@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.FileSystem;
@@ -33,14 +34,30 @@ public static class FileSaverHelper
             return;
         }
         
-        var fileName = vm.FileInfo is null ? Path.GetTempFileName() : vm.FileInfo.Name;
+        // Suggest random filename for saving, if it is not an existing file
+        var fileName = vm.FileInfo is null ? Path.GetRandomFileName() : vm.FileInfo.Name;
 
         await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
     }
 
     public static async Task SaveFileAsync(string? filename, string destination, MainViewModel vm)
     {
-        if (!string.IsNullOrWhiteSpace(filename))
+        if (vm.EffectConfig is not null)
+        {
+            await SaveImageFromBitmap();
+        }
+        else if (!string.IsNullOrWhiteSpace(filename) && File.Exists(filename))
+        {
+            await SaveImageFromFile();
+        }
+        else
+        {
+            await SaveImageFromBitmap();
+        }
+        
+        return;
+
+        async Task SaveImageFromFile()
         {
             await SaveImageFileHelper.SaveImageAsync(null,
                 filename,
@@ -51,41 +68,55 @@ public static class FileSaverHelper
                 Path.GetExtension(destination),
                 vm.RotationAngle);
         }
-        else
+        
+        async Task SaveImageFromBitmap()
         {
-            switch (vm.ImageType)
+            
+            try
             {
-                case ImageType.AnimatedGif:
-                case ImageType.AnimatedWebp:
-                    throw new ArgumentOutOfRangeException();
-                case ImageType.Bitmap:
-                    if (vm.ImageSource is not Bitmap bitmap)
+                switch (vm.ImageType)
+                {
+                    case ImageType.AnimatedGif: // TODO: Add animated GIF support
+                    case ImageType.AnimatedWebp: // TODO: Add animated WebP support
+                    case ImageType.Bitmap:
                     {
-                        throw new ArgumentOutOfRangeException();
-                    }
-                    var stream = new FileStream(destination, FileMode.Create);
-                    const uint quality = 100;
-                    bitmap.Save(stream, (int)quality);
-                    await stream.DisposeAsync();
-                    var ext = Path.GetExtension(destination);
-                    if (ext != ".jpg" || ext != ".jpeg" || ext != ".png" || ext != ".bmp" || vm.RotationAngle != 0)
-                    {
-                        await SaveImageFileHelper.SaveImageAsync(
-                            null,
-                            destination,
-                            destination:destination,
-                            width: null,
-                            height: null,
-                            quality,
-                            ext,
-                            vm.RotationAngle);
-                    }
+                        if (vm.ImageSource is not Bitmap bitmap)
+                        {
+                            throw new InvalidOperationException("No bitmap available for saving.");
+                        }
+                        const uint quality = 100; // TODO: Add quality slider to user settings
+                        var stream = new FileStream(destination, FileMode.Create);
+                        bitmap.Save(stream, (int)quality);
+                        await stream.DisposeAsync().ConfigureAwait(false);
+                        var ext = Path.GetExtension(destination);
+                        // Add rotation, apply image conversion
+                        if (ext.IsSupported())
+                        {
+                            await SaveImageFileHelper.SaveImageAsync(
+                                null,
+                                destination,
+                                destination,
+                                width: null,
+                                height: null,
+                                quality,
+                                ext,
+                                vm.RotationAngle);
+                        }
                     
-                    break;
-                case ImageType.Svg:
-                    throw new ArgumentOutOfRangeException();
-                default:
-                    throw new ArgumentOutOfRangeException();
+                        break;
+                    }
+                    case ImageType.Svg:
+                        // TODO convert svg to bitmap and save
+                        throw new InvalidOperationException("No bitmap available for saving.");
+                    default:
+                        throw new InvalidOperationException("No bitmap available for saving.");
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+         Console.WriteLine($"{nameof(SaveFileAsync)}.{nameof(SaveImageFromBitmap)} exception: \n{e.StackTrace}");       
+#endif
             }
         }
     }

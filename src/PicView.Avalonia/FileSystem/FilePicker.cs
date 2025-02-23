@@ -1,13 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
-using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.FileSystem;
@@ -179,25 +177,6 @@ public static class FilePicker
         var file = await PickFileForSavingAsync(fileName);
         if (file is null)
         {
-            return;
-        }
-
-        if (!File.Exists(file))
-        {
-            if (vm.ImageSource is not Bitmap bitmap)
-            {
-                return;
-            }
-            bitmap.Save(file);
-            if (!Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase)
-                || !Path.GetExtension(fileName).Equals(".jpg", StringComparison.OrdinalIgnoreCase)
-                || !Path.GetExtension(fileName).Equals(".jpeg", StringComparison.OrdinalIgnoreCase)
-                || !Path.GetExtension(fileName).Equals(".jfif", StringComparison.OrdinalIgnoreCase)
-                || !Path.GetExtension(fileName).Equals(".bmp", StringComparison.OrdinalIgnoreCase)
-                || !Path.GetExtension(fileName).Equals(".gif", StringComparison.OrdinalIgnoreCase))
-            {
-                await SaveImageFileHelper.SaveImageAsync(null, file, fileName, null, null, null, Path.GetExtension(fileName), vm.RotationAngle);
-            }
             return;
         }
         

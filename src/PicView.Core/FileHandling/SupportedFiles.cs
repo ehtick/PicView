@@ -150,7 +150,7 @@ public static class SupportedFiles
     /// <summary>
     /// Extension method to check if a FileInfo is a supported archive.
     /// </summary>
-    /// <param name="FileInfo">FileInfo to check</param>
+    /// <param name="fileInfo">FileInfo to check</param>
     /// <returns>True if file is a supported archive, False otherwise</returns>
     public static bool IsArchive(this FileInfo fileInfo)
     {
