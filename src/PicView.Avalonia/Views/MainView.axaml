@@ -561,12 +561,12 @@
                         Width="13" />
                 </MenuItem.Icon>
 
-                <!--  Set as wallpaper fit  -->
+                <!--  Set as wallpaper filled  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperCommand}"
+                    Command="{CompiledBinding SetAsWallpaperFilledCommand}"
                     CommandParameter="{CompiledBinding FileInfo.FullName,
                                                        FallbackValue=''}"
-                    Header="{CompiledBinding Fit,
+                    Header="{CompiledBinding Fill,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -578,12 +578,12 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <!--  Set as wallpaper filled  -->
+                <!--  Set as wallpaper fit  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperFilledCommand}"
+                    Command="{CompiledBinding SetAsWallpaperCommand}"
                     CommandParameter="{CompiledBinding FileInfo.FullName,
                                                        FallbackValue=''}"
-                    Header="{CompiledBinding Fill,
+                    Header="{CompiledBinding Fit,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path

@@ -110,6 +110,22 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
+                            <MenuItem
+                                Command="{CompiledBinding SetAsWallpaperFilledCommand}"
+                                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                                                   FallbackValue=''}"
+                                Header="{CompiledBinding SetAsWallpaper,
+                                                         Mode=OneWay}">
+                                <MenuItem.Icon>
+                                    <Path
+                                        Data="{StaticResource PanoramaGeometry}"
+                                        Fill="{DynamicResource MainTextColor}"
+                                        Height="10.40"
+                                        Stretch="Fill"
+                                        Width="13" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator />
                             <MenuItem Header="{CompiledBinding ClearEffects}" x:Name="ClearEffectsItem">
                                 <MenuItem.Icon>
                                     <Image
