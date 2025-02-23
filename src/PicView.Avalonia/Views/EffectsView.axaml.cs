@@ -69,16 +69,55 @@ public partial class EffectsView : UserControl
         ResetSolarizeBtn.Click += (_, _) => SolarizeSlider.Value = 0;
         ResetBlurBtn.Click += (_, _) => BlurSlider.Value = 0;
 
-        BrightnessSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Brightness = new Percentage(e.NewValue));
-        ContrastSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Contrast = new Percentage(e.NewValue));
-        PencilSketchSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.SketchStrokeWidth = e.NewValue);
-        PosterizeSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.PosterizeLevel = (int)e.NewValue == 1 ? 2 : (int)e.NewValue);
-        SolarizeSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.Solarize = new Percentage(e.NewValue));
-        BlurSlider.ValueChanged += (s, e) => UpdateEffectConfig(vm, config => config.BlurLevel = e.NewValue);
+        BrightnessSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.Brightness = new Percentage(e.NewValue));
+        };
+        ContrastSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.Contrast = new Percentage(e.NewValue));
+        };
+        PencilSketchSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.SketchStrokeWidth = e.NewValue);
+        };
+        PosterizeSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.PosterizeLevel = (int)e.NewValue == 1 ? 2 : (int)e.NewValue);  
+        };
+        SolarizeSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.Solarize = new Percentage(e.NewValue));
+        };
+        BlurSlider.ValueChanged += (s, e) =>
+        {
+            vm.EffectConfig ??= new ImageEffectConfig();
+            UpdateEffectConfig(vm, config => config.BlurLevel = e.NewValue);
+        };
 
-        BlackAndWhiteToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, BlackAndWhiteToggleButton, config => config.BlackAndWhite = BlackAndWhiteToggleButton.IsChecked.Value);
-        NegativeToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, NegativeToggleButton, config => config.Negative = NegativeToggleButton.IsChecked.Value);
-        OldMovieToggleButton.Click += async (_, _) => await UpdateToggleEffect(vm, OldMovieToggleButton, config => config.OldMovie = OldMovieToggleButton.IsChecked.Value);
+        BlackAndWhiteToggleButton.Click += async delegate
+        {
+            var isBlackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue && BlackAndWhiteToggleButton.IsChecked.Value;
+            vm.EffectConfig ??= new ImageEffectConfig();
+            await UpdateToggleEffect(vm, BlackAndWhiteToggleButton, config => config.BlackAndWhite = isBlackAndWhite);
+        };
+        NegativeToggleButton.Click += async delegate
+        {
+            var isNegative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
+            vm.EffectConfig ??= new ImageEffectConfig();
+            await UpdateToggleEffect(vm, NegativeToggleButton, config => config.Negative = isNegative);
+        };
+        OldMovieToggleButton.Click += async delegate
+        {
+            var isOldMovie = OldMovieToggleButton.IsChecked.HasValue && OldMovieToggleButton.IsChecked.Value;
+            vm.EffectConfig ??= new ImageEffectConfig();
+            await UpdateToggleEffect(vm, OldMovieToggleButton, config => config.OldMovie = isOldMovie);
+        };
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -173,11 +212,12 @@ public partial class EffectsView : UserControl
 
     private async Task UpdateToggleEffect(MainViewModel vm, ToggleButton toggleButton, Action<ImageEffectConfig> updateAction)
     {
-        if (!toggleButton.IsChecked.HasValue)
+        var shouldReturn = false;
+        await Dispatcher.UIThread.InvokeAsync(() => shouldReturn = !toggleButton.IsChecked.HasValue);
+        if (shouldReturn)
         {
             return;
         }
-
         updateAction(vm.EffectConfig);
         await ApplyEffectsDebounced();
     }
