@@ -29,12 +29,13 @@ public static class GetImageModel
         try
         {
             var ext = fileInfo.Extension.ToLower();
+            using var magickImage = new MagickImage();
+            magickImage.Ping(fileInfo);
             if (string.IsNullOrEmpty(ext))
             {
-                using var magickImage = new MagickImage();
-                magickImage.Ping(fileInfo);
                 ext = magickImage.Format.ToString().ToLower();
             }
+            imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
 
             switch (ext)
             {

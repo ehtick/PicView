@@ -137,7 +137,7 @@ public class ImageIterator : IAsyncDisposable
                 GalleryNavigation.CenterScrollToSelectedItem(_vm);
             }
 
-            await PreLoader.ResynchronizeAsync(ImagePaths);
+            PreLoader.Resynchronize(ImagePaths);
         }
         catch (Exception exception)
         {
@@ -190,10 +190,11 @@ public class ImageIterator : IAsyncDisposable
                     return;
                 }
 
+                
                 RemoveCurrentItemFromPreLoader();
-
+                PreLoader.Resynchronize(ImagePaths);
                 CurrentIndex = GetIteration(index, NavigateTo.Previous);
-
+                _vm.FileInfo = new FileInfo(ImagePaths[CurrentIndex]);
                 await IterateToIndex(CurrentIndex, new CancellationTokenSource());
             }
             else
@@ -221,9 +222,12 @@ public class ImageIterator : IAsyncDisposable
                     GalleryNavigation.CenterScrollToSelectedItem(_vm);
                 }
             }
-        
-            await PreLoader.ResynchronizeAsync(ImagePaths);
 
+            if (!isSameFile)
+            {
+                PreLoader.Resynchronize(ImagePaths);
+            }
+            
             FileHistoryNavigation.Remove(e.FullPath);
 
         }
@@ -299,7 +303,7 @@ public class ImageIterator : IAsyncDisposable
 
             SetTitleHelper.SetTitle(_vm);
             PreLoader.RefreshFileInfo(oldIndex, fileInfo, ImagePaths);
-            await ResynchronizeAsync();
+            Resynchronize();
 
             _isRunning = false;
             FileHistoryNavigation.Rename(e.OldFullPath, e.FullPath);
@@ -376,7 +380,7 @@ public class ImageIterator : IAsyncDisposable
 
     public void RemoveCurrentItemFromPreLoader() => PreLoader.Remove(CurrentIndex, ImagePaths);
 
-    public async Task ResynchronizeAsync() => await PreLoader.ResynchronizeAsync(ImagePaths);
+    public void Resynchronize() => PreLoader.Resynchronize(ImagePaths);
 
     #endregion
 

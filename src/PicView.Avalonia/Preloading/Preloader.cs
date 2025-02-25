@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using Avalonia.Media.Imaging;
 using PicView.Avalonia.ImageHandling;
-using PicView.Core.ImageDecoding;
 using static System.GC;
 
 namespace PicView.Avalonia.Preloading;
@@ -21,7 +20,7 @@ public class PreLoader : IAsyncDisposable
     /// <summary>
     ///     Indicates whether the preloader is currently running.
     /// </summary>
-    private static bool _isRunning;
+    private int _isRunningFlag; // 0 = idle, 1 = running
 
     private readonly PreLoaderConfig _config = new();
 
@@ -60,21 +59,21 @@ public class PreLoader : IAsyncDisposable
         }
 
         var imageModel = new ImageModel();
+        var preLoadValue = new PreLoadValue(imageModel)
+        {
+            IsLoading = true,
+        };
 
-        var preLoadValue = new PreLoadValue(imageModel);
         if (!_preLoadList.TryAdd(index, preLoadValue))
         {
             return false;
         }
-
-        preLoadValue.IsLoading = true;
+        
         try
         {
             var fileInfo = imageModel.FileInfo = new FileInfo(list[index]);
             imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
             preLoadValue.ImageModel = imageModel;
-            imageModel.EXIFOrientation ??= EXIFHelper.GetImageOrientation(fileInfo);
-
 #if DEBUG
             if (ShowAddRemove)
             {
@@ -159,21 +158,22 @@ public class PreLoader : IAsyncDisposable
     /// <remarks>
     ///     Call it after the file watcher detects changes, or the list is resorted
     /// </remarks>
-    public async Task ResynchronizeAsync(List<string> list)
+    public void Resynchronize(List<string> list)
     {
         if (list == null)
         {
 #if DEBUG
-            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(ResynchronizeAsync)} list is null");
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(Resynchronize)} list is null");
 #endif
             return;
         }
-
-        while (_isRunning)
+        
+        if (list.Count == 0 || _preLoadList.IsEmpty)
         {
-            await _cancellationTokenSource?.CancelAsync();
-            await Task.Delay(100);
+            return;
         }
+        
+        _cancellationTokenSource?.Cancel();
 
         // Create a reverse lookup from file path to current index
         var reverseLookup = new Dictionary<string, int>(list.Count);
@@ -263,6 +263,12 @@ public class PreLoader : IAsyncDisposable
         return null;
     }
 
+    /// <summary>
+    ///     Gets the preloaded value for a specific file name. Should only be used when resynchronizing.
+    /// </summary>
+    /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
+    /// <param name="list">The list of image paths.</param>
+    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
     public PreLoadValue? Get(string fileName, List<string> list) =>
         Get(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel.FileInfo.FullName == fileName), list);
 
@@ -292,6 +298,12 @@ public class PreLoader : IAsyncDisposable
         return Get(key, list);
     }
 
+    /// <summary>
+    ///     Gets the preloaded value for a specific file name asynchronously. Should only be used when resynchronizing.
+    /// </summary>
+    /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
+    /// <param name="list">The list of image paths.</param>
+    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
     public async Task<PreLoadValue?> GetAsync(string fileName, List<string> list) =>
         await GetAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo?.FullName == fileName),
             list);
@@ -347,38 +359,42 @@ public class PreLoader : IAsyncDisposable
             return false;
         }
 
+        if (!_preLoadList.TryGetValue(key, out var item))
+        {
+            return false;
+        }
+
         try
         {
-            if (_preLoadList.TryGetValue(key, out var item))
+            if (item.ImageModel is not null)
             {
-                lock (_lock)
-                {
-                    if (item.ImageModel?.Image is Bitmap bitmap)
-                    {
-                        bitmap.Dispose();
-                    }
-                }
-
-                if (item.ImageModel is not null)
-                {
-                    item.ImageModel.FileInfo = null;
-                }
-
-                var removed = _preLoadList.TryRemove(key, out _);
-#if DEBUG
-                if (removed && ShowAddRemove)
-                {
-                    Trace.WriteLine($"{list[key]} removed at {list.IndexOf(list[key])}");
-                }
-#endif
-                return removed;
+                item.ImageModel.FileInfo = null;
             }
+
+            var removed = _preLoadList.TryRemove(key, out _);
+#if DEBUG
+            if (removed && ShowAddRemove)
+            {
+                Trace.WriteLine($"{Path.GetFileName(list[key])} removed at {list.IndexOf(list[key])}");
+            }
+#endif
+            return removed;
         }
         catch (Exception e)
         {
 #if DEBUG
             Trace.WriteLine($"{nameof(Remove)} exception:\n{e.Message}");
 #endif
+        }
+        finally
+        {
+            lock (_lock)
+            {
+                if (item.ImageModel?.Image is Bitmap bitmap)
+                {
+                    bitmap.Dispose();
+                }
+            }
         }
 
         return false;
@@ -463,9 +479,9 @@ public class PreLoader : IAsyncDisposable
             return;
         }
 
-        if (_isRunning)
+        if (Interlocked.CompareExchange(ref _isRunningFlag, 1, 0) != 0)
         {
-            return;
+            return; // Already running
         }
 
 #if DEBUG
@@ -488,13 +504,15 @@ public class PreLoader : IAsyncDisposable
             Trace.WriteLine($"{nameof(PreLoadAsync)} exception:\n{exception.Message}");
 #endif
         }
+        finally
+        {
+            Interlocked.Exchange(ref _isRunningFlag, 0);
+        }
     }
 
     private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<string> list,
         CancellationToken token)
     {
-        _isRunning = true;
-
         var count = list.Count;
 
         int nextStartingIndex, prevStartingIndex;
@@ -509,34 +527,29 @@ public class PreLoader : IAsyncDisposable
             prevStartingIndex = currentIndex - 1;
         }
 
-        var isPrettymuchEmpty = _preLoadList.Count <= 1;
+        var isPrettyMuchEmpty = _preLoadList.Count <= 1;
         var options = new ParallelOptions
         {
             MaxDegreeOfParallelism = _config.MaxParallelism,
             CancellationToken = token
         };
 
-        try
-        {
-            if (reverse)
-            {
-                await LoopAsync(options, false);
-                await LoopAsync(options, true);
-            }
-            else
-            {
-                await LoopAsync(options, true);
-                await LoopAsync(options, false);
-            }
+        var additions = new List<int>();
 
-            if (!isPrettymuchEmpty)
-            {
-                RemoveLoop();
-            }
-        }
-        finally
+        if (reverse)
         {
-            _isRunning = false;
+            await LoopAsync(options, false);
+            await LoopAsync(options, true);
+        }
+        else
+        {
+            await LoopAsync(options, true);
+            await LoopAsync(options, false);
+        }
+
+        if (!isPrettyMuchEmpty)
+        {
+            RemoveLoop();
         }
 
         return;
@@ -545,8 +558,12 @@ public class PreLoader : IAsyncDisposable
         {
             await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
             {
+                token.ThrowIfCancellationRequested();
                 var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
-                await AddAsync(index, list);
+                if (await AddAsync(index, list))
+                {
+                    additions.Add(index);
+                }
             });
         }
 
@@ -559,9 +576,16 @@ public class PreLoader : IAsyncDisposable
                 return;
             }
 
-            while (_preLoadList.Count > PreLoaderConfig.MaxCount)
+            var keysToRemove = _preLoadList.Keys
+                .OrderByDescending(k => Math.Abs(k - currentIndex))
+                .Take(_preLoadList.Count - PreLoaderConfig.MaxCount);
+
+            foreach (var key in keysToRemove)
             {
-                Remove(reverse ? _preLoadList.Keys.Max() : _preLoadList.Keys.Min(), list);
+                if (!additions.Contains(key))
+                {
+                    Remove(key, list);
+                }
             }
         }
     }
@@ -594,16 +618,11 @@ public class PreLoader : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_disposed)
-        {
-            return;
-        }
-
-        if (_cancellationTokenSource is not null)
-        {
-            await ClearAsync().ConfigureAwait(false);
-        }
-
+        if (_disposed) return;
+        await _cancellationTokenSource?.CancelAsync();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        await ClearAsync().ConfigureAwait(false);
         Dispose(false);
         SuppressFinalize(this);
     }
