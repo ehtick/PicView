@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
-using Avalonia.Layout;
 using Avalonia.Threading;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
@@ -388,9 +387,6 @@ public static class WindowFunctions
         Dispatcher.UIThread.Invoke(() =>
         {
             desktop.MainWindow.WindowState = WindowState.FullScreen;
-                
-            // Reset to stretch to fix it, if it has been set to left for startup fix
-            vm.ImageViewer.MainBorder.HorizontalAlignment = HorizontalAlignment.Stretch;
         });
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

@@ -1,5 +1,4 @@
-﻿using Avalonia.Layout;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
@@ -61,10 +60,12 @@ public static class QuickLoad
             {
                 WindowFunctions.CenterWindowOnScreen();
             }
-            else if (vm.PixelWidth > UIHelper.GetMainView.Bounds.Width || vm.PixelHeight > UIHelper.GetMainView.Bounds.Height)
+            else if (vm.PixelWidth > vm.ImageViewer.Bounds.Width)
             {
                 // Fixes weird bug where the image is not rendered correctly
-                vm.ImageViewer.MainBorder.HorizontalAlignment = HorizontalAlignment.Left;
+                // TODO: check if this will still be needed in future Avalonia versions
+                vm.ImageViewer.MainBorder.Width = vm.ImageViewer.ImageScrollViewer.Bounds.Width;
+                WindowResizing.SetSize(vm);
             }
         }, DispatcherPriority.Send);
 
@@ -112,6 +113,20 @@ public static class QuickLoad
             {
                 WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
             }, DispatcherPriority.Send);
+        }
+        else if (!Settings.WindowProperties.AutoFit)
+        {
+            if (vm.PixelWidth > vm.ImageViewer.Bounds.Width)
+            {
+                // Fixes weird bug where the image is not rendered correctly
+                // TODO: check if this will still be needed in future Avalonia versions
+                vm.ImageSource = imageModel.Image;
+                vm.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
+                }, DispatcherPriority.Send);
+            }
         }
         
         // Add recent files, except when browsing archive
