@@ -1,4 +1,7 @@
 ﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -6,9 +9,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using ReactiveUI;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using Avalonia;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -44,22 +44,20 @@ public class AutoScrollViewer : ScrollViewer
     private readonly Subject<bool> _autoScrollingSubject = new();
     private readonly CompositeDisposable _disposables = new();
 
-    private bool _isAutoScrolling;
-
     /// <summary>
     /// Gets or sets a value indicating whether auto-scrolling is active.
     /// </summary>
     public bool IsAutoScrolling
     {
-        get => _isAutoScrolling;
+        get;
         set
         {
-            if (_isAutoScrolling == value)
+            if (field == value)
             {
                 return;
             }
 
-            _isAutoScrolling = value;
+            field = value;
             _autoScrollingSubject.OnNext(value);
         }
     }
