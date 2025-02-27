@@ -1,4 +1,3 @@
-using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -7,28 +6,17 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ImageTransformations;
-using Point = Avalonia.Point;
 
 namespace PicView.Avalonia.Views;
 
 public partial class ImageViewer : UserControl
 {
-    private static ScaleTransform? _scaleTransform;
-    private static TranslateTransform? _translateTransform;
-
-    private static Point _start;
-    private static Point _origin;
-    private static Point _current;
-
-    private bool _captured;
-    private bool _isZoomed;
-
     public ImageViewer()
     {
         InitializeComponent();
@@ -41,7 +29,7 @@ public partial class ImageViewer : UserControl
             InitializeZoom();
             LostFocus += (_, _) =>
             {
-                _captured = false;
+                Zoom.Release();
             };
         };
     }
@@ -61,7 +49,7 @@ public partial class ImageViewer : UserControl
 
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e)
     {
-        ZoomTo(e.GetPosition(this), e.Delta.X > 0);
+        Zoom.ZoomTo(e.GetPosition(this), e.Delta.X > 0, DataContext as MainViewModel);
     }
 
     public async Task PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
@@ -195,318 +183,19 @@ public partial class ImageViewer : UserControl
 
     #region Zoom
 
-    private void InitializeZoom()
-    {
-        MainBorder.RenderTransform = new TransformGroup
-        {
-            Children =
-            [
-                new ScaleTransform(),
-                new TranslateTransform()
-            ]
-        };
-        _scaleTransform = (ScaleTransform)((TransformGroup)MainBorder.RenderTransform)
-            .Children.First(tr => tr is ScaleTransform);
+    private void InitializeZoom() => Zoom.InitializeZoom(MainBorder);
 
-        _translateTransform = (TranslateTransform)((TransformGroup)MainBorder.RenderTransform)
-            .Children.First(tr => tr is TranslateTransform);
-        MainBorder.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-        MainImage.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-    }
+    public void ZoomIn(PointerWheelEventArgs e) => Zoom.ZoomIn(e, this, MainImage, DataContext as MainViewModel);
 
-    public void ZoomIn(PointerWheelEventArgs e)
-    {
-        ZoomTo(e, true);
-    }
+    public void ZoomOut(PointerWheelEventArgs e) => Zoom.ZoomOut(e, this, MainImage, DataContext as MainViewModel);
 
-    public void ZoomOut(PointerWheelEventArgs e)
-    {
-        ZoomTo(e, false);
-    }
+    public void ZoomIn() => Zoom.ZoomIn(DataContext as MainViewModel);
 
-    public void ZoomIn()
-    {
-        ZoomTo(_current, true);
-    }
-
-    public void ZoomOut()
-    {
-        ZoomTo(_current, false);
-    }
-
-    public void ZoomTo(PointerWheelEventArgs e, bool isZoomIn)
-    {
-        Point relativePosition;
-        if (!MainImage.IsPointerOver)
-        {
-            // Get center of the ImageViewer control
-            var centerX = Bounds.Width / 2;
-            var centerY = Bounds.Height / 2;
-        
-            // Convert to MainImage's coordinate space
-            relativePosition = this.TranslatePoint(new Point(centerX, centerY), MainImage) 
-                               ?? new Point(MainImage.Bounds.Width / 2, MainImage.Bounds.Height / 2);
-        }
-        else
-        {
-            relativePosition = e.GetPosition(MainImage);
-        }
-        ZoomTo(relativePosition, isZoomIn);
-    }
-
-    public void ZoomTo(Point point, bool isZoomIn)
-    {
-        if (_scaleTransform == null || _translateTransform == null)
-        {
-            return;
-        }
-        var currentZoom = _scaleTransform.ScaleX;
-        var zoomSpeed = Settings.Zoom.ZoomSpeed;
-        
-        switch (currentZoom)
-        {
-            // Increase speed based on the current zoom level
-            case > 15 when isZoomIn:
-                return;
-
-            case > 4:
-                zoomSpeed += 1;
-                break;
-
-            case > 3.2:
-                zoomSpeed += 0.8;
-                break;
-
-            case > 1.6:
-                zoomSpeed += 0.5;
-                break;
-        }
-
-        if (!isZoomIn)
-        {
-            zoomSpeed = -zoomSpeed;
-        }
-
-        currentZoom += zoomSpeed;
-        currentZoom = Math.Max(0.09, currentZoom); // Fix for zooming out too much
-        if (Settings.Zoom.AvoidZoomingOut && currentZoom < 1.0)
-        {
-            ResetZoom(true);
-        }
-        else
-        {
-            if (currentZoom is > 0.95 and < 1.05 or > 1.0 and < 1.05)
-            {
-                ResetZoom(true);
-            }
-            else
-            {
-                ZoomTo(point, currentZoom, true);
-            }
-        }
-    }
-
-    public void ZoomTo(Point point, double zoomValue, bool enableAnimations)
-    {
-        if (_scaleTransform == null || _translateTransform == null)
-        {
-            return;
-        }
-        if (DataContext is not MainViewModel vm)
-            return;
-
-        if (enableAnimations)
-        {
-            _scaleTransform.Transitions ??=
-            [
-                new DoubleTransition { Property = ScaleTransform.ScaleXProperty, Duration = TimeSpan.FromSeconds(.25) },
-                new DoubleTransition { Property = ScaleTransform.ScaleYProperty, Duration = TimeSpan.FromSeconds(.25) }
-            ];
-            _translateTransform.Transitions ??=
-            [
-                new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromSeconds(.25) },
-                new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromSeconds(.25) }
-            ];
-        }
-        else
-        {
-            _scaleTransform.Transitions = null;
-            _translateTransform.Transitions = null;
-        }
-
-        var absoluteX = point.X * _scaleTransform.ScaleX + _translateTransform.X;
-        var absoluteY = point.Y * _scaleTransform.ScaleY + _translateTransform.Y;
-
-        var newTranslateValueX = Math.Abs(zoomValue - 1) > .2 ? absoluteX - point.X * zoomValue : 0;
-        var newTranslateValueY = Math.Abs(zoomValue - 1) > .2 ? absoluteY - point.Y * zoomValue : 0;
-        
-        _scaleTransform.ScaleX = zoomValue;
-        _scaleTransform.ScaleY = zoomValue;
-        _translateTransform.X = newTranslateValueX;
-        _translateTransform.Y = newTranslateValueY;
-        vm.ZoomValue = zoomValue;
-        _isZoomed = zoomValue != 0;
-        if (_isZoomed)
-        {
-            SetTitleHelper.SetTitle(vm);
-            _ = TooltipHelper.ShowTooltipMessageAsync($"{Math.Floor(zoomValue * 100)}%", center: true, TimeSpan.FromSeconds(1));
-        }
-    }
-
-
-    public void ResetZoom(bool enableAnimations)
-    {
-        if (_scaleTransform == null || _translateTransform == null)
-        {
-            return;
-        }
-        Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (enableAnimations)
-            {
-                _scaleTransform.Transitions ??=
-                [
-                    new DoubleTransition { Property = ScaleTransform.ScaleXProperty, Duration = TimeSpan.FromSeconds(.25) },
-                    new DoubleTransition { Property = ScaleTransform.ScaleYProperty, Duration = TimeSpan.FromSeconds(.25) }
-                ];
-                _translateTransform.Transitions ??=
-                [
-                    new DoubleTransition { Property = TranslateTransform.XProperty, Duration = TimeSpan.FromSeconds(.25) },
-                    new DoubleTransition { Property = TranslateTransform.YProperty, Duration = TimeSpan.FromSeconds(.25) }
-                ];
-            }
-            else
-            {
-                _scaleTransform.Transitions = null;
-                _translateTransform.Transitions = null;
-            }
-
-            _scaleTransform.ScaleX = 1;
-            _scaleTransform.ScaleY = 1;
-            _translateTransform.X = 0;
-            _translateTransform.Y = 0;
-        }, DispatcherPriority.Send);
-
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-        vm.ZoomValue = 1;
-        vm.RotationAngle = 0;
-        TooltipHelper.StopTooltipMessage();
-        SetTitleHelper.SetTitle(vm);
-        _isZoomed = false;
-    }
-
-    public void Reset()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            DoReset();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(DoReset);
-        }
-        return;
-        
-        void DoReset()
-        {
-            if (_isZoomed)
-            {
-                ResetZoom(false);
-            }
-            ImageLayoutTransformControl.LayoutTransform = null;
-            MainImage.RenderTransform = null;
-            if (DataContext is MainViewModel vm)
-            {
-                vm.RotationAngle = 0;
-            }
-        }
-    }
+    public void ZoomOut() => Zoom.ZoomOut( DataContext as MainViewModel);
     
-    private void Capture(PointerEventArgs e)
-    {
-        if (_captured)
-        {
-            return;
-        }
-        if (_scaleTransform == null || _translateTransform == null)
-        {
-            return;
-        }
-
-        var mainView = UIHelper.GetMainView;
-
-        var point = e.GetCurrentPoint(mainView);
-        var x = point.Position.X;
-        var y = point.Position.Y;
-        _start = new Point(x, y);
-        _origin = new Point(_translateTransform.X, _translateTransform.Y);
-        _captured = true;
-    }
+    public void ResetZoom(bool enableAnimations = true) => Zoom.ResetZoom(enableAnimations, DataContext as MainViewModel);
     
-    public void Pan(PointerEventArgs e)
-    {
-        if (!_captured || _scaleTransform == null || !_isZoomed)
-        {
-            return;
-        }
-
-        var dragMousePosition = _start - e.GetPosition(this);
-    
-        var newXproperty = _origin.X - dragMousePosition.X;
-        var newYproperty = _origin.Y - dragMousePosition.Y;
-        
-        // #185
-        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized || !Settings.WindowProperties.AutoFit)
-        {
-            // TODO: figure out how to pan when not auto fitting window while keeping it in bounds
-            _translateTransform.Transitions = null;
-            _translateTransform.X = newXproperty;
-            _translateTransform.Y = newYproperty;
-            e.Handled = true;
-            return;
-        }
-    
-
-        var actualScrollWidth = ImageScrollViewer.Bounds.Width;
-        var actualBorderWidth = MainBorder.Bounds.Width;
-        var actualScrollHeight = ImageScrollViewer.Bounds.Height;
-        var actualBorderHeight = MainBorder.Bounds.Height;
-
-        var isXOutOfBorder = actualScrollWidth < actualBorderWidth * _scaleTransform.ScaleX;
-        var isYOutOfBorder = actualScrollHeight < actualBorderHeight * _scaleTransform.ScaleY;
-        var maxX = actualScrollWidth - actualBorderWidth * _scaleTransform.ScaleX;
-        var maxY = actualScrollHeight - actualBorderHeight * _scaleTransform.ScaleY;
-    
-        // Clamp X translation
-        if ((isXOutOfBorder && newXproperty < maxX) || (!isXOutOfBorder && newXproperty > maxX))
-        {
-            newXproperty = maxX;
-        }
-        if ((isXOutOfBorder && newXproperty > 0) || (!isXOutOfBorder && newXproperty < 0))
-        {
-            newXproperty = 0;
-        }
-
-        // Clamp Y translation
-        if ((isYOutOfBorder && newYproperty < maxY) || (!isYOutOfBorder && newYproperty > maxY))
-        {
-            newYproperty = maxY;
-        }
-        if ((isYOutOfBorder && newYproperty > 0) || (!isYOutOfBorder && newYproperty < 0))
-        {
-            newYproperty = 0;
-        }
-
-        _translateTransform.Transitions = null;
-        _translateTransform.X = newXproperty;
-        _translateTransform.Y = newYproperty;
-        e.Handled = true;
-    }
-
-    #endregion Zoom
+    #endregion
 
     #region Rotation and Flip
 
@@ -618,7 +307,7 @@ public partial class ImageViewer : UserControl
         var rotateTransform = new RotateTransform(rotationAngle);
         ImageLayoutTransformControl.LayoutTransform = rotateTransform;
         
-        if (_isZoomed)
+        if (Zoom.IsZoomed)
         {
             ResetZoom(false);
         }
@@ -649,7 +338,7 @@ public partial class ImageViewer : UserControl
                 default:
                 case EXIFHelper.EXIFOrientation.None:
                 case EXIFHelper.EXIFOrientation.Horizontal:
-                    Reset();
+                    ResetZoom();;
                     return;
                 case EXIFHelper.EXIFOrientation.MirrorHorizontal:
                     SetTransform(-1, 0);
@@ -689,7 +378,7 @@ public partial class ImageViewer : UserControl
     {
         if (e.ClickCount == 2)
         {
-            ResetZoom(true);
+            ResetZoom();
         }
     }
 
@@ -701,7 +390,7 @@ public partial class ImageViewer : UserControl
         }
         if (e.ClickCount == 2)
         {
-            ResetZoom(true);
+            ResetZoom();
         }
         else
         {
@@ -709,11 +398,7 @@ public partial class ImageViewer : UserControl
         }
     }
 
-    private void MainImage_OnPointerMoved(object? sender, PointerEventArgs e)
-    {
-        _current = e.GetPosition(this);
-        Pan(e);
-    }
+    private void MainImage_OnPointerMoved(object? sender, PointerEventArgs e) => Zoom.Pan(e, this);
 
     private void Pressed(PointerEventArgs e)
     {
@@ -721,13 +406,10 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
-        Capture(e);
+        Zoom.Capture(e);
     }
 
-    private void MainImage_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        _captured = false;
-    }
+    private void MainImage_OnPointerReleased(object? sender, PointerReleasedEventArgs e) => Zoom.Release();
 
     #endregion Events
     
