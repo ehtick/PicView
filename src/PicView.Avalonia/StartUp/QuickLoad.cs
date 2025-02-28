@@ -49,13 +49,27 @@ public static class QuickLoad
             vm.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
         }
         
+        // When width and height are the same, it renders image incorrectly at startup,
+        // so need to handle it specially
+        var is1To1 = imageModel.PixelWidth == imageModel.PixelHeight;
+        
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             vm.ImageViewer.SetTransform(imageModel.EXIFOrientation);
-            SetSize();
-            if (Settings.WindowProperties.AutoFit)
+            if (Settings.WindowProperties.AutoFit && !Settings.Zoom.ScrollEnabled)
             {
+                SetSize();
                 WindowFunctions.CenterWindowOnScreen();
+            }
+            else if (is1To1)
+            {
+                var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, vm.RotationAngle, vm);
+                vm.ImageViewer.MainBorder.Height = size?.Width ?? 0;
+                vm.ImageViewer.MainBorder.Width = size?.Height ?? 0;
+            }
+            else if (imageModel.PixelWidth <= UIHelper.GetMainView.Bounds.Width && imageModel.PixelHeight <= UIHelper.GetMainView.Bounds.Height)
+            {
+                SetSize();
             }
         }, DispatcherPriority.Send);
 
@@ -79,7 +93,7 @@ public static class QuickLoad
         {
             if (TiffManager.IsTiff(imageModel.FileInfo.FullName))
             {
-                SetTitleHelper.TrySetTiffTitle(imageModel.PixelWidth, imageModel.PixelHeight, NavigationManager.GetCurrentIndex, fileInfo, vm);
+                SetTitleHelper.TrySetTiffTitle(imageModel, vm);
             }
             else
             {
@@ -87,48 +101,41 @@ public static class QuickLoad
             }
         }
         
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        // Fixes weird bug where the image is not rendered correctly
+        // TODO: check if this will still be needed in future Avalonia versions
+        if (!Settings.WindowProperties.AutoFit && !Settings.Zoom.ScrollEnabled)
         {
-            if (vm.PixelWidth > vm.ImageViewer.Bounds.Width && !Settings.Zoom.ScrollEnabled)
+            if (!is1To1)
             {
-                // Fixes weird bug where the image is not rendered correctly
-                // TODO: check if this will still be needed in future Avalonia versions
-                if (vm.PixelHeight > vm.ImageViewer.Bounds.Height)
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    vm.ImageViewer.MainBorder.Height = vm.ImageViewer.ImageScrollViewer.Bounds.Height;
-                }
+                    if (imageModel.PixelWidth > UIHelper.GetMainView.Bounds.Width || imageModel.PixelHeight > UIHelper.GetMainView.Bounds.Height
+                        || imageModel.PixelWidth == imageModel.PixelHeight)
+                    {
+                        WindowResizing.SetSize(1, 1, 0, 0, 0, vm);
+                    }
+                });
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (imageModel.PixelWidth > UIHelper.GetMainView.Bounds.Width || imageModel.PixelHeight > UIHelper.GetMainView.Bounds.Height)
+                    {
+                        vm.ImageViewer.MainBorder.Height = double.NaN;
+                        vm.ImageViewer.MainBorder.Width = double.NaN;
 
-                vm.ImageViewer.MainBorder.Width = vm.ImageViewer.ImageScrollViewer.Bounds.Width;
-
-                WindowResizing.SetSize(1, 1, 0, 0, 0, vm);
+                        SetSize();
+                    }
+                }, DispatcherPriority.Send);
             }
-        });
-        
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (vm.PixelWidth > vm.ImageViewer.Bounds.Width && !Settings.Zoom.ScrollEnabled)
-            {
-                vm.ImageViewer.MainBorder.Height = double.NaN;
-                vm.ImageViewer.MainBorder.Width = double.NaN;
-
-                SetSize();
-            }
-        }, DispatcherPriority.Send);
+        }
 
         if (Settings.Zoom.ScrollEnabled)
         {
             // Bad fix for scrolling
             // TODO: Implement proper startup scrolling fix
             Settings.Zoom.ScrollEnabled = false;
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
-            }, DispatcherPriority.Background);
+            await Dispatcher.UIThread.InvokeAsync(SetSize, DispatcherPriority.Background);
             Settings.Zoom.ScrollEnabled = true;
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, imageModel.Rotation, vm);
-            }, DispatcherPriority.Send);
+            await Dispatcher.UIThread.InvokeAsync(SetSize, DispatcherPriority.Send);
         }
 
         vm.ExifOrientation = imageModel.EXIFOrientation;

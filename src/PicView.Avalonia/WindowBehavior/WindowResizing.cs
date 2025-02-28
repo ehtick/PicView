@@ -50,6 +50,71 @@ public static class WindowResizing
 
     public static void SetSize(MainViewModel vm)
     {
+        var size = GetSize(vm);
+
+        if (size is null)
+        {
+            return;
+        }
+        
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            SetSize(size.Value, vm);
+        }
+        else
+        {
+            Dispatcher.UIThread.InvokeAsync(() => SetSize(size.Value, vm));
+        }
+    }
+
+    public static void SetSize(double width, double height, double secondWidth, double secondHeight, double rotation,
+        MainViewModel vm)
+    {
+        var size = GetSize(width, height, secondWidth, secondHeight, rotation, vm);
+
+        if (size is null)
+        {
+            return;
+        }
+
+        SetSize(size.Value, vm);
+    }
+    
+    public static void SetSize(ImageSizeCalculationHelper.ImageSize size, MainViewModel vm)
+    {
+        vm.TitleMaxWidth = size.TitleMaxWidth;
+        vm.ImageWidth = size.Width;
+        vm.SecondaryImageWidth = size.SecondaryWidth;
+        vm.ImageHeight = size.Height;
+        vm.GalleryMargin = new Thickness(0, 0, 0, size.Margin);
+
+        vm.ScrollViewerWidth = size.ScrollViewerWidth;
+        vm.ScrollViewerHeight = size.ScrollViewerHeight;
+
+        if (Settings.WindowProperties.AutoFit)
+        {
+            if (Settings.WindowProperties.Fullscreen ||
+                Settings.WindowProperties.Maximized)
+            {
+                vm.GalleryWidth = double.NaN;
+            }
+            else
+            {
+                vm.GalleryWidth = vm.RotationAngle is 90 or 270
+                    ? Math.Max(size.Height, SizeDefaults.WindowMinSize)
+                    : Math.Max(size.Width, SizeDefaults.WindowMinSize);
+            }
+        }
+        else
+        {
+            vm.GalleryWidth = double.NaN;
+        }
+        
+        vm.AspectRatio = size.AspectRatio;
+    }
+
+    public static ImageSizeCalculationHelper.ImageSize? GetSize(MainViewModel vm)
+    {
         double firstWidth, firstHeight;
         var preloadValue = NavigationManager.GetCurrentPreLoadValue();
         if (preloadValue == null)
@@ -63,7 +128,7 @@ public static class WindowResizing
                 }
                 else
                 {
-                    return;
+                    return null;
                 }
             }
             else if (vm.FileInfo?.Exists != null)
@@ -75,7 +140,7 @@ public static class WindowResizing
             }
             else
             {
-                return;
+                return null;
             }
         }
         else
@@ -84,52 +149,33 @@ public static class WindowResizing
             firstHeight = GetHeight();
         }
 
-        if (Settings.ImageScaling.ShowImageSideBySide)
+        if (!Settings.ImageScaling.ShowImageSideBySide)
         {
-            var secondaryPreloadValue = NavigationManager.GetNextPreLoadValue();
-            double secondWidth, secondHeight;
-            if (secondaryPreloadValue != null)
-            {
-                secondWidth = GetWidth();
-                secondHeight = GetHeight();
-            }
-            else if (NavigationManager.CanNavigate(vm))
-            {
-                var nextFileName = NavigationManager.GetNextFileName;
-                var magickImage = new MagickImage();
-                magickImage.Ping(nextFileName);
-                secondWidth = magickImage.Width;
-                secondHeight = magickImage.Height;
-            }
-            else
-            {
-                secondWidth = 0;
-                secondHeight = 0;
-            }
+            return GetSize(firstWidth, firstHeight, 0, 0, vm.RotationAngle, vm);
+        }
 
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                SetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.RotationAngle, vm);
-            }
-            else
-            {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                    SetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.RotationAngle, vm));
-            }
+        var secondaryPreloadValue = NavigationManager.GetNextPreLoadValue();
+        double secondWidth, secondHeight;
+        if (secondaryPreloadValue != null)
+        {
+            secondWidth = GetWidth();
+            secondHeight = GetHeight();
+        }
+        else if (NavigationManager.CanNavigate(vm))
+        {
+            var nextFileName = NavigationManager.GetNextFileName;
+            var magickImage = new MagickImage();
+            magickImage.Ping(nextFileName);
+            secondWidth = magickImage.Width;
+            secondHeight = magickImage.Height;
         }
         else
         {
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                SetSize(firstWidth, firstHeight, 0, 0, vm.RotationAngle, vm);
-            }
-            else
-            {
-                Dispatcher.UIThread.InvokeAsync(() => SetSize(firstWidth, firstHeight, 0, 0, vm.RotationAngle, vm));
-            }
+            secondWidth = 0;
+            secondHeight = 0;
         }
-
-        return;
+            
+        return GetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.RotationAngle, vm);
 
         double GetWidth()
         {
@@ -141,21 +187,21 @@ public static class WindowResizing
             return preloadValue?.ImageModel?.PixelHeight ?? vm.ImageHeight;
         }
     }
-
-    public static void SetSize(double width, double height, double secondWidth, double secondHeight, double rotation,
+    
+    public static ImageSizeCalculationHelper.ImageSize? GetSize(double width, double height, double secondWidth, double secondHeight, double rotation,
         MainViewModel vm)
     {
         width = width == 0 ? vm.ImageWidth : width;
         height = height == 0 ? vm.ImageHeight : height;
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            return;
+            return null;
         }
 
         var mainView = UIHelper.GetMainView;
         if (mainView is null)
         {
-            return;
+            return null;
         }
 
         const int padding = 45;
@@ -168,7 +214,7 @@ public static class WindowResizing
         if (double.IsNaN(containerWidth) || double.IsNaN(containerHeight) || double.IsNaN(width) ||
             double.IsNaN(height))
         {
-            return;
+            return null;
         }
 
         ImageSizeCalculationHelper.ImageSize size;
@@ -213,35 +259,7 @@ public static class WindowResizing
                 containerHeight);
         }
 
-        vm.TitleMaxWidth = size.TitleMaxWidth;
-        vm.ImageWidth = size.Width;
-        vm.SecondaryImageWidth = size.SecondaryWidth;
-        vm.ImageHeight = size.Height;
-        vm.GalleryMargin = new Thickness(0, 0, 0, size.Margin);
-
-        vm.ScrollViewerWidth = size.ScrollViewerWidth;
-        vm.ScrollViewerHeight = size.ScrollViewerHeight;
-
-        if (Settings.WindowProperties.AutoFit)
-        {
-            if (Settings.WindowProperties.Fullscreen ||
-                Settings.WindowProperties.Maximized)
-            {
-                vm.GalleryWidth = double.NaN;
-            }
-            else
-            {
-                vm.GalleryWidth = vm.RotationAngle is 90 or 270
-                    ? Math.Max(size.Height, desktopMinHeight)
-                    : Math.Max(size.Width, desktopMinWidth);
-            }
-        }
-        else
-        {
-            vm.GalleryWidth = double.NaN;
-        }
-        
-        vm.AspectRatio = size.AspectRatio;
+        return size;
     }
 
     public static void SaveSize(Window window)
