@@ -69,7 +69,7 @@ public static class SettingsUpdater
         }
         finally
         {
-            SetTitleHelper.RefreshTitle(vm);
+            SetTitleHelper.SetTitle(vm);
             vm.IsLoading = false;
         }
     }

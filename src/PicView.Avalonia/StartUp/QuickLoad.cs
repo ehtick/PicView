@@ -64,8 +64,17 @@ public static class QuickLoad
             else if (is1To1)
             {
                 var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight, secondaryPreloadValue?.ImageModel?.PixelWidth ?? 0, secondaryPreloadValue?.ImageModel?.PixelHeight ?? 0, vm.RotationAngle, vm);
-                vm.ImageViewer.MainBorder.Height = size?.Width ?? 0;
-                vm.ImageViewer.MainBorder.Width = size?.Height ?? 0;
+                if (!size.HasValue)
+                {
+#if DEBUG
+         Console.WriteLine($"{nameof(QuickLoadAsync)} {nameof(size)} is null");           
+#endif
+                    ErrorHandling.ShowStartUpMenu(vm);
+                    return;
+                }
+                WindowResizing.SetSize(size.Value, vm);
+                vm.ImageViewer.MainBorder.Height = size.Value.Width;
+                vm.ImageViewer.MainBorder.Width = size.Value.Height;
             }
             else if (imageModel.PixelWidth <= UIHelper.GetMainView.Bounds.Width && imageModel.PixelHeight <= UIHelper.GetMainView.Bounds.Height)
             {

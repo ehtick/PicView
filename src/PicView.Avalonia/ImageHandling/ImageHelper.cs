@@ -147,6 +147,6 @@ public static class ImageHelper
                 Trace.WriteLine(e);
             }
         });
-        SetTitleHelper.RefreshTitle(vm);
+        SetTitleHelper.SetTitle(vm);
     }
 }

@@ -75,7 +75,7 @@ public static class CropFunctions
 
         vm.CurrentView = vm.ImageViewer;
         IsCropping = false;
-        SetTitleHelper.RefreshTitle(vm);
+        SetTitleHelper.SetTitle(vm);
     }
 
     public static bool DetermineIfShouldBeEnabled(MainViewModel vm)

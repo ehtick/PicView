@@ -46,7 +46,7 @@ public static class ErrorHandling
             }
             else
             {
-                SetTitleHelper.ResetTitle(vm);
+                SetTitleHelper.SetNoImageTitle(vm);
             }
 
             vm.GalleryMode = GalleryMode.Closed;
