@@ -260,7 +260,7 @@ public static class GalleryFunctions
             var mainView = UIHelper.GetMainView;
 
             var galleryListBox = mainView.GalleryView.GalleryListBox;
-            if (vm.SelectedGalleryItemIndex < 0)
+            if (vm.SelectedGalleryItemIndex < 0 || vm.SelectedGalleryItemIndex >= galleryListBox.Items.Count)
             {
                 return;
             }
