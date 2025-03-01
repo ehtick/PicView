@@ -85,6 +85,7 @@ public partial class EditableTitlebar : UserControl
 
         if (!vm.IsEditableTitlebarOpen)
         {
+            _ = MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
             return;
         }
 
@@ -99,7 +100,22 @@ public partial class EditableTitlebar : UserControl
     protected override void OnKeyUp(KeyEventArgs e)
     {
         base.OnKeyUp(e);
-        if (e.Key is Key.Enter or Key.Return)
+        
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        if (!vm.IsEditableTitlebarOpen)
+        {
+            if (e.Key != Key.Escape)
+            {
+                _ = MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
+            }
+            return;
+        }
+        
+        if (e.Key is Key.Enter)
         {
             _ = HandleRename();
             MainKeyboardShortcuts.IsKeysEnabled = true;
@@ -178,14 +194,14 @@ public partial class EditableTitlebar : UserControl
         async Task End()
         {
             vm.IsLoading = false;
+            vm.IsEditableTitlebarOpen = false;
+            MainKeyboardShortcuts.IsKeysEnabled = true;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 TextBox.ClearSelection();
                 Cursor = new Cursor(StandardCursorType.Arrow);
-                MainKeyboardShortcuts.IsKeysEnabled = true;
                 UIHelper.GetMainView.Focus();
             });
-            vm.IsEditableTitlebarOpen = false;
             await NavigationManager.LoadPicFromFile(newPath, vm);
         }
     }
