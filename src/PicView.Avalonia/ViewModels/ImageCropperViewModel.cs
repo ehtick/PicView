@@ -146,8 +146,6 @@ public class ImageCropperViewModel : ViewModelBase
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
         if (vm.ImageSource is not Bitmap sourceBitmap) return;
-        
-        CropFunctions.CloseCropControl(vm);
 
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
