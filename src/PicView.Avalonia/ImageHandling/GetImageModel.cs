@@ -41,7 +41,7 @@ public static class GetImageModel
             {
                 case ".webp":
                     await AddImageAsync(fileInfo, imageModel).ConfigureAwait(false);
-                    if (ImageHelper.IsAnimated(fileInfo))
+                    if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedWebp;
                     }
@@ -49,7 +49,7 @@ public static class GetImageModel
                     break;
                 case ".gif":
                     await AddImageAsync(fileInfo, imageModel).ConfigureAwait(false);
-                    if (ImageHelper.IsAnimated(fileInfo))
+                    if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedGif;
                     }

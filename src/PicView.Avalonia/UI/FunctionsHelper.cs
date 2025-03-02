@@ -743,7 +743,7 @@ public static class FunctionsHelper
 
     public static async Task OptimizeImage()
     {
-        await ImageHelper.OptimizeImage(Vm);
+        await ImageOptimizer.OptimizeImageAsync(Vm).ConfigureAwait(false);
     }
 
     public static async Task Slideshow()

@@ -1438,7 +1438,7 @@ public class MainViewModel : ViewModelBase
         IsLoading = true;
         try
         {
-            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+            var file = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
 
             PlatformService?.SetAsWallpaper(file, WallpaperManager.GetWallpaperStyle(style));
         }
@@ -1470,7 +1470,7 @@ public class MainViewModel : ViewModelBase
 
         try
         {
-            var file = await ImageHelper.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
+            var file = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
 
             var process = new Process
             {
