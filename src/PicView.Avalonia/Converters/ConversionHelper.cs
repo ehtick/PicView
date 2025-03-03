@@ -1,4 +1,6 @@
 ﻿using ImageMagick;
+using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
@@ -18,6 +20,20 @@ internal static class ConversionHelper
 
         var magickPercentage = new Percentage(percentage);
         return await SaveImageFileHelper.ResizeImageAsync(fileInfo, 0, 0, 100, magickPercentage).ConfigureAwait(false);
+    }
+    
+    public static async Task ResizeImageByPercentage(int percentage, MainViewModel vm)
+    {
+        SetTitleHelper.SetLoadingTitle(vm);
+        var success = await ResizeImageByPercentage(vm.FileInfo, percentage);
+        if (success)
+        {
+            await NavigationManager.QuickReload();
+        }
+        else
+        {
+            SetTitleHelper.SetTitle(vm);
+        }
     }
 
     internal static async Task<bool> ResizeByWidth(FileInfo fileInfo, double width)
@@ -69,6 +85,20 @@ internal static class ConversionHelper
 
         FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
         return newPath;
+    }
+    
+    public static async Task ConvertFileExtension(int index, MainViewModel vm)
+    {
+        if (vm.FileInfo is null)
+        {
+            return;
+        }
+
+        var newPath = await ConvertTask(vm.FileInfo, index);
+        if (!string.IsNullOrWhiteSpace(newPath))
+        {
+            await NavigationManager.LoadPicFromStringAsync(newPath, vm);
+        }
     }
     
     public static void DetermineIfOptimizeImageShouldBeEnabled(MainViewModel vm)

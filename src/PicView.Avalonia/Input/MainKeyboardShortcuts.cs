@@ -68,7 +68,7 @@ public static class MainKeyboardShortcuts
             case Key.F12:
                 // Show Avalonia DevTools in DEBUG mode
                 return;
-            case Key.F8:
+            case Key.F7:
                 await FunctionsHelper.Invalidate();
                 return;
             case Key.F9:
