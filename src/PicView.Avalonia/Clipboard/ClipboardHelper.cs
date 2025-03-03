@@ -1,17 +1,14 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
@@ -24,39 +21,7 @@ namespace PicView.Avalonia.Clipboard;
 /// </summary>
 public static class ClipboardHelper
 {
-    /// <summary>
-    /// Displays a brief animation to indicate a clipboard operation occurred
-    /// </summary>
-    public static async Task CopyAnimation()
-    {
-        const double speed = 0.2;
-        const double opacity = 0.4;
-        var startOpacityAnimation = AnimationsHelper.OpacityAnimation(0, opacity, speed);
-        var endOpacityAnimation = AnimationsHelper.OpacityAnimation(opacity, 0, speed);
-        Rectangle? rectangle = null;
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            rectangle = new Rectangle
-            {
-                Width = UIHelper.GetMainView.Width,
-                Height = UIHelper.GetMainView.Height,
-                Opacity = 0,
-                Fill = Brushes.Black,
-                IsHitTestVisible = false
-            };
-            UIHelper.GetMainView.MainGrid.Children.Add(rectangle);
-        });
-
-        await startOpacityAnimation.RunAsync(rectangle);
-        await endOpacityAnimation.RunAsync(rectangle);
-        await Task.Delay(200);
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            UIHelper.GetMainView.MainGrid.Children.Remove(rectangle);
-        });
-    }
 
     /// <summary>
     /// Duplicates the current file and navigates to it
@@ -78,7 +43,7 @@ public static class ClipboardHelper
             return;
         }
 
-        await Task.WhenAll(CopyAnimation(), NavigationManager.LoadPicFromFile(duplicatedPath, vm));
+        await Task.WhenAll(AnimationsHelper.CopyAnimation(), NavigationManager.LoadPicFromFile(duplicatedPath, vm));
     }
 
     /// <summary>
@@ -96,7 +61,7 @@ public static class ClipboardHelper
 
         try
         {
-            await Task.WhenAll(clipboard.SetTextAsync(text), CopyAnimation());
+            await Task.WhenAll(clipboard.SetTextAsync(text), AnimationsHelper.CopyAnimation());
             return true;
         }
         catch (Exception)
@@ -123,7 +88,7 @@ public static class ClipboardHelper
             var success = await Task.Run(() => vm.PlatformService.CopyFile(file));
             if (success)
             {
-                await CopyAnimation();
+                await AnimationsHelper.CopyAnimation();
             }
             return success;
         }
@@ -153,7 +118,7 @@ public static class ClipboardHelper
             // Handle for Windows
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), CopyAnimation());
+                await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), AnimationsHelper.CopyAnimation());
                 return false;
             }
 
@@ -162,7 +127,7 @@ public static class ClipboardHelper
 
             var dataObject = new DataObject();
             dataObject.Set("image/png", ms.ToArray());
-            await Task.WhenAll(clipboard.SetDataObjectAsync(dataObject), CopyAnimation());
+            await Task.WhenAll(clipboard.SetDataObjectAsync(dataObject), AnimationsHelper.CopyAnimation());
         }
         catch (Exception)
         {
@@ -224,8 +189,7 @@ public static class ClipboardHelper
                 return false;
             }
 
-            await clipboard.SetTextAsync(base64);
-            await CopyAnimation();
+            await Task.WhenAll(clipboard.SetTextAsync(base64), AnimationsHelper.CopyAnimation());
             return true;
         }
         catch (Exception)
@@ -252,7 +216,7 @@ public static class ClipboardHelper
             var success = await Task.Run(() => vm.PlatformService.CutFile(path));
             if (success)
             {
-                await CopyAnimation();
+                await AnimationsHelper.CopyAnimation();
             }
             return success;
         }
@@ -299,7 +263,7 @@ public static class ClipboardHelper
         catch (Exception ex)
         {
             // Log or handle the exception
-            System.Diagnostics.Debug.WriteLine($"Paste operation failed: {ex.Message}");
+            Debug.WriteLine($"Paste operation failed: {ex.Message}");
         }
     }
 

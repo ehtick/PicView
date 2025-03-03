@@ -32,7 +32,14 @@ public static class Slideshow
             return;
         }
 
-        await Start(vm, milliseconds);
+        if (milliseconds <= 0)
+        {
+            await StartSlideshow(vm);
+        }
+        else
+        {
+            await Start(vm, milliseconds);
+        }
     }
     
     public static void StopSlideshow(MainViewModel vm)

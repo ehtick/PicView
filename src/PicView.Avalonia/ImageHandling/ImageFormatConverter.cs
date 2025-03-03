@@ -2,6 +2,7 @@
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
+using PicView.Core.Http;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.ImageHandling;
@@ -79,7 +80,7 @@ public static class ImageFormatConverter
         var url = path.GetURL();
         if (!string.IsNullOrWhiteSpace(url))
         {
-            path = await ImageDownloader.DownloadImageFromUrlAsync(url);
+            path = await HttpManager.DownloadFileAsync(url).ConfigureAwait(false);
             if (string.IsNullOrEmpty(path))
             {
                 return string.Empty;

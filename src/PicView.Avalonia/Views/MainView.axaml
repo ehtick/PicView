@@ -360,7 +360,7 @@
                     Command="{CompiledBinding ToggleBottomGalleryCommand}"
                     Header="{CompiledBinding GetIsShowingBottomGalleryTranslation,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsGalleryShown}">
+                    IsChecked="{CompiledBinding IsBottomGalleryShown}">
                     <MenuItem.Icon>
                         <Image Height="12" Width="12">
                             <DrawingImage>
@@ -1155,7 +1155,7 @@
             GalleryMode="{CompiledBinding GalleryMode,
                                           Mode=OneWay}"
             Height="NaN"
-            IsVisible="{CompiledBinding IsGalleryShown,
+            IsVisible="{CompiledBinding IsBottomGalleryShown,
                                         Mode=OneWay}"
             VerticalAlignment="{CompiledBinding GalleryVerticalAlignment,
                                                 Mode=OneWay}"

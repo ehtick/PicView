@@ -1,4 +1,5 @@
-﻿using PicView.Core.FileHandling;
+﻿using PicView.Core.Extensions;
+using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 
 namespace PicView.Core.Http;
@@ -89,30 +90,10 @@ public static class HttpManager
             return string.Empty;
 
         var percentComplete = TranslationHelper.Translation.PercentComplete;
-        var downloadedMb = FormatFileSize(totalBytesDownloaded.Value);
-        var totalMb = FormatFileSize(totalFileSize.Value);
+        var downloadedMb = totalBytesDownloaded.Value.GetReadableFileSize();
+        var totalMb = totalFileSize.Value.GetReadableFileSize();
         
         return $"{downloadedMb}/{totalMb} ({(int)progressPercentage.Value}% {percentComplete})";
-    }
-    
-    /// <summary>
-    /// Formats file size to a human-readable format
-    /// </summary>
-    /// <param name="bytes">Size in bytes</param>
-    /// <returns>Formatted file size</returns>
-    private static string FormatFileSize(long bytes)
-    {
-        string[] sizes = ["B", "KB", "MB", "GB", "TB"];
-        var order = 0;
-        double size = bytes;
-        
-        while (size >= 1024 && order < sizes.Length - 1)
-        {
-            order++;
-            size /= 1024;
-        }
-        
-        return $"{size:0.##} {sizes[order]}";
     }
     
     /// <summary>

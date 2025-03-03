@@ -93,12 +93,15 @@ public static class FileHistoryNavigation
     {
         if (!NavigationManager.CanNavigate(vm))
         {
-            var lastFile = Path.GetFileNameWithoutExtension(GetLastFile());
-            if (lastFile == Path.GetFileNameWithoutExtension(vm.FileInfo.Name))
+            if (vm.FileInfo is not null)
             {
-                return;
+                var lastFile = Path.GetFileNameWithoutExtension(GetLastFile());
+                if (lastFile == Path.GetFileNameWithoutExtension(vm.FileInfo.Name))
+                {
+                    return;
+                }
+                await OpenLastFileAsync(vm).ConfigureAwait(false);
             }
-            await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
         }
 

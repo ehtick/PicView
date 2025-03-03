@@ -309,7 +309,8 @@ public static class StartUpHelper
         vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
         vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
         vm.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
-        vm.IsGalleryShown = Settings.Gallery.ShowBottomGalleryInHiddenUI;
+        vm.IsBottomGalleryShown = Settings.Gallery.IsBottomGalleryShown;
+        vm.IsBottomGalleryShownInHiddenUI = Settings.Gallery.ShowBottomGalleryInHiddenUI;
         vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
         vm.IsUIShown  = Settings.UIProperties.ShowInterface;
         vm.IsTopToolbarShown  = Settings.UIProperties.ShowInterface;

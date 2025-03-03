@@ -105,23 +105,25 @@ public sealed class HttpClientDownloadWithProgress : IDisposable
         
         do
         {
-            bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
-            
-            if (bytesRead > 0)
-            {
-                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
-                totalBytesRead += bytesRead;
+            bytesRead = await contentStream.ReadAsync(buffer, cancellationToken).ConfigureAwait(false);
 
-                if (totalDownloadSize.HasValue)
-                {
-                    var progressPercentage = (double)totalBytesRead / totalDownloadSize.Value * 100;
-                    OnProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
-                }
-                else
-                {
-                    // If we don't know the total size, just report bytes downloaded
-                    OnProgressChanged(null, totalBytesRead, null);
-                }
+            if (bytesRead <= 0)
+            {
+                continue;
+            }
+
+            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken).ConfigureAwait(false);
+            totalBytesRead += bytesRead;
+
+            if (totalDownloadSize.HasValue)
+            {
+                var progressPercentage = (double)totalBytesRead / totalDownloadSize.Value * 100;
+                OnProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
+            }
+            else
+            {
+                // If we don't know the total size, just report bytes downloaded
+                OnProgressChanged(null, totalBytesRead, null);
             }
         } while (bytesRead > 0 && !cancellationToken.IsCancellationRequested);
         

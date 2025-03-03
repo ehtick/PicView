@@ -114,4 +114,20 @@ public static class Rotation
         }
         await MoveCursorAfterRotation(vm, rotationButton);
     }
+    
+    public static void Flip(MainViewModel vm)
+    {
+        if (vm.ScaleX == 1)
+        {
+            vm.ScaleX = -1;
+            vm.GetIsFlippedTranslation = vm.UnFlip;
+        }
+        else
+        {
+            vm.ScaleX = 1;
+            vm.GetIsFlippedTranslation = vm.Flip;
+        }
+
+        Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });
+    }
 }

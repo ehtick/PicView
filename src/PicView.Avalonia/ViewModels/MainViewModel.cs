@@ -7,6 +7,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Converters;
+using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageEffects;
 using PicView.Avalonia.ImageHandling;
@@ -115,7 +116,7 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsGalleryShown
+    public bool IsBottomGalleryShown
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1244,179 +1245,27 @@ public class MainViewModel : ViewModelBase
         }
     }
     
-    private async Task CopyFileTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await ClipboardHelper.CopyFileToClipboard(path, this);
-    }
+    private async Task CopyFileTask(string path) => await ClipboardHelper.CopyFileToClipboard(path, this);
     
-    private async Task CopyFilePathTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await ClipboardHelper.CopyTextToClipboard(path);
-    }
+    private async Task CopyFilePathTask(string path) => await ClipboardHelper.CopyTextToClipboard(path);
     
-    private async Task CopyBase64Task(string path)
-    {
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await ClipboardHelper.CopyBase64ToClipboard(path, this);
-    }
+    private async Task CopyBase64Task(string path) => await ClipboardHelper.CopyBase64ToClipboard(path, this);
     
-    private async Task CutFileTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await ClipboardHelper.CutFile(path, this);
-    }
+    private async Task CutFileTask(string path) => await ClipboardHelper.CutFile(path, this);
     
-    private async Task DeleteFileTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            try
-            {
-                var errorMsg = FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false);
-                if (!string.IsNullOrWhiteSpace(errorMsg))
-                {
-                    _ = TooltipHelper.ShowTooltipMessageAsync(errorMsg);
-                }
-            }
-            catch (Exception e)
-            {
-                _ = TooltipHelper.ShowTooltipMessageAsync(e);
-#if DEBUG
-                Console.WriteLine(e);
-#endif
-            }
-        });
-        
-    }
+    private async Task DeleteFileTask(string path)=> await Task.Run(() => FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: false));
     
-    private async Task RecycleFileTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: true);
-        });
-    }
-    
-    private async Task DuplicateFileTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
+    private static async Task RecycleFileTask(string path) => await Task.Run(() => FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle: true));
 
-        IsLoading = true;
-        if (path == FileInfo.FullName)
-        {
-            await FunctionsHelper.DuplicateFile();
-        }
-        else
-        {
-            var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(path);
-            if (!string.IsNullOrWhiteSpace(duplicatedPath))
-            {
-                await ClipboardHelper.CopyAnimation();
-            }
-        }
-        IsLoading = false;
-    }
+    private async Task DuplicateFileTask(string path) => await FileManager.DuplicateFile(path, this).ConfigureAwait(false);
     
-    private async Task ShowFilePropertiesTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService.ShowFileProperties(path);
-        });
-    }
+    private async Task ShowFilePropertiesTask(string path) => await FileManager.ShowFileProperties(path, this).ConfigureAwait(false);
 
-    private async Task PrintTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.Print(path);
-        });
-    }
+    private async Task PrintTask(string path) => await FileManager.Print(path, this).ConfigureAwait(false);
     
-    private async Task OpenWithTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.OpenWith(path);
-        });
-    }
+    private async Task OpenWithTask(string path) => await FileManager.Print(path, this).ConfigureAwait(false);
     
-    private async Task LocateOnDiskTask(string path)
-    {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return;
-        }
-        if (PlatformService is null)
-        {
-            return;
-        }
-        await Task.Run(() =>
-        {
-            PlatformService?.LocateOnDisk(path);
-        });
-    }
+    private async Task LocateOnDiskTask(string path) => await FileManager.LocateOnDisk(path, this).ConfigureAwait(false);
     
     public async Task SetAsWallpaperTask(string path) => await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
     
@@ -1427,33 +1276,9 @@ public class MainViewModel : ViewModelBase
     public async Task SetAsWallpaperStretchedTask(string path) => await SetAsWallpaperTask(path, WallpaperStyle.Stretch).ConfigureAwait(false);
     
     public async Task SetAsWallpaperCenteredTask(string path) => await SetAsWallpaperTask(path, WallpaperStyle.Center).ConfigureAwait(false);
-    
-    public async Task SetAsWallpaperTask(string path, WallpaperStyle style)
-    {
-        if (PlatformService is null)
-        {
-            return;
-        }
-        
-        IsLoading = true;
-        try
-        {
-            var file = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, this).ConfigureAwait(false);
 
-            PlatformService?.SetAsWallpaper(file, WallpaperManager.GetWallpaperStyle(style));
-        }
-        catch (Exception e)
-        {
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
-#if DEBUG
-            Console.WriteLine(e);   
-#endif
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
+    public async Task SetAsWallpaperTask(string path, WallpaperStyle style) =>
+        await WallpaperManager.SetAsWallpaper(path, style, this).ConfigureAwait(false);
     
     private async Task SetAsLockScreenTask(string path)
     {
@@ -1500,58 +1325,9 @@ public class MainViewModel : ViewModelBase
         }
     }
 
-    public void SetGalleryItemStretch(string value)
-    {
-        if (value.Equals("Square", StringComparison.OrdinalIgnoreCase))
-        {
-            if (GalleryFunctions.IsFullGalleryOpen)
-            {
-                GalleryStretchMode.ChangeFullGalleryStretchSquare(this);
-            }
-            else
-            {
-                GalleryStretchMode.ChangeBottomGalleryStretchSquare(this);
-            }
-            return;
-        }
-        
-        if (value.Equals("FillSquare", StringComparison.OrdinalIgnoreCase))
-        {
-            if (GalleryFunctions.IsFullGalleryOpen)
-            {
-                GalleryStretchMode.ChangeFullGalleryStretchSquareFill(this);
-            }
-            else
-            {
-                GalleryStretchMode.ChangeBottomGalleryStretchSquareFill(this);
-            }
-            return;
-        }
+    private void SetGalleryItemStretch(string value) => GalleryHelper.SetGalleryItemStretch(value, this);
 
-        if (Enum.TryParse<Stretch>(value, out var stretch))
-        {
-            if (GalleryFunctions.IsFullGalleryOpen)
-            {
-                GalleryStretchMode.ChangeFullGalleryItemStretch(this, stretch);
-            }
-            else
-            {
-                GalleryStretchMode.ChangeBottomGalleryItemStretch(this, stretch);
-            }
-        }
-    }
-
-    public async Task StartSlideShowTask(int milliseconds)
-    {
-        if (milliseconds <= 0)
-        {
-            await Avalonia.Navigation.Slideshow.StartSlideshow(this);
-        }
-        else
-        {
-            await Avalonia.Navigation.Slideshow.StartSlideshow(this, milliseconds);
-        }
-    }
+    public async Task StartSlideShowTask(int milliseconds) => await Avalonia.Navigation.Slideshow.StartSlideshow(this, milliseconds);
 
     #endregion Methods
 

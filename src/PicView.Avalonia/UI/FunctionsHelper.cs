@@ -737,7 +737,7 @@ public static class FunctionsHelper
 
     public static Task Flip()
     {
-        ImageControl.Flip(Vm);
+        Rotation.Flip(Vm);
         return Task.CompletedTask;
     }
 

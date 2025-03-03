@@ -1,4 +1,5 @@
-﻿using PicView.Avalonia.UI;
+﻿using PicView.Avalonia.Animations;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.PopUps;
 using PicView.Core.FileHandling;
@@ -32,5 +33,92 @@ public static class FileManager
         {
             await TooltipHelper.ShowTooltipMessageAsync(errorMsg, true);
         }
+    }
+    
+    public static async Task DuplicateFile(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        vm.IsLoading = true;
+        if (path == vm.FileInfo.FullName)
+        {
+            await FunctionsHelper.DuplicateFile();
+        }
+        else
+        {
+            var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(path);
+            if (!string.IsNullOrWhiteSpace(duplicatedPath))
+            {
+                await AnimationsHelper.CopyAnimation();
+            }
+        }
+        vm.IsLoading = false;
+    }
+    
+    public static async Task ShowFileProperties(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        if (vm.PlatformService is null)
+        {
+            return;
+        }
+        await Task.Run(() =>
+        {
+            vm.PlatformService.ShowFileProperties(path);
+        });
+    }
+    
+    public static async Task Print(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        if (vm.PlatformService is null)
+        {
+            return;
+        }
+        await Task.Run(() =>
+        {
+            vm.PlatformService?.Print(path);
+        });
+    }
+    
+    public static async Task LocateOnDisk(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        if (vm.PlatformService is null)
+        {
+            return;
+        }
+        await Task.Run(() =>
+        {
+            vm.PlatformService?.LocateOnDisk(path);
+        });
+    }
+    
+    public static async Task OpenWith(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        if (vm.PlatformService is null)
+        {
+            return;
+        }
+        await Task.Run(() =>
+        {
+            vm.PlatformService?.OpenWith(path);
+        });
     }
 }
