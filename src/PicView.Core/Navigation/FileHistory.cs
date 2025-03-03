@@ -196,24 +196,17 @@ public class FileHistory
 
         return index >= _fileHistory.Count ? _fileHistory[^1] : _fileHistory[index];
     }
-
-    /// <summary>
-    /// Gets the next file entry based on the current index and list of file names.
-    /// </summary>
-    /// <param name="looping">Whether to loop to the beginning when reaching the end.</param>
-    /// <param name="index">The current index in the list.</param>
-    /// <param name="list">The list of file names.</param>
-    /// <returns>The next file entry or null if not found or an exception occurs.</returns>
-    public string? GetNextEntry(bool looping, int index, List<string> list)
+    
+    public string? GetNextEntry(bool looping, int index)
     {
-        if (list.Count <= 0)
+        if (_fileHistory.Count <= 0)
         {
             return GetLastFile();
         }
 
         try
         {
-            var foundIndex = _fileHistory.IndexOf(list[index]);
+            var foundIndex = _fileHistory.IndexOf(_fileHistory[index]);
 
             if (looping)
             {
@@ -231,24 +224,17 @@ public class FileHistory
             return null;
         }
     }
-
-    /// <summary>
-    /// Gets the previous file entry based on the current index and list of file names.
-    /// </summary>
-    /// <param name="looping">Whether to loop to the end when reaching the beginning.</param>
-    /// <param name="index">The current index in the list.</param>
-    /// <param name="list">The list of file names.</param>
-    /// <returns>The previous file entry or null if not found or an exception occurs.</returns>
-    public string? GetPreviousEntry(bool looping, int index, List<string> list)
+    
+    public string? GetPreviousEntry(bool looping, int index)
     {
-        if (list.Count <= 0)
+        if (_fileHistory.Count <= 0)
         {
             return GetFirstFile();
         }
 
         try
         {
-            var foundIndex = _fileHistory.IndexOf(list[index]);
+            var foundIndex = _fileHistory.IndexOf(_fileHistory[index]);
             if (looping)
             {
                 return GetEntryAt((foundIndex - 1 + _fileHistory.Count) % _fileHistory.Count);

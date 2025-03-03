@@ -206,16 +206,7 @@ public static class UpdateImage
     /// <param name="vm">The main view model instance.</param>
     public static void SetSingleImage(object source, ImageType imageType, string name, MainViewModel vm)
     {
-        ExecuteSetSingleImageAsync(
-            source,
-            imageType,
-            name,
-            vm,
-            (action, priority) =>
-            {
-                Dispatcher.UIThread.Invoke(action, priority);
-                return Task.CompletedTask;
-            }).GetAwaiter().GetResult();
+        SetSingleImageAsync(source, imageType, name, vm).GetAwaiter().GetResult();
     }
 
     /// <inheritdoc cref="SetSingleImage" />
@@ -227,7 +218,6 @@ public static class UpdateImage
             name,
             vm,
             async (action, priority) => { await Dispatcher.UIThread.InvokeAsync(action, priority); });
-        await NavigationManager.DisposeImageIteratorAsync();
     }
 
     /// <summary>
@@ -275,15 +265,9 @@ public static class UpdateImage
             height = bitmap?.PixelSize.Height ?? 0;
         }
 
-        if (GalleryFunctions.IsBottomGalleryOpen)
-        {
-            await dispatchAction(() => { vm.GalleryMode = GalleryMode.BottomToClosed; }, DispatcherPriority.Render);
-            vm.GalleryMode = GalleryMode.Closed;
-        }
-
         vm.FileInfo = null;
 
-        await dispatchAction(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); }, DispatcherPriority.Render);
+        await dispatchAction(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); }, DispatcherPriority.Send);
 
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
         vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
@@ -295,7 +279,11 @@ public static class UpdateImage
         vm.PixelWidth = width;
         vm.PixelHeight = height;
 
-        vm.GalleryMargin = new Thickness(0);
+        if (Settings.Gallery.IsBottomGalleryShown)
+        {
+            vm.GalleryMode = GalleryMode.Closed;
+            vm.GalleryMargin = new Thickness(0);
+        }
 
         await dispatchAction(() => { UIHelper.GetGalleryView.IsVisible = false; }, DispatcherPriority.Render);
         await NavigationManager.DisposeImageIteratorAsync();

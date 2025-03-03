@@ -39,11 +39,11 @@ public class FileHistoryTest
         var entry = history.GetEntryAt(1);
         Assert.NotNull(entry);
 
-        var nextEntry = history.GetNextEntry(looping: true, 2, list);
+        var nextEntry = history.GetNextEntry(looping: true, 2);
         Assert.NotNull(nextEntry);
         Assert.True(File.Exists(nextEntry));
 
-        var prevEntry = history.GetPreviousEntry(looping: true, 2, list);
+        var prevEntry = history.GetPreviousEntry(looping: true, 2);
         Assert.NotNull(prevEntry);
         Assert.True(File.Exists(prevEntry));
 

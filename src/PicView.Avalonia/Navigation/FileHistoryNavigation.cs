@@ -93,12 +93,11 @@ public static class FileHistoryNavigation
     {
         if (!NavigationManager.CanNavigate(vm))
         {
-            await OpenLastFileAsync(vm).ConfigureAwait(false);
-            return;
-        }
-        
-        if (!NavigationManager.CanNavigate(vm))
-        {
+            var lastFile = Path.GetFileNameWithoutExtension(GetLastFile());
+            if (lastFile == Path.GetFileNameWithoutExtension(vm.FileInfo.Name))
+            {
+                return;
+            }
             await OpenLastFileAsync(vm).ConfigureAwait(false);
             return;
         }
@@ -108,34 +107,19 @@ public static class FileHistoryNavigation
 
     public static async Task LoadEntryAsync(MainViewModel vm, int index, bool next)
     {
-        var imagePaths = NavigationManager.GetCollection;
-
         _fileHistory ??= new FileHistory();
         string? nextEntry;
         if (next)
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetNextEntry(Settings.UIProperties.Looping, index)).ConfigureAwait(false);
         }
         else
         {
-            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(Settings.UIProperties.Looping, index, imagePaths)).ConfigureAwait(false);
+            nextEntry = await Task.FromResult(_fileHistory.GetPreviousEntry(Settings.UIProperties.Looping, index)).ConfigureAwait(false);
         }
 
         if (string.IsNullOrWhiteSpace(nextEntry))
         {
-            return;
-        }
-
-        if (imagePaths.Contains(nextEntry))
-        {
-            if (nextEntry == imagePaths[index])
-            {
-                return;
-            }
-
-            vm.CurrentView = vm.ImageViewer;
-
-            await NavigationManager.Navigate(imagePaths.IndexOf(nextEntry), vm).ConfigureAwait(false);
             return;
         }
         await NavigationManager.LoadPicFromStringAsync(nextEntry, vm);

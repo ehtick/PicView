@@ -438,8 +438,7 @@ public static class NavigationManager
                 }
                 else
                 {
-                    await _imageIterator.DisposeAsync();
-                    await ErrorHandling.ReloadAsync(vm);
+                    await LoadWithoutImageIterator(fileInfo, vm);
                 }
             }
             else
@@ -576,11 +575,14 @@ public static class NavigationManager
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType, url, vm);
+
+        vm.IsLoading = false;
         vm.FileInfo = fileInfo;
         vm.ExifOrientation = imageModel.EXIFOrientation;
         FileHistoryNavigation.Add(url);
 
-        vm.IsLoading = false;
+        await DisposeImageIteratorAsync();
+        
     }
 
     /// <summary>
@@ -720,11 +722,13 @@ public static class NavigationManager
         {
             return;
         }
+        await _imageIterator.ClearAsync();
+        _imageIterator.ImagePaths.Clear();
         await _imageIterator.DisposeAsync();
     }
     
     public static bool IsCollectionEmpty => _imageIterator.ImagePaths is null || _imageIterator.ImagePaths.Count < 0;
-    public static List<string> GetCollection => _imageIterator.ImagePaths;
+    public static List<string>? GetCollection => _imageIterator?.ImagePaths;
     
     public static void UpdateFileListAndIndex(List<string> fileList, int index) => _imageIterator?.UpdateFileListAndIndex(fileList, index);
     

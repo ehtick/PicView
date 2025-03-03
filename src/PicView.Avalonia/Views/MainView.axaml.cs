@@ -142,7 +142,7 @@ public partial class MainView : UserControl
 #endif
             var secondaryAccentBrush = (SolidColorBrush)secondaryAccentColor;
             var fileLocation = FileHistoryNavigation.GetFileLocation(index);
-            var selected = NavigationManager.GetCurrentIndex == NavigationManager.GetCollection.IndexOf(fileLocation);
+            var selected = NavigationManager.GetCurrentIndex == NavigationManager.GetCollection?.IndexOf(fileLocation);
             var header = Path.GetFileNameWithoutExtension(fileLocation);
             header = header.Length > 60 ? header.Shorten(60) : header;
         
