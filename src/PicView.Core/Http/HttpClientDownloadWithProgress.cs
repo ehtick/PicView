@@ -1,60 +1,140 @@
-﻿namespace PicView.Core.Http;
+﻿using System.Net;
 
-public sealed class HttpClientDownloadWithProgress(string downloadUrl, string destinationFilePath) : IDisposable
+namespace PicView.Core.Http;
+
+public sealed class HttpClientDownloadWithProgress : IDisposable
 {
     public delegate void ProgressChangedHandler(long? totalFileSize, long? totalBytesDownloaded,
         double? progressPercentage);
 
+    private readonly string _downloadUrl;
+    private readonly string _destinationFilePath;
+    private readonly HttpClient _httpClient;
     private bool _disposed;
-    private HttpClient? _httpClient;
 
     public event ProgressChangedHandler? ProgressChanged;
-
-    public async Task StartDownloadAsync()
+    
+    /// <summary>
+    /// Initializes a new instance of HttpClientDownloadWithProgress
+    /// </summary>
+    /// <param name="downloadUrl">URL to download from</param>
+    /// <param name="destinationFilePath">Where to save the downloaded file</param>
+    /// <param name="httpClient">Optional custom HttpClient instance</param>
+    public HttpClientDownloadWithProgress(string downloadUrl, string destinationFilePath, HttpClient? httpClient = null)
     {
-        _httpClient = new HttpClient { Timeout = TimeSpan.FromHours(6) };
-        using var response = await _httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead)
-            .ConfigureAwait(false);
-        await DownloadFileFromHttpResponseMessage(response).ConfigureAwait(false);
+        _downloadUrl = downloadUrl ?? throw new ArgumentNullException(nameof(downloadUrl));
+        _destinationFilePath = destinationFilePath ?? throw new ArgumentNullException(nameof(destinationFilePath));
+        _httpClient = httpClient ?? new HttpClient { Timeout = TimeSpan.FromHours(1) };
     }
 
-    private async Task DownloadFileFromHttpResponseMessage(HttpResponseMessage response)
+    /// <summary>
+    /// Starts downloading the file asynchronously
+    /// </summary>
+    /// <param name="cancellationToken">Token to cancel the download</param>
+    /// <returns>Task representing the download operation</returns>
+    /// <exception cref="HttpRequestException">Thrown when the download fails</exception>
+    public async Task StartDownloadAsync(CancellationToken cancellationToken = default)
     {
-        response.EnsureSuccessStatusCode();
+        try
+        {
+            using var response = await _httpClient.GetAsync(
+                _downloadUrl, 
+                HttpCompletionOption.ResponseHeadersRead,
+                cancellationToken).ConfigureAwait(false);
+                
+            await DownloadFileFromHttpResponseMessage(response, cancellationToken).ConfigureAwait(false);
+        }
+        catch (TaskCanceledException)
+        {
+            // Clean up partial downloads
+            if (File.Exists(_destinationFilePath))
+            {
+                try { File.Delete(_destinationFilePath); } catch { /* Ignore cleanup failures */ }
+            }
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw new HttpRequestException($"Failed to download file from {_downloadUrl}: {ex.Message}", ex);
+        }
+    }
+
+    private async Task DownloadFileFromHttpResponseMessage(
+        HttpResponseMessage response, 
+        CancellationToken cancellationToken)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                throw new FileNotFoundException($"The requested file at {_downloadUrl} was not found.", _downloadUrl);
+                
+            throw new HttpRequestException(
+                $"Download failed with status code {response.StatusCode}: {response.ReasonPhrase}");
+        }
+        
         var totalBytes = response.Content.Headers.ContentLength;
-        await using var contentStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
-        await ProcessContentStream(totalBytes, contentStream).ConfigureAwait(false);
+        await using var contentStream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        await ProcessContentStream(totalBytes, contentStream, cancellationToken).ConfigureAwait(false);
     }
 
-    private async Task ProcessContentStream(long? totalDownloadSize, Stream contentStream)
+    private async Task ProcessContentStream(
+        long? totalDownloadSize, 
+        Stream contentStream,
+        CancellationToken cancellationToken)
     {
-        const int bufferSize = 8192;
+        const int bufferSize = 81920; // Larger buffer for better performance
         var buffer = new byte[bufferSize];
-        await using var fileStream = new FileStream(destinationFilePath, FileMode.Create, FileAccess.Write,
-            FileShare.None, bufferSize, true);
         var totalBytesRead = 0L;
+        
+        // Ensure the directory exists
+        var directory = Path.GetDirectoryName(_destinationFilePath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
+        await using var fileStream = new FileStream(
+            _destinationFilePath, 
+            FileMode.Create, 
+            FileAccess.Write,
+            FileShare.None, 
+            bufferSize, 
+            true);
+            
+        int bytesRead;
+        
         do
         {
-            var bytesRead = await contentStream.ReadAsync(buffer).ConfigureAwait(false);
-            if (bytesRead == 0)
+            bytesRead = await contentStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
+            
+            if (bytesRead > 0)
             {
-                break;
+                await fileStream.WriteAsync(buffer, 0, bytesRead, cancellationToken).ConfigureAwait(false);
+                totalBytesRead += bytesRead;
+
+                if (totalDownloadSize.HasValue)
+                {
+                    var progressPercentage = (double)totalBytesRead / totalDownloadSize.Value * 100;
+                    OnProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
+                }
+                else
+                {
+                    // If we don't know the total size, just report bytes downloaded
+                    OnProgressChanged(null, totalBytesRead, null);
+                }
             }
-
-            await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead)).ConfigureAwait(false);
-            totalBytesRead += bytesRead;
-
-            if (!totalDownloadSize.HasValue)
-            {
-                continue;
-            }
-
-            var progressPercentage = (double)totalBytesRead / totalDownloadSize.Value * 100;
-            OnProgressChanged(totalDownloadSize, totalBytesRead, progressPercentage);
-        } while (true);
+        } while (bytesRead > 0 && !cancellationToken.IsCancellationRequested);
+        
+        // Flush to ensure all data is written
+        await fileStream.FlushAsync(cancellationToken).ConfigureAwait(false);
+        
+        if (cancellationToken.IsCancellationRequested)
+        {
+            throw new TaskCanceledException("Download was canceled");
+        }
     }
 
-    private void OnProgressChanged(long? totalDownloadSize, long totalBytesRead, double progressPercentage)
+    private void OnProgressChanged(long? totalDownloadSize, long totalBytesRead, double? progressPercentage)
     {
         ProgressChanged?.Invoke(totalDownloadSize, totalBytesRead, progressPercentage);
     }
@@ -76,7 +156,7 @@ public sealed class HttpClientDownloadWithProgress(string downloadUrl, string de
 
         if (disposing)
         {
-            _httpClient?.Dispose();
+            _httpClient.Dispose();
         }
 
         _disposed = true;
