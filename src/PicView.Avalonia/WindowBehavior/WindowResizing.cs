@@ -203,8 +203,7 @@ public static class WindowResizing
         {
             return null;
         }
-
-        const int padding = 45;
+        
         var screenSize = ScreenHelper.ScreenSize;
         var desktopMinWidth = desktop.MainWindow.MinWidth;
         var desktopMinHeight = desktop.MainWindow.MinHeight;
@@ -231,7 +230,6 @@ public static class WindowResizing
                 desktopMinHeight,
                 ImageSizeCalculationHelper.GetInterfaceSize(),
                 rotation,
-                padding,
                 screenSize.Scaling,
                 vm.TitlebarHeight,
                 vm.BottombarHeight,
@@ -250,7 +248,6 @@ public static class WindowResizing
                 desktopMinHeight,
                 ImageSizeCalculationHelper.GetInterfaceSize(),
                 rotation,
-                padding,
                 screenSize.Scaling,
                 vm.TitlebarHeight,
                 vm.BottombarHeight,

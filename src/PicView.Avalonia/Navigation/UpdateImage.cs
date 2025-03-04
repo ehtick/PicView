@@ -79,9 +79,10 @@ public static class UpdateImage
 
             vm.ImageType = preLoadValue.ImageModel.ImageType;
 
-            WindowResizing.SetSize(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight,
-                nextPreloadValue?.ImageModel?.PixelWidth ?? 0, nextPreloadValue?.ImageModel?.PixelHeight ?? 0,
-                preLoadValue.ImageModel.Rotation, vm);
+            if (!Settings.Zoom.ScrollEnabled)
+            {
+                SetSize();
+            }
 
             UIHelper.GetToolTipMessage.IsVisible = false;
         }, DispatcherPriority.Send);
@@ -110,6 +111,16 @@ public static class UpdateImage
                 SetTitleHelper.SetTitle(vm, preLoadValue.ImageModel);
             }
         }
+        
+        if (Settings.Zoom.ScrollEnabled)
+        {
+            // Bad fix for scrolling
+            // TODO: Implement proper scrolling fix
+            Settings.Zoom.ScrollEnabled = false;
+            await Dispatcher.UIThread.InvokeAsync(SetSize);
+            Settings.Zoom.ScrollEnabled = true;
+            await Dispatcher.UIThread.InvokeAsync(SetSize, DispatcherPriority.Send);
+        }
 
         if (Settings.WindowProperties.KeepCentered)
         {
@@ -126,6 +137,16 @@ public static class UpdateImage
         }
 
         SetStats(vm, index, preLoadValue.ImageModel);
+        
+        return;
+
+        void SetSize()
+        {
+            WindowResizing.SetSize(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight,
+                nextPreloadValue?.ImageModel?.PixelWidth ?? 0, nextPreloadValue?.ImageModel?.PixelHeight ?? 0,
+                preLoadValue.ImageModel.Rotation, vm);
+        }
+
     }
 
     #endregion
