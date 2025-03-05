@@ -916,30 +916,13 @@ public static class NavigationManager
         ImageModel? nextImageModel = null;
         vm.ImageSource = imageModel.Image;
         vm.ImageType = imageModel.ImageType;
-        if (Settings.ImageScaling.ShowImageSideBySide)
-        {
-            nextImageModel = (await _imageIterator.GetNextPreLoadValueAsync()).ImageModel;
-            vm.SecondaryImageSource = nextImageModel.Image;
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, nextImageModel.PixelWidth,
-                    nextImageModel.PixelHeight, imageModel.Rotation, vm);
-            });
-        }
-        else
+        if (!Settings.ImageScaling.ShowImageSideBySide)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation,
                     vm);
             });
-        }
-        
-        if (Settings.ImageScaling.ShowImageSideBySide)
-        {
-            // Fixes incorrect rendering in the side by side view
-            // TODO: Improve and fix side by side and remove this hack 
-            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
         }
 
         await DisposeImageIteratorAsync();
@@ -953,20 +936,40 @@ public static class NavigationManager
         {
             _imageIterator = new ImageIterator(fileInfo, files, index, vm);
         }
-        
-        var isTiffUpdated = await CheckIfTiffAndUpdate(vm, fileInfo, index); 
-        if (!isTiffUpdated)
+
+        if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            if (Settings.ImageScaling.ShowImageSideBySide)
+            nextImageModel = (await _imageIterator.GetNextPreLoadValueAsync()).ImageModel;
+            vm.SecondaryImageSource = nextImageModel.Image;
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
-            }
-            else
-            {
-                SetTitleHelper.SetTitle(vm, imageModel);
-            }
-        
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, nextImageModel.PixelWidth,
+                    nextImageModel.PixelHeight, imageModel.Rotation, vm);
+            });
+            
+            SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
             UpdateImage.SetStats(vm, index, imageModel);
+            
+            // Fixes incorrect rendering in the side by side view
+            // TODO: Improve and fix side by side and remove this hack 
+            Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
+        }
+        else
+        {
+            var isTiffUpdated = await CheckIfTiffAndUpdate(vm, fileInfo, index); 
+            if (!isTiffUpdated)
+            {
+                if (Settings.ImageScaling.ShowImageSideBySide)
+                {
+                    SetTitleHelper.SetSideBySideTitle(vm, imageModel, nextImageModel);
+                }
+                else
+                {
+                    SetTitleHelper.SetTitle(vm, imageModel);
+                }
+        
+                UpdateImage.SetStats(vm, index, imageModel);
+            }
         }
 
         vm.IsLoading = false;
