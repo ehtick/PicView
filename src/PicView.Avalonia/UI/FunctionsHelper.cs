@@ -573,13 +573,7 @@ public static class FunctionsHelper
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetNextEntry(), Vm).ConfigureAwait(false);
     }
     
-    public static async Task Print()
-    {
-        await Task.Run(() =>
-        {
-            Vm?.PlatformService?.Print(Vm.FileInfo?.FullName);
-        });
-    }
+    public static async Task Print() => await FileManager.Print(null, Vm).ConfigureAwait(false);
 
     public static async Task Open()
     {
@@ -673,10 +667,7 @@ public static class FunctionsHelper
         await ClipboardHelper.CopyBase64ToClipboard(Vm.FileInfo?.FullName, vm: Vm);
     }
 
-    public static async Task DuplicateFile()
-    {
-        await ClipboardHelper.Duplicate(Vm).ConfigureAwait(false);
-    }
+    public static async Task DuplicateFile() => await ClipboardHelper.DuplicateCurrentFile(Vm).ConfigureAwait(false);
 
     public static async Task CutFile()
     {
@@ -1082,4 +1073,14 @@ public static class FunctionsHelper
     #endregion
     
     #endregion
+    
+#if DEBUG
+    public static void Invalidate()
+    {
+        Vm?.ImageViewer?.MainImage?.InvalidateVisual();
+        Vm?.ImageViewer?.InvalidateVisual();
+        Vm?.ImageViewer?.MainImage?.InvalidateMeasure();
+        Vm?.ImageViewer?.InvalidateMeasure();
+    }
+#endif
 }

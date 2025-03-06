@@ -71,6 +71,9 @@ public static class MainKeyboardShortcuts
             case Key.F9:
                 await FunctionsHelper.ShowStartUpMenu();
                 return;
+            case Key.F7:
+                FunctionsHelper.Invalidate();
+                return;
 #endif
 
             case Key.LeftShift:

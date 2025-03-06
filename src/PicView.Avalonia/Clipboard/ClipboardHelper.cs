@@ -9,6 +9,7 @@ using Avalonia.Platform.Storage;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
@@ -21,13 +22,11 @@ namespace PicView.Avalonia.Clipboard;
 /// </summary>
 public static class ClipboardHelper
 {
-
-
     /// <summary>
     /// Duplicates the current file and navigates to it
     /// </summary>
     /// <param name="vm">The main view model</param>
-    public static async Task Duplicate(MainViewModel vm)
+    public static async Task DuplicateCurrentFile(MainViewModel vm)
     {
         if (!NavigationManager.CanNavigate(vm))
         {
@@ -44,6 +43,57 @@ public static class ClipboardHelper
         }
 
         await Task.WhenAll(AnimationsHelper.CopyAnimation(), NavigationManager.LoadPicFromFile(duplicatedPath, vm));
+    }
+    
+    /// <summary>
+    /// Duplicates the specified file and plays a copy animation when done. The original file is not navigated away from.
+    /// </summary>
+    /// <param name="path">Path to the file to duplicate</param>
+    public static async Task DuplicateFile(string path)
+    {
+        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(path);
+        if (!string.IsNullOrWhiteSpace(duplicatedPath))
+        {
+            await AnimationsHelper.CopyAnimation();
+        }
+    }
+    
+    /// <summary>
+    /// Duplicates the specified file, either the current file or another one specified by path.
+    /// If the current file is being duplicated, the view model will navigate to the duplicated file.
+    /// </summary>
+    /// <param name="path">Path to the file to duplicate, or null to duplicate the current file.</param>
+    /// <param name="vm">The main view model</param>
+    public static async Task Duplicate(string path, MainViewModel vm)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+        try
+        {
+            vm.IsLoading = true;
+            
+            if (path == vm.FileInfo?.FullName)
+            {
+                await DuplicateCurrentFile(vm);
+            }
+            else
+            {
+                await DuplicateFile(path);
+            }
+        }
+        catch (Exception e)
+        {
+#if DEBUG
+            Debug.WriteLine($"{nameof(ClipboardHelper)} {nameof(Duplicate)} {e.StackTrace}");
+#endif
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.UnexpectedError);
+        }
+        finally
+        {
+            vm.IsLoading = false;
+        }
     }
 
     /// <summary>
@@ -64,8 +114,12 @@ public static class ClipboardHelper
             await Task.WhenAll(clipboard.SetTextAsync(text), AnimationsHelper.CopyAnimation());
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+#if DEBUG
+            Debug.WriteLine($"{nameof(ClipboardHelper)} {nameof(CopyTextToClipboard)} {e.StackTrace}");
+#endif
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.UnexpectedError);
             return false;
         }
     }
@@ -262,7 +316,6 @@ public static class ClipboardHelper
         }
         catch (Exception ex)
         {
-            // Log or handle the exception
             Debug.WriteLine($"Paste operation failed: {ex.Message}");
         }
     }

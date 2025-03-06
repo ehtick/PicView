@@ -1492,7 +1492,7 @@ public class MainViewModel : ViewModelBase
         await Task.Run(() => FileDeletionHelper.DeleteFileWithErrorMsg(path, true));
 
     private async Task DuplicateFileTask(string path) =>
-        await FileManager.DuplicateFile(path, this).ConfigureAwait(false);
+        await ClipboardHelper.Duplicate(path, this).ConfigureAwait(false);
 
     private async Task ShowFilePropertiesTask(string path) =>
         await FileManager.ShowFileProperties(path, this).ConfigureAwait(false);
