@@ -275,9 +275,8 @@ public static class ImageSizeCalculationHelper
                                  Settings.WindowProperties.Maximized;
                 var borderSpaceHeight = fullscreen ? 0 : uiTopSize + uiBottomSize + galleryHeight;
                 var workAreaHeight = monitorHeight * dpiScaling - borderSpaceHeight;
-                scrollHeight = Settings.ImageScaling.StretchImage
-                    ? workAreaHeight
-                    : workAreaHeight - Padding;
+                scrollHeight = Math.Min(xHeight,
+                    Settings.ImageScaling.StretchImage ? workAreaHeight : workAreaHeight - Padding);
             }
             else
             {
@@ -341,7 +340,14 @@ public static class ImageSizeCalculationHelper
 
         if (Settings.Zoom.ScrollEnabled)
         {
-            titleMaxWidth += SizeDefaults.ScrollbarSize;
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                titleMaxWidth += SizeDefaults.ScrollbarSize + 10;
+            }
+            else
+            {
+                titleMaxWidth += SizeDefaults.ScrollbarSize;
+            }
         }
 
         return titleMaxWidth;

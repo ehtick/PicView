@@ -145,8 +145,8 @@ public static class WindowResizing
         }
         else
         {
-            firstWidth = GetWidth();
-            firstHeight = GetHeight();
+            firstWidth = preloadValue.ImageModel?.PixelWidth ?? vm.ImageWidth;
+            firstHeight = preloadValue.ImageModel?.PixelHeight ?? vm.ImageHeight;
         }
 
         if (!Settings.ImageScaling.ShowImageSideBySide)
@@ -156,10 +156,10 @@ public static class WindowResizing
 
         var secondaryPreloadValue = NavigationManager.GetNextPreLoadValue();
         double secondWidth, secondHeight;
-        if (secondaryPreloadValue != null)
+        if (secondaryPreloadValue is { ImageModel: not null })
         {
-            secondWidth = GetWidth();
-            secondHeight = GetHeight();
+            secondWidth = secondaryPreloadValue.ImageModel.PixelWidth;
+            secondHeight = secondaryPreloadValue.ImageModel.PixelHeight;
         }
         else if (NavigationManager.CanNavigate(vm))
         {
@@ -176,16 +176,6 @@ public static class WindowResizing
         }
             
         return GetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.RotationAngle, vm);
-
-        double GetWidth()
-        {
-            return preloadValue?.ImageModel?.PixelWidth ?? vm.ImageWidth;
-        }
-
-        double GetHeight()
-        {
-            return preloadValue?.ImageModel?.PixelHeight ?? vm.ImageHeight;
-        }
     }
     
     public static ImageSizeCalculationHelper.ImageSize? GetSize(double width, double height, double secondWidth, double secondHeight, double rotation,
