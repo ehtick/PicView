@@ -208,79 +208,66 @@ public static class FunctionsHelper
 
     #region Navigation, zoom and rotation
 
-    public static async Task Next()
-    {
-        await NavigationManager.Iterate(next: true, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.Iterate(bool, MainViewModel)" />
+    public static async Task Next() =>
+        await NavigationManager.Iterate(next: true, Vm).ConfigureAwait(false);
     
-    public static async Task NextFolder()
-    {
-        await NavigationManager.GoToNextFolder(true, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.GoToNextFolder(bool, MainViewModel)" />
+    public static async Task NextFolder() =>
+        await NavigationManager.GoToNextFolder(true, Vm).ConfigureAwait(false);
     
-    public static async Task Last()
-    {
-        await NavigationManager.NavigateFirstOrLast(last: true, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.NavigateFirstOrLast(bool, MainViewModel)" />
+    public static async Task Last() =>
+        await NavigationManager.NavigateFirstOrLast(last: true, Vm).ConfigureAwait(false);
 
-    public static async Task Prev()
-    {
-        await NavigationManager.Iterate(next: false, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.Iterate(bool, MainViewModel)" />
+    public static async Task Prev() =>
+        await NavigationManager.Iterate(next: false, Vm).ConfigureAwait(false);
     
-    public static async Task PrevFolder()
-    {
-        await NavigationManager.GoToNextFolder(false, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.GoToNextFolder(bool, MainViewModel)" />
+    public static async Task PrevFolder() =>
+        await NavigationManager.GoToNextFolder(false, Vm).ConfigureAwait(false);
 
-    public static async Task First()
-    {
-        await NavigationManager.NavigateFirstOrLast(last: false, Vm);
-    }
+    /// <inheritdoc cref="NavigationManager.NavigateFirstOrLast(bool, MainViewModel)" />
+    public static async Task First() =>
+        await NavigationManager.NavigateFirstOrLast(last: false, Vm).ConfigureAwait(false);
     
-    public static async Task Next10()
-    {
+    /// <inheritdoc cref="NavigationManager.Next10(MainViewModel)" />
+    public static async Task Next10() =>
         await NavigationManager.Next10(Vm).ConfigureAwait(false);
-    }
-    
-    public static async Task Next100()
-    {
+
+    /// <inheritdoc cref="NavigationManager.Next100(MainViewModel)" />
+    public static async Task Next100() =>
         await NavigationManager.Next100(Vm).ConfigureAwait(false);
-    }
     
-    public static async Task Prev10()
-    {
+    /// <inheritdoc cref="NavigationManager.Prev10(MainViewModel)" />
+    public static async Task Prev10() =>
         await NavigationManager.Prev10(Vm).ConfigureAwait(false);
-    }
     
-    public static async Task Prev100()
-    {
+    /// <inheritdoc cref="NavigationManager.Prev100(MainViewModel)" />
+    public static async Task Prev100() =>
         await NavigationManager.Prev100(Vm).ConfigureAwait(false);
-    }
     
 
-    public static async Task Up()
-    {
-        await Rotation.NavigateUp(Vm);
-    }
+    /// <inheritdoc cref="Rotation.NavigateUp(MainViewModel)" />
+    public static async Task Up() =>
+        await Rotation.NavigateUp(Vm).ConfigureAwait(false);
 
-    public static async Task RotateRight()
-    {
-        await Rotation.RotateRight(Vm);
-    }
+    /// <inheritdoc cref="Rotation.RotateRight(MainViewModel)" />
+    public static async Task RotateRight() =>
+        await Rotation.RotateRight(Vm).ConfigureAwait(false);
 
-    public static async Task RotateLeft()
-    {
-        await Rotation.RotateLeft(Vm);
-    }
+    /// <inheritdoc cref="Rotation.RotateLeft(MainViewModel)" />
+    public static async Task RotateLeft() =>
+        await Rotation.RotateLeft(Vm).ConfigureAwait(false);
 
-    public static async Task Down()
-    {
-        await Rotation.NavigateDown(Vm);
-    }
+    /// <inheritdoc cref="Rotation.NavigateDown(MainViewModel)" />
+    public static async Task Down() =>
+        await Rotation.NavigateDown(Vm).ConfigureAwait(false);
     
     public static async Task ScrollDown()
     {
+        // TODO: ImageViewer Needs refactor
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Vm.ImageViewer.ImageScrollViewer.LineDown();
@@ -289,6 +276,7 @@ public static class FunctionsHelper
     
     public static async Task ScrollUp()
     {
+        // TODO: ImageViewer Needs refactor
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Vm.ImageViewer.ImageScrollViewer.LineUp();
@@ -297,6 +285,7 @@ public static class FunctionsHelper
 
     public static async Task ScrollToTop()
     {
+        // TODO: ImageViewer Needs refactor
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Vm.ImageViewer.ImageScrollViewer.ScrollToHome();
@@ -305,6 +294,7 @@ public static class FunctionsHelper
 
     public static async Task ScrollToBottom()
     {
+        // TODO: ImageViewer Needs refactor
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Vm.ImageViewer.ImageScrollViewer.ScrollToEnd();
@@ -313,6 +303,7 @@ public static class FunctionsHelper
 
     public static async Task ZoomIn()
     {
+        // TODO: ImageViewer Needs refactor
         if (Vm is null)
         {
             return;
@@ -322,6 +313,7 @@ public static class FunctionsHelper
 
     public static async Task ZoomOut()
     {
+        // TODO: ImageViewer Needs refactor
         if (Vm is null)
         {
             return;
@@ -331,6 +323,7 @@ public static class FunctionsHelper
 
     public static async Task ResetZoom()
     {
+        // TODO: ImageViewer Needs refactor
         if (Vm is null)
         {
             return;
@@ -342,71 +335,53 @@ public static class FunctionsHelper
 
     #region Toggle UI functions
 
-    public static async Task ToggleScroll()
-    {
+    /// <inheritdoc cref="SettingsUpdater.ToggleScroll(MainViewModel)" />
+    public static async Task ToggleScroll() =>
         await SettingsUpdater.ToggleScroll(Vm).ConfigureAwait(false);
-    }
 
-    public static async Task ChangeCtrlZoom()
-    {
+    /// <inheritdoc cref="SettingsUpdater.ToggleCtrlZoom(MainViewModel)" />
+    public static async Task ChangeCtrlZoom() =>
         await SettingsUpdater.ToggleCtrlZoom(Vm).ConfigureAwait(false);
-    }
 
-    public static async Task ToggleLooping()
-    {
+    /// <inheritdoc cref="SettingsUpdater.ToggleLooping(MainViewModel)" />
+    public static async Task ToggleLooping() =>
         await SettingsUpdater.ToggleLooping(Vm).ConfigureAwait(false);
-    }
     
-    public static async Task ToggleInterface()
-    {
+    /// <inheritdoc cref="HideInterfaceLogic.ToggleUI(MainViewModel)" />
+    public static async Task ToggleInterface() =>
         await HideInterfaceLogic.ToggleUI(Vm).ConfigureAwait(false);
-    }
     
-    public static async Task ToggleSubdirectories()
-    {
+    /// <inheritdoc cref="SettingsUpdater.ToggleSubdirectories(MainViewModel)" />
+    public static async Task ToggleSubdirectories() =>
         await SettingsUpdater.ToggleSubdirectories(vm: Vm).ConfigureAwait(false);
-    }
     
-    public static async Task ToggleBottomToolbar()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
+    /// <inheritdoc cref="HideInterfaceLogic.ToggleBottomToolbar(MainViewModel)" />
+    public static async Task ToggleBottomToolbar() =>
         await HideInterfaceLogic.ToggleBottomToolbar(Vm).ConfigureAwait(false);
-    }
     
-    public static async Task ToggleTaskbarProgress()
-    {
+    /// <inheritdoc cref="SettingsUpdater.ToggleTaskbarProgress(MainViewModel)" />
+    public static async Task ToggleTaskbarProgress() =>
         await SettingsUpdater.ToggleTaskbarProgress(Vm).ConfigureAwait(false);
-    }
     
     #endregion
 
     #region Gallery functions
 
-    public static Task ToggleGallery()
-    {
-        GalleryFunctions.ToggleGallery(Vm);
-        return Task.CompletedTask;
-    }
+    /// <inheritdoc cref="GalleryFunctions.ToggleGallery(MainViewModel)" />
+    public static Task ToggleGallery() =>
+        Task.Run(() => GalleryFunctions.ToggleGallery(Vm));
 
-    public static Task OpenCloseBottomGallery()
-    {
-        GalleryFunctions.OpenCloseBottomGallery(Vm);
-        return Task.CompletedTask;
-    }
+    /// <inheritdoc cref="GalleryFunctions.OpenCloseBottomGallery(MainViewModel)" />
+    public static Task OpenCloseBottomGallery() =>
+        Task.Run(() => GalleryFunctions.OpenCloseBottomGallery(Vm));
     
-    public static Task CloseGallery()
-    {
-        GalleryFunctions.CloseGallery(Vm);
-        return Task.CompletedTask;
-    }
+    /// <inheritdoc cref="GalleryFunctions.CloseGallery(MainViewModel)" />
+    public static Task CloseGallery() =>
+        Task.Run(() => GalleryFunctions.CloseGallery(Vm));
     
-    public static async Task GalleryClick()
-    {
-        await GalleryNavigation.GalleryClick(Vm);
-    }
+    /// <inheritdoc cref="GalleryNavigation.GalleryClick(MainViewModel)" />
+    public static async Task GalleryClick() =>
+        await GalleryNavigation.GalleryClick(Vm).ConfigureAwait(false);
 
     #endregion
     
@@ -414,38 +389,33 @@ public static class FunctionsHelper
 
     public static async Task ShowStartUpMenu()
     {
+        //TODO: Needs refactor, add async overload for ShowStartUpMenu
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             ErrorHandling.ShowStartUpMenu(Vm);
         });
     }
     
-    public static async Task Close()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await UIHelper.Close(Vm);
-    }
+    /// <inheritdoc cref="UIHelper.Close(MainViewModel)" />
+    public static async Task Close() =>
+        await UIHelper.Close(Vm).ConfigureAwait(false);
     
     public static async Task Center()
     {
+        // TODO: Needs refactor, add async overload for Center
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             Rotation.Center(Vm);
         });
     }
     
-    public static async Task Maximize()
-    {
-        await WindowFunctions.MaximizeRestore();
-    }
+    /// <inheritdoc cref="WindowFunctions.MaximizeRestore()" />
+    public static async Task Maximize() =>
+        await WindowFunctions.MaximizeRestore().ConfigureAwait(false);
 
-    public static async Task NewWindow()
-    {        
-        await Task.Run(ProcessHelper.StartNewProcess);
-    }
+    /// <inheritdoc cref="ProcessHelper.StartNewProcess()" />
+    public static async Task NewWindow() =>
+        await Task.Run(ProcessHelper.StartNewProcess).ConfigureAwait(false);
 
     public static Task AboutWindow()
     {
@@ -493,99 +463,96 @@ public static class FunctionsHelper
 
     #region Image Scaling and Window Behavior
     
-    public static async Task Stretch()
-    {
-        await WindowFunctions.Stretch(Vm);
-    }
-    public static async Task AutoFitWindow()
-    {
-        await WindowFunctions.ToggleAutoFit(Vm);
-    }
+    /// <inheritdoc cref="WindowFunctions.Stretch(MainViewModel)" />
+    public static async Task Stretch() =>
+        await WindowFunctions.Stretch(Vm).ConfigureAwait(false);
+    
+    /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainViewModel)" />
+    public static async Task AutoFitWindow() =>
+        await WindowFunctions.ToggleAutoFit(Vm).ConfigureAwait(false);
 
-    public static async Task AutoFitWindowAndStretch()
-    {
-        await WindowFunctions.AutoFitAndStretch(Vm);
-    }
+    /// <inheritdoc cref="WindowFunctions.AutoFitAndStretch(MainViewModel)" />
+    public static async Task AutoFitWindowAndStretch() =>
+        await WindowFunctions.AutoFitAndStretch(Vm).ConfigureAwait(false);
 
-    public static async Task NormalWindow()
-    {
-        await WindowFunctions.NormalWindow(Vm);
-    }
+    /// <inheritdoc cref="WindowFunctions.NormalWindow(MainViewModel)" />
+    public static async Task NormalWindow() =>
+        await WindowFunctions.NormalWindow(Vm).ConfigureAwait(false);
 
-    public static async Task NormalWindowAndStretch()
-    {
-        await WindowFunctions.NormalWindowStretch(Vm);
-    }
+    /// <inheritdoc cref="WindowFunctions.NormalWindowStretch(MainViewModel)" />
+    public static async Task NormalWindowAndStretch() =>
+        await WindowFunctions.NormalWindowStretch(Vm).ConfigureAwait(false);
 
-    public static async Task ToggleFullscreen()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-
-        await WindowFunctions.ToggleFullscreen(Vm);
-    }
+    /// <inheritdoc cref="WindowFunctions.ToggleFullscreen(MainViewModel)" />
+    public static async Task ToggleFullscreen() =>
+        await WindowFunctions.ToggleFullscreen(Vm).ConfigureAwait(false);
     
     // This shouldn't be here, but keep as alias and backwards compatibility.
     public static Task Fullscreen() => ToggleFullscreen();
 
-    public static async Task SetTopMost()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
+    /// <inheritdoc cref="WindowFunctions.ToggleTopMost(MainViewModel)" />
+    public static async Task SetTopMost() =>
 
-        await WindowFunctions.ToggleTopMost(Vm);
-    }
+        await WindowFunctions.ToggleTopMost(Vm).ConfigureAwait(false);
 
     #endregion
 
     #region File funnctions
 
+    /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public static async Task OpenLastFile() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetLastEntry(), Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public static async Task OpenPreviousFileHistoryEntry() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetPreviousEntry(), Vm).ConfigureAwait(false);
+   
+    /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public static async Task OpenNextFileHistoryEntry() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetNextEntry(), Vm).ConfigureAwait(false);
     
+    /// <inheritdoc cref="FileManager.Print(string, MainViewModel)" />
     public static async Task Print() =>
         await FileManager.Print(null, Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="FilePicker.SelectAndLoadFile(MainViewModel)" />
     public static async Task Open() =>
         await FilePicker.SelectAndLoadFile(Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="FileManager.OpenWith(string, MainViewModel)" />
     public static async Task OpenWith() =>
         await Task.Run(() => Vm?.PlatformService?.OpenWith(Vm.FileInfo?.FullName)).ConfigureAwait(false);
     
-
+    /// <inheritdoc cref="FileManager.LocateOnDisk(string, MainViewModel)" />
     public static async Task OpenInExplorer()=>
         await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.FileInfo?.FullName)).ConfigureAwait(false);
 
+    /// <inheritdoc cref="FileSaverHelper.SaveCurrentFile(MainViewModel)" />
     public static async Task Save() =>
         await FileSaverHelper.SaveCurrentFile(Vm).ConfigureAwait(false);
     
+    /// <inheritdoc cref="FileSaverHelper.SaveFileAs(MainViewModel)" />
     public static async Task SaveAs() =>
         await FileSaverHelper.SaveFileAs(Vm).ConfigureAwait(false);
     
+    /// <inheritdoc cref="FileManager.DeleteFile(bool, MainViewModel)" />
     public static async Task DeleteFile() =>
         await FileManager.DeleteFile(true, Vm).ConfigureAwait(false);
     
+    /// <inheritdoc cref="FileManager.DeleteFile(bool, MainViewModel)" />
     public static async Task DeleteFilePermanently() =>
         await FileManager.DeleteFile(false, Vm).ConfigureAwait(false);
 
     public static async Task Rename()
     {
-        // TODO: Needs refactor
+        // TODO: Needs refactor for selecting file name
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             UIHelper.GetEditableTitlebar.SelectFileName();
         });
     }
     
+    /// <inheritdoc cref="FileManager.ShowFileProperties(string, MainViewModel)" />
     public static async Task ShowFileProperties() =>
         await Task.Run(() => Vm?.PlatformService?.ShowFileProperties(Vm.FileInfo?.FullName)).ConfigureAwait(false);
     
@@ -672,86 +639,41 @@ public static class FunctionsHelper
 
     #region Sorting
 
-    public static async Task SortFilesByName()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm.PlatformService, Vm, FileListHelper.SortFilesBy.Name);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesByName() =>
+        await FileListManager.UpdateFileList(Vm.PlatformService, Vm, FileListHelper.SortFilesBy.Name).ConfigureAwait(false);
 
-    public static async Task SortFilesByCreationTime()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.CreationTime);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesByCreationTime() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.CreationTime).ConfigureAwait(false);
 
-    public static async Task SortFilesByLastAccessTime()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastAccessTime);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesByLastAccessTime() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastAccessTime).ConfigureAwait(false);
 
-    public static async Task SortFilesByLastWriteTime()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastWriteTime);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesByLastWriteTime() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.LastWriteTime).ConfigureAwait(false);
 
-    public static async Task SortFilesBySize()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.FileSize);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesBySize() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.FileSize).ConfigureAwait(false);
 
-    public static async Task SortFilesByExtension()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Extension);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesByExtension() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Extension).ConfigureAwait(false);
 
-    public static async Task SortFilesRandomly()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Random);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, FileListHelper.SortFilesBy)" />
+    public static async Task SortFilesRandomly() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, FileListHelper.SortFilesBy.Random).ConfigureAwait(false);
 
-    public static async Task SortFilesAscending()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: true);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, bool)" />
+    public static async Task SortFilesAscending() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: true).ConfigureAwait(false);
 
-    public static async Task SortFilesDescending()
-    {
-        if (Vm?.PlatformService is null)
-        {
-            return;
-        }
-        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: false);
-    }
+    /// <inheritdoc cref="FileListManager.UpdateFileList(IPlatformService, MainViewModel, bool)" />
+    public static async Task SortFilesDescending() =>
+        await FileListManager.UpdateFileList(Vm?.PlatformService, Vm, ascending: false).ConfigureAwait(false);
 
     #endregion Sorting
 
@@ -759,6 +681,7 @@ public static class FunctionsHelper
 
     public static async Task Set0Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -770,6 +693,7 @@ public static class FunctionsHelper
 
     public static async Task Set1Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -781,6 +705,7 @@ public static class FunctionsHelper
 
     public static async Task Set2Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -791,6 +716,7 @@ public static class FunctionsHelper
 
     public static async Task Set3Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -801,6 +727,7 @@ public static class FunctionsHelper
 
     public static async Task Set4Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -811,6 +738,7 @@ public static class FunctionsHelper
 
     public static async Task Set5Star()
     {
+        // TODO: Needs refactoring into EXIFHelper
         if (Vm is null)
         {
             return;
@@ -825,6 +753,7 @@ public static class FunctionsHelper
 
     public static async Task OpenGoogleMaps()
     {
+        // TODO: Needs refactoring into its own method
         if (Vm is null)
         {
             return;
@@ -839,6 +768,7 @@ public static class FunctionsHelper
     
     public static async Task OpenBingMaps()
     {
+        // TODO: Needs refactoring into its own method
         if (Vm is null)
         {
             return;
@@ -854,95 +784,42 @@ public static class FunctionsHelper
     #endregion
 
     #region Wallpaper and lockscreen image
-    
-    public static async Task SetAsWallpaper()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            await SetAsWallpaperFilled();
-        }
-        // TODO: Add setting wallpaper support for macOS
-    }
+    public static async Task SetAsWallpaper() =>
+        await SetAsWallpaperFilled();
 
-    public static async Task SetAsWallpaperTiled()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 0));
-    }
+    public static async Task SetAsWallpaperTiled() =>
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 0)).ConfigureAwait(false);
     
-    public static async Task SetAsWallpaperCentered()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 1));
-    }
+    public static async Task SetAsWallpaperCentered() =>
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 1)).ConfigureAwait(false);
     
-    public static async Task SetAsWallpaperStretched()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 2));
-    }
+    public static async Task SetAsWallpaperStretched() =>
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 2)).ConfigureAwait(false);
     
-    public static async Task SetAsWallpaperFitted()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 3));
-    }
+    public static async Task SetAsWallpaperFitted() =>
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 3)).ConfigureAwait(false);
     
-    public static async Task SetAsWallpaperFilled()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 4));
-    }
+    public static async Task SetAsWallpaperFilled() =>
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.FileInfo.FullName, 4)).ConfigureAwait(false);
     
-    public static async Task SetAsLockscreenCentered()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.FileInfo.FullName));
-    }
+    public static async Task SetAsLockscreenCentered() =>
+        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.FileInfo.FullName)).ConfigureAwait(false);
     
-    public static async Task SetAsLockScreen()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.FileInfo.FullName));
-    }
+    public static async Task SetAsLockScreen() =>
+        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.FileInfo.FullName)).ConfigureAwait(false);
 
     #endregion
 
     #region Other settings
 
-    public static async Task ResetSettings()
-    {
-        await SettingsUpdater.ResetSettings(Vm);
-    }
+    /// <inheritdoc cref="SettingsUpdater.ResetSettings(MainViewModel)" />
+    public static async Task ResetSettings() =>
+        await SettingsUpdater.ResetSettings(Vm).ConfigureAwait(false);
     
     public static async Task Restart()
     {
+        // TODO: Needs refactoring into its own method
         var openFile = string.Empty;
         var getFromArgs = false;
         if (Vm?.FileInfo is not null)
@@ -981,14 +858,9 @@ public static class FunctionsHelper
         });
     }
     
-    public static async Task ToggleUsingTouchpad()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await SettingsUpdater.ToggleUsingTouchpad(Vm);
-    }
+    /// <inheritdoc cref="SettingsUpdater.ToggleUsingTouchpad(MainViewModel)" />
+    public static async Task ToggleUsingTouchpad() =>
+        await SettingsUpdater.ToggleUsingTouchpad(Vm).ConfigureAwait(false);
 
     #endregion
     
