@@ -544,96 +544,50 @@ public static class FunctionsHelper
 
     #region File funnctions
 
-    public static async Task OpenLastFile()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-
+    public static async Task OpenLastFile() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetLastEntry(), Vm).ConfigureAwait(false);
-    }
 
-    public static async Task OpenPreviousFileHistoryEntry()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-
+    public static async Task OpenPreviousFileHistoryEntry() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetPreviousEntry(), Vm).ConfigureAwait(false);
-    }
-    public static async Task OpenNextFileHistoryEntry()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-
+    public static async Task OpenNextFileHistoryEntry() =>
         await NavigationManager.LoadPicFromStringAsync(FileHistory.GetNextEntry(), Vm).ConfigureAwait(false);
-    }
     
-    public static async Task Print() => await FileManager.Print(null, Vm).ConfigureAwait(false);
+    public static async Task Print() =>
+        await FileManager.Print(null, Vm).ConfigureAwait(false);
 
-    public static async Task Open()
-    {
-        await FilePicker.SelectAndLoadFile(Vm);
-    }
+    public static async Task Open() =>
+        await FilePicker.SelectAndLoadFile(Vm).ConfigureAwait(false);
 
-    public static Task OpenWith()
-    {
-        Vm?.PlatformService?.OpenWith(Vm.FileInfo?.FullName);
-        return Task.CompletedTask;
-    }
-
-    public static Task OpenInExplorer()
-    {
-        Vm?.PlatformService?.LocateOnDisk(Vm.FileInfo?.FullName);
-        return Task.CompletedTask;
-    }
-
-    public static async Task Save()
-    {
-        await FileSaverHelper.SaveCurrentFile(Vm);
-    }
+    public static async Task OpenWith() =>
+        await Task.Run(() => Vm?.PlatformService?.OpenWith(Vm.FileInfo?.FullName)).ConfigureAwait(false);
     
-    public static async Task SaveAs()
-    {
-        await FileSaverHelper.SaveFileAs(Vm);
-    }
-    
-    public static async Task DeleteFile()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
 
-        await FileManager.DeleteFile(true, Vm);
-    }
-    
-    public static async Task DeleteFilePermanently()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
+    public static async Task OpenInExplorer()=>
+        await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.FileInfo?.FullName)).ConfigureAwait(false);
 
-        await FileManager.DeleteFile(false, Vm);
-    }
+    public static async Task Save() =>
+        await FileSaverHelper.SaveCurrentFile(Vm).ConfigureAwait(false);
+    
+    public static async Task SaveAs() =>
+        await FileSaverHelper.SaveFileAs(Vm).ConfigureAwait(false);
+    
+    public static async Task DeleteFile() =>
+        await FileManager.DeleteFile(true, Vm).ConfigureAwait(false);
+    
+    public static async Task DeleteFilePermanently() =>
+        await FileManager.DeleteFile(false, Vm).ConfigureAwait(false);
 
     public static async Task Rename()
     {
+        // TODO: Needs refactor
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             UIHelper.GetEditableTitlebar.SelectFileName();
         });
     }
     
-    public static async Task ShowFileProperties()
-    {
-        await Task.Run(() => Vm?.PlatformService?.ShowFileProperties(Vm.FileInfo?.FullName));
-    }
+    public static async Task ShowFileProperties() =>
+        await Task.Run(() => Vm?.PlatformService?.ShowFileProperties(Vm.FileInfo?.FullName)).ConfigureAwait(false);
     
     #endregion
 
@@ -664,16 +618,9 @@ public static class FunctionsHelper
 
     #region Image Functions
     
-    public static async Task ChangeBackground()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        
-        BackgroundManager.ChangeBackground(Vm);
-        await SaveSettingsAsync();
-    }
+    /// <inheritdoc cref="BackgroundManager.ChangeBackground(MainViewModel)" />
+    public static async Task ChangeBackground() =>
+        await BackgroundManager.ChangeBackgroundAsync(Vm).ConfigureAwait(false);
     
     public static async Task SideBySide()
     {

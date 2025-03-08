@@ -11,12 +11,12 @@ using PicView.Core.Localization;
 namespace PicView.Avalonia.Clipboard;
 
 /// <summary>
-/// Handles clipboard operations related to images
+///     Handles clipboard operations related to images
 /// </summary>
 public static class ClipboardImageOperations
 {
     /// <summary>
-    /// Copies the current image to the clipboard
+    ///     Copies the current image to the clipboard
     /// </summary>
     /// <param name="vm">The main view model</param>
     /// <returns>A task representing the asynchronous operation</returns>
@@ -51,7 +51,7 @@ public static class ClipboardImageOperations
     }
 
     /// <summary>
-    /// Copies an image as base64 string to the clipboard
+    ///     Copies an image as base64 string to the clipboard
     /// </summary>
     /// <param name="path">Optional path to the image file</param>
     /// <param name="vm">The main view model</param>
@@ -66,53 +66,63 @@ public static class ClipboardImageOperations
 
         return await ClipboardService.ExecuteClipboardOperation(async () =>
         {
-            var base64 = await GetBase64String(path, vm);
-            
-            if (string.IsNullOrEmpty(base64))
+            try
             {
+                var base64 = await GetBase64String(path, vm);
+
+                if (string.IsNullOrEmpty(base64))
+                {
+                    return false;
+                }
+
+                await clipboard.SetTextAsync(base64);
+                return true;
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(
+                    $"{nameof(ClipboardImageOperations)} {nameof(CopyBase64ToClipboard)} error: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
+#endif
                 return false;
             }
-
-            await clipboard.SetTextAsync(base64);
-            return true;
         });
     }
-    
+
     private static async Task<string> GetBase64String(string path, MainViewModel vm)
     {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            switch (vm.ImageType)
-            {
-                case ImageType.AnimatedGif:
-                case ImageType.AnimatedWebp:
-                case ImageType.Bitmap:
-                    if (vm.ImageSource is not Bitmap bitmap)
-                    {
-                        return string.Empty;
-                    }
-
-                    using (var stream = new MemoryStream())
-                    {
-                        bitmap.Save(stream, quality: 100);
-                        return Convert.ToBase64String(stream.ToArray());
-                    }
-
-                case ImageType.Svg:
-                    return string.Empty;
-                    
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(vm.ImageType), $"Unsupported image type: {vm.ImageType}");
-            }
-        }
-        else
+        if (!string.IsNullOrWhiteSpace(path))
         {
             return Convert.ToBase64String(await File.ReadAllBytesAsync(path));
         }
+
+        switch (vm.ImageType)
+        {
+            case ImageType.AnimatedGif:
+            case ImageType.AnimatedWebp:
+            case ImageType.Bitmap:
+                if (vm.ImageSource is not Bitmap bitmap)
+                {
+                    return string.Empty;
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    bitmap.Save(stream, 100);
+                    return Convert.ToBase64String(stream.ToArray());
+                }
+
+            case ImageType.Svg:
+                return string.Empty;
+
+            default:
+                throw new ArgumentOutOfRangeException(nameof(vm.ImageType), $"Unsupported image type: {vm.ImageType}");
+        }
     }
-    
+
     /// <summary>
-    /// Pastes an image from the clipboard
+    ///     Pastes an image from the clipboard
     /// </summary>
     /// <param name="vm">The main view model</param>
     /// <returns>A task representing the asynchronous operation</returns>
@@ -127,11 +137,10 @@ public static class ClipboardImageOperations
         try
         {
             var name = TranslationHelper.Translation.ClipboardImage;
-            var imageType = ImageType.Bitmap;
 
             // Try standard image formats
             var bitmap = await TryGetBitmapFromClipboard(clipboard);
-            
+
             // Try Windows-specific clipboard handling if needed
             if (bitmap == null && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -141,17 +150,18 @@ public static class ClipboardImageOperations
             // Set the image if we got one
             if (bitmap != null)
             {
-                await UpdateImage.SetSingleImageAsync(bitmap, imageType, name, vm);
+                await UpdateImage.SetSingleImageAsync(bitmap, ImageType.Bitmap, name, vm);
             }
         }
         catch (Exception ex)
         {
 #if DEBUG
             Debug.WriteLine($"{nameof(ClipboardImageOperations)} {nameof(PasteClipboardImage)} error: {ex.Message}");
+            Debug.WriteLine(ex.StackTrace);
 #endif
         }
     }
-    
+
     private static async Task<Bitmap?> TryGetBitmapFromClipboard(IClipboard clipboard)
     {
         // List of formats to try
@@ -174,12 +184,17 @@ public static class ClipboardImageOperations
                 using var memoryStream = new MemoryStream(dataBytes);
                 return new Bitmap(memoryStream);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Ignore format errors and try next format
+#if DEBUG
+                Debug.WriteLine(
+                    $"{nameof(ClipboardImageOperations)} {nameof(TryGetBitmapFromClipboard)} error: {ex.Message}");
+                Debug.WriteLine(ex.StackTrace);
+#endif
             }
         }
-        
+
         return null;
     }
 }

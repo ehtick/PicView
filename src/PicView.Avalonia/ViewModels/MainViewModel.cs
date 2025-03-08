@@ -1501,9 +1501,11 @@ public class MainViewModel : ViewModelBase
     private async Task ShowFilePropertiesTask(string path) =>
         await FileManager.ShowFileProperties(path, this).ConfigureAwait(false);
 
-    private async Task PrintTask(string path) => await FileManager.Print(path, this).ConfigureAwait(false);
+    private async Task PrintTask(string path) =>
+        await FileManager.Print(path, this).ConfigureAwait(false);
 
-    private async Task OpenWithTask(string path) => await FileManager.OpenWith(path, this).ConfigureAwait(false);
+    private async Task OpenWithTask(string path) => 
+        await FileManager.OpenWith(path, this).ConfigureAwait(false);
 
     private async Task LocateOnDiskTask(string path) =>
         await FileManager.LocateOnDisk(path, this).ConfigureAwait(false);

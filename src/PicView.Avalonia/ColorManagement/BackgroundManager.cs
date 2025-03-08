@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
+using Avalonia.Threading;
 using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.ColorManagement;
@@ -75,6 +76,14 @@ public static class BackgroundManager
         // Cycle to the next background choice
         var nextChoice = (Settings.UIProperties.BgColorChoice + 1) % ((int)BackgroundType.MaxValue + 1);
         SetBackground(vm, nextChoice);
+    }
+    
+    
+    /// <inheritdoc cref="ChangeBackground(MainViewModel)" />
+    public static async Task ChangeBackgroundAsync(MainViewModel vm)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => ChangeBackground(vm));
+        await SaveSettingsAsync();
     }
 
     /// <summary>
