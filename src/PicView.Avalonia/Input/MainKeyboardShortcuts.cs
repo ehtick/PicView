@@ -147,10 +147,10 @@ public static class MainKeyboardShortcuts
             case Key.F12: // Show Avalonia DevTools in DEBUG mode
                 return true;
             case Key.F9:
-                _ = FunctionsHelper.ShowStartUpMenu();
+                _ = FunctionsMapper.ShowStartUpMenu();
                 return true;
             case Key.F7:
-                FunctionsHelper.Invalidate();
+                FunctionsMapper.Invalidate();
                 return true;
         }
 #endif
@@ -186,7 +186,7 @@ public static class MainKeyboardShortcuts
         // Handle escape key
         if (e.Key == Key.Escape)
         {
-            await FunctionsHelper.Close().ConfigureAwait(false);
+            await FunctionsMapper.Close().ConfigureAwait(false);
             return true;
         }
 

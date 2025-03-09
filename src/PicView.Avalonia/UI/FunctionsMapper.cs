@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Clipboard;
@@ -20,7 +19,10 @@ using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.UI;
 
-public static class FunctionsHelper
+/// <summary>
+/// Used to map functions to their names, used for keyboard shortcuts
+/// </summary>
+public static class FunctionsMapper
 {
     public static MainViewModel? Vm;
 
@@ -560,24 +562,31 @@ public static class FunctionsHelper
 
     #region Copy and Paste functions
 
+    /// <inheritdoc cref="ClipboardFileOperations.CopyFileToClipboard(string, MainViewModel)" />
     public static async Task CopyFile() =>
         await ClipboardFileOperations.CopyFileToClipboard(Vm?.FileInfo?.FullName, Vm).ConfigureAwait(false);
-
+    
+    /// <inheritdoc cref="ClipboardTextOperations.CopyTextToClipboard(string)" />
     public static async Task CopyFilePath() => 
         await ClipboardTextOperations.CopyTextToClipboard(Vm?.FileInfo?.FullName).ConfigureAwait(false);
 
+    /// <inheritdoc cref="ClipboardImageOperations.CopyImageToClipboard(MainViewModel)" />
     public static async Task CopyImage() => 
         await ClipboardImageOperations.CopyImageToClipboard(Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string, MainViewModel)" />
     public static async Task CopyBase64() =>
         await ClipboardImageOperations.CopyBase64ToClipboard(Vm.FileInfo?.FullName, vm: Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
     public static async Task DuplicateFile() => 
         await ClipboardFileOperations.Duplicate(Vm.FileInfo?.FullName, Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="ClipboardFileOperations.CutFile(string, MainViewModel)" />
     public static async Task CutFile() =>
         await ClipboardFileOperations.CutFile(Vm.FileInfo.FullName, Vm).ConfigureAwait(false);
 
+    /// <inheritdoc cref="ClipboardPasteOperations.Paste(MainViewModel)" />
     public static async Task Paste() =>
         await ClipboardPasteOperations.Paste(Vm).ConfigureAwait(false);
     
@@ -589,30 +598,20 @@ public static class FunctionsHelper
     public static async Task ChangeBackground() =>
         await BackgroundManager.ChangeBackgroundAsync(Vm).ConfigureAwait(false);
     
-    public static async Task SideBySide()
-    {
-        await SettingsUpdater.ToggleSideBySide(Vm);
-    }
+    /// <inheritdoc cref="SettingsUpdater.ToggleSideBySide(MainViewModel)" />
+    public static async Task SideBySide() =>
+        await SettingsUpdater.ToggleSideBySide(Vm).ConfigureAwait(false);
     
-    public static async Task Reload()
-    {
-        if (Vm is null)
-        {
-            return;
-        }
-        await ErrorHandling.ReloadAsync(Vm);
-    }
+    /// <inheritdoc cref="ErrorHandling.ReloadAsync(MainViewModel)" />
+    public static async Task Reload() =>
+        await ErrorHandling.ReloadAsync(Vm).ConfigureAwait(false);
 
-    public static Task ResizeImage()
-    {
-        Vm?.PlatformService?.ShowSingleImageResizeWindow();
-        return Task.CompletedTask;
-    }
+    public async static Task ResizeImage() => 
+        await Task.Run(() => Vm?.PlatformService?.ShowSingleImageResizeWindow()).ConfigureAwait(false);
 
-    public static async Task Crop()
-    {
+    /// <inheritdoc cref="CropFunctions.StartCropControl(MainViewModel)" />
+    public static async Task Crop() =>
         await Dispatcher.UIThread.InvokeAsync(() => CropFunctions.StartCropControl(Vm));
-    }
 
     public static Task Flip()
     {
@@ -620,15 +619,13 @@ public static class FunctionsHelper
         return Task.CompletedTask;
     }
 
-    public static async Task OptimizeImage()
-    {
+    /// <inheritdoc cref="ImageOptimizer.OptimizeImageAsync(MainViewModel)" />
+    public static async Task OptimizeImage() =>
         await ImageOptimizer.OptimizeImageAsync(Vm).ConfigureAwait(false);
-    }
 
-    public static async Task Slideshow()
-    {
-        await Navigation.Slideshow.StartSlideshow(Vm);
-    }
+    /// <inheritdoc cref="Navigation.Slideshow.StartSlideshow(MainViewModel)" />
+    public static async Task Slideshow() =>
+        await Navigation.Slideshow.StartSlideshow(Vm).ConfigureAwait(false);
 
     public static Task ColorPicker()
     {
