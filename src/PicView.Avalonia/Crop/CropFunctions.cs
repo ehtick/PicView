@@ -110,7 +110,7 @@ public static class CropFunctions
             return false;
         }
 
-        if (UIHelper.IsDialogOpen)
+        if (DialogManager.IsDialogOpen)
         {
             return false;
         }

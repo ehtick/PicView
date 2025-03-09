@@ -174,7 +174,7 @@ public static class MainKeyboardShortcuts
         }
 
         // Handle open dialog
-        if (UIHelper.IsDialogOpen)
+        if (DialogManager.IsDialogOpen)
         {
             UIHelper.GetMainView.MainGrid.Children
                 .OfType<AnimatedPopUp>()

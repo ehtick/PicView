@@ -45,7 +45,7 @@ public static class NavigationManager
     {
         return _imageIterator?.ImagePaths is not null &&
                _imageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping &&
-               !UIHelper.IsDialogOpen && vm is { IsEditableTitlebarOpen: false, FileInfo: not null };
+               !DialogManager.IsDialogOpen && vm is { IsEditableTitlebarOpen: false, FileInfo: not null };
         // TODO: should probably turn this into CanExecute observable for ReactiveUI
     }
 

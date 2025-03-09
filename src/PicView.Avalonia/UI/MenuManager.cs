@@ -80,7 +80,7 @@ public static class MenuManager
 
     private static void ToggleMenu(MainViewModel vm, MenuType menuType)
     {
-        if (UIHelper.IsDialogOpen)
+        if (DialogManager.IsDialogOpen)
         {
             return;
         }

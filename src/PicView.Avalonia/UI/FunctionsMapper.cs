@@ -398,9 +398,9 @@ public static class FunctionsMapper
         });
     }
     
-    /// <inheritdoc cref="UIHelper.Close(MainViewModel)" />
+    /// <inheritdoc cref="DialogManager.Close(MainViewModel)" />
     public static async Task Close() =>
-        await UIHelper.Close(Vm).ConfigureAwait(false);
+        await DialogManager.Close(Vm).ConfigureAwait(false);
     
     public static async Task Center()
     {
