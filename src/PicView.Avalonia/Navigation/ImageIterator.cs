@@ -131,6 +131,7 @@ public class ImageIterator : IAsyncDisposable
 #endif
             });
         };
+        Interlocked.Exchange(ref _isRunningFlag, 0);
     }
 
     private async Task OnFileAdded(FileSystemEventArgs e)
@@ -142,11 +143,6 @@ public class ImageIterator : IAsyncDisposable
 
         try
         {
-            if (e.FullPath.IsSupported() == false)
-            {
-                return;
-            }
-
             var fileInfo = new FileInfo(e.FullPath);
             if (fileInfo.Exists == false)
             {
@@ -211,11 +207,6 @@ public class ImageIterator : IAsyncDisposable
         
         try
         {
-            if (e.FullPath.IsSupported() == false)
-            {
-                return;
-            }
-
             if (ImagePaths.Contains(e.FullPath) == false)
             {
                 return;
@@ -595,32 +586,34 @@ public class ImageIterator : IAsyncDisposable
             var preloadValue = GetPreLoadValue(index);
             if (preloadValue is not null)
             {
-                // Wait for image to load
+                // Wait for image to load if it's still loading
                 if (preloadValue is { IsLoading: true, ImageModel.Image: null })
                 {
                     LoadingPreview();
 
-                    var retries = 0;
-                    do
+                    using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
+                    linkedCts.CancelAfter(TimeSpan.FromMinutes(2));
+
+                    try
                     {
-                        await Task.Delay(20, cts.Token).ConfigureAwait(false);
-                        if (CurrentIndex != index)
+                        // Wait for the loading to complete or timeout
+                        await preloadValue.WaitForLoadingCompleteAsync().WaitAsync(linkedCts.Token);
+                    }
+                    catch (OperationCanceledException) when (!cts.IsCancellationRequested)
+                    {
+                        // This is a timeout, not cancellation from navigation
+                        preloadValue = new PreLoadValue(await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[CurrentIndex])))
                         {
-                            // Skip loading if user went to next value
-                            await cts.CancelAsync();
-                            return;
-                        }
+                            IsLoading = false
+                        };
+                    }
 
-                        retries++;
-
-                        if (retries > 50)
-                        {
-                            preloadValue = new PreLoadValue(await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[CurrentIndex])))
-                            {
-                                IsLoading = false
-                            };
-                        }
-                    } while (preloadValue.IsLoading);
+                    // Check if user navigated away during loading
+                    if (CurrentIndex != index)
+                    {
+                        await cts.CancelAsync();
+                        return;
+                    }
                 }
             }
             else

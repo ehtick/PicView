@@ -24,7 +24,7 @@ public static class GetImageModel
         { ".b64", new Base64Handler() }
     };
 
-    public static async Task<ImageModel?> GetImageModelAsync(FileInfo fileInfo)
+    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo)
     {
         if (fileInfo is null)
         {

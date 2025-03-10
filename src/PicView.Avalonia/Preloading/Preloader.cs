@@ -59,16 +59,13 @@ public class PreLoader : IAsyncDisposable
         }
 
         var imageModel = new ImageModel();
-        var preLoadValue = new PreLoadValue(imageModel)
-        {
-            IsLoading = true,
-        };
+        var preLoadValue = new PreLoadValue(imageModel, true); // Set isLoading to true
 
         if (!_preLoadList.TryAdd(index, preLoadValue))
         {
             return false;
         }
-        
+    
         try
         {
             var fileInfo = imageModel.FileInfo = new FileInfo(list[index]);
@@ -91,7 +88,7 @@ public class PreLoader : IAsyncDisposable
         }
         finally
         {
-            preLoadValue.IsLoading = false;
+            preLoadValue.IsLoading = false; // This will trigger the TaskCompletionSource
         }
     }
 
