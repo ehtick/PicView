@@ -97,17 +97,6 @@ public static class TranslationManager
     }
 
     /// <summary>
-    /// Changes the application's language by loading the corresponding language file.
-    /// </summary>
-    /// <param name="language">The index of the language to be changed.</param>
-    public static async Task ChangeLanguage(int language)
-    {
-        // TODO: Get current language from settings, and then change to another language.
-        await LoadLanguage("da").ConfigureAwait(false);
-        await SaveSettingsAsync().ConfigureAwait(false);
-    }
-
-    /// <summary>
     /// Determines the file path for the specified ISO language code.
     /// </summary>
     /// <param name="isoLanguageCode">The ISO language code representing the desired language.</param>

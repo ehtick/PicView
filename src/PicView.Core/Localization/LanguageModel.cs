@@ -1,6 +1,9 @@
-﻿namespace PicView.Core.Localization;
+﻿using System.Diagnostics.CodeAnalysis;
 
-public record LanguageModel
+namespace PicView.Core.Localization;
+
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+public class LanguageModel
 {
     public string? Loading { get; set; }
     public string? NoImage { get; set; }
