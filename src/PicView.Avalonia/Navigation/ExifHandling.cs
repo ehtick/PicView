@@ -56,21 +56,21 @@ public static class ExifHandling
 
             vm.GetOrientation = vm.ExifOrientation switch
             {
-                EXIFHelper.EXIFOrientation.Horizontal => TranslationHelper.Translation.Normal,
-                EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationHelper.Translation.Flipped,
-                EXIFHelper.EXIFOrientation.Rotate180 => $"{TranslationHelper.Translation.Rotated} 180\u00b0",
+                EXIFHelper.EXIFOrientation.Horizontal => TranslationManager.Translation.Normal,
+                EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
+                EXIFHelper.EXIFOrientation.Rotate180 => $"{TranslationManager.Translation.Rotated} 180\u00b0",
                 EXIFHelper.EXIFOrientation.MirrorVertical =>
-                    $"{TranslationHelper.Translation.Rotated} 180\u00b0, {TranslationHelper.Translation.Flipped}",
+                    $"{TranslationManager.Translation.Rotated} 180\u00b0, {TranslationManager.Translation.Flipped}",
                 EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw =>
-                    $"{TranslationHelper.Translation.Rotated} 270\u00b0, {TranslationHelper.Translation.Flipped}",
-                EXIFHelper.EXIFOrientation.Rotate90Cw => $"{TranslationHelper.Translation.Rotated} 90\u00b0",
+                    $"{TranslationManager.Translation.Rotated} 270\u00b0, {TranslationManager.Translation.Flipped}",
+                EXIFHelper.EXIFOrientation.Rotate90Cw => $"{TranslationManager.Translation.Rotated} 90\u00b0",
                 EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw =>
-                    $"{TranslationHelper.Translation.Rotated} 90\u00b0, {TranslationHelper.Translation.Flipped}",
-                EXIFHelper.EXIFOrientation.Rotated270Cw => $"{TranslationHelper.Translation.Rotated} 270\u00b0",
+                    $"{TranslationManager.Translation.Rotated} 90\u00b0, {TranslationManager.Translation.Flipped}",
+                EXIFHelper.EXIFOrientation.Rotated270Cw => $"{TranslationManager.Translation.Rotated} 270\u00b0",
                 _ => string.Empty
             };
 
-            var meter = TranslationHelper.Translation.Meter;
+            var meter = TranslationManager.Translation.Meter;
 
             if (string.IsNullOrEmpty(vm.GetBitDepth))
             {
@@ -89,7 +89,7 @@ public static class ExifHandling
                 vm.GetPrintSizeInch = printSizes.PrintSizeInch;
                 vm.GetSizeMp = printSizes.SizeMp;
 
-                vm.GetResolution = $"{vm.DpiX} x {vm.DpiY} {TranslationHelper.Translation.Dpi}";
+                vm.GetResolution = $"{vm.DpiX} x {vm.DpiY} {TranslationManager.Translation.Dpi}";
             }
 
             var gcd = ImageTitleFormatter.GCD(vm.PixelWidth, vm.PixelHeight);

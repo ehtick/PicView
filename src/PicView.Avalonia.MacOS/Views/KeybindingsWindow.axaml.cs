@@ -18,7 +18,7 @@ public partial class KeybindingsWindow : Window
         Loaded += (sender, e) =>
         {
             MinWidth = MaxWidth = Width;
-            Title = $"{TranslationHelper.Translation.ApplicationShortcuts} - PicView";
+            Title = $"{TranslationManager.Translation.ApplicationShortcuts} - PicView";
         };
     }
 

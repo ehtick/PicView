@@ -46,7 +46,7 @@ public partial class SettingsWindow : Window
         Loaded += delegate
         {
             MinWidth = Width;
-            Title = TranslationHelper.GetTranslation("Settings") + " - PicView";
+            Title = TranslationManager.GetTranslation("Settings") + " - PicView";
         };
         KeyDown += (_, e) =>
         {

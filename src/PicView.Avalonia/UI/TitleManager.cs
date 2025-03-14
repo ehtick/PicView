@@ -27,13 +27,13 @@ public static class TitleManager
             {
                 title = vm.Title.GetURL();
             }
-            else if (s.Contains(TranslationHelper.Translation.Base64Image))
+            else if (s.Contains(TranslationManager.Translation.Base64Image))
             {
-                title = TranslationHelper.Translation.Base64Image;
+                title = TranslationManager.Translation.Base64Image;
             }
             else
             {
-                title = TranslationHelper.Translation.ClipboardImage!;
+                title = TranslationManager.Translation.ClipboardImage!;
             }
 
             var singleImageWindowTitles =
@@ -87,8 +87,8 @@ public static class TitleManager
     /// <param name="vm">The main view model instance.</param>
     public static void SetLoadingTitle(MainViewModel vm)
     {
-        vm.WindowTitle = $"{TranslationHelper.Translation.Loading} - PicView";
-        vm.Title = TranslationHelper.Translation.Loading;
+        vm.WindowTitle = $"{TranslationManager.Translation.Loading} - PicView";
+        vm.Title = TranslationManager.Translation.Loading;
         vm.TitleTooltip = vm.Title;
     }
 
@@ -256,16 +256,16 @@ public static class TitleManager
     /// </remarks>
     public static void SetNoImageTitle(MainViewModel vm)
     {
-        vm.Title = TranslationHelper.Translation.NoImage;
-        vm.WindowTitle = TranslationHelper.Translation.NoImage + " - PicView";
-        vm.TitleTooltip = TranslationHelper.Translation.NoImage;
+        vm.Title = TranslationManager.Translation.NoImage;
+        vm.WindowTitle = TranslationManager.Translation.NoImage + " - PicView";
+        vm.TitleTooltip = TranslationManager.Translation.NoImage;
     }
 
     private static void ReturnError(MainViewModel vm)
     {
         vm.WindowTitle =
             vm.Title =
-                vm.TitleTooltip = TranslationHelper.GetTranslation("UnableToRender");
+                vm.TitleTooltip = TranslationManager.GetTranslation("UnableToRender");
     }
 
     private static bool ValidateImageModel(ImageModel? imageModel, MainViewModel vm)

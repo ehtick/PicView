@@ -29,7 +29,7 @@ public partial class DragDropView : UserControl
 
     private void InitializeView()
     {
-        TxtDragToView.Text = TranslationHelper.Translation.DropToLoad;
+        TxtDragToView.Text = TranslationManager.Translation.DropToLoad;
         UpdateViewSize();
     }
 

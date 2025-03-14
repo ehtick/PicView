@@ -172,7 +172,7 @@ public partial class SingleImageResizeView : UserControl
 
         if (!success)
         {
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.SavingFileFailed);
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.SavingFileFailed);
             return;
         }
 

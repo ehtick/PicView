@@ -14,7 +14,7 @@ public partial class BatchResizeWindow : Window
         {
             MinWidth = MaxWidth = Width;
             Height = 500;
-            Title = TranslationHelper.Translation.BatchResize + " - PicView";
+            Title = TranslationManager.Translation.BatchResize + " - PicView";
             
             // Keep window position when resizing
             ClientSizeProperty.Changed.Subscribe(size =>

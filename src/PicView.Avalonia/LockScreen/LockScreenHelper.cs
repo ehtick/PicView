@@ -37,7 +37,7 @@ public static class LockScreenHelper
                 }
             };
             process.Start();
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.Applying, true);
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.Applying, true);
             await process.WaitForExitAsync();
         }
         catch (Exception e)

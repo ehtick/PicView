@@ -69,7 +69,7 @@ public class FuncTextBox : TextBox
             
         var selectAllMenuItem = new MenuItem
         {
-            Header = TranslationHelper.Translation.SelectAll,
+            Header = TranslationManager.Translation.SelectAll,
             Icon = new Image
             {
                 Width = 12,
@@ -82,7 +82,7 @@ public class FuncTextBox : TextBox
 
         var cutMenuItem = new MenuItem
         {
-            Header = TranslationHelper.Translation.Cut,
+            Header = TranslationManager.Translation.Cut,
             Icon = new Path
             {
                 Width = 12,
@@ -97,7 +97,7 @@ public class FuncTextBox : TextBox
 
         var copyMenuItem = new MenuItem
         {
-            Header = TranslationHelper.Translation.Copy,
+            Header = TranslationManager.Translation.Copy,
             Icon = new Path
             {
                 Width = 12,
@@ -112,7 +112,7 @@ public class FuncTextBox : TextBox
 
         var pasteMenuItem = new MenuItem
         {
-            Header = TranslationHelper.Translation.FilePaste,
+            Header = TranslationManager.Translation.FilePaste,
             Icon = new Path
             {
                 Width = 12,
@@ -127,7 +127,7 @@ public class FuncTextBox : TextBox
 
         var deleteMenuItem = new MenuItem
         {
-            Header = TranslationHelper.Translation.DeleteFile,
+            Header = TranslationManager.Translation.DeleteFile,
             Icon = new Path
             {
                 Width = 12,

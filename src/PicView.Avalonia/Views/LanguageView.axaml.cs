@@ -19,7 +19,7 @@ public partial class LanguageView : UserControl
                 return;
             }
 
-            var languages = TranslationHelper.GetLanguages().OrderBy(x => x);
+            var languages = TranslationManager.GetLanguages().OrderBy(x => x);
             foreach (var language in languages)
             {
                 var lang = Path.GetFileNameWithoutExtension(language);
@@ -112,7 +112,7 @@ public partial class LanguageView : UserControl
 
                 Settings.UIProperties.UserLanguage = language;
 
-                await TranslationHelper.LoadLanguage(language).ConfigureAwait(false);
+                await TranslationManager.LoadLanguage(language).ConfigureAwait(false);
                 await LanguageUpdater.UpdateLanguageAsync(vm, true).ConfigureAwait(false);
             };
         };

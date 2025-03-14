@@ -68,7 +68,7 @@ public partial class App : Application, IPlatformSpecificService
                 return;
             }
         
-            TranslationHelper.Init();
+            TranslationManager.Init();
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

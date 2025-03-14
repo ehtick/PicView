@@ -71,9 +71,9 @@ public static class AspectRatioHelper
 
     public static PrintSizes GetPrintSizes(int pixelWidth, int pixelHeight, double dpiX, double dpiY)
     {
-        var cm = TranslationHelper.Translation.Centimeters;
-        var mp = TranslationHelper.Translation.MegaPixels;
-        var inches = TranslationHelper.Translation.Inches;
+        var cm = TranslationManager.Translation.Centimeters;
+        var mp = TranslationManager.Translation.MegaPixels;
+        var inches = TranslationManager.Translation.Inches;
         var inchesWidth = pixelWidth / dpiX;
         var inchesHeight = pixelHeight / dpiY;
         var printSizeInch =
@@ -92,9 +92,9 @@ public static class AspectRatioHelper
 
     public static string GetFormattedAspectRatio(int gcd, int width, int height)
     {
-        var square = TranslationHelper.Translation.Square;
-        var landscape = TranslationHelper.Translation.Landscape;
-        var portrait = TranslationHelper.Translation.Portrait;
+        var square = TranslationManager.Translation.Square;
+        var landscape = TranslationManager.Translation.Landscape;
+        var portrait = TranslationManager.Translation.Portrait;
         
         var firstRatio = width / gcd;
         var secondRatio = height / gcd;

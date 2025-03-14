@@ -22,7 +22,7 @@ public class LanguageAndSettingsUnitTest
         var enJsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/Languages/en.json");
         var enKeys = await GetJsonKeys(enJsonPath);
     
-        var languages = TranslationHelper.GetLanguages();
+        var languages = TranslationManager.GetLanguages();
         Assert.NotNull(languages);
     
         // Check each language file against en.json keys
@@ -81,12 +81,12 @@ public class LanguageAndSettingsUnitTest
         await LoadSettingsAsync();
         Assert.NotNull(Settings);
 
-        var exists = await TranslationHelper.LoadLanguage("en");
+        var exists = await TranslationManager.LoadLanguage("en");
         Assert.True(exists);
-        Assert.Equal("Image", TranslationHelper.Translation.Image);
+        Assert.Equal("Image", TranslationManager.Translation.Image);
         const Languages da = Languages.da;
-        await TranslationHelper.ChangeLanguage((int)da);
-        Assert.Equal("Billede", TranslationHelper.Translation.Image);
+        await TranslationManager.ChangeLanguage((int)da);
+        Assert.Equal("Billede", TranslationManager.Translation.Image);
     }
     
     [Fact]

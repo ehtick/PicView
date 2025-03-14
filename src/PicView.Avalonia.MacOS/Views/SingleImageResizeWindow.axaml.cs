@@ -13,7 +13,7 @@ public partial class SingleImageResizeWindow : Window
         {
             MinWidth = MaxWidth = Width;
             Height = 500;
-            Title = TranslationHelper.Translation.ResizeImage + " - PicView";
+            Title = TranslationManager.Translation.ResizeImage + " - PicView";
         };
         KeyDown += (_, e) =>
         {

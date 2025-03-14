@@ -15,10 +15,10 @@ public partial class KeybindingsView : UserControl
     {
         InitializeComponent();
         DefaultButton.Click += async delegate { await SetDefault(); };
-        FullscreenBox.Text = $"{TranslationHelper.Translation.Shift} + {TranslationHelper.Translation.DoubleClick}";
-        FullscreenBox.Text = $"{TranslationHelper.Translation.Shift} + {TranslationHelper.Translation.DoubleClick}";
-        DragWindowBox.Text = $"{TranslationHelper.Translation.Shift} + {TranslationHelper.Translation.MouseDrag}";
-        CloseBox.Text = TranslationHelper.Translation.Esc;
+        FullscreenBox.Text = $"{TranslationManager.Translation.Shift} + {TranslationManager.Translation.DoubleClick}";
+        FullscreenBox.Text = $"{TranslationManager.Translation.Shift} + {TranslationManager.Translation.DoubleClick}";
+        DragWindowBox.Text = $"{TranslationManager.Translation.Shift} + {TranslationManager.Translation.MouseDrag}";
+        CloseBox.Text = TranslationManager.Translation.Esc;
         
         // Fix invisible text on macOS
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))

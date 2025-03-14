@@ -52,7 +52,7 @@ public partial class BatchResizeView : UserControl
             SourceFolderTextBox.TextChanged += delegate
             {
                 OutputFolderTextBox.Text = Path.Combine(SourceFolderTextBox.Text ?? string.Empty,
-                    TranslationHelper.Translation.BatchResize);
+                    TranslationManager.Translation.BatchResize);
             };
 
             SourceFolderButton.Click += async delegate
@@ -167,7 +167,7 @@ public partial class BatchResizeView : UserControl
 
         StartButton.IsEnabled = true;
 
-        CancelButtonTextBlock.Text = TranslationHelper.Translation.Reset;
+        CancelButtonTextBlock.Text = TranslationManager.Translation.Reset;
         CancelButton.Classes.Remove("errorHover");
         CancelButton.Classes.Add("altHover");
         
@@ -178,7 +178,7 @@ public partial class BatchResizeView : UserControl
     private async Task CancelBatchResize()
     {
         await _cancellationTokenSource?.CancelAsync();
-        CancelButtonTextBlock.Text = TranslationHelper.Translation.Reset;
+        CancelButtonTextBlock.Text = TranslationManager.Translation.Reset;
         StartButton.IsEnabled = true;
         _isRunning = false;
         ProgressBar.Value = 0;
@@ -190,7 +190,7 @@ public partial class BatchResizeView : UserControl
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            CancelButtonTextBlock.Text = TranslationHelper.Translation.Cancel;
+            CancelButtonTextBlock.Text = TranslationManager.Translation.Cancel;
             CancelButton.Classes.Remove("altHover");
             CancelButton.Classes.Add("errorHover");
             StartButton.IsEnabled = false;

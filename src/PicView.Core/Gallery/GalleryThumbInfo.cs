@@ -41,9 +41,9 @@ public static class GalleryThumbInfo
             var fileLocation = fileInfo.FullName;
             var fileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
             var fileSize = 
-                $"{TranslationHelper.Translation.FileSize}: {fileInfo.Length.GetReadableFileSize()}";
+                $"{TranslationManager.Translation.FileSize}: {fileInfo.Length.GetReadableFileSize()}";
             var fileDate = 
-                $"{TranslationHelper.Translation.Modified}: {fileInfo.LastWriteTimeUtc.ToString(CultureInfo.CurrentCulture)}";
+                $"{TranslationManager.Translation.Modified}: {fileInfo.LastWriteTimeUtc.ToString(CultureInfo.CurrentCulture)}";
 
             return new GalleryThumbHolder(fileLocation, fileName, fileSize, fileDate);
         }

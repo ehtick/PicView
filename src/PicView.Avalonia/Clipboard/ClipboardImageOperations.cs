@@ -136,7 +136,7 @@ public static class ClipboardImageOperations
 
         try
         {
-            var name = TranslationHelper.Translation.ClipboardImage;
+            var name = TranslationManager.Translation.ClipboardImage;
 
             // Try standard image formats
             var bitmap = await TryGetBitmapFromClipboard(clipboard);

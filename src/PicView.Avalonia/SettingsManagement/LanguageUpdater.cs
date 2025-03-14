@@ -9,11 +9,11 @@ public static class LanguageUpdater
     {
         if (settingsExists)
         {
-            await TranslationHelper.LoadLanguage(Settings.UIProperties.UserLanguage).ConfigureAwait(false);
+            await TranslationManager.LoadLanguage(Settings.UIProperties.UserLanguage).ConfigureAwait(false);
         }
         else
         {
-            await TranslationHelper.DetermineAndLoadLanguage().ConfigureAwait(false);
+            await TranslationManager.DetermineAndLoadLanguage().ConfigureAwait(false);
         }
 
         vm.UpdateLanguage();
@@ -23,30 +23,30 @@ public static class LanguageUpdater
         vm.GetIsShowingUITranslation = !Settings.UIProperties.ShowInterface ? vm.ShowUI : vm.HideUI;
         
         vm.GetIsScrollingTranslation = Settings.Zoom.ScrollEnabled ?
-            TranslationHelper.Translation.ScrollingEnabled : TranslationHelper.Translation.ScrollingDisabled;
+            TranslationManager.Translation.ScrollingEnabled : TranslationManager.Translation.ScrollingDisabled;
         
         vm.GetIsShowingBottomGalleryTranslation = Settings.Gallery.IsBottomGalleryShown ?
-            TranslationHelper.Translation.HideBottomGallery :
-            TranslationHelper.Translation.ShowBottomGallery;
+            TranslationManager.Translation.HideBottomGallery :
+            TranslationManager.Translation.ShowBottomGallery;
         
         vm.GetIsLoopingTranslation = Settings.UIProperties.Looping
-            ? TranslationHelper.Translation.LoopingEnabled
-            : TranslationHelper.Translation.LoopingDisabled;
+            ? TranslationManager.Translation.LoopingEnabled
+            : TranslationManager.Translation.LoopingDisabled;
         
         vm.GetIsCtrlZoomTranslation = Settings.Zoom.CtrlZoom
-            ? TranslationHelper.Translation.CtrlToZoom
-            : TranslationHelper.Translation.ScrollToZoom;
+            ? TranslationManager.Translation.CtrlToZoom
+            : TranslationManager.Translation.ScrollToZoom;
         
         vm.GetIsShowingBottomToolbarTranslation = Settings.UIProperties.ShowBottomNavBar
-            ? TranslationHelper.Translation.HideBottomToolbar
-            : TranslationHelper.Translation.ShowBottomToolbar;
+            ? TranslationManager.Translation.HideBottomToolbar
+            : TranslationManager.Translation.ShowBottomToolbar;
         
         vm.GetIsShowingFadingUIButtonsTranslation = Settings.UIProperties.ShowAltInterfaceButtons
-            ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
-            : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
+            ? TranslationManager.Translation.DisableFadeInButtonsOnHover
+            : TranslationManager.Translation.ShowFadeInButtonsOnHover;
         
         vm.GetIsUsingTouchpadTranslation = Settings.Zoom.IsUsingTouchPad
-            ? TranslationHelper.Translation.UsingTouchpad
-            : TranslationHelper.Translation.UsingMouse;
+            ? TranslationManager.Translation.UsingTouchpad
+            : TranslationManager.Translation.UsingMouse;
     }
 }

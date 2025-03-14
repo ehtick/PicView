@@ -42,7 +42,7 @@ public partial class KeybindingsWindow : Window
         Loaded += delegate
         {
             MinWidth = MaxWidth = Width;
-            Title = $"{TranslationHelper.Translation.ApplicationShortcuts}  - PicView";
+            Title = $"{TranslationManager.Translation.ApplicationShortcuts}  - PicView";
         };
         KeyDown += (_, e) =>
         {

@@ -19,7 +19,7 @@ public partial class SettingsWindow : Window
         {
             MinWidth = MaxWidth = Width;
             Height = 500;
-            Title = TranslationHelper.Translation.Settings + " - PicView";
+            Title = TranslationManager.Translation.Settings + " - PicView";
         };
         KeyDown += (_, e) =>
         {

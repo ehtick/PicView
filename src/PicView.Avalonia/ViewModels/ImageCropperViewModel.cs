@@ -31,11 +31,11 @@ public class ImageCropperViewModel : ViewModelBase
 
     private void InitializeTranslations()
     {
-        Crop = TranslationHelper.Translation.CropPicture;
-        Copy = TranslationHelper.Translation.CopyImage;
-        Close = TranslationHelper.Translation.Close;
-        Width = TranslationHelper.Translation.Width;
-        Height = TranslationHelper.Translation.Height;
+        Crop = TranslationManager.Translation.CropPicture;
+        Copy = TranslationManager.Translation.CopyImage;
+        Close = TranslationManager.Translation.Close;
+        Width = TranslationManager.Translation.Width;
+        Height = TranslationManager.Translation.Height;
     }
     
     public ReactiveCommand<Unit, Unit>? CropImageCommand { get; private set; }
@@ -165,7 +165,7 @@ public class ImageCropperViewModel : ViewModelBase
 
     private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
     {
-        var fileName = $"{TranslationHelper.Translation.Crop} {new Random().Next(9999)}.png";
+        var fileName = $"{TranslationManager.Translation.Crop} {new Random().Next(9999)}.png";
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
         var width = (int)PixelSelectionWidth;

@@ -17,7 +17,7 @@ public class IndexToStringSizeConverter: IValueConverter
         switch (index)
         {
             case 1:
-                return TranslationHelper.Translation.Thumbnail ?? "Thumb";
+                return TranslationManager.Translation.Thumbnail ?? "Thumb";
             
             case 2 when parameterIndex is 1:
                 return "medium";

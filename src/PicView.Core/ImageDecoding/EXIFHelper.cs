@@ -194,7 +194,7 @@ public static class EXIFHelper
         {
             1 => "sRGB",
             2 => "Adobe RGB",
-            65535 => TranslationHelper.Translation.Uncalibrated ?? "Uncalibrated",
+            65535 => TranslationManager.Translation.Uncalibrated ?? "Uncalibrated",
             _ => string.Empty
         };
     }
@@ -208,15 +208,15 @@ public static class EXIFHelper
         }
         return exposureProgram switch
         {
-            0 => TranslationHelper.GetTranslation("NotDefined"),
-            1 => TranslationHelper.GetTranslation("Manual"),
-            2 => TranslationHelper.GetTranslation("Normal"),
-            3 => TranslationHelper.GetTranslation("AperturePriority"),
-            4 => TranslationHelper.GetTranslation("ShutterPriority"),
-            5 => TranslationHelper.GetTranslation("CreativeProgram"),
-            6 => TranslationHelper.GetTranslation("ActionProgram"),
-            7 => TranslationHelper.GetTranslation("Portrait"),
-            8 => TranslationHelper.GetTranslation("Landscape"),
+            0 => TranslationManager.GetTranslation("NotDefined"),
+            1 => TranslationManager.GetTranslation("Manual"),
+            2 => TranslationManager.GetTranslation("Normal"),
+            3 => TranslationManager.GetTranslation("AperturePriority"),
+            4 => TranslationManager.GetTranslation("ShutterPriority"),
+            5 => TranslationManager.GetTranslation("CreativeProgram"),
+            6 => TranslationManager.GetTranslation("ActionProgram"),
+            7 => TranslationManager.GetTranslation("Portrait"),
+            8 => TranslationManager.GetTranslation("Landscape"),
             _ => string.Empty
         };
     }
@@ -251,9 +251,9 @@ public static class EXIFHelper
         }
         return saturation switch
         {
-            0 => TranslationHelper.GetTranslation("Normal"),
-            1 => TranslationHelper.GetTranslation("Low"),
-            2 => TranslationHelper.GetTranslation("High"),
+            0 => TranslationManager.GetTranslation("Normal"),
+            1 => TranslationManager.GetTranslation("Low"),
+            2 => TranslationManager.GetTranslation("High"),
             _ => string.Empty
         };
     }
@@ -267,9 +267,9 @@ public static class EXIFHelper
         }
         return contrast switch
         {
-            0 => TranslationHelper.GetTranslation("Normal"),
-            1 => TranslationHelper.GetTranslation("Soft"),
-            2 => TranslationHelper.GetTranslation("Hard"),
+            0 => TranslationManager.GetTranslation("Normal"),
+            1 => TranslationManager.GetTranslation("Soft"),
+            2 => TranslationManager.GetTranslation("Hard"),
             _ => string.Empty
         };
     }
@@ -283,9 +283,9 @@ public static class EXIFHelper
         }
         return sharpness switch
         {
-            0 => TranslationHelper.GetTranslation("Normal"),
-            1 => TranslationHelper.GetTranslation("Soft"),
-            2 => TranslationHelper.GetTranslation("Hard"),
+            0 => TranslationManager.GetTranslation("Normal"),
+            1 => TranslationManager.GetTranslation("Soft"),
+            2 => TranslationManager.GetTranslation("Hard"),
             _ => string.Empty
         };
     }
@@ -299,8 +299,8 @@ public static class EXIFHelper
         }
         return whiteBalance switch
         {
-            0 => TranslationHelper.GetTranslation("Auto"),
-            1 => TranslationHelper.GetTranslation("Manual"),
+            0 => TranslationManager.GetTranslation("Auto"),
+            1 => TranslationManager.GetTranslation("Manual"),
             _ => string.Empty
         };
     }
@@ -314,9 +314,9 @@ public static class EXIFHelper
         }
         return resolutionUnit switch
         {
-            1 => TranslationHelper.GetTranslation("None"),
-            2 => TranslationHelper.GetTranslation("Inches"),
-            3 => TranslationHelper.GetTranslation("Centimeters"),
+            1 => TranslationManager.GetTranslation("None"),
+            2 => TranslationManager.GetTranslation("Inches"),
+            3 => TranslationManager.GetTranslation("Centimeters"),
             _ => string.Empty
         };
     }
@@ -336,60 +336,60 @@ public static class EXIFHelper
             case 9:
             case 24:
             case 32:
-                return TranslationHelper.GetTranslation("FlashDidNotFire");
+                return TranslationManager.GetTranslation("FlashDidNotFire");
 
             case 1:
             case 13:
             case 25:
-                return TranslationHelper.GetTranslation("FlashFired");
+                return TranslationManager.GetTranslation("FlashFired");
 
             case 5:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 7:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 15:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 16:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 29:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 31:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 65:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
 
             case 69:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 71:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 73:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
 
             case 77:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 79:
-                return TranslationHelper.GetTranslation("Unknown") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("Unknown") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 89:
-                return TranslationHelper.GetTranslation("FlashDidNotFire") + ", " + TranslationHelper.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashDidNotFire") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
 
             case 93:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
 
             case 95:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 97:
-                return TranslationHelper.GetTranslation("FlashFired") + ", " + TranslationHelper.GetTranslation("RedEyeReduction") + ", " + TranslationHelper.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             default: return string.Empty;
         }
@@ -404,18 +404,18 @@ public static class EXIFHelper
         }
         return lightSource switch
         {
-            0 => TranslationHelper.GetTranslation("Unknown"),
-            1 => TranslationHelper.GetTranslation("Daylight"),
-            2 => TranslationHelper.GetTranslation("Fluorescent"),
+            0 => TranslationManager.GetTranslation("Unknown"),
+            1 => TranslationManager.GetTranslation("Daylight"),
+            2 => TranslationManager.GetTranslation("Fluorescent"),
             3 => "Tungsten",
-            4 => TranslationHelper.GetTranslation("Flash"),
-            9 => TranslationHelper.GetTranslation("FineWeather"),
-            10 => TranslationHelper.GetTranslation("CloudyWeather"),
-            11 => TranslationHelper.GetTranslation("Shade"),
-            12 => TranslationHelper.GetTranslation("DaylightFluorescent"),
-            13 => TranslationHelper.GetTranslation("DayWhiteFluorescent"),
-            14 => TranslationHelper.GetTranslation("CoolWhiteFluorescent"),
-            15 => TranslationHelper.GetTranslation("WhiteFluorescent"),
+            4 => TranslationManager.GetTranslation("Flash"),
+            9 => TranslationManager.GetTranslation("FineWeather"),
+            10 => TranslationManager.GetTranslation("CloudyWeather"),
+            11 => TranslationManager.GetTranslation("Shade"),
+            12 => TranslationManager.GetTranslation("DaylightFluorescent"),
+            13 => TranslationManager.GetTranslation("DayWhiteFluorescent"),
+            14 => TranslationManager.GetTranslation("CoolWhiteFluorescent"),
+            15 => TranslationManager.GetTranslation("WhiteFluorescent"),
             17 => "Illuminants A",
             18 => "Illuminants B",
             19 => "Illuminants C",
@@ -424,7 +424,7 @@ public static class EXIFHelper
             22 => "D75",
             23 => "D50",
             24 => "ISO Studio Tungsten",
-            255 => TranslationHelper.GetTranslation("NotDefined"),
+            255 => TranslationManager.GetTranslation("NotDefined"),
             _ => string.Empty
         };
     }

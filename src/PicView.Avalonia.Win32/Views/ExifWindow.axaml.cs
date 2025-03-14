@@ -80,7 +80,7 @@ public partial class ExifWindow : Window
             RemoveRatingButton.Classes.Remove("noBorderHover");
             RemoveRatingButton.Classes.Add("hover");
         }
-        Title = TranslationHelper.GetTranslation("ImageInfo") + " - PicView";
+        Title = TranslationManager.GetTranslation("ImageInfo") + " - PicView";
         KeyDown += (_, e) =>
         {
             if (e.Key is Key.Escape)

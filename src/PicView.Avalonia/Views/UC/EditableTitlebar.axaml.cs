@@ -157,7 +157,7 @@ public partial class EditableTitlebar : UserControl
             vm.IsLoading = false;
             // Show error message to user
             // TODO Translate error message
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.GetTranslation("FileAlreadyExistsError"), true);
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.GetTranslation("FileAlreadyExistsError"), true);
             return;
         }
         
@@ -189,7 +189,7 @@ public partial class EditableTitlebar : UserControl
             if (!renamed)
             {
                 // TODO Show error message
-                await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.UnexpectedError);
+                await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
                 return;
             }
             await End();

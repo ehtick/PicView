@@ -12,7 +12,7 @@ internal partial class LanguageSourceGenerationContext : JsonSerializerContext;
 /// <summary>
 /// Helper class for managing language-related tasks, including loading and switching languages.
 /// </summary>
-public static class TranslationHelper
+public static class TranslationManager
 {
     /// <summary>
     /// The current language model containing translations.
@@ -102,10 +102,8 @@ public static class TranslationHelper
     /// <param name="language">The index of the language to be changed.</param>
     public static async Task ChangeLanguage(int language)
     {
-        var choice = (Languages)language;
-        var languageCode = choice.ToString().Replace('_', '-');
-        Settings.UIProperties.UserLanguage = languageCode;
-        await LoadLanguage(languageCode).ConfigureAwait(false);
+        // TODO: Get current language from settings, and then change to another language.
+        await LoadLanguage("da").ConfigureAwait(false);
         await SaveSettingsAsync().ConfigureAwait(false);
     }
 

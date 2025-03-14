@@ -47,7 +47,7 @@ public partial class EffectsWindow : Window
         Loaded += delegate
         {
             MinWidth = MaxWidth = Width;
-            Title = $"{TranslationHelper.Translation.Effects}  - PicView";
+            Title = $"{TranslationManager.Translation.Effects}  - PicView";
             
             ClearEffectsItem.Click += delegate
             {

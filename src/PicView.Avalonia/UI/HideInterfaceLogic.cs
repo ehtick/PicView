@@ -26,7 +26,7 @@ public static class HideInterfaceLogic
             Settings.UIProperties.ShowInterface = false;
             vm.IsTopToolbarShown = false;
             vm.IsBottomToolbarShown = false;
-            vm.GetIsShowingUITranslation = TranslationHelper.Translation.ShowUI;
+            vm.GetIsShowingUITranslation = TranslationManager.Translation.ShowUI;
             if (!GalleryFunctions.IsFullGalleryOpen)
             {
                 if (!Settings.Gallery.ShowBottomGalleryInHiddenUI)
@@ -51,7 +51,7 @@ public static class HideInterfaceLogic
         {
             vm.IsUIShown = true;
             vm.IsTopToolbarShown = true;
-            vm.GetIsShowingUITranslation = TranslationHelper.Translation.HideUI;
+            vm.GetIsShowingUITranslation = TranslationManager.Translation.HideUI;
             if (Settings.UIProperties.ShowBottomNavBar)
             {
                 vm.IsBottomToolbarShown = true;
@@ -100,14 +100,14 @@ public static class HideInterfaceLogic
         {
             vm.IsBottomToolbarShown = false;
             Settings.UIProperties.ShowBottomNavBar = false;
-            vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.ShowBottomToolbar;
+            vm.GetIsShowingBottomToolbarTranslation = TranslationManager.Translation.ShowBottomToolbar;
         }
         else
         {
             vm.IsBottomToolbarShown = true;
             Settings.UIProperties.ShowBottomNavBar = true;
             vm.BottombarHeight = SizeDefaults.BottombarHeight;
-            vm.GetIsShowingBottomToolbarTranslation = TranslationHelper.Translation.HideBottomToolbar;
+            vm.GetIsShowingBottomToolbarTranslation = TranslationManager.Translation.HideBottomToolbar;
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -288,8 +288,8 @@ public static class HideInterfaceLogic
             .UIProperties.ShowAltInterfaceButtons;
         
         vm.GetIsShowingFadingUIButtonsTranslation = Settings.UIProperties.ShowAltInterfaceButtons
-            ? TranslationHelper.Translation.DisableFadeInButtonsOnHover
-            : TranslationHelper.Translation.ShowFadeInButtonsOnHover;
+            ? TranslationManager.Translation.DisableFadeInButtonsOnHover
+            : TranslationManager.Translation.ShowFadeInButtonsOnHover;
         
         await SaveSettingsAsync();
     }

@@ -47,7 +47,7 @@ public partial class SingleImageResizeWindow : Window
         Loaded += delegate
         {
             MinWidth = MaxWidth = Width;
-            Title = $"{TranslationHelper.Translation.Resize}  - PicView";
+            Title = $"{TranslationManager.Translation.Resize}  - PicView";
         };
         KeyDown += (_, e) =>
         {

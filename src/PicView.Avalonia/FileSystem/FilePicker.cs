@@ -46,7 +46,7 @@ public static class FilePicker
             
             var options = new FilePickerOpenOptions
             {
-                Title = $"{TranslationHelper.Translation.OpenFileDialog} - PicView",
+                Title = $"{TranslationManager.Translation.OpenFileDialog} - PicView",
                 AllowMultiple = false,
                 FileTypeFilter = [
                     AllFileType,
@@ -78,7 +78,7 @@ public static class FilePicker
         return null;
     }
 
-    private static FilePickerFileType AllFileType { get; } = new(TranslationHelper.GetTranslation("SupportedFiles"))
+    private static FilePickerFileType AllFileType { get; } = new(TranslationManager.GetTranslation("SupportedFiles"))
     {
         Patterns = SupportedFiles.ConvertFilesToGlobFormat(),
         AppleUniformTypeIdentifiers = ["public.image"],
@@ -120,7 +120,7 @@ public static class FilePicker
         MimeTypes = ["image/jpeg"],
     };
 
-    private static FilePickerFileType ArchiveFileType { get; } = new(TranslationHelper.GetTranslation("Archives"))
+    private static FilePickerFileType ArchiveFileType { get; } = new(TranslationManager.GetTranslation("Archives"))
     {
         Patterns = SupportedFiles.ConvertArchivesToGlobFormat(),
         AppleUniformTypeIdentifiers = ["public.archive"],
@@ -184,7 +184,7 @@ public static class FilePicker
 
             var options = new FilePickerSaveOptions
             {
-                Title = $"{TranslationHelper.Translation.OpenFileDialog} - PicView",
+                Title = $"{TranslationManager.Translation.OpenFileDialog} - PicView",
                 FileTypeChoices = [
                     FilePickerFileTypes.ImageAll,
                     JpegFileType,
@@ -220,7 +220,7 @@ public static class FilePicker
 
         var options = new FolderPickerOpenOptions
         {
-            Title = TranslationHelper.Translation.Folder + " - PicView",
+            Title = TranslationManager.Translation.Folder + " - PicView",
             AllowMultiple = false
         };
         

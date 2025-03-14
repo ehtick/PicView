@@ -15,7 +15,7 @@ public partial class ExifWindow : Window
             WindowBorder.Background = Brushes.Transparent;
             XExifView.Background = Brushes.Transparent;
         }
-        Title = TranslationHelper.Translation.ImageInfo + " - PicView";
+        Title = TranslationManager.Translation.ImageInfo + " - PicView";
         KeyDown += (_, e) =>
         {
             if (e.Key is Key.Escape)

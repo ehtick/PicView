@@ -100,7 +100,7 @@ public static class ImageTitleFormatter
         sb.Append('/');
         sb.Append(filesList.Count);
         sb.Append(' ');
-        sb.Append(filesList.Count == 1 ? TranslationHelper.Translation.File : TranslationHelper.Translation.Files);
+        sb.Append(filesList.Count == 1 ? TranslationManager.Translation.File : TranslationManager.Translation.Files);
         sb.Append(" (");
         sb.Append(width);
         sb.Append(" x ");
@@ -184,14 +184,14 @@ public static class ImageTitleFormatter
     {
 #if DEBUG
         Trace.WriteLine(exception);
-        Debug.Assert(TranslationHelper.Translation.UnexpectedError != null);
+        Debug.Assert(TranslationManager.Translation.UnexpectedError != null);
 #endif
 
         return new WindowTitles
         {
-            BaseTitle = TranslationHelper.Translation.UnexpectedError,
-            TitleWithAppName = TranslationHelper.Translation.UnexpectedError,
-            FilePathTitle = TranslationHelper.Translation.UnexpectedError
+            BaseTitle = TranslationManager.Translation.UnexpectedError,
+            TitleWithAppName = TranslationManager.Translation.UnexpectedError,
+            FilePathTitle = TranslationManager.Translation.UnexpectedError
         };
     }
 

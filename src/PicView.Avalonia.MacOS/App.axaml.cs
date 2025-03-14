@@ -50,7 +50,7 @@ public class App : Application, IPlatformSpecificService
 
             var settingsExists = await LoadSettingsAsync().ConfigureAwait(false);
         
-            TranslationHelper.Init();
+            TranslationManager.Init();
         
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

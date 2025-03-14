@@ -26,7 +26,7 @@ public static class HttpManager
         if (customPath != null)
         {
             downloadPath = customPath;
-            Directory.CreateDirectory(Path.GetDirectoryName(downloadPath) ?? throw new Exception(TranslationHelper.GetTranslation("UnexpectedError")));
+            Directory.CreateDirectory(Path.GetDirectoryName(downloadPath) ?? throw new Exception(TranslationManager.GetTranslation("UnexpectedError")));
         }
         else
         {
@@ -35,7 +35,7 @@ public static class HttpManager
             var tempPath = TempFileHelper.TempFilePath;
             if (!createTempPath)
             {
-                throw new Exception(TranslationHelper.GetTranslation("UnexpectedError"));
+                throw new Exception(TranslationManager.GetTranslation("UnexpectedError"));
             }
             
             var fileName = GetSafeFileName(url);
@@ -89,7 +89,7 @@ public static class HttpManager
         if (!totalFileSize.HasValue || !totalBytesDownloaded.HasValue || !progressPercentage.HasValue) 
             return string.Empty;
 
-        var percentComplete = TranslationHelper.Translation.PercentComplete;
+        var percentComplete = TranslationManager.Translation.PercentComplete;
         var downloadedMb = totalBytesDownloaded.Value.GetReadableFileSize();
         var totalMb = totalFileSize.Value.GetReadableFileSize();
         

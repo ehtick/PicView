@@ -94,14 +94,14 @@ public static class SettingsUpdater
     public static void TurnOffUsingTouchpad(MainViewModel vm)
     {
         Settings.Zoom.IsUsingTouchPad = false;
-        vm.GetIsUsingTouchpadTranslation = TranslationHelper.Translation.UsingMouse;
+        vm.GetIsUsingTouchpadTranslation = TranslationManager.Translation.UsingMouse;
         vm.IsUsingTouchpad = false;
     }
     
     public static void TurnOnUsingTouchpad(MainViewModel vm)
     {
         Settings.Zoom.IsUsingTouchPad = true;
-        vm.GetIsUsingTouchpadTranslation = TranslationHelper.Translation.UsingTouchpad;
+        vm.GetIsUsingTouchpadTranslation = TranslationManager.Translation.UsingTouchpad;
         vm.IsUsingTouchpad = true;
     }
     
@@ -258,7 +258,7 @@ public static class SettingsUpdater
     public static void TurnOffScroll(MainViewModel vm)
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
-        vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingDisabled;
+        vm.GetIsScrollingTranslation = TranslationManager.Translation.ScrollingDisabled;
         vm.IsScrollingEnabled = false;
         Settings.Zoom.ScrollEnabled = false;
         try
@@ -277,7 +277,7 @@ public static class SettingsUpdater
     public static void TurnOnScroll(MainViewModel vm)
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
-        vm.GetIsScrollingTranslation = TranslationHelper.Translation.ScrollingEnabled;
+        vm.GetIsScrollingTranslation = TranslationManager.Translation.ScrollingEnabled;
         vm.IsScrollingEnabled = true;
         Settings.Zoom.ScrollEnabled = true;
         try
@@ -302,8 +302,8 @@ public static class SettingsUpdater
         
         Settings.Zoom.CtrlZoom = !Settings.Zoom.CtrlZoom;
         vm.GetIsCtrlZoomTranslation = Settings.Zoom.CtrlZoom
-            ? TranslationHelper.Translation.CtrlToZoom
-            : TranslationHelper.Translation.ScrollToZoom;
+            ? TranslationManager.Translation.CtrlToZoom
+            : TranslationManager.Translation.ScrollToZoom;
         
         // Set source for ChangeCtrlZoomImage
         if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
@@ -322,7 +322,7 @@ public static class SettingsUpdater
     public static void TurnOffCtrlZoom(MainViewModel vm)
     {
         Settings.Zoom.CtrlZoom = false;
-        vm.GetIsCtrlZoomTranslation = TranslationHelper.Translation.ScrollToZoom;
+        vm.GetIsCtrlZoomTranslation = TranslationManager.Translation.ScrollToZoom;
         if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
         {
             return;
@@ -342,13 +342,13 @@ public static class SettingsUpdater
         var value = !Settings.UIProperties.Looping;
         Settings.UIProperties.Looping = value;
         vm.GetIsLoopingTranslation = value
-            ? TranslationHelper.Translation.LoopingEnabled
-            : TranslationHelper.Translation.LoopingDisabled;
+            ? TranslationManager.Translation.LoopingEnabled
+            : TranslationManager.Translation.LoopingDisabled;
         vm.IsLooping = value;
 
         var msg = value
-            ? TranslationHelper.Translation.LoopingEnabled
-            : TranslationHelper.Translation.LoopingDisabled;
+            ? TranslationManager.Translation.LoopingEnabled
+            : TranslationManager.Translation.LoopingDisabled;
         await TooltipHelper.ShowTooltipMessageAsync(msg);
 
         await SaveSettingsAsync();
@@ -357,7 +357,7 @@ public static class SettingsUpdater
     public static void TurnOffLooping(MainViewModel vm)
     {
         Settings.UIProperties.Looping = false;
-        vm.GetIsLoopingTranslation = TranslationHelper.Translation.LoopingDisabled;
+        vm.GetIsLoopingTranslation = TranslationManager.Translation.LoopingDisabled;
         vm.IsLooping = false;
     }
     

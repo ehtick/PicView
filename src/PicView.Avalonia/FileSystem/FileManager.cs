@@ -26,7 +26,7 @@ public static class FileManager
             
             if (!recycle)
             {
-                var prompt = TranslationHelper.GetTranslation("DeleteFilePermanently");
+                var prompt = TranslationManager.GetTranslation("DeleteFilePermanently");
                 var deleteDialog = new DeleteDialog(prompt, vm.FileInfo.FullName);
                 UIHelper.GetMainView.MainGrid.Children.Add(deleteDialog);
                 // Dialog handles the deletion
@@ -152,7 +152,7 @@ public static class FileManager
             
         if (string.IsNullOrWhiteSpace(file))
         {
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationHelper.Translation.UnexpectedError);
+            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
             return;
         }
 

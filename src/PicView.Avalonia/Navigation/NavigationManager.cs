@@ -321,7 +321,7 @@ public static class NavigationManager
         {
             vm.PlatformService.StopTaskbarProgress();
             await LoadWithoutImageIterator(new FileInfo(fileList[0]), vm, fileList);
-            if (vm.Title == TranslationHelper.Translation.Loading)
+            if (vm.Title == TranslationManager.Translation.Loading)
             {
                 TitleManager.SetTitle(vm);
             }
@@ -630,7 +630,7 @@ public static class NavigationManager
                     ImageType = ImageType.Bitmap
                 };
                 await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType,
-                    TranslationHelper.Translation.Base64Image, vm);
+                    TranslationManager.Translation.Base64Image, vm);
             }
             catch (Exception e)
             {
