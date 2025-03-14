@@ -427,19 +427,19 @@ public class MainViewModel : ViewModelBase
     {
         get
         {
-            if (!SettingsHelper.Settings.Gallery.IsBottomGalleryShown)
+            if (!SettingsManager.Settings.Gallery.IsBottomGalleryShown)
             {
                 return 0;
             }
 
-            if (SettingsHelper.Settings.WindowProperties.Fullscreen)
+            if (SettingsManager.Settings.WindowProperties.Fullscreen)
             {
-                return SettingsHelper.Settings.Gallery.IsBottomGalleryShown
+                return SettingsManager.Settings.Gallery.IsBottomGalleryShown
                     ? GetBottomGalleryItemHeight + SizeDefaults.ScrollbarSize
                     : 0;
             }
 
-            if (!SettingsHelper.Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsUIShown)
+            if (!SettingsManager.Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsUIShown)
             {
                 return 0;
             }
@@ -759,7 +759,7 @@ public class MainViewModel : ViewModelBase
         get;
         set
         {
-            SettingsHelper.Settings.Zoom.AvoidZoomingOut = value;
+            SettingsManager.Settings.Zoom.AvoidZoomingOut = value;
             this.RaiseAndSetIfChanged(ref field, value);
         }
     }
@@ -858,7 +858,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.ImageScaling.StretchImage = value;
+            SettingsManager.Settings.ImageScaling.StretchImage = value;
             WindowResizing.SetSize(this);
         }
     }
@@ -881,7 +881,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.WindowProperties.KeepCentered = value;
+            SettingsManager.Settings.WindowProperties.KeepCentered = value;
         }
     }
 
@@ -891,7 +891,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.UIProperties.OpenInSameWindow = value;
+            SettingsManager.Settings.UIProperties.OpenInSameWindow = value;
         }
     }
 
@@ -901,7 +901,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.UIProperties.ShowConfirmationOnEsc = value;
+            SettingsManager.Settings.UIProperties.ShowConfirmationOnEsc = value;
         }
     }
 
@@ -917,7 +917,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.Zoom.IsUsingTouchPad = value;
+            SettingsManager.Settings.Zoom.IsUsingTouchPad = value;
         }
     }
 
@@ -998,7 +998,7 @@ public class MainViewModel : ViewModelBase
         {
             var roundedValue = Math.Round(value, 2);
             this.RaiseAndSetIfChanged(ref field, roundedValue);
-            SettingsHelper.Settings.UIProperties.SlideShowTimer = roundedValue;
+            SettingsManager.Settings.UIProperties.SlideShowTimer = roundedValue;
         }
     }
 
@@ -1008,7 +1008,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsHelper.Settings.UIProperties.NavSpeed = value;
+            SettingsManager.Settings.UIProperties.NavSpeed = value;
         }
     }
 
@@ -1019,7 +1019,7 @@ public class MainViewModel : ViewModelBase
         {
             var roundedValue = Math.Round(value, 2);
             this.RaiseAndSetIfChanged(ref field, roundedValue);
-            SettingsHelper.Settings.Zoom.ZoomSpeed = roundedValue;
+            SettingsManager.Settings.Zoom.ZoomSpeed = roundedValue;
         }
     }
 

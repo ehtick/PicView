@@ -1,1 +1,1 @@
-﻿global using static PicView.Core.Config.SettingsHelper;
+﻿global using static PicView.Core.Config.SettingsManager;

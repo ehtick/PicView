@@ -9,7 +9,7 @@ namespace PicView.Core.Config;
 [JsonSerializable(typeof(AppSettings))]
 internal partial class SourceGenerationContext : JsonSerializerContext;
 
-public static class SettingsHelper
+public static class SettingsManager
 {
     private const double CurrentSettingsVersion = 1.3;
     private const string ConfigFileName = "UserSettings.json";
@@ -321,7 +321,7 @@ public static class SettingsHelper
     private static void LogError(string methodName, Exception ex)
     {
 #if DEBUG
-        Trace.WriteLine($"{nameof(SettingsHelper)}: {methodName} error: {ex.Message}");
+        Trace.WriteLine($"{nameof(SettingsManager)}: {methodName} error: {ex.Message}");
         Trace.WriteLine(ex.StackTrace);
 #endif
     }
