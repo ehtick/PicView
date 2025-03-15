@@ -17,12 +17,12 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
-using PicView.WindowsNT;
-using PicView.WindowsNT.FileHandling;
-using PicView.WindowsNT.Taskbar;
-using PicView.WindowsNT.Wallpaper;
+using PicView.Core.WindowsNT;
+using PicView.Core.WindowsNT.FileHandling;
+using PicView.Core.WindowsNT.Taskbar;
+using PicView.Core.WindowsNT.Wallpaper;
 using Dispatcher = Avalonia.Threading.Dispatcher;
-using Win32Clipboard = PicView.WindowsNT.Copy.Win32Clipboard;
+using Win32Clipboard = PicView.Core.WindowsNT.Copy.Win32Clipboard;
 
 namespace PicView.Avalonia.Win32;
 

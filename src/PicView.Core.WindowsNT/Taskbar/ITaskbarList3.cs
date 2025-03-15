@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.Marshalling;
 
-namespace PicView.WindowsNT.Taskbar;
+namespace PicView.Core.WindowsNT.Taskbar;
 
 // ITaskbarList3 interface using P/Invoke
 [GeneratedComInterface]

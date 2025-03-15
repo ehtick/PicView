@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace PicView.WindowsNT.Taskbar;
+namespace PicView.Core.WindowsNT.Taskbar;
 public partial class TaskbarProgress
 {
     /// <summary>

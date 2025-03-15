@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace PicView.WindowsNT;
+namespace PicView.Core.WindowsNT;
 
 public static partial class NativeMethods
 {

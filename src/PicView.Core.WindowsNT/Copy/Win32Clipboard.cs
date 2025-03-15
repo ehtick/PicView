@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace PicView.WindowsNT.Copy;
+namespace PicView.Core.WindowsNT.Copy;
 
 public static partial class Win32Clipboard
 {

@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.Avalonia.Win32", "P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.Avalonia.MacOS", "PicView.Avalonia.MacOS\PicView.Avalonia.MacOS.csproj", "{79402A1F-0EDE-49C8-970A-E7AC0065FFB4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.WindowsNT", "PicView.WindowsNT\PicView.WindowsNT.csproj", "{D63E2F56-02CC-4E23-AF78-F5218E83B2E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.Core.WindowsNT", "PicView.Core.WindowsNT\PicView.Core.WindowsNT.csproj", "{D63E2F56-02CC-4E23-AF78-F5218E83B2E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.MacOS", "PicView.MacOS\PicView.MacOS.csproj", "{FEAC727E-1102-4F11-A747-5A5789FBBF81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.Core.MacOS", "PicView.Core.MacOS\PicView.Core.MacOS.csproj", "{FEAC727E-1102-4F11-A747-5A5789FBBF81}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PicView.Tests", "PicView.Tests\PicView.Tests.csproj", "{E9901309-A077-42CF-957C-9E737DC9731C}"
 EndProject

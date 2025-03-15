@@ -1,4 +1,4 @@
-﻿namespace PicView.MacOS;
+﻿namespace PicView.Core.MacOS;
 public static class Fullscreen
 {
 

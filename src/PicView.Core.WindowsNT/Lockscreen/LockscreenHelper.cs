@@ -1,7 +1,7 @@
 ﻿// using System.Runtime.InteropServices;
 // using Microsoft.Win32;
 //
-// namespace PicView.WindowsNT.Lockscreen;
+// namespace PicView.Core.WindowsNT.Lockscreen;
 //
 // public static partial class LockscreenHelper
 // {

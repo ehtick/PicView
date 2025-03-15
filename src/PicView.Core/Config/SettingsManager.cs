@@ -22,7 +22,7 @@ public static class SettingsManager
     /// <summary>
     ///     Asynchronously loads the user settings. Loads defaults if not found
     /// </summary>
-    /// <returns>True if settings exists and were loaded successfully</returns>
+    /// <returns>True if settings exists</returns>
     public static async Task<bool> LoadSettingsAsync()
     {
         try

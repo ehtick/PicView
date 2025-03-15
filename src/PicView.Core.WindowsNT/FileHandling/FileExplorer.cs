@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace PicView.WindowsNT.FileHandling;
+namespace PicView.Core.WindowsNT.FileHandling;
 public static class Shell32Wrapper
 {
     [DllImport("shell32.dll", SetLastError = true)]

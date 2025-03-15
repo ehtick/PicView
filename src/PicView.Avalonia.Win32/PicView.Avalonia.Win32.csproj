@@ -48,7 +48,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PicView.Avalonia\PicView.Avalonia.csproj" />
     <ProjectReference Include="..\PicView.Core\PicView.Core.csproj" />
-    <ProjectReference Include="..\PicView.WindowsNT\PicView.WindowsNT.csproj" />
+    <ProjectReference Include="..\PicView.Core.WindowsNT\PicView.Core.WindowsNT.csproj" />
   </ItemGroup>
 
   <ItemGroup>
