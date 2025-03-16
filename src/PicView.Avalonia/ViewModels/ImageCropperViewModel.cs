@@ -13,13 +13,12 @@ using ReactiveUI;
 
 namespace PicView.Avalonia.ViewModels;
 
-public class ImageCropperViewModel : ViewModelBase
+public class ImageCropperViewModel : ReactiveObject
 {
     public ImageCropperViewModel(Bitmap bitmap)
     {
         Bitmap = bitmap;
         InitializeCommands();
-        InitializeTranslations();
     }
 
     private void InitializeCommands()
@@ -27,15 +26,6 @@ public class ImageCropperViewModel : ViewModelBase
         CropImageCommand = ReactiveCommand.CreateFromTask(SaveCroppedImageAsync);
         CopyCropImageCommand = ReactiveCommand.CreateFromTask(CopyCroppedImageAsync);
         CloseCropCommand = ReactiveCommand.Create(HandleCloseCrop);
-    }
-
-    private void InitializeTranslations()
-    {
-        Crop = TranslationManager.Translation.CropPicture;
-        Copy = TranslationManager.Translation.CopyImage;
-        Close = TranslationManager.Translation.Close;
-        Width = TranslationManager.Translation.Width;
-        Height = TranslationManager.Translation.Height;
     }
     
     public ReactiveCommand<Unit, Unit>? CropImageCommand { get; private set; }
@@ -136,7 +126,7 @@ public class ImageCropperViewModel : ViewModelBase
         
         CropFunctions.CloseCropControl(vm);
 
-        if (vm.FileInfo.FullName == saveFileDialog)
+        if (vm.PicViewer.FileInfo.FullName == saveFileDialog)
         {
             await ErrorHandling.ReloadAsync(vm);
         }
@@ -145,7 +135,7 @@ public class ImageCropperViewModel : ViewModelBase
     private async Task CopyCroppedImageAsync()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
-        if (vm.ImageSource is not Bitmap sourceBitmap) return;
+        if (vm.PicViewer.ImageSource is not Bitmap sourceBitmap) return;
 
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
@@ -161,7 +151,7 @@ public class ImageCropperViewModel : ViewModelBase
     }
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
-      => NavigationManager.IsCollectionEmpty ? CreateNewCroppedImage() : (vm.FileInfo.FullName, vm.FileInfo, null);
+      => NavigationManager.IsCollectionEmpty ? CreateNewCroppedImage() : (vm.PicViewer.FileInfo.FullName, vm.PicViewer.FileInfo, null);
 
     private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
     {

@@ -18,7 +18,7 @@ public static class ImageOptimizer
     {
         ArgumentNullException.ThrowIfNull(vm);
 
-        if (!NavigationManager.CanNavigate(vm) || vm.FileInfo == null)
+        if (!NavigationManager.CanNavigate(vm) || vm.PicViewer.FileInfo == null)
         {
             return;
         }
@@ -31,7 +31,7 @@ public static class ImageOptimizer
                 {
                     OptimalCompression = true
                 };
-                optimizer.LosslessCompress(vm.FileInfo.FullName);
+                optimizer.LosslessCompress(vm.PicViewer.FileInfo.FullName);
             }
             catch (Exception ex)
             {

@@ -51,7 +51,7 @@ public static class WindowFunctions
             }
             else
             {
-                lastFile = vm?.FileInfo?.FullName ?? FileHistory.GetLastEntry();
+                lastFile = vm?.PicViewer.FileInfo?.FullName ?? FileHistory.GetLastEntry();
             }
         }
         else
@@ -77,7 +77,7 @@ public static class WindowFunctions
         {
             if (Settings.WindowProperties.AutoFit)
             {
-                if (vm.PixelWidth > UIHelper.GetMainView.Bounds.Width || vm.PixelHeight > UIHelper.GetMainView.Bounds.Height)
+                if (vm.PicViewer.PixelWidth > UIHelper.GetMainView.Bounds.Width || vm.PicViewer.PixelHeight > UIHelper.GetMainView.Bounds.Height)
                 {
                     vm.ImageViewer.MainBorder.Height = double.NaN;
                     vm.ImageViewer.MainBorder.Width = double.NaN;
@@ -110,7 +110,7 @@ public static class WindowFunctions
                 }
                 else
                 {
-                    if (vm.PixelWidth > UIHelper.GetMainView.Bounds.Width || vm.PixelHeight > UIHelper.GetMainView.Bounds.Height)
+                    if (vm.PicViewer.PixelWidth > UIHelper.GetMainView.Bounds.Width || vm.PicViewer.PixelHeight > UIHelper.GetMainView.Bounds.Height)
                     {
                         Dispatcher.UIThread.Post(() => WindowResizing.SetSize(vm), DispatcherPriority.Render);
                     }

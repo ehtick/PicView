@@ -45,7 +45,7 @@ public static class NavigationManager
     {
         return _imageIterator?.ImagePaths is not null &&
                _imageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping &&
-               !DialogManager.IsDialogOpen && vm is { IsEditableTitlebarOpen: false, FileInfo: not null };
+               !DialogManager.IsDialogOpen && vm is { IsEditableTitlebarOpen: false, PicViewer.FileInfo: not null };
         // TODO: should probably turn this into CanExecute observable for ReactiveUI
     }
 
@@ -59,10 +59,10 @@ public static class NavigationManager
     {
         if (!CanNavigate(vm))
         {
-            if (vm.FileInfo is null && _imageIterator is not null)
+            if (vm.PicViewer.FileInfo is null && _imageIterator is not null)
             {
                 // Fixes issue that shouldn't happen. Should investigate.
-                vm.FileInfo = new FileInfo(_imageIterator.ImagePaths[0]);
+                vm.PicViewer.FileInfo = new FileInfo(_imageIterator.ImagePaths[0]);
             }
             else
             {
@@ -141,7 +141,7 @@ public static class NavigationManager
             }
             else
             {
-                await UpdateImage.SetTiffImageAsync(TiffNavigationInfo, _imageIterator.CurrentIndex, vm.FileInfo, vm);
+                await UpdateImage.SetTiffImageAsync(TiffNavigationInfo, _imageIterator.CurrentIndex, vm.PicViewer.FileInfo, vm);
             }
         }
         return;
@@ -584,8 +584,8 @@ public static class NavigationManager
         await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType, url, vm);
 
         vm.IsLoading = false;
-        vm.FileInfo = fileInfo;
-        vm.ExifOrientation = imageModel.EXIFOrientation;
+        vm.PicViewer.FileInfo = fileInfo;
+        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
         FileHistory.Add(url);
 
         await DisposeImageIteratorAsync();
@@ -602,8 +602,8 @@ public static class NavigationManager
     {
         TitleManager.SetLoadingTitle(vm);
         vm.IsLoading = true;
-        vm.ImageSource = null;
-        vm.FileInfo = null;
+        vm.PicViewer.ImageSource = null;
+        vm.PicViewer.FileInfo = null;
         
         if (_cancellationTokenSource is not null)
         {
@@ -637,9 +637,9 @@ public static class NavigationManager
 #if DEBUG
                 Console.WriteLine("LoadPicFromBase64Async exception = \n" + e.Message);
 #endif
-                if (vm.FileInfo is not null && vm.FileInfo.Exists)
+                if (vm.PicViewer.FileInfo is not null && vm.PicViewer.FileInfo.Exists)
                 {
-                    await LoadPicFromFile(vm.FileInfo.FullName, vm, vm.FileInfo);
+                    await LoadPicFromFile(vm.PicViewer.FileInfo.FullName, vm, vm.PicViewer.FileInfo);
                 }
                 else
                 {
@@ -720,7 +720,7 @@ public static class NavigationManager
 
     public static void InitializeImageIterator(MainViewModel vm)
     {
-        _imageIterator ??= new ImageIterator(vm.FileInfo, vm);
+        _imageIterator ??= new ImageIterator(vm.PicViewer.FileInfo, vm);
     }
     
     public static async Task DisposeImageIteratorAsync()
@@ -810,7 +810,7 @@ public static class NavigationManager
     
     public static async Task FullReload(MainViewModel vm)
     {
-        if (vm.ImageSource is null)
+        if (vm.PicViewer.ImageSource is null)
         {
             return;
         }
@@ -831,7 +831,7 @@ public static class NavigationManager
 
         var index = _imageIterator.CurrentIndex;
         await _imageIterator.DisposeAsync().ConfigureAwait(false);
-        _imageIterator = new ImageIterator(vm.FileInfo, vm);
+        _imageIterator = new ImageIterator(vm.PicViewer.FileInfo, vm);
         await Navigate(index, vm).ConfigureAwait(false);
     }
 
@@ -916,8 +916,8 @@ public static class NavigationManager
     {
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         ImageModel? nextImageModel = null;
-        vm.ImageSource = imageModel.Image;
-        vm.ImageType = imageModel.ImageType;
+        vm.PicViewer.ImageSource = imageModel.Image;
+        vm.PicViewer.ImageType = imageModel.ImageType;
         if (!Settings.ImageScaling.ShowImageSideBySide)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -942,7 +942,7 @@ public static class NavigationManager
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             nextImageModel = (await _imageIterator.GetNextPreLoadValueAsync()).ImageModel;
-            vm.SecondaryImageSource = nextImageModel.Image;
+            vm.PicViewer.SecondaryImageSource = nextImageModel.Image;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, nextImageModel.PixelWidth,

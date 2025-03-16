@@ -25,7 +25,7 @@ internal static class ConversionHelper
     public static async Task ResizeImageByPercentage(int percentage, MainViewModel vm)
     {
         TitleManager.SetLoadingTitle(vm);
-        var success = await ResizeImageByPercentage(vm.FileInfo, percentage);
+        var success = await ResizeImageByPercentage(vm.PicViewer.FileInfo, percentage);
         if (success)
         {
             await NavigationManager.QuickReload();
@@ -89,12 +89,12 @@ internal static class ConversionHelper
     
     public static async Task ConvertFileExtension(int index, MainViewModel vm)
     {
-        if (vm.FileInfo is null)
+        if (vm.PicViewer.FileInfo is null)
         {
             return;
         }
 
-        var newPath = await ConvertTask(vm.FileInfo, index);
+        var newPath = await ConvertTask(vm.PicViewer.FileInfo, index);
         if (!string.IsNullOrWhiteSpace(newPath))
         {
             await NavigationManager.LoadPicFromStringAsync(newPath, vm);
@@ -103,16 +103,16 @@ internal static class ConversionHelper
     
     public static void DetermineIfOptimizeImageShouldBeEnabled(MainViewModel vm)
     {
-        if (vm.FileInfo is null)
+        if (vm.PicViewer.FileInfo is null)
         {
             vm.ShouldOptimizeImageBeEnabled = false;
             return;
         }
 
-        if (vm.FileInfo.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.FileInfo.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.FileInfo.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
-            || vm.FileInfo.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
+        if (vm.PicViewer.FileInfo.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
         {
             vm.ShouldOptimizeImageBeEnabled = true;
         }

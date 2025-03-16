@@ -34,10 +34,10 @@ public static class ImageEffectsHelper
         {
             await Task.Run(async () =>
             {
-                using var magick = await LoadImage(vm.FileInfo, cancellationToken);
+                using var magick = await LoadImage(vm.PicViewer.FileInfo, cancellationToken);
                 ApplyImageEffects(magick, config, cancellationToken);
                 var bitmap = magick.ToWriteableBitmap();
-                vm.ImageSource = bitmap;
+                vm.PicViewer.ImageSource = bitmap;
             }, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)

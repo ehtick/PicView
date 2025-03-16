@@ -16,9 +16,9 @@
             <!--  Next  -->
             <MenuItem
                 Command="{CompiledBinding NextCommand}"
-                Header="{CompiledBinding NextImage,
+                Header="{CompiledBinding Translation.NextImage,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -32,9 +32,9 @@
             <!--  Prev  -->
             <MenuItem
                 Command="{CompiledBinding PreviousCommand}"
-                Header="{CompiledBinding PrevImage,
+                Header="{CompiledBinding Translation.PrevImage,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -51,9 +51,9 @@
             <!--  Next 10  -->
             <MenuItem
                 Command="{CompiledBinding Skip10Command}"
-                Header="{CompiledBinding AdvanceBy10Images,
+                Header="{CompiledBinding Translation.AdvanceBy10Images,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -67,9 +67,9 @@
             <!--  Next 100  -->
             <MenuItem
                 Command="{CompiledBinding Skip100Command}"
-                Header="{CompiledBinding AdvanceBy100Images,
+                Header="{CompiledBinding Translation.AdvanceBy100Images,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -83,9 +83,9 @@
             <!--  Prev 10  -->
             <MenuItem
                 Command="{CompiledBinding Prev10Command}"
-                Header="{CompiledBinding GoBackBy10Images,
+                Header="{CompiledBinding Translation.GoBackBy10Images,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -99,9 +99,9 @@
             <!--  Prev 100  -->
             <MenuItem
                 Command="{CompiledBinding Prev100Command}"
-                Header="{CompiledBinding GoBackBy100Images,
+                Header="{CompiledBinding Translation.GoBackBy100Images,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -117,8 +117,8 @@
             <!--  First Image  -->
             <MenuItem
                 Command="{CompiledBinding FirstCommand}"
-                Header="{CompiledBinding FirstImage}"
-                IsEnabled="{CompiledBinding FileInfo,
+                Header="{CompiledBinding Translation.FirstImage}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -131,9 +131,9 @@
             <!--  Last Image  -->
             <MenuItem
                 Command="{CompiledBinding LastCommand}"
-                Header="{CompiledBinding LastImage,
+                Header="{CompiledBinding Translation.LastImage,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -148,9 +148,9 @@
             <!--  Next folder  -->
             <MenuItem
                 Command="{CompiledBinding NextFolderCommand}"
-                Header="{CompiledBinding NextFolder,
+                Header="{CompiledBinding Translation.NextFolder,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -163,9 +163,9 @@
             <!--  Prev folder  -->
             <MenuItem
                 Command="{CompiledBinding PreviousFolderCommand}"
-                Header="{CompiledBinding PrevFolder,
+                Header="{CompiledBinding Translation.PrevFolder,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -178,7 +178,7 @@
             <Separator />
 
             <!--  Hide bottom bar  -->
-            <MenuItem Command="{CompiledBinding ToggleBottomNavBarCommand}" Header="{CompiledBinding HideBottomToolbar, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding ToggleBottomNavBarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -270,7 +270,7 @@
                     Height="25"
                     IconHeight="20"
                     IconWidth="17"
-                    IsEnabled="{CompiledBinding FileInfo,
+                    IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
                     Width="90"
@@ -288,7 +288,7 @@
                     Height="25"
                     IconHeight="20"
                     IconWidth="17"
-                    IsEnabled="{CompiledBinding FileInfo,
+                    IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
                     Width="90"

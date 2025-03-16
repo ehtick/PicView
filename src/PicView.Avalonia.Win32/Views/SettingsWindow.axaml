@@ -49,7 +49,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     IconHeight="10"
                     IconWidth="10"
-                    ToolTip.Tip="{CompiledBinding Close,
+                    ToolTip.Tip="{CompiledBinding Translation.Close,
                                                   Mode=OneWay}"
                     Width="30"
                     x:Name="CloseButton" />
@@ -75,7 +75,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     LineHeight="28"
                     Padding="30,0,0,0"
-                    Text="{CompiledBinding Settings,
+                    Text="{CompiledBinding Translation.Settings,
                                            Mode=OneWay}"
                     TextAlignment="Center"
                     x:Name="TitleText" />

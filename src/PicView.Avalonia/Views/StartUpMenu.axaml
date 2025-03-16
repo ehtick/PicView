@@ -73,7 +73,7 @@
                         </Image.Source>
                     </Image>
                     <Label
-                        Content="{CompiledBinding SelectFile}"
+                        Content="{CompiledBinding Translation.SelectFile}"
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                         FontSize="14"
                         Foreground="{StaticResource SelectFileBrush}"
@@ -113,7 +113,7 @@
                         </Image.Source>
                     </Image>
                     <Label
-                        Content="{CompiledBinding OpenLastFile}"
+                        Content="{CompiledBinding Translation.OpenLastFile}"
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                         FontSize="14"
                         Foreground="{StaticResource OpenLastFileBrush}"
@@ -131,7 +131,7 @@
                         Stretch="Fill"
                         Width="20" />
                     <Label
-                        Content="{CompiledBinding FilePaste}"
+                        Content="{CompiledBinding Translation.Paste}"
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                         FontSize="14"
                         Foreground="{StaticResource PasteBrush}"

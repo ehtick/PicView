@@ -33,7 +33,7 @@
 
                 <TextBlock
                     Classes="txt"
-                    Text="{CompiledBinding ApplicationShortcuts}"
+                    Text="{CompiledBinding Translation.ApplicationShortcuts}"
                     TextAlignment="Center" />
             </DockPanel>
 

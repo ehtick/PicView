@@ -61,7 +61,7 @@
                     Command="{CompiledBinding PrintCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding Print,
+                    Header="{CompiledBinding Translation.Print,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -76,7 +76,7 @@
                     Command="{CompiledBinding OpenWithCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding OpenWith,
+                    Header="{CompiledBinding Translation.OpenWith,
                                              Mode=OneWay}"
                     x:Name="OpenWith">
                     <MenuItem.Icon>
@@ -92,7 +92,7 @@
                     Command="{CompiledBinding LocateOnDiskCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding ShowInFolder,
+                    Header="{CompiledBinding Translation.ShowInFolder,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -108,7 +108,7 @@
                     Command="{CompiledBinding SetAsWallpaperCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding SetAsWallpaper,
+                    Header="{CompiledBinding Translation.SetAsWallpaper,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -140,7 +140,7 @@
                     Command="{CompiledBinding CopyFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding CopyFile,
+                    Header="{CompiledBinding Translation.CopyFile,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -151,7 +151,7 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="{CompiledBinding CopyImage, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.CopyImage, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CopyGeometry}"
@@ -164,7 +164,7 @@
                 <MenuItem>
                     <MenuItem.Header>
                         <TextBlock>
-                            <Run Text="{CompiledBinding Copy, Mode=OneWay}" />
+                            <Run Text="{CompiledBinding Translation.Copy, Mode=OneWay}" />
                             <Run Text=" base64" />
                         </TextBlock>
                     </MenuItem.Header>
@@ -181,7 +181,7 @@
                     Command="{CompiledBinding DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding DuplicateFile,
+                    Header="{CompiledBinding Translation.DuplicateFile,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -207,7 +207,7 @@
                     Command="{CompiledBinding RecycleFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
-                    Header="{CompiledBinding DeleteFile,
+                    Header="{CompiledBinding Translation.DeleteFile,
                                              Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -219,7 +219,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="{CompiledBinding Stretch, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.Stretch, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -229,48 +229,48 @@
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Uniform"
-                        Header="{CompiledBinding Uniform,
+                        Header="{CompiledBinding Translation.Uniform,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsUniformMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="UniformToFill"
-                        Header="{CompiledBinding UniformToFill,
+                        Header="{CompiledBinding Translation.UniformToFill,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsUniformToFillMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Fill"
-                        Header="{CompiledBinding Fill,
+                        Header="{CompiledBinding Translation.Fill,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsFillMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="None"
-                        Header="{CompiledBinding None,
+                        Header="{CompiledBinding Translation.None,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsNoneMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Square"
-                        Header="{CompiledBinding Square,
+                        Header="{CompiledBinding Translation.Square,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsSquareMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="FillSquare"
-                        Header="{CompiledBinding FillSquare,
+                        Header="{CompiledBinding Translation.FillSquare,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsFillSquareMenuChecked}"
                         ToggleType="Radio" />
                 </MenuItem>
                 <MenuItem
-                    Header="{CompiledBinding ExpandedGalleryItemSize,
+                    Header="{CompiledBinding Translation.ExpandedGalleryItemSize,
                                              Mode=OneWay}"
                     PointerPressed="Flyout_OnPointerPressed"
                     StaysOpenOnClick="True">
@@ -294,7 +294,7 @@
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding HideBottomGallery, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding Translation.HideBottomGallery, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"

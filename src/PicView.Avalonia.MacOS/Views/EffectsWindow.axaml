@@ -32,7 +32,7 @@
 
                 <TextBlock
                     Classes="txt"
-                    Text="{CompiledBinding Effects,
+                    Text="{CompiledBinding Translation.Effects,
                                            Mode=OneWay}"
                     TextAlignment="Center" />
             </DockPanel>

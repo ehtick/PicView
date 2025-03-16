@@ -23,7 +23,7 @@ public static class ClipboardImageOperations
     public static async Task<bool> CopyImageToClipboard(MainViewModel vm)
     {
         var clipboard = ClipboardService.GetClipboard();
-        if (clipboard == null || vm.ImageSource is not Bitmap bitmap)
+        if (clipboard == null || vm.PicViewer.ImageSource is not Bitmap bitmap)
         {
             return false;
         }
@@ -97,12 +97,12 @@ public static class ClipboardImageOperations
             return Convert.ToBase64String(await File.ReadAllBytesAsync(path));
         }
 
-        switch (vm.ImageType)
+        switch (vm.PicViewer.ImageType)
         {
             case ImageType.AnimatedGif:
             case ImageType.AnimatedWebp:
             case ImageType.Bitmap:
-                if (vm.ImageSource is not Bitmap bitmap)
+                if (vm.PicViewer.ImageSource is not Bitmap bitmap)
                 {
                     return string.Empty;
                 }
@@ -117,7 +117,7 @@ public static class ClipboardImageOperations
                 return string.Empty;
 
             default:
-                throw new ArgumentOutOfRangeException(nameof(vm.ImageType), $"Unsupported image type: {vm.ImageType}");
+                throw new ArgumentOutOfRangeException(nameof(vm.PicViewer.ImageType), $"Unsupported image type: {vm.PicViewer.ImageType}");
         }
     }
 

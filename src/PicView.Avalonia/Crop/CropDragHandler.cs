@@ -17,7 +17,7 @@ public class CropDragHandler(CropControl control)
     public void OnDragStart(object? sender, PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(control).Properties.IsLeftButtonPressed || 
-            control.DataContext is not ImageCropperViewModel vm)
+            control.DataContext is not MainViewModel vm)
         {
             return;
         }
@@ -39,7 +39,7 @@ public class CropDragHandler(CropControl control)
             currentTop = 0;
         }
 
-        _originalRect = new Rect(currentLeft, currentTop, vm.SelectionWidth, vm.SelectionHeight);
+        _originalRect = new Rect(currentLeft, currentTop, vm.Crop.SelectionWidth, vm.Crop.SelectionHeight);
         _isDragging = true;
     }
 
@@ -50,7 +50,7 @@ public class CropDragHandler(CropControl control)
             return;
         }
 
-        if (control.DataContext is not ImageCropperViewModel vm)
+        if (control.DataContext is not MainViewModel vm)
         {
             return;
         }
@@ -68,8 +68,8 @@ public class CropDragHandler(CropControl control)
         var newTop = _originalRect.Y + delta.Y;
 
         // Clamp the newLeft and newTop values to keep the rectangle within bounds
-        newLeft = Math.Max(0, Math.Min(vm.ImageWidth - vm.SelectionWidth, newLeft));
-        newTop = Math.Max(0, Math.Min(vm.ImageHeight - vm.SelectionHeight, newTop));
+        newLeft = Math.Max(0, Math.Min(vm.PicViewer.ImageWidth - vm.Crop.SelectionWidth, newLeft));
+        newTop = Math.Max(0, Math.Min(vm.PicViewer.ImageHeight - vm.Crop.SelectionHeight, newTop));
 
         // Only proceed if new positions are valid (i.e., not NaN)
         if (double.IsNaN(newLeft) || double.IsNaN(newTop))
@@ -85,8 +85,8 @@ public class CropDragHandler(CropControl control)
         Canvas.SetTop(control.SizeBorder, newTop - control.SizeBorder.Bounds.Height - ButtonTopOffset);
 
         // Update view model values
-        vm.SelectionX = Convert.ToInt32(newLeft);
-        vm.SelectionY = Convert.ToInt32(newTop);
+        vm.Crop.SelectionX = Convert.ToInt32(newLeft);
+        vm.Crop.SelectionY = Convert.ToInt32(newTop);
     }
 
     public void OnDragEnd(object? sender, PointerReleasedEventArgs e)

@@ -1,6 +1,6 @@
 ﻿<UserControl
     x:Class="PicView.Avalonia.Views.UC.CropControl"
-    x:DataType="viewModels:ImageCropperViewModel"
+    x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -22,7 +22,7 @@
     </UserControl.Styles>
     <UserControl.ContextMenu>
         <ContextMenu x:Name="CropContextMenu">
-            <MenuItem Command="{CompiledBinding CropImageCommand}" Header="{CompiledBinding Crop, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CropImageCommand}" Header="{CompiledBinding Translation.Crop, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CropGeometry}"
@@ -32,7 +32,7 @@
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding CopyCropImageCommand}" Header="{CompiledBinding Copy, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CopyCropImageCommand}" Header="{CompiledBinding Translation.Copy, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CopyGeometry}"
@@ -42,7 +42,7 @@
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding CloseCropCommand}" Header="{CompiledBinding Close, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CloseCropCommand}" Header="{CompiledBinding Translation.Close, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CloseGeometry}"
@@ -56,9 +56,7 @@
     </UserControl.ContextMenu>
     <Panel>
         <!--  Image control to display the bitmap  -->
-        <Image Source="{Binding Bitmap}" x:Name="ImageControl" />
-
-
+        <Image Source="{Binding Crop.Bitmap}" x:Name="ImageControl" />
 
         <Canvas Background="Transparent" x:Name="RootCanvas">
 
@@ -76,13 +74,13 @@
                     Classes="txt"
                     FontSize="14"
                     Foreground="{DynamicResource MainTextColor}">
-                    <Run Text="{CompiledBinding Width, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Translation.Width, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding PixelSelectionWidth, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Crop.PixelSelectionWidth, Mode=OneWay}" />
                     <Run Text=" x " />
-                    <Run Text="{CompiledBinding Height, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Translation.Height, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding PixelSelectionHeight, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Crop.PixelSelectionHeight, Mode=OneWay}" />
                 </TextBlock>
             </Border>
 
@@ -91,8 +89,8 @@
                 Background="Transparent"
                 BorderBrush="#fff"
                 BorderThickness="2"
-                Height="{CompiledBinding SelectionHeight}"
-                Width="{CompiledBinding SelectionWidth}"
+                Height="{CompiledBinding Crop.SelectionHeight}"
+                Width="{CompiledBinding Crop.SelectionWidth}"
                 x:Name="MainRectangle" />
 
             <!--  Top Left  -->

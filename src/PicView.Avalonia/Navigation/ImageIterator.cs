@@ -249,7 +249,7 @@ public class ImageIterator : IAsyncDisposable
                 PreLoader.Resynchronize(ImagePaths);
                 var newIndex = GetIteration(index, NavigateTo.Previous);
                 Interlocked.Exchange(ref _currentIndex, newIndex);
-                _vm.FileInfo = new FileInfo(ImagePaths[CurrentIndex]);
+                _vm.PicViewer.FileInfo = new FileInfo(ImagePaths[CurrentIndex]);
                 await IterateToIndex(CurrentIndex, new CancellationTokenSource());
             }
             else
@@ -269,7 +269,7 @@ public class ImageIterator : IAsyncDisposable
                     }
                 }
 
-                var indexOf = ImagePaths.IndexOf(_vm.FileInfo.FullName);
+                var indexOf = ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName);
                 _vm.SelectedGalleryItemIndex = indexOf;// Fixes deselection bug 
                 Interlocked.Exchange(ref _currentIndex, indexOf);
                 if (isSameFile)
@@ -353,7 +353,7 @@ public class ImageIterator : IAsyncDisposable
         
             if (sameFile)
             {
-                _vm.FileInfo = fileInfo;
+                _vm.PicViewer.FileInfo = fileInfo;
             }
 
             TitleManager.SetTitle(_vm);
@@ -411,10 +411,10 @@ public class ImageIterator : IAsyncDisposable
         await PreLoader.GetAsync(index, ImagePaths);
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
-        IsRunning ? PreLoader.Get(_vm.FileInfo.FullName, ImagePaths) : PreLoader.Get(CurrentIndex, ImagePaths);
+        IsRunning ? PreLoader.Get(_vm.PicViewer.FileInfo.FullName, ImagePaths) : PreLoader.Get(CurrentIndex, ImagePaths);
 
     public async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
-         IsRunning ? await PreLoader.GetAsync(_vm.FileInfo.FullName, ImagePaths) : await PreLoader.GetAsync(CurrentIndex, ImagePaths);
+         IsRunning ? await PreLoader.GetAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths) : await PreLoader.GetAsync(CurrentIndex, ImagePaths);
 
     public PreLoadValue? GetNextPreLoadValue()
     {
@@ -442,7 +442,7 @@ public class ImageIterator : IAsyncDisposable
     public async Task ReloadFileListAsync()
     {
         ImagePaths = await Task.FromResult(_vm.PlatformService.GetFiles(InitialFileInfo)).ConfigureAwait(false);
-        Interlocked.Exchange(ref _currentIndex, ImagePaths.IndexOf(_vm.FileInfo.FullName));
+        Interlocked.Exchange(ref _currentIndex, ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName));
 
         InitiateFileSystemWatcher(InitialFileInfo);
     }
@@ -728,7 +728,7 @@ public class ImageIterator : IAsyncDisposable
 
             if (!Settings.ImageScaling.ShowImageSideBySide)
             {
-                _vm.ImageSource = thumb;
+                _vm.PicViewer.ImageSource = thumb;
             }
             else
             {
@@ -737,8 +737,8 @@ public class ImageIterator : IAsyncDisposable
                 {
                     return;
                 }
-                _vm.ImageSource = thumb;
-                _vm.SecondaryImageSource = secondaryThumb;
+                _vm.PicViewer.ImageSource = thumb;
+                _vm.PicViewer.SecondaryImageSource = secondaryThumb;
             }
         }
     }

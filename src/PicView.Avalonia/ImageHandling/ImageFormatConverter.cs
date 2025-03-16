@@ -26,9 +26,9 @@ public static class ImageFormatConverter
         Bitmap? source = null;
 
         // Primary case: Handle effect applied or empty path by saving current ImageSource
-        if (vm.EffectConfig is not null || string.IsNullOrWhiteSpace(path))
+        if (vm.PicViewer.EffectConfig is not null || string.IsNullOrWhiteSpace(path))
         {
-            if (vm.ImageSource is Bitmap bmp)
+            if (vm.PicViewer.ImageSource is Bitmap bmp)
             {
                 source = bmp;
             }
@@ -36,15 +36,15 @@ public static class ImageFormatConverter
         else if (NavigationManager.CanNavigate(vm) && !string.IsNullOrEmpty(path))
         {
             // Handle effects for the current file
-            if (vm.EffectConfig is not null && vm.FileInfo?.FullName == path)
+            if (vm.PicViewer.EffectConfig is not null && vm.PicViewer.FileInfo?.FullName == path)
             {
-                if (vm.ImageSource is Bitmap bmp)
+                if (vm.PicViewer.ImageSource is Bitmap bmp)
                 {
                     source = bmp;
                 }
             }
             // Current path that's already in common format
-            else if (path == vm.FileInfo?.FullName)
+            else if (path == vm.PicViewer.FileInfo?.FullName)
             {
                 if (path.IsCommon())
                 {
@@ -52,7 +52,7 @@ public static class ImageFormatConverter
                     return path;
                 }
 
-                if (vm.ImageSource is Bitmap bmp && vm.FileInfo.FullName.IsSupported())
+                if (vm.PicViewer.ImageSource is Bitmap bmp && vm.PicViewer.FileInfo.FullName.IsSupported())
                 {
                     source = bmp;
                 }

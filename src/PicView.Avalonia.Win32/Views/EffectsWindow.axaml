@@ -79,7 +79,7 @@
                     Width="30">
                     <customControls:IconButton.Flyout>
                         <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
-                            <MenuItem Command="{CompiledBinding SaveFileCommand}" Header="{CompiledBinding Save, Mode=OneWay}">
+                            <MenuItem Command="{CompiledBinding SaveFileCommand}" Header="{CompiledBinding Translation.Save, Mode=OneWay}">
                                 <MenuItem.Icon>
                                     <Path
                                         Data="{StaticResource SaveGeometry}"
@@ -89,7 +89,7 @@
                                         Width="12" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{CompiledBinding SaveFileAsCommand}" Header="{CompiledBinding SaveAs}">
+                            <MenuItem Command="{CompiledBinding SaveFileAsCommand}" Header="{CompiledBinding Translation.SaveAs}">
                                 <MenuItem.Icon>
                                     <Path
                                         Data="{StaticResource SaveGeometry}"
@@ -99,7 +99,7 @@
                                         Width="12" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Command="{CompiledBinding CopyImageCommand}" Header="{CompiledBinding CopyImage, Mode=OneWay}">
+                            <MenuItem Command="{CompiledBinding CopyImageCommand}" Header="{CompiledBinding Translation.CopyImage, Mode=OneWay}">
                                 <MenuItem.Icon>
                                     <Path
                                         Data="{StaticResource CopyGeometry}"
@@ -112,9 +112,9 @@
                             <Separator />
                             <MenuItem
                                 Command="{CompiledBinding SetAsWallpaperFilledCommand}"
-                                CommandParameter="{CompiledBinding FileInfo.FullName,
+                                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                                    FallbackValue=''}"
-                                Header="{CompiledBinding SetAsWallpaper,
+                                Header="{CompiledBinding Translation.SetAsWallpaper,
                                                          Mode=OneWay}">
                                 <MenuItem.Icon>
                                     <Path
@@ -126,7 +126,7 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
-                            <MenuItem Header="{CompiledBinding ClearEffects}" x:Name="ClearEffectsItem">
+                            <MenuItem Header="{CompiledBinding Translation.ClearEffects}" x:Name="ClearEffectsItem">
                                 <MenuItem.Icon>
                                     <Image
                                         Height="12"
@@ -144,7 +144,7 @@
                     Height="28"
                     LineHeight="28"
                     Padding="30,0,0,0"
-                    Text="{CompiledBinding Effects}"
+                    Text="{CompiledBinding Translation.Effects}"
                     TextAlignment="Center"
                     x:Name="TitleText" />
             </DockPanel>

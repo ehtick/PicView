@@ -94,14 +94,14 @@ public static class SettingsUpdater
     public static void TurnOffUsingTouchpad(MainViewModel vm)
     {
         Settings.Zoom.IsUsingTouchPad = false;
-        vm.GetIsUsingTouchpadTranslation = TranslationManager.Translation.UsingMouse;
+        vm.Translation.IsUsingTouchpad = TranslationManager.Translation.UsingMouse;
         vm.IsUsingTouchpad = false;
     }
     
     public static void TurnOnUsingTouchpad(MainViewModel vm)
     {
         Settings.Zoom.IsUsingTouchPad = true;
-        vm.GetIsUsingTouchpadTranslation = TranslationManager.Translation.UsingTouchpad;
+        vm.Translation.IsUsingTouchpad = TranslationManager.Translation.UsingTouchpad;
         vm.IsUsingTouchpad = true;
     }
     
@@ -186,8 +186,8 @@ public static class SettingsUpdater
     public static void TurnOffSideBySide(MainViewModel vm)
     {
         Settings.ImageScaling.ShowImageSideBySide = false;
-        vm.IsShowingSideBySide = false;
-        vm.SecondaryImageSource = null;
+        vm.PicViewer.IsShowingSideBySide = false;
+        vm.PicViewer.SecondaryImageSource = null;
         WindowResizing.SetSize(vm);
         TitleManager.SetTitle(vm);
     }
@@ -195,7 +195,7 @@ public static class SettingsUpdater
     public static async Task TurnOnSideBySide(MainViewModel vm)
     {
         Settings.ImageScaling.ShowImageSideBySide = true;
-        vm.IsShowingSideBySide = true;
+        vm.PicViewer.IsShowingSideBySide = true;
         if (NavigationManager.CanNavigate(vm))
         {
             var preloadValue = await NavigationManager.GetNextPreLoadValueAsync();
@@ -206,15 +206,15 @@ public static class SettingsUpdater
 #endif
                 return;
             }
-            vm.SecondaryImageSource = preloadValue.ImageModel.Image;
+            vm.PicViewer.SecondaryImageSource = preloadValue.ImageModel.Image;
             var imageModel1 = new ImageModel
             {
-                FileInfo = vm.FileInfo,
-                PixelWidth = (int)vm.ImageWidth,
-                PixelHeight = (int)vm.ImageHeight,
-                ImageType = vm.ImageType,
-                Image = vm.ImageSource,
-                EXIFOrientation = vm.ExifOrientation
+                FileInfo = vm.PicViewer.FileInfo,
+                PixelWidth = (int)vm.PicViewer.ImageWidth,
+                PixelHeight = (int)vm.PicViewer.ImageHeight,
+                ImageType = vm.PicViewer.ImageType,
+                Image = vm.PicViewer.ImageSource,
+                EXIFOrientation = vm.PicViewer.ExifOrientation
             };
             var imageModel2 = new ImageModel
             {
@@ -227,7 +227,7 @@ public static class SettingsUpdater
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                WindowResizing.SetSize(vm.ImageWidth, vm.ImageHeight, preloadValue.ImageModel.PixelWidth,
+                WindowResizing.SetSize(vm.PicViewer.ImageWidth, vm.PicViewer.ImageHeight, preloadValue.ImageModel.PixelWidth,
                     preloadValue.ImageModel.PixelHeight, vm.RotationAngle, vm);
                 TitleManager.SetSideBySideTitle(vm, imageModel1, imageModel2);
             });
@@ -258,7 +258,7 @@ public static class SettingsUpdater
     public static void TurnOffScroll(MainViewModel vm)
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
-        vm.GetIsScrollingTranslation = TranslationManager.Translation.ScrollingDisabled;
+        vm.Translation.IsScrolling = TranslationManager.Translation.ScrollingDisabled;
         vm.IsScrollingEnabled = false;
         Settings.Zoom.ScrollEnabled = false;
         try
@@ -277,7 +277,7 @@ public static class SettingsUpdater
     public static void TurnOnScroll(MainViewModel vm)
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
-        vm.GetIsScrollingTranslation = TranslationManager.Translation.ScrollingEnabled;
+        vm.Translation.IsScrolling = TranslationManager.Translation.ScrollingEnabled;
         vm.IsScrollingEnabled = true;
         Settings.Zoom.ScrollEnabled = true;
         try
@@ -301,7 +301,7 @@ public static class SettingsUpdater
         }
         
         Settings.Zoom.CtrlZoom = !Settings.Zoom.CtrlZoom;
-        vm.GetIsCtrlZoomTranslation = Settings.Zoom.CtrlZoom
+        vm.Translation.IsCtrlToZoom = Settings.Zoom.CtrlZoom
             ? TranslationManager.Translation.CtrlToZoom
             : TranslationManager.Translation.ScrollToZoom;
         
@@ -322,7 +322,7 @@ public static class SettingsUpdater
     public static void TurnOffCtrlZoom(MainViewModel vm)
     {
         Settings.Zoom.CtrlZoom = false;
-        vm.GetIsCtrlZoomTranslation = TranslationManager.Translation.ScrollToZoom;
+        vm.Translation.IsCtrlToZoom = TranslationManager.Translation.ScrollToZoom;
         if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage ))
         {
             return;
@@ -341,7 +341,7 @@ public static class SettingsUpdater
         
         var value = !Settings.UIProperties.Looping;
         Settings.UIProperties.Looping = value;
-        vm.GetIsLoopingTranslation = value
+        vm.Translation.IsLooping = value
             ? TranslationManager.Translation.LoopingEnabled
             : TranslationManager.Translation.LoopingDisabled;
         vm.IsLooping = value;
@@ -357,7 +357,7 @@ public static class SettingsUpdater
     public static void TurnOffLooping(MainViewModel vm)
     {
         Settings.UIProperties.Looping = false;
-        vm.GetIsLoopingTranslation = TranslationManager.Translation.LoopingDisabled;
+        vm.Translation.IsLooping = TranslationManager.Translation.LoopingDisabled;
         vm.IsLooping = false;
     }
     

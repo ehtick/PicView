@@ -26,7 +26,7 @@ public static class HideInterfaceLogic
             Settings.UIProperties.ShowInterface = false;
             vm.IsTopToolbarShown = false;
             vm.IsBottomToolbarShown = false;
-            vm.GetIsShowingUITranslation = TranslationManager.Translation.ShowUI;
+            vm.Translation.IsShowingUI = TranslationManager.Translation.ShowUI;
             if (!GalleryFunctions.IsFullGalleryOpen)
             {
                 if (!Settings.Gallery.ShowBottomGalleryInHiddenUI)
@@ -51,7 +51,7 @@ public static class HideInterfaceLogic
         {
             vm.IsUIShown = true;
             vm.IsTopToolbarShown = true;
-            vm.GetIsShowingUITranslation = TranslationManager.Translation.HideUI;
+            vm.Translation.IsShowingUI = TranslationManager.Translation.HideUI;
             if (Settings.UIProperties.ShowBottomNavBar)
             {
                 vm.IsBottomToolbarShown = true;
@@ -73,7 +73,7 @@ public static class HideInterfaceLogic
                                 GalleryFunctions.OpenBottomGallery(vm);
                             }
                         });
-                        _ = GalleryLoad.LoadGallery(vm, vm.FileInfo.DirectoryName);
+                        _ = GalleryLoad.LoadGallery(vm, vm.PicViewer.FileInfo.DirectoryName);
                     }
 
                     vm.IsBottomGalleryShown = true;
@@ -100,14 +100,14 @@ public static class HideInterfaceLogic
         {
             vm.IsBottomToolbarShown = false;
             Settings.UIProperties.ShowBottomNavBar = false;
-            vm.GetIsShowingBottomToolbarTranslation = TranslationManager.Translation.ShowBottomToolbar;
+            vm.Translation.IsShowingBottomToolbar = TranslationManager.Translation.ShowBottomToolbar;
         }
         else
         {
             vm.IsBottomToolbarShown = true;
             Settings.UIProperties.ShowBottomNavBar = true;
             vm.BottombarHeight = SizeDefaults.BottombarHeight;
-            vm.GetIsShowingBottomToolbarTranslation = TranslationManager.Translation.HideBottomToolbar;
+            vm.Translation.IsShowingBottomToolbar = TranslationManager.Translation.HideBottomToolbar;
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -287,7 +287,7 @@ public static class HideInterfaceLogic
         Settings.UIProperties.ShowAltInterfaceButtons = !Settings
             .UIProperties.ShowAltInterfaceButtons;
         
-        vm.GetIsShowingFadingUIButtonsTranslation = Settings.UIProperties.ShowAltInterfaceButtons
+        vm.Translation.IsShowingFadingUIButtons = Settings.UIProperties.ShowAltInterfaceButtons
             ? TranslationManager.Translation.DisableFadeInButtonsOnHover
             : TranslationManager.Translation.ShowFadeInButtonsOnHover;
         

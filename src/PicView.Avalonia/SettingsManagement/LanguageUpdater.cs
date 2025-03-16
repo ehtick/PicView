@@ -5,7 +5,7 @@ namespace PicView.Avalonia.SettingsManagement;
 
 public static class LanguageUpdater
 {
-    public static async Task UpdateLanguageAsync(MainViewModel vm, bool settingsExists)
+    public static async Task UpdateLanguageAsync(TranslationViewModel translationViewModel, PicViewerModel picViewerModel, bool settingsExists)
     {
         if (settingsExists)
         {
@@ -16,36 +16,36 @@ public static class LanguageUpdater
             await TranslationManager.DetermineAndLoadLanguage().ConfigureAwait(false);
         }
 
-        vm.UpdateLanguage();
+        translationViewModel.UpdateLanguage();
 
-        vm.GetIsFlippedTranslation = vm.ScaleX == 1 ? vm.Flip : vm.UnFlip;
+        translationViewModel.IsFlipped = picViewerModel.ScaleX == 1 ? translationViewModel.Flip : translationViewModel.UnFlip;
         
-        vm.GetIsShowingUITranslation = !Settings.UIProperties.ShowInterface ? vm.ShowUI : vm.HideUI;
+        translationViewModel.IsShowingUI = !Settings.UIProperties.ShowInterface ? translationViewModel.ShowUI : translationViewModel.HideUI;
         
-        vm.GetIsScrollingTranslation = Settings.Zoom.ScrollEnabled ?
+        translationViewModel.IsScrolling = Settings.Zoom.ScrollEnabled ?
             TranslationManager.Translation.ScrollingEnabled : TranslationManager.Translation.ScrollingDisabled;
         
-        vm.GetIsShowingBottomGalleryTranslation = Settings.Gallery.IsBottomGalleryShown ?
+        translationViewModel.IsShowingBottomGallery = Settings.Gallery.IsBottomGalleryShown ?
             TranslationManager.Translation.HideBottomGallery :
             TranslationManager.Translation.ShowBottomGallery;
         
-        vm.GetIsLoopingTranslation = Settings.UIProperties.Looping
+        translationViewModel.IsLooping = Settings.UIProperties.Looping
             ? TranslationManager.Translation.LoopingEnabled
             : TranslationManager.Translation.LoopingDisabled;
         
-        vm.GetIsCtrlZoomTranslation = Settings.Zoom.CtrlZoom
+        translationViewModel.IsCtrlToZoom = Settings.Zoom.CtrlZoom
             ? TranslationManager.Translation.CtrlToZoom
             : TranslationManager.Translation.ScrollToZoom;
         
-        vm.GetIsShowingBottomToolbarTranslation = Settings.UIProperties.ShowBottomNavBar
+        translationViewModel.IsShowingBottomToolbar = Settings.UIProperties.ShowBottomNavBar
             ? TranslationManager.Translation.HideBottomToolbar
             : TranslationManager.Translation.ShowBottomToolbar;
         
-        vm.GetIsShowingFadingUIButtonsTranslation = Settings.UIProperties.ShowAltInterfaceButtons
+        translationViewModel.IsShowingFadingUIButtons = Settings.UIProperties.ShowAltInterfaceButtons
             ? TranslationManager.Translation.DisableFadeInButtonsOnHover
             : TranslationManager.Translation.ShowFadeInButtonsOnHover;
         
-        vm.GetIsUsingTouchpadTranslation = Settings.Zoom.IsUsingTouchPad
+        translationViewModel.IsUsingTouchpad = Settings.Zoom.IsUsingTouchPad
             ? TranslationManager.Translation.UsingTouchpad
             : TranslationManager.Translation.UsingMouse;
     }

@@ -31,16 +31,16 @@
             Foreground="{DynamicResource MainTextColor}"
             IconHeight="12"
             IconWidth="12"
-            IsEnabled="{CompiledBinding FileInfo,
+            IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             IsTabStop="False"
             Margin="0"
-            ToolTip.Tip="{CompiledBinding GetIsFlippedTranslation,
+            ToolTip.Tip="{CompiledBinding Translation.IsFlipped,
                                           Mode=OneWay}"
             Width="30"
             x:Name="FlipButton">
             <Button.RenderTransform>
-                <ScaleTransform ScaleX="{CompiledBinding ScaleX}" />
+                <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX}" />
             </Button.RenderTransform>
         </customControls:IconButton>
 
@@ -55,11 +55,11 @@
             Icon="{StaticResource RefreshCcwDot}"
             IconHeight="13"
             IconWidth="13"
-            IsEnabled="{CompiledBinding FileInfo,
+            IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             IsTabStop="False"
             Margin="0"
-            ToolTip.Tip="{CompiledBinding RotateRight}"
+            ToolTip.Tip="{CompiledBinding Translation.RotateRight}"
             Width="30"
             x:Name="RotateRightButton" />
 
@@ -74,7 +74,7 @@
             Foreground="{DynamicResource MainTextColor}"
             IconHeight="17"
             IconWidth="17"
-            IsEnabled="{CompiledBinding FileInfo,
+            IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             IsTabStop="False"
             Name="GalleryButton"

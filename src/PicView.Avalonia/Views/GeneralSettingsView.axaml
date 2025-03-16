@@ -21,7 +21,7 @@
                 FontSize="14"
                 Foreground="{StaticResource SecondaryTextColor}"
                 Margin="0,20,0,20"
-                Text="{CompiledBinding ApplicationStartup,
+                Text="{CompiledBinding Translation.ApplicationStartup,
                                        Mode=OneWay}" />
             <ComboBox
                 Background="{DynamicResource SecondaryBackgroundColor}"
@@ -32,8 +32,8 @@
                 Padding="5,7,0,7"
                 Width="300"
                 x:Name="ApplicationStartupBox">
-                <ComboBoxItem Content="{CompiledBinding None, Mode=OneWay}" />
-                <ComboBoxItem Content="{CompiledBinding OpenLastFile, Mode=OneWay}" />
+                <ComboBoxItem Content="{CompiledBinding Translation.None, Mode=OneWay}" />
+                <ComboBoxItem Content="{CompiledBinding Translation.OpenLastFile, Mode=OneWay}" />
             </ComboBox>
 
             <TextBlock
@@ -42,7 +42,7 @@
                 FontSize="14"
                 Foreground="{StaticResource SecondaryTextColor}"
                 Margin="0,20,0,20"
-                Text="{CompiledBinding WindowManagement,
+                Text="{CompiledBinding Translation.WindowManagement,
                                        Mode=OneWay}" />
 
             <ToggleButton
@@ -59,7 +59,7 @@
                     Margin="0"
                     MaxWidth="240"
                     Padding="0,1,5,0"
-                    Text="{CompiledBinding StayTopMost,
+                    Text="{CompiledBinding Translation.StayTopMost,
                                            Mode=OneWay}" />
             </ToggleButton>
 
@@ -76,7 +76,7 @@
                     Margin="0"
                     MaxWidth="240"
                     Padding="0,1,5,0"
-                    Text="{CompiledBinding StayCentered,
+                    Text="{CompiledBinding Translation.StayCentered,
                                            Mode=OneWay}" />
             </ToggleButton>
 
@@ -93,7 +93,7 @@
                     Margin="0"
                     MaxWidth="240"
                     Padding="0,1,5,0"
-                    Text="{CompiledBinding OpenInSameWindow,
+                    Text="{CompiledBinding Translation.OpenInSameWindow,
                                            Mode=OneWay}" />
             </ToggleButton>
 
@@ -110,7 +110,7 @@
                     Margin="0"
                     MaxWidth="240"
                     Padding="0,1,5,0"
-                    Text="{CompiledBinding ShowConfirmationOnEsc,
+                    Text="{CompiledBinding Translation.ShowConfirmationOnEsc,
                                            Mode=OneWay}" />
             </ToggleButton>
 

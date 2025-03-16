@@ -24,7 +24,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding SourceFolder}"
+                    Text="{CompiledBinding Translation.SourceFolder}"
                     Width="130" />
                 <customControls:FuncTextBox
                     Classes="hover TStyle"
@@ -45,7 +45,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding OutputFolder}"
+                    Text="{CompiledBinding Translation.OutputFolder}"
                     Width="130" />
                 <customControls:FuncTextBox
                     Classes="hover TStyle"
@@ -66,7 +66,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding ConvertTo,
+                    Text="{CompiledBinding Translation.ConvertTo,
                                            Mode=OneWay}"
                     Width="130" />
                 <ComboBox
@@ -82,7 +82,7 @@
                     SelectedItem="NoConversion"
                     Width="195"
                     x:Name="ConversionComboBox">
-                    <ComboBoxItem Content="{CompiledBinding NoConversion, Mode=OneWay}" x:Name="NoConversion" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.NoConversion, Mode=OneWay}" x:Name="NoConversion" />
                     <ComboBoxItem Content=".png" x:Name="PngItem" />
                     <ComboBoxItem Content=".jpg" x:Name="JpgItem" />
                     <ComboBoxItem Content=".webp" x:Name="WebpItem" />
@@ -96,7 +96,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Compression,
+                    Text="{CompiledBinding Translation.Compression,
                                            Mode=OneWay}"
                     Width="130" />
                 <ComboBox
@@ -112,9 +112,9 @@
                     SelectedItem="Lossless"
                     Width="195"
                     x:Name="CompressionComboBox">
-                    <ComboBoxItem Content="{CompiledBinding Lossless, Mode=OneWay}" x:Name="Lossless" />
-                    <ComboBoxItem Content="{CompiledBinding Lossy, Mode=OneWay}" x:Name="Lossy" />
-                    <ComboBoxItem Content="{CompiledBinding None, Mode=OneWay}" x:Name="None" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.Lossless, Mode=OneWay}" x:Name="Lossless" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.Lossy, Mode=OneWay}" x:Name="Lossy" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.None, Mode=OneWay}" x:Name="None" />
                 </ComboBox>
             </StackPanel>
 
@@ -123,7 +123,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Quality,
+                    Text="{CompiledBinding Translation.Quality,
                                            Mode=OneWay}"
                     Width="130" />
 
@@ -153,7 +153,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Resize,
+                    Text="{CompiledBinding Translation.Resize,
                                            Mode=OneWay}"
                     Width="130"
                     x:Name="ResizeTextBlock" />
@@ -170,11 +170,11 @@
                     SelectedItem="NoResizeBox"
                     Width="195"
                     x:Name="ResizeComboBox">
-                    <ComboBoxItem Content="{CompiledBinding NoResize}" x:Name="NoResizeBox" />
-                    <ComboBoxItem Content="{CompiledBinding Width}" x:Name="WidthResizeBox" />
-                    <ComboBoxItem Content="{CompiledBinding Height}" x:Name="HeightResizeBox" />
-                    <ComboBoxItem Content="{CompiledBinding WidthAndHeight}" x:Name="WidthAndHeightResizeBox" />
-                    <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="PercentageResizeBox" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.NoResize}" x:Name="NoResizeBox" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="WidthResizeBox" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="HeightResizeBox" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.WidthAndHeight}" x:Name="WidthAndHeightResizeBox" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="PercentageResizeBox" />
                 </ComboBox>
             </StackPanel>
 
@@ -186,14 +186,14 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Width}"
+                    Text="{CompiledBinding Translation.Width}"
                     Width="130"
                     x:Name="WidthTextBlock" />
 
                 <customControls:NumTextBox
                     Classes="hover TStyle"
                     Margin="11,0,10,0"
-                    Text="{CompiledBinding PixelWidth,
+                    Text="{CompiledBinding PicViewer.PixelWidth,
                                            Mode=OneTime}"
                     Width="195"
                     x:Name="WidthValueBox" />
@@ -207,14 +207,14 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Height}"
+                    Text="{CompiledBinding Translation.Height}"
                     Width="130"
                     x:Name="HeightTextBlock" />
 
                 <customControls:NumTextBox
                     Classes="hover TStyle"
                     Margin="11,0,10,0"
-                    Text="{CompiledBinding PixelHeight,
+                    Text="{CompiledBinding PicViewer.PixelHeight,
                                            Mode=OneTime}"
                     Width="195"
                     x:Name="HeightValueBox" />
@@ -228,14 +228,14 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Width}"
+                    Text="{CompiledBinding Translation.Width}"
                     Width="130"
                     x:Name="WidthAndHeightWidthTextBlock" />
 
                 <customControls:NumTextBox
                     Classes="hover TStyle"
                     Margin="11,0,10,0"
-                    Text="{CompiledBinding PixelWidth,
+                    Text="{CompiledBinding PicViewer.PixelWidth,
                                            Mode=OneTime}"
                     Width="195"
                     x:Name="WidthAndHeightWidthValueBox" />
@@ -362,14 +362,14 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Height}"
+                    Text="{CompiledBinding Translation.Height}"
                     Width="130"
                     x:Name="WidthAndHeightHeightTextBlock" />
 
                 <customControls:NumTextBox
                     Classes="hover TStyle"
                     Margin="11,0,10,0"
-                    Text="{CompiledBinding PixelHeight,
+                    Text="{CompiledBinding PicViewer.PixelHeight,
                                            Mode=OneTime}"
                     Width="195"
                     x:Name="WidthAndHeightHeightValueBox" />
@@ -383,7 +383,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding Percentage}"
+                    Text="{CompiledBinding Translation.Percentage}"
                     Width="130"
                     x:Name="PercentageTextBlock" />
 
@@ -405,7 +405,7 @@
                 <TextBlock
                     Classes="txt"
                     Margin="5,0,0,0"
-                    Text="{CompiledBinding GenerateThumbnails,
+                    Text="{CompiledBinding Translation.GenerateThumbnails,
                                            Mode=OneWay}"
                     Width="130"
                     x:Name="GenerateThumbnailsTextBlock" />
@@ -422,7 +422,7 @@
                     SelectedItem="NoThumbnailsItem"
                     Width="195"
                     x:Name="ThumbnailsComboBox">
-                    <ComboBoxItem Content="{CompiledBinding None}" x:Name="NoThumbnailsItem" />
+                    <ComboBoxItem Content="{CompiledBinding Translation.None}" x:Name="NoThumbnailsItem" />
                     <ComboBoxItem Content="1" />
                     <ComboBoxItem Content="2" />
                     <ComboBoxItem Content="3" />
@@ -448,10 +448,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 1" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -469,7 +469,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -485,9 +485,9 @@
                             SelectedItem="Thumb1PercentageItem"
                             Width="195"
                             x:Name="Thumb1ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb1PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb1WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb1HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb1PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb1WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb1HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -514,10 +514,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 2" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -535,7 +535,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -551,9 +551,9 @@
                             SelectedItem="Thumb2PercentageItem"
                             Width="195"
                             x:Name="Thumb2ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb2PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb2WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb2HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb2PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb2WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb2HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -580,10 +580,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 3" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -601,7 +601,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -617,9 +617,9 @@
                             SelectedItem="Thumb3PercentageItem"
                             Width="195"
                             x:Name="Thumb3ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb3PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb3WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb3HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb3PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb3WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb3HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -646,10 +646,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 4" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -667,7 +667,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -683,9 +683,9 @@
                             SelectedItem="Thumb4PercentageItem"
                             Width="195"
                             x:Name="Thumb4ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb4PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb4WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb4HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb4PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb4WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb4HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -711,10 +711,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 5" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -732,7 +732,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -748,9 +748,9 @@
                             SelectedItem="Thumb5PercentageItem"
                             Width="195"
                             x:Name="Thumb5ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb5PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb5WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb5HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb5PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb5WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb5HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -776,10 +776,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 6" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -797,7 +797,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -813,9 +813,9 @@
                             SelectedItem="Thumb6PercentageItem"
                             Width="195"
                             x:Name="Thumb6ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb6PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb61WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb6HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb6PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb61WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb6HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -842,10 +842,10 @@
                             Classes="txt"
                             Margin="8,0,0,0"
                             Width="130">
-                            <Run Text="{CompiledBinding Thumbnail}" />
+                            <Run Text="{CompiledBinding Translation.Thumbnail}" />
                             <Run Text=" 7" />
                             <LineBreak />
-                            <Run Text="{CompiledBinding OutputFolder}" />
+                            <Run Text="{CompiledBinding Translation.OutputFolder}" />
                         </TextBlock>
                         <customControls:FuncTextBox
                             Classes="hover TStyle"
@@ -863,7 +863,7 @@
                         <TextBlock
                             Classes="txt"
                             Margin="8,0,0,0"
-                            Text="{CompiledBinding Resize}"
+                            Text="{CompiledBinding Translation.Resize}"
                             Width="125" />
 
                         <ComboBox
@@ -879,9 +879,9 @@
                             SelectedItem="Thumb7PercentageItem"
                             Width="195"
                             x:Name="Thumb7ComboBox">
-                            <ComboBoxItem Content="{CompiledBinding Percentage}" x:Name="Thumb7PercentageItem" />
-                            <ComboBoxItem Content="{CompiledBinding Width}" x:Name="Thumb7WidthItem" />
-                            <ComboBoxItem Content="{CompiledBinding Height}" x:Name="Thumb7HeightItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Percentage}" x:Name="Thumb7PercentageItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Width}" x:Name="Thumb7WidthItem" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.Height}" x:Name="Thumb7HeightItem" />
                         </ComboBox>
 
                         <customControls:FuncTextBox
@@ -937,7 +937,7 @@
                 <TextBlock
                     Classes="txt"
                     Padding="15,0"
-                    Text="{CompiledBinding Reset,
+                    Text="{CompiledBinding Translation.Reset,
                                            Mode=OneWay}"
                     TextAlignment="Center"
                     x:Name="CancelButtonTextBlock" />
@@ -952,7 +952,7 @@
                 <TextBlock
                     Classes="txt"
                     Padding="15,0"
-                    Text="{CompiledBinding Start,
+                    Text="{CompiledBinding Translation.Start,
                                            Mode=OneWay}"
                     TextAlignment="Center" />
             </Button>

@@ -12,7 +12,7 @@ public class CropKeyboardManager(CropControl control)
 {
     public async Task KeyDownHandler(KeyEventArgs e)
     {
-        if (control.DataContext is not ImageCropperViewModel vm)
+        if (control.DataContext is not MainViewModel vm)
         {
             return;
         }
@@ -20,7 +20,7 @@ public class CropKeyboardManager(CropControl control)
         switch (e.Key)
         {
             case Key.Enter:
-                await vm.CropImageCommand.Execute();
+                await vm.Crop.CropImageCommand.Execute();
                 return;
             case Key.Escape:
                 CropFunctions.CloseCropControl(UIHelper.GetMainView.DataContext as MainViewModel);
@@ -85,11 +85,11 @@ public class CropKeyboardManager(CropControl control)
                 case "Save":
                 case "SaveAs":
                 case "GalleryClick":
-                    await vm.CropImageCommand.Execute();
+                    await vm.Crop.CropImageCommand.Execute();
                     return;
                 case "CopyImage":
                 case "CopyFile":
-                    await vm.CopyCropImageCommand.Execute();
+                    await vm.Crop.CopyCropImageCommand.Execute();
                     return;
             }
         }

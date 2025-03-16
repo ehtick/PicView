@@ -8,11 +8,10 @@ using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.ImageEffects;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.LockScreen;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Wallpaper;
 using PicView.Avalonia.WindowBehavior;
@@ -26,9 +25,16 @@ using ImageViewer = PicView.Avalonia.Views.ImageViewer;
 
 namespace PicView.Avalonia.ViewModels;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : ReactiveObject
 {
     public readonly IPlatformSpecificService? PlatformService;
+    public ImageCropperViewModel? Crop { get; set; }
+    
+    public TranslationViewModel Translation { get; } = new();
+    
+    public PicViewerModel PicViewer { get; } = new();
+    
+    public ExifViewModel Exif { get; } = new();
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService)
     {
@@ -285,82 +291,6 @@ public class MainViewModel : ViewModelBase
         // Only use for unit test
     }
 
-    #region Image
-
-    public object? ImageSource
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public object? SecondaryImageSource
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public ImageType ImageType
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public double ImageWidth
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public double ImageHeight
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public double SecondaryImageWidth
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public Brush? ImageBackground
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsShowingSideBySide
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public double ScrollViewerWidth
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = double.NaN;
-
-    public double ScrollViewerHeight
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = double.NaN;
-
-    public double AspectRatio
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public ImageEffectConfig? EffectConfig
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    #endregion
-
     #region Gallery
 
     public Thickness GalleryMargin
@@ -427,19 +357,19 @@ public class MainViewModel : ViewModelBase
     {
         get
         {
-            if (!SettingsManager.Settings.Gallery.IsBottomGalleryShown)
+            if (!Settings.Gallery.IsBottomGalleryShown)
             {
                 return 0;
             }
 
-            if (SettingsManager.Settings.WindowProperties.Fullscreen)
+            if (Settings.WindowProperties.Fullscreen)
             {
-                return SettingsManager.Settings.Gallery.IsBottomGalleryShown
+                return Settings.Gallery.IsBottomGalleryShown
                     ? GetBottomGalleryItemHeight + SizeDefaults.ScrollbarSize
                     : 0;
             }
 
-            if (!SettingsManager.Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsUIShown)
+            if (!Settings.Gallery.ShowBottomGalleryInHiddenUI && !IsUIShown)
             {
                 return 0;
             }
@@ -739,6 +669,22 @@ public class MainViewModel : ViewModelBase
     #endregion Commands
 
     #region Fields
+    
+    #region Sorting Order
+
+    public FileListHelper.SortFilesBy SortOrder
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public bool IsAscending
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    #endregion Sorting Order
 
     #region Booleans
 
@@ -759,7 +705,7 @@ public class MainViewModel : ViewModelBase
         get;
         set
         {
-            SettingsManager.Settings.Zoom.AvoidZoomingOut = value;
+            Settings.Zoom.AvoidZoomingOut = value;
             this.RaiseAndSetIfChanged(ref field, value);
         }
     }
@@ -858,7 +804,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.ImageScaling.StretchImage = value;
+            Settings.ImageScaling.StretchImage = value;
             WindowResizing.SetSize(this);
         }
     }
@@ -881,7 +827,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.WindowProperties.KeepCentered = value;
+            Settings.WindowProperties.KeepCentered = value;
         }
     }
 
@@ -891,7 +837,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.UIProperties.OpenInSameWindow = value;
+            Settings.UIProperties.OpenInSameWindow = value;
         }
     }
 
@@ -901,7 +847,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.UIProperties.ShowConfirmationOnEsc = value;
+            Settings.UIProperties.ShowConfirmationOnEsc = value;
         }
     }
 
@@ -917,11 +863,17 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.Zoom.IsUsingTouchPad = value;
+            Settings.Zoom.IsUsingTouchPad = value;
         }
     }
 
     #endregion Booleans
+    
+    public Brush? ImageBackground
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public Thickness TopScreenMargin
     {
@@ -964,13 +916,6 @@ public class MainViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    // Used to flip the flip button
-    public int ScaleX
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = 1;
-
     public UserControl? CurrentView
     {
         get;
@@ -998,7 +943,7 @@ public class MainViewModel : ViewModelBase
         {
             var roundedValue = Math.Round(value, 2);
             this.RaiseAndSetIfChanged(ref field, roundedValue);
-            SettingsManager.Settings.UIProperties.SlideShowTimer = roundedValue;
+            Settings.UIProperties.SlideShowTimer = roundedValue;
         }
     }
 
@@ -1008,7 +953,7 @@ public class MainViewModel : ViewModelBase
         set
         {
             this.RaiseAndSetIfChanged(ref field, value);
-            SettingsManager.Settings.UIProperties.NavSpeed = value;
+            Settings.UIProperties.NavSpeed = value;
         }
     }
 
@@ -1019,344 +964,10 @@ public class MainViewModel : ViewModelBase
         {
             var roundedValue = Math.Round(value, 2);
             this.RaiseAndSetIfChanged(ref field, roundedValue);
-            SettingsManager.Settings.Zoom.ZoomSpeed = roundedValue;
+            Settings.Zoom.ZoomSpeed = roundedValue;
         }
     }
-
-    #region strings
-
-    public string? GetIsShowingUITranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsShowingBottomToolbarTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsShowingFadingUIButtonsTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsUsingTouchpadTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsFlippedTranslation
-    {
-        get => ScaleX == -1 ? UnFlip : Flip;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsShowingBottomGalleryTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsLoopingTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsScrollingTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetIsCtrlZoomTranslation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetPrintSizeInch
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetPrintSizeCm
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetSizeMp
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetResolution
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetBitDepth
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetAspectRatio
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetLatitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetLongitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetAltitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GoogleLink
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? BingLink
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetAuthors
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetDateTaken
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetCopyright
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetTitle
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetSubject
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetSoftware
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetResolutionUnit
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetColorRepresentation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetCompression
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetCompressedBitsPixel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetCameraMaker
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetCameraModel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetExposureProgram
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetExposureTime
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetExposureBias
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetFNumber
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetMaxAperture
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetDigitalZoom
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetFocalLength35Mm
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetFocalLength
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetISOSpeed
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetMeteringMode
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetContrast
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetSaturation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetSharpness
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetWhiteBalance
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetFlashMode
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetFlashEnergy
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetLightSource
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetBrightness
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetPhotometricInterpretation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetOrientation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetExifVersion
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetLensModel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GetLensMaker
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    #endregion strings
-
+    
     #region Window Properties
 
     public string? Title
@@ -1455,21 +1066,7 @@ public class MainViewModel : ViewModelBase
 
     #region Methods
 
-    #region Sorting Order
-
-    public FileListHelper.SortFilesBy SortOrder
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsAscending
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    #endregion Sorting Order
+    #region Tasks
 
     private async Task ResizeImageByPercentage(int percentage) =>
         await ConversionHelper.ResizeImageByPercentage(percentage, this).ConfigureAwait(false);
@@ -1534,7 +1131,9 @@ public class MainViewModel : ViewModelBase
     private void SetGalleryItemStretch(string value) => GalleryHelper.SetGalleryItemStretch(value, this);
 
     public async Task StartSlideShowTask(int milliseconds) =>
-        await Avalonia.Navigation.Slideshow.StartSlideshow(this, milliseconds);
+        await Slideshow.StartSlideshow(this, milliseconds);
+    
+    #endregion
 
     #endregion Methods
 }

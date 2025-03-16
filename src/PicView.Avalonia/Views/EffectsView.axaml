@@ -17,7 +17,7 @@
     </UserControl.Styles>
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ContextMenu">
-            <MenuItem Command="{CompiledBinding SaveFileCommand}" Header="{CompiledBinding Save, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding SaveFileCommand}" Header="{CompiledBinding Translation.Save, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource SaveGeometry}"
@@ -27,7 +27,7 @@
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding SaveFileAsCommand}" Header="{CompiledBinding SaveAs}">
+            <MenuItem Command="{CompiledBinding SaveFileAsCommand}" Header="{CompiledBinding Translation.SaveAs}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource SaveGeometry}"
@@ -37,7 +37,7 @@
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding CopyImageCommand}" Header="{CompiledBinding CopyImage, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding CopyImageCommand}" Header="{CompiledBinding Translation.CopyImage, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CopyGeometry}"
@@ -50,9 +50,9 @@
             <Separator />
             <MenuItem
                 Command="{CompiledBinding SetAsWallpaperFilledCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                    FallbackValue=''}"
-                Header="{CompiledBinding SetAsWallpaper,
+                Header="{CompiledBinding Translation.SetAsWallpaper,
                                          Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
@@ -64,7 +64,7 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="{CompiledBinding ClearEffects}" x:Name="ClearEffectsItem">
+            <MenuItem Header="{CompiledBinding Translation.ClearEffects}" x:Name="ClearEffectsItem">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -91,7 +91,7 @@
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                         FontSize="14"
                         Padding="10,5"
-                        Text="{CompiledBinding Lighting}" />
+                        Text="{CompiledBinding Translation.Lighting}" />
                 </Expander.Header>
                 <StackPanel Margin="15,20">
 
@@ -100,7 +100,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding Brightness}"
+                            Text="{CompiledBinding Translation.Brightness}"
                             VerticalAlignment="Center" />
 
                         <Rectangle
@@ -158,7 +158,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding Contrast}"
+                            Text="{CompiledBinding Translation.Contrast}"
                             VerticalAlignment="Center" />
 
                         <Rectangle
@@ -228,7 +228,7 @@
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                         FontSize="14"
                         Padding="10,5"
-                        Text="{CompiledBinding Effects}" />
+                        Text="{CompiledBinding Translation.Effects}" />
                 </Expander.Header>
                 <StackPanel Margin="15,0">
 
@@ -237,7 +237,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding Blur}"
+                            Text="{CompiledBinding Translation.Blur}"
                             VerticalAlignment="Center" />
                     </Panel>
 
@@ -279,7 +279,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding PencilSketch}"
+                            Text="{CompiledBinding Translation.PencilSketch}"
                             VerticalAlignment="Center" />
                     </Panel>
 
@@ -322,7 +322,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding Posterize}"
+                            Text="{CompiledBinding Translation.Posterize}"
                             VerticalAlignment="Center" />
                     </Panel>
 
@@ -365,7 +365,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding Solarize}"
+                            Text="{CompiledBinding Translation.Solarize}"
                             VerticalAlignment="Center" />
                     </Panel>
 
@@ -413,7 +413,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding BlackAndWhite}"
+                            Text="{CompiledBinding Translation.BlackAndWhite}"
                             VerticalAlignment="Center" />
                     </ToggleButton>
 
@@ -425,7 +425,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding NegativeColors}"
+                            Text="{CompiledBinding Translation.NegativeColors}"
                             VerticalAlignment="Center" />
                     </ToggleButton>
 
@@ -437,7 +437,7 @@
                         <TextBlock
                             Classes="txt"
                             HorizontalAlignment="Left"
-                            Text="{CompiledBinding OldMovie}"
+                            Text="{CompiledBinding Translation.OldMovie}"
                             VerticalAlignment="Center" />
                     </ToggleButton>
 

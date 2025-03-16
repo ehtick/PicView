@@ -21,7 +21,7 @@
 
         <Panel.ContextMenu>
             <ContextMenu Opened="MenuBase_OnOpened">
-                <MenuItem Header="{CompiledBinding Stretch, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.Stretch, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -31,48 +31,48 @@
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Uniform"
-                        Header="{CompiledBinding Uniform,
+                        Header="{CompiledBinding Translation.Uniform,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsUniformMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="UniformToFill"
-                        Header="{CompiledBinding UniformToFill,
+                        Header="{CompiledBinding Translation.UniformToFill,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsUniformToFillMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Fill"
-                        Header="{CompiledBinding Fill,
+                        Header="{CompiledBinding Translation.Fill,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsFillMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="None"
-                        Header="{CompiledBinding None,
+                        Header="{CompiledBinding Translation.None,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsNoneMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="Square"
-                        Header="{CompiledBinding Square,
+                        Header="{CompiledBinding Translation.Square,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsSquareMenuChecked}"
                         ToggleType="Radio" />
                     <MenuItem
                         Command="{CompiledBinding GalleryItemStretchCommand}"
                         CommandParameter="FillSquare"
-                        Header="{CompiledBinding FillSquare,
+                        Header="{CompiledBinding Translation.FillSquare,
                                                  Mode=OneWay}"
                         IsChecked="{CompiledBinding IsFillSquareMenuChecked}"
                         ToggleType="Radio" />
                 </MenuItem>
                 <MenuItem
-                    Header="{CompiledBinding ExpandedGalleryItemSize,
+                    Header="{CompiledBinding Translation.ExpandedGalleryItemSize,
                                              Mode=OneWay}"
                     PointerPressed="Flyout_OnPointerPressed"
                     StaysOpenOnClick="True">
@@ -96,7 +96,7 @@
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding HideBottomGallery, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding Translation.HideBottomGallery, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"

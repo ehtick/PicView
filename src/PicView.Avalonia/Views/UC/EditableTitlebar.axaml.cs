@@ -142,14 +142,14 @@ public partial class EditableTitlebar : UserControl
             return;
         }
 
-        if (vm.FileInfo is { Exists: false })
+        if (vm.PicViewer.FileInfo is { Exists: false })
         {
             return;
         }
         
         vm.IsLoading = true;
-        var oldPath = vm.FileInfo.FullName;
-        var newPath = Path.Combine(vm.FileInfo.DirectoryName, TextBox.Text);
+        var oldPath = vm.PicViewer.FileInfo.FullName;
+        var newPath = Path.Combine(vm.PicViewer.FileInfo.DirectoryName, TextBox.Text);
 
         if (File.Exists(newPath))
         {
@@ -219,13 +219,13 @@ public partial class EditableTitlebar : UserControl
             return;
         }
         
-        if (vm.FileInfo is null)
+        if (vm.PicViewer.FileInfo is null)
         {
             return;
         }
         
-        TextBox.Text = vm.FileInfo.Name;
-        var filename = vm.FileInfo.Name;
+        TextBox.Text = vm.PicViewer.FileInfo.Name;
+        var filename = vm.PicViewer.FileInfo.Name;
         var start = TextBox.Text.Length - filename.Length;
         var end = Path.GetFileNameWithoutExtension(filename).Length;
         TextBox.SelectionStart = start;

@@ -119,15 +119,15 @@ public static class Rotation
     
     public static void Flip(MainViewModel vm)
     {
-        if (vm.ScaleX == 1)
+        if (vm.PicViewer.ScaleX == 1)
         {
-            vm.ScaleX = -1;
-            vm.GetIsFlippedTranslation = vm.UnFlip;
+            vm.PicViewer.ScaleX = -1;
+            vm.Translation.IsFlipped = vm.Translation.UnFlip;
         }
         else
         {
-            vm.ScaleX = 1;
-            vm.GetIsFlippedTranslation = vm.Flip;
+            vm.PicViewer.ScaleX = 1;
+            vm.Translation.IsFlipped = vm.Translation.Flip;
         }
 
         Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });

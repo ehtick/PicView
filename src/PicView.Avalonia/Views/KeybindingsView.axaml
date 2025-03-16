@@ -21,13 +21,13 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="16"
             Margin="10,20,10,15"
-            Text="{CompiledBinding ApplicationShortcuts}"
+            Text="{CompiledBinding Translation.ApplicationShortcuts}"
             TextAlignment="Center"
             x:Name="ApplicationShortcutsTextBlock" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-            Text="{CompiledBinding ChangeKeybindingText}"
+            Text="{CompiledBinding Translation.ChangeKeybindingText}"
             TextAlignment="Center"
             x:Name="ChangeKeybindingTextBlock" />
         <Button
@@ -35,7 +35,7 @@
             HorizontalAlignment="Center"
             Margin="0,15,0,25"
             x:Name="DefaultButton">
-            <TextBlock Classes="txt" Text="{CompiledBinding ResetButtonText}" />
+            <TextBlock Classes="txt" Text="{CompiledBinding Translation.ResetButtonText}" />
         </Button>
 
         <TextBlock
@@ -43,7 +43,7 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding Navigation}"
+            Text="{CompiledBinding Translation.Navigation}"
             TextAlignment="Center"
             x:Name="NavigationTextBlock" />
 
@@ -52,19 +52,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding NextImage}"
+                Text="{CompiledBinding Translation.NextImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Next"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Next"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -73,19 +73,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding AdvanceBy10Images}"
+                Text="{CompiledBinding Translation.AdvanceBy10Images}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Next10"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Next10"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -94,19 +94,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding AdvanceBy100Images}"
+                Text="{CompiledBinding Translation.AdvanceBy100Images}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Next100"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Next100"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -115,18 +115,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding PrevImage}"
+                Text="{CompiledBinding Translation.PrevImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Prev"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Prev"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -135,19 +135,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding GoBackBy10Images}"
+                Text="{CompiledBinding Translation.GoBackBy10Images}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Prev10"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Prev10"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -156,19 +156,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding GoBackBy100Images}"
+                Text="{CompiledBinding Translation.GoBackBy100Images}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Prev100"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Prev100"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -177,19 +177,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding LastImage}"
+                Text="{CompiledBinding Translation.LastImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="Last"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Last"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -198,18 +198,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FirstImage}"
+                Text="{CompiledBinding Translation.FirstImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="First"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="First"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -217,19 +217,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding NextFolder}"
+                Text="{CompiledBinding Translation.NextFolder}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="False"
                 Classes="hover TStyle"
                 MethodName="NextFolder"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="NextFolder"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -240,18 +240,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding PrevFolder}"
+                Text="{CompiledBinding Translation.PrevFolder}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="PrevFolder"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="PrevFolder"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -259,18 +259,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding SelectGalleryThumb}"
+                Text="{CompiledBinding Translation.SelectGalleryThumb}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="GalleryClick"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="GalleryClick"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -278,18 +278,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleLooping}"
+                Text="{CompiledBinding Translation.ToggleLooping}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ToggleLooping"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ToggleLooping"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -298,25 +298,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding ScrollAndRotate}"
+            Text="{CompiledBinding Translation.ScrollAndRotate}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding RotateRight}"
+                Text="{CompiledBinding Translation.RotateRight}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Up"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Up"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -324,7 +324,7 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollUp}"
+                Text="{CompiledBinding Translation.ScrollUp}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
@@ -349,18 +349,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollUp}"
+                Text="{CompiledBinding Translation.ScrollUp}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ScrollUp"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ScrollUp"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -368,18 +368,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding RotateLeft}"
+                Text="{CompiledBinding Translation.RotateLeft}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Down"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Down"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -387,7 +387,7 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollDown}"
+                Text="{CompiledBinding Translation.ScrollDown}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
@@ -410,18 +410,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollDown}"
+                Text="{CompiledBinding Translation.ScrollDown}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ScrollDown"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ScrollDown"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -429,18 +429,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollToTop}"
+                Text="{CompiledBinding Translation.ScrollToTop}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ScrollToTop"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ScrollToTop"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -448,18 +448,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ScrollToBottom}"
+                Text="{CompiledBinding Translation.ScrollToBottom}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ScrollToBottom"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ScrollToBottom"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -467,18 +467,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleScroll}"
+                Text="{CompiledBinding Translation.ToggleScroll}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ToggleScroll"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ToggleScroll"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -486,18 +486,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding GetIsCtrlZoomTranslation}"
+                Text="{CompiledBinding Translation.IsCtrlToZoom}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ChangeCtrlZoom"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ChangeCtrlZoom"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -506,19 +506,19 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding Zoom}"
+            Text="{CompiledBinding Translation.Zoom}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ZoomIn}"
+                Text="{CompiledBinding Translation.ZoomIn}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ZoomIn"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
@@ -534,12 +534,12 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ZoomOut}"
+                Text="{CompiledBinding Translation.ZoomOut}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ZoomOut"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
@@ -555,22 +555,22 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Pan}"
+                Text="{CompiledBinding Translation.Pan}"
                 Width="170" />
             <TextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
                 Classes="hover TStyle"
                 Foreground="{DynamicResource DisabledTextColor}"
                 IsReadOnly="True"
-                Text="{CompiledBinding MouseDrag}"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                Text="{CompiledBinding Translation.MouseDrag}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <TextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
                 Classes="hover TStyle"
                 Foreground="{DynamicResource DisabledTextColor}"
                 IsReadOnly="True"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -578,19 +578,19 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ResetZoom}"
+                Text="{CompiledBinding Translation.ResetZoom}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ResetZoom"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <TextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
                 Classes="hover TStyle"
                 Foreground="{DynamicResource DisabledTextColor}"
                 IsReadOnly="True"
-                Text="{CompiledBinding DoubleClick}"
+                Text="{CompiledBinding Translation.DoubleClick}"
                 Width="140" />
         </StackPanel>
 
@@ -599,25 +599,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding ImageControl}"
+            Text="{CompiledBinding Translation.ImageControl}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding SideBySide}"
+                Text="{CompiledBinding Translation.SideBySide}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="SideBySide"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="SideBySide"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -625,18 +625,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Stretch}"
+                Text="{CompiledBinding Translation.Stretch}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Stretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Stretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -644,18 +644,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Flip}"
+                Text="{CompiledBinding Translation.Flip}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Flip"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Flip"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -668,13 +668,13 @@
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Crop"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Crop"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -682,18 +682,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ChangeBackground}"
+                Text="{CompiledBinding Translation.ChangeBackground}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ChangeBackground"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ChangeBackground"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -701,18 +701,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding OptimizeImage}"
+                Text="{CompiledBinding Translation.OptimizeImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="OptimizeImage"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="OptimizeImage"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -721,27 +721,27 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding InterfaceConfiguration}"
+            Text="{CompiledBinding Translation.InterfaceConfiguration}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding GetIsShowingUITranslation,
+                Text="{CompiledBinding Translation.IsShowingUI,
                                        Mode=OneWay}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ToggleInterface"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip,
                                               Mode=OneWay}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ToggleInterface"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip,
                                               Mode=OneWay}"
                 Width="140" />
         </StackPanel>
@@ -750,18 +750,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Slideshow}"
+                Text="{CompiledBinding Translation.Slideshow}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Slideshow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Slideshow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -769,18 +769,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ShowImageGallery}"
+                Text="{CompiledBinding Translation.ShowImageGallery}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ToggleGallery"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ToggleGallery"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -789,25 +789,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding FileManagement}"
+            Text="{CompiledBinding Translation.FileManagement}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Open}"
+                Text="{CompiledBinding Translation.Open}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Open"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Open"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -815,18 +815,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding OpenWith}"
+                Text="{CompiledBinding Translation.OpenWith}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="OpenWith"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="OpenWith"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -834,18 +834,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Reload}"
+                Text="{CompiledBinding Translation.Reload}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Reload"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Reload"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -853,18 +853,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Save}"
+                Text="{CompiledBinding Translation.Save}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Save"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Save"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -872,18 +872,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding SaveAs}"
+                Text="{CompiledBinding Translation.SaveAs}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="SaveAs"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="SaveAs"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -891,18 +891,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Print}"
+                Text="{CompiledBinding Translation.Print}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Print"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Print"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -910,18 +910,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding DeleteFile}"
+                Text="{CompiledBinding Translation.DeleteFile}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="DeleteFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="DeleteFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -929,18 +929,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding PermanentlyDelete}"
+                Text="{CompiledBinding Translation.PermanentlyDelete}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="DeleteFilePermanently"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="DeleteFilePermanently"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -948,18 +948,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding RenameFile}"
+                Text="{CompiledBinding Translation.RenameFile}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Rename"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Rename"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -967,18 +967,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FileProperties}"
+                Text="{CompiledBinding Translation.FileProperties}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ShowFileProperties"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ShowFileProperties"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -987,25 +987,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding Copy}"
+            Text="{CompiledBinding Translation.Copy}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding CopyFile}"
+                Text="{CompiledBinding Translation.CopyFile}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="CopyFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="CopyFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1013,18 +1013,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FileCopyPath}"
+                Text="{CompiledBinding Translation.FileCopyPath}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="CopyFilePath"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="CopyFilePath"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1032,18 +1032,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding CopyImage}"
+                Text="{CompiledBinding Translation.CopyImage}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="CopyImage"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="CopyImage"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1052,19 +1052,19 @@
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                 Width="170">
-                <Run Text="{CompiledBinding Copy}" />
+                <Run Text="{CompiledBinding Translation.Copy}" />
                 <Run Text=" base64" />
             </TextBlock>
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="CopyBase64"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="CopyBase64"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1075,18 +1075,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FileCut}"
+                Text="{CompiledBinding Translation.FileCut}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="CutFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="CutFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1094,18 +1094,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding FilePaste}"
+                Text="{CompiledBinding Translation.Paste}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Paste"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Paste"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1113,18 +1113,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding DuplicateFile}"
+                Text="{CompiledBinding Translation.DuplicateFile}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="DuplicateFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="DuplicateFile"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1133,25 +1133,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding WindowManagement}"
+            Text="{CompiledBinding Translation.WindowManagement}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding About}"
+                Text="{CompiledBinding Translation.About}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="AboutWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="AboutWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1159,18 +1159,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Settings}"
+                Text="{CompiledBinding Translation.Settings}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="SettingsWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="SettingsWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1178,18 +1178,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ImageInfo}"
+                Text="{CompiledBinding Translation.ImageInfo}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ImageInfoWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ImageInfoWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1197,18 +1197,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ApplicationShortcuts}"
+                Text="{CompiledBinding Translation.ApplicationShortcuts}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="KeybindingsWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="KeybindingsWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1216,18 +1216,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding BatchResize}"
+                Text="{CompiledBinding Translation.BatchResize}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="BatchResizeWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="BatchResizeWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1235,18 +1235,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Resize}"
+                Text="{CompiledBinding Translation.Resize}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="ResizeWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="ResizeWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1254,7 +1254,7 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Close}"
+                Text="{CompiledBinding Translation.Close}"
                 Width="170" />
             <TextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
@@ -1275,18 +1275,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Close}"
+                Text="{CompiledBinding Translation.Close}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Close"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Close"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1294,18 +1294,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding NewWindow}"
+                Text="{CompiledBinding Translation.NewWindow}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="NewWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="NewWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1313,18 +1313,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding CenterWindow}"
+                Text="{CompiledBinding Translation.CenterWindow}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Center"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Center"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1332,18 +1332,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding StayTopMost}"
+                Text="{CompiledBinding Translation.StayTopMost}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="SetTopMost"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="SetTopMost"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1351,7 +1351,7 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding MoveWindow}"
+                Text="{CompiledBinding Translation.MoveWindow}"
                 Width="170" />
             <TextBox
                 Background="{DynamicResource DisabledBackgroundColor}"
@@ -1372,12 +1372,12 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleFullscreen}"
+                Text="{CompiledBinding Translation.ToggleFullscreen}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Fullscreen"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip,
                                               Mode=OneWay}"
                 Width="140" />
             <TextBox
@@ -1393,14 +1393,14 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding ToggleFullscreen,
+                Text="{CompiledBinding Translation.ToggleFullscreen,
                                        Mode=OneWay}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Fullscreen"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip,
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip,
                                               Mode=OneWay}"
                 Width="140" />
             <TextBox
@@ -1415,18 +1415,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Maximize}"
+                Text="{CompiledBinding Translation.Maximize}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Maximize"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Maximize"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1435,25 +1435,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding WindowScaling}"
+            Text="{CompiledBinding Translation.WindowScaling}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding AutoFitWindow}"
+                Text="{CompiledBinding Translation.AutoFitWindow}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="AutoFitWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="AutoFitWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1463,18 +1463,18 @@
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                 Width="170">
                 <Run Text="⇔ " />
-                <Run Text="{CompiledBinding Stretch}" />
+                <Run Text="{CompiledBinding Translation.Stretch}" />
             </TextBlock>
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="AutoFitWindowAndStretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="AutoFitWindowAndStretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1482,18 +1482,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding NormalWindow}"
+                Text="{CompiledBinding Translation.NormalWindow}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="NormalWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="NormalWindow"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1503,18 +1503,18 @@
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                 Width="170">
                 <Run Text="⇔ " />
-                <Run Text="{CompiledBinding Stretch}" />
+                <Run Text="{CompiledBinding Translation.Stretch}" />
             </TextBlock>
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="NormalWindowAndStretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="NormalWindowAndStretch"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1523,25 +1523,25 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="10,10,10,15"
-            Text="{CompiledBinding SetStarRating}"
+            Text="{CompiledBinding Translation.SetStarRating}"
             TextAlignment="Center" />
 
         <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding _1Star}"
+                Text="{CompiledBinding Translation._1Star}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set1Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set1Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1549,18 +1549,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding _2Star}"
+                Text="{CompiledBinding Translation._2Star}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set2Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set2Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1568,18 +1568,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding _3Star}"
+                Text="{CompiledBinding Translation._3Star}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set3Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set3Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1587,18 +1587,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding _4Star}"
+                Text="{CompiledBinding Translation._4Star}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set4Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set4Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1606,18 +1606,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding _5Star}"
+                Text="{CompiledBinding Translation._5Star}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set5Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set2Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
 
@@ -1625,18 +1625,18 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding RemoveStarRating}"
+                Text="{CompiledBinding Translation.RemoveStarRating}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
                 MethodName="Set0Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
             <customControls:KeybindTextBox
                 Alt="True"
                 Classes="hover TStyle"
                 MethodName="Set0Star"
-                ToolTip.Tip="{CompiledBinding ChangeKeybindingTooltip}"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip}"
                 Width="140" />
         </StackPanel>
     </StackPanel>

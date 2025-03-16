@@ -261,18 +261,18 @@ public partial class ImageViewer : UserControl
             return;
         }
         int prevScaleX;
-        vm.ScaleX = vm.ScaleX == -1 ? 1 : -1;
-        if (vm.ScaleX == 1)
+        vm.PicViewer.ScaleX = vm.PicViewer.ScaleX == -1 ? 1 : -1;
+        if (vm.PicViewer.ScaleX == 1)
         {
             prevScaleX = 1;
-            vm.ScaleX = -1;
-            vm.GetIsFlippedTranslation = vm.UnFlip;
+            vm.PicViewer.ScaleX = -1;
+            vm.Translation.IsFlipped = vm.Translation.UnFlip;
         }
         else
         {
             prevScaleX = -1;
-            vm.ScaleX = 1;
-            vm.GetIsFlippedTranslation = vm.Flip;
+            vm.PicViewer.ScaleX = 1;
+            vm.Translation.IsFlipped = vm.Translation.Flip;
         }
         
         if (animate)
@@ -285,11 +285,11 @@ public partial class ImageViewer : UserControl
                 ]
             };
             ImageLayoutTransformControl.RenderTransform = flipTransform;
-            flipTransform.ScaleX = vm.ScaleX;
+            flipTransform.ScaleX = vm.PicViewer.ScaleX;
         }
         else
         {
-            var flipTransform = new ScaleTransform(vm.ScaleX, 1);
+            var flipTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
             ImageLayoutTransformControl.RenderTransform = flipTransform;
         }
     }
@@ -299,9 +299,9 @@ public partial class ImageViewer : UserControl
         if (DataContext is not MainViewModel vm)
             return;
 
-        vm.ScaleX = scaleX;
+        vm.PicViewer.ScaleX = scaleX;
         vm.RotationAngle = rotationAngle;
-        var flipTransform = new ScaleTransform(vm.ScaleX, 1);
+        var flipTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
         ImageLayoutTransformControl.RenderTransform = flipTransform;
         
         var rotateTransform = new RotateTransform(rotationAngle);

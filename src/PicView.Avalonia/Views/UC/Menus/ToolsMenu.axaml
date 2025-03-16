@@ -48,7 +48,7 @@
                     Command="{CompiledBinding ShowBatchResizeWindowCommand}"
                     CornerRadius="8,0,0,0"
                     Height="45"
-                    ToolTip.Tip="{CompiledBinding BatchResize,
+                    ToolTip.Tip="{CompiledBinding Translation.BatchResize,
                                                   Mode=OneWay}"
                     Width="179"
                     x:Name="BatchResizeButton">
@@ -64,7 +64,7 @@
                             Foreground="{DynamicResource MainTextColor}"
                             Margin="10,0,7,0"
                             MaxWidth="130"
-                            Text="{CompiledBinding BatchResize,
+                            Text="{CompiledBinding Translation.BatchResize,
                                                    Mode=OneWay}"
                             VerticalAlignment="Center" />
                     </StackPanel>
@@ -78,7 +78,7 @@
                     Classes="noBorderHover"
                     Command="{CompiledBinding ShowEffectsWindowCommand}"
                     Height="45"
-                    ToolTip.Tip="{CompiledBinding EffectsTooltip,
+                    ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip,
                                                   Mode=OneWay}"
                     Width="136"
                     x:Name="EffectsButton">
@@ -101,7 +101,7 @@
                             Foreground="{DynamicResource MainTextColor}"
                             Margin="10,0,6,0"
                             MaxWidth="130"
-                            Text="{CompiledBinding Effects,
+                            Text="{CompiledBinding Translation.Effects,
                                                    Mode=OneWay}"
                             VerticalAlignment="Center" />
                     </StackPanel>
@@ -120,7 +120,7 @@
                     Height="45"
                     IconHeight="10"
                     IconWidth="10"
-                    ToolTip.Tip="{CompiledBinding Close,
+                    ToolTip.Tip="{CompiledBinding Translation.Close,
                                                   Mode=OneWay}"
                     Width="45" />
 
@@ -143,7 +143,7 @@
                         <TextBlock
                             Classes="txt btnTxt"
                             Margin="10,0,6,0"
-                            Text="{CompiledBinding ImageInfo,
+                            Text="{CompiledBinding Translation.ImageInfo,
                                                    Mode=OneWay}" />
                     </StackPanel>
                 </Button>
@@ -157,7 +157,7 @@
                     Height="46"
                     IsEnabled="{CompiledBinding ShouldOptimizeImageBeEnabled,
                                                 Mode=OneWay}"
-                    ToolTip.Tip="{CompiledBinding OptimizeImage,
+                    ToolTip.Tip="{CompiledBinding Translation.OptimizeImage,
                                                   Mode=OneWay}"
                     Width="169"
                     x:Name="OptimizeImageButton">
@@ -167,7 +167,7 @@
                             Margin="9,0,10,0"
                             Source="{StaticResource PortalImage}"
                             Width="20" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding OptimizeImage, Mode=OneWay}" />
+                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.OptimizeImage, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
 
@@ -178,7 +178,7 @@
                     Classes="ButtonBorder altHover"
                     Height="46"
                     IsEnabled="False"
-                    ToolTip.Tip="{CompiledBinding ColorPickerToolTooltip,
+                    ToolTip.Tip="{CompiledBinding Translation.ColorPickerToolTooltip,
                                                   Mode=OneWay}"
                     Width="169">
                     <StackPanel Orientation="Horizontal">
@@ -189,7 +189,7 @@
                             Margin="9,0,12,0"
                             Stretch="Fill"
                             Width="17" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding ColorPickerTool, Mode=OneWay}" />
+                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ColorPickerTool, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
 
@@ -207,7 +207,7 @@
                             Margin="10,0,10,0"
                             Source="{StaticResource CanvasImage}"
                             Width="20" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding ChangeBackground, Mode=OneWay}" />
+                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ChangeBackground, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
 
@@ -218,7 +218,7 @@
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding ShowKeybindingsWindowCommand}"
                     Height="46"
-                    ToolTip.Tip="{CompiledBinding ApplicationShortcuts,
+                    ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts,
                                                   Mode=OneWay}"
                     Width="169">
                     <StackPanel Orientation="Horizontal">
@@ -227,7 +227,7 @@
                             Margin="9,0,12,0"
                             Source="{StaticResource ShortcutsImage}"
                             Width="17" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding ApplicationShortcuts, Mode=OneWay}" />
+                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ApplicationShortcuts, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
 
@@ -245,7 +245,7 @@
                             Margin="11,0,12,0"
                             Source="{StaticResource EyeOffImage}"
                             Width="18" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding GetIsShowingUITranslation, Mode=OneWay}" />
+                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.IsShowingUI, Mode=OneWay}" />
                     </StackPanel>
                 </Button>
             </Canvas>

@@ -48,7 +48,7 @@
                     Command="{Binding ShowSettingsWindowCommand}"
                     CornerRadius="8,0,0,0"
                     Height="46"
-                    ToolTip.Tip="{CompiledBinding ShowAllSettingsWindow,
+                    ToolTip.Tip="{CompiledBinding Translation.ShowAllSettingsWindow,
                                                   Mode=OneWay}"
                     Width="179"
                     x:Name="SettingsButton">
@@ -66,7 +66,7 @@
                             Foreground="{DynamicResource MainTextColor}"
                             Margin="10,0,6,0"
                             MaxWidth="150"
-                            Text="{CompiledBinding Settings,
+                            Text="{CompiledBinding Translation.Settings,
                                                    Mode=OneWay}"
                             VerticalAlignment="Center" />
                     </StackPanel>
@@ -80,7 +80,7 @@
                     Classes="noBorderHover"
                     Command="{CompiledBinding ShowAboutWindowCommand}"
                     Height="46"
-                    ToolTip.Tip="{CompiledBinding AboutWindow,
+                    ToolTip.Tip="{CompiledBinding Translation.AboutWindow,
                                                   Mode=OneWay}"
                     Width="136"
                     x:Name="AboutWindowButton">
@@ -96,7 +96,7 @@
                             Foreground="{DynamicResource MainTextColor}"
                             Margin="10,0,6,0"
                             MaxWidth="150"
-                            Text="{CompiledBinding About,
+                            Text="{CompiledBinding Translation.About,
                                                    Mode=OneWay}"
                             VerticalAlignment="Center" />
                     </StackPanel>
@@ -115,7 +115,7 @@
                     Height="46"
                     IconHeight="10"
                     IconWidth="10"
-                    ToolTip.Tip="{CompiledBinding Close,
+                    ToolTip.Tip="{CompiledBinding Translation.Close,
                                                   Mode=OneWay}"
                     Width="45" />
 
@@ -128,10 +128,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsScrollingEnabled}"
-                    ToolTip.Tip="{CompiledBinding ToggleScroll,
+                    ToolTip.Tip="{CompiledBinding Translation.ToggleScroll,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding GetIsScrollingTranslation, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.IsScrolling, Mode=OneWay}" />
                 </ToggleButton>
 
                 <ToggleButton
@@ -142,10 +142,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsStretched}"
-                    ToolTip.Tip="{CompiledBinding Stretch,
+                    ToolTip.Tip="{CompiledBinding Translation.Stretch,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Stretch, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.Stretch, Mode=OneWay}" />
                 </ToggleButton>
 
                 <ToggleButton
@@ -157,10 +157,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsLooping}"
-                    ToolTip.Tip="{CompiledBinding ToggleLooping,
+                    ToolTip.Tip="{CompiledBinding Translation.ToggleLooping,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding GetIsLoopingTranslation, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.IsLooping, Mode=OneWay}" />
                 </ToggleButton>
 
                 <ToggleButton
@@ -172,10 +172,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsAutoFit}"
-                    ToolTip.Tip="{CompiledBinding AutoFitWindow,
+                    ToolTip.Tip="{CompiledBinding Translation.AutoFitWindow,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding AutoFitWindow, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.AutoFitWindow, Mode=OneWay}" />
                 </ToggleButton>
 
                 <ToggleButton
@@ -187,10 +187,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsTopMost}"
-                    ToolTip.Tip="{CompiledBinding StayTopMost,
+                    ToolTip.Tip="{CompiledBinding Translation.StayTopMost,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding StayTopMost, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.StayTopMost, Mode=OneWay}" />
                 </ToggleButton>
 
                 <ToggleButton
@@ -202,10 +202,10 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding IsIncludingSubdirectories}"
-                    ToolTip.Tip="{CompiledBinding SearchSubdirectory,
+                    ToolTip.Tip="{CompiledBinding Translation.SearchSubdirectory,
                                                   Mode=OneWay}"
                     Width="169">
-                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding SearchSubdirectory, Mode=OneWay}" />
+                    <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.SearchSubdirectory, Mode=OneWay}" />
                 </ToggleButton>
             </Canvas>
         </Border>

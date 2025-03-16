@@ -1,20 +1,17 @@
 ﻿using PicView.Core.Extensions;
-using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using ReactiveUI;
 
 namespace PicView.Avalonia.ViewModels;
 
-public class ViewModelBase : ReactiveObject
+public class TranslationViewModel : ReactiveObject
 {
-    #region Localization
-
     public void UpdateLanguage()
     {
         File = TranslationManager.Translation.File;
         SelectFile = TranslationManager.Translation.OpenFileDialog;
         OpenLastFile = TranslationManager.Translation.OpenLastFile;
-        FilePaste = TranslationManager.Translation.FilePaste;
+        Paste = TranslationManager.Translation.FilePaste;
         Copy = TranslationManager.Translation.Copy;
         Reload = TranslationManager.Translation.Reload;
         Print = TranslationManager.Translation.Print;
@@ -98,7 +95,7 @@ public class ViewModelBase : ReactiveObject
         CompressedBitsPixel = TranslationManager.Translation.CompressedBitsPixel;
         Compression = TranslationManager.Translation.Compression;
         ExposureTime = TranslationManager.Translation.ExposureTime;
-        XPTitle = TranslationManager.Translation.Title;
+        Title = TranslationManager.Translation.Title;
         Subject = TranslationManager.Translation.Subject;
         Software = TranslationManager.Translation.Software;
         CameraMaker = TranslationManager.Translation.CameraMaker;
@@ -135,7 +132,7 @@ public class ViewModelBase : ReactiveObject
         RecentFiles = TranslationManager.Translation.RecentFiles;
         SetAsWallpaper = TranslationManager.Translation.SetAsWallpaper;
         SetAsLockScreenImage = TranslationManager.Translation.SetAsLockScreenImage;
-        ImageTxt = TranslationManager.Translation.Image;
+        Image = TranslationManager.Translation.Image;
         CopyImage = TranslationManager.Translation.CopyImage;
         FileCopyPath = TranslationManager.Translation.FileCopyPath;
         FileCut = TranslationManager.Translation.Cut;
@@ -184,7 +181,7 @@ public class ViewModelBase : ReactiveObject
         InterfaceConfiguration = TranslationManager.Translation.InterfaceConfiguration;
         FileManagement = TranslationManager.Translation.FileManagement;
         ToggleFullscreen = TranslationManager.Translation.ToggleFullscreen;
-        FullscreenTxt = TranslationManager.Translation.Fullscreen;
+        Fullscreen = TranslationManager.Translation.Fullscreen;
         ShowImageGallery = TranslationManager.Translation.ShowImageGallery;
         WindowManagement = TranslationManager.Translation.WindowManagement;
         CenterWindow = TranslationManager.Translation.CenterWindow;
@@ -270,7 +267,7 @@ public class ViewModelBase : ReactiveObject
         Maximize = TranslationManager.Translation.Maximize;
     }
 
-    #region Strings
+    #region Static Translation Strings
     
     public string? Maximize
     {
@@ -548,7 +545,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? FullscreenTxt
+    public string? Fullscreen
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1070,7 +1067,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? ImageTxt
+    public string? Image
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1286,7 +1283,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? XPTitle
+    public string? Title
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1388,7 +1385,7 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? FilePaste
+    public string? Paste
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1826,47 +1823,63 @@ public class ViewModelBase : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    #endregion Strings
-
-    #endregion Localization
-
-    #region Image
-
-    public FileInfo? FileInfo
+    #endregion strings
+    
+    #region Dynamic Translation strings
+    
+    public string? IsFlipped
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    public int PixelWidth
+    
+    public string? IsShowingUI
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    public int PixelHeight
+    
+    public string? IsScrolling
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    public double DpiX
+    
+    public string? IsCtrlToZoom
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    public double DpiY
+    
+    public string? IsLooping
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    public EXIFHelper.EXIFOrientation? ExifOrientation
+    
+    public string? IsShowingBottomGallery
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-
-    #endregion Image
+    
+    public string? IsShowingBottomToolbar
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? IsShowingFadingUIButtons
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? IsUsingTouchpad
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    #endregion
 }

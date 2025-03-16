@@ -30,7 +30,7 @@ public static class CropFunctions
         {
             return;
         }
-        if (vm?.ImageSource is not Bitmap bitmap)
+        if (vm?.PicViewer.ImageSource is not Bitmap bitmap)
         {
             return;
         }
@@ -43,16 +43,16 @@ public static class CropFunctions
             WindowResizing.SetSize(vm);
             Settings.Gallery.IsBottomGalleryShown = true;
         }
-        var size = new Size(vm.ImageWidth, vm.ImageHeight);
-        var cropperViewModel = new ImageCropperViewModel(bitmap)
+        var size = new Size(vm.PicViewer.ImageWidth, vm.PicViewer.ImageHeight);
+        vm.Crop = new ImageCropperViewModel(bitmap)
         {
             ImageWidth = size.Width,
             ImageHeight = size.Height,
-            AspectRatio = vm.AspectRatio
+            AspectRatio = vm.PicViewer.AspectRatio
         };
         var cropControl = new CropControl
         {
-            DataContext = cropperViewModel,
+            DataContext = vm,
             Width = size.Width,
             Height = size.Height,
             Margin = new Thickness(0)
@@ -79,17 +79,19 @@ public static class CropFunctions
         TitleManager.SetTitle(vm);
         
         // Reset image type to fix issue with animated images
-        switch (vm.ImageType)
+        switch (vm.PicViewer.ImageType)
         {
             case ImageType.AnimatedWebp:
-                vm.ImageType = ImageType.Bitmap;
-                vm.ImageType = ImageType.AnimatedWebp;
+                vm.PicViewer.ImageType = ImageType.Bitmap;
+                vm.PicViewer.ImageType = ImageType.AnimatedWebp;
                 break;
             case ImageType.AnimatedGif:
-                vm.ImageType = ImageType.Bitmap;
-                vm.ImageType = ImageType.AnimatedGif;
+                vm.PicViewer.ImageType = ImageType.Bitmap;
+                vm.PicViewer.ImageType = ImageType.AnimatedGif;
                 break;
         }
+
+        vm.Crop = null;
     }
 
     public static bool DetermineIfShouldBeEnabled(MainViewModel vm)
@@ -98,7 +100,7 @@ public static class CropFunctions
         {
             return false;
         }
-        if (vm?.ImageSource is not Bitmap)
+        if (vm?.PicViewer.ImageSource is not Bitmap)
         {
             vm.ShouldCropBeEnabled = false;
             return false;
@@ -120,7 +122,7 @@ public static class CropFunctions
             return false;
         }
 
-        if (vm.RotationAngle is 0 && vm.ScaleX is 1)
+        if (vm.RotationAngle is 0 && vm.PicViewer.ScaleX is 1)
         {
             vm.ShouldCropBeEnabled = true;
             return true;

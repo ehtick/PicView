@@ -32,7 +32,7 @@
 
                 <TextBlock
                     Classes="txt"
-                    Text="{CompiledBinding ResizeImage,
+                    Text="{CompiledBinding Translation.ResizeImage,
                                            Mode=OneWay}"
                     TextAlignment="Center" />
             </DockPanel>

@@ -693,7 +693,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding GeneralSettings, Mode=OneWay}" />
+                                Text="{Binding Translation.GeneralSettings, Mode=OneWay}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -712,7 +712,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding Appearance, Mode=OneWay}" />
+                                Text="{Binding Translation.Appearance, Mode=OneWay}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -731,7 +731,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding ImageTxt, Mode=OneWay}" />
+                                Text="{Binding Translation.Image, Mode=OneWay}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -750,7 +750,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding GallerySettings,
+                                Text="{CompiledBinding Translation.GallerySettings,
                                                        Mode=OneWay}" />
                         </StackPanel>
                     </TabItem.Header>
@@ -770,7 +770,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Slideshow,
+                                Text="{CompiledBinding Translation.Slideshow,
                                                        Mode=OneWay}" />
                         </StackPanel>
                     </TabItem.Header>
@@ -790,7 +790,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Navigation}" />
+                                Text="{CompiledBinding Translation.Navigation}" />
                         </StackPanel>
                     </TabItem.Header>
 
@@ -810,7 +810,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Zoom}" />
+                                Text="{CompiledBinding Translation.Zoom}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -829,7 +829,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding MouseWheel}" />
+                                Text="{CompiledBinding Translation.MouseWheel}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -848,7 +848,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Language}" />
+                                Text="{CompiledBinding Translation.Language}" />
                         </StackPanel>
                     </TabItem.Header>
                     <customControls:AutoScrollViewer>
@@ -867,7 +867,7 @@
                             <TextBlock
                                 Classes="txt txtShadow"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding ApplicationShortcuts}" />
+                                Text="{CompiledBinding Translation.ApplicationShortcuts}" />
                         </StackPanel>
                     </TabItem.Header>
                     <Button
@@ -878,7 +878,7 @@
                         HorizontalAlignment="Left"
                         Margin="65,50,0,20"
                         Padding="0,0,7,0"
-                        ToolTip.Tip="{CompiledBinding ApplicationShortcuts,
+                        ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts,
                                                       Mode=OneWay}"
                         VerticalAlignment="Top"
                         Width="NaN">
@@ -891,7 +891,7 @@
                             <TextBlock
                                 Classes="txt"
                                 Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding ApplicationShortcuts,
+                                Text="{CompiledBinding Translation.ApplicationShortcuts,
                                                        Mode=OneWay}" />
                         </StackPanel>
                     </Button>
@@ -956,7 +956,7 @@
                 <TextBlock
                     Classes="txt"
                     Foreground="{StaticResource SecondaryTextColor}"
-                    Text="{CompiledBinding ResetButtonText,
+                    Text="{CompiledBinding Translation.ResetButtonText,
                                            Mode=OneWay}" />
             </StackPanel>
 

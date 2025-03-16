@@ -33,14 +33,14 @@
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding DuplicateFileCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                    FallbackValue=''}"
                 Height="28"
                 Width="135">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{CompiledBinding DuplicateFile}"
+                    Text="{CompiledBinding Translation.DuplicateFile}"
                     VerticalAlignment="Center" />
             </Button>
 
@@ -54,7 +54,7 @@
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{Binding DeleteFile}"
+                    Text="{Binding Translation.DeleteFile}"
                     VerticalAlignment="Center" />
             </Button>
 
@@ -68,7 +68,7 @@
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{CompiledBinding OptimizeImage}"
+                    Text="{CompiledBinding Translation.OptimizeImage}"
                     VerticalAlignment="Center" />
             </Button>
 
@@ -77,14 +77,14 @@
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding OpenWithCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                    FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{Binding OpenWith}"
+                    Text="{Binding Translation.OpenWith}"
                     VerticalAlignment="Center" />
             </Button>
 
@@ -93,14 +93,14 @@
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                    FallbackValue=''}"
                 Height="28"
                 Width="130">
                 <TextBlock
                     Classes="txt"
                     HorizontalAlignment="Center"
-                    Text="{CompiledBinding ShowInFolder}"
+                    Text="{CompiledBinding Translation.ShowInFolder}"
                     VerticalAlignment="Center" />
             </Button>
             <buttons:StarOutlineButtons Margin="10,0,0,0" />

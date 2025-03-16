@@ -24,7 +24,7 @@
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             FontSize="14"
                             Margin="4,0,0,5"
-                            Text="{CompiledBinding Width,
+                            Text="{CompiledBinding Translation.Width,
                                                    Mode=OneWay}" />
                         <customControls:NumTextBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -33,9 +33,9 @@
                             Foreground="{StaticResource SecondaryTextColor}"
                             Height="35"
                             Margin="0"
-                            Text="{CompiledBinding PixelWidth,
+                            Text="{CompiledBinding PicViewer.PixelWidth,
                                                    Mode=OneWay}"
-                            ToolTip.Tip="{CompiledBinding SizeTooltip,
+                            ToolTip.Tip="{CompiledBinding Translation.SizeTooltip,
                                                           Mode=OneWay}"
                             Width="195"
                             x:Name="PixelWidthTextBox" />
@@ -71,7 +71,7 @@
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             FontSize="14"
                             Margin="4,0,0,5"
-                            Text="{CompiledBinding Height,
+                            Text="{CompiledBinding Translation.Height,
                                                    Mode=OneWay}" />
                         <customControls:NumTextBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -80,9 +80,9 @@
                             Foreground="{StaticResource SecondaryTextColor}"
                             Height="35"
                             Margin="0"
-                            Text="{CompiledBinding PixelHeight,
+                            Text="{CompiledBinding PicViewer.PixelHeight,
                                                    Mode=OneWay}"
-                            ToolTip.Tip="{CompiledBinding SizeTooltip,
+                            ToolTip.Tip="{CompiledBinding Translation.SizeTooltip,
                                                           Mode=OneWay}"
                             Width="195"
                             x:Name="PixelHeightTextBox" />
@@ -96,7 +96,7 @@
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             FontSize="14"
                             Margin="5,0,0,2"
-                            Text="{CompiledBinding Quality,
+                            Text="{CompiledBinding Translation.Quality,
                                                    Mode=OneWay}" />
                         <customControls:CustomSlider
                             IsSnapToTickEnabled="True"
@@ -118,7 +118,7 @@
                             FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                             FontSize="14"
                             Margin="5,0,0,5"
-                            Text="{CompiledBinding ConvertTo,
+                            Text="{CompiledBinding Translation.ConvertTo,
                                                    Mode=OneWay}" />
                         <ComboBox
                             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -133,7 +133,7 @@
                             SelectedIndex="0"
                             Width="195"
                             x:Name="ConversionComboBox">
-                            <ComboBoxItem Content="{CompiledBinding NoConversion, Mode=OneWay}" x:Name="NoConversion" />
+                            <ComboBoxItem Content="{CompiledBinding Translation.NoConversion, Mode=OneWay}" x:Name="NoConversion" />
                             <ComboBoxItem Content=".png" x:Name="PngItem" />
                             <ComboBoxItem Content=".jpg" x:Name="JpgItem" />
                             <ComboBoxItem Content=".webp" x:Name="WebpItem" />
@@ -157,7 +157,7 @@
                     x:Name="ResetButton">
                     <TextBlock
                         Classes="txt"
-                        Text="{CompiledBinding Reset,
+                        Text="{CompiledBinding Translation.Reset,
                                                Mode=OneWay}"
                         TextAlignment="Center" />
                 </Button>
@@ -170,7 +170,7 @@
                     x:Name="SaveButton">
                     <TextBlock
                         Classes="txt"
-                        Text="{CompiledBinding Save,
+                        Text="{CompiledBinding Translation.Save,
                                                Mode=OneWay}"
                         TextAlignment="Center" />
                     <SplitButton.Flyout>
@@ -182,7 +182,7 @@
                                 <TextBlock
                                     Classes="txt"
                                     Foreground="{DynamicResource MainTextColor}"
-                                    Text="{CompiledBinding SaveAs,
+                                    Text="{CompiledBinding Translation.SaveAs,
                                                            Mode=OneWay}"
                                     TextAlignment="Center" />
                             </Button>

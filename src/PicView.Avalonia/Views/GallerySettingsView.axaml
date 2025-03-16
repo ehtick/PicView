@@ -20,7 +20,7 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Margin="0,20,0,20"
-            Text="{CompiledBinding GallerySettings,
+            Text="{CompiledBinding Translation.GallerySettings,
                                    Mode=OneWay}" />
 
         <ToggleButton
@@ -30,7 +30,7 @@
             Command="{CompiledBinding ToggleBottomGalleryCommand}"
             IsChecked="{CompiledBinding IsBottomGalleryShown}"
             Margin="0,0,0,10"
-            ToolTip.Tip="{CompiledBinding ShowBottomGallery,
+            ToolTip.Tip="{CompiledBinding Translation.ShowBottomGallery,
                                           Mode=OneWay}"
             Width="300"
             x:Name="ToggleBottomGalleryButton">
@@ -39,7 +39,7 @@
                 Margin="0"
                 MaxWidth="240"
                 Padding="0,1,5,0"
-                Text="{CompiledBinding ShowBottomGallery,
+                Text="{CompiledBinding Translation.ShowBottomGallery,
                                        Mode=OneWay}" />
         </ToggleButton>
 
@@ -57,7 +57,7 @@
                 Margin="0"
                 MaxWidth="240"
                 Padding="0,1,5,0"
-                Text="{CompiledBinding ShowBottomGalleryWhenUiIsHidden}" />
+                Text="{CompiledBinding Translation.ShowBottomGalleryWhenUiIsHidden}" />
         </ToggleButton>
 
         <TextBlock
@@ -65,7 +65,7 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             Margin="0,10,0,10"
             MaxWidth="300"
-            Text="{CompiledBinding ExpandedGalleryItemSize,
+            Text="{CompiledBinding Translation.ExpandedGalleryItemSize,
                                    Mode=OneWay}" />
         <uc:FullGalleryItemSizeSlider />
         <TextBlock
@@ -82,7 +82,7 @@
             FontSize="12"
             Margin="0,10,0,10"
             MaxWidth="300"
-            Text="{CompiledBinding BottomGalleryItemSize,
+            Text="{CompiledBinding Translation.BottomGalleryItemSize,
                                    Mode=OneWay}" />
         <uc:BottomGalleryItemSizeSlider />
         <TextBlock
@@ -99,7 +99,7 @@
             FontSize="12"
             Margin="0,10,0,15"
             MaxWidth="300"
-            Text="{CompiledBinding GalleryThumbnailStretch,
+            Text="{CompiledBinding Translation.GalleryThumbnailStretch,
                                    Mode=OneWay}" />
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -110,12 +110,12 @@
             Padding="5,7,0,7"
             Width="300"
             x:Name="FullGalleryComboBox">
-            <ComboBoxItem Content="{CompiledBinding Uniform}" x:Name="FullGalleryUniformItem" />
-            <ComboBoxItem Content="{CompiledBinding UniformToFill}" x:Name="FullGalleryUniformToFillItem" />
-            <ComboBoxItem Content="{CompiledBinding Fill}" x:Name="FullGalleryFillItem" />
-            <ComboBoxItem Content="{CompiledBinding None}" x:Name="FullGalleryNoneItem" />
-            <ComboBoxItem Content="{CompiledBinding Square}" x:Name="FullGallerySquareItem" />
-            <ComboBoxItem Content="{CompiledBinding FillSquare}" x:Name="FullGalleryFillSquareItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Uniform}" x:Name="FullGalleryUniformItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.UniformToFill}" x:Name="FullGalleryUniformToFillItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Fill}" x:Name="FullGalleryFillItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.None}" x:Name="FullGalleryNoneItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Square}" x:Name="FullGallerySquareItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.FillSquare}" x:Name="FullGalleryFillSquareItem" />
         </ComboBox>
 
         <TextBlock
@@ -124,7 +124,7 @@
             FontSize="12"
             Margin="0,3,0,15"
             MaxWidth="300"
-            Text="{CompiledBinding BottomGalleryThumbnailStretch}" />
+            Text="{CompiledBinding Translation.BottomGalleryThumbnailStretch}" />
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
             BorderBrush="{DynamicResource MainBorderColor}"
@@ -134,12 +134,12 @@
             Padding="5,7,0,7"
             Width="300"
             x:Name="BottomGalleryComboBox">
-            <ComboBoxItem Content="{CompiledBinding Uniform}" x:Name="BottomGalleryUniformItem" />
-            <ComboBoxItem Content="{CompiledBinding UniformToFill}" x:Name="BottomGalleryUniformToFillItem" />
-            <ComboBoxItem Content="{CompiledBinding Fill}" x:Name="BottomGalleryFillItem" />
-            <ComboBoxItem Content="{CompiledBinding None}" x:Name="BottomGalleryNoneItem" />
-            <ComboBoxItem Content="{CompiledBinding Square}" x:Name="BottomGallerySquareItem" />
-            <ComboBoxItem Content="{CompiledBinding FillSquare}" x:Name="BottomGalleryFillSquareItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Uniform}" x:Name="BottomGalleryUniformItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.UniformToFill}" x:Name="BottomGalleryUniformToFillItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Fill}" x:Name="BottomGalleryFillItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.None}" x:Name="BottomGalleryNoneItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.Square}" x:Name="BottomGallerySquareItem" />
+            <ComboBoxItem Content="{CompiledBinding Translation.FillSquare}" x:Name="BottomGalleryFillSquareItem" />
         </ComboBox>
     </StackPanel>
 </UserControl>

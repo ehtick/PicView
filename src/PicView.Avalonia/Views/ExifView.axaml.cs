@@ -56,18 +56,18 @@ public partial class ExifView : UserControl
             
             ExifHandling.UpdateExifValues(vm);
             
-            _imageUpdateSubscription = vm.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
+            _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
             {
                 ExifHandling.UpdateExifValues(vm);
             });
             ResetButton.Click += (_, _) =>
             {
-                PixelWidthTextBox.Text = vm.PixelWidth.ToString();
-                PixelHeightTextBox.Text = vm.PixelHeight.ToString();
+                PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
+                PixelHeightTextBox.Text = vm.PicViewer.PixelHeight.ToString();
                 AdjustAspectRatio(PixelWidthTextBox);
-                FullPathTextBox.Text = vm.FileInfo?.FullName ?? "";
-                DirectoryNameTextBox.Text = vm.FileInfo?.DirectoryName ?? "";
-                FileNameTextBox.Text = vm.FileInfo?.Name ?? ""; 
+                FullPathTextBox.Text = vm.PicViewer.FileInfo?.FullName ?? "";
+                DirectoryNameTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? "";
+                FileNameTextBox.Text = vm.PicViewer.FileInfo?.Name ?? ""; 
             };
             
             SaveButton.Click += async (_, _) =>
@@ -75,20 +75,20 @@ public partial class ExifView : UserControl
                 var ext = GetExtension();
                 var location = FullPathTextBox.Text; // TODO check if this is a valid path
                                                      // and sync with file name/directory text boxes
-                await SendToImageSaver(vm.FileInfo?.FullName, location, PixelWidthTextBox.Text, PixelHeightTextBox.Text, ext).ConfigureAwait(false);
+                await SendToImageSaver(vm.PicViewer.FileInfo?.FullName, location, PixelWidthTextBox.Text, PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
 
             SaveAsButton.Click += async (_, _) =>
             {
-                var fileInfoFullName = vm.FileInfo.FullName;
+                var fileInfoFullName = vm.PicViewer.FileInfo.FullName;
                 var ext = DetermineFileExtension(vm, ref fileInfoFullName);
         
-                var file = await FilePicker.PickFileForSavingAsync(vm.FileInfo?.FullName, ext);
+                var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.FullName, ext);
                 if (file is null)
                 {
                     return;
                 }
-                await SendToImageSaver( vm.FileInfo?.FullName, file, PixelWidthTextBox.Text, PixelHeightTextBox.Text, ext).ConfigureAwait(false);
+                await SendToImageSaver( vm.PicViewer.FileInfo?.FullName, file, PixelWidthTextBox.Text, PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
         };
     }
@@ -125,7 +125,7 @@ public partial class ExifView : UserControl
         {
             return;
         }
-        var aspectRatio = (double)vm.PixelWidth / vm.PixelHeight;
+        var aspectRatio = (double)vm.PicViewer.PixelWidth / vm.PicViewer.PixelHeight;
         AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
             aspectRatio, DataContext as MainViewModel);
         
@@ -138,13 +138,13 @@ public partial class ExifView : UserControl
         {
             return;
         }
-        var printSizes = AspectRatioHelper.GetPrintSizes(width, height, vm.DpiX, vm.DpiY);
+        var printSizes = AspectRatioHelper.GetPrintSizes(width, height, vm.Exif.DpiX, vm.Exif.DpiY);
         PrintSizeInchTextBox.Text = printSizes.PrintSizeInch;
         PrintSizeCmTextBox.Text = printSizes.PrintSizeCm;
         SizeMpTextBox.Text = printSizes.SizeMp;
 
         var gcd = ImageTitleFormatter.GCD(width, height);
-        AspectRatioTextBox.Text = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PixelWidth, vm.PixelHeight);
+        AspectRatioTextBox.Text = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
     }
 
     private static async Task DoResize(MainViewModel vm, bool isWidth, object width, object height)
@@ -157,7 +157,7 @@ public partial class ExifView : UserControl
             }
             if (widthValue > 0)
             {
-                var success = await ConversionHelper.ResizeByWidth(vm.FileInfo, widthValue).ConfigureAwait(false);
+                var success = await ConversionHelper.ResizeByWidth(vm.PicViewer.FileInfo, widthValue).ConfigureAwait(false);
                 if (success)
                 {
                     await NavigationManager.QuickReload().ConfigureAwait(false);
@@ -172,7 +172,7 @@ public partial class ExifView : UserControl
             }
             if (heightValue > 0)
             {
-                var success = await ConversionHelper.ResizeByHeight(vm.FileInfo, heightValue).ConfigureAwait(false);
+                var success = await ConversionHelper.ResizeByHeight(vm.PicViewer.FileInfo, heightValue).ConfigureAwait(false);
                 if (success)
                 {
                     await NavigationManager.QuickReload().ConfigureAwait(false);
@@ -196,7 +196,7 @@ public partial class ExifView : UserControl
     
     private string DetermineFileExtension(MainViewModel vm, ref string destination)
     {
-        var ext = vm.FileInfo.Extension;
+        var ext = vm.PicViewer.FileInfo.Extension;
         if (NoConversion.IsSelected)
         {
             return ext;

@@ -37,7 +37,7 @@ public static class TitleManager
             }
 
             var singleImageWindowTitles =
-                ImageTitleFormatter.GenerateTitleForSingleImage(vm.PixelWidth, vm.PixelWidth, title, vm.ZoomValue);
+                ImageTitleFormatter.GenerateTitleForSingleImage(vm.PicViewer.PixelWidth, vm.PicViewer.PixelWidth, title, vm.ZoomValue);
             vm.WindowTitle = singleImageWindowTitles.BaseTitle;
             vm.Title = singleImageWindowTitles.TitleWithAppName;
             vm.TitleTooltip = singleImageWindowTitles.TitleWithAppName;
@@ -46,8 +46,8 @@ public static class TitleManager
 
         if (NavigationManager.TiffNavigationInfo is not null)
         {
-            SetTiffTitle(NavigationManager.TiffNavigationInfo, vm.PixelWidth, vm.PixelHeight,
-                NavigationManager.GetCurrentIndex, vm.FileInfo, vm);
+            SetTiffTitle(NavigationManager.TiffNavigationInfo, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight,
+                NavigationManager.GetCurrentIndex, vm.PicViewer.FileInfo, vm);
             return;
         }
 
@@ -55,9 +55,9 @@ public static class TitleManager
         {
             var imageModel1 = new ImageModel
             {
-                FileInfo = vm.FileInfo,
-                PixelWidth = vm.PixelWidth,
-                PixelHeight = vm.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo,
+                PixelWidth = vm.PicViewer.PixelWidth,
+                PixelHeight = vm.PicViewer.PixelHeight
             };
             var nextFileName = NavigationManager.GetNextFileName;
             using var magickImage = new MagickImage();
@@ -72,9 +72,9 @@ public static class TitleManager
             return;
         }
 
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PixelWidth, vm.PixelHeight,
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight,
             NavigationManager.GetCurrentIndex,
-            vm.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
+            vm.PicViewer.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
         vm.WindowTitle = windowTitles.TitleWithAppName;
         vm.Title = windowTitles.BaseTitle;
         vm.TitleTooltip = windowTitles.FilePathTitle;
@@ -102,16 +102,16 @@ public static class TitleManager
     {
         if (!ValidateImageModel(imageModel, vm))
         {
-            if (vm.FileInfo is null)
+            if (vm.PicViewer.FileInfo is null)
             {
                 ReturnError(vm);
                 return;
             }
             imageModel = new ImageModel
             {
-                FileInfo = vm.FileInfo,
-                PixelWidth = vm.PixelWidth,
-                PixelHeight = vm.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo,
+                PixelWidth = vm.PicViewer.PixelWidth,
+                PixelHeight = vm.PicViewer.PixelHeight
             };
         }
 
@@ -200,15 +200,15 @@ public static class TitleManager
         // Fix image models, which can be null caused by race conditions?
         if (!ValidateImageModel(imageModel1, vm))
         {
-            if (vm.FileInfo is null)
+            if (vm.PicViewer.FileInfo is null)
             {
                 return;
             }
             imageModel1 = new ImageModel
             {
-                FileInfo = vm.FileInfo,
-                PixelWidth = vm.PixelWidth,
-                PixelHeight = vm.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo,
+                PixelWidth = vm.PicViewer.PixelWidth,
+                PixelHeight = vm.PicViewer.PixelHeight
             };
         }
         if (!ValidateImageModel(imageModel2, vm))

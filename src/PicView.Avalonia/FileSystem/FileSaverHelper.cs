@@ -15,13 +15,13 @@ public static class FileSaverHelper
             return;
         }
         
-        if (vm.FileInfo is null)
+        if (vm.PicViewer.FileInfo is null)
         {
             await SaveFileAs(vm);
         }
         else
         {
-            await SaveFileAsync(vm.FileInfo.FullName, vm.FileInfo.FullName, vm);
+            await SaveFileAsync(vm.PicViewer.FileInfo.FullName, vm.PicViewer.FileInfo.FullName, vm);
         }
         
         //TODO: Add visual design to tell the user that file was saved
@@ -35,14 +35,14 @@ public static class FileSaverHelper
         }
         
         // Suggest random filename for saving, if it is not an existing file
-        var fileName = vm.FileInfo is null ? Path.GetRandomFileName() : vm.FileInfo.Name;
+        var fileName = vm.PicViewer.FileInfo is null ? Path.GetRandomFileName() : vm.PicViewer.FileInfo.Name;
 
         await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
     }
 
     public static async Task SaveFileAsync(string? filename, string destination, MainViewModel vm)
     {
-        if (vm.EffectConfig is not null)
+        if (vm.PicViewer.EffectConfig is not null)
         {
             await SaveImageFromBitmap();
         }
@@ -74,13 +74,13 @@ public static class FileSaverHelper
             
             try
             {
-                switch (vm.ImageType)
+                switch (vm.PicViewer.ImageType)
                 {
                     case ImageType.AnimatedGif: // TODO: Add animated GIF support
                     case ImageType.AnimatedWebp: // TODO: Add animated WebP support
                     case ImageType.Bitmap:
                     {
-                        if (vm.ImageSource is not Bitmap bitmap)
+                        if (vm.PicViewer.ImageSource is not Bitmap bitmap)
                         {
                             throw new InvalidOperationException("No bitmap available for saving.");
                         }

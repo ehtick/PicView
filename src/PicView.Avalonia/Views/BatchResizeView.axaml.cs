@@ -111,7 +111,7 @@ public partial class BatchResizeView : UserControl
                 return;
             }
 
-            SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
+            SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
         };
     }
 
@@ -157,7 +157,7 @@ public partial class BatchResizeView : UserControl
             return;
         }
 
-        SourceFolderTextBox.Text = vm.FileInfo?.DirectoryName ?? string.Empty;
+        SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
     }
 
     private void ResetProgress()

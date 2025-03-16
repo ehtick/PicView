@@ -79,10 +79,10 @@ public static class UpdateImage
             vm.ImageViewer.SetTransform(preLoadValue.ImageModel.EXIFOrientation);
             if (Settings.ImageScaling.ShowImageSideBySide && nextPreloadValue is { ImageModel: not null })
             {
-                vm.SecondaryImageSource = nextPreloadValue.ImageModel.Image;
+                vm.PicViewer.SecondaryImageSource = nextPreloadValue.ImageModel.Image;
                 if (preLoadValue is { ImageModel: not null})
                 {
-                    vm.ImageSource = preLoadValue.ImageModel.Image;
+                    vm.PicViewer.ImageSource = preLoadValue.ImageModel.Image;
                 }
             }
             else if (preLoadValue is { ImageModel: not null})
@@ -92,9 +92,9 @@ public static class UpdateImage
                     vm.ImageViewer.MainImage.InitialAnimatedSource = preLoadValue.ImageModel.FileInfo.FullName;
                 }
                 
-                vm.ImageSource = preLoadValue.ImageModel.Image;
-                vm.SecondaryImageSource = null;
-                vm.ImageType = preLoadValue.ImageModel.ImageType;
+                vm.PicViewer.ImageSource = preLoadValue.ImageModel.Image;
+                vm.PicViewer.SecondaryImageSource = null;
+                vm.PicViewer.ImageType = preLoadValue.ImageModel.ImageType;
             }
             else
             {
@@ -201,9 +201,9 @@ public static class UpdateImage
         MainViewModel vm)
     {
         var source = await Task.Run( () => tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap()).ConfigureAwait(false);
-        vm.ImageSource = source;
-        vm.SecondaryImageSource = null;
-        vm.ImageType = ImageType.Bitmap;
+        vm.PicViewer.ImageSource = source;
+        vm.PicViewer.SecondaryImageSource = null;
+        vm.PicViewer.ImageType = ImageType.Bitmap;
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
         
@@ -294,21 +294,21 @@ public static class UpdateImage
             var path = source as string;
             using var magickImage = new MagickImage();
             magickImage.Ping(path);
-            vm.ImageSource = source;
-            vm.ImageType = ImageType.Svg;
+            vm.PicViewer.ImageSource = source;
+            vm.PicViewer.ImageType = ImageType.Svg;
             width = (int)magickImage.Width;
             height = (int)magickImage.Height;
         }
         else
         {
             var bitmap = source as Bitmap;
-            vm.ImageSource = source;
-            vm.ImageType = imageType == ImageType.Invalid ? ImageType.Bitmap : imageType;
+            vm.PicViewer.ImageSource = source;
+            vm.PicViewer.ImageType = imageType == ImageType.Invalid ? ImageType.Bitmap : imageType;
             width = bitmap?.PixelSize.Width ?? 0;
             height = bitmap?.PixelSize.Height ?? 0;
         }
 
-        vm.FileInfo = null;
+        vm.PicViewer.FileInfo = null;
 
         await dispatchAction(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); }, DispatcherPriority.Send);
 
@@ -319,8 +319,8 @@ public static class UpdateImage
 
         vm.PlatformService.StopTaskbarProgress();
 
-        vm.PixelWidth = width;
-        vm.PixelHeight = height;
+        vm.PicViewer.PixelWidth = width;
+        vm.PicViewer.PixelHeight = height;
 
         if (Settings.Gallery.IsBottomGalleryShown)
         {
@@ -338,11 +338,11 @@ public static class UpdateImage
 
     public static void SetStats(MainViewModel vm, int index, ImageModel imageModel)
     {
-        vm.PixelWidth = imageModel.PixelWidth;
-        vm.PixelHeight = imageModel.PixelHeight;
+        vm.PicViewer.PixelWidth = imageModel.PixelWidth;
+        vm.PicViewer.PixelHeight = imageModel.PixelHeight;
         vm.GetIndex = index + 1;
-        vm.ExifOrientation = imageModel.EXIFOrientation;
-        vm.FileInfo = imageModel.FileInfo;
+        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
+        vm.PicViewer.FileInfo = imageModel.FileInfo;
         vm.ZoomValue = 1;
 
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -353,7 +353,7 @@ public static class UpdateImage
         }
 
         // Reset effects
-        vm.EffectConfig = null;
+        vm.PicViewer.EffectConfig = null;
     }
 
     #endregion

@@ -101,13 +101,13 @@ public static class FileListManager
         {
             try
             {
-                var files = platformSpecificService.GetFiles(vm.FileInfo);
+                var files = platformSpecificService.GetFiles(vm.PicViewer.FileInfo);
                 if (files is not { Count: > 0 })
                 {
                     return false;
                 }
 
-                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.FileInfo.FullName));
+                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.PicViewer.FileInfo.FullName));
                 TitleManager.SetTitle(vm);
                 return true;
             }
@@ -135,7 +135,7 @@ public static class FileListManager
 
         if (!_cancellationTokenSource.IsCancellationRequested)
         {
-            await GalleryLoad.ReloadGalleryAsync(vm, vm.FileInfo.DirectoryName);
+            await GalleryLoad.ReloadGalleryAsync(vm, vm.PicViewer.FileInfo.DirectoryName);
         }
     }
 }

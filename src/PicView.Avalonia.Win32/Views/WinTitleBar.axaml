@@ -45,7 +45,7 @@
                 Foreground="{DynamicResource MainTextColor}"
                 IconHeight="17"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding FileInfo,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Width="30"
                 x:Name="GalleryButton" />
@@ -59,11 +59,11 @@
                 Icon="{StaticResource RefreshCcwDot}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding ImageSource,
+                IsEnabled="{CompiledBinding PicViewer.ImageSource,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Margin="0"
                 Name="RotateRightButton"
-                ToolTip.Tip="{CompiledBinding RotateRight,
+                ToolTip.Tip="{CompiledBinding Translation.RotateRight,
                                               Mode=OneWay}"
                 Width="30"
                 x:Name="RotateLeftButton" />
@@ -79,15 +79,15 @@
                 Foreground="{DynamicResource MainTextColor}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding ImageSource,
+                IsEnabled="{CompiledBinding PicViewer.ImageSource,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Margin="0"
-                ToolTip.Tip="{CompiledBinding GetIsFlippedTranslation,
+                ToolTip.Tip="{CompiledBinding Translation.IsFlipped,
                                               Mode=OneWay}"
                 Width="30"
                 x:Name="FlipButton">
                 <Button.RenderTransform>
-                    <ScaleTransform ScaleX="{CompiledBinding ScaleX}" />
+                    <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX}" />
                 </Button.RenderTransform>
             </customControls:IconButton>
 

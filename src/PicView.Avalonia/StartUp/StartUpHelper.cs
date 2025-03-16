@@ -81,7 +81,7 @@ public static class StartUpHelper
         
         ResourceLimits.LimitMemory(new Percentage(90));
 
-        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm, settingsExists));
+        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
         if (settingsExists)
         {
             Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
@@ -309,7 +309,7 @@ public static class StartUpHelper
         vm.GetNavSpeed = Settings.UIProperties.NavSpeed;
         vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
         vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
-        vm.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
+        vm.PicViewer.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
         vm.IsBottomGalleryShown = Settings.Gallery.IsBottomGalleryShown;
         vm.IsBottomGalleryShownInHiddenUI = Settings.Gallery.ShowBottomGalleryInHiddenUI;
         vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;

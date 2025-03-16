@@ -66,7 +66,7 @@ public static class ErrorHandling
     {
         vm.IsLoading = true;
         
-        if (vm.ImageSource is null)
+        if (vm.PicViewer.ImageSource is null)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -81,7 +81,7 @@ public static class ErrorHandling
             return;
         }
         
-        if (vm.ImageSource is null || !NavigationManager.CanNavigate(vm))
+        if (vm.PicViewer.ImageSource is null || !NavigationManager.CanNavigate(vm))
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

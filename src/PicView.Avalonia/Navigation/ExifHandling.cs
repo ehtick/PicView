@@ -14,7 +14,7 @@ public static class ExifHandling
 {
     public static void UpdateExifValues(MainViewModel vm)
     {
-        if (vm.FileInfo is null || vm is { PixelWidth: <= 0, PixelHeight: <= 0 })
+        if (vm.PicViewer?.FileInfo is null || vm.PicViewer is { PixelWidth: <= 0, PixelHeight: <= 0 })
         {
             return;
         }
@@ -22,39 +22,39 @@ public static class ExifHandling
         
         try
         {
-            if (!vm.FileInfo.Exists)
+            if (!vm.PicViewer.FileInfo.Exists)
             {
                 return;
             }
-            magick.Ping(vm.FileInfo);
+            magick.Ping(vm.PicViewer.FileInfo);
             var profile = magick.GetExifProfile();
 
             if (profile != null)
             {
-                vm.DpiY = profile?.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? 0;
-                vm.DpiX = profile?.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? 0;
+                vm.Exif.DpiY = profile?.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? 0;
+                vm.Exif.DpiX = profile?.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? 0;
                 var depth = profile?.GetValue(ExifTag.BitsPerSample)?.Value;
                 if (depth is not null)
                 {
                     var x = depth.Aggregate(0, (current, value) => current + value);
-                    vm.GetBitDepth = x.ToString();
+                    vm.Exif.BitDepth = x.ToString();
                 }
                 else
                 {
-                    vm.GetBitDepth = (magick.Depth * 3).ToString();
+                    vm.Exif.BitDepth = (magick.Depth * 3).ToString();
                 }
             }
 
-            if (vm.DpiX is 0 && vm.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
+            if (vm.Exif.DpiX is 0 && vm.PicViewer.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
             {
-                if (vm.ImageSource is Bitmap bmp)
+                if (vm.PicViewer.ImageSource is Bitmap bmp)
                 {
-                    vm.DpiX = bmp?.Dpi.X ?? 0;
-                    vm.DpiY = bmp?.Dpi.Y ?? 0;
+                    vm.Exif.DpiX = bmp?.Dpi.X ?? 0;
+                    vm.Exif.DpiY = bmp?.Dpi.Y ?? 0;
                 }
             }
 
-            vm.GetOrientation = vm.ExifOrientation switch
+            vm.Exif.Orientation = vm.PicViewer.ExifOrientation switch
             {
                 EXIFHelper.EXIFOrientation.Horizontal => TranslationManager.Translation.Normal,
                 EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
@@ -72,34 +72,34 @@ public static class ExifHandling
 
             var meter = TranslationManager.Translation.Meter;
 
-            if (string.IsNullOrEmpty(vm.GetBitDepth))
+            if (string.IsNullOrEmpty(vm.Exif.BitDepth))
             {
-                vm.GetBitDepth = (magick.Depth * 3).ToString();
+                vm.Exif.BitDepth = (magick.Depth * 3).ToString();
             }
 
-            if (vm.DpiX == 0 || vm.DpiY == 0) // Check for zero before division
+            if (vm.Exif.DpiX == 0 || vm.Exif.DpiY == 0) // Check for zero before division
             {
-                vm.GetPrintSizeCm = vm.GetPrintSizeInch = vm.GetSizeMp = vm.GetResolution = string.Empty;
+                vm.Exif.PrintSizeCm = vm.Exif.PrintSizeInch = vm.Exif.SizeMp = vm.Exif.Resolution = string.Empty;
             }
             else 
             {
-                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PixelWidth, vm.PixelHeight, vm.DpiX, vm.DpiY);
+                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight, vm.Exif.DpiX, vm.Exif.DpiY);
 
-                vm.GetPrintSizeCm = printSizes.PrintSizeCm;
-                vm.GetPrintSizeInch = printSizes.PrintSizeInch;
-                vm.GetSizeMp = printSizes.SizeMp;
+                vm.Exif.PrintSizeCm = printSizes.PrintSizeCm;
+                vm.Exif.PrintSizeInch = printSizes.PrintSizeInch;
+                vm.Exif.SizeMp = printSizes.SizeMp;
 
-                vm.GetResolution = $"{vm.DpiX} x {vm.DpiY} {TranslationManager.Translation.Dpi}";
+                vm.Exif.Resolution = $"{vm.Exif.DpiX} x {vm.Exif.DpiY} {TranslationManager.Translation.Dpi}";
             }
 
-            var gcd = ImageTitleFormatter.GCD(vm.PixelWidth, vm.PixelHeight);
+            var gcd = ImageTitleFormatter.GCD(vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
             if (gcd != 0) // Check for zero before division
             {
-                vm.GetAspectRatio = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PixelWidth, vm.PixelHeight);
+                vm.Exif.AspectRatio = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
             }
             else
             {
-                vm.GetAspectRatio = string.Empty; // Handle cases where gcd is 0
+                vm.Exif.AspectRatio = string.Empty; // Handle cases where gcd is 0
             }
 
             vm.EXIFRating = profile?.GetValue(ExifTag.Rating)?.Value ?? 0;
@@ -108,58 +108,56 @@ public static class ExifHandling
 
             if (gpsValues is not null)
             {
-                vm.GetLatitude = gpsValues[0];
-                vm.GetLongitude = gpsValues[1];
+                vm.Exif.Latitude = gpsValues[0];
+                vm.Exif.Longitude = gpsValues[1];
 
-                vm.GoogleLink = gpsValues[2];
-                vm.BingLink = gpsValues[3];
+                vm.Exif.GoogleLink = gpsValues[2];
+                vm.Exif.BingLink = gpsValues[3];
             }
             else
             {
-                vm.GetLatitude = vm.GetLongitude = vm.GoogleLink = vm.BingLink = string.Empty;
+                vm.Exif.Latitude = vm.Exif.Longitude = vm.Exif.GoogleLink = vm.Exif.BingLink = string.Empty;
             }
 
             var altitude = profile?.GetValue(ExifTag.GPSAltitude)?.Value;
-            vm.GetAltitude = altitude.HasValue
+            vm.Exif.Altitude = altitude.HasValue
                 ? $"{altitude.Value.ToDouble()} {meter}"
                 : string.Empty;
             var getAuthors = profile?.GetValue(ExifTag.Artist)?.Value;
-            vm.GetAuthors = getAuthors ?? string.Empty;
-            vm.GetDateTaken = EXIFHelper.GetDateTaken(profile);
-            vm.GetCopyright = profile?.GetValue(ExifTag.Copyright)?.Value ?? string.Empty;
-            vm.GetTitle = EXIFHelper.GetTitle(profile);
-            vm.GetSubject = EXIFHelper.GetSubject(profile);
-            vm.GetSoftware = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
-            vm.GetResolutionUnit = EXIFHelper.GetResolutionUnit(profile);
-            vm.GetColorRepresentation = EXIFHelper.GetColorSpace(profile);
-            vm.GetCompression = profile?.GetValue(ExifTag.Compression)?.Value.ToString() ?? string.Empty;
-            vm.GetCompressedBitsPixel = profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ??
-                                        string.Empty;
-            vm.GetCameraMaker = profile?.GetValue(ExifTag.Make)?.Value ?? string.Empty;
-            vm.GetCameraModel = profile?.GetValue(ExifTag.Model)?.Value ?? string.Empty;
-            vm.GetExposureProgram = EXIFHelper.GetExposureProgram(profile);
-            vm.GetExposureTime = profile?.GetValue(ExifTag.ExposureTime)?.Value.ToString() ?? string.Empty;
-            vm.GetFNumber = profile?.GetValue(ExifTag.FNumber)?.Value.ToString() ?? string.Empty;
-            vm.GetMaxAperture = profile?.GetValue(ExifTag.MaxApertureValue)?.Value.ToString() ?? string.Empty;
-            vm.GetExposureBias = profile?.GetValue(ExifTag.ExposureBiasValue)?.Value.ToString() ?? string.Empty;
-            vm.GetDigitalZoom = profile?.GetValue(ExifTag.DigitalZoomRatio)?.Value.ToString() ?? string.Empty;
-            vm.GetFocalLength35Mm = profile?.GetValue(ExifTag.FocalLengthIn35mmFilm)?.Value.ToString() ??
-                                    string.Empty;
-            vm.GetFocalLength = profile?.GetValue(ExifTag.FocalLength)?.Value.ToString() ?? string.Empty;
-            vm.GetISOSpeed = EXIFHelper.GetISOSpeed(profile);
-            vm.GetMeteringMode = profile?.GetValue(ExifTag.MeteringMode)?.Value.ToString() ?? string.Empty;
-            vm.GetContrast = EXIFHelper.GetContrast(profile);
-            vm.GetSaturation = EXIFHelper.GetSaturation(profile);
-            vm.GetSharpness = EXIFHelper.GetSharpness(profile);
-            vm.GetWhiteBalance = EXIFHelper.GetWhiteBalance(profile);
-            vm.GetFlashMode = EXIFHelper.GetFlashMode(profile);
-            vm.GetFlashEnergy = profile?.GetValue(ExifTag.FlashEnergy)?.Value.ToString() ?? string.Empty;
-            vm.GetLightSource = EXIFHelper.GetLightSource(profile);
-            vm.GetBrightness = profile?.GetValue(ExifTag.BrightnessValue)?.Value.ToString() ?? string.Empty;
-            vm.GetPhotometricInterpretation = EXIFHelper.GetPhotometricInterpretation(profile);
-            vm.GetExifVersion = EXIFHelper.GetExifVersion(profile);
-            vm.GetLensModel = profile?.GetValue(ExifTag.LensModel)?.Value ?? string.Empty;
-            vm.GetLensMaker = profile?.GetValue(ExifTag.LensMake)?.Value ?? string.Empty;
+            vm.Exif.Authors = getAuthors ?? string.Empty;
+            vm.Exif.DateTaken = EXIFHelper.GetDateTaken(profile);
+            vm.Exif.Copyright = profile?.GetValue(ExifTag.Copyright)?.Value ?? string.Empty;
+            vm.Exif.Title = EXIFHelper.GetTitle(profile);
+            vm.Exif.Subject = EXIFHelper.GetSubject(profile);
+            vm.Exif.Software = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
+            vm.Exif.ResolutionUnit = EXIFHelper.GetResolutionUnit(profile);
+            vm.Exif.ColorRepresentation = EXIFHelper.GetColorSpace(profile);
+            vm.Exif.Compression = profile?.GetValue(ExifTag.Compression)?.Value.ToString() ?? string.Empty;
+            vm.Exif.CompressedBitsPixel = profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ?? string.Empty;
+            vm.Exif.CameraMaker = profile?.GetValue(ExifTag.Make)?.Value ?? string.Empty;
+            vm.Exif.CameraModel = profile?.GetValue(ExifTag.Model)?.Value ?? string.Empty;
+            vm.Exif.ExposureProgram = EXIFHelper.GetExposureProgram(profile);
+            vm.Exif.ExposureTime = profile?.GetValue(ExifTag.ExposureTime)?.Value.ToString() ?? string.Empty;
+            vm.Exif.FNumber = profile?.GetValue(ExifTag.FNumber)?.Value.ToString() ?? string.Empty;
+            vm.Exif.MaxAperture = profile?.GetValue(ExifTag.MaxApertureValue)?.Value.ToString() ?? string.Empty;
+            vm.Exif.ExposureBias = profile?.GetValue(ExifTag.ExposureBiasValue)?.Value.ToString() ?? string.Empty;
+            vm.Exif.DigitalZoom = profile?.GetValue(ExifTag.DigitalZoomRatio)?.Value.ToString() ?? string.Empty;
+            vm.Exif.FocalLength35Mm = profile?.GetValue(ExifTag.FocalLengthIn35mmFilm)?.Value.ToString() ?? string.Empty;
+            vm.Exif.FocalLength = profile?.GetValue(ExifTag.FocalLength)?.Value.ToString() ?? string.Empty;
+            vm.Exif.ISOSpeed = EXIFHelper.GetISOSpeed(profile);
+            vm.Exif.MeteringMode = profile?.GetValue(ExifTag.MeteringMode)?.Value.ToString() ?? string.Empty;
+            vm.Exif.Contrast = EXIFHelper.GetContrast(profile);
+            vm.Exif.Saturation = EXIFHelper.GetSaturation(profile);
+            vm.Exif.Sharpness = EXIFHelper.GetSharpness(profile);
+            vm.Exif.WhiteBalance = EXIFHelper.GetWhiteBalance(profile);
+            vm.Exif.FlashMode = EXIFHelper.GetFlashMode(profile);
+            vm.Exif.FlashEnergy = profile?.GetValue(ExifTag.FlashEnergy)?.Value.ToString() ?? string.Empty;
+            vm.Exif.LightSource = EXIFHelper.GetLightSource(profile);
+            vm.Exif.Brightness = profile?.GetValue(ExifTag.BrightnessValue)?.Value.ToString() ?? string.Empty;
+            vm.Exif.PhotometricInterpretation = EXIFHelper.GetPhotometricInterpretation(profile);
+            vm.Exif.ExifVersion = EXIFHelper.GetExifVersion(profile);
+            vm.Exif.LensModel = profile?.GetValue(ExifTag.LensModel)?.Value ?? string.Empty;
+            vm.Exif.LensMaker = profile?.GetValue(ExifTag.LensMake)?.Value ?? string.Empty;
         }
         catch (Exception e)
         {

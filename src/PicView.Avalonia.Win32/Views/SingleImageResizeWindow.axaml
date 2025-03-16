@@ -70,7 +70,7 @@
                     Height="28"
                     LineHeight="28"
                     Padding="30,0,0,0"
-                    Text="{CompiledBinding ResizeImage,
+                    Text="{CompiledBinding Translation.ResizeImage,
                                            Mode=OneWay}"
                     TextAlignment="Center"
                     x:Name="TitleText" />

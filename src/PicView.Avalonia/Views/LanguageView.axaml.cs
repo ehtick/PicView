@@ -113,7 +113,7 @@ public partial class LanguageView : UserControl
                 Settings.UIProperties.UserLanguage = language;
 
                 await TranslationManager.LoadLanguage(language).ConfigureAwait(false);
-                await LanguageUpdater.UpdateLanguageAsync(vm, true).ConfigureAwait(false);
+                await LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, true).ConfigureAwait(false);
             };
         };
     }

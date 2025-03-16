@@ -15,7 +15,7 @@ public static class FileManager
     /// </summary>
     public static async Task DeleteFile(bool recycle, MainViewModel vm)
     {
-        if (vm.FileInfo is null)
+        if (vm.PicViewer.FileInfo is null)
         {
             return;
         }
@@ -27,13 +27,13 @@ public static class FileManager
             if (!recycle)
             {
                 var prompt = TranslationManager.GetTranslation("DeleteFilePermanently");
-                var deleteDialog = new DeleteDialog(prompt, vm.FileInfo.FullName);
+                var deleteDialog = new DeleteDialog(prompt, vm.PicViewer.FileInfo.FullName);
                 UIHelper.GetMainView.MainGrid.Children.Add(deleteDialog);
                 // Dialog handles the deletion
             }
             else
             {
-                errorMsg = await Task.FromResult(FileDeletionHelper.DeleteFileWithErrorMsg(vm.FileInfo.FullName, recycle));
+                errorMsg = await Task.FromResult(FileDeletionHelper.DeleteFileWithErrorMsg(vm.PicViewer.FileInfo.FullName, recycle));
             }
     
             if (!string.IsNullOrEmpty(errorMsg))

@@ -30,7 +30,7 @@
                 Classes="txt"
                 Height="28"
                 LineHeight="28"
-                Text="{CompiledBinding Settings,
+                Text="{CompiledBinding Translation.Settings,
                                        Mode=OneWay}"
                 TextAlignment="Center"
                 x:Name="TitleText" />

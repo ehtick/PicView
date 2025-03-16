@@ -78,7 +78,7 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding SetExifRating0Command}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                        FallbackValue=''}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
@@ -100,7 +100,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding DeleteFile,
+                    ToolTip.Tip="{CompiledBinding Translation.DeleteFile,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="RecycleButton" />
@@ -116,7 +116,7 @@
                     Icon="{StaticResource PortalImage}"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding OptimizeImage,
+                    ToolTip.Tip="{CompiledBinding Translation.OptimizeImage,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="OptimizeButton" />
@@ -126,7 +126,7 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding OpenWithCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource OpenWithGeometry}"
                     DockPanel.Dock="Right"
@@ -134,7 +134,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding OpenWith,
+                    ToolTip.Tip="{CompiledBinding Translation.OpenWith,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="OpenWithButton" />
@@ -144,7 +144,7 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding PrintCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource PrintGeometry}"
                     DockPanel.Dock="Right"
@@ -152,7 +152,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding Print,
+                    ToolTip.Tip="{CompiledBinding Translation.Print,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="PrintButton" />
@@ -167,7 +167,7 @@
                     Icon="{StaticResource CopyImages}"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding CopyImage,
+                    ToolTip.Tip="{CompiledBinding Translation.CopyImage,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="CopyButton" />
@@ -183,7 +183,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding CopyFile,
+                    ToolTip.Tip="{CompiledBinding Translation.CopyFile,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="CopyFileButton" />
@@ -199,7 +199,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding DuplicateFile,
+                    ToolTip.Tip="{CompiledBinding Translation.DuplicateFile,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="DuplicateButton" />
@@ -209,7 +209,7 @@
                     BorderThickness="1,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding LocateOnDiskCommand}"
-                    CommandParameter="{CompiledBinding FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource ShowInFolderGeometry}"
                     DockPanel.Dock="Right"
@@ -217,7 +217,7 @@
                     Height="28"
                     IconHeight="17"
                     IconWidth="17"
-                    ToolTip.Tip="{CompiledBinding ShowInFolder,
+                    ToolTip.Tip="{CompiledBinding Translation.ShowInFolder,
                                                   Mode=OneWay}"
                     Width="45"
                     x:Name="LocateOnDiskButton" />
@@ -227,7 +227,7 @@
                     Classes="txt"
                     DockPanel.Dock="Left"
                     Foreground="{DynamicResource MainTextColor}"
-                    Text="{CompiledBinding ImageInfo}"
+                    Text="{CompiledBinding Translation.ImageInfo}"
                     TextAlignment="Center" />
             </DockPanel>
             <Rectangle

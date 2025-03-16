@@ -69,7 +69,7 @@
                     Height="28"
                     LineHeight="28"
                     Padding="30,0,0,0"
-                    Text="{CompiledBinding BatchResize,
+                    Text="{CompiledBinding Translation.BatchResize,
                                            Mode=OneWay}"
                     TextAlignment="Center"
                     x:Name="TitleText" />

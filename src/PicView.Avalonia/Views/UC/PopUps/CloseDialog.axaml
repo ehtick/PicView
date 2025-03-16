@@ -18,7 +18,7 @@
             FontSize="14"
             Foreground="{DynamicResource MainTextColor}"
             HorizontalAlignment="Center"
-            Text="{CompiledBinding CloseWindowPrompt}"
+            Text="{CompiledBinding Translation.CloseWindowPrompt}"
             VerticalAlignment="Top" />
         <StackPanel
             HorizontalAlignment="Right"
@@ -33,14 +33,14 @@
                 <TextBlock
                     Classes="txt"
                     Foreground="{DynamicResource MainTextColor}"
-                    Text="{CompiledBinding Cancel}" />
+                    Text="{CompiledBinding Translation.Cancel}" />
             </Button>
             <Button
                 Background="{DynamicResource AccentColor}"
                 Classes="BorderStyle accentHover mainBtn"
                 Padding="30,0"
                 x:Name="CloseButton">
-                <TextBlock Classes="txt" Text="{CompiledBinding Close}" />
+                <TextBlock Classes="txt" Text="{CompiledBinding Translation.Close}" />
             </Button>
         </StackPanel>
     </Panel>

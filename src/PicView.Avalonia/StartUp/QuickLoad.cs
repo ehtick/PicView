@@ -29,7 +29,7 @@ public static class QuickLoad
             await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
             return;
         }
-        vm.FileInfo = fileInfo;
+        vm.PicViewer.FileInfo = fileInfo;
         
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         
@@ -37,17 +37,17 @@ public static class QuickLoad
         {
             vm.ImageViewer.MainImage.InitialAnimatedSource = file;
         }
-        vm.ImageSource = imageModel.Image;
-        vm.ImageType = imageModel.ImageType;
+        vm.PicViewer.ImageSource = imageModel.Image;
+        vm.PicViewer.ImageType = imageModel.ImageType;
         vm.ZoomValue = 1;
-        vm.PixelWidth = imageModel.PixelWidth;
-        vm.PixelHeight = imageModel.PixelHeight;
+        vm.PicViewer.PixelWidth = imageModel.PixelWidth;
+        vm.PicViewer.PixelHeight = imageModel.PixelHeight;
         PreLoadValue? secondaryPreloadValue = null;
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             NavigationManager.InitializeImageIterator(vm);
             secondaryPreloadValue = await NavigationManager.GetNextPreLoadValueAsync();
-            vm.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
+            vm.PicViewer.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
         }
         
         // When width and height are the same, it renders image incorrectly at startup,
@@ -147,7 +147,7 @@ public static class QuickLoad
             await Dispatcher.UIThread.InvokeAsync(SetSize, DispatcherPriority.Send);
         }
 
-        vm.ExifOrientation = imageModel.EXIFOrientation;
+        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
         vm.GetIndex = NavigationManager.GetNonZeroIndex;
         
         // Add recent files, except when browsing archive

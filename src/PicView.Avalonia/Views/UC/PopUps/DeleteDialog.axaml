@@ -39,14 +39,14 @@
                 <TextBlock
                     Classes="txt"
                     Foreground="{DynamicResource MainTextColor}"
-                    Text="{CompiledBinding Cancel}" />
+                    Text="{CompiledBinding Translation.Cancel}" />
             </Button>
             <Button
                 Background="{DynamicResource AccentColor}"
                 Classes="BorderStyle accentHover mainBtn"
                 Padding="30,0"
                 x:Name="ConfirmButton">
-                <TextBlock Classes="txt" Text="{CompiledBinding DeleteFile}" />
+                <TextBlock Classes="txt" Text="{CompiledBinding Translation.DeleteFile}" />
             </Button>
         </StackPanel>
     </StackPanel>
