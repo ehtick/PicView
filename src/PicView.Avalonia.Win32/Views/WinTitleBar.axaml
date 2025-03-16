@@ -117,6 +117,25 @@
                 Foreground="{DynamicResource MainTextColor}"
                 IconHeight="12"
                 IconWidth="12"
+                IsVisible="{CompiledBinding ShouldMaximizeBeShown,
+                                            Mode=OneWay}"
+                Width="30"
+                x:Name="FullscreenButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource WindowButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="hover"
+                ClickMode="Release"
+                Command="{CompiledBinding RestoreCommand}"
+                Data="{StaticResource RestoreGeometry}"
+                DockPanel.Dock="Right"
+                Foreground="{DynamicResource MainTextColor}"
+                IconHeight="12"
+                IconWidth="12"
+                IsVisible="{CompiledBinding !ShouldMaximizeBeShown,
+                                            Mode=OneWay}"
                 Width="30"
                 x:Name="RestoreButton" />
 
