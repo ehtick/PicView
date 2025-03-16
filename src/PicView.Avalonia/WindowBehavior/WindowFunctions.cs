@@ -56,7 +56,7 @@ public static class WindowFunctions
         }
         else
         {
-            var url = vm?.Title.GetURL();
+            var url = vm?.PicViewer.Title.GetURL();
             lastFile = !string.IsNullOrWhiteSpace(url) ? url : FileHistory.GetLastEntry();
         }
 

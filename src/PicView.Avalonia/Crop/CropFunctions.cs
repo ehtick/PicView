@@ -60,8 +60,8 @@ public static class CropFunctions
         vm.CurrentView = cropControl;
         
         IsCropping = true;
-        vm.Title = TranslationManager.Translation.CropMessage;
-        vm.TitleTooltip = TranslationManager.Translation.CropMessage;
+        vm.PicViewer.Title = TranslationManager.Translation.CropMessage;
+        vm.PicViewer.TitleTooltip = TranslationManager.Translation.CropMessage;
         
         FunctionsMapper.CloseMenus();
     }

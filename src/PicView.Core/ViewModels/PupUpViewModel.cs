@@ -1,7 +1,7 @@
 ﻿using System.Reactive;
 using ReactiveUI;
 
-namespace PicView.Avalonia.ViewModels;
+namespace PicView.Core.ViewModels;
 
 public class PopUpViewModel : ReactiveObject
 {

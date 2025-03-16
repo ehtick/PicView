@@ -41,12 +41,6 @@ public static class GetImageModel
             using var magickImage = new MagickImage();
             magickImage.Ping(fileInfo);
             
-            // If extension is missing, use format from MagickImage
-            if (string.IsNullOrEmpty(ext))
-            {
-                ext = $".{magickImage.Format.ToString().ToLower()}";
-            }
-            
             // Extract EXIF orientation early
             imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
 

@@ -1,19 +1,16 @@
-﻿using Avalonia.Media.Imaging;
-using ImageMagick;
-using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.ViewModels;
+﻿using ImageMagick;
 using PicView.Core.FileHandling;
 
-namespace PicView.Avalonia.ImageEffects;
+namespace PicView.Core.ImageEffects;
 
 public static class ImageEffectsHelper
 {
-    public static async Task<WriteableBitmap> GetRadialBlur(string file)
+    public static async Task<MagickImage?> GetRadialBlur(string file)
     {
-        using var magick = new MagickImage();
+        var magick = new MagickImage();
         await magick.ReadAsync(file).ConfigureAwait(false);
         ApplyRadialBlur(magick);
-        return magick.ToWriteableBitmap();
+        return magick;
     }
 
     private static void ApplyRadialBlur(MagickImage magick)
@@ -27,17 +24,15 @@ public static class ImageEffectsHelper
         magick.Morphology(morphology);
     }
     
-    public static async Task ApplyEffects(MainViewModel vm, ImageEffectConfig config, CancellationToken cancellationToken)
+    public static async Task<MagickImage?> ApplyEffects(FileInfo fileInfo, ImageEffectConfig config, CancellationToken cancellationToken)
     {
-        vm.IsLoading = true;
         try
         {
-            await Task.Run(async () =>
+            return await Task.Run(async () =>
             {
-                using var magick = await LoadImage(vm.PicViewer.FileInfo, cancellationToken);
+                var magick = await LoadImage(fileInfo, cancellationToken);
                 ApplyImageEffects(magick, config, cancellationToken);
-                var bitmap = magick.ToWriteableBitmap();
-                vm.PicViewer.ImageSource = bitmap;
+                return magick;
             }, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
@@ -50,10 +45,7 @@ public static class ImageEffectsHelper
             Console.WriteLine(e);
 #endif
         }
-        finally
-        {
-            vm.IsLoading = false;
-        }
+        return null;
     }
 
     private static async Task<MagickImage> LoadImage(FileInfo fileInfo, CancellationToken cancellationToken)

@@ -5,7 +5,7 @@
     MinWidth="{CompiledBinding WindowMinSize}"
     SizeChanged="Control_OnSizeChanged"
     SizeToContent="{CompiledBinding SizeToContent}"
-    Title="{CompiledBinding WindowTitle,
+    Title="{CompiledBinding PicViewer.WindowTitle,
                             Mode=OneWay}"
     TransparencyLevelHint="AcrylicBlur"
     x:Class="PicView.Avalonia.Win32.Views.WinMainWindow"

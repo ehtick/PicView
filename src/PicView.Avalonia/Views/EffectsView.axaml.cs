@@ -6,9 +6,10 @@ using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.ImageEffects;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.ImageEffects;
 using ReactiveUI;
 using Timer = System.Timers.Timer;
 
@@ -156,7 +157,20 @@ public partial class EffectsView : UserControl
         MainViewModel? vm = null;
         await Dispatcher.UIThread.InvokeAsync(() => { vm = DataContext as MainViewModel; });
         
-        await ImageEffectsHelper.ApplyEffects(vm, vm.PicViewer.EffectConfig, _cancellationTokenSource.Token).ConfigureAwait(false);
+        vm.IsLoading = true;
+
+        try
+        {
+            var magick = await ImageEffectsHelper.ApplyEffects(vm.PicViewer.FileInfo, vm.PicViewer.EffectConfig, _cancellationTokenSource.Token).ConfigureAwait(false);
+            if (magick is not null)
+            {
+                vm.PicViewer.ImageSource = magick.ToWriteableBitmap();
+            }
+        }
+        finally
+        {
+            vm.IsLoading = false;
+        }
     }
 
     public async Task RemoveEffects(MainViewModel vm)

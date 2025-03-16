@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace PicView.Avalonia.ViewModels;
+namespace PicView.Core.ViewModels;
 
 public class ExifViewModel : ReactiveObject
 {

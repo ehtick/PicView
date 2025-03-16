@@ -1,6 +1,6 @@
 ﻿using ImageMagick;
 
-namespace PicView.Avalonia.ImageEffects;
+namespace PicView.Core.ImageEffects;
 
 public class ImageEffectConfig
 {

@@ -25,6 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-OpenMP-x64" Version="14.3.0" />
+    <PackageReference Include="ReactiveUI" Version="20.2.45" />
     <PackageReference Include="SharpCompress" Version="0.39.0" />
     <PackageReference Include="ZString" Version="2.6.0" />
   </ItemGroup>

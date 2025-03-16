@@ -1,9 +1,9 @@
-﻿using PicView.Avalonia.ImageEffects;
-using PicView.Avalonia.ImageHandling;
+﻿using PicView.Avalonia.ImageHandling;
 using PicView.Core.ImageDecoding;
+using PicView.Core.ImageEffects;
 using ReactiveUI;
 
-namespace PicView.Avalonia.ViewModels;
+namespace PicView.Core.ViewModels;
 
 public class PicViewerModel : ReactiveObject
 {
@@ -116,4 +116,22 @@ public class PicViewerModel : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     } = 1;
+    
+    public string? Title
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "Loading...";
+
+    public string? TitleTooltip
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "Loading...";
+
+    public string? WindowTitle
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = "PicView";
 }

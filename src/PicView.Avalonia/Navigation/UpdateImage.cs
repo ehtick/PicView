@@ -313,9 +313,9 @@ public static class UpdateImage
         await dispatchAction(() => { WindowResizing.SetSize(width, height, 0, 0, 0, vm); }, DispatcherPriority.Send);
 
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
-        vm.WindowTitle = singeImageWindowTitles.TitleWithAppName;
-        vm.Title = singeImageWindowTitles.BaseTitle;
-        vm.TitleTooltip = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.WindowTitle = singeImageWindowTitles.TitleWithAppName;
+        vm.PicViewer.Title = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.TitleTooltip = singeImageWindowTitles.BaseTitle;
 
         vm.PlatformService.StopTaskbarProgress();
 

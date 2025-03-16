@@ -8,7 +8,7 @@
     MinWidth="{CompiledBinding WindowMinSize}"
     SizeChanged="Control_OnSizeChanged"
     SizeToContent="{CompiledBinding SizeToContent}"
-    Title="{CompiledBinding WindowTitle}"
+    Title="{CompiledBinding PicViewer.WindowTitle}"
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"

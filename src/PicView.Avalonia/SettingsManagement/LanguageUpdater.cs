@@ -1,5 +1,5 @@
-﻿using PicView.Avalonia.ViewModels;
-using PicView.Core.Localization;
+﻿using PicView.Core.Localization;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.SettingsManagement;
 

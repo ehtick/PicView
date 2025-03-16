@@ -71,7 +71,7 @@ public partial class EditableTitlebar : UserControl
         vm.IsEditableTitlebarOpen = false;
         Cursor = new Cursor(StandardCursorType.Arrow);
         MainKeyboardShortcuts.IsKeysEnabled = true;
-        TextBlock.Text = vm.Title;
+        TextBlock.Text = vm.PicViewer.Title;
     }
     
     #region Rename

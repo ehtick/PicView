@@ -321,7 +321,7 @@ public static class NavigationManager
         {
             vm.PlatformService.StopTaskbarProgress();
             await LoadWithoutImageIterator(new FileInfo(fileList[0]), vm, fileList);
-            if (vm.Title == TranslationManager.Translation.Loading)
+            if (vm.PicViewer.Title == TranslationManager.Translation.Loading)
             {
                 TitleManager.SetTitle(vm);
             }
@@ -545,9 +545,9 @@ public static class NavigationManager
 
                 var displayProgress = HttpManager.GetProgressDisplay(totalFileSize, totalBytesDownloaded,
                     progressPercentage);
-                vm.Title = displayProgress;
-                vm.TitleTooltip = displayProgress;
-                vm.WindowTitle = displayProgress;
+                vm.PicViewer.Title = displayProgress;
+                vm.PicViewer.TitleTooltip = displayProgress;
+                vm.PicViewer.WindowTitle = displayProgress;
                 if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
                     vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded, (ulong)totalFileSize);
@@ -817,7 +817,7 @@ public static class NavigationManager
         
         if (_imageIterator is null)
         {
-            var url = vm.Title.GetURL();
+            var url = vm.PicViewer.Title.GetURL();
             if (!string.IsNullOrEmpty(url))
             {
                 await LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);

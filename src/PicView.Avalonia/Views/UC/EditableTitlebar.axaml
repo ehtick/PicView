@@ -1,7 +1,7 @@
 ﻿<UserControl
     Height="{CompiledBinding TitlebarHeight,
                              Mode=OneWay}"
-    ToolTip.Tip="{Binding TitleTooltip, Mode=OneWay}"
+    ToolTip.Tip="{Binding PicViewer.TitleTooltip, Mode=OneWay}"
     Width="{CompiledBinding TitleMaxWidth,
                             Mode=OneWay}"
     d:DesignHeight="450"
@@ -25,7 +25,7 @@
             IsTabStop="False"
             IsVisible="{CompiledBinding !IsEditableTitlebarOpen}"
             Padding="0,7,0,5"
-            Text="{CompiledBinding Title,
+            Text="{CompiledBinding PicViewer.Title,
                                    Mode=OneWay}"
             TextAlignment="Center"
             TextTrimming="CharacterEllipsis"

@@ -25,11 +25,11 @@
                                      Mode=OneWay}"
             IsTabStop="False"
             Padding="0,7,0,5"
-            Text="{CompiledBinding Title,
+            Text="{CompiledBinding PicViewer.Title,
                                    Mode=OneWay}"
             TextAlignment="Center"
             TextTrimming="CharacterEllipsis"
-            ToolTip.Tip="{CompiledBinding TitleTooltip,
+            ToolTip.Tip="{CompiledBinding PicViewer.TitleTooltip,
                                           Mode=OneWay}"
             VerticalAlignment="Center" />
         <TextBox

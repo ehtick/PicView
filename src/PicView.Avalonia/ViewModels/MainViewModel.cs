@@ -16,10 +16,10 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.Wallpaper;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Calculations;
-using PicView.Core.Config;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.ProcessHandling;
+using PicView.Core.ViewModels;
 using ReactiveUI;
 using ImageViewer = PicView.Avalonia.Views.ImageViewer;
 
@@ -969,24 +969,6 @@ public class MainViewModel : ReactiveObject
     }
     
     #region Window Properties
-
-    public string? Title
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = "Loading...";
-
-    public string? TitleTooltip
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = "Loading...";
-
-    public string? WindowTitle
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = "PicView";
 
     public SizeToContent SizeToContent
     {
