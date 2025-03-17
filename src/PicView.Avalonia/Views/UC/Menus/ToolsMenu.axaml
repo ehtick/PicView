@@ -25,7 +25,7 @@
 
         <Border
             Background="{DynamicResource MenuBackgroundColor}"
-            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderBrush="{DynamicResource OuterBorderColor}"
             BorderThickness="1"
             CornerRadius="8"
             Effect="{DynamicResource MenuShadowButtonBorder}">
@@ -33,7 +33,7 @@
 
                 <Border
                     Background="{DynamicResource SecondaryBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderBrush="{DynamicResource OuterBorderColor}"
                     BorderThickness="0,0,0,1"
                     CornerRadius="8,8,0,0"
                     Height="47"

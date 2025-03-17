@@ -104,7 +104,7 @@
                             <SolidColorBrush Color="{DynamicResource SecondaryBackgroundColor}" />
                         </Setter>
                         <Setter Property="BorderBrush">
-                            <SolidColorBrush Color="{DynamicResource MainBorderColor}" />
+                            <SolidColorBrush Color="{DynamicResource OuterBorderColor}" />
                         </Setter>
                     </KeyFrame>
                     <KeyFrame Cue="1">

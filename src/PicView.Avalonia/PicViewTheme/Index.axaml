@@ -25,7 +25,6 @@
                 <ResourceInclude Source="Controls/PathIcon.axaml" />
                 <ResourceInclude Source="Controls/ProgressBar.axaml" />
                 <ResourceInclude Source="Controls/RadioButton.axaml" />
-                <ResourceInclude Source="Controls/RepeatButton.axaml" />
                 <ResourceInclude Source="Controls/Scrollbar.axaml" />
                 <ResourceInclude Source="Controls/Slider.axaml" />
                 <ResourceInclude Source="Controls/SplitButton.axaml" />
@@ -47,5 +46,6 @@
     </Style>
 
     <StyleInclude Source="Classes.axaml" />
+
 
 </Styles>

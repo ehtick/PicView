@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Media;
 using Avalonia.Styling;
 
 namespace PicView.Avalonia.ColorManagement;
@@ -35,48 +34,11 @@ public static class ThemeManager
             case Theme.Glass:
                 Settings.Theme.GlassTheme = true;
                 application.RequestedThemeVariant = ThemeVariant.Light;
-                GlassThemeUpdates();
+                GlassThemeHelper.GlassThemeUpdates();
                 break;
         }
         
         ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
-    }
-
-    public static void GlassThemeUpdates()
-    {
-        if (!Application.Current.TryGetResource("MainTextColor",
-                ThemeVariant.Dark, out var textColor))
-        {
-            return;
-        }
-
-        if (textColor is not Color mainColor)
-        {
-            return;
-        }
-
-        Application.Current.Resources["MainTextColor"] = mainColor;
-        
-        Application.Current.Resources["MainButtonBackgroundColor"] = Color.Parse("#4D000000");
-        Application.Current.Resources["MainBackgroundColor"] = Color.Parse("#4D000000");
-        
-        Application.Current.Resources["SecondaryButtonBackgroundColor"] = Color.Parse("#D1464646");
-        Application.Current.Resources["SecondaryBackgroundColor"] = Color.Parse("#DE5B5B5B");
-        
-        Application.Current.Resources["DisabledBackgroundColor"] = Color.Parse("#4D5B5B5B");
-
-        Application.Current.Resources["MainBorderColor"] = Colors.Transparent;
-        Application.Current.Resources["SecondaryBorderColor"] = Colors.Transparent;
-        Application.Current.Resources["TertiaryBorderColor"] = Colors.Transparent;
-        
-        Application.Current.Resources["ContextMenuTextColor"] = mainColor;
-        Application.Current.Resources["ContextMenuBackgroundColor"] = Color.Parse("#A1464646");
-            
-        Application.Current.Resources["MenuBackgroundColor"] = Color.Parse("#6D5B5B5B");
-        Application.Current.Resources["MenuButtonColor"] = Color.Parse("#50797979");
-        
-        Application.Current.Resources["WindowBorderColor"] = Color.Parse("#15FFFFFF");
-        
     }
 
     public static void DetermineTheme(Application? application, bool settingsExists)

@@ -150,7 +150,7 @@ public static class ColorManager
         
         if (Settings.Theme.GlassTheme)
         {
-            ThemeManager.GlassThemeUpdates();
+            GlassThemeHelper.GlassThemeUpdates();
         }
 
         // Update application resources with the new brushes

@@ -38,6 +38,9 @@ public partial class WinTitleBar : UserControl
                 RestoreButton.Background = Brushes.Transparent;
                 RestoreButton.BorderThickness = new Thickness(0);
                 
+                FullscreenButton.Background = Brushes.Transparent;
+                FullscreenButton.BorderThickness = new Thickness(0);
+                
                 FlipButton.Background = Brushes.Transparent;
                 FlipButton.BorderThickness = new Thickness(0);
                 

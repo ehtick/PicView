@@ -145,7 +145,7 @@ public static class StartUpHelper
     {
         if (Settings.Theme.GlassTheme)
         {
-            ThemeManager.GlassThemeUpdates();
+            GlassThemeHelper.GlassThemeUpdates();
         }
 
         BackgroundManager.SetBackground(vm);

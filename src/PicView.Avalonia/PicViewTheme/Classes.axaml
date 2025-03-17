@@ -38,7 +38,7 @@
         <Setter Property="CornerRadius" Value="4" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Focusable" Value="False" />
-        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource OuterBorderColor}" />
         <Setter Property="Effect" Value="{StaticResource MenuShadowButtonBorder}" />
         <Setter Property="Background" Value="{DynamicResource MainButtonBackgroundColor}" />
     </Style>
@@ -73,5 +73,17 @@
         <Setter Property="Width" Value="180" />
         <Setter Property="CaretBrush" Value="{StaticResource SecondaryTextColor}" />
         <Setter Property="SelectionForegroundBrush" Value="{StaticResource SecondaryTextColor}" />
+    </Style>
+
+    <Style Selector="Button.GlassBorder, ToggleButton.GlassBorder, RepeatButton.GlassBorder">
+        <Setter Property="BorderBrush" Value="#48000000" />
+    </Style>
+
+    <Style Selector="Border.GlassBorder">
+        <Setter Property="BorderBrush" Value="#48000000" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Polygon.GlassBorder">
+        <Setter Property="Stroke" Value="#48000000" />
     </Style>
 </Styles>
