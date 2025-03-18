@@ -101,8 +101,8 @@ public static class WindowResizing
             else
             {
                 vm.GalleryWidth = vm.RotationAngle is 90 or 270
-                    ? Math.Max(size.Height, SizeDefaults.WindowMinSize)
-                    : Math.Max(size.Width, SizeDefaults.WindowMinSize);
+                    ? Math.Max(size.Height, SizeDefaults.WindowMinSize + 15)
+                    : Math.Max(size.Width, SizeDefaults.WindowMinSize + 15);
             }
         }
         else
