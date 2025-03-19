@@ -89,9 +89,9 @@
             HorizontalAlignment="Center"
             IsSnapToTickEnabled="True"
             Margin="0,1,0,1"
-            Maximum="2.5"
+            Maximum="0.95"
             Minimum="0.05"
-            TickFrequency="0.05"
+            TickFrequency="0.01"
             TickPlacement="BottomRight"
             Value="{CompiledBinding GetNavSpeed,
                                     Mode=TwoWay}"
