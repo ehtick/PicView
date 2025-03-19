@@ -56,7 +56,7 @@ public static class QuickLoad
         
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            vm.ImageViewer.SetTransform(imageModel.EXIFOrientation);
+            vm.ImageViewer.SetTransform(imageModel.EXIFOrientation, false);
             if (Settings.WindowProperties.AutoFit && !Settings.Zoom.ScrollEnabled)
             {
                 SetSize();

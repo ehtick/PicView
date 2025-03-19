@@ -313,7 +313,7 @@ public partial class ImageViewer : UserControl
         }
     }
 
-    public void SetTransform(EXIFHelper.EXIFOrientation? orientation)
+    public void SetTransform(EXIFHelper.EXIFOrientation? orientation, bool resetZoom = true)
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -338,7 +338,10 @@ public partial class ImageViewer : UserControl
                 default:
                 case EXIFHelper.EXIFOrientation.None:
                 case EXIFHelper.EXIFOrientation.Horizontal:
-                    ResetZoom();;
+                    if (resetZoom)
+                    {
+                        ResetZoom();
+                    }
                     return;
                 case EXIFHelper.EXIFOrientation.MirrorHorizontal:
                     SetTransform(-1, 0);
