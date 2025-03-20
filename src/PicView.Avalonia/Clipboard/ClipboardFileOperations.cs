@@ -136,14 +136,17 @@ public static class ClipboardFileOperations
     {
         try
         {
-            if (files is IEnumerable<IStorageItem> items)
+            switch (files)
             {
-                await ProcessStorageItems(items.ToArray(), vm);
-            }
-            else if (files is IStorageItem singleFile)
-            {
-                var path = GetLocalPath(singleFile.Path);
-                await NavigationManager.LoadPicFromStringAsync(path, vm);
+                case IEnumerable<IStorageItem> items:
+                    await ProcessStorageItems(items.ToArray(), vm);
+                    break;
+                case IStorageItem singleFile:
+                {
+                    var path = GetLocalPath(singleFile.Path);
+                    await NavigationManager.LoadPicFromStringAsync(path, vm);
+                    break;
+                }
             }
         }
         catch (Exception ex)

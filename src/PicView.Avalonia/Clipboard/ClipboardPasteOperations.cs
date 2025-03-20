@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Avalonia.Input;
+using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 
@@ -21,8 +22,8 @@ public static class ClipboardPasteOperations
 
         try
         {
-            // Try to paste files first
-            var files = await clipboard.GetDataAsync(DataFormats.Files);
+            // Need to use dispatcher to access clipboard in this instance
+            var files = await Dispatcher.UIThread.InvokeAsync(async () => await clipboard.GetDataAsync(DataFormats.Files));
             if (files != null)
             {
                 await ClipboardFileOperations.PasteFiles(files, vm);
