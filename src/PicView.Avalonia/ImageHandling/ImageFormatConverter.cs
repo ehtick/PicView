@@ -52,7 +52,7 @@ public static class ImageFormatConverter
                     return path;
                 }
 
-                if (vm.PicViewer.ImageSource is Bitmap bmp && vm.PicViewer.FileInfo.FullName.IsSupported())
+                if (vm.PicViewer.ImageSource is Bitmap bmp)
                 {
                     source = bmp;
                 }

@@ -89,7 +89,7 @@ public static class FileManager
                 return;
             }
 
-            await Task.Run(() => vm.PlatformService.Print(path));
+            await Task.Run(() => vm.PlatformService.Print(file));
         }
         catch (Exception ex)
         {
