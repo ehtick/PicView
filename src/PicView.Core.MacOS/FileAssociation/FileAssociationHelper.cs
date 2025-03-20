@@ -1,6 +1,4 @@
-﻿#if DEBUG
-using System.Diagnostics;
-#endif
+﻿using System.Diagnostics;
 
 namespace PicView.Core.MacOS.FileAssociation;
 

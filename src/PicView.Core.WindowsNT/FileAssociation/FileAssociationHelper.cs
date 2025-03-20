@@ -55,7 +55,6 @@ public static class FileAssociationHelper
 #if DEBUG
             Debug.WriteLine($"Error registering file association: {ex.Message}");
 #endif
-
             return false;
         }
     }
