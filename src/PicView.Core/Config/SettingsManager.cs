@@ -16,6 +16,8 @@ public static class SettingsManager
     private const string LocalConfigPath = "Config/" + ConfigFileName;
     private const string RoamingConfigFolder = "Ruben2776/PicView/Config";
     private const string RoamingConfigPath = RoamingConfigFolder + "/" + ConfigFileName;
+    
+    private static bool _isSavingFromRoamingPath;
 
     public static AppSettings? Settings { get; private set; }
 
@@ -132,6 +134,7 @@ public static class SettingsManager
         try
         {
             await ReadSettingsFromPathAsync(path).ConfigureAwait(false);
+            _isSavingFromRoamingPath = true;
             return true;
         }
         catch (Exception)
@@ -190,9 +193,15 @@ public static class SettingsManager
 
         try
         {
-            // Try to save to local directory first
-            var localPath = GetLocalSettingsPath();
-            await SaveSettingsToPathAsync(localPath).ConfigureAwait(false);
+            if (_isSavingFromRoamingPath)
+            {
+                await SaveSettingsToPathAsync(GetRoamingSettingsPath()).ConfigureAwait(false);
+            }
+            else
+            {
+                var localPath = GetLocalSettingsPath();
+                await SaveSettingsToPathAsync(localPath).ConfigureAwait(false);
+            }
             return true;
         }
         catch (UnauthorizedAccessException)
