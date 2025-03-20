@@ -83,7 +83,9 @@ public static class FileAssociationHelper
         }
         catch (Exception ex)
         {
+#if DEBUG
             Debug.WriteLine($"Error unregistering file association: {ex.Message}");
+#endif
             return false;
         }
     }
