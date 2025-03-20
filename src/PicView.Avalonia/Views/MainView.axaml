@@ -932,7 +932,7 @@
             <Separator />
 
             <!--  Paste  -->
-            <MenuItem Command="{CompiledBinding PasteCommand}" Header="{CompiledBinding Translation.File, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding PasteCommand}" Header="{CompiledBinding Translation.Paste, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource PasteGeometry}"
