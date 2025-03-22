@@ -163,7 +163,7 @@ public class GalleryAnimationControl : UserControl
             // Configure gallery
             ViewModel.GalleryOrientation = Orientation.Vertical;
             GalleryStretchMode.DetermineStretchMode(ViewModel);
-            ViewModel.IsGalleryCloseIconVisible = true;
+            ViewModel.IsFullGalleryOpen = true;
 
             // Animate opacity
             var opacityAnimation = AnimationsHelper.OpacityAnimation(NoOpacity, FullOpacity, MediumAnimationSpeed);
@@ -248,7 +248,7 @@ public class GalleryAnimationControl : UserControl
             // Configure gallery
             ViewModel.GalleryOrientation = Orientation.Horizontal;
             GalleryStretchMode.DetermineStretchMode(ViewModel);
-            ViewModel.IsGalleryCloseIconVisible = false;
+            ViewModel.IsFullGalleryOpen = false;
             ViewModel.GalleryVerticalAlignment = VerticalAlignment.Bottom;
 
             // Animate height
@@ -293,7 +293,7 @@ public class GalleryAnimationControl : UserControl
 
             // Configure gallery
             ViewModel.GalleryOrientation = Orientation.Horizontal;
-            ViewModel.IsGalleryCloseIconVisible = false;
+            ViewModel.IsFullGalleryOpen = false;
 
             // Animate height
             var heightAnimation = AnimationsHelper.HeightAnimation(from, ZeroHeight, FastAnimationSpeed);
@@ -326,7 +326,7 @@ public class GalleryAnimationControl : UserControl
 
             // Configure gallery
             ViewModel.GalleryOrientation = Orientation.Vertical;
-            ViewModel.IsGalleryCloseIconVisible = true;
+            ViewModel.IsFullGalleryOpen = true;
             GalleryStretchMode.DetermineStretchMode(ViewModel);
             ViewModel.GalleryItemMargin = FullGalleryItemMargin;
 
@@ -364,7 +364,7 @@ public class GalleryAnimationControl : UserControl
 
             // Configure gallery
             ViewModel.GalleryVerticalAlignment = VerticalAlignment.Bottom;
-            ViewModel.IsGalleryCloseIconVisible = false;
+            ViewModel.IsFullGalleryOpen = false;
 
             // Animate height
             var from = Bounds.Height;

@@ -274,7 +274,6 @@ public static class GalleryFunctions
     #region Gallery toggle
 
     public static bool IsFullGalleryOpen { get; private set; }
-    public static bool IsBottomGalleryOpen { get; private set; }
 
     public static void ToggleGallery(MainViewModel vm)
     {
@@ -286,8 +285,6 @@ public static class GalleryFunctions
         MenuManager.CloseMenus(vm);
         if (Settings.Gallery.IsBottomGalleryShown)
         {
-            // Showing bottom gallery is enabled
-            IsBottomGalleryOpen = true;
             if (IsFullGalleryOpen)
             {
                 // Switch to bottom gallery
@@ -305,7 +302,6 @@ public static class GalleryFunctions
         }
         else
         {
-            IsBottomGalleryOpen = false;
             if (IsFullGalleryOpen)
             {
                 // close full gallery
@@ -340,11 +336,9 @@ public static class GalleryFunctions
             vm.Translation.IsShowingBottomGallery = TranslationManager.Translation.ShowBottomGallery;
             Settings.Gallery.IsBottomGalleryShown = false;
             IsFullGalleryOpen = false;
-            IsBottomGalleryOpen = false;
             return;
         }
 
-        IsBottomGalleryOpen = true;
         IsFullGalleryOpen = false;
         Settings.Gallery.IsBottomGalleryShown = true;
         if (NavigationManager.CanNavigate(vm))
@@ -363,7 +357,6 @@ public static class GalleryFunctions
 
     public static void OpenBottomGallery(MainViewModel vm)
     {
-        IsBottomGalleryOpen = true;
         vm.GalleryMode = GalleryMode.ClosedToBottom;
         vm.GalleryVerticalAlignment = VerticalAlignment.Bottom;
     }

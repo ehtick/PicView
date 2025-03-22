@@ -341,7 +341,7 @@ public class MainViewModel : ReactiveObject
         get;
     }
 
-    public bool IsGalleryCloseIconVisible
+    public bool IsFullGalleryOpen
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

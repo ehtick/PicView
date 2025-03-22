@@ -15,62 +15,6 @@ namespace PicView.Avalonia.Navigation;
 
 public static class ImageLoader
 {
-    #region Cancellation
-
-    private static CancellationTokenSource? _cancellationTokenSource;
-    
-    public static void Cancel()
-    {
-        if (_cancellationTokenSource is not null)
-        {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
-        }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
-
-    public static async Task CancelAsync()
-    {
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
-        }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-    }
-
-    #endregion
-
-    #region Image Iterator Loading
-
-    public static async Task LastIterationAsync(ImageIterator imageIterator) => await imageIterator.NextIteration(NavigateTo.Last, _cancellationTokenSource)
-        .ConfigureAwait(false);
-    
-    public static async Task FirstIterationAsync(ImageIterator imageIterator) => await imageIterator.NextIteration(NavigateTo.First, _cancellationTokenSource)
-        .ConfigureAwait(false);
-    
-    /// <summary>
-    ///     Checks if the previous iteration has been cancelled and starts the iteration at the given index
-    /// </summary>
-    /// <param name="index">The index to iterate to.</param>
-    /// <param name="imageIterator">The ImageIterator instance.</param>
-    public static async Task CheckCancellationAndStartIterateToIndex(int index, ImageIterator imageIterator)
-    {
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-        }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-        await imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
-    }
-
-    #endregion
-
     #region Load Pic From String
 
     /// <summary>
@@ -142,10 +86,10 @@ public static class ImageLoader
 
     #endregion
 
-
     #region Load Pic From File
-    
-    public static async Task LoadPicFromFile(string fileName, MainViewModel vm, ImageIterator imageIterator, FileInfo? fileInfo = null)
+
+    public static async Task LoadPicFromFile(string fileName, MainViewModel vm, ImageIterator imageIterator,
+        FileInfo? fileInfo = null)
     {
         if (vm is null)
         {
@@ -176,12 +120,12 @@ public static class ImageLoader
                 }
                 else
                 {
-                    await NavigationManager.LoadWithoutImageIterator(fileInfo, vm);
+                    await NavigationManager.LoadWithoutImageIterator(fileInfo, vm).ConfigureAwait(false);
                 }
             }
             else
             {
-                await NavigationManager.LoadWithoutImageIterator(fileInfo, vm);
+                await NavigationManager.LoadWithoutImageIterator(fileInfo, vm).ConfigureAwait(false);
             }
         }
         else
@@ -191,7 +135,7 @@ public static class ImageLoader
                 vm.PlatformService.StopTaskbarProgress();
             }
 
-            await NavigationManager.LoadWithoutImageIterator(fileInfo, vm);
+            await NavigationManager.LoadWithoutImageIterator(fileInfo, vm).ConfigureAwait(false);
         }
     }
 
@@ -268,12 +212,12 @@ public static class ImageLoader
     /// </summary>
     /// <param name="path">The path to the archive file containing the picture(s) to load.</param>
     /// <param name="vm">The main view model instance used to manage UI state and operations.</param>
-    ///  <param name="imageIterator">The image iterator to use for navigation.</param>
+    /// <param name="imageIterator">The image iterator to use for navigation.</param>
     public static async Task LoadPicFromArchiveAsync(string path, MainViewModel vm, ImageIterator imageIterator)
     {
         if (_cancellationTokenSource is not null)
         {
-            await _cancellationTokenSource.CancelAsync();
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
 
         vm.IsLoading = true;
@@ -309,12 +253,11 @@ public static class ImageLoader
             await ErrorHandling.ReloadAsync(vm);
         }
     }
-    
 
     #endregion
 
     #region Load Pic From URL
-    
+
     /// <summary>
     ///     Loads a picture from a given URL.
     /// </summary>
@@ -359,7 +302,7 @@ public static class ImageLoader
             {
                 tasks.Add(imageIterator.DisposeAsync().AsTask());
             }
-            
+
             await Task.WhenAll(tasks).ConfigureAwait(false);
             destination = httpDownload.DownloadPath;
         }
@@ -396,7 +339,7 @@ public static class ImageLoader
 
     #region Load Pic From Base64
 
-        /// <summary>
+    /// <summary>
     ///     Loads a picture from a Base64-encoded string.
     /// </summary>
     /// <param name="base64">The Base64-encoded string representing the picture.</param>
@@ -408,12 +351,13 @@ public static class ImageLoader
         vm.IsLoading = true;
         vm.PicViewer.ImageSource = null;
         vm.PicViewer.FileInfo = null;
-        
+
         if (_cancellationTokenSource is not null)
         {
-            await _cancellationTokenSource.CancelAsync();
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
-        await NavigationManager.DisposeImageIteratorAsync();
+
+        await NavigationManager.DisposeImageIteratorAsync().ConfigureAwait(false);
 
         await Task.Run(async () =>
         {
@@ -443,7 +387,7 @@ public static class ImageLoader
 #endif
                 if (vm.PicViewer.FileInfo is not null && vm.PicViewer.FileInfo.Exists)
                 {
-                    await LoadPicFromFile(vm.PicViewer.FileInfo.FullName, vm, imageIterator, vm.PicViewer.FileInfo);
+                    await LoadPicFromFile(vm.PicViewer.FileInfo.FullName, vm, imageIterator, vm.PicViewer.FileInfo).ConfigureAwait(false);
                 }
                 else
                 {
@@ -456,5 +400,68 @@ public static class ImageLoader
     }
 
     #endregion
-    
+
+    #region Cancellation
+
+    private static CancellationTokenSource? _cancellationTokenSource;
+
+    public static void Cancel()
+    {
+        if (_cancellationTokenSource is not null)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
+
+    public static async Task CancelAsync()
+    {
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource = null;
+        }
+
+        _cancellationTokenSource = new CancellationTokenSource();
+    }
+
+    #endregion
+
+    #region Image Iterator Loading
+
+    /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
+    public static async Task LastIterationAsync(ImageIterator imageIterator) => await imageIterator
+        .NextIteration(NavigateTo.Last, _cancellationTokenSource)
+        .ConfigureAwait(false);
+
+    /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
+    public static async Task FirstIterationAsync(ImageIterator imageIterator) => await imageIterator
+        .NextIteration(NavigateTo.First, _cancellationTokenSource)
+        .ConfigureAwait(false);
+
+    /// <summary>
+    ///     Checks if the previous iteration has been cancelled and starts the iteration at the given index
+    /// </summary>
+    /// <param name="index">The index to iterate to.</param>
+    /// <param name="imageIterator">The ImageIterator instance.</param>
+    public static async Task CheckCancellationAndStartIterateToIndex(int index, ImageIterator imageIterator)
+    {
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
+        }
+
+        // Need to start in new task. This makes it more responsive, since it can get laggy when loading large images
+        await Task.Run(async () =>
+        {
+            _cancellationTokenSource = new CancellationTokenSource();
+            await imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
+        }).ConfigureAwait(false);
+    }
+
+    #endregion
 }

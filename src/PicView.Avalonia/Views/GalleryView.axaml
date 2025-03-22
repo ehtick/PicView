@@ -95,8 +95,12 @@
                         </Flyout>
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
-                <Separator />
-                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding Translation.HideBottomGallery, Mode=OneWay}">
+                <Separator IsVisible="{CompiledBinding !IsFullGalleryOpen}" />
+                <MenuItem
+                    Command="{CompiledBinding CloseGalleryCommand}"
+                    Header="{CompiledBinding Translation.HideBottomGallery,
+                                             Mode=OneWay}"
+                    IsVisible="{CompiledBinding !IsFullGalleryOpen}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"
@@ -117,7 +121,7 @@
             DockPanel.Dock="Right"
             Height="60"
             HorizontalAlignment="Right"
-            IsVisible="{CompiledBinding IsGalleryCloseIconVisible}"
+            IsVisible="{CompiledBinding IsFullGalleryOpen}"
             VerticalAlignment="Top"
             Width="50"
             ZIndex="99">
