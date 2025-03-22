@@ -13,6 +13,7 @@ public static partial class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool SetCursorPos(int x, int y);    
     
+    // Notify the system about the change
     [LibraryImport("shell32.dll")]
     public static partial void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
     
@@ -37,6 +38,4 @@ public static partial class NativeMethods
     }
 
     #endregion Disable Screensaver and Power options
-
-
 }
