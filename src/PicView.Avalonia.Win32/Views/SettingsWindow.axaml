@@ -20,67 +20,106 @@
         PointerPressed="MoveWindow"
         x:Name="ParentBorder">
         <Panel>
-            <DockPanel
+            <Border
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,0,1"
                 Height="28"
-                LastChildFill="True"
                 VerticalAlignment="Top">
-                <Border
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,1"
-                    DockPanel.Dock="Left"
-                    x:Name="TopWindowBorder">
-                    <Image
-                        Height="25"
-                        Margin="10,1,10,1"
-                        Source="{StaticResource LogoImage}"
-                        Width="20" />
-                </Border>
+                <DockPanel LastChildFill="True" VerticalAlignment="Top">
+                    <Border
+                        Background="{DynamicResource WindowButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="0,0,1,0"
+                        DockPanel.Dock="Left"
+                        x:Name="LogoBorder">
+                        <Image
+                            Height="25"
+                            Margin="10,1,10,1"
+                            Source="{StaticResource LogoImage}"
+                            Width="20" />
+                    </Border>
 
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="hover"
-                    Click="Close"
-                    ClickMode="Release"
-                    Data="{StaticResource CloseGeometry}"
-                    DockPanel.Dock="Right"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="10"
-                    IconWidth="10"
-                    ToolTip.Tip="{CompiledBinding Translation.Close,
-                                                  Mode=OneWay}"
-                    Width="30"
-                    x:Name="CloseButton" />
+                    <customControls:IconButton
+                        Background="{DynamicResource WindowButtonBackgroundColor}"
+                        Classes="hover"
+                        Click="Close"
+                        ClickMode="Release"
+                        Data="{StaticResource CloseGeometry}"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource MainTextColor}"
+                        IconHeight="10"
+                        IconWidth="10"
+                        ToolTip.Tip="{CompiledBinding Translation.Close,
+                                                      Mode=OneWay}"
+                        Width="30"
+                        x:Name="CloseButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1,0,1,0"
-                    Classes="hover"
-                    Click="Minimize"
-                    ClickMode="Release"
-                    Data="{StaticResource MinimizeGeometry}"
-                    DockPanel.Dock="Right"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="12"
-                    IconWidth="12"
-                    Width="30"
-                    x:Name="MinimizeButton" />
+                    <customControls:IconButton
+                        Background="{DynamicResource WindowButtonBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1,0,1,0"
+                        Classes="hover"
+                        Click="Minimize"
+                        ClickMode="Release"
+                        Data="{StaticResource MinimizeGeometry}"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource MainTextColor}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Width="30"
+                        x:Name="MinimizeButton" />
 
-                <TextBlock
-                    Background="{StaticResource WindowSecondaryBackgroundColor}"
-                    Classes="txt"
-                    Foreground="{DynamicResource MainTextColor}"
-                    LineHeight="28"
-                    Padding="30,0,0,0"
-                    Text="{CompiledBinding Translation.Settings,
-                                           Mode=OneWay}"
-                    TextAlignment="Center"
-                    x:Name="TitleText" />
-            </DockPanel>
+                    <customControls:IconButton
+                        Background="{StaticResource WindowSecondaryBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="1,0,0,0"
+                        Classes="hover"
+                        ClickMode="Press"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource MainTextColor}"
+                        Icon="{StaticResource MenuImage}"
+                        IconHeight="12"
+                        IconWidth="12"
+                        Width="30"
+                        x:Name="SettingsButton">
+                        <customControls:IconButton.Flyout>
+                            <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
+                                <MenuItem Foreground="{DynamicResource MainTextColor}" Header="UserSettings.json">
+                                    <MenuItem.Icon>
+                                        <Image
+                                            Height="12"
+                                            Source="{StaticResource BracesImage}"
+                                            Width="12" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem
+                                    Command="{CompiledBinding ResetSettingsCommand}"
+                                    Foreground="{DynamicResource MainTextColor}"
+                                    Header="{CompiledBinding Translation.ResetButtonText,
+                                                             Mode=OneWay}">
+                                    <MenuItem.Icon>
+                                        <Image
+                                            Height="12"
+                                            Source="{StaticResource ResetImage}"
+                                            Width="12" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </MenuFlyout>
+                        </customControls:IconButton.Flyout>
+                    </customControls:IconButton>
 
+                    <TextBlock
+                        Background="{StaticResource WindowSecondaryBackgroundColor}"
+                        Classes="txt"
+                        Foreground="{DynamicResource MainTextColor}"
+                        LineHeight="28"
+                        Padding="30,0,0,0"
+                        Text="{CompiledBinding Translation.Settings,
+                                               Mode=OneWay}"
+                        TextAlignment="Center"
+                        x:Name="TitleText" />
+                </DockPanel>
+            </Border>
 
             <views:SettingsView Background="{DynamicResource NoisyTexture}" Margin="0,28,0,0" />
 

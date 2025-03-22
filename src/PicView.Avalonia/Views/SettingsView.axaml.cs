@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -15,11 +14,6 @@ public partial class SettingsView : UserControl
     public SettingsView()
     {
         InitializeComponent();
-        // Add rounded corners on macOS
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            ResetSettingsButton.CornerRadius = new CornerRadius(0,0,0,8);
-        }
         
         Loaded += delegate
         {

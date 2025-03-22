@@ -14,11 +14,15 @@ public partial class SettingsWindow : Window
         InitializeComponent();
         if (Settings.Theme.GlassTheme)
         {
-            TopWindowBorder.Background = Brushes.Transparent;
-            TopWindowBorder.BorderThickness = new Thickness(0);
+            LogoBorder.Background = Brushes.Transparent;
+            LogoBorder.BorderThickness = new Thickness(0);
+            
+            SettingsButton.Background = Brushes.Transparent;
+            SettingsButton.BorderThickness = new Thickness(0);
             
             CloseButton.Background = Brushes.Transparent;
             CloseButton.BorderThickness = new Thickness(0);
+            
             MinimizeButton.Background = Brushes.Transparent;
             MinimizeButton.BorderThickness = new Thickness(0);
             

@@ -15,7 +15,7 @@
         <viewModels:MainViewModel />
     </Design.DataContext>
     <UserControl.Resources>
-        <Thickness x:Key="TabMargin">20,5,40,20</Thickness>
+        <Thickness x:Key="TabMargin">20,5,40,0</Thickness>
         <Thickness x:Key="TabPadding">45,5,45,20</Thickness>
         <DrawingImage x:Key="KeyboardImage">
             <DrawingGroup>
@@ -653,314 +653,265 @@
     </UserControl.Resources>
     <Panel>
 
-        <customControls:AutoScrollViewer>
-            <TabControl
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0"
-                HorizontalAlignment="Left"
-                Margin="0,0,0,35"
-                Padding="0"
-                TabStripPlacement="Left"
-                VerticalAlignment="Top"
-                x:Name="MainTabControl">
-                <TabControl.Styles>
-                    <Styles>
-                        <Style Selector="TabItem.headerStyle">
-                            <Setter Property="HorizontalContentAlignment" Value="Left" />
-                            <Setter Property="Padding" Value="12, 15" />
-                            <Setter Property="Width" Value="225" />
-                        </Style>
-                        <Style Selector="Image.imageStyle">
-                            <Setter Property="Margin" Value="2,0,8,0" />
-                            <Setter Property="Width" Value="14" />
-                            <Setter Property="Height" Value="14" />
-                        </Style>
-                        <!-- <Style Selector="Path.pathStyle"> -->
-                        <!--     <Setter Property="Margin" Value="2,0,8,0" /> -->
-                        <!--     <Setter Property="Width" Value="14" /> -->
-                        <!--     <Setter Property="Height" Value="14" /> -->
-                        <!--     <Setter Property="Stretch" Value="Fill" /> -->
-                        <!--     <Setter Property="Fill" Value="{DynamicResource MainTextColor}" /> -->
-                        <!-- </Style> -->
-                    </Styles>
-                </TabControl.Styles>
-
-                <!--  General Settings  -->
-                <TabItem Classes="headerStyle" x:Name="GeneralSettingsTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource GeneralSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding Translation.GeneralSettings, Mode=OneWay}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:GeneralSettingsView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Appearance Settings  -->
-                <TabItem Classes="headerStyle" x:Name="AppearanceTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource AppearanceSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding Translation.Appearance, Mode=OneWay}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:AppearanceView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Image Settings  -->
-                <TabItem Classes="headerStyle" x:Name="ImageTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource ImageSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{Binding Translation.Image, Mode=OneWay}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:ImageSettingsView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Gallery Settings  -->
-                <TabItem Classes="headerStyle" x:Name="GalleryTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource GallerySettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.GallerySettings,
-                                                       Mode=OneWay}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:GalleryView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Slideshow Settings  -->
-                <TabItem Classes="headerStyle" x:Name="SlideshowTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource SlideshowSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.Slideshow,
-                                                       Mode=OneWay}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <ScrollViewer>
-                        <views:SlideshowSettingsView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </ScrollViewer>
-                </TabItem>
-
-                <!--  Navigation Settings  -->
-                <TabItem Classes="headerStyle" x:Name="NavigationTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource NavigationSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.Navigation}" />
-                        </StackPanel>
-                    </TabItem.Header>
-
-                    <customControls:AutoScrollViewer>
-                        <views:NavigationView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Zoom Settings  -->
-                <TabItem Classes="headerStyle">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource ZoomSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.Zoom}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:ZoomSettingsView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Mouse Wheel Settings  -->
-                <TabItem Classes="headerStyle" x:Name="MouseWheelTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource MouseWheelIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.MouseWheel}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:MouseWheelView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Language Settings  -->
-                <TabItem Classes="headerStyle" x:Name="LanguageTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource LanguageSettingsIcon}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.Language}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <customControls:AutoScrollViewer>
-                        <views:LanguageView
-                            Background="Transparent"
-                            Margin="{StaticResource TabMargin}"
-                            Padding="{StaticResource TabPadding}" />
-                    </customControls:AutoScrollViewer>
-                </TabItem>
-
-                <!--  Application Shortcuts  -->
-                <TabItem Classes="headerStyle" x:Name="AppShortcutsTabItem">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource KeyboardImage}" />
-                            <TextBlock
-                                Classes="txt txtShadow"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.ApplicationShortcuts}" />
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Button
-                        Background="{DynamicResource AltBackgroundHoverColor}"
-                        BorderBrush="{DynamicResource SecondaryBorderColor}"
-                        Classes="ButtonBorder hover"
-                        Command="{CompiledBinding ShowKeybindingsWindowCommand}"
-                        HorizontalAlignment="Left"
-                        Margin="65,50,0,20"
-                        Padding="0,0,7,0"
-                        ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts,
-                                                      Mode=OneWay}"
-                        VerticalAlignment="Top"
-                        Width="NaN">
-                        <StackPanel Orientation="Horizontal">
-                            <Image
-                                Height="17"
-                                Margin="9,0,12,0"
-                                Source="{StaticResource KeyboardImage}"
-                                Width="17" />
-                            <TextBlock
-                                Classes="txt"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="{CompiledBinding Translation.ApplicationShortcuts,
-                                                       Mode=OneWay}" />
-                        </StackPanel>
-                    </Button>
-                </TabItem>
-
-                <!--  File associations  -->
-                <TabItem
-                    Classes="headerStyle"
-                    IsEnabled="False"
-                    x:Name="FileAssociationsTabItem ">
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Classes="imageStyle" Source="{StaticResource FileActionsIcon}" />
-                            <TextBlock
-                                Classes="txt"
-                                Foreground="{StaticResource SecondaryTextColor}"
-                                Text="File associations" />
-                        </StackPanel>
-                    </TabItem.Header>
-                </TabItem>
-            </TabControl>
-        </customControls:AutoScrollViewer>
-
-        <!--  Reset settings  -->
-        <Button
-            Background="#27FFFFFF"
-            BorderThickness="0,1,1,0"
-            Classes="BorderStyle errorHover mainBtn"
-            Command="{CompiledBinding ResetSettingsCommand}"
+        <TabControl
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="0"
             HorizontalAlignment="Left"
             Margin="0"
-            VerticalAlignment="Bottom"
-            Width="211"
-            x:Name="ResetSettingsButton">
-            <StackPanel Orientation="Horizontal">
-                <Image Margin="5,0,10,0">
-                    <DrawingImage>
-                        <DrawingGroup>
-                            <GeometryDrawing Geometry="F1 M9 10L4 15L9 20">
-                                <GeometryDrawing.Pen>
-                                    <Pen
-                                        Brush="{StaticResource SecondaryTextColor}"
-                                        LineCap="Round"
-                                        LineJoin="Round"
-                                        MiterLimit="4"
-                                        Thickness="2" />
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                            <GeometryDrawing Geometry="F1 M20 4L20 11Q20 11.1965 19.9807 11.3921Q19.9615 11.5876 19.9231 11.7804Q19.8848 11.9731 19.8278 12.1611Q19.7707 12.3492 19.6955 12.5307Q19.6203 12.7123 19.5277 12.8856Q19.435 13.0589 19.3259 13.2223Q19.2167 13.3857 19.092 13.5376Q18.9674 13.6895 18.8284 13.8284Q18.6895 13.9674 18.5376 14.092Q18.3857 14.2167 18.2223 14.3259Q18.0589 14.4351 17.8856 14.5277Q17.7123 14.6203 17.5307 14.6955Q17.3492 14.7707 17.1611 14.8278Q16.9731 14.8848 16.7804 14.9231Q16.5876 14.9615 16.3921 14.9807Q16.1965 15 16 15L4 15">
-                                <GeometryDrawing.Pen>
-                                    <Pen
-                                        Brush="{StaticResource SecondaryTextColor}"
-                                        LineCap="Round"
-                                        LineJoin="Round"
-                                        MiterLimit="4"
-                                        Thickness="2" />
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                        </DrawingGroup>
-                    </DrawingImage>
-                </Image>
-                <TextBlock
-                    Classes="txt"
-                    Foreground="{StaticResource SecondaryTextColor}"
-                    Text="{CompiledBinding Translation.ResetButtonText,
-                                           Mode=OneWay}" />
-            </StackPanel>
+            Padding="0"
+            TabStripPlacement="Left"
+            VerticalAlignment="Top"
+            x:Name="MainTabControl">
+            <TabControl.Styles>
+                <Styles>
+                    <Style Selector="TabItem.headerStyle">
+                        <Setter Property="HorizontalContentAlignment" Value="Left" />
+                        <Setter Property="Padding" Value="12, 15" />
+                        <Setter Property="Width" Value="225" />
+                    </Style>
+                    <Style Selector="Image.imageStyle">
+                        <Setter Property="Margin" Value="2,0,8,0" />
+                        <Setter Property="Width" Value="14" />
+                        <Setter Property="Height" Value="14" />
+                    </Style>
+                    <!-- <Style Selector="Path.pathStyle"> -->
+                    <!--     <Setter Property="Margin" Value="2,0,8,0" /> -->
+                    <!--     <Setter Property="Width" Value="14" /> -->
+                    <!--     <Setter Property="Height" Value="14" /> -->
+                    <!--     <Setter Property="Stretch" Value="Fill" /> -->
+                    <!--     <Setter Property="Fill" Value="{DynamicResource MainTextColor}" /> -->
+                    <!-- </Style> -->
+                </Styles>
+            </TabControl.Styles>
 
-        </Button>
+            <!--  General Settings  -->
+            <TabItem Classes="headerStyle" x:Name="GeneralSettingsTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource GeneralSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{Binding Translation.GeneralSettings, Mode=OneWay}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:GeneralSettingsView Margin="{StaticResource TabMargin}" Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Appearance Settings  -->
+            <TabItem Classes="headerStyle" x:Name="AppearanceTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource AppearanceSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{Binding Translation.Appearance, Mode=OneWay}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:AppearanceView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Image Settings  -->
+            <TabItem Classes="headerStyle" x:Name="ImageTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource ImageSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{Binding Translation.Image, Mode=OneWay}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:ImageSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Gallery Settings  -->
+            <TabItem Classes="headerStyle" x:Name="GalleryTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource GallerySettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.GallerySettings,
+                                                   Mode=OneWay}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:GalleryView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Slideshow Settings  -->
+            <TabItem Classes="headerStyle" x:Name="SlideshowTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource SlideshowSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.Slideshow,
+                                                   Mode=OneWay}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:SlideshowSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Navigation Settings  -->
+            <TabItem Classes="headerStyle" x:Name="NavigationTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource NavigationSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.Navigation}" />
+                    </StackPanel>
+                </TabItem.Header>
+
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:NavigationView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Zoom Settings  -->
+            <TabItem Classes="headerStyle">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource ZoomSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.Zoom}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:ZoomSettingsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Mouse Wheel Settings  -->
+            <TabItem Classes="headerStyle" x:Name="MouseWheelTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource MouseWheelIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.MouseWheel}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:MouseWheelView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Language Settings  -->
+            <TabItem Classes="headerStyle" x:Name="LanguageTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource LanguageSettingsIcon}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.Language}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:LanguageView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="{StaticResource TabPadding}" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+
+            <!--  Application Shortcuts  -->
+            <TabItem Classes="headerStyle" x:Name="AppShortcutsTabItem">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource KeyboardImage}" />
+                        <TextBlock
+                            Classes="txt txtShadow"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.ApplicationShortcuts}" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Button
+                    Background="{DynamicResource AltBackgroundHoverColor}"
+                    BorderBrush="{DynamicResource SecondaryBorderColor}"
+                    Classes="ButtonBorder hover"
+                    Command="{CompiledBinding ShowKeybindingsWindowCommand}"
+                    HorizontalAlignment="Left"
+                    Margin="65,50,0,20"
+                    Padding="0,0,7,0"
+                    ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts,
+                                                  Mode=OneWay}"
+                    VerticalAlignment="Top"
+                    Width="NaN">
+                    <StackPanel Orientation="Horizontal">
+                        <Image
+                            Height="17"
+                            Margin="9,0,12,0"
+                            Source="{StaticResource KeyboardImage}"
+                            Width="17" />
+                        <TextBlock
+                            Classes="txt"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="{CompiledBinding Translation.ApplicationShortcuts,
+                                                   Mode=OneWay}" />
+                    </StackPanel>
+                </Button>
+            </TabItem>
+
+            <!--  File associations  -->
+            <TabItem Classes="headerStyle" x:Name="FileAssociationsTabItem ">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Classes="imageStyle" Source="{StaticResource FileActionsIcon}" />
+                        <TextBlock
+                            Classes="txt"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            Text="File associations" />
+                    </StackPanel>
+                </TabItem.Header>
+                <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
+                    <views:FileAssociationsView
+                        Background="Transparent"
+                        Margin="{StaticResource TabMargin}"
+                        Padding="45,0,0,0" />
+                </customControls:AutoScrollViewer>
+            </TabItem>
+        </TabControl>
 
 
 

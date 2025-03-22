@@ -39,7 +39,7 @@
         </ComboBox>
 
         <Button
-            Classes="altHover"
+            Classes="errorHover"
             Command="{Binding RestartCommand}"
             Margin="0,0,0,20">
             <TextBlock
@@ -180,7 +180,7 @@
                         <Setter Property="Width" Value="35" />
                         <Setter Property="Height" Value="35" />
                         <Setter Property="BorderThickness" Value="1" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
                     </Style>
                     <Style Selector="Button.colorBtn.active">
                         <Setter Property="BorderThickness" Value="2" />
