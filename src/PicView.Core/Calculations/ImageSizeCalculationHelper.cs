@@ -33,7 +33,7 @@ public static class ImageSizeCalculationHelper
     {
         if (width <= 0 || height <= 0 || rotationAngle > 360 || rotationAngle < 0)
         {
-            return new ImageSize(0, 0, 0, 0, 0, 0, 0, 0);
+            return ErrorImageSize(monitorMinWidth, monitorMinHeight, interfaceSize, containerWidth);
         }
 
         double aspectRatio;
@@ -180,7 +180,7 @@ public static class ImageSizeCalculationHelper
         if (width <= 0 || height <= 0 || secondaryWidth <= 0 || secondaryHeight <= 0 || rotationAngle > 360 ||
             rotationAngle < 0)
         {
-            return new ImageSize(0, 0, 0, 0, 0, 0, 0, 0);
+            return ErrorImageSize(monitorMinWidth, monitorMinHeight, interfaceSize, containerWidth);
         }
 
         // Get sizes for both images
@@ -352,6 +352,11 @@ public static class ImageSizeCalculationHelper
 
         return titleMaxWidth;
     }
+    
+    private static ImageSize ErrorImageSize(double monitorMinWidth, double monitorMinHeight, double interfaceSize, double containerWidth)
+        => new ImageSize(0, 0, 0, 0, 0, GetTitleMaxWidth(0, 0, 0, monitorMinWidth,
+                    monitorMinHeight, interfaceSize, containerWidth), 0, 0);
+        
 
     public readonly struct ImageSize(
         double width,
