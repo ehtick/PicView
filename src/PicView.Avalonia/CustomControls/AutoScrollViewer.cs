@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using ReactiveUI;
 
 namespace PicView.Avalonia.CustomControls;
@@ -126,7 +127,15 @@ public class AutoScrollViewer : ScrollViewer
             })
             .DisposeWith(_disposables);
 
+        // Handle all types of focus loss events to end auto-scrolling
         LostFocus += (_, _) => IsAutoScrolling = false;
+        // End auto-scrolling when parent window loses focus
+        var parentWindow = this.GetVisualAncestors().OfType<Window>().FirstOrDefault();
+        if (parentWindow != null)
+        {
+            parentWindow.Deactivated += (_, _) => IsAutoScrolling = false;
+        }
+
         ScrollChanged += (_, _) => _autoScrollingSubject.OnNext(IsAutoScrolling);
     }
 
@@ -239,4 +248,3 @@ public class AutoScrollViewer : ScrollViewer
         _disposables.Dispose();
     }
 }
-
