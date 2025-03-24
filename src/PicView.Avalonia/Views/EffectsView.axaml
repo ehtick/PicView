@@ -68,7 +68,7 @@
                 <MenuItem.Icon>
                     <Image
                         Height="12"
-                        Source="{StaticResource CloseImage}"
+                        Source="{StaticResource ClearImage}"
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>

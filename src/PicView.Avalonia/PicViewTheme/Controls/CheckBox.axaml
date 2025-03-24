@@ -34,6 +34,14 @@
                                     Source="{StaticResource SquareImage}"
                                     Stretch="Fill"
                                     Width="18"
+                                    x:Name="indeterminateMark" />
+
+                                <Image
+                                    Height="18"
+                                    IsVisible="False"
+                                    Source="{StaticResource SquareXImage}"
+                                    Stretch="Fill"
+                                    Width="18"
                                     x:Name="CrossMark" />
                             </Canvas>
                         </Decorator>
@@ -57,6 +65,9 @@
             <Style Selector="^ /template/ Image#CrossMark">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
+            <Style Selector="^ /template/ Image#indeterminateMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
         </Style>
 
         <Style Selector="^:unchecked">
@@ -64,6 +75,21 @@
                 <Setter Property="IsVisible" Value="False" />
             </Style>
             <Style Selector="^ /template/ Image#CrossMark">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+            <Style Selector="^ /template/ Image#indeterminateMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:indeterminate">
+            <Style Selector="^ /template/ Image#TickMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ Image#CrossMark">
+                <Setter Property="IsVisible" Value="False" />
+            </Style>
+            <Style Selector="^ /template/ Image#indeterminateMark">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>
