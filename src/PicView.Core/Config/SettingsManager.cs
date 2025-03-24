@@ -17,7 +17,7 @@ public static class SettingsManager
     private const string RoamingConfigFolder = "Ruben2776/PicView/Config";
     private const string RoamingConfigPath = RoamingConfigFolder + "/" + ConfigFileName;
     
-    private static bool _isSavingFromRoamingPath;
+    public static string? CurrentSettingsPath { get; private set; }
 
     public static AppSettings? Settings { get; private set; }
 
@@ -134,7 +134,6 @@ public static class SettingsManager
         try
         {
             await ReadSettingsFromPathAsync(path).ConfigureAwait(false);
-            _isSavingFromRoamingPath = true;
             return true;
         }
         catch (Exception)
@@ -179,6 +178,7 @@ public static class SettingsManager
         }
 
         Settings = await UpgradeSettingsIfNeededAsync(settings).ConfigureAwait(false);
+        CurrentSettingsPath = path.Replace("/", "\\");
     }
 
     /// <summary>
@@ -193,15 +193,7 @@ public static class SettingsManager
 
         try
         {
-            if (_isSavingFromRoamingPath)
-            {
-                await SaveSettingsToPathAsync(GetRoamingSettingsPath()).ConfigureAwait(false);
-            }
-            else
-            {
-                var localPath = GetLocalSettingsPath();
-                await SaveSettingsToPathAsync(localPath).ConfigureAwait(false);
-            }
+            await SaveSettingsToPathAsync(CurrentSettingsPath).ConfigureAwait(false);
             return true;
         }
         catch (UnauthorizedAccessException)
@@ -283,10 +275,9 @@ public static class SettingsManager
             }
 
             var jsonString = await File.ReadAllTextAsync(localPath).ConfigureAwait(false);
-            var existingSettings = JsonSerializer.Deserialize(
-                jsonString, typeof(AppSettings), SourceGenerationContext.Default) as AppSettings;
 
-            if (existingSettings == null)
+            if (JsonSerializer.Deserialize(
+                    jsonString, typeof(AppSettings), SourceGenerationContext.Default) is not AppSettings existingSettings)
             {
                 return;
             }

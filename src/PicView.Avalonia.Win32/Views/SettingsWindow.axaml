@@ -9,6 +9,7 @@
     x:Class="PicView.Avalonia.Win32.Views.SettingsWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons;assembly=PicView.Avalonia"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
@@ -69,44 +70,7 @@
                         Width="30"
                         x:Name="MinimizeButton" />
 
-                    <customControls:IconButton
-                        Background="{StaticResource WindowSecondaryBackgroundColor}"
-                        BorderBrush="{DynamicResource MainBorderColor}"
-                        BorderThickness="1,0,0,0"
-                        Classes="hover"
-                        ClickMode="Press"
-                        DockPanel.Dock="Right"
-                        Foreground="{DynamicResource MainTextColor}"
-                        Icon="{StaticResource MenuImage}"
-                        IconHeight="12"
-                        IconWidth="12"
-                        Width="30"
-                        x:Name="SettingsButton">
-                        <customControls:IconButton.Flyout>
-                            <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
-                                <MenuItem Foreground="{DynamicResource MainTextColor}" Header="UserSettings.json">
-                                    <MenuItem.Icon>
-                                        <Image
-                                            Height="12"
-                                            Source="{StaticResource BracesImage}"
-                                            Width="12" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem
-                                    Command="{CompiledBinding ResetSettingsCommand}"
-                                    Foreground="{DynamicResource MainTextColor}"
-                                    Header="{CompiledBinding Translation.ResetButtonText,
-                                                             Mode=OneWay}">
-                                    <MenuItem.Icon>
-                                        <Image
-                                            Height="12"
-                                            Source="{StaticResource ResetImage}"
-                                            Width="12" />
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                            </MenuFlyout>
-                        </customControls:IconButton.Flyout>
-                    </customControls:IconButton>
+                    <buttons:SettingsMenuButton x:Name="SettingsButton" />
 
                     <TextBlock
                         Background="{StaticResource WindowSecondaryBackgroundColor}"

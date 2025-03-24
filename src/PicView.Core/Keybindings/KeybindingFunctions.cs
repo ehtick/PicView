@@ -2,6 +2,7 @@
 
 public static class KeybindingFunctions
 {
+    public static string? CurrentKeybindingsPath { get; private set; }
     public static async Task SaveKeyBindingsFile(string json)
     {
         try
@@ -9,6 +10,7 @@ public static class KeybindingFunctions
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/keybindings.json");
             await using var writer = new StreamWriter(path);
             await writer.WriteAsync(json).ConfigureAwait(false);
+            CurrentKeybindingsPath = path.Replace("/", "\\");;
         }
         catch (Exception)
         {
@@ -20,6 +22,7 @@ public static class KeybindingFunctions
             }
             await using var newWriter = new StreamWriter(newPath);
             await newWriter.WriteAsync(json).ConfigureAwait(false);
+            CurrentKeybindingsPath = newPath.Replace("/", "\\");;
         }
     }
 
@@ -29,6 +32,7 @@ public static class KeybindingFunctions
         if (File.Exists(path))
         {
             var text = await File.ReadAllTextAsync(path).ConfigureAwait(false);
+            CurrentKeybindingsPath = path.Replace("/", "\\");;
             return text;
         }
 
@@ -36,6 +40,7 @@ public static class KeybindingFunctions
         if (File.Exists(newPath))
         {
             var text = await File.ReadAllTextAsync(newPath).ConfigureAwait(false);
+            CurrentKeybindingsPath = path.Replace("/", "\\");;
             return text;
         }
 

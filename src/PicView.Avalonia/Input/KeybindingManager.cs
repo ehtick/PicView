@@ -103,11 +103,6 @@ public static class KeybindingManager
         await Loop(keyValues).ConfigureAwait(false);
     }
     
-    private static string? GetFunctionNameByFunction(Func<Task> function)
-    {
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (function == null)
-            return "";
-        return CustomShortcuts.FirstOrDefault(x => x.Value == function).Value.Method.Name ?? "";
-    }
+    private static string GetFunctionNameByFunction(Func<Task> function) =>
+        function == null ? "" : CustomShortcuts.FirstOrDefault(x => x.Value == function).Value.Method.Name;
 }

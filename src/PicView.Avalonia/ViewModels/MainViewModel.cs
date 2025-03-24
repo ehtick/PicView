@@ -284,6 +284,10 @@ public class MainViewModel : ReactiveObject
         RestartCommand = ReactiveCommand.CreateFromTask(FunctionsMapper.Restart);
 
         ToggleUsingTouchpadCommand = ReactiveCommand.CreateFromTask(FunctionsMapper.ToggleUsingTouchpad);
+        
+        ShowSettingsFileCommand = ReactiveCommand.CreateFromTask(FunctionsMapper.ShowSettingsFile);
+        
+        ShowKeybindingsFileCommand = ReactiveCommand.CreateFromTask(FunctionsMapper.ShowKeybindingsFile);
 
         #endregion Settings commands
     }
@@ -667,6 +671,10 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ShowSideBySideCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? RestartCommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? ShowSettingsFileCommand { get; }
+    
+    public ReactiveCommand<Unit, Unit>? ShowKeybindingsFileCommand { get; }
 
     #endregion Commands
 

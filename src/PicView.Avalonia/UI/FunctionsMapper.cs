@@ -14,6 +14,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Keybindings;
 using PicView.Core.Navigation;
 using PicView.Core.ProcessHandling;
 
@@ -114,6 +115,8 @@ public static class FunctionsMapper
             "DeleteFilePermanently" => DeleteFilePermanently,
             "Rename" => Rename,
             "ShowFileProperties" => ShowFileProperties,
+            "ShowSettingsFile" => ShowSettingsFile,
+            "ShowKeybindingsFile" => ShowKeybindingsFile,
 
             // Image functions
             "ResizeImage" => ResizeImage,
@@ -854,6 +857,12 @@ public static class FunctionsMapper
             desktop.MainWindow?.Close();
         });
     }
+    
+    public static async Task ShowSettingsFile() =>
+        await Task.Run(() => Vm?.PlatformService?.OpenWith(CurrentSettingsPath)).ConfigureAwait(false);
+    
+    public static async Task ShowKeybindingsFile() =>
+        await Task.Run(() => Vm?.PlatformService?.OpenWith(KeybindingFunctions.CurrentKeybindingsPath)).ConfigureAwait(false);
     
     /// <inheritdoc cref="SettingsUpdater.ToggleUsingTouchpad(MainViewModel)" />
     public static async Task ToggleUsingTouchpad() =>
