@@ -19,12 +19,12 @@ public partial class FileAssociationsView : UserControl
     {
         InitializeComponent();
 
-        Loaded += delegate
+        AttachedToVisualTree += delegate
         {
             FilterBox.TextChanged += FilterBox_TextChanged;
             
             // Setup binding for the buttons
-            SelectAllButton.Click += (s, e) =>
+            SelectAllButton.Click += delegate
             {
                 foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
                 {
@@ -36,7 +36,7 @@ public partial class FileAssociationsView : UserControl
                     var tag = checkBox.Tag?.ToString();
                     if (tag.StartsWith(".zip") || tag.StartsWith(".rar") || tag.StartsWith(".7z") || tag.StartsWith(".gzip")) 
                     {
-                        checkBox.IsChecked = false;
+                        checkBox.IsChecked = null;
                     }
                     else
                     {
@@ -46,13 +46,13 @@ public partial class FileAssociationsView : UserControl
                 }
             };
             
-            UnSelectAllButton.Click += (s, e) =>
+            UnSelectAllButton.Click += delegate
             {
                 foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
                 {
                     if (checkBox is not null)
                     {
-                        checkBox.IsChecked = false;
+                        checkBox.IsChecked = null;
                     }
                 }
             };
@@ -125,7 +125,7 @@ public partial class FileAssociationsView : UserControl
             _allCheckBoxes.Add((groupCheckBox, fileTypeGroup.Name));
                 
             // Handle group checkbox changes to update all items in the group
-            groupCheckBox.IsCheckedChanged += (s, e) =>
+            groupCheckBox.IsCheckedChanged += delegate
             {
                 var isChecked = groupCheckBox.IsChecked;
                 if (!isChecked.HasValue)
@@ -148,6 +148,7 @@ public partial class FileAssociationsView : UserControl
                     Classes = { "altHover", "x" },
                     Tag = fileType.Extension,
                     IsChecked = fileType.IsSelected,
+                    IsThreeState = true
                 };
                     
                 var fileTextBlock = new TextBlock
@@ -167,7 +168,7 @@ public partial class FileAssociationsView : UserControl
                 _allCheckBoxes.Add((fileCheckBox, $"{fileType.Description} {fileType.Extension}"));
                     
                 // Bind the checkbox to the file type's IsSelected property
-                fileCheckBox.IsCheckedChanged += (s, e) =>
+                fileCheckBox.IsCheckedChanged += delegate
                 {
                     if (fileCheckBox.IsChecked.HasValue)
                     {
