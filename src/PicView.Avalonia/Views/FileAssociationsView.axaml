@@ -89,6 +89,7 @@
 
                 <customControls:IconButton
                     Classes="altHover"
+                    Command="{CompiledBinding AssociationsViewModel.ClearFilterCommand}"
                     Data="{StaticResource CloseGeometry}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColorFaded}"
@@ -150,6 +151,7 @@
             <Button
                 Background="{DynamicResource AccentColor}"
                 Classes="BorderStyle accentHover mainBtn"
+                Command="{CompiledBinding AssociationsViewModel.ApplyCommand}"
                 DockPanel.Dock="Right"
                 HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">

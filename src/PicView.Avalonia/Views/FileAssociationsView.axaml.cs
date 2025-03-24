@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
@@ -11,50 +12,50 @@ namespace PicView.Avalonia.Views;
 public partial class FileAssociationsView : UserControl
 {
     private readonly List<(CheckBox CheckBox, string SearchText)> _allCheckBoxes = [];
-    private CompositeDisposable _disposables = new CompositeDisposable();
+    private readonly CompositeDisposable _disposables = new();
         
     public FileAssociationsView()
     {
         InitializeComponent();
-            
-        FilterBox.TextChanged += FilterBox_TextChanged;
-                
-        // Clear button functionality
-        ClearButton.Click += (s, e) => 
-        { 
-            FilterBox.Text = string.Empty;
-            FilterCheckBoxes(string.Empty);
-        };
-            
-        // Setup binding for the buttons
-        SelectAllButton.Click += (s, e) =>
-        {
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
 
-            vm.AssociationsViewModel.SelectAllCommand.Execute().Subscribe();
-            UpdateCheckBoxesFromViewModel();
-        };
-            
-        UnSelectAllButton.Click += (s, e) =>
+        Loaded += delegate
         {
-            if (DataContext is not MainViewModel vm)
+            FilterBox.TextChanged += FilterBox_TextChanged;
+            
+            // Setup binding for the buttons
+            SelectAllButton.Click += (s, e) =>
             {
-                return;
-            }
+                foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
+                {
+                    if (checkBox is null)
+                    {
+                        continue;
+                    }
 
-            vm.AssociationsViewModel.UnselectAllCommand.Execute().Subscribe();
-            UpdateCheckBoxesFromViewModel();
-        };
+                    var tag = checkBox.Tag?.ToString();
+                    if (tag.StartsWith(".zip") || tag.StartsWith(".rar") || tag.StartsWith(".7z") || tag.StartsWith(".gzip")) 
+                    {
+                        checkBox.IsChecked = false;
+                    }
+                    else
+                    {
+                         checkBox.IsChecked = true;
+                    }
+                   
+                }
+            };
             
-        DataContextChanged += (s, e) =>
-        {
-            _disposables.Dispose();
-            _disposables = new CompositeDisposable();
-                
-            // Initialize the collection of checkboxes once the DataContext is set
+            UnSelectAllButton.Click += (s, e) =>
+            {
+                foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
+                {
+                    if (checkBox is not null)
+                    {
+                        checkBox.IsChecked = false;
+                    }
+                }
+            };
+            
             InitializeCheckBoxesCollection();
         };
     }
@@ -67,6 +68,8 @@ public partial class FileAssociationsView : UserControl
         {
             return;
         }
+        
+        vm.AssociationsViewModel ??= new FileAssociationsViewModel();
             
         // Subscribe to changes in the filter text
         vm.AssociationsViewModel.WhenAnyValue(x => x.FilterText)
@@ -80,7 +83,8 @@ public partial class FileAssociationsView : UserControl
             var groupCheckBox = new CheckBox
             {
                 Classes = { "altHover", "y" },
-                Name = $"{fileTypeGroup.Name.Replace(" ", "")}Group", // Remove spaces for the name
+                Tag = "group",
+                Name = fileTypeGroup.Name.Trim(),
                 IsChecked = fileTypeGroup.IsSelected,
             };
                 
@@ -121,6 +125,7 @@ public partial class FileAssociationsView : UserControl
                 var fileCheckBox = new CheckBox
                 {
                     Classes = { "altHover", "x" },
+                    Tag = fileType.Extension,
                     IsChecked = fileType.IsSelected,
                 };
                     
@@ -170,7 +175,7 @@ public partial class FileAssociationsView : UserControl
         }
             
         // Initial filter
-        //FilterCheckBoxes(vm.AssociationsViewModel.FilterText);
+        FilterCheckBoxes(vm.AssociationsViewModel.FilterText);
     }
         
     private void UpdateCheckBoxesFromViewModel()
@@ -200,7 +205,7 @@ public partial class FileAssociationsView : UserControl
                     anySelected = true;
             }
                     
-            groupCheckBox.IsChecked = allSelected ? true : (anySelected ? null : false);
+            groupCheckBox.IsChecked = allSelected ? true : anySelected ? null : false;
         }
     }
         
@@ -230,7 +235,6 @@ public partial class FileAssociationsView : UserControl
         
     private void FilterBox_TextChanged(object? sender, EventArgs e)
     {
-        return;
         if (DataContext is MainViewModel vm)
         {
             vm.AssociationsViewModel.FilterText = FilterBox.Text;
@@ -248,8 +252,6 @@ public partial class FileAssociationsView : UserControl
             }
             return;
         }
-            
-        filterText = filterText.ToLowerInvariant();
             
         foreach (var (checkBox, searchText) in _allCheckBoxes)
         {

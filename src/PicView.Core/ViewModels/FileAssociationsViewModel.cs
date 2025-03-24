@@ -12,20 +12,16 @@ public class FileAssociationsViewModel : ReactiveObject
 {
     private readonly ReadOnlyObservableCollection<FileTypeGroup> _fileTypeGroups;
     private readonly SourceList<FileTypeGroup> _fileTypeGroupsList = new();
-    private string _filterText = string.Empty;
-    
+
     public ReadOnlyObservableCollection<FileTypeGroup> FileTypeGroups => _fileTypeGroups;
-    
+
     public string FilterText
     {
-        get => _filterText;
-        set => this.RaiseAndSetIfChanged(ref _filterText, value);
-    }
-    
-    public ReactiveCommand<Unit, Unit> SelectAllCommand { get; }
-    public ReactiveCommand<Unit, Unit> UnselectAllCommand { get; }
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    } = string.Empty;
+
     public ReactiveCommand<Unit, Unit> ApplyCommand { get; }
-    public ReactiveCommand<Unit, Unit> ResetCommand { get; }
     public ReactiveCommand<Unit, string> ClearFilterCommand { get; }
     
     public FileAssociationsViewModel()
@@ -45,18 +41,25 @@ public class FileAssociationsViewModel : ReactiveObject
             .Subscribe();
             
         // Initialize commands
-        SelectAllCommand = ReactiveCommand.Create(() => SetAllVisibleCheckboxes(true));
-        UnselectAllCommand = ReactiveCommand.Create(() => SetAllVisibleCheckboxes(false));
         ApplyCommand = ReactiveCommand.CreateFromTask(async () => await ApplyFileAssociations());
-        ResetCommand = ReactiveCommand.Create(ResetAssociations);
         ClearFilterCommand = ReactiveCommand.Create(() => FilterText = string.Empty);
     }
     
     private Func<FileTypeGroup, bool> BuildFilter(string filter)
     {
         if (string.IsNullOrWhiteSpace(filter))
+        {
+            // Reset all items to visible when filter is empty
+            foreach (var group in _fileTypeGroupsList.Items)
+            {
+                foreach (var item in group.FileTypes)
+                {
+                    item.IsVisible = true;
+                }
+            }
             return _ => true;
-            
+        }
+        
         return group => {
             // Update visibility of items based on filter
             var anyVisible = false;
@@ -67,23 +70,12 @@ public class FileAssociationsViewModel : ReactiveObject
                 if (item.IsVisible)
                     anyVisible = true;
             }
-            
+        
             // Only show groups that have at least one visible item
             return anyVisible;
         };
     }
-    
-    private void SetAllVisibleCheckboxes(bool isChecked)
-    {
-        foreach (var group in FileTypeGroups)
-        {
-            foreach (var fileType in group.FileTypes.Where(x => x.IsVisible))
-            {
-                fileType.IsSelected = isChecked;
-            }
-        }
-    }
-    
+
     private async Task ApplyFileAssociations()
     {
         // Call your FileAssociationManager implementation here
@@ -104,12 +96,6 @@ public class FileAssociationsViewModel : ReactiveObject
                 }
             }
         }
-    }
-    
-    private void ResetAssociations()
-    {
-        // Reset to current system associations
-        // This would need to query your FileAssociationManager
     }
     
     private void InitializeFileTypes()
@@ -144,47 +130,47 @@ public class FileAssociationsViewModel : ReactiveObject
             ]),
             
             new FileTypeGroup("Raw", [
-                new FileTypeItem("Raw (.raw)", [".raw"]),
-                new FileTypeItem("Framed Raster (.3fr)", [".3fr"]),
-                new FileTypeItem("Sony Digital Camera RAW (.arw)", [".arw"]),
-                new FileTypeItem("Canon Digital Camera RAW (.cr2, .cr3, .crw)", [".cr2, .cr3, .crw"]),
-                new FileTypeItem("Kodak Raw (.dcr, .kdc)", [".dcr", ".kdc"]),
-                new FileTypeItem("Digital Negative RAW (.dng)", [".dng"]),
-                new FileTypeItem("Epson Raw Image (.erf)", [".erf"]),
-                new FileTypeItem("Minolta Raw Image (.mdc)", [".mdc"]),
-                new FileTypeItem("Nikon Raw Image (.nef)", [".nef"]),
-                new FileTypeItem("Mamiya Raw Image (.mef)", [".mef"]),
-                new FileTypeItem("Leaf/Aptus/Mamiya MOS Raw Image (.mos)", [".mos"]),
-                new FileTypeItem("Minolta Dimage RAW (.mrw)", [".mrw"]),
-                new FileTypeItem("Nikon Raw Image (.nef)", [".nef"]),
-                new FileTypeItem("Nokia RAW Bitmap (.nrw)", [".nrw"]),
-                new FileTypeItem("Olympus Raw Image (.orf)", [".orf"]),
-                new FileTypeItem("Pentax Raw Image (.pef)", [".pef"]),
-                new FileTypeItem("Sony SRF Raw (.srf)", [".srf"]),
-                new FileTypeItem("Sigma Foveon X3 (.x3f)", [".x3f"]),
-                new FileTypeItem("Kodak FlashPix Bitmap (.fpx)", [".fpx"]),
-                new FileTypeItem("Kodak PhotoCD Bitmap (.pcd)", [".pcd"]),
-                new FileTypeItem("Kodak Raw (.dcr)", [".dcr"]),
-                new FileTypeItem("Windows Metafile Image (.wmf, .emf)", [".wmf", ".emf"]),
+                new FileTypeItem("Raw", [".raw"]),
+                new FileTypeItem("Framed Raster", [".3fr"]),
+                new FileTypeItem("Sony Digital Camera RAW", [".arw"]),
+                new FileTypeItem("Canon Digital Camera RAW", [".cr2, .cr3, .crw"]),
+                new FileTypeItem("Kodak Raw", [".dcr", ".kdc"]),
+                new FileTypeItem("Digital Negative RAW", [".dng"]),
+                new FileTypeItem("Epson Raw Image", [".erf"]),
+                new FileTypeItem("Minolta Raw Image", [".mdc"]),
+                new FileTypeItem("Nikon Raw Image", [".nef"]),
+                new FileTypeItem("Mamiya Raw Image", [".mef"]),
+                new FileTypeItem("Leaf/Aptus/Mamiya MOS Raw Image", [".mos"]),
+                new FileTypeItem("Minolta Dimage RAW", [".mrw"]),
+                new FileTypeItem("Nikon Raw Image", [".nef"]),
+                new FileTypeItem("Nokia RAW Bitmap", [".nrw"]),
+                new FileTypeItem("Olympus Raw Image", [".orf"]),
+                new FileTypeItem("Pentax Raw Image", [".pef"]),
+                new FileTypeItem("Sony SRF Raw", [".srf"]),
+                new FileTypeItem("Sigma Foveon X3", [".x3f"]),
+                new FileTypeItem("Kodak FlashPix Bitmap", [".fpx"]),
+                new FileTypeItem("Kodak PhotoCD Bitmap", [".pcd"]),
+                new FileTypeItem("Kodak Raw", [".dcr"]),
+                new FileTypeItem("Windows Metafile Image", [".wmf", ".emf"]),
             ]),
             
             new FileTypeGroup("Uncommon", [
-                new FileTypeItem("Wordperfect Graphics (.wpg)", [".wpg"]),
-                new FileTypeItem("Paintbrush bitmap graphics (.pcx)", [".pcx"]),
-                new FileTypeItem("X Bitmap (.xbm)", [".xbm"]),
-                new FileTypeItem("PX PixMap Bitmap (.xpm)", [".xpm"]),
-                new FileTypeItem("Dr. Halo (.cut)", [".cut"]),
-                new FileTypeItem("Truevision Thumb (.thm)", [".thm"]),
-                new FileTypeItem("Portable GrayMap Bitmap (.ppm)", [".ppm"]),
-                new FileTypeItem("Portable PixMap Bitmap (.pbm)", [".pbm"]),
-                new FileTypeItem("Base64 (.b64)", [".b64"])
+                new FileTypeItem("Wordperfect Graphics", [".wpg"]),
+                new FileTypeItem("Paintbrush bitmap graphics", [".pcx"]),
+                new FileTypeItem("X Bitmap", [".xbm"]),
+                new FileTypeItem("PX PixMap Bitmap", [".xpm"]),
+                new FileTypeItem("Dr. Halo ", [".cut"]),
+                new FileTypeItem("Truevision Thumb", [".thm"]),
+                new FileTypeItem("Portable GrayMap Bitmap", [".ppm"]),
+                new FileTypeItem("Portable PixMap Bitmap", [".pbm"]),
+                new FileTypeItem("Base64", [".b64"])
             ]),
             
             new FileTypeGroup("Archive", [
-                new FileTypeItem("Zip (.zip)", [".zip"], false),
-                new FileTypeItem("Rar (.rar)", [".rar"], false),
-                new FileTypeItem("Gzip (.gzip)", [".gzip"], false),
-                new FileTypeItem("CDisplay RAR Archived Comic Book (.cbr)", [".cbr, .cbz, .cb7"])
+                new FileTypeItem("Zip", [".zip"], false),
+                new FileTypeItem("Rar", [".rar"], false),
+                new FileTypeItem("Gzip", [".gzip"], false),
+                new FileTypeItem("CDisplay RAR Archived Comic Book", [".cbr, .cbz, .cb7"])
             ], false)
         };
         
@@ -196,13 +182,23 @@ public class FileAssociationsViewModel : ReactiveObject
     }
 }
 
-public class FileTypeGroup(string name, IEnumerable<FileTypeItem> fileTypes, bool isSelected = true)
-    : ReactiveObject
+public class FileTypeGroup : ReactiveObject
 {
-    public string Name { get; } = name;
-    public ObservableCollection<FileTypeItem> FileTypes { get; } = new(fileTypes);
+    public string Name { get; }
+    public ObservableCollection<FileTypeItem> FileTypes { get; }
 
-    public bool IsSelected { get;  } = isSelected;
+    public bool IsSelected
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public FileTypeGroup(string name, IEnumerable<FileTypeItem> fileTypes, bool isSelected = true)
+    {
+        Name = name;
+        FileTypes = new ObservableCollection<FileTypeItem>(fileTypes);
+        IsSelected = isSelected;
+    }
 }
 
 public class FileTypeItem : ReactiveObject
@@ -217,13 +213,13 @@ public class FileTypeItem : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
-    
+
     public bool IsVisible
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     } = true;
-    
+
     public FileTypeItem(string description, string[] extensions, bool isSelected = true)
     {
         Description = description;
