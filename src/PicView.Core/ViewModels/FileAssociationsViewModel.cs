@@ -15,7 +15,7 @@ public class FileAssociationsViewModel : ReactiveObject
 
     public ReadOnlyObservableCollection<FileTypeGroup> FileTypeGroups => _fileTypeGroups;
 
-    public string FilterText
+    public string? FilterText
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -45,7 +45,7 @@ public class FileAssociationsViewModel : ReactiveObject
         ClearFilterCommand = ReactiveCommand.Create(() => FilterText = string.Empty);
     }
     
-    private Func<FileTypeGroup, bool> BuildFilter(string filter)
+    private Func<FileTypeGroup, bool> BuildFilter(string? filter)
     {
         if (string.IsNullOrWhiteSpace(filter))
         {
@@ -75,23 +75,48 @@ public class FileAssociationsViewModel : ReactiveObject
             return anyVisible;
         };
     }
+    
+    private void SyncUIStateToViewModel()
+    {
+        // Force property notifications to ensure all changes are processed
+        foreach (var group in FileTypeGroups)
+        {
+            group.IsSelected = group.IsSelected;
+            foreach (var fileType in group.FileTypes)
+            {
+                fileType.IsSelected = fileType.IsSelected;
+            }
+        }
+    }
 
     private async Task ApplyFileAssociations()
     {
-        // Call your FileAssociationManager implementation here
+        // Ensure all UI changes are synced to the ViewModel
+        SyncUIStateToViewModel();
+        
+        // Now process the associations
         foreach (var group in FileTypeGroups)
         {
             foreach (var fileType in group.FileTypes)
             {
                 foreach (var extension in fileType.Extensions)
                 {
-                    if (fileType.IsSelected)
+                    // Make sure to properly handle extensions that contain commas
+                    var individualExtensions = extension.Split([',', ' '], StringSplitOptions.RemoveEmptyEntries);
+    
+                    foreach (var ext in individualExtensions)
                     {
-                        await FileAssociationManager.AssociateFile(extension);
-                    }
-                    else
-                    {
-                        await FileAssociationManager.UnassociateFile(extension);
+                        var cleanExt = ext.Trim();
+                        if (!cleanExt.StartsWith('.'))
+                            cleanExt = "." + cleanExt;
+            
+                        if (fileType.IsSelected.HasValue)
+                        {
+                            if (fileType.IsSelected.Value)
+                                await FileAssociationManager.AssociateFile(cleanExt);
+                            else
+                                await FileAssociationManager.UnassociateFile(cleanExt);
+                        }
                     }
                 }
             }
@@ -167,11 +192,11 @@ public class FileAssociationsViewModel : ReactiveObject
             ]),
             
             new FileTypeGroup(TranslationManager.GetTranslation("Archives"), [
-                new FileTypeItem("Zip", [".zip"], false),
-                new FileTypeItem("Rar", [".rar"], false),
-                new FileTypeItem("Gzip", [".gzip"], false),
-                new FileTypeItem("CDisplay RAR Archived Comic Book", [".cbr, .cbz, .cb7"])
-            ], false)
+                new FileTypeItem("Zip", [".zip"], null),
+                new FileTypeItem("Rar", [".rar"], null),
+                new FileTypeItem("Gzip", [".gzip"], null),
+                new FileTypeItem("CDisplay Archived Comic Book", [".cbr, .cbz, .cb7"])
+            ], null)
         };
         
         _fileTypeGroupsList.Edit(list =>
@@ -187,13 +212,13 @@ public class FileTypeGroup : ReactiveObject
     public string Name { get; set; }
     public ObservableCollection<FileTypeItem> FileTypes { get; }
 
-    public bool IsSelected
+    public bool? IsSelected
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public FileTypeGroup(string name, IEnumerable<FileTypeItem> fileTypes, bool isSelected = true)
+    public FileTypeGroup(string name, IEnumerable<FileTypeItem> fileTypes, bool? isSelected = true)
     {
         Name = name;
         FileTypes = new ObservableCollection<FileTypeItem>(fileTypes);
@@ -208,7 +233,7 @@ public class FileTypeItem : ReactiveObject
     
     public string Extension => string.Join(", ", Extensions);
 
-    public bool IsSelected
+    public bool? IsSelected
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -220,7 +245,7 @@ public class FileTypeItem : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     } = true;
 
-    public FileTypeItem(string description, string[] extensions, bool isSelected = true)
+    public FileTypeItem(string description, string[] extensions, bool? isSelected = true)
     {
         Description = description;
         Extensions = extensions;

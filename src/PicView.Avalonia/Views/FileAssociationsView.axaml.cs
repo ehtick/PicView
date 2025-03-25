@@ -33,6 +33,11 @@ public partial class FileAssociationsView : UserControl
                         continue;
                     }
 
+                    if (!checkBox.IsVisible)
+                    {
+                        continue;
+                    }
+
                     var tag = checkBox.Tag?.ToString();
                     if (tag.StartsWith(".zip") || tag.StartsWith(".rar") || tag.StartsWith(".7z") || tag.StartsWith(".gzip")) 
                     {
@@ -48,9 +53,18 @@ public partial class FileAssociationsView : UserControl
             
             UnSelectAllButton.Click += delegate
             {
-                foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
+                var checkBoxes = FileTypesContainer.Children.OfType<CheckBox>();
+                var enumerable = checkBoxes as CheckBox[] ?? checkBoxes.ToArray();
+                if (enumerable.All(x => x.IsChecked == null && x.IsVisible))
                 {
-                    if (checkBox is not null)
+                    foreach (var checkBox in enumerable)
+                    {
+                        checkBox.IsChecked = false;
+                    }
+                }
+                else
+                {
+                    foreach (var checkBox in enumerable.Where(x => x.IsVisible))
                     {
                         checkBox.IsChecked = null;
                     }
@@ -106,7 +120,8 @@ public partial class FileAssociationsView : UserControl
                 Classes = { "altHover", "y" },
                 Tag = "group",
                 Name = fileTypeGroup.Name.Trim(),
-                IsChecked = fileTypeGroup.IsSelected,
+                IsThreeState = true,
+                IsChecked = fileTypeGroup.IsSelected
             };
                 
             var groupTextBlock = new TextBlock
@@ -170,10 +185,11 @@ public partial class FileAssociationsView : UserControl
                 // Bind the checkbox to the file type's IsSelected property
                 fileCheckBox.IsCheckedChanged += delegate
                 {
-                    if (fileCheckBox.IsChecked.HasValue)
-                    {
-                        fileType.IsSelected = fileCheckBox.IsChecked.Value;
-                    }
+                    // Update the model - important to handle null state correctly
+                    fileType.IsSelected = fileCheckBox.IsChecked;
+    
+                    // Now update the group checkbox state
+                    UpdateGroupCheckboxState(fileTypeGroup);
                 };
                     
                 // Subscribe to changes in the file type's IsSelected property
@@ -195,9 +211,67 @@ public partial class FileAssociationsView : UserControl
                     .DisposeWith(_disposables);
             }
         }
+    }
+    
+    private void UpdateGroupCheckboxState(FileTypeGroup group)
+    {
+        // Find all checkboxes that are part of this group
+        var fileTypeCheckboxes = FileTypesContainer.Children.OfType<CheckBox>()
+            .Where(c => c.Tag != null && c.Tag.ToString() != "group" && 
+                        c.IsVisible && IsCheckboxInGroup(c, group));
+                   
+        var allTrue = true;
+        var allFalse = true;
+        var anyNull = false;
+    
+        foreach (var cb in fileTypeCheckboxes)
+        {
+            if (!cb.IsChecked.HasValue || cb.IsChecked == null)
+            {
+                anyNull = true;
+                allTrue = false;
+                allFalse = false;
+            }
+            else if (cb.IsChecked.Value)
+            {
+                allFalse = false;
+            }
+            else
+            {
+                allTrue = false;
+            }
+        }
+    
+        // Find the group checkbox
+        var groupCheckbox = FileTypesContainer.Children.OfType<CheckBox>()
+            .FirstOrDefault(c => c.Tag?.ToString() == "group" && c.Name == group.Name.Trim());
+    
+        if (groupCheckbox != null)
+        {
+            // Set state based on children
+            if (anyNull)
+                groupCheckbox.IsChecked = null;
+            else if (allTrue)
+                groupCheckbox.IsChecked = true;
+            else if (allFalse)
+                groupCheckbox.IsChecked = false;
+            else
+                groupCheckbox.IsChecked = null; // Mixed state
             
-        // Initial filter
-        FilterCheckBoxes(vm.AssociationsViewModel.FilterText);
+            // Update the ViewModel
+            group.IsSelected = groupCheckbox.IsChecked;
+        }
+    }
+
+    private bool IsCheckboxInGroup(CheckBox checkbox, FileTypeGroup group)
+    {
+        // You can determine this by position in the UI or by extension tag
+        var extension = checkbox.Tag?.ToString();
+        if (string.IsNullOrEmpty(extension))
+            return false;
+        
+        return group.FileTypes.Any(ft => ft.Extensions.Contains(extension) || 
+                                         extension.Contains(ft.Extensions.FirstOrDefault() ?? ""));
     }
         
     private void UpdateCheckBoxesFromViewModel()
@@ -216,18 +290,22 @@ public partial class FileAssociationsView : UserControl
             }
 
             // Check if all children are selected
-            var allSelected = true;
-            var anySelected = false;
+            bool? allSelected = true;
+            bool? anySelected = false;
                     
             foreach (var fileType in group.FileTypes)
             {
-                if (!fileType.IsSelected)
+                if (!fileType.IsSelected.HasValue)
+                    anySelected = null;
+                else if (!fileType.IsSelected.Value)
                     allSelected = false;
                 else
                     anySelected = true;
             }
-                    
-            groupCheckBox.IsChecked = allSelected ? true : anySelected ? null : false;
+            
+            // Update the group checkbox
+            groupCheckBox.IsChecked = allSelected;
+            groupCheckBox.IsThreeState = anySelected == null;
         }
     }
         
@@ -263,7 +341,7 @@ public partial class FileAssociationsView : UserControl
         }
     }
         
-    private void FilterCheckBoxes(string filterText)
+    private void FilterCheckBoxes(string? filterText)
     {
         if (string.IsNullOrWhiteSpace(filterText))
         {
