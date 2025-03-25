@@ -82,13 +82,13 @@
                 VerticalAlignment="Top"
                 x:Name="BorderRectangle" />
 
-            <customControls:AutoScrollViewer
+            <customControls:MainScrollViewer
                 Background="{DynamicResource NoisyTexture}"
                 Focusable="True"
                 Margin="0,28,0,0"
                 Padding="5,2,5,10">
                 <views:KeybindingsView Background="Transparent" PointerPressed="MoveWindow" />
-            </customControls:AutoScrollViewer>
+            </customControls:MainScrollViewer>
         </Panel>
     </Border>
 </Window>

@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
@@ -190,6 +192,16 @@ public static class MainKeyboardShortcuts
             {
                 return true;
             }
+            
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                if (desktop.Windows.Count > 1)
+                {
+                    desktop.Windows[^1].Close();
+                    return true;
+                }
+            }
+            
             await FunctionsMapper.Close().ConfigureAwait(false);
             return true;
         }
