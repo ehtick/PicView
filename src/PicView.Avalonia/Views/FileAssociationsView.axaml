@@ -18,7 +18,11 @@
 
     <Panel>
 
-        <uc:SpinWaiter IsVisible="{CompiledBinding AssociationsViewModel.IsProcessing, Mode=OneWay}" />
+        <uc:SpinWaiter
+            HorizontalAlignment="Center"
+            IsVisible="{CompiledBinding AssociationsViewModel.IsProcessing,
+                                        Mode=OneWay}"
+            VerticalAlignment="Center" />
 
         <StackPanel
             Focusable="True"
@@ -89,8 +93,8 @@
 
                 <Button
                     Classes="altHover"
-                    Padding="10,2,10,2"
-                    x:Name="SelectAllButton">
+                    Command="{CompiledBinding AssociationsViewModel.SelectAllCommand}"
+                    Padding="10,2,10,2">
                     <TextBlock
                         Classes="txt"
                         Foreground="{StaticResource SecondaryTextColor}"
@@ -106,6 +110,7 @@
 
                 <Button
                     Classes="altHover"
+                    Command="{CompiledBinding AssociationsViewModel.UnselectAllCommand}"
                     Padding="10,2,10,2"
                     x:Name="UnSelectAllButton">
                     <TextBlock
@@ -137,10 +142,10 @@
 
                 <Button
                     Classes="altHover"
+                    Command="{CompiledBinding AssociationsViewModel.ResetCommand}"
                     DockPanel.Dock="Left"
                     HorizontalAlignment="Left"
-                    Padding="20,10"
-                    x:Name="ResetButton">
+                    Padding="20,10">
                     <TextBlock
                         Classes="txt"
                         Foreground="{StaticResource SecondaryTextColor}"
@@ -170,7 +175,9 @@
                 </Button>
 
                 <Button
-                    Classes="errorHover"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Classes="errorHover mainBtn"
                     Command="{CompiledBinding AssociationsViewModel.UnassociateCommand}"
                     DockPanel.Dock="Right"
                     HorizontalAlignment="Right"
@@ -188,10 +195,6 @@
                             Width="18" />
                     </StackPanel>
                 </Button>
-
-
-
-
 
             </DockPanel>
         </StackPanel>

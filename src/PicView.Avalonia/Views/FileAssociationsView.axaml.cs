@@ -32,102 +32,8 @@ public partial class FileAssociationsView : UserControl
         {
             FilterBox.TextChanged += FilterBox_TextChanged;
             
-            SelectAllButton.Click += delegate
-            {
-                foreach (var checkBox in FileTypesContainer.Children.OfType<CheckBox>())
-                {
-                    if (checkBox is null)
-                    {
-                        continue;
-                    }
-
-                    if (!checkBox.IsVisible)
-                    {
-                        continue;
-                    }
-
-                    var tag = checkBox.Tag?.ToString();
-                    if (tag.StartsWith(".zip") || tag.StartsWith(".rar") || tag.StartsWith(".7z") || tag.StartsWith(".gzip")) 
-                    {
-                        checkBox.IsChecked = null;
-                    }
-                    else
-                    {
-                         checkBox.IsChecked = true;
-                    }
-                   
-                }
-            };
-            
-            UnSelectAllButton.Click += delegate
-            {
-                var checkBoxes = FileTypesContainer.Children.OfType<CheckBox>();
-                var enumerable = checkBoxes as CheckBox[] ?? checkBoxes.ToArray();
-                if (enumerable.All(x => x.IsChecked == null && x.IsVisible))
-                {
-                    foreach (var checkBox in enumerable)
-                    {
-                        checkBox.IsChecked = false;
-                    }
-                }
-                else
-                {
-                    foreach (var checkBox in enumerable.Where(x => x.IsVisible))
-                    {
-                        checkBox.IsChecked = null;
-                    }
-                }
-            };
-            
-            ResetButton.Click += delegate
-            {
-                if (DataContext is not MainViewModel { AssociationsViewModel: not null } vm)
-                {
-                    return;
-                }
-
-                // Use the view model to reset file types to default
-                vm.AssociationsViewModel.ResetFileTypesToDefault();
-                    
-                // Now update the UI checkboxes based on the reset data
-                var checkboxes = FileTypesContainer.Children.OfType<CheckBox>().ToArray();
-                    
-                foreach (var checkbox in checkboxes)
-                {
-                    ResetCheckboxStateFromViewModel(checkbox, vm.AssociationsViewModel);
-                }
-            };
-            
             InitializeCheckBoxesCollection();
         };
-    }
-    
-    private static void ResetCheckboxStateFromViewModel(CheckBox checkbox, FileAssociationsViewModel viewModel)
-    {
-        var tag = checkbox.Tag?.ToString();
-        if (tag == "group") // group checkbox
-        {
-            var name = checkbox.Name;
-            var group = viewModel.FileTypeGroups.FirstOrDefault(g => g.Name?.Trim() == name);
-            if (group != null)
-            {
-                checkbox.IsChecked = group.IsSelected;
-            }
-        }
-        else if (!string.IsNullOrEmpty(tag)) // file type checkbox
-        {
-            foreach (var group in viewModel.FileTypeGroups)
-            {
-                foreach (var fileType in group.FileTypes)
-                {
-                    if (fileType.Extension.Contains(tag))
-                    {
-                        checkbox.IsChecked = fileType.IsSelected;
-                        break;
-                    }
-                }
-            }
-        }
     }
         
     private void InitializeCheckBoxesCollection()
@@ -315,7 +221,7 @@ public partial class FileAssociationsView : UserControl
         group.IsSelected = groupCheckbox.IsChecked;
     }
 
-    private bool IsCheckboxInGroup(CheckBox checkbox, FileTypeGroup group)
+    private static bool IsCheckboxInGroup(CheckBox checkbox, FileTypeGroup group)
     {
         // You can determine this by position in the UI or by extension tag
         var extension = checkbox.Tag?.ToString();
