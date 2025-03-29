@@ -64,15 +64,19 @@ public partial class FileAssociationsView : UserControl
                 }
                 else if (fileTypeGroup.FileTypes.Any(x => x.Extension.StartsWith(".svg")))
                 {
-                    fileTypeGroup.Name = TranslationManager.GetTranslation("Graphics");
+                    fileTypeGroup.Name = TranslationManager.Translation.Graphics!;
                 }
                 else if (fileTypeGroup.FileTypes.Any(x => x.Extension.StartsWith(".raw")))
                 {
-                    fileTypeGroup.Name = TranslationManager.GetTranslation("Raw");
+                    fileTypeGroup.Name = TranslationManager.Translation.RawCamera!;
                 }
                 else if (fileTypeGroup.FileTypes.Any(x => x.Extension.StartsWith(".wpg")))
                 {
-                    fileTypeGroup.Name = TranslationManager.GetTranslation("Uncommon");
+                    fileTypeGroup.Name = TranslationManager.Translation.Uncommon!;
+                }
+                else if (fileTypeGroup.FileTypes.Any(x => x.Extension.StartsWith(".zip")))
+                {
+                    fileTypeGroup.Name = TranslationManager.Translation.Archives!;
                 }
             }
             // Create group header checkbox
@@ -80,7 +84,7 @@ public partial class FileAssociationsView : UserControl
             {
                 Classes = { "altHover", "y", "changeColor" },
                 Tag = "group",
-                Name = fileTypeGroup.Name.Trim(),
+                Name = fileTypeGroup.Name,
                 IsThreeState = true,
                 IsChecked = fileTypeGroup.IsSelected
             };
