@@ -64,9 +64,15 @@ public partial class SettingsWindow : Window
         };
         KeyDown += (_, e) =>
         {
-            if (e.Key is Key.Escape)
+            var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control) || e.KeyModifiers.HasFlag(KeyModifiers.Meta);
+            switch (e.Key)
             {
-                Close();
+                case Key.Escape:
+                    Close();
+                    break;
+                case Key.F when ctrl:
+                    FocusFilterBox();
+                    break;
             }
         };
 
@@ -77,6 +83,17 @@ public partial class SettingsWindow : Window
         };
 
         InitializeFileAssociationManager();
+    }
+
+    private void FocusFilterBox()
+    {
+        var fileAssociationsView = SettingsView.FindControl<Control>("FileAssociationsView");
+        var filterBox = fileAssociationsView?.FindControl<Control>("FilterBox");
+        var isFilterBoxEffectivelyVisible = filterBox?.Bounds is { Width: > 0, Height: > 0 };
+        if (isFilterBoxEffectivelyVisible)
+        {
+            filterBox?.Focus();
+        }
     }
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)

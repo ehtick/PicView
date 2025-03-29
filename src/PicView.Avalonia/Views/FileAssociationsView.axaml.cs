@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -33,6 +34,15 @@ public partial class FileAssociationsView : UserControl
             FilterBox.TextChanged += FilterBox_TextChanged;
             
             InitializeCheckBoxesCollection();
+
+            KeyDown += (_, e) =>
+            {
+                var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control) || e.KeyModifiers.HasFlag(KeyModifiers.Meta);
+                if (e.Key == Key.F && ctrl)
+                {
+                    FilterBox.Focus();
+                }
+            };
         };
     }
         
