@@ -41,7 +41,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.6" />
     <PackageReference Include="Clowd.Clipboard.Avalonia" Version="1.1.4" />
   </ItemGroup>
 

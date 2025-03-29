@@ -46,7 +46,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.5" />
+    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.6" />
   </ItemGroup>
 
   <ItemGroup>
