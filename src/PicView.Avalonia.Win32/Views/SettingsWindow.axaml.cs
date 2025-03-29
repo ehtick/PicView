@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
@@ -68,6 +69,7 @@ public partial class SettingsWindow : Window
             switch (e.Key)
             {
                 case Key.Escape:
+                    MainKeyboardShortcuts.IsEscKeyEnabled = false;
                     Close();
                     break;
                 case Key.F when ctrl:

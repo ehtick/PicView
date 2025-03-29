@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
@@ -35,6 +36,8 @@ public partial class SettingsWindow : Window
         {
             if (e.Key is Key.Escape)
             {
+                e.Handled = true;
+                MainKeyboardShortcuts.IsEscKeyEnabled = false;
                 Close();
             }
         };

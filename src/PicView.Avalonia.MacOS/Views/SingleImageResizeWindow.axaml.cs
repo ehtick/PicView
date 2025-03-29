@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using PicView.Avalonia.Input;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -19,6 +20,8 @@ public partial class SingleImageResizeWindow : Window
         {
             if (e.Key is Key.Escape)
             {
+                e.Handled = true;
+                MainKeyboardShortcuts.IsEscKeyEnabled = false;
                 Close();
             }
         };

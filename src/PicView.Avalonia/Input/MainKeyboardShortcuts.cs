@@ -35,6 +35,8 @@ public static class MainKeyboardShortcuts
     /// Gets or sets whether keyboard shortcuts are enabled.
     /// </summary>
     public static bool IsKeysEnabled { get; set; } = true;
+    
+    public static bool IsEscKeyEnabled { get; set; } = true;
 
     // For backward compatibility with existing code
     public static bool CtrlDown => (CurrentModifiers & KeyModifiers.Control) == KeyModifiers.Control;
@@ -96,27 +98,6 @@ public static class MainKeyboardShortcuts
     /// <param name="e">The key event arguments.</param>
     public static void MainWindow_KeysUp(KeyEventArgs e)
     {
-        // Handle escape key
-        if (e.Key == Key.Escape)
-        {
-            if (UIHelper.GetMainView.DataContext as MainViewModel is { IsEditableTitlebarOpen: true })
-            {
-                return;
-            }
-            
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { Windows.Count: > 1 } desktop)
-            {
-                desktop.Windows[^1].Close();
-                IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
-                return;
-            }
-
-            if (!IsKeyHeldDown)
-            {
-                _ = FunctionsMapper.Close();
-            }
-        }
-        
         UpdateModifierState(e.Key, false);
         Reset();
     }
@@ -205,6 +186,27 @@ public static class MainKeyboardShortcuts
                 ?.KeyDownHandler(null, e);
             return true;
         }
+        
+        // Handle escape key
+        if (e.Key == Key.Escape)
+        {
+            if (UIHelper.GetMainView.DataContext as MainViewModel is { IsEditableTitlebarOpen: true })
+            {
+                return true;
+            }
+            
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { Windows.Count: > 1 } desktop)
+            {
+                desktop.Windows[^1].Close();
+                IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
+                return true;
+            }
+
+            if (!IsKeyHeldDown && IsEscKeyEnabled)
+            {
+                _ = FunctionsMapper.Close();
+            }
+        }
 
         return false;
     }
@@ -234,6 +236,7 @@ public static class MainKeyboardShortcuts
     public static void Reset()
     {
         IsKeyHeldDown = false;
+        IsEscKeyEnabled = true;
         CurrentKeys = null;
         _keyRepeatCount = 0;
     }

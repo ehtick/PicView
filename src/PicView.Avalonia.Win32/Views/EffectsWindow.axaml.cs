@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
@@ -62,6 +63,8 @@ public partial class EffectsWindow : Window
         {
             if (e.Key is Key.Escape)
             {
+                e.Handled = true;
+                MainKeyboardShortcuts.IsEscKeyEnabled = false;
                 Close();
             }
         };

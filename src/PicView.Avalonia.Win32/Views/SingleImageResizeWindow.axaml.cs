@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.Input;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -53,6 +54,8 @@ public partial class SingleImageResizeWindow : Window
         {
             if (e.Key is Key.Escape)
             {
+                e.Handled = true;
+                MainKeyboardShortcuts.IsEscKeyEnabled = false;
                 Close();
             }
         };
