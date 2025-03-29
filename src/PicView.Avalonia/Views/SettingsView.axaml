@@ -651,7 +651,7 @@
             </DrawingGroup>
         </DrawingImage>
     </UserControl.Resources>
-    <Panel>
+    <Panel Background="Transparent" Focusable="True">
 
         <TabControl
             Background="{DynamicResource TertiaryBackgroundColor}"
@@ -900,7 +900,8 @@
                         <TextBlock
                             Classes="txt"
                             Foreground="{StaticResource SecondaryTextColor}"
-                            Text="File associations" />
+                            Text="{CompiledBinding Translation.FileAssociations,
+                                                   Mode=OneWay}" />
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
