@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
@@ -199,6 +200,12 @@ public static class MainKeyboardShortcuts
             {
                 desktop.Windows[^1].Close();
                 IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
+                return true;
+            }
+
+            if (Slideshow.IsRunning)
+            {
+                Slideshow.StopSlideshow(UIHelper.GetMainView.MainGrid.DataContext as MainViewModel);
                 return true;
             }
 
