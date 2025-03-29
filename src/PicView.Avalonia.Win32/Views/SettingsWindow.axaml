@@ -37,6 +37,34 @@
                             Width="20" />
                     </Border>
 
+                    <Border Background="{StaticResource WindowSecondaryBackgroundColor}" DockPanel.Dock="Left">
+                        <customControls:IconButton
+                            Background="{StaticResource WindowSecondaryBackgroundColor}"
+                            Classes="noBorderHover"
+                            Command="{CompiledBinding SettingsViewModel.GoBackCommand}"
+                            Data="{StaticResource ArrowLeftGeometry}"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            IconHeight="12"
+                            IconWidth="12"
+                            Padding="8,0" />
+                    </Border>
+
+                    <Border
+                        Background="{StaticResource WindowSecondaryBackgroundColor}"
+                        BorderBrush="{DynamicResource MainBorderColor}"
+                        BorderThickness="0,0,1,0"
+                        DockPanel.Dock="Left">
+                        <customControls:IconButton
+                            Background="{StaticResource WindowSecondaryBackgroundColor}"
+                            Classes="noBorderHover"
+                            Command="{CompiledBinding SettingsViewModel.GoForwardCommand}"
+                            Data="{StaticResource ArrowRightGeometry}"
+                            Foreground="{StaticResource SecondaryTextColor}"
+                            IconHeight="12"
+                            IconWidth="12"
+                            Padding="8,0" />
+                    </Border>
+
                     <customControls:IconButton
                         Background="{DynamicResource WindowButtonBackgroundColor}"
                         Classes="hover"
@@ -82,7 +110,10 @@
                 </DockPanel>
             </Border>
 
-            <views:SettingsView Background="{DynamicResource NoisyTexture}" Margin="0,28,0,0" />
+            <views:SettingsView
+                Background="{DynamicResource NoisyTexture}"
+                Margin="0,28,0,0"
+                x:Name="SettingsView" />
 
         </Panel>
     </Border>

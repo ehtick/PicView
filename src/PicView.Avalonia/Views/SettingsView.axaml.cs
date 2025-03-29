@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.ViewModels;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
 
@@ -25,6 +27,21 @@ public partial class SettingsView : UserControl
             MainTabControl.MinHeight = MainTabControl.Bounds.Height;
             MainTabControl.SelectionChanged += TabSelectionChanged;
             PointerPressed += OnMouseButtonDown;
+
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+            
+            vm.SettingsViewModel.GoBackCommand = ReactiveCommand.Create(
+                GoBack, 
+                vm.SettingsViewModel.WhenAnyValue(x => x.IsBackButtonEnabled)
+            );
+            
+            vm.SettingsViewModel.GoForwardCommand = ReactiveCommand.Create(
+                GoForward, 
+                vm.SettingsViewModel.WhenAnyValue(x => x.IsForwardButtonEnabled)
+            );
         };
     }
 
@@ -53,10 +70,13 @@ public partial class SettingsView : UserControl
         if (_currentTab != null)
         {
             _backStack.Push(_currentTab);
+            // Clear forward stack when a new tab is selected directly
+            _forwardStack.Clear();
         }
     
         _currentTab = selectedTab;
         SelectTab(_currentTab);
+        UpdateNavigationButtons();
     }
     
     public void GoBack()
@@ -69,6 +89,7 @@ public partial class SettingsView : UserControl
         _forwardStack.Push(_currentTab);
         _currentTab = _backStack.Pop();
         SelectTab(_currentTab);
+        UpdateNavigationButtons();
     }
 
     public void GoForward()
@@ -81,6 +102,18 @@ public partial class SettingsView : UserControl
         _backStack.Push(_currentTab);
         _currentTab = _forwardStack.Pop();
         SelectTab(_currentTab);
+        UpdateNavigationButtons();
+    }
+
+    private void UpdateNavigationButtons()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        
+        vm.SettingsViewModel.IsBackButtonEnabled = _backStack.Count > 0;
+        vm.SettingsViewModel.IsForwardButtonEnabled = _forwardStack.Count > 0;
     }
 
     private void SelectTab(TabItem? tab)

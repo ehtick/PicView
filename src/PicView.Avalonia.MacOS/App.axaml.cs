@@ -275,6 +275,7 @@ public class App : Application, IPlatformSpecificService
             if (_settingsWindow is null)
             {
                 _vm.AssociationsViewModel ??= new FileAssociationsViewModel();
+                _vm.SettingsViewModel ??= new SettingsViewModel();
                 _settingsWindow = new SettingsWindow
                 {
                     DataContext = _vm,

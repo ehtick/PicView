@@ -28,10 +28,10 @@ namespace PicView.Avalonia.ViewModels;
 public class MainViewModel : ReactiveObject
 {
     public readonly IPlatformSpecificService? PlatformService;
-    public ImageCropperViewModel? Crop { get; set; }
     
     public TranslationViewModel Translation { get; } = new();
-    
+    public SettingsViewModel? SettingsViewModel { get; set; }
+    public ImageCropperViewModel? Crop { get; set; }
     public PicViewerModel PicViewer { get; } = new();
     
     public ExifViewModel Exif { get; } = new();
