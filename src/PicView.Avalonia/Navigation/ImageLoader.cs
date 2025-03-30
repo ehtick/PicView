@@ -280,6 +280,7 @@ public static class ImageLoader
 
             var httpDownload = HttpManager.GetDownloadClient(url);
             using var client = httpDownload.Client;
+            var fileName = Path.GetFileName(url);
             client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) =>
             {
                 if (totalFileSize is null || totalBytesDownloaded is null || progressPercentage is null)
@@ -289,9 +290,10 @@ public static class ImageLoader
 
                 var displayProgress = HttpManager.GetProgressDisplay(totalFileSize, totalBytesDownloaded,
                     progressPercentage);
-                vm.PicViewer.Title = displayProgress;
-                vm.PicViewer.TitleTooltip = displayProgress;
-                vm.PicViewer.WindowTitle = displayProgress;
+                var title = $"{fileName} {TranslationManager.Translation.Downloading} {displayProgress}";
+                vm.PicViewer.Title = title;
+                vm.PicViewer.TitleTooltip = title;
+                vm.PicViewer.WindowTitle = title;
                 if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
                     vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded, (ulong)totalFileSize);
