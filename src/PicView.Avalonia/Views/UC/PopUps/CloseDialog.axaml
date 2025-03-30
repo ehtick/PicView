@@ -15,6 +15,7 @@
     <Panel Background="Transparent">
         <TextBlock
             Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Foreground="{DynamicResource MainTextColor}"
             HorizontalAlignment="Center"

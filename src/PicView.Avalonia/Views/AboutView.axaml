@@ -113,7 +113,21 @@
     </UserControl.Resources>
 
     <Panel>
-        <uc:SpinWaiter IsVisible="False" x:Name="SpinWaiter" />
+
+        <uc:SpinWaiter
+            HorizontalAlignment="Center"
+            IsVisible="False"
+            VerticalAlignment="Center"
+            x:Name="SpinWaiter" />
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            HorizontalAlignment="Center"
+            IsVisible="{Binding IsVisible, ElementName=SpinWaiter}"
+            Margin="0,75,0,0"
+            Text="{CompiledBinding Translation.Downloading}"
+            VerticalAlignment="Center" />
 
         <StackPanel Margin="0,10,0,10" x:Name="ParentContainer">
 
@@ -190,6 +204,14 @@
                     Foreground="{Binding Path=Foreground, ElementName=UpdateButton}"
                     Text="{CompiledBinding Translation.CheckForUpdates}" />
             </Button>
+
+            <TextBlock
+                Classes="txt"
+                Foreground="{Binding Path=Foreground, ElementName=UpdateButton}"
+                HorizontalAlignment="Center"
+                IsVisible="False"
+                Margin="0,10,0,15"
+                x:Name="UpdateStatus" />
 
             <HyperlinkButton
                 HorizontalAlignment="Center"

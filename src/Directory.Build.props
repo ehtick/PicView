@@ -4,7 +4,7 @@
     <AvaloniaVersion>11.2.6</AvaloniaVersion>
     <VersionPrefix>3.1.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
+    <AssemblyVersion>3.1.0.0</AssemblyVersion>
     <FileVersion>3.1.0</FileVersion>
   </PropertyGroup>
 </Project>

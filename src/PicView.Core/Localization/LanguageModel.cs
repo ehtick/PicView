@@ -47,7 +47,6 @@ public class LanguageModel
     public string? CameraMaker { get; set; }
     public string? CameraModel { get; set; }
     public string? Cancel { get; set; }
-    public string? ShowConfirmationDialogWhenPermanentlyDeletingFile { get; set; }
     public string? Center { get; set; }
     public string? CenterWindow { get; set; }
     public string? Centimeters { get; set; }
@@ -106,6 +105,7 @@ public class LanguageModel
     public string? DiskSize { get; set; }
     public string? DoubleClick { get; set; }
     public string? Down { get; set; }
+    public string? Downloading { get; set; }
     public string? Dpi { get; set; }
     public string? DragFileTo { get; set; }
     public string? DragImage { get; set; }
@@ -236,6 +236,7 @@ public class LanguageModel
     public string? Normal { get; set; }
     public string? NormalWindow { get; set; }
     public string? NotDefined { get; set; }
+    public string? NoUpdateFound { get; set; }
     public string? NumpadMinus { get; set; }
     public string? NumpadPlus { get; set; }
     public string? OldMovie { get; set; }
@@ -321,6 +322,7 @@ public class LanguageModel
     public string? ShowBottomGalleryWhenUiIsHidden { get; set; }
     public string? ShowBottomToolbar { get; set; }
     public string? ShowConfirmationDialogWhenMovingFileToRecycleBin { get; set; }
+    public string? ShowConfirmationDialogWhenPermanentlyDeletingFile { get; set; }
     public string? ShowConfirmationOnEsc { get; set; }
     public string? ShowFadeInButtonsOnHover { get; set; }
     public string? ShowFileSavingDialog { get; set; }

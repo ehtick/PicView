@@ -10,7 +10,6 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
@@ -44,11 +43,6 @@ public static class StartUpHelper
             else if (args.Length > 1)
             {
                 var arg = args[1];
-                if (arg.Equals("update", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    Task.Run(async () => await UpdateManager.UpdateCurrentVersion(vm));
-                    return;
-                }
                 if (arg.StartsWith("associate:", StringComparison.OrdinalIgnoreCase) ||
                     arg.StartsWith("unassociate:", StringComparison.OrdinalIgnoreCase))
                 {

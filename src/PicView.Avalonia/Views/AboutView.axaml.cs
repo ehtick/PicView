@@ -6,6 +6,7 @@ using Avalonia.Styling;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
+using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 
 namespace PicView.Avalonia.Views;
@@ -85,7 +86,13 @@ public partial class AboutView : UserControl
                 SpinWaiter.IsVisible = true;
                 try
                 {
-                    await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
+                   var checkIfNewUpdate = await UpdateManager.UpdateCurrentVersion(DataContext as MainViewModel);
+                   UpdateButton.IsVisible = false;
+                   UpdateStatus.IsVisible = true;
+                   if (!checkIfNewUpdate)
+                   {
+                       UpdateStatus.Text = TranslationManager.Translation.NoUpdateFound;
+                   }
                 }
                 finally
                 {

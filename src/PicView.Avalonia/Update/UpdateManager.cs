@@ -7,7 +7,9 @@ using Microsoft.Win32;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.Http;
+using PicView.Core.ProcessHandling;
 #if RELEASE
 using PicView.Core.Config;
 #endif
@@ -32,48 +34,48 @@ public static class UpdateManager
     private const string ExecutableName = "PicView.exe";
     private const string UpdateArgument = "update";
     
-    /// <summary>
-    ///     Installation architecture types
-    /// </summary>
-    private enum InstalledArchitecture
-    {
-        X64Portable,
-        X64Install,
-        Arm64Portable,
-        Arm64Install
-    }
+    #if DEBUG
+    // ReSharper disable once ConvertToConstant.Local
+    private static readonly bool ForceUpdate = true;
+    #endif
     
     /// <summary>
     ///     Checks for updates and installs if a newer version is available
     /// </summary>
     /// <param name="vm">The main view model</param>
-    public static async Task UpdateCurrentVersion(MainViewModel vm)
+    public static async Task<bool> UpdateCurrentVersion(MainViewModel vm)
     {
         // TODO Add support for other OS
         // TODO add UI
-        
-        // Handle admin privileges if needed
-        if (HandleAdminPrivilegesIfNeeded())
-        {
-            return; // Application was restarted with admin privileges
-        }
         
         // Create temporary directory for update files
         var tempPath = CreateTemporaryDirectory();
         var tempJsonPath = Path.Combine(tempPath, "update.json");
 
-        // Get current version
-        var currentVersion = GetCurrentVersion();
-
-        // Download and parse update information
+        // Check if update is needed
+        Version? currentVersion;
+#if DEBUG
+        currentVersion = ForceUpdate ? new Version("3.0.0.3") : VersionHelper.GetAssemblyVersion();  
+#else
+        currentVersion = VersionHelper.GetAssemblyVersion();
+#endif
+        Debug.Assert(currentVersion != null);
+        
         var updateInfo = await DownloadAndParseUpdateInfo(tempJsonPath);
         if (updateInfo == null)
         {
-            return;
+            return false;
+        }
+        
+        var remoteVersion = new Version(updateInfo.Version);
+        if (remoteVersion <= currentVersion)
+        {
+            return false;
         }
 
         // Handle update based on platform and installation type
-        await HandlePlatformSpecificUpdate(vm, updateInfo, currentVersion, tempPath);
+        await HandlePlatformSpecificUpdate(vm, updateInfo, tempPath);
+        return true;
     }
 
     #region Utilities
@@ -102,63 +104,25 @@ public static class UpdateManager
     /// <summary>
     ///     Checks if the application needs to be elevated and restarts it if needed
     /// </summary>
-    /// <returns>True if the application was restarted with admin privileges</returns>
-    private static bool HandleAdminPrivilegesIfNeeded()
+    private static void HandleAdminPrivilegesIfNeeded()
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            return false;
+            return;
         }
 
-        return IsDirectoryAccessRestricted() && RestartWithAdminPrivileges();
-    }
-
-    /// <summary>
-    ///     Determines if the current directory has restricted access
-    /// </summary>
-    private static bool IsDirectoryAccessRestricted()
-    {
-        var currentDirectory = new DirectoryInfo(Environment.ProcessPath);
         try
         {
-            return currentDirectory.GetAccessControl().AreAccessRulesProtected;
+            // Determines if the current directory has restricted access
+            var currentDirectory = new DirectoryInfo(Environment.ProcessPath);
+            _ = currentDirectory.GetAccessControl().AreAccessRulesProtected;
         }
         catch (Exception)
         {
-            return false;
-        }
-    }
-
-    /// <summary>
-    ///     Restarts the application with admin privileges
-    /// </summary>
-    private static bool RestartWithAdminPrivileges()
-    {
-        var process = new Process
-        {
-            StartInfo = new ProcessStartInfo
-            {
-                Verb = "runas",
-                UseShellExecute = true,
-                FileName = ExecutableName,
-                Arguments = UpdateArgument,
-                WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory
-            }
-        };
-
-        try
-        {
-            process.Start();
+            ProcessHelper.StartProcessWithElevatedPermission(UpdateArgument);
             Environment.Exit(0);
-            return true;
-        }
-        catch (Exception e)
-        {
-            LogDebug(e);
-            return false;
         }
     }
-
     #endregion
 
     #region Update Info
@@ -171,19 +135,6 @@ public static class UpdateManager
         var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempPath);
         return tempPath;
-    }
-
-    /// <summary>
-    ///     Gets the current application version
-    /// </summary>
-    private static Version? GetCurrentVersion()
-    {
-#if DEBUG
-        // Use a lower version in debug mode to test update functionality
-        return new Version("3.0.0.3");
-#else
-        return VersionHelper.GetAssemblyVersion();
-#endif
     }
 
     /// <summary>
@@ -231,17 +182,17 @@ public static class UpdateManager
         try
         {
             var jsonString = await File.ReadAllTextAsync(jsonFilePath);
-            var updateInfo = JsonSerializer.Deserialize(
-                jsonString, typeof(UpdateInfo),
-                UpdateSourceGenerationContext.Default) as UpdateInfo;
 
-            if (updateInfo == null)
+            if (JsonSerializer.Deserialize(
+                    jsonString, typeof(UpdateInfo),
+                    UpdateSourceGenerationContext.Default) is UpdateInfo updateInfo)
             {
-                await TooltipHelper.ShowTooltipMessageAsync("Update information is missing or corrupted.");
-                return null;
+                return updateInfo;
             }
 
-            return updateInfo;
+            await TooltipHelper.ShowTooltipMessageAsync("Update information is missing or corrupted.");
+            return null;
+
         }
         catch (Exception e)
         {
@@ -261,12 +212,11 @@ public static class UpdateManager
     private static async Task HandlePlatformSpecificUpdate(
         MainViewModel vm,
         UpdateInfo updateInfo,
-        Version? currentVersion,
         string tempPath)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            await HandleWindowsUpdate(vm, updateInfo, currentVersion, tempPath);
+            await HandleWindowsUpdate(vm, updateInfo, tempPath);
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -284,32 +234,13 @@ public static class UpdateManager
     private static async Task HandleWindowsUpdate(
         MainViewModel vm,
         UpdateInfo updateInfo,
-        Version? currentVersion,
         string tempPath)
     {
         // Determine if application is installed or portable
         var isInstalled = IsApplicationInstalled();
 
         // Determine architecture
-        var architecture = DetermineArchitecture(isInstalled);
-
-        // Check if update is needed
-        var remoteVersion = new Version(updateInfo.Version);
-        if (remoteVersion <= currentVersion)
-        {
-            return;
-        }
-
-        // Apply update based on architecture and installation type
-        await ApplyWindowsUpdate(vm, updateInfo, architecture, tempPath);
-    }
-
-    /// <summary>
-    ///     Determines the installed architecture type
-    /// </summary>
-    private static InstalledArchitecture DetermineArchitecture(bool isInstalled)
-    {
-        return RuntimeInformation.ProcessArchitecture switch
+        var architecture = RuntimeInformation.ProcessArchitecture switch
         {
             Architecture.X64 => isInstalled ? InstalledArchitecture.X64Install : InstalledArchitecture.X64Portable,
             Architecture.Arm64 => isInstalled
@@ -317,6 +248,9 @@ public static class UpdateManager
                 : InstalledArchitecture.Arm64Portable,
             _ => InstalledArchitecture.X64Install
         };
+
+        // Apply update based on architecture and installation type
+        await ApplyWindowsUpdate(vm, updateInfo, architecture, tempPath);
     }
 
     /// <summary>
@@ -409,13 +343,7 @@ public static class UpdateManager
             "PicView",
             ExecutableName);
 
-        if (File.Exists(x64Path))
-        {
-            return true;
-        }
-
-        // Check registry for installation
-        return CheckRegistryForInstallation();
+        return File.Exists(x64Path) || CheckRegistryForInstallation();
     }
 
     /// <summary>
