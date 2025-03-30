@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -11,44 +12,64 @@ namespace PicView.Avalonia.FileSystem;
 public static class FileManager
 {
     /// <summary>
-    /// Deletes the current file, either permanently or by moving to recycle bin
+    ///     Deletes the current file, either permanently or by moving to recycle bin
     /// </summary>
-    public static async Task DeleteFile(bool recycle, MainViewModel vm)
+    public static async Task DeleteFileWithOptionalDialog(bool recycle, string path)
     {
-        if (vm.PicViewer.FileInfo is null)
+        if (string.IsNullOrWhiteSpace(path))
         {
             return;
         }
-        
+
         try
         {
-            string? errorMsg = null;
-            
-            if (!recycle)
+            if (recycle && Settings.UIProperties.ShowRecycleConfirmation)
             {
-                var prompt = TranslationManager.GetTranslation("DeleteFilePermanently");
-                var deleteDialog = new DeleteDialog(prompt, vm.PicViewer.FileInfo.FullName);
-                UIHelper.GetMainView.MainGrid.Children.Add(deleteDialog);
-                // Dialog handles the deletion
+               await Dispatcher.UIThread.InvokeAsync(ShowDeleteDialog);
+            }
+            else if (!recycle && Settings.UIProperties.ShowPermanentDeletionConfirmation)
+            {
+                await Dispatcher.UIThread.InvokeAsync(ShowDeleteDialog);
             }
             else
             {
-                errorMsg = await Task.FromResult(FileDeletionHelper.DeleteFileWithErrorMsg(vm.PicViewer.FileInfo.FullName, recycle));
-            }
-    
-            if (!string.IsNullOrEmpty(errorMsg))
-            {
-                await TooltipHelper.ShowTooltipMessageAsync(errorMsg, true);
+                var errorMsg =
+                    await Task.FromResult(
+                        FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle));
+
+                if (!string.IsNullOrEmpty(errorMsg))
+                {
+                    await TooltipHelper.ShowTooltipMessageAsync(errorMsg, true);
+                }
+                else
+                {
+                    var msg = recycle
+                        ? TranslationManager.Translation.SentFileToRecycleBin
+                        : TranslationManager.Translation.DeletedFile;
+                    await TooltipHelper.ShowTooltipMessageAsync(msg + Environment.NewLine + Path.GetFileName(path));
+                }
             }
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(DeleteFile));
+            await LogAndShowError(ex, nameof(DeleteFileWithOptionalDialog));
+        }
+
+        return;
+
+        void ShowDeleteDialog()
+        {
+            var prompt = recycle
+                ? TranslationManager.Translation.DeleteFile
+                : TranslationManager.Translation.DeleteFilePermanently;
+            var deleteDialog = new DeleteDialog(prompt, path, recycle);
+            UIHelper.GetMainView.MainGrid.Children.Add(deleteDialog);
+            // Dialog handles the deletion
         }
     }
-    
+
     /// <summary>
-    /// Shows properties dialog for the specified file
+    ///     Shows properties dialog for the specified file
     /// </summary>
     public static async Task ShowFileProperties(string path, MainViewModel vm)
     {
@@ -56,7 +77,7 @@ public static class FileManager
         {
             return;
         }
-        
+
         try
         {
             await Task.Run(() => vm.PlatformService!.ShowFileProperties(path));
@@ -66,9 +87,9 @@ public static class FileManager
             await LogAndShowError(ex, nameof(ShowFileProperties));
         }
     }
-    
+
     /// <summary>
-    /// Prints the specified image file
+    ///     Prints the specified image file
     /// </summary>
     public static async Task Print(string? path, MainViewModel vm)
     {
@@ -76,13 +97,13 @@ public static class FileManager
         {
             return;
         }
-        
+
         try
         {
             vm.IsLoading = true;
             var file = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, vm)
                 .ConfigureAwait(false);
-            
+
             if (string.IsNullOrWhiteSpace(file))
             {
                 await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
@@ -100,9 +121,9 @@ public static class FileManager
             vm.IsLoading = false;
         }
     }
-    
+
     /// <summary>
-    /// Opens the file location in file explorer
+    ///     Opens the file location in file explorer
     /// </summary>
     public static async Task LocateOnDisk(string path, MainViewModel vm)
     {
@@ -110,6 +131,7 @@ public static class FileManager
         {
             return;
         }
+
         try
         {
             await Task.Run(() => vm.PlatformService!.LocateOnDisk(path));
@@ -119,9 +141,9 @@ public static class FileManager
             await LogAndShowError(ex, nameof(LocateOnDisk));
         }
     }
-    
+
     /// <summary>
-    /// Shows the dialog to open the file with another application
+    ///     Shows the dialog to open the file with another application
     /// </summary>
     public static async Task OpenWith(string path, MainViewModel vm)
     {
@@ -129,6 +151,7 @@ public static class FileManager
         {
             return;
         }
+
         try
         {
             await Task.Run(() => vm.PlatformService!.OpenWith(path));
@@ -140,17 +163,17 @@ public static class FileManager
     }
 
     #region Private Helper Methods
-    
+
     /// <summary>
-    /// Validates common parameters for file operations
+    ///     Validates common parameters for file operations
     /// </summary>
     private static bool ValidateParameters(string? path, object? platformService)
     {
         return !string.IsNullOrWhiteSpace(path) && platformService != null;
     }
-    
+
     /// <summary>
-    /// Logs errors and shows appropriate error messages
+    ///     Logs errors and shows appropriate error messages
     /// </summary>
     private static async Task LogAndShowError(Exception ex, string methodName)
     {
@@ -160,6 +183,6 @@ public static class FileManager
 #endif
         await TooltipHelper.ShowTooltipMessageAsync(ex.Message);
     }
-    
+
     #endregion
 }

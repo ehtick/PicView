@@ -3,14 +3,23 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.CustomControls;
 using PicView.Core.FileHandling;
+using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Views.UC.PopUps;
 
 public partial class DeleteDialog : AnimatedPopUp
 {
-    public DeleteDialog(string prompt, string file)
+    public DeleteDialog(string prompt, string file, bool recycle)
     {
         InitializeComponent();
+        if (recycle)
+        {
+            ConfirmButtonText.Text = TranslationManager.Translation.MoveToRecycleBin;
+        }
+        else
+        {
+            ConfirmButtonText.Text = TranslationManager.Translation.DeleteFile;
+        }
         Loaded += delegate
         {
             PromptText.Text = prompt;
@@ -18,7 +27,7 @@ public partial class DeleteDialog : AnimatedPopUp
             CancelButton.Click += async delegate { await AnimatedClosing(); };
             ConfirmButton.Click += async delegate
             {
-                FileDeletionHelper.DeleteFileWithErrorMsg(file, false);
+                FileDeletionHelper.DeleteFileWithErrorMsg(file, recycle);
                 await AnimatedClosing();
             };
 

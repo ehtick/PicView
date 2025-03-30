@@ -15,16 +15,16 @@
     <StackPanel Background="Transparent">
         <TextBlock
             Classes="txt"
-            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             FontSize="14"
             Foreground="{DynamicResource MainTextColor}"
-            MaxWidth="200"
+            MaxWidth="240"
             x:Name="PromptText" />
         <TextBlock
             Classes="txt"
             Foreground="{DynamicResource MainTextColor}"
-            Margin="0,6,0,0"
-            MaxWidth="200"
+            Margin="0,15,0,0"
+            MaxWidth="240"
             x:Name="PromptFileName" />
         <StackPanel
             HorizontalAlignment="Right"
@@ -34,7 +34,7 @@
             <Button
                 Classes="BorderStyle altHover mainBtn"
                 Margin="0,0,10,0"
-                Padding="30,0"
+                Padding="15,0"
                 x:Name="CancelButton">
                 <TextBlock
                     Classes="txt"
@@ -46,7 +46,7 @@
                 Classes="BorderStyle accentHover mainBtn"
                 Padding="30,0"
                 x:Name="ConfirmButton">
-                <TextBlock Classes="txt" Text="{CompiledBinding Translation.DeleteFile}" />
+                <TextBlock Classes="txt" x:Name="ConfirmButtonText" />
             </Button>
         </StackPanel>
     </StackPanel>

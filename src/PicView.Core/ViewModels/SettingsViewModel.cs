@@ -6,6 +6,9 @@ namespace PicView.Core.ViewModels;
 
 public class SettingsViewModel : ReactiveObject
 {
+
+    #region Tab history navigation
+    
     public bool IsBackButtonEnabled
     {
         get;
@@ -28,4 +31,30 @@ public class SettingsViewModel : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+    
+    #endregion
+
+    #region UI
+    
+    public bool IsShowingRecycleDialog
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            Settings.UIProperties.ShowRecycleConfirmation = value;
+        } 
+    } = Settings.UIProperties.ShowRecycleConfirmation;
+
+    public bool IsShowingPermanentDeletionDialog
+    {
+        get;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref field, value);
+            Settings.UIProperties.ShowPermanentDeletionConfirmation = value;
+        }
+    } = Settings.UIProperties.ShowPermanentDeletionConfirmation;
+
+    #endregion
 }

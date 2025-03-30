@@ -2,7 +2,7 @@
 
 public class AppSettings
 {
-    public double Version { get; set; } = 1.3;
+    public double Version { get; set; } = 1.4;
     public WindowProperties? WindowProperties { get; set; }
     public UIProperties? UIProperties { get; set; }
     public Theme? Theme { get; set; }
@@ -39,6 +39,8 @@ public class UIProperties
     public double SlideShowTimer { get; set; } = 5000;
     public bool OpenInSameWindow { get; set; } = false;
     public bool ShowConfirmationOnEsc { get; set; } = false;
+    public bool ShowRecycleConfirmation { get; set; } = false;
+    public bool ShowPermanentDeletionConfirmation { get; set; } = true;
 }
 
 public class Theme

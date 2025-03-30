@@ -114,6 +114,49 @@
                                            Mode=OneWay}" />
             </ToggleButton>
 
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                FontSize="14"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0,20,0,20"
+                Text="{CompiledBinding Translation.FileManagement,
+                                       Mode=OneWay}" />
+
+            <ToggleButton
+                Background="Transparent"
+                BorderThickness="0"
+                Classes="altHover changeColor"
+                IsChecked="{CompiledBinding SettingsViewModel.IsShowingPermanentDeletionDialog}"
+                Margin="0,0,0,10"
+                Width="300">
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{StaticResource SecondaryTextColor}"
+                    Margin="0"
+                    MaxWidth="240"
+                    Padding="0,1,5,0"
+                    Text="{CompiledBinding Translation.ShowConfirmationDialogWhenPermanentlyDeletingFile,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <ToggleButton
+                Background="Transparent"
+                BorderThickness="0"
+                Classes="altHover changeColor"
+                IsChecked="{CompiledBinding SettingsViewModel.IsShowingRecycleDialog}"
+                Margin="0,0,0,10"
+                Width="300">
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{StaticResource SecondaryTextColor}"
+                    Margin="0"
+                    MaxWidth="240"
+                    Padding="0,1,5,0"
+                    Text="{CompiledBinding Translation.ShowConfirmationDialogWhenMovingFileToRecycleBin,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
         </StackPanel>
     </Panel>
 </UserControl>

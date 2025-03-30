@@ -540,13 +540,13 @@ public static class FunctionsMapper
     public static async Task SaveAs() =>
         await FileSaverHelper.SaveFileAs(Vm).ConfigureAwait(false);
     
-    /// <inheritdoc cref="FileManager.DeleteFile(bool, MainViewModel)" />
+    /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFile() =>
-        await FileManager.DeleteFile(true, Vm).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(true, Vm.PicViewer?.FileInfo?.FullName).ConfigureAwait(false);
     
-    /// <inheritdoc cref="FileManager.DeleteFile(bool, MainViewModel)" />
+    /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFilePermanently() =>
-        await FileManager.DeleteFile(false, Vm).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(false, Vm.PicViewer?.FileInfo?.FullName).ConfigureAwait(false);
 
     public static async Task Rename()
     {

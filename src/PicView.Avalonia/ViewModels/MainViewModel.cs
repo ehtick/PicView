@@ -1079,10 +1079,10 @@ public class MainViewModel : ReactiveObject
         await ClipboardFileOperations.CutFile(path, this).ConfigureAwait(false);
 
     private static async Task DeleteFileTask(string path) =>
-        await Task.Run(() => FileDeletionHelper.DeleteFileWithErrorMsg(path, false)).ConfigureAwait(false);
+        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path)).ConfigureAwait(false);
 
     private static async Task RecycleFileTask(string path) =>
-        await Task.Run(() => FileDeletionHelper.DeleteFileWithErrorMsg(path, true)).ConfigureAwait(false);
+        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path)).ConfigureAwait(false);
 
     private async Task DuplicateFileTask(string path) =>
         await ClipboardFileOperations.Duplicate(path, this).ConfigureAwait(false);

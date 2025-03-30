@@ -272,9 +272,30 @@ public class TranslationViewModel : ReactiveObject
         Filter = TranslationManager.Translation.Filter;
         UnselectAll = TranslationManager.Translation.UnselectAll;
         Unassociate = TranslationManager.Translation.Unassociate;
+        ShowConfirmationDialogWhenMovingFileToRecycleBin = TranslationManager.Translation.ShowConfirmationDialogWhenMovingFileToRecycleBin;
+        MoveToRecycleBin = TranslationManager.Translation.MoveToRecycleBin;
+        ShowConfirmationDialogWhenPermanentlyDeletingFile = TranslationManager.Translation.ShowConfirmationDialogWhenPermanentlyDeletingFile;
     }
 
     #region Static Translation Strings
+    
+    public string? ShowConfirmationDialogWhenPermanentlyDeletingFile
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? MoveToRecycleBin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? ShowConfirmationDialogWhenMovingFileToRecycleBin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
     
     public string? SelectFileTypesToAssociate
     {
