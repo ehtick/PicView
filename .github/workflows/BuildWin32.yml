@@ -44,7 +44,7 @@ jobs:
 
       # Step 6 (x64): Compile .ISS to .EXE Installer for x64
       - name: Compile .ISS to .EXE Installer (x64)
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+        uses: pwall2222/inno-setup-download@v0.0.6
         with:
           path: .\Build\install.iss
           options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64
@@ -73,7 +73,7 @@ jobs:
 
       # Step 10 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+        uses: pwall2222/inno-setup-download@v0.0.6
         with:
           path: .\Build\install.iss
           options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64
