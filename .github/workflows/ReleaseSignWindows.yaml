@@ -32,11 +32,21 @@ jobs:
 
       # Step 5 (x64): Compile .ISS to .EXE Installer for x64
       - name: Compile .ISS to .EXE Installer (x64)
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
-        with:
-          path: .\Build\install.iss
-          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64
-
+        run: |
+          New-Item -Path "${{ github.workspace }}\Build\install" -ItemType Directory -Force
+          
+          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
+            /O+ `
+            /DMyAppVersion="${{steps.get-version.outputs.version}}" `
+            /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
+            /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64" `
+            /DMyAppOutputName="PicView-v${{steps.get-version.outputs.version}}-win-x64" `
+            /DLicenseFile="${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt" `
+            /DAppIcon="${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico" `
+            /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
+            "${{ github.workspace }}\Build\install.iss"
+        shell: pwsh
+        
       # Step 6 (arm64): Publish arm64 version
       - name: Publish arm64 version
         run: |
@@ -46,12 +56,20 @@ jobs:
 
       # Step 7 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
-        with:
-          path: .\Build\install.iss
-          options: /O+ /DMyAppVersion=${{steps.get-version.outputs.file-version}} /DMyAppOutputDir=${{ github.workspace }}\Build\install /DMyFileSource=${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64 /DAppIcon=${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico /DLicenseFile=${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt /DMyAppOutputName=Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64
-
-
+        run: |
+          
+          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
+            /O+ `
+            /DMyAppVersion="${{steps.get-version.outputs.version}}" `
+            /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
+            /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64" `
+            /DMyAppOutputName="PicView-v${{steps.get-version.outputs.version}}-win-arm64" `
+            /DLicenseFile="${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt" `
+            /DAppIcon="${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico" `
+            /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
+            "${{ github.workspace }}\Build\install.iss"
+        shell: pwsh
+        
       # Step 8: Upload unsigned artifact
       - name: upload-unsigned-artifact
         id: upload-unsigned-artifact
@@ -61,9 +79,9 @@ jobs:
           if-no-files-found: error
           path: |
             ${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64\
-            ${{ github.workspace }}\Build\install\Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64.exe
+            ${{ github.workspace }}\Build\install\PicView-v${{steps.get-version.outputs.version}}-win-x64.exe
             ${{ github.workspace }}\Build\\PicView-v${{steps.get-version.outputs.version}}-win-arm64\
-            ${{ github.workspace }}\Build\install\Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64.exe
+            ${{ github.workspace }}\Build\install\PicView-v${{steps.get-version.outputs.version}}-win-arm64.exe
           retention-days: 1
       
       # Step 9: Sign the binaries
