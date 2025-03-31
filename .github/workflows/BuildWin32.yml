@@ -50,10 +50,6 @@ jobs:
       # Step 7 (x64): Compile .ISS to .EXE Installer for x64
       - name: Compile .ISS to .EXE Installer (x64)
         run: |
-          $output_name = "Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64"
-          $license_file = "{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt"
-          $app_icon = "${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico"
-          
           New-Item -Path "${{ github.workspace }}\Build\install" -ItemType Directory -Force
           
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
@@ -61,9 +57,9 @@ jobs:
             /DMyAppVersion="${{steps.get-version.outputs.version}}" `
             /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
             /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64" `
-            /DMyAppOutputName="$output_name" `
-            /DLicenseFile="$license_file" `
-            /DAppIcon="$app_icon" `
+            /DMyAppOutputName="PicView-v${{steps.get-version.outputs.version}}-win-x64" `
+            /DLicenseFile="${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt" `
+            /DAppIcon="${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico" `
             /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
@@ -93,18 +89,15 @@ jobs:
       # Step 11 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
         run: |
-          $output_name = "Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64"
-          $license_file = "{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt"
-          $app_icon = "${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico"
           
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
             /DMyAppVersion="${{steps.get-version.outputs.version}}" `
             /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
             /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64" `
-            /DMyAppOutputName="$output_name" `
-            /DLicenseFile="$license_file" `
-            /DAppIcon="$app_icon" `
+            /DMyAppOutputName="PicView-v${{steps.get-version.outputs.version}}-win-arm64" `
+            /DLicenseFile="${{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt" `
+            /DAppIcon="${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico" `
             /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
