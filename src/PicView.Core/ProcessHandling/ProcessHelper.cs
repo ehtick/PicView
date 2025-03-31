@@ -2,56 +2,50 @@
 
 namespace PicView.Core.ProcessHandling;
 
+/// <summary>
+///     Provides helper methods for process-related operations.
+/// </summary>
 public static class ProcessHelper
 {
     /// <summary>
-    /// Launches the URL provided in a web browser.
-    /// </summary>
-    /// <param name="url">The URL to be launched in a web browser.</param>
-    public static void Hyperlink_RequestNavigate(string url)
-    {
-        if (string.IsNullOrWhiteSpace(url))
-        {
-            return;
-        }
-
-        var ps = new ProcessStartInfo(url)
-        {
-            UseShellExecute = true,
-            Verb = "open"
-        };
-        Process.Start(ps);
-    }
-
-    /// <summary>
-    /// Gets the path to the current process.
+    ///     Gets the path to the current process.
     /// </summary>
     /// <returns>The path to the current process.</returns>
     public static string? GetPathToProcess()
     {
-        var GetAppPath = Environment.ProcessPath;
+        var getAppPath = Environment.ProcessPath;
 
-        if (GetAppPath is not null && Path.GetExtension(GetAppPath) == ".dll")
+        if (getAppPath is not null &&
+            Path.GetExtension(getAppPath).Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
         {
-            GetAppPath = GetAppPath.Replace(".dll", ".exe", StringComparison.InvariantCultureIgnoreCase);
+            getAppPath = getAppPath.Replace(".dll", ".exe", StringComparison.InvariantCultureIgnoreCase);
         }
 
-        return GetAppPath;
+        return getAppPath;
     }
-    
+
+    /// <summary>
+    ///     Starts the current process with elevated permissions (administrator rights).
+    /// </summary>
+    /// <param name="arguments">Command line arguments to pass to the elevated process.</param>
+    /// <returns>
+    ///     <c>true</c> if the process was successfully started with elevated permissions;
+    ///     <c>false</c> if the user declined the UAC prompt or if another error occurred.
+    /// </returns>
     public static bool StartProcessWithElevatedPermission(string arguments)
     {
         try
         {
-            var startInfo = new ProcessStartInfo
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
             {
                 FileName = Process.GetCurrentProcess().MainModule?.FileName,
                 Arguments = arguments,
                 UseShellExecute = true,
                 Verb = "runas"
             };
-            
-            Process.Start(startInfo);
+
+            process.Start();
             return true;
         }
         catch (Exception ex)
@@ -63,8 +57,9 @@ public static class ProcessHelper
     }
 
     /// <summary>
-    /// Restarts the current application.
+    ///     Restarts the current application.
     /// </summary>
+    /// <param name="args">The command line arguments to pass to the restarted application.</param>
     public static void RestartApp(string? args)
     {
         var getAppPath = GetPathToProcess();
@@ -73,7 +68,7 @@ public static class ProcessHelper
     }
 
     /// <summary>
-    /// Starts a new instance of the current process with the provided file argument.
+    ///     Starts a new instance of the current process with the provided file argument.
     /// </summary>
     /// <param name="argument">The file argument to be passed to the new instance of the current process.</param>
     public static void StartNewProcess(string argument)
@@ -85,31 +80,30 @@ public static class ProcessHelper
         args = args.Insert(0, @"""");
         args = args.Insert(args.Length - 1, @"""");
 
-        Process process = new()
-        {
-            StartInfo =
-            {
-                FileName = pathToExe,
-                Arguments = args
-            }
-        };
+        using Process process = new();
+        process.StartInfo.FileName = pathToExe;
+        process.StartInfo.Arguments = args;
         process.Start();
     }
 
     /// <summary>
-    /// Starts a new instance of the current process.
+    ///     Starts a new instance of the current process.
     /// </summary>
     public static void StartNewProcess()
     {
         var pathToExe = GetPathToProcess();
 
-        Process process = new()
-        {
-            StartInfo = { FileName = pathToExe }
-        };
+        using Process process = new();
+        process.StartInfo.FileName = pathToExe;
         process.Start();
     }
 
+    /// <summary>
+    ///     Determines whether another instance of the application is already running.
+    /// </summary>
+    /// <returns>
+    ///     <c>true</c> if another instance of the application is already running; otherwise, <c>false</c>.
+    /// </returns>
     public static bool CheckIfAnotherInstanceIsRunning()
     {
         try
@@ -132,6 +126,10 @@ public static class ProcessHelper
         }
     }
 
+    /// <summary>
+    ///     Opens a file using the Windows "Open with" dialog, allowing the user to select a program to open the file.
+    /// </summary>
+    /// <param name="path">The path to the file to be opened.</param>
     public static void OpenWith(string path)
     {
         try
@@ -140,6 +138,7 @@ public static class ProcessHelper
             {
                 return;
             }
+
             using var process = new Process();
             process.StartInfo.FileName = "openwith";
             process.StartInfo.Arguments = $"\"{path}\"";
@@ -155,6 +154,10 @@ public static class ProcessHelper
         }
     }
 
+    /// <summary>
+    ///     Sends a file to the default printer for printing.
+    /// </summary>
+    /// <param name="path">The path to the file to be printed.</param>
     public static void Print(string? path)
     {
         try
@@ -163,11 +166,12 @@ public static class ProcessHelper
             {
                 return;
             }
+
             using var process = new Process();
             process.StartInfo = new ProcessStartInfo(path)
             {
                 Verb = "print",
-                UseShellExecute = true,
+                UseShellExecute = true
             };
             process.Start();
         }
@@ -179,17 +183,23 @@ public static class ProcessHelper
         }
     }
 
+    /// <summary>
+    ///     Opens a URL or file path in the default associated application.
+    /// </summary>
+    /// <param name="link">The URL or file path to open.</param>
     public static void OpenLink(string link)
     {
         if (string.IsNullOrWhiteSpace(link))
         {
             return;
         }
-        var ps = new ProcessStartInfo(link)
+
+        using var process = new Process();
+        process.StartInfo = new ProcessStartInfo(link)
         {
             UseShellExecute = true,
             Verb = "open"
         };
-        Process.Start(ps);
+        process.Start();
     }
 }

@@ -6,6 +6,7 @@ using Avalonia.Media;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.FileHandling;
+using PicView.Core.Localization;
 using PicView.Core.WindowsNT.FileAssociation;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -73,8 +74,7 @@ public partial class SettingsWindow : Window
         Loaded += delegate
         {
             MinWidth = Width;
-            //Title = TranslationManager.GetTranslation("Settings") + " - PicView";
-            Title = $"{ScreenHelper.ScreenSize.WorkingAreaWidth} x {ScreenHelper.ScreenSize.WorkingAreaHeight} {ScreenHelper.ScreenSize.Scaling}";
+            Title = TranslationManager.GetTranslation("Settings") + " - PicView";
         };
         KeyDown += (_, e) =>
         {

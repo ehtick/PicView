@@ -67,6 +67,7 @@ public static class StartUpHelper
                 }
             }
         }
+        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
         
         InitializeSettings(vm);
 
@@ -90,8 +91,7 @@ public static class StartUpHelper
         HandleStartUpMenuOrImage(vm, args);
         
         ResourceLimits.LimitMemory(new Percentage(90));
-
-        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
+        
         if (settingsExists)
         {
             Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
