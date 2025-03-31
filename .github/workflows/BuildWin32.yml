@@ -51,8 +51,8 @@ jobs:
       - name: Compile .ISS to .EXE Installer (x64)
         run: |
           $output_name = "Setup-PicView-v${{steps.get-version.outputs.version}}-win-x64"
-          $license_file = "${{ github.workspace }}/LICENSE"
-          $app_icon = "${{ github.workspace }}/PicView/Icons/Logo.ico"
+          $license_file = "{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt"
+          $app_icon = "${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico"
           
           New-Item -Path "${{ github.workspace }}\Build\install" -ItemType Directory -Force
           
@@ -94,8 +94,8 @@ jobs:
       - name: Compile .ISS to .EXE Installer (arm64)
         run: |
           $output_name = "Setup-PicView-v${{steps.get-version.outputs.version}}-win-arm64"
-          $license_file = "${{ github.workspace }}/LICENSE"
-          $app_icon = "${{ github.workspace }}/PicView/Icons/Logo.ico"
+          $license_file = "{ github.workspace }}\src\PicView.Core\Licenses\LICENSE.txt"
+          $app_icon = "${{ github.workspace }}\src\PicView.Avalonia.Win32\icon.ico"
           
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
