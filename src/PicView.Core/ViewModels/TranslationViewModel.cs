@@ -21,6 +21,7 @@ public class TranslationViewModel : ReactiveObject
         CopyFile = TranslationManager.Translation.CopyFile;
         NewWindow = TranslationManager.Translation.NewWindow;
         Close = TranslationManager.Translation.Close;
+        CloseGallery = TranslationManager.Translation.CloseGallery;
         Open = TranslationManager.Translation.Open;
         OpenFileDialog = TranslationManager.Translation.OpenFileDialog;
         ShowInFolder = TranslationManager.Translation.ShowInFolder;
@@ -527,6 +528,12 @@ public class TranslationViewModel : ReactiveObject
     }
 
     public string? Close
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? CloseGallery
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

@@ -119,22 +119,6 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--  <MenuItem  -->
-                <!--  Command="{CompiledBinding SetAsLockScreenCommand}"  -->
-                <!--  CommandParameter="{CompiledBinding Path=Text,  -->
-                <!--  ElementName=FileLocation}"  -->
-                <!--  Header="{CompiledBinding SetAsLockScreenImage,  -->
-                <!--  Mode=OneWay}"  -->
-                <!--  IsEnabled="False">  -->
-                <!--     <MenuItem.Icon> -->
-                <!--  <Path  -->
-                <!--  Data="{StaticResource PanoramaGeometry}"  -->
-                <!--  Fill="{DynamicResource MainTextColor}"  -->
-                <!--  Height="12"  -->
-                <!--  Stretch="Fill"  -->
-                <!--  Width="12" />  -->
-                <!--     </MenuItem.Icon> -->
-                <!-- </MenuItem> -->
                 <Separator />
                 <MenuItem
                     Command="{CompiledBinding CopyFileCommand}"
@@ -294,7 +278,25 @@
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{CompiledBinding CloseGalleryCommand}" Header="{CompiledBinding Translation.HideBottomGallery, Mode=OneWay}">
+                <MenuItem
+                    Command="{CompiledBinding CloseGalleryCommand}"
+                    Header="{CompiledBinding Translation.HideBottomGallery,
+                                             Mode=OneWay}"
+                    IsVisible="{CompiledBinding !IsFullGalleryOpen}">
+                    <MenuItem.Icon>
+                        <Path
+                            Data="{StaticResource CloseGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Height="12"
+                            Stretch="Fill"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{CompiledBinding ToggleGalleryCommand}"
+                    Header="{CompiledBinding Translation.CloseGallery,
+                                             Mode=OneWay}"
+                    IsVisible="{CompiledBinding IsFullGalleryOpen}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"
