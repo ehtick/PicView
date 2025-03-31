@@ -46,7 +46,7 @@ jobs:
       - name: Install Inno Setup
         run: |
           choco install innosetup -y
-          
+      
       # Step 7 (x64): Compile .ISS to .EXE Installer for x64
       - name: Compile .ISS to .EXE Installer (x64)
         run: |
@@ -54,14 +54,17 @@ jobs:
           $license_file = "${{ github.workspace }}/LICENSE"
           $app_icon = "${{ github.workspace }}/PicView/Icons/Logo.ico"
           
+          New-Item -Path "${{ github.workspace }}\Build\install" -ItemType Directory -Force
+          
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
-            /DMyAppVersion=${{steps.get-version.outputs.version}} `
+            /DMyAppVersion="${{steps.get-version.outputs.version}}" `
             /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
             /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64" `
             /DMyAppOutputName="$output_name" `
             /DLicenseFile="$license_file" `
             /DAppIcon="$app_icon" `
+            /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
 
@@ -96,12 +99,13 @@ jobs:
           
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
-            /DMyAppVersion=${{steps.get-version.outputs.version}} `
+            /DMyAppVersion="${{steps.get-version.outputs.version}}" `
             /DMyAppOutputDir="${{ github.workspace }}\Build\install" `
             /DMyFileSource="${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64" `
             /DMyAppOutputName="$output_name" `
             /DLicenseFile="$license_file" `
             /DAppIcon="$app_icon" `
+            /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
 
