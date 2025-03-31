@@ -338,37 +338,44 @@ public class FileAssociationsViewModel : ReactiveObject
 
     /// <summary>
     /// Toggles selection state of all visible file types between indeterminate and unselected.
+    /// If the number of indeterminate checkboxes equals or is greater than the number of non-indeterminate ones,
+    /// all visible checkboxes will be set to unchecked. Otherwise, all will be set to indeterminate.
     /// </summary>
     /// <remarks>
     /// This method uses snapshots of collections to avoid enumeration modification exceptions.
-    /// If all visible items are already in indeterminate state, they will be set to unselected.
-    /// Otherwise, all visible items will be set to indeterminate.
     /// </remarks>
     private void UnselectAllFileTypes()
     {
         // Make a copy of the current groups to avoid enumeration issues
         var currentGroups = FileTypeGroups.ToArray();
     
-        // Update selection states to true for all items
+        // Count the total number of visible checkboxes and indeterminate ones
+        var totalVisible = 0;
+        var indeterminateCount = 0;
+
         foreach (var group in currentGroups)
         {
-            // Use snapshot of file types to avoid enumeration issues
-            var fileTypes = group.FileTypes.ToArray();
-            
-            // Toggle between indeterminate and false for visible items
-            if (fileTypes.All(x => x.IsSelected == null && x.IsVisible))
+            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible))
             {
-                foreach (var checkBox in fileTypes)
+                totalVisible++;
+                if (fileType.IsSelected == null)
                 {
-                    checkBox.IsSelected = false;
+                    indeterminateCount++;
                 }
             }
-            else
+        }
+
+        // Determine which state to set based on the counts
+        // If indeterminate count is equal to or greater than non-indeterminate count, 
+        // set all to unchecked, otherwise set all to indeterminate
+        var setToUnchecked = indeterminateCount >= totalVisible - indeterminateCount;
+
+        // Apply the chosen state to all visible checkboxes
+        foreach (var group in currentGroups)
+        {
+            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible))
             {
-                foreach (var checkBox in fileTypes.Where(x => x.IsVisible))
-                {
-                    checkBox.IsSelected = null;
-                }
+                fileType.IsSelected = setToUnchecked ? false : null;
             }
         }
     }
@@ -394,7 +401,7 @@ public class FileAssociationsViewModel : ReactiveObject
             UpdateSelection();
             
             // Now process the associations
-            return await FileTypeHelper.SetFileAssociations(FileTypeGroups);
+            return await FileAssociationProcessor.SetFileAssociations(FileTypeGroups);
         }
         finally
         {
@@ -416,7 +423,7 @@ public class FileAssociationsViewModel : ReactiveObject
         {
             IsProcessing = true;
             UnselectFileTypes();
-            await FileTypeHelper.SetFileAssociations(FileTypeGroups);
+            await FileAssociationProcessor.SetFileAssociations(FileTypeGroups);
         }
         finally
         {

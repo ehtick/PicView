@@ -50,7 +50,7 @@ public static class StartUpHelper
                         {
                             vm.PlatformService.InitiateFileAssociationService();
                             Debug.WriteLine($"Processing file association argument: {arg}");
-                            await FileTypeHelper.ProcessFileAssociationArguments(arg);
+                            await FileAssociationProcessor.ProcessFileAssociationArguments(arg);
 
                             // Exit if this was just a file association command
                             // and no other files were specified to be opened

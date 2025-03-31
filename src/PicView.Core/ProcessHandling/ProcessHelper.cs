@@ -55,6 +55,31 @@ public static class ProcessHelper
             return false;
         }
     }
+    
+    public static async Task<bool> StartProcessWithElevatedPermissionAsync(string arguments)
+    {
+        try
+        {
+            using var process = new Process();
+            process.StartInfo = new ProcessStartInfo
+            {
+                FileName = Process.GetCurrentProcess().MainModule?.FileName,
+                Arguments = arguments,
+                UseShellExecute = true,
+                Verb = "runas"
+            };
+
+            process.Start();
+            await process.WaitForExitAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            // User declined the UAC prompt or other error
+            Debug.WriteLine($"Failed to start elevated process: {ex.Message}");
+            return false;
+        }
+    }
 
     /// <summary>
     ///     Restarts the current application.
