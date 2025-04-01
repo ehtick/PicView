@@ -80,6 +80,7 @@
                         Foreground="{DynamicResource MainTextColor}"
                         IconHeight="10"
                         IconWidth="10"
+                        IsRepeatEnabled="False"
                         ToolTip.Tip="{CompiledBinding Translation.Close,
                                                       Mode=OneWay}"
                         Width="30"
@@ -97,6 +98,7 @@
                         Foreground="{DynamicResource MainTextColor}"
                         IconHeight="12"
                         IconWidth="12"
+                        IsRepeatEnabled="False"
                         Width="30"
                         x:Name="MinimizeButton" />
 

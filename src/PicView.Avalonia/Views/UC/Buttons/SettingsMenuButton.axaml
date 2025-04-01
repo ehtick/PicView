@@ -21,6 +21,7 @@
         Icon="{StaticResource MenuImage}"
         IconHeight="12"
         IconWidth="12"
+        IsRepeatEnabled="False"
         Width="30"
         x:Name="SettingsButton">
         <customControls:IconButton.Flyout>

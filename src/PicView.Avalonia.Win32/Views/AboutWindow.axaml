@@ -45,6 +45,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     IconHeight="10"
                     IconWidth="10"
+                    IsRepeatEnabled="False"
                     Width="30"
                     x:Name="CloseButton" />
 
@@ -59,6 +60,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     IconHeight="12"
                     IconWidth="12"
+                    IsRepeatEnabled="False"
                     Width="30"
                     x:Name="MinimizeButton" />
 
