@@ -7,7 +7,7 @@ using Avalonia.Media;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Calculations;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.Views;
 

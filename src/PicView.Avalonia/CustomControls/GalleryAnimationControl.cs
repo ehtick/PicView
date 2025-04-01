@@ -10,8 +10,8 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Calculations;
 using PicView.Core.Gallery;
+using PicView.Core.Sizing;
 using ReactiveUI;
 
 namespace PicView.Avalonia.CustomControls;

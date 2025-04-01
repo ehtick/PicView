@@ -3,7 +3,6 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTheme TargetType="ComboBox" x:Key="{x:Type ComboBox}">
-        <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -15,30 +14,26 @@
             <ControlTemplate>
                 <DockPanel LastChildFill="true">
                     <Border
-                        Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="1,0,0,0"
                         DockPanel.Dock="Left"
                         Name="LeftBorder" />
                     <Border
-                        Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="0,1,0,0"
                         DockPanel.Dock="Top"
                         Name="TopBorder" />
                     <Border
-                        Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="0,0,1,0"
                         DockPanel.Dock="Right"
                         Name="RightBorder" />
                     <Border
-                        Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="0,0,0,1"
                         DockPanel.Dock="Bottom"
                         Name="BottomBorder" />
-                    <Panel>
+                    <Panel Background="{TemplateBinding Background}">
                         <TextBlock
                             Foreground="{TemplateBinding PlaceholderForeground}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

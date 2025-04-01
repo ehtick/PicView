@@ -1,4 +1,4 @@
-﻿namespace PicView.Core.Calculations;
+﻿namespace PicView.Core.Sizing;
 
 public static class SizeDefaults
 {

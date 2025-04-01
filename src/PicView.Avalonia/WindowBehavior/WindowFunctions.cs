@@ -10,9 +10,9 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
-using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
 using PicView.Core.Navigation;
+using PicView.Core.Sizing;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -443,6 +443,7 @@ public static class WindowFunctions
     {
         vm.SizeToContent = SizeToContent.Manual;
         vm.IsFullscreen = true;
+        Settings.WindowProperties.Fullscreen = true;
         vm.IsMaximized = false;
         vm.CanResize = false;
         Dispatcher.UIThread.Invoke(() =>
@@ -493,14 +494,12 @@ public static class WindowFunctions
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             vm.BottomCornerRadius = new CornerRadius(0);
-            WindowResizing.SetSize(vm);
-            //var screen = ScreenHelper.ScreenSize;
-            //vm.TitleMaxWidth = ImageSizeCalculationHelper.GetTitleMaxWidth(0, screen.WorkingAreaWidth, screen.WorkingAreaHeight, screen.WorkingAreaWidth, screen.WorkingAreaHeight, ImageSizeCalculationHelper.GetInterfaceSize(), screen.WorkingAreaHeight);
             if (Settings.WindowProperties.AutoFit)
             {
                 // TODO go to macOS fullscreen mode when auto fit is on
             }
         }
+        WindowResizing.SetSize(vm);
 
         vm.GalleryWidth = double.NaN;
     }

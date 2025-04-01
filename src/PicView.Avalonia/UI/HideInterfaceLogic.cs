@@ -5,9 +5,9 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Calculations;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.UI;
 

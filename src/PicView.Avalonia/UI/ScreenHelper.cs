@@ -1,28 +1,7 @@
 ﻿using Avalonia.Controls;
-using PicView.Core.Calculations;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.UI;
-
-/// <summary>
-/// Represents screen dimensions and scaling information.
-/// </summary>
-public readonly record struct ScreenSize
-{
-    /// <summary>
-    /// Gets the width of the screen's working area in device-independent pixels.
-    /// </summary>
-    public double WorkingAreaWidth { get; init; }
-    
-    /// <summary>
-    /// Gets the height of the screen's working area in device-independent pixels.
-    /// </summary>
-    public double WorkingAreaHeight { get; init; }
-    
-    /// <summary>
-    /// Gets the DPI scaling factor of the screen.
-    /// </summary>
-    public double Scaling { get; init; }
-}
 
 /// <summary>
 /// Provides utilities for obtaining and managing screen information.
@@ -57,11 +36,16 @@ public static class ScreenHelper
         
             var monitorWidth = screen.WorkingArea.Width / screen.Scaling;
             var monitorHeight = screen.WorkingArea.Height / screen.Scaling;
+            
+            var width = window.Width / screen.Scaling;
+            var height = window.Height / screen.Scaling;
         
             ScreenSize = new ScreenSize           
             {
                 WorkingAreaWidth = monitorWidth,
                 WorkingAreaHeight = monitorHeight,
+                Width = width,
+                Height = height,
                 Scaling = screen.Scaling,
             };
         }

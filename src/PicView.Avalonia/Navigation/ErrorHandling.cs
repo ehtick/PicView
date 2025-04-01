@@ -4,10 +4,10 @@ using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
+using PicView.Core.Sizing;
 using StartUpMenu = PicView.Avalonia.Views.StartUpMenu;
 
 namespace PicView.Avalonia.Navigation;

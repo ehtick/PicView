@@ -5,7 +5,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Calculations;
+using PicView.Core.Sizing;
 using ReactiveUI;
 
 namespace PicView.Avalonia.Views;

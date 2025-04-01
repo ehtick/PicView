@@ -14,11 +14,11 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Calculations;
 using PicView.Core.FileAssociations;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 using PicView.Core.ProcessHandling;
+using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;

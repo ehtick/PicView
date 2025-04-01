@@ -4,8 +4,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Calculations;
 using PicView.Core.Localization;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.Views.UC;
 

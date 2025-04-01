@@ -7,7 +7,7 @@ using ImageMagick;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Calculations;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.WindowBehavior;
 
@@ -210,13 +210,12 @@ public static class WindowResizing
         ImageSizeCalculationHelper.ImageSize size;
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
-            size = ImageSizeCalculationHelper.GetImageSize(
+            size = ImageSizeCalculationHelper.GetSideBySideImageSize(
                 width,
                 height,
                 secondWidth,
                 secondHeight,
-                screenSize.WorkingAreaWidth,
-                screenSize.WorkingAreaHeight,
+                screenSize,
                 desktopMinWidth,
                 desktopMinHeight,
                 ImageSizeCalculationHelper.GetInterfaceSize(),
@@ -230,11 +229,10 @@ public static class WindowResizing
         }
         else
         {
-            size = ImageSizeCalculationHelper.GetSideBySideImageSize(
+            size = ImageSizeCalculationHelper.GetImageSize(
                 width,
                 height,
-                screenSize.WorkingAreaWidth,
-                screenSize.WorkingAreaHeight,
+                screenSize,
                 desktopMinWidth,
                 desktopMinHeight,
                 ImageSizeCalculationHelper.GetInterfaceSize(),

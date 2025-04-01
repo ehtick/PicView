@@ -9,9 +9,9 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using PicView.Core.Calculations;
 using PicView.Core.FileHandling;
 using PicView.Core.ProcessHandling;
+using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.DragAndDrop;
 
