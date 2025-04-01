@@ -9,21 +9,6 @@ using PicView.Core.ProcessHandling;
 
 namespace PicView.Core.FileAssociations;
 
-/// <summary>
-/// Models for file association instructions
-/// </summary>
-public class FileAssociationInstructions
-{
-    public List<AssociationItem> ExtensionsToAssociate { get; set; } = [];
-    public List<string> ExtensionsToUnassociate { get; set; } = [];
-}
-
-public class AssociationItem
-{
-    public string Extension { get; set; } = string.Empty;
-    public string? Description { get; set; }
-}
-
 [JsonSourceGenerationOptions(AllowTrailingCommas = true, WriteIndented = true)]
 [JsonSerializable(typeof(FileAssociationInstructions))]
 [JsonSerializable(typeof(AssociationItem))]
