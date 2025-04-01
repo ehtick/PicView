@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
@@ -61,17 +62,21 @@ public partial class AppearanceView : UserControl
             ThemeManager.SetTheme(selectedTheme);
         };
 
+        // Set button colors dynamically from ColorManager
+        UpdateColorButtons();
+        
+        // Set active color button based on current theme
         ClearColorButtonsActiveState();
         switch ((ColorOptions)Settings.Theme.ColorTheme)
         {
-            case ColorOptions.Aqua:
-                AquaButton.Classes.Add("active");
+            case ColorOptions.Raspberry:
+                RaspberryButton.Classes.Add("active");
                 break;
             case ColorOptions.Teal:
                 TealButton.Classes.Add("active");
                 break;
-            case ColorOptions.Lime:
-                LimeButton.Classes.Add("active");
+            case ColorOptions.Emerald:
+                EmeraldButton.Classes.Add("active");
                 break;
             case ColorOptions.Golden:
                 GoldButton.Classes.Add("active");
@@ -88,8 +93,8 @@ public partial class AppearanceView : UserControl
             case ColorOptions.Red:
                 RedButton.Classes.Add("active");
                 break;
-            case ColorOptions.Green:
-                GreenButton.Classes.Add("active");
+            case ColorOptions.Ruby:
+                RubyButton.Classes.Add("active");
                 break;
             case ColorOptions.Magenta:
                 MagentaButton.Classes.Add("active");
@@ -110,13 +115,44 @@ public partial class AppearanceView : UserControl
             .Subscribe(_ => SetBackgroundTheme(Settings.UIProperties.BgColorChoice))
             .DisposeWith(_disposables);
     }
+    
+    // New method to update color buttons with values from ColorManager
+    private void UpdateColorButtons()
+    {
+        BlueButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Blue));
+        CyanButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Cyan));
+        RaspberryButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Raspberry));
+        TealButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Teal));
+        EmeraldButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Emerald));
+        RubyButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Ruby));
+        GoldButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Golden));
+        OrangeButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Orange));
+        RedButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Red));
+        PinkButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Pink));
+        MagentaButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Magenta));
+        PurpleButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Purple));
+    }
+    
+    // Add constants for color theme indices for easier reference
+    private const int Blue = 0;
+    private const int Pink = 2;
+    private const int Orange = 3;
+    private const int Ruby = 4;
+    private const int Red = 5;
+    private const int Teal = 6;
+    private const int Raspberry = 7;
+    private const int Golden = 8;
+    private const int Purple = 9;
+    private const int Cyan = 10;
+    private const int Magenta = 11;
+    private const int Emerald = 12;
 
     private void ClearColorButtonsActiveState()
     {
         var buttons = new List<Button>
         {
-            BlueButton, CyanButton, GreenButton, MagentaButton, RedButton, AquaButton,
-            TealButton, LimeButton, GoldButton, OrangeButton, PinkButton, PurpleButton
+            BlueButton, CyanButton, RubyButton, MagentaButton, RedButton, RaspberryButton,
+            TealButton, EmeraldButton, GoldButton, OrangeButton, PinkButton, PurpleButton
         };
 
         foreach (var button in buttons)
@@ -139,8 +175,8 @@ public partial class AppearanceView : UserControl
             case ColorOptions.Orange:
                 OrangeButton.Classes.Add("active");
                 break;
-            case ColorOptions.Green:
-                GreenButton.Classes.Add("active");
+            case ColorOptions.Ruby:
+                RubyButton.Classes.Add("active");
                 break;
             case ColorOptions.Red:
                 RedButton.Classes.Add("active");
@@ -148,8 +184,8 @@ public partial class AppearanceView : UserControl
             case ColorOptions.Teal:
                 TealButton.Classes.Add("active");
                 break;
-            case ColorOptions.Aqua:
-                AquaButton.Classes.Add("active");
+            case ColorOptions.Raspberry:
+                RaspberryButton.Classes.Add("active");
                 break;
             case ColorOptions.Golden:
                 GoldButton.Classes.Add("active");
@@ -163,8 +199,8 @@ public partial class AppearanceView : UserControl
             case ColorOptions.Magenta:
                 MagentaButton.Classes.Add("active");
                 break;
-            case ColorOptions.Lime:
-                LimeButton.Classes.Add("active");
+            case ColorOptions.Emerald:
+                EmeraldButton.Classes.Add("active");
                 break;
         }
 
@@ -183,12 +219,12 @@ public partial class AppearanceView : UserControl
         {
             nameof(BlueButton) => ColorOptions.Blue,
             nameof(CyanButton) => ColorOptions.Cyan,
-            nameof(GreenButton) => ColorOptions.Green,
+            nameof(RubyButton) => ColorOptions.Ruby,
             nameof(MagentaButton) => ColorOptions.Magenta,
             nameof(RedButton) => ColorOptions.Red,
-            nameof(AquaButton) => ColorOptions.Aqua,
+            nameof(RaspberryButton) => ColorOptions.Raspberry,
             nameof(TealButton) => ColorOptions.Teal,
-            nameof(LimeButton) => ColorOptions.Lime,
+            nameof(EmeraldButton) => ColorOptions.Emerald,
             nameof(GoldButton) => ColorOptions.Golden,
             nameof(OrangeButton) => ColorOptions.Orange,
             nameof(PinkButton) => ColorOptions.Pink,

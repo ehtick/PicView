@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
+using PicView.Core.ColorHandling;
 
 namespace PicView.Avalonia.ColorManagement;
 
@@ -8,94 +9,92 @@ namespace PicView.Avalonia.ColorManagement;
 /// </summary>
 public static class ColorManager
 {
-    // Define color theme constants for better readability
-    private const int Blue = 0;
-    private const int Pink = 2;
-    private const int Orange = 3;
-    private const int Green = 4;
-    private const int Red = 5;
-    private const int Teal = 6;
-    private const int Aqua = 7;
-    private const int Golden = 8;
-    private const int Purple = 9;
-    private const int Cyan = 10;
-    private const int Magenta = 11;
-    private const int Lime = 12;
-    
     // Color definitions for each theme
     private static readonly Dictionary<int, ThemeColors> ThemeColorMap = new()
     {
-        [Blue] = new ThemeColors(
+        [(int)ColorOptions.Blue] = new ThemeColors(
             logoLight: Color.FromRgb(225, 210, 80),
             logoDark: Color.FromRgb(255, 240, 90),
             primary: Color.FromRgb(26, 140, 240),
-            secondary: Color.FromArgb(242, 66, 163, 249)
+            secondary: Color.FromArgb(242, 66, 163, 249),
+            buttonColor: Color.FromRgb(26, 140, 240)
         ),
-        [Pink] = new ThemeColors(
+        [(int)ColorOptions.Pink] = new ThemeColors(
             logoLight: Color.FromRgb(250, 180, 38),
             logoDark: Color.FromRgb(255, 237, 38),
             primary: Color.FromRgb(255, 53, 197),
-            secondary: Color.FromArgb(230, 255, 98, 210)
+            secondary: Color.FromArgb(230, 255, 98, 210),
+            buttonColor: Color.FromRgb(255, 53, 197)
         ),
-        [Orange] = new ThemeColors(
+        [(int)ColorOptions.Orange] = new ThemeColors(
             logoLight: Color.FromRgb(248, 175, 60),
             logoDark: Color.FromRgb(248, 175, 60),
             primary: Color.FromRgb(219, 91, 61),
-            secondary: Color.FromArgb(242, 245, 121, 57)
+            secondary: Color.FromArgb(242, 245, 121, 57),
+            buttonColor: Color.FromRgb(219, 91, 61)
         ),
-        [Green] = new ThemeColors(
+        [(int)ColorOptions.Ruby] = new ThemeColors(
             logoLight: Color.FromRgb(175, 157, 38),
             logoDark: Color.FromRgb(209, 237, 93),
-            primary: Color.FromRgb(34, 203, 151),
-            secondary: Color.FromArgb(242, 80, 248, 196)
+            primary: Color.FromRgb(255, 32, 110), 
+            secondary: Color.FromArgb(242, 255, 80, 140), 
+            buttonColor: Color.FromRgb(255, 32, 110)
         ),
-        [Red] = new ThemeColors(
+        [(int)ColorOptions.Red] = new ThemeColors(
             logoLight: Color.FromRgb(250, 192, 92),
             logoDark: Color.FromRgb(250, 192, 92),
             primary: Color.FromRgb(249, 17, 16),
-            secondary: Color.FromArgb(242, 249, 61, 60)
+            secondary: Color.FromArgb(242, 249, 61, 60),
+            buttonColor: Color.FromRgb(249, 17, 16)
         ),
-        [Teal] = new ThemeColors(
+        [(int)ColorOptions.Teal] = new ThemeColors(
             logoLight: Color.FromRgb(254, 172, 150),
             logoDark: Color.FromRgb(254, 172, 150),
             primary: Color.FromRgb(68, 161, 160),
-            secondary: Color.FromArgb(242, 31, 174, 152)
+            secondary: Color.FromArgb(242, 77, 195, 194),
+            buttonColor: Color.FromRgb(68, 161, 160)
         ),
-        [Aqua] = new ThemeColors(
+        [(int)ColorOptions.Raspberry] = new ThemeColors(
             logoLight: Color.FromRgb(228, 209, 17),
             logoDark: Color.FromRgb(228, 209, 17),
-            primary: Color.FromRgb(54, 230, 204),
-            secondary: Color.FromArgb(242, 121, 253, 233)
+            primary: Color.FromRgb(181, 69, 126),
+            secondary: Color.FromArgb(242, 201, 100, 156),
+            buttonColor: Color.FromRgb(181, 69, 126)
         ),
-        [Golden] = new ThemeColors(
+        [(int)ColorOptions.Golden] = new ThemeColors(
             logoLight: Color.FromRgb(226, 180, 224),
             logoDark: Color.FromRgb(255, 253, 42),
             primary: Color.FromRgb(254, 169, 85),
-            secondary: Color.FromArgb(242, 249, 187, 125)
+            secondary: Color.FromArgb(242, 249, 187, 125),
+            buttonColor: Color.FromRgb(254, 169, 85)
         ),
-        [Purple] = new ThemeColors(
+        [(int)ColorOptions.Purple] = new ThemeColors(
             logoLight: Color.FromRgb(226, 141, 223),
             logoDark: Color.FromRgb(237, 184, 135),
             primary: Color.FromRgb(151, 56, 235),
-            secondary: Color.FromArgb(242, 194, 95, 255)
+            secondary: Color.FromArgb(242, 194, 95, 255),
+            buttonColor: Color.FromRgb(151, 56, 235)
         ),
-        [Cyan] = new ThemeColors(
+        [(int)ColorOptions.Cyan] = new ThemeColors(
             logoLight: Color.FromRgb(215, 200, 70),
             logoDark: Color.FromRgb(255, 253, 66),
             primary: Color.FromRgb(27, 161, 226),
-            secondary: Color.FromArgb(242, 89, 186, 233)
+            secondary: Color.FromArgb(242, 89, 186, 233),
+            buttonColor: Color.FromRgb(27, 161, 226)
         ),
-        [Magenta] = new ThemeColors(
+        [(int)ColorOptions.Magenta] = new ThemeColors(
             logoLight: Color.FromRgb(226, 141, 223),
             logoDark: Color.FromRgb(255, 237, 38),
             primary: Color.FromRgb(230, 139, 238),
-            secondary: Color.FromArgb(242, 255, 108, 212)
+            secondary: Color.FromArgb(242, 255, 108, 212),
+            buttonColor: Color.FromRgb(230, 139, 238)
         ),
-        [Lime] = new ThemeColors(
+        [(int)ColorOptions.Emerald] = new ThemeColors(
             logoLight: Color.FromRgb(255, 253, 42),
             logoDark: Color.FromRgb(255, 253, 42),
-            primary: Color.FromRgb(32, 231, 107),
-            secondary: Color.FromArgb(242, 97, 240, 151)
+            primary: Color.FromRgb(0, 114, 0), // Changed from (32, 231, 107) to #007200
+            secondary: Color.FromArgb(242, 50, 164, 50), // Updated secondary color to match new primary
+            buttonColor: Color.FromRgb(0, 114, 0) // Button color matches primary
         )
     };
 
@@ -114,6 +113,12 @@ public static class ColorManager
     /// Gets the primary accent color based on the current color theme.
     /// </summary>
     public static Color PrimaryAccentColor => GetThemeColors().Primary;
+    
+    /// <summary>
+    /// Gets the button color for a specific theme
+    /// </summary>
+    public static Color GetButtonColor(int themeIndex) =>
+        ThemeColorMap.TryGetValue(themeIndex, out var colors) ? colors.ButtonColor : ThemeColorMap[0].ButtonColor;
 
     /// <summary>
     /// Gets the color set for the current theme
@@ -173,12 +178,13 @@ public static class ColorManager
     /// <summary>
     /// Represents a set of colors for a theme
     /// </summary>
-    private readonly struct ThemeColors(Color logoLight, Color logoDark, Color primary, Color secondary)
+    private readonly struct ThemeColors(Color logoLight, Color logoDark, Color primary, Color secondary, Color buttonColor)
     {
         private Color LogoLight { get; } = logoLight;
         private Color LogoDark { get; } = logoDark;
         public Color Primary { get; } = primary;
         public Color Secondary { get; } = secondary;
+        public Color ButtonColor { get; } = buttonColor;
 
         /// <summary>
         /// Gets the appropriate logo color based on dark mode setting

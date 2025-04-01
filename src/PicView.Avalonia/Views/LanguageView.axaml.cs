@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Avalonia.Controls;
 using PicView.Avalonia.SettingsManagement;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
 
@@ -11,6 +12,14 @@ public partial class LanguageView : UserControl
     public LanguageView()
     {
         InitializeComponent();
+        
+        LanguageBox.MaxDropDownHeight = ScreenHelper.ScreenSize.WorkingAreaHeight switch
+        {
+            > 500 and <= 650 => 290,
+            >= 650 and <= 700 => 320,
+            >= 700 => 360,
+            _ => 240
+        };
 
         Loaded += (_, _) =>
         {

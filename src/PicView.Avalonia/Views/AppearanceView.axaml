@@ -96,30 +96,18 @@
                 Classes="colorBtn"
                 Click="ColorButton_OnClick"
                 x:Name="CyanButton" />
-            <!--  Aqua  -->
+            <!--  TealButton  -->
             <Button
                 Background="#36E6CC"
                 Classes="colorBtn"
                 Click="ColorButton_OnClick"
-                x:Name="AquaButton" />
-            <!--  Teal  -->
-            <Button
-                Background="#44A1A0"
-                Classes="colorBtn"
-                Click="ColorButton_OnClick"
                 x:Name="TealButton" />
-            <!--  Lime  -->
+            <!--  Emerald  -->
             <Button
-                Background="#20E76B"
+                Background="#007200"
                 Classes="colorBtn"
                 Click="ColorButton_OnClick"
-                x:Name="LimeButton" />
-            <!--  Green  -->
-            <Button
-                Background="#22CB97"
-                Classes="colorBtn"
-                Click="ColorButton_OnClick"
-                x:Name="GreenButton" />
+                x:Name="EmeraldButton" />
             <!--  Gold  -->
             <Button
                 Background="#FEA955"
@@ -138,12 +126,24 @@
                 Classes="colorBtn"
                 Click="ColorButton_OnClick"
                 x:Name="RedButton" />
+            <!--  Ruby  -->
+            <Button
+                Background="#FF206E"
+                Classes="colorBtn"
+                Click="ColorButton_OnClick"
+                x:Name="RubyButton" />
             <!--  Pink  -->
             <Button
                 Background="#FF35C5"
                 Classes="colorBtn"
                 Click="ColorButton_OnClick"
                 x:Name="PinkButton" />
+            <!--  Raspberry  -->
+            <Button
+                Background="#b5457e"
+                Classes="colorBtn"
+                Click="ColorButton_OnClick"
+                x:Name="RaspberryButton" />
             <!--  Magenta  -->
             <Button
                 Background="#E68BEE"
@@ -265,7 +265,6 @@
 
         </WrapPanel>
 
-
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -274,8 +273,6 @@
             Margin="0,20,0,10"
             Text="{CompiledBinding Translation.InterfaceConfiguration,
                                    Mode=OneWay}" />
-
-
         <Button
             Background="Transparent"
             BorderThickness="0"

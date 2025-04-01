@@ -1,8 +1,8 @@
 <ResourceDictionary
+    x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:ClassModifier="internal">
-    <ControlTheme x:Key="{x:Type ComboBoxItem}" TargetType="ComboBoxItem">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="ComboBoxItem" x:Key="{x:Type ComboBoxItem}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Padding" Value="4" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -10,20 +10,20 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter
-                    Name="PART_ContentPresenter"
-                    Padding="{TemplateBinding Padding}"
-                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
                     Content="{TemplateBinding Content}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
-                    CornerRadius="{TemplateBinding CornerRadius}" />
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                    Name="PART_ContentPresenter"
+                    Padding="{TemplateBinding Padding}"
+                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
             </ControlTemplate>
         </Setter>
         <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
         </Style>
         <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource AccentColor}" />
