@@ -391,23 +391,7 @@ public class FileAssociationsViewModel : ReactiveObject
     /// <remarks>
     /// This method sets <see cref="IsProcessing"/> to true during execution, which disables UI interaction.
     /// </remarks>
-    private async Task<bool> ApplyFileAssociations()
-    {
-        try
-        {
-            IsProcessing = true;
-            
-            // Ensure all UI changes are synced to the ViewModel
-            UpdateSelection();
-            
-            // Now process the associations
-            return await FileAssociationProcessor.SetFileAssociations(FileTypeGroups);
-        }
-        finally
-        {
-            IsProcessing = false;
-        }
-    }
+    private async Task<bool> ApplyFileAssociations() => await SetFileAssociations(false);
     
     /// <summary>
     /// Unassociates all file types from the application by setting all selection states to false
@@ -417,13 +401,27 @@ public class FileAssociationsViewModel : ReactiveObject
     /// <remarks>
     /// This method sets <see cref="IsProcessing"/> to true during execution, which disables UI interaction.
     /// </remarks>
-    private async Task UnassociateFileAssociations()
+    private async Task UnassociateFileAssociations() => await SetFileAssociations(true);
+    
+    private async Task<bool> SetFileAssociations(bool unassociate)
     {
         try
         {
             IsProcessing = true;
-            UnselectFileTypes();
-            await FileAssociationProcessor.SetFileAssociations(FileTypeGroups);
+
+            return await Task.Run(async () =>
+            {
+                if (unassociate)
+                {
+                    UnselectFileTypes();
+                }
+                else
+                {
+                    UpdateSelection();
+                }
+                
+                return await FileAssociationProcessor.SetFileAssociations(FileTypeGroups);
+            });
         }
         finally
         {
