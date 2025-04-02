@@ -2,7 +2,7 @@
 <img src="https://d33wubrfki0l68.cloudfront.net/327934f4ff80060e07c17935683ecad27cda8080/ee2bc/assets/images/photoshop_1.png" alt="PicView Logo" height="90">
 </h1>
 
-PicView is a fast, free and fully customizable picture viewer for Windows 10 and 11. It supports all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `JXL`, `HEIC`, `PSD` and many others. 
+PicView is a fast, free and fully customizable picture viewer for Windows 10 and 11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
 
 Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 
@@ -19,7 +19,7 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.4/PicView-v3.0.4-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.0.4/PicView-v3.0.4-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.0/PicView-v3.1.0-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.0/PicView-v3.1.0-win-arm64.exe)
 
 [Latest releases at PicView.org](https://picview.org/download)
 
