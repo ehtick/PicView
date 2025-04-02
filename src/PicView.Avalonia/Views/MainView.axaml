@@ -1158,6 +1158,7 @@
             Margin="{CompiledBinding GalleryMargin}" />
         <buttons:ClickArrowRight
             HorizontalAlignment="Right"
+            Margin="{CompiledBinding RightControlOffSetMargin}"
             Opacity="0"
             VerticalAlignment="Center"
             x:Name="ClickArrowRight" />
@@ -1171,6 +1172,7 @@
             Height="150"
             HorizontalAlignment="Right"
             IsVisible="{CompiledBinding !IsUIShown}"
+            Margin="{CompiledBinding RightControlOffSetMargin}"
             Opacity="0"
             Orientation="Horizontal"
             VerticalAlignment="Top"

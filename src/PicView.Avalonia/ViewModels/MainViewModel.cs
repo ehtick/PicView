@@ -885,6 +885,12 @@ public class MainViewModel : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+    
+    public Thickness RightControlOffSetMargin
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public Thickness TopScreenMargin
     {

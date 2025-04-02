@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -9,7 +8,6 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC.Buttons;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
@@ -271,17 +269,7 @@ public static class SettingsUpdater
         vm.Translation.IsScrolling = TranslationManager.Translation.ScrollingDisabled;
         vm.IsScrollingEnabled = false;
         Settings.Zoom.ScrollEnabled = false;
-        try
-        {
-            var clickArrowRight = UIHelper.GetMainView.MainGrid.FindControl<ClickArrowRight>("ClickArrowRight");
-            clickArrowRight.Margin = new Thickness(0);
-        }
-        catch (Exception e)
-        {
-#if DEBUG
-            Console.WriteLine($"{nameof(TurnOnScroll)} {e.Message}");
-#endif
-        }
+        vm.RightControlOffSetMargin = new Thickness(0);
     }
     
     public static void TurnOnScroll(MainViewModel vm)
@@ -290,17 +278,7 @@ public static class SettingsUpdater
         vm.Translation.IsScrolling = TranslationManager.Translation.ScrollingEnabled;
         vm.IsScrollingEnabled = true;
         Settings.Zoom.ScrollEnabled = true;
-        try
-        {
-            var clickArrowRight = UIHelper.GetMainView.MainGrid.FindControl<ClickArrowRight>("ClickArrowRight");
-            clickArrowRight.Margin = new Thickness(0,0,30,0);
-        }
-        catch (Exception e)
-        {
-#if DEBUG
-            Console.WriteLine($"{nameof(TurnOnScroll)} {e.Message}");
-#endif
-        }
+        vm.RightControlOffSetMargin = new Thickness(0,0,30,0);
     }
     
     public static async Task ToggleCtrlZoom(MainViewModel vm)
