@@ -80,7 +80,7 @@ public static class TooltipHelper
     /// </summary>
     /// <param name="message">The message to display in the tooltip.</param>
     /// <param name="center">Determines whether the tooltip should be centered or aligned at the bottom.</param>
-    internal static async Task ShowTooltipMessageAsync(object message, bool center = false)
+    public static async Task ShowTooltipMessageAsync(object message, bool center = false)
     {
         await ShowTooltipMessageAsync(message, center, TimeSpan.FromSeconds(2));
     }

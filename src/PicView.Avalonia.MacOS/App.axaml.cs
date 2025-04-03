@@ -11,6 +11,7 @@ using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
@@ -18,6 +19,7 @@ using PicView.Core.Localization;
 using PicView.Core.MacOS;
 using PicView.Core.MacOS.FileAssociation;
 using PicView.Core.MacOS.Wallpaper;
+using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.MacOS;
@@ -68,6 +70,7 @@ public class App : Application, IPlatformSpecificService
         
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
+                
                 _mainWindow.DataContext = _vm;
                 StartUpHelper.Start(_vm, settingsExists, desktop, _mainWindow);
             },DispatcherPriority.Send);
@@ -78,49 +81,10 @@ public class App : Application, IPlatformSpecificService
         }
     }
 
-    public void SetTaskbarProgress(ulong progress, ulong maximum)
-    {
-        // TODO: Implement SetTaskbarProgress
-        // https://github.com/carina-studio/AppSuiteBase/blob/master/Core/AppSuiteApplication.MacOS.cs#L365
-    }
+    #region Interface implementations
 
-    public void StopTaskbarProgress()
-    {
-        
-    }
-
-    public void SetCursorPos(int x, int y)
-    {
-        // TODO: Implement SetCursorPos
-    }
-
-    public List<string> GetFiles(FileInfo fileInfo)
-    {
-        var files = FileListHelper.RetrieveFiles(fileInfo);
-        return FileListManager.SortIEnumerable(files, this);
-    }
-
-    public int CompareStrings(string str1, string str2)
-    {
-        return string.CompareOrdinal(str1, str2);
-    }
-
-    public void OpenWith(string path)
-    {
-        // TODO: Implement OpenWith on macOS
-    }
-
-    public void LocateOnDisk(string path)
-    {
-        Process.Start("open", $"-R \"{path}\"");
-    }
+    #region Windows
     
-    public void ShowFileProperties(string path)
-    {
-        // TODO implement show file properties on macOS
-    }
-
-
     public void ShowAboutWindow()
     {
         if (Dispatcher.UIThread.CheckAccess())
@@ -427,9 +391,61 @@ public class App : Application, IPlatformSpecificService
         }   
     }
 
+    #endregion
+    public void SetTaskbarProgress(ulong progress, ulong maximum)
+    {
+        // TODO: Implement SetTaskbarProgress
+        // https://github.com/carina-studio/AppSuiteBase/blob/master/Core/AppSuiteApplication.MacOS.cs#L365
+    }
+
+    public void StopTaskbarProgress()
+    {
+        
+    }
+
+    public void SetCursorPos(int x, int y)
+    {
+        // TODO: Implement SetCursorPos
+    }
+
+    public List<string> GetFiles(FileInfo fileInfo)
+    {
+        var files = FileListHelper.RetrieveFiles(fileInfo);
+        return FileListManager.SortIEnumerable(files, this);
+    }
+
+    public int CompareStrings(string str1, string str2)
+    {
+        return string.CompareOrdinal(str1, str2);
+    }
+
+    public void OpenWith(string path)
+    {
+        // TODO: Implement OpenWith on macOS
+        ProcessHelper.OpenLink(path);
+    }
+
+    public void LocateOnDisk(string path)
+    {
+        Process.Start("open", $"-R \"{path}\"");
+    }
+    
+    public void ShowFileProperties(string path)
+    {
+        // TODO implement show file properties on macOS
+    }
+
     public void Print(string path)
     {
-        // TODO: Implement Print
+        try
+        {
+            Process.Start("lpr", $"\"{path}\"");
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e);
+           _ = TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+        }
     }
 
     public void SetAsWallpaper(string path, int wallpaperStyle)
@@ -439,19 +455,19 @@ public class App : Application, IPlatformSpecificService
 
     public bool SetAsLockScreen(string path)
     {
-        // TODO: Implement SetAsLockScreen
+        // wallpaper and lockscreen are the same in macOS
         return false;
     }
     
     public bool CopyFile(string path)
     {
-        // TODO: Implement CopyFile
+        // TODO: Implement copying file to clipboard
         return false;
     }
     
     public bool CutFile(string path)
     {
-        // TODO: Implement CutFile
+        // TODO: Implement cutting file to clipboard
         return false;
     }
 
@@ -491,4 +507,6 @@ public class App : Application, IPlatformSpecificService
         var iIFileAssociationService = new MacFileAssociationService();
         FileAssociationManager.Initialize(iIFileAssociationService);
     }
+    
+    #endregion
 }

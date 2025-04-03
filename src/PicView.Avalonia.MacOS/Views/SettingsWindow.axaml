@@ -11,6 +11,7 @@
     x:Class="PicView.Avalonia.MacOS.Views.SettingsWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons;assembly=PicView.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
@@ -25,15 +26,21 @@
         CornerRadius="8"
         PointerPressed="MoveWindow">
         <StackPanel>
-            <TextBlock
-                Background="{DynamicResource WindowBackgroundColor}"
-                Classes="txt"
-                Height="28"
-                LineHeight="28"
-                Text="{CompiledBinding Translation.Settings,
-                                       Mode=OneWay}"
-                TextAlignment="Center"
-                x:Name="TitleText" />
+            <Panel>
+                <buttons:SettingsMenuButton
+                    HorizontalAlignment="Right"
+                    ZIndex="1"
+                    x:Name="SettingsButton" />
+                <TextBlock
+                    Background="{DynamicResource WindowBackgroundColor}"
+                    Classes="txt"
+                    Height="28"
+                    LineHeight="28"
+                    Text="{CompiledBinding Translation.Settings,
+                                           Mode=OneWay}"
+                    TextAlignment="Center"
+                    x:Name="TitleText" />
+            </Panel>
 
             <views:SettingsView Background="{DynamicResource WindowBackgroundColor}" x:Name="XSettingsView" />
         </StackPanel>

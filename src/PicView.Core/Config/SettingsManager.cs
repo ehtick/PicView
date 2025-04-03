@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -29,6 +30,10 @@ public static class SettingsManager
     {
         try
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return await LoadFromPathAsync(GetRoamingSettingsPath()).ConfigureAwait(false);
+            }
             var path = GetUserSettingsPath();
             if (!string.IsNullOrEmpty(path))
             {
@@ -58,8 +63,7 @@ public static class SettingsManager
             return roamingPath;
         }
 
-        var localPath = GetLocalSettingsPath();
-        return File.Exists(localPath) ? localPath : string.Empty;
+        return GetLocalSettingsPath();
     }
 
     /// <summary>
@@ -193,6 +197,11 @@ public static class SettingsManager
 
         try
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                await SaveSettingsToPathAsync(GetRoamingSettingsPath()).ConfigureAwait(false);
+                return true;
+            }
             await SaveSettingsToPathAsync(CurrentSettingsPath).ConfigureAwait(false);
             return true;
         }
