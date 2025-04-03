@@ -10,7 +10,6 @@
     </NativeMenu.Menu>
 
     <Application.Styles>
-        <SimpleTheme />
-        <StyleInclude Source="avares://PicView.Avalonia/PicViewTheme/Index.axaml" />
+        <StyleInclude Source="avares://PicView.Avalonia/PicViewTheme/AllControls.axaml" />
     </Application.Styles>
 </Application>

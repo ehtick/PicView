@@ -46,10 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia.Themes.Simple" Version="11.2.6" />
-  </ItemGroup>
-
-  <ItemGroup>
     <AvaloniaXaml Update="Views\ExifWindow.axaml">
       <SubType>Designer</SubType>
     </AvaloniaXaml>

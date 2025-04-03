@@ -68,6 +68,9 @@
                 Color="#E6000000"
                 Direction="360"
                 x:Key="TextShadow" />
+
+            <Color x:Key="ErrorColor">#FFFF0000</Color>
+            <SolidColorBrush Color="{StaticResource ErrorColor}" x:Key="ErrorBrush" />
         </ResourceDictionary>
 
 

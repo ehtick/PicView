@@ -67,6 +67,7 @@
                     <AutoCompleteBox
                         Background="Transparent"
                         BorderBrush="Transparent"
+                        BorderThickness="1"
                         FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
                         Foreground="{DynamicResource MainTextColor}"
                         HorizontalAlignment="Left"

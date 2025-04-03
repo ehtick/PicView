@@ -155,10 +155,10 @@
                         <AutoCompleteBox
                             Background="{DynamicResource AltBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
+                            BorderThickness="1"
                             FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
                             Foreground="{DynamicResource MainTextColor}"
                             Height="26"
-                            IsEnabled="True"
                             IsTabStop="False"
                             Margin="5,0,0,0"
                             Padding="5,4,0,2"

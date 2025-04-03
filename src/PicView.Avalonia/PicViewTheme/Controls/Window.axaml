@@ -1,12 +1,13 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.PreviewWith>
-        <Window />
-    </Design.PreviewWith>
     <ControlTheme TargetType="Window" x:Key="{x:Type Window}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="TransparencyBackgroundFallback" Value="{StaticResource MenuBackgroundColor}" />
         <Setter Property="Foreground" Value="{StaticResource MainTextColor}" />
         <Setter Property="BorderBrush" Value="{StaticResource MainBorderColor}" />
+        <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
+        <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="32" />
+        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+        <Setter Property="TransparencyLevelHint" Value="AcrylicBlur" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>

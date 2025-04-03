@@ -8,6 +8,7 @@
                 <ResourceInclude Source="Icons.axaml" />
 
                 <ResourceInclude Source="Controls/AnimatedPopUp.axaml" />
+                <ResourceInclude Source="Controls/AutoCompleteBox.axaml" />
                 <ResourceInclude Source="Controls/AutoScrollViewer.axaml" />
                 <ResourceInclude Source="Controls/Border.axaml" />
                 <ResourceInclude Source="Controls/Button.axaml" />
@@ -17,6 +18,7 @@
                 <ResourceInclude Source="Controls/ComboBoxItem.axaml" />
                 <ResourceInclude Source="Controls/Expander.axaml" />
                 <ResourceInclude Source="Controls/FlyoutPresenter.axaml" />
+                <ResourceInclude Source="Controls/HyperlinkButton.axaml" />
                 <ResourceInclude Source="Controls/ListBox.axaml" />
                 <ResourceInclude Source="Controls/ListBoxItem.axaml" />
                 <ResourceInclude Source="Controls/MainScrollbar.axaml" />
@@ -25,11 +27,13 @@
                 <ResourceInclude Source="Controls/MenuFlyoutPresenter.axaml" />
                 <ResourceInclude Source="Controls/NumericUpDown.axaml" />
                 <ResourceInclude Source="Controls/PathIcon.axaml" />
+                <ResourceInclude Source="Controls/PopupRoot.axaml" />
                 <ResourceInclude Source="Controls/ProgressBar.axaml" />
                 <ResourceInclude Source="Controls/RadioButton.axaml" />
                 <ResourceInclude Source="Controls/Scrollbar.axaml" />
                 <ResourceInclude Source="Controls/Slider.axaml" />
                 <ResourceInclude Source="Controls/SplitButton.axaml" />
+                <ResourceInclude Source="Controls/TabControl.axaml" />
                 <ResourceInclude Source="Controls/TabItem.axaml" />
                 <ResourceInclude Source="Controls/TextBlock.axaml" />
                 <ResourceInclude Source="Controls/TextBox.axaml" />
@@ -39,13 +43,6 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Styles.Resources>
-    <Style Selector="Window">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="ExtendClientAreaChromeHints" Value="NoChrome" />
-        <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="32" />
-        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
-        <Setter Property="TransparencyLevelHint" Value="AcrylicBlur" />
-    </Style>
 
     <StyleInclude Source="Classes.axaml" />
 

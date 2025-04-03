@@ -232,7 +232,7 @@
 
             <HyperlinkButton
                 HorizontalAlignment="Center"
-                Margin="0,1,0,1"
+                Margin="0,1,0,5"
                 NavigateUri="https://github.com/AvaloniaUI/Avalonia"
                 ToolTip.Tip="https://github.com/AvaloniaUI/Avalonia">
                 <TextBlock
@@ -243,7 +243,7 @@
 
             <HyperlinkButton
                 HorizontalAlignment="Center"
-                Margin="0,1,0,1"
+                Margin="0,1,0,5"
                 NavigateUri="https://github.com/dlemstra/Magick.NET"
                 ToolTip.Tip="https://github.com/dlemstra/Magick.NET">
                 <TextBlock
@@ -254,7 +254,7 @@
 
             <HyperlinkButton
                 HorizontalAlignment="Center"
-                Margin="0,1,0,1"
+                Margin="0,1,0,5"
                 NavigateUri="http://Ionicons.com/"
                 ToolTip.Tip="http://Ionicons.com/">
                 <TextBlock
@@ -265,7 +265,7 @@
 
             <HyperlinkButton
                 HorizontalAlignment="Center"
-                Margin="0,1,0,1"
+                Margin="0,1,0,5"
                 NavigateUri="https://fontawesome.com/"
                 ToolTip.Tip="https://fontawesome.com/">
                 <TextBlock
@@ -276,7 +276,7 @@
 
             <HyperlinkButton
                 HorizontalAlignment="Center"
-                Margin="0,1,0,1"
+                Margin="0,1,0,5"
                 NavigateUri="https://lucide.dev/"
                 ToolTip.Tip="https://lucide.dev/">
                 <TextBlock
