@@ -29,6 +29,16 @@ public class FuncTextBox : TextBox
                 LoadContextMenu();
             }
         };
+
+        ContextMenu.Opened += (_, _) =>
+        {
+            Classes.Add("active");
+        };
+
+        ContextMenu.Closed += (_, _) =>
+        {
+            Classes.Remove("active");
+        };
     }
 
     protected override Type StyleKeyOverride => typeof(TextBox);
