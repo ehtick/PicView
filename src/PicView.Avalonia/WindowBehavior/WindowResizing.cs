@@ -66,6 +66,9 @@ public static class WindowResizing
             Dispatcher.UIThread.InvokeAsync(() => SetSize(size.Value, vm));
         }
     }
+    
+    public static void SetSize(double width, double height, MainViewModel vm) 
+        => SetSize(width, height, 0, 0, 0, vm);
 
     public static void SetSize(double width, double height, double secondWidth, double secondHeight, double rotation,
         MainViewModel vm)

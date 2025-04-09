@@ -42,38 +42,4 @@ public static class ImageDecoder
         var base64String = await File.ReadAllTextAsync(fileInfo.FullName).ConfigureAwait(false);
         return Base64ToMagickImage(base64String);
     }
-
-    public static async Task<MagickImage> LoadImageAtResolutionAsync(
-        FileInfo fileInfo,
-        int percentage,
-        double originalWidth,
-        double originalHeight,
-        CancellationToken cancellationToken)
-    {
-        return await Task.Run(() =>
-        {
-            var magickImage = new MagickImage();
-
-            // Fast metadata read for optimization targets
-            if (percentage < 100)
-            {
-                var settings = new MagickReadSettings
-                {
-                    Width = (uint?)(originalWidth * percentage / 100),
-                    Height = (uint?)(originalHeight * percentage / 100)
-                };
-                magickImage.Read(fileInfo, settings);
-            }
-            else
-            {
-                // For 100%, read the full image
-                magickImage.Read(fileInfo);
-            }
-
-            // Check cancellation before expensive operations
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return magickImage;
-        }, cancellationToken);
-    }
 }

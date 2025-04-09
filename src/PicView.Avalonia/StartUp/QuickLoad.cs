@@ -49,10 +49,8 @@ public static class QuickLoad
         ImageModel? imageModel = null;
         await Task.WhenAll(
             Task.Run(() => { NavigationManager.InitializeImageIterator(vm); }, cancellationTokenSource.Token),
-            Task.Run(async () => imageModel = await GetImageModel.GetImageModelAsync(fileInfo), cancellationTokenSource.Token));
-        vm.IsLoading = false;
-        await RenderingFixes(vm, imageModel, null);
-        SetPicViewerValues(vm, imageModel, fileInfo);
+            Task.Run(async () => imageModel = await SetSingleImageAsync(vm, fileInfo), cancellationTokenSource.Token))
+            .ConfigureAwait(false);
         if (TiffManager.IsTiff(imageModel.FileInfo.FullName))
         {
             TitleManager.TrySetTiffTitle(imageModel, vm);
@@ -63,6 +61,19 @@ public static class QuickLoad
         }
         await StartPreloaderAndGalleryAsync(vm, imageModel, fileInfo);
         cancellationTokenSource.Dispose();
+    }
+
+    private static async Task<ImageModel> SetSingleImageAsync(MainViewModel vm, FileInfo fileInfo)
+    {
+        var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
+        SetPicViewerValues(vm, imageModel, fileInfo);
+        vm.IsLoading = false;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, vm);
+        }, DispatcherPriority.Send);
+        await RenderingFixes(vm, imageModel, null);
+        return imageModel;
     }
 
     private static async Task SideBySideLoadingAsync(MainViewModel vm, FileInfo fileInfo)
