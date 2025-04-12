@@ -11,6 +11,7 @@
         <Setter Property="MinHeight" Value="20" />
         <Setter Property="PlaceholderForeground" Value="{StaticResource MainTextColorFaded}" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
         <Setter Property="Template">
             <ControlTemplate>
                 <DockPanel LastChildFill="true">
@@ -100,6 +101,7 @@
                 </DockPanel>
             </ControlTemplate>
         </Setter>
+
         <Style Selector="^:pointerover /template/ Border#LeftBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
@@ -125,6 +127,16 @@
             <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
         </Style>
 
+        <Style Selector="^:focus /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+        <Style Selector="^:focus:not(:selected) /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+        <Style Selector="^:selected:focus /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        </Style>
+
         <Style Selector="^:dropdownopen /template/ Border#LeftBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
@@ -138,6 +150,5 @@
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
             <Setter Property="Opacity" Value=".4" />
         </Style>
-
     </ControlTheme>
 </ResourceDictionary>

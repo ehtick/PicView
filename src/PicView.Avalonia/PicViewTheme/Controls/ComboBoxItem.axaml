@@ -37,5 +37,10 @@
         <Style Selector="^:selected:focus:pointerover /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Background" Value="{DynamicResource AccentColor}" />
         </Style>
+
+        <Style Selector="^:focus-within /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
