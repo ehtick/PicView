@@ -18,7 +18,7 @@ namespace PicView.Avalonia.Views;
 
 public partial class MainView : UserControl
 {
-    private FileHistoryMenuController? _historyMenuController;
+    public FileHistoryMenuController? FileHistoryMenuController;
     
     public MainView()
     {
@@ -60,7 +60,7 @@ public partial class MainView : UserControl
                 return;
             }
             // Initialize the history menu controller
-            _historyMenuController = new FileHistoryMenuController(RecentFilesCM, HistorySortButton, HistoryClearButton, vm);
+            FileHistoryMenuController = new FileHistoryMenuController(RecentFilesCM, HistorySortButton, HistoryClearButton, vm);
 
             HideInterfaceLogic.AddHoverButtonEvents(AltButtonsPanel, vm);
             PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
@@ -127,7 +127,7 @@ public partial class MainView : UserControl
         }, DispatcherPriority.Render);
         
         // Update file history menu items in Dispatcher with low priority to avoid slowdown
-        await Dispatcher.UIThread.InvokeAsync(() => _historyMenuController?.UpdateFileHistoryMenu(), DispatcherPriority.Background);
+        await Dispatcher.UIThread.InvokeAsync(() => FileHistoryMenuController?.UpdateFileHistoryMenu(), DispatcherPriority.Background);
     }
 
     private async Task Drop(object? sender, DragEventArgs e)
