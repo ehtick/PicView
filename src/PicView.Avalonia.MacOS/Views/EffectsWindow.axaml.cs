@@ -18,7 +18,7 @@ public partial class EffectsWindow : Window
         }
         Loaded += delegate
         {
-            MinWidth = MaxWidth = Width;
+            MinWidth = MaxWidth = Bounds.Width;
             Title = $"{TranslationManager.Translation.Effects} - PicView";
             
             ClientSizeProperty.Changed.Subscribe(size =>

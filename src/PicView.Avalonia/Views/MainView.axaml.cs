@@ -77,7 +77,6 @@ public partial class MainView : UserControl
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                MaximizeMenuItem.IsVisible = false;
                 WallpaperMenuItem.IsVisible = false;
             }
             else

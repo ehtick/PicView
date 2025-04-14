@@ -17,7 +17,7 @@ public partial class AboutWindow : Window
         }
         Loaded += delegate
         {
-            MinWidth = MaxWidth = Width;
+            MinWidth = MaxWidth = Bounds.Width;
             Title = $"{TranslationManager.Translation.About} - PicView";
         };
         KeyDown += (_, e) =>

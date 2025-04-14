@@ -28,7 +28,7 @@ public partial class SettingsWindow : Window
         }
         Loaded += delegate
         {
-            MinWidth = MaxWidth = Width;
+            MinWidth = MaxWidth = Bounds.Width;
             Height = 500;
             Title = TranslationManager.Translation.Settings + " - PicView";
         };

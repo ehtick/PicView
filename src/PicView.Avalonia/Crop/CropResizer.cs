@@ -100,8 +100,8 @@ public static class CropResizer
         // Update the view model
         vm.SelectionX = Convert.ToInt32(newX);
         vm.SelectionY = Convert.ToInt32(newY);
-        vm.SelectionWidth = newWidth;
-        vm.SelectionHeight = newHeight;
+        vm.SelectionWidth = Convert.ToInt32(newWidth);
+        vm.SelectionHeight = Convert.ToInt32(newHeight);
         
         // Update the rectangle position on canvas
         Canvas.SetLeft(control.MainRectangle, newX);

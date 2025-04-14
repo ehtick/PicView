@@ -18,34 +18,35 @@
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
+
     <Border
         BorderBrush="{DynamicResource WindowBorderColor}"
         BorderThickness="1"
         CornerRadius="8">
         <Panel>
 
-            <DockPanel
+            <Panel
                 Background="{DynamicResource WindowBackgroundColor}"
-                Height="28"
-                PointerPressed="MoveWindow"
+                Height="{StaticResource TopBorderHeight}"
                 VerticalAlignment="Top"
                 x:Name="WindowBorder">
 
                 <TextBlock
                     Classes="txt"
+                    Foreground="{DynamicResource MainTextColor}"
                     Text="{CompiledBinding Translation.ApplicationShortcuts}"
                     TextAlignment="Center" />
-            </DockPanel>
+            </Panel>
 
-            <customControls:AutoScrollViewer
+            <Border
                 Background="{DynamicResource WindowBackgroundColor}"
                 Focusable="True"
                 Margin="0,28,0,0"
-                Padding="5,2,5,10"
-                PointerPressed="MoveWindow"
-                x:Name="XKeybindingsView">
-                <views:KeybindingsView />
-            </customControls:AutoScrollViewer>
+                PointerPressed="MoveWindow">
+                <customControls:AutoScrollViewer Padding="5,2,5,10">
+                    <views:KeybindingsView x:Name="XKeybindingsView" />
+                </customControls:AutoScrollViewer>
+            </Border>
         </Panel>
     </Border>
 </Window>

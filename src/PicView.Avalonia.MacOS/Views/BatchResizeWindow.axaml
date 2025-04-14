@@ -24,26 +24,19 @@
         BorderThickness="1"
         CornerRadius="8">
         <StackPanel>
-
             <DockPanel
                 Background="{DynamicResource SecondaryBackgroundColor}"
                 Height="28"
                 PointerPressed="MoveWindow"
                 VerticalAlignment="Top">
-
                 <TextBlock
                     Classes="txt"
                     Text="{CompiledBinding Translation.ResizeImage,
                                            Mode=OneWay}"
                     TextAlignment="Center" />
             </DockPanel>
-
-
-            <customControls:AutoScrollViewer
-                Background="{DynamicResource WindowBackgroundColor}"
-                Margin="5,0,0,0"
-                PointerPressed="MoveWindow">
-                <views:BatchResizeView x:Name="XAboutView" />
+            <customControls:AutoScrollViewer Background="{DynamicResource WindowBackgroundColor}" PointerPressed="MoveWindow">
+                <views:BatchResizeView Padding="5,0" x:Name="XAboutView" />
             </customControls:AutoScrollViewer>
         </StackPanel>
     </Border>

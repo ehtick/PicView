@@ -1,8 +1,21 @@
-﻿namespace PicView.Core.Keybindings;
+﻿using System.Runtime.InteropServices;
+
+namespace PicView.Core.Keybindings;
 
 public static class KeybindingFunctions
 {
-    public static string? CurrentKeybindingsPath { get; private set; }
+    private static string? _currentKeybindingsPath;
+    public static string? CurrentKeybindingsPath
+    {
+        get
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return _currentKeybindingsPath.Replace("/", "\\");;
+            }
+            return _currentKeybindingsPath;
+        }
+    }
     public static async Task SaveKeyBindingsFile(string json)
     {
         try
@@ -10,7 +23,6 @@ public static class KeybindingFunctions
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/keybindings.json");
             await using var writer = new StreamWriter(path);
             await writer.WriteAsync(json).ConfigureAwait(false);
-            CurrentKeybindingsPath = path.Replace("/", "\\");;
         }
         catch (Exception)
         {
@@ -22,7 +34,6 @@ public static class KeybindingFunctions
             }
             await using var newWriter = new StreamWriter(newPath);
             await newWriter.WriteAsync(json).ConfigureAwait(false);
-            CurrentKeybindingsPath = newPath.Replace("/", "\\");;
         }
     }
 
@@ -32,7 +43,7 @@ public static class KeybindingFunctions
         if (File.Exists(path))
         {
             var text = await File.ReadAllTextAsync(path).ConfigureAwait(false);
-            CurrentKeybindingsPath = path.Replace("/", "\\");;
+            _currentKeybindingsPath = path;
             return text;
         }
 
@@ -40,7 +51,7 @@ public static class KeybindingFunctions
         if (File.Exists(newPath))
         {
             var text = await File.ReadAllTextAsync(newPath).ConfigureAwait(false);
-            CurrentKeybindingsPath = path.Replace("/", "\\");;
+            _currentKeybindingsPath = newPath;
             return text;
         }
 

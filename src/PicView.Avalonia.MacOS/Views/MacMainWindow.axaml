@@ -27,7 +27,7 @@
                     <NativeMenuItem Command="{CompiledBinding OpenFileCommand}" Header="{CompiledBinding Translation.Open, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding OpenWithCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.OpenWith,
                                                  Mode=OneWay}" />
@@ -79,7 +79,7 @@
                     <NativeMenuItem Command="{CompiledBinding RotateRightCommand}" Header="{CompiledBinding Translation.RotateRight, Mode=OneWay}" />
                     <NativeMenuItem Command="{CompiledBinding FlipCommand}" Header="{CompiledBinding Translation.Flip, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding CropCommand}" Header="{CompiledBinding Crop, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding CropCommand}" Header="{CompiledBinding Translation.Crop, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <!--  TODO Implement setting as wallpaper for macOS  -->
                     <NativeMenuItem
@@ -111,6 +111,9 @@
             <NativeMenuItem Header="{CompiledBinding Translation.Navigation}">
                 <NativeMenu>
                     <NativeMenuItem Command="{CompiledBinding SlideshowCommand}" Header="{CompiledBinding Translation.Slideshow}" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Command="{CompiledBinding FirstCommand}" Header="{CompiledBinding Translation.FirstImage}" />
+                    <NativeMenuItem Command="{CompiledBinding LastCommand}" Header="{CompiledBinding Translation.LastImage}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding Skip10Command}" Header="{CompiledBinding Translation.AdvanceBy10Images}" />
                     <NativeMenuItem Command="{CompiledBinding Skip100Command}" Header="{CompiledBinding Translation.AdvanceBy100Images}" />

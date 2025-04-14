@@ -12,7 +12,7 @@ public partial class SingleImageResizeWindow : Window
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            MinWidth = MaxWidth = Width;
+            MinWidth = MaxWidth = Bounds.Width;
             Height = 500;
             Title = TranslationManager.Translation.ResizeImage + " - PicView";
         };

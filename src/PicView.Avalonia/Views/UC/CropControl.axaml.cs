@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -16,6 +17,16 @@ public partial class CropControl : UserControl
     public CropControl()
     {
         InitializeComponent();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            TopMiddleButton.Cursor = Cursor.Parse("TopSide");
+            BottomMiddleButton.Cursor = Cursor.Parse("BottomSide");
+            LeftMiddleButton.Cursor = Cursor.Parse("LeftSide");
+            RightMiddleButton.Cursor = Cursor.Parse("RightSide");
+            
+            MainRectangle.Cursor = Cursor.Parse("DragMove");
+            
+        }
         _keyboardManager = new CropKeyboardManager(this);
         _dragHandler = new CropDragHandler(this);
         _resizeHandler = new CropResizeHandler(this);

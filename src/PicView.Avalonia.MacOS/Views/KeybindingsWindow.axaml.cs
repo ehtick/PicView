@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -10,6 +11,7 @@ public partial class KeybindingsWindow : Window
 {
     public KeybindingsWindow()
     {
+        MaxHeight = ScreenHelper.ScreenSize.WorkingAreaHeight;
         InitializeComponent();
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {
@@ -18,7 +20,7 @@ public partial class KeybindingsWindow : Window
         }
         Loaded += (sender, e) =>
         {
-            MinWidth = MaxWidth = Width;
+            MinWidth = MaxWidth = Bounds.Width;
             Title = $"{TranslationManager.Translation.ApplicationShortcuts} - PicView";
         };
         KeyDown += (_, e) =>
