@@ -250,16 +250,25 @@ public static class WindowFunctions
         if (Settings.WindowProperties.Fullscreen)
         {
             vm.IsFullscreen = false;
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                desktop.MainWindow.WindowState = WindowState.Normal);
+
             if (saveSettings)
             {
                 Settings.WindowProperties.Fullscreen = false;
             }
 
-            WindowResizing.RestoreSize(desktop.MainWindow);
+            if (Settings.WindowProperties.AutoFit)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    desktop.MainWindow.WindowState = WindowState.Normal);
+                CenterWindowOnScreen();
+            }
+            else
+            {
+                WindowResizing.RestoreSize(desktop.MainWindow);
+            }
+
             Restore(vm, desktop);
-            
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 vm.BottomCornerRadius = new CornerRadius(0, 0, 8, 8);
@@ -347,18 +356,17 @@ public static class WindowFunctions
         Dispatcher.UIThread.InvokeAsync(() =>
             desktop.MainWindow.WindowState = WindowState.Normal);
         vm.IsUIShown = Settings.UIProperties.ShowInterface;
-        InitializeWindowSizeAndPosition(desktop.MainWindow);
         
         if (Settings.WindowProperties.AutoFit)
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
-            CenterWindowOnScreen();
         }
         else
         {
             vm.SizeToContent = SizeToContent.Manual;
             vm.CanResize = true;
+            InitializeWindowSizeAndPosition(desktop.MainWindow);
         }
         WindowResizing.SetSize(vm);
     }
@@ -540,32 +548,22 @@ public static class WindowFunctions
         Dispatcher.UIThread.Post(() =>
         {
             var window = desktop.MainWindow;
-
-            // Get the screen that the window is currently on
-            var screens = window.Screens;
-            var screen = screens.ScreenFromVisual(window);
-
-            if (screen == null)
+            if (window.WindowState is WindowState.Maximized or WindowState.FullScreen)
             {
-                return; // No screen found (edge case)
+                return;
             }
-
-            // Get the scaling factor of the screen (DPI scaling)
-            var scalingFactor = screen.Scaling;
-
-            // Get the current screen's bounds (in physical pixels, not adjusted for scaling)
-            var screenBounds = screen.WorkingArea;
-
-            // Calculate the actual bounds in logical units (adjusting for scaling)
-            var screenWidth = screenBounds.Width / scalingFactor;
-            var screenHeight = screenBounds.Height / scalingFactor;
+            ScreenHelper.UpdateScreenSize(window);
+            var screen = ScreenHelper.ScreenSize;
 
             // Get the size of the window
             var windowSize = window.ClientSize;
+            
+            var x = screen.X;
+            var y = screen.Y;
 
             // Calculate the position to center the window on the screen
-            var centeredX = screenBounds.X + (screenWidth - windowSize.Width) / 2;
-            var centeredY = screenBounds.Y + (screenHeight - windowSize.Height) / 2;
+            var centeredX = x + (screen.WorkingAreaWidth - windowSize.Width) / 2;
+            var centeredY = y + (screen.WorkingAreaHeight - windowSize.Height) / 2;
 
             // Set the window's new position
             window.Position = horizontal

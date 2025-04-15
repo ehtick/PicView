@@ -18,6 +18,9 @@ public readonly record struct ScreenSize
     public double Width { get; init; }
     public double Height { get; init; }
     
+    public double X { get; init; }
+    public double Y { get; init; }
+    
     /// <summary>
     /// Gets the DPI scaling factor of the screen.
     /// </summary>

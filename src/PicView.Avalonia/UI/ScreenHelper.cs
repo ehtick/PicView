@@ -35,14 +35,15 @@ public static class ScreenHelper
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
+                // TODO: Get macOS dock size
             }
             var screen = window.Screens.ScreenFromVisual(window);
         
             var monitorWidth = screen.WorkingArea.Width / screen.Scaling;
             var monitorHeight = screen.WorkingArea.Height / screen.Scaling;
             
-            var width = window.Width / screen.Scaling;
-            var height = window.Height / screen.Scaling;
+            var width = screen.Bounds.Width / screen.Scaling;
+            var height = screen.Bounds.Height / screen.Scaling;
         
             ScreenSize = new ScreenSize           
             {
@@ -51,6 +52,8 @@ public static class ScreenHelper
                 Width = width,
                 Height = height,
                 Scaling = screen.Scaling,
+                X = screen.Bounds.X,
+                Y = screen.Bounds.Y
             };
         }
     }
