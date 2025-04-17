@@ -70,7 +70,7 @@ $infoPlistContent = @"
     <key>CFBundleDisplayName</key>
     <string>PicView</string>
     <key>CFBundleIdentifier</key>
-    <string>ruben2776.picview</string>
+    <string>com.ruben2776.picview</string>
     <key>CFBundleVersion</key>
     <string>${appVersion}</string>
     <key>CFBundlePackageType</key>
@@ -99,6 +99,50 @@ $infoPlistContent = @"
     <false/>
 	<key>LSApplicationCategoryType</key>
     <string>public.app-category.graphics-design</string>
+       <key>CFBundleDocumentTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeName</key>
+                <string>Image File</string>
+                <key>LSItemContentTypes</key>
+                <array>
+                    <string>public.png</string>
+                    <string>public.jpeg</string>
+                    <string>public.jpg</string>
+                    <string>public.gif</string>
+                    <string>public.tiff</string>
+                    <string>public.bmp</string>
+                    <string>public.ico</string>
+                    <string>public.svg-image</string>
+                    <string>org.webmproject.webp</string>
+                    <string>org.khronos.avif</string>
+                </array>
+                <key>CFBundleTypeRole</key>
+                <string>Viewer</string>
+            </dict>
+        </array>
+        <key>UTExportedTypeDeclarations</key>
+        <array>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>org.khronos.avif</string>
+                <key>UTTypeConformsTo</key>
+                <array>
+                    <string>public.image</string>
+                </array>
+                <key>UTTypeDescription</key>
+                <string>AVIF Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array>
+                        <string>avif</string>
+                    </array>
+                    <key>public.mime-type</key>
+                    <string>image/avif</string>
+                </dict>
+            </dict>
+        </array>
 </dict>
 </plist>
 "@
