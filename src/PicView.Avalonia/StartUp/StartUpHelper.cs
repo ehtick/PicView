@@ -174,6 +174,10 @@ public static class StartUpHelper
             if (string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
                 ErrorHandling.ShowStartUpMenu(vm);
+                if (Settings.WindowProperties.AutoFit)
+                {
+                    WindowFunctions.CenterWindowOnScreen();
+                }
             }
             else
             {
@@ -184,6 +188,10 @@ public static class StartUpHelper
         else
         {
             ErrorHandling.ShowStartUpMenu(vm);
+            if (Settings.WindowProperties.AutoFit)
+            {
+                WindowFunctions.CenterWindowOnScreen();
+            }
         }
     }
 
