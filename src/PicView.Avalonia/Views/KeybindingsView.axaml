@@ -659,7 +659,7 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Text="{CompiledBinding Crop}"
+                Text="{CompiledBinding Translation.Crop}"
                 Width="170" />
             <customControls:KeybindTextBox
                 Classes="hover TStyle"
