@@ -358,23 +358,20 @@ public static class ImageSizeCalculationHelper
             titleMaxWidth = containerWidth - interfaceSize;
         }
 
-        if (Settings.Zoom.ScrollEnabled)
+        if (!Settings.Zoom.ScrollEnabled)
         {
-            if (Settings.ImageScaling.ShowImageSideBySide)
-            {
-                titleMaxWidth += SizeDefaults.ScrollbarSize + 10;
-            }
-            else
-            {
-                titleMaxWidth += SizeDefaults.ScrollbarSize;
-            }
+            return titleMaxWidth;
         }
 
-        return titleMaxWidth;
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            return titleMaxWidth + (SizeDefaults.ScrollbarSize + 10);
+        }
+        return titleMaxWidth + SizeDefaults.ScrollbarSize;
     }
     
     private static ImageSize ErrorImageSize(double monitorMinWidth, double monitorMinHeight, double interfaceSize, double containerWidth)
-        => new ImageSize(0, 0, 0, 0, 0, GetTitleMaxWidth(0, 0, 0, monitorMinWidth,
+        => new(0, 0, 0, 0, 0, GetTitleMaxWidth(0, 0, 0, monitorMinWidth,
                     monitorMinHeight, interfaceSize, containerWidth), 0, 0);
         
 
