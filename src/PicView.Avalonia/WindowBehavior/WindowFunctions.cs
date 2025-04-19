@@ -398,7 +398,6 @@ public static class WindowFunctions
             if (Settings.WindowProperties.AutoFit)
             {
                 vm.SizeToContent = SizeToContent.Manual;
-                vm.CanResize = true;
             }
 
             desktop.MainWindow.WindowState = WindowState.Maximized;
@@ -407,6 +406,7 @@ public static class WindowFunctions
             SetMargin();
             vm.IsMaximized = true;
             vm.IsFullscreen = false;
+            vm.CanResize = false;
         }
     }
     
@@ -510,6 +510,7 @@ public static class WindowFunctions
         }
         WindowResizing.SetSize(vm);
 
+        MenuManager.CloseMenus(vm);
         vm.GalleryWidth = double.NaN;
     }
 

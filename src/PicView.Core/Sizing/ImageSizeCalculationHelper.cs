@@ -315,9 +315,15 @@ public static class ImageSizeCalculationHelper
     public static double GetTitleMaxWidth(double rotationAngle, double width, double height, double monitorMinWidth,
         double monitorMinHeight, double interfaceSize, double containerWidth)
     {
+        if (Settings.WindowProperties.Fullscreen)
+        {
+            // Title bar is not shown in fullscreen
+            return 0;
+        }
+        
         double titleMaxWidth;
-
-        if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Fullscreen)
+        
+        if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Maximized)
         {
             switch (rotationAngle)
             {
@@ -349,7 +355,7 @@ public static class ImageSizeCalculationHelper
                 interfaceSize += GetWindowMargin() * 2;
             }
             // Fix title width to window size
-            titleMaxWidth = containerWidth - interfaceSize <= 0 ? 0 : containerWidth - interfaceSize;
+            titleMaxWidth = containerWidth - interfaceSize;
         }
 
         if (Settings.Zoom.ScrollEnabled)
