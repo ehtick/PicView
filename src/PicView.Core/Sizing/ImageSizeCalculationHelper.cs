@@ -15,6 +15,12 @@ public static class ImageSizeCalculationHelper
         // TODO: find a more elegant solution
         return RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? 165 : 215;
     }
+    
+    public static double GetWindowMargin()
+    {
+        // TODO: find a more elegant solution
+        return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? 7 : 0;
+    }
 
     public static ImageSize GetImageSize(double width,
         double height,
@@ -310,10 +316,8 @@ public static class ImageSizeCalculationHelper
         double monitorMinHeight, double interfaceSize, double containerWidth)
     {
         double titleMaxWidth;
-        var maximized = Settings.WindowProperties.Fullscreen ||
-                        Settings.WindowProperties.Maximized;
 
-        if (Settings.WindowProperties.AutoFit && !maximized)
+        if (Settings.WindowProperties.AutoFit && !Settings.WindowProperties.Fullscreen)
         {
             switch (rotationAngle)
             {
@@ -340,6 +344,10 @@ public static class ImageSizeCalculationHelper
         }
         else
         {
+            if (Settings.WindowProperties.Maximized)
+            {
+                interfaceSize += GetWindowMargin() * 2;
+            }
             // Fix title width to window size
             titleMaxWidth = containerWidth - interfaceSize <= 0 ? 0 : containerWidth - interfaceSize;
         }
