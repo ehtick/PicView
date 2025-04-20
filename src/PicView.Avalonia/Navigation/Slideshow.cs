@@ -34,7 +34,7 @@ public static class Slideshow
 
         if (milliseconds <= 0)
         {
-            await StartSlideshow(vm);
+            await Start(vm, TimeSpan.FromSeconds(Settings.UIProperties.SlideShowTimer).TotalMilliseconds);
         }
         else
         {
