@@ -31,14 +31,23 @@ public partial class SingleImageResizeView : UserControl
 
     private void OnLoaded(object? sender, EventArgs e)
     {
-        if (DataContext is not MainViewModel vm) return;
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
 
         _aspectRatio = (double)vm.PicViewer.PixelWidth / vm.PicViewer.PixelHeight;
-        InitializeEventHandlers(vm);
-        _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
-        {
-            Dispatcher.UIThread.Invoke(SetIsQualitySliderEnabled);
-        });
+
+        RegisterEventHandlers(vm);
+
+        _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Select(x => x is not null)
+            .Subscribe(_ =>
+            {
+                UpdateQualitySliderState();
+                ShowCancelButton();
+            });
     }
 
     private void OnUnloaded(object? sender, EventArgs e)
@@ -46,51 +55,76 @@ public partial class SingleImageResizeView : UserControl
         _imageUpdateSubscription?.Dispose();
     }
 
-    private void InitializeEventHandlers(MainViewModel vm)
+    private void RegisterEventHandlers(MainViewModel vm)
     {
-        SetIsQualitySliderEnabled();
+        UpdateQualitySliderState();
+        QualitySlider.ValueChanged += (_, _) => ShowResetButton();
+
         SaveButton.Click += async (_, _) => await SaveImage(vm).ConfigureAwait(false);
         SaveAsButton.Click += async (_, _) => await SaveImageAs(vm).ConfigureAwait(false);
 
         PixelWidthTextBox.KeyDown += async (_, e) => await SaveImageOnEnter(e, vm);
         PixelHeightTextBox.KeyDown += async (_, e) => await SaveImageOnEnter(e, vm);
 
-        PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
-        PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
+        PixelWidthTextBox.KeyUp += (_, _) => AdjustAspectRatio(PixelWidthTextBox);
+        PixelHeightTextBox.KeyUp += (_, _) => AdjustAspectRatio(PixelHeightTextBox);
 
-        ConversionComboBox.SelectionChanged += delegate { SetIsQualitySliderEnabled(); };
+        ConversionComboBox.SelectionChanged += (_, _) =>
+        {
+            UpdateQualitySliderState();
+            ShowResetButton();
+        };
 
         ResetButton.Click += (_, _) => ResetSettings(vm);
+        CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
 
         LinkChainButton.Click += (_, _) => ToggleAspectRatio();
     }
 
-    private void AdjustAspectRatio(TextBox sender)
+    private void ShowResetButton()
     {
-        if (!_isKeepingAspectRatio) return;
-
-        AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
-            _aspectRatio, DataContext as MainViewModel);
+        CancelButton.IsVisible = false;
+        ResetButton.IsVisible = true;
     }
 
-    private void SetIsQualitySliderEnabled()
+    private void ShowCancelButton()
     {
-        if (DataContext is not MainViewModel vm) return;
+        CancelButton.IsVisible = true;
+        ResetButton.IsVisible = false;
+    }
+
+    private void AdjustAspectRatio(TextBox sender)
+    {
+        if (!_isKeepingAspectRatio)
+        {
+            return;
+        }
+
+        AspectRatioHelper.SetAspectRatioForTextBox(
+            PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
+            _aspectRatio, DataContext as MainViewModel);
+
+        ShowResetButton();
+    }
+
+    private void UpdateQualitySliderState()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
 
         try
         {
-            if (JpgItem.IsSelected || PngItem.IsSelected)
+            if (IsConversionToQualityFormat())
             {
                 QualitySlider.IsEnabled = true;
                 QualitySlider.Value = 75;
             }
-            else if (vm.PicViewer.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
-                     vm.PicViewer.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-                     vm.PicViewer.FileInfo.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase))
+            else if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.Extension))
             {
                 QualitySlider.IsEnabled = true;
-                var quality = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
-                QualitySlider.Value = quality;
+                QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
             }
             else
             {
@@ -105,6 +139,14 @@ public partial class SingleImageResizeView : UserControl
         }
     }
 
+    private bool IsConversionToQualityFormat()
+        => JpgItem.IsSelected || PngItem.IsSelected;
+
+    private static bool IsOriginalFileQualityFormat(string ext)
+        => ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase)
+           || ext.Equals(".jpeg", StringComparison.OrdinalIgnoreCase)
+           || ext.Equals(".png", StringComparison.OrdinalIgnoreCase);
+
     private async Task SaveImageOnEnter(KeyEventArgs e, MainViewModel vm)
     {
         if (e.Key == Key.Enter)
@@ -115,20 +157,21 @@ public partial class SingleImageResizeView : UserControl
 
     private async Task SaveImageAs(MainViewModel vm)
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
-            desktop.MainWindow?.StorageProvider is not { } provider)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop
+            || desktop.MainWindow?.StorageProvider is not { } provider)
         {
             return;
         }
 
         var fileInfoFullName = vm.PicViewer.FileInfo.FullName;
-        var ext = DetermineFileExtension(vm, ref fileInfoFullName);
-        
+        var ext = GetSelectedFileExtension(vm, ref fileInfoFullName);
+
         var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.FullName, ext);
         if (file is null)
         {
             return;
         }
+
         await DoSaveImage(vm, file).ConfigureAwait(false);
     }
 
@@ -144,29 +187,21 @@ public partial class SingleImageResizeView : UserControl
         {
             return;
         }
-        
+
         await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(true));
 
-        const int rotationAngle = 0; // TODO make a control for adjusting rotation
+        const int rotationAngle = 0; // TODO: Add rotation control
 
         var file = vm.PicViewer.FileInfo.FullName;
-        var ext = DetermineFileExtension(vm, ref destination);
+        var ext = GetSelectedFileExtension(vm, ref destination);
         destination = Path.ChangeExtension(destination, ext);
         var sameFile = file.Equals(destination, StringComparison.OrdinalIgnoreCase);
 
-
         var quality = GetQualityValue(ext, destination);
 
-        var success = await SaveImageFileHelper.SaveImageAsync(null,
-            file,
-            sameFile ? null : destination,
-            width,
-            height,
-            quality,
-            ext,
-            rotationAngle,
-            null,
-            _isKeepingAspectRatio).ConfigureAwait(false);
+        var success = await SaveImageFileHelper.SaveImageAsync(
+            null, file, sameFile ? null : destination, width, height, quality,
+            ext, rotationAngle, null, _isKeepingAspectRatio).ConfigureAwait(false);
 
         await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(false));
 
@@ -177,6 +212,7 @@ public partial class SingleImageResizeView : UserControl
         }
 
         await HandlePostSaveActions(vm, file, destination);
+
         if (Path.GetExtension(file) != ext)
         {
             FileDeletionHelper.DeleteFileWithErrorMsg(file, true);
@@ -185,12 +221,12 @@ public partial class SingleImageResizeView : UserControl
 
     private void SetLoadingState(bool isLoading)
     {
-        ParentContainer.Opacity = isLoading ? .1 : 1;
+        ParentContainer.Opacity = isLoading ? 0.1 : 1;
         ParentContainer.IsHitTestVisible = !isLoading;
         SpinWaiter.IsVisible = isLoading;
     }
 
-    private string DetermineFileExtension(MainViewModel vm, ref string destination)
+    private string GetSelectedFileExtension(MainViewModel vm, ref string destination)
     {
         var ext = vm.PicViewer.FileInfo.Extension;
         if (NoConversion.IsSelected)
@@ -198,40 +234,56 @@ public partial class SingleImageResizeView : UserControl
             return ext;
         }
 
-        if (PngItem.IsSelected)
-        {
-            ext = ".png";
-        }
-        else if (JpgItem.IsSelected)
-        {
-            ext = ".jpg";
-        }
-        else if (WebpItem.IsSelected)
-        {
-            ext = ".webp";
-        }
-        else if (AvifItem.IsSelected)
-        {
-            ext = ".avif";
-        }
-        else if (HeicItem.IsSelected)
-        {
-            ext = ".heic";
-        }
-        else if (JxlItem.IsSelected)
-        {
-            ext = ".jxl";
-        }
+        ext = GetExtensionFromSelectedItem() ?? ext;
         destination = Path.ChangeExtension(destination, ext);
         return ext;
     }
 
+    private string? GetExtensionFromSelectedItem()
+    {
+        if (PngItem.IsSelected)
+        {
+            return ".png";
+        }
+
+        if (JpgItem.IsSelected)
+        {
+            return ".jpg";
+        }
+
+        if (WebpItem.IsSelected)
+        {
+            return ".webp";
+        }
+
+        if (AvifItem.IsSelected)
+        {
+            return ".avif";
+        }
+
+        if (HeicItem.IsSelected)
+        {
+            return ".heic";
+        }
+
+        if (JxlItem.IsSelected)
+        {
+            return ".jxl";
+        }
+
+        return null;
+    }
+
     private uint? GetQualityValue(string ext, string destination)
     {
-        if (QualitySlider.IsEnabled && (ext == ".jpg" || Path.GetExtension(destination) == ".jpg" || Path.GetExtension(destination) == ".jpeg"))
+        if (QualitySlider.IsEnabled && (
+                ext.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                Path.GetExtension(destination).Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                Path.GetExtension(destination).Equals(".jpeg", StringComparison.OrdinalIgnoreCase)))
         {
             return (uint)QualitySlider.Value;
         }
+
         return null;
     }
 
@@ -251,19 +303,20 @@ public partial class SingleImageResizeView : UserControl
     {
         PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
         PixelHeightTextBox.Text = vm.PicViewer.PixelHeight.ToString();
-        if (vm.PicViewer.FileInfo.Extension.Equals(".jpg", StringComparison.OrdinalIgnoreCase) ||
-            vm.PicViewer.FileInfo.Extension.Equals(".jpeg", StringComparison.OrdinalIgnoreCase) ||
-            vm.PicViewer.FileInfo.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase))
+
+        if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.Extension))
         {
             QualitySlider.IsEnabled = true;
-            var quality = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
-            QualitySlider.Value = quality;
+            QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
         }
         else
         {
             QualitySlider.IsEnabled = false;
         }
+
         ConversionComboBox.SelectedItem = NoConversion;
+
+        ShowCancelButton();
     }
 
     private void ToggleAspectRatio()

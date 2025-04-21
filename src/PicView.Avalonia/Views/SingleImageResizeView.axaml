@@ -152,12 +152,26 @@
                 <Button
                     Classes="BorderStyle altHover mainBtn"
                     CornerRadius="4"
+                    IsVisible="False"
                     Margin="30,0,60,0"
                     Width="195"
                     x:Name="ResetButton">
                     <TextBlock
                         Classes="txt"
                         Text="{CompiledBinding Translation.Reset,
+                                               Mode=OneWay}"
+                        TextAlignment="Center" />
+                </Button>
+
+                <Button
+                    Classes="BorderStyle altHover mainBtn"
+                    CornerRadius="4"
+                    Margin="30,0,60,0"
+                    Width="195"
+                    x:Name="CancelButton">
+                    <TextBlock
+                        Classes="txt"
+                        Text="{CompiledBinding Translation.Cancel,
                                                Mode=OneWay}"
                         TextAlignment="Center" />
                 </Button>
