@@ -43,16 +43,72 @@
                 <string>Image File</string>
                 <key>LSItemContentTypes</key>
                 <array>
-                    <string>public.png</string>
                     <string>public.jpeg</string>
                     <string>public.jpg</string>
+                    <string>public.png</string>
+                    <string>public.bmp</string>
                     <string>public.gif</string>
                     <string>public.tiff</string>
-                    <string>public.bmp</string>
                     <string>public.ico</string>
                     <string>public.svg-image</string>
                     <string>org.webmproject.webp</string>
                     <string>org.khronos.avif</string>
+                    <string>com.adobe.photoshop-image</string>
+                    <string>com.adobe.photoshop-image-psb</string>
+                    <string>public.heic</string>
+                    <string>public.heif</string>
+                    <string>public.hdr-image</string>
+                    <string>public.xbitmap-image</string>
+                    <string>public.xpixmap-image</string>
+                    <string>com.ruben2776.picview.jpe</string>
+                    <string>com.ruben2776.picview.jfif</string>
+                    <string>com.ruben2776.picview.wbmp</string>
+                    <string>com.ruben2776.picview.psd</string>
+                    <string>com.ruben2776.picview.psb</string>
+                    <string>com.ruben2776.picview.tif</string>
+                    <string>com.ruben2776.picview.dds</string>
+                    <string>com.ruben2776.picview.tga</string>
+                    <string>com.ruben2776.picview.xcf</string>
+                    <string>com.ruben2776.picview.jxl</string>
+                    <string>com.ruben2776.picview.jp2</string>
+                    <string>com.ruben2776.picview.qoi</string>
+                    <string>com.ruben2776.picview.thm</string>
+                    <string>com.ruben2776.picview.b64</string>
+                    <string>com.ruben2776.picview.svgz</string>
+                    <string>com.ruben2776.picview.3fr</string>
+                    <string>com.ruben2776.picview.arw</string>
+                    <string>com.ruben2776.picview.cr2</string>
+                    <string>com.ruben2776.picview.cr3</string>
+                    <string>com.ruben2776.picview.crw</string>
+                    <string>com.ruben2776.picview.dcr</string>
+                    <string>com.ruben2776.picview.dng</string>
+                    <string>com.ruben2776.picview.erf</string>
+                    <string>com.ruben2776.picview.kdc</string>
+                    <string>com.ruben2776.picview.mdc</string>
+                    <string>com.ruben2776.picview.mef</string>
+                    <string>com.ruben2776.picview.mos</string>
+                    <string>com.ruben2776.picview.mrw</string>
+                    <string>com.ruben2776.picview.nef</string>
+                    <string>com.ruben2776.picview.nrw</string>
+                    <string>com.ruben2776.picview.orf</string>
+                    <string>com.ruben2776.picview.pef</string>
+                    <string>com.ruben2776.picview.raf</string>
+                    <string>com.ruben2776.picview.raw</string>
+                    <string>com.ruben2776.picview.rw2</string>
+                    <string>com.ruben2776.picview.srf</string>
+                    <string>com.ruben2776.picview.x3f</string>
+                    <string>com.ruben2776.picview.fpx</string>
+                    <string>com.ruben2776.picview.pcd</string>
+                    <string>com.ruben2776.picview.flif</string>
+                    <string>com.ruben2776.picview.pgm</string>
+                    <string>com.ruben2776.picview.ppm</string>
+                    <string>com.ruben2776.picview.cut</string>
+                    <string>com.ruben2776.picview.exr</string>
+                    <string>com.ruben2776.picview.dib</string>
+                    <string>com.ruben2776.picview.emf</string>
+                    <string>com.ruben2776.picview.wmf</string>
+                    <string>com.ruben2776.picview.wpg</string>
+                    <string>com.ruben2776.picview.pcx</string>
                 </array>
                 <key>CFBundleTypeRole</key>
                 <string>Viewer</string>
@@ -60,6 +116,7 @@
         </array>
         <key>UTExportedTypeDeclarations</key>
         <array>
+            <!-- Standard/known UTIs should NOT be redefined; only custom/rare ones are here -->
             <dict>
                 <key>UTTypeIdentifier</key>
                 <string>org.khronos.avif</string>
@@ -72,11 +129,747 @@
                 <key>UTTypeTagSpecification</key>
                 <dict>
                     <key>public.filename-extension</key>
-                    <array>
-                        <string>avif</string>
-                    </array>
+                    <array><string>avif</string></array>
                     <key>public.mime-type</key>
                     <string>image/avif</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.jpe</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.jpeg</string></array>
+                <key>UTTypeDescription</key>
+                <string>JPEG Image (JPE)</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>jpe</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/jpeg</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.jfif</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.jpeg</string></array>
+                <key>UTTypeDescription</key>
+                <string>JPEG File Interchange Format</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>jfif</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/jpeg</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.wbmp</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Wireless Bitmap Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>wbmp</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/vnd.wap.wbmp</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.psd</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Adobe Photoshop Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>psd</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/vnd.adobe.photoshop</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.psb</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Adobe Photoshop Large Document</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>psb</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/vnd.adobe.photoshop</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.tif</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.tiff</string></array>
+                <key>UTTypeDescription</key>
+                <string>TIFF Image (TIF)</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>tif</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/tiff</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.dds</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>DirectDraw Surface Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>dds</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/vnd.ms-dds</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.tga</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Targa Graphic</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>tga</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-targa</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.xcf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>GIMP XCF Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>xcf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-xcf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.jxl</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>JPEG XL Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>jxl</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/jxl</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.jp2</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>JPEG 2000 Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>jp2</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/jp2</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.qoi</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Quite OK Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>qoi</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/qoi</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.thm</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Thumbnail Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>thm</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/thm</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.b64</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.data</string></array>
+                <key>UTTypeDescription</key>
+                <string>Base64 Encoded Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>b64</string></array>
+                    <key>public.mime-type</key>
+                    <string>application/octet-stream</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.svgz</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Compressed SVG Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>svgz</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/svg+xml</string>
+                </dict>
+            </dict>
+            <!-- RAW and camera formats -->
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.3fr</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Hasselblad RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>3fr</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-hasselblad-3fr</string>
+                </dict>
+            </dict>
+            <!-- Repeat the below block for each camera RAW extension (arw, cr2, etc.), changing values as appropriate. -->
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.arw</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Sony RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>arw</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-sony-arw</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.cr2</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Canon RAW Image CR2</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>cr2</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-canon-cr2</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.cr3</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Canon RAW Image CR3</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>cr3</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-canon-cr3</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.crw</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Canon RAW Image CRW</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>crw</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-canon-crw</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.dcr</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Kodak RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>dcr</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-kodak-dcr</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.dng</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Digital Negative Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>dng</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-adobe-dng</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.erf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Epson RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>erf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-epson-erf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.kdc</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Kodak Digital Camera RAW</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>kdc</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-kodak-kdc</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.mdc</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Minolta RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>mdc</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-minolta-mdc</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.mef</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Mamiya RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>mef</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-mamiya-mef</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.mos</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Leaf RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>mos</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-leaf-mos</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.mrw</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Minolta RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>mrw</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-minolta-mrw</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.nef</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Nikon RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>nef</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-nikon-nef</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.nrw</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Nikon RAW Image NRW</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>nrw</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-nikon-nrw</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.orf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Olympus RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>orf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-olympus-orf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.pef</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Pentax RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>pef</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-pentax-pef</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.raf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Fuji RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>raf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-fuji-raf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.raw</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Generic RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>raw</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-raw</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.rw2</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Panasonic RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>rw2</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-panasonic-rw2</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.srf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Sony RAW Image SRF</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>srf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-sony-srf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.x3f</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.camera-raw-image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Sigma RAW Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>x3f</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-sigma-x3f</string>
+                </dict>
+            </dict>
+            <!-- Miscellaneous and legacy image formats -->
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.fpx</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>FlashPix Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>fpx</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/vnd.fpx</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.pcd</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Kodak Photo CD Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>pcd</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-photo-cd</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.flif</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Free Lossless Image Format</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>flif</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/flif</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.pgm</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Portable Graymap Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>pgm</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-portable-graymap</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.ppm</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Portable Pixmap Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>ppm</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-portable-pixmap</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.cut</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Dr Halo CUT Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>cut</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-drhalo-cut</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.exr</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>OpenEXR Image</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>exr</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-exr</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.dib</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Device Independent Bitmap</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>dib</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/bmp</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.emf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Enhanced Metafile</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>emf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-emf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.wmf</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>Windows Metafile</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>wmf</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/wmf</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.wpg</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>WordPerfect Graphic</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>wpg</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-wpg</string>
+                </dict>
+            </dict>
+            <dict>
+                <key>UTTypeIdentifier</key>
+                <string>com.ruben2776.picview.pcx</string>
+                <key>UTTypeConformsTo</key>
+                <array><string>public.image</string></array>
+                <key>UTTypeDescription</key>
+                <string>ZSoft Paintbrush</string>
+                <key>UTTypeTagSpecification</key>
+                <dict>
+                    <key>public.filename-extension</key>
+                    <array><string>pcx</string></array>
+                    <key>public.mime-type</key>
+                    <string>image/x-pcx</string>
                 </dict>
             </dict>
         </array>
