@@ -96,6 +96,8 @@
                     Classes="errorHover"
                     ClickMode="Release"
                     Command="{CompiledBinding RecycleFileCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                                                       FallbackValue=''}"
                     Data="{StaticResource RecycleGeometry}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
@@ -112,6 +114,8 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{Binding OptimizeImageCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                                                       FallbackValue=''}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="28"
@@ -164,6 +168,8 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding CopyImageCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                                                       FallbackValue=''}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
                     Icon="{StaticResource CopyImages}"
@@ -179,6 +185,8 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding CopyFileCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                                                       FallbackValue=''}"
                     Data="{StaticResource CopyGeometry}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
@@ -195,6 +203,8 @@
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding DuplicateFileCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                                                       FallbackValue=''}"
                     Data="{StaticResource DuplicateGeometry}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
