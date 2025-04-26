@@ -28,12 +28,6 @@ internal class Program
                 UseOpacitySaveLayer = true
             })
             .UseWin32()
-            .UseSkia()
-#if DEBUG
-            .LogToTrace();
-#else
-;
-#endif
-        
+            .UseSkia();
     }
 }

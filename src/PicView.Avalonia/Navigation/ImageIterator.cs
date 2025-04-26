@@ -38,8 +38,6 @@ public class ImageIterator : IAsyncDisposable
     private bool isRunning;
     
     private readonly MainViewModel? _vm;
-    
-    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     #endregion
 
@@ -146,8 +144,6 @@ public class ImageIterator : IAsyncDisposable
                 return;
             }
             
-            await _semaphore.WaitAsync();
-            
             var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
                 ? new FileInfo(_watcher.Path)
                 : fileInfo;
@@ -195,7 +191,6 @@ public class ImageIterator : IAsyncDisposable
         }
         finally
         {
-            _semaphore.Release();
             isRunning = false;
         }
     }
@@ -209,7 +204,6 @@ public class ImageIterator : IAsyncDisposable
                 return;
             }
 
-            await _semaphore.WaitAsync();
             isRunning = true;
 
             var index = ImagePaths.IndexOf(e.FullPath);
@@ -217,7 +211,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 return;
             }
-            
+
             var currentIndex = CurrentIndex;
             var isSameFile = currentIndex == index;
 
@@ -236,7 +230,7 @@ public class ImageIterator : IAsyncDisposable
                     ErrorHandling.ShowStartUpMenu(_vm);
                     return;
                 }
-                
+
                 RemoveCurrentItemFromPreLoader();
                 PreLoader.Resynchronize(ImagePaths);
                 var newIndex = GetIteration(index, NavigateTo.Previous);
@@ -262,7 +256,7 @@ public class ImageIterator : IAsyncDisposable
                 }
 
                 var indexOf = ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName);
-                _vm.SelectedGalleryItemIndex = indexOf;// Fixes deselection bug 
+                _vm.SelectedGalleryItemIndex = indexOf; // Fixes deselection bug 
                 CurrentIndex = indexOf;
                 if (isSameFile)
                 {
@@ -274,20 +268,18 @@ public class ImageIterator : IAsyncDisposable
             {
                 PreLoader.Resynchronize(ImagePaths);
             }
-            
-            FileHistoryManager.Remove(e.FullPath);
 
+            FileHistoryManager.Remove(e.FullPath);
         }
         catch (Exception exception)
         {
 #if DEBUG
-            Console.WriteLine($"{nameof(ImageIterator)}.{nameof(OnFileDeleted)} {exception.Message} \n{exception.StackTrace}");
+            Console.WriteLine(
+                $"{nameof(ImageIterator)}.{nameof(OnFileDeleted)} {exception.Message} \n{exception.StackTrace}");
 #endif
         }
-
         finally
         {
-            _semaphore.Release();
             isRunning = false;
         }
     }
@@ -305,8 +297,6 @@ public class ImageIterator : IAsyncDisposable
 
                 return;
             }
-
-            await _semaphore.WaitAsync();
 
             isRunning = true;
 
@@ -374,7 +364,6 @@ public class ImageIterator : IAsyncDisposable
         }
         finally
         {
-            _semaphore.Release();
             isRunning = false;
         }
     }
@@ -439,7 +428,6 @@ public class ImageIterator : IAsyncDisposable
     {
         try
         {
-            await _semaphore.WaitAsync();
             isRunning = true;
             var fileList = await Task.FromResult(_vm.PlatformService.GetFiles(_vm.PicViewer.FileInfo)).ConfigureAwait(false);
             var oldList = ImagePaths;
@@ -473,7 +461,6 @@ public class ImageIterator : IAsyncDisposable
         }
         finally
         {
-            _semaphore.Release();
             isRunning = false;
         }
     }
