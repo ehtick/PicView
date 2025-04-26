@@ -93,7 +93,26 @@ public static class DragAndDropHelper
             var url = dataStr.Split((char)10).FirstOrDefault();
             if (url != null)
             {
-                await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+                if (url.StartsWith("file://"))
+                {
+                    var file = url[7..];
+                    if (file.StartsWith('/'))
+                    {
+                        file = file[1..];
+                    }
+                    if (file.IsArchive())
+                    {
+                        await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await NavigationManager.LoadPicFromFile(file, vm).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);
+                }
             }
         }
     }
