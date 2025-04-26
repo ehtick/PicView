@@ -1,4 +1,5 @@
-﻿using Avalonia;
+using System.Reactive.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Media;
@@ -7,12 +8,14 @@ using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Navigation;
+using ReactiveUI;
 
 namespace PicView.Avalonia.Views;
 
@@ -28,6 +31,8 @@ public partial class BatchResizeView : UserControl
         InitializeComponent();
         Loaded += delegate
         {
+            ScrollViewer.MaxHeight = ScreenHelper.ScreenSize.WorkingAreaHeight;
+            
             if (DataContext is not MainViewModel vm)
             {
                 return;
@@ -93,6 +98,8 @@ public partial class BatchResizeView : UserControl
                 }
             };
 
+            ResetButton.Click += (_,_) => Reset();
+            
             CancelButton.Click += async delegate
             {
                 if (_isRunning)
@@ -101,9 +108,8 @@ public partial class BatchResizeView : UserControl
                 }
                 else
                 {
-                    Reset();
+                    (VisualRoot as Window)?.Close();
                 }
-
             };
 
             if (!NavigationManager.CanNavigate(vm))
@@ -112,6 +118,30 @@ public partial class BatchResizeView : UserControl
             }
 
             SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
+            
+            this.WhenAny(x => x.SourceFolderTextBox.Text, x => x.Value)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Skip(1)
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                });
+            
+            this.WhenAnyValue(x => x.ConversionComboBox.SelectedItem,
+                    x => x.CompressionComboBox.SelectedItem,
+                    x => x.HeightResizeBox,
+                    x => x.WidthResizeBox,
+                    x => x.QualitySlider.Value,
+                    x => x.ThumbnailsComboBox.SelectedItem,
+                    x => x.IsQualityEnabledBox.IsChecked)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Skip(1)
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                });
         };
     }
 
@@ -120,6 +150,9 @@ public partial class BatchResizeView : UserControl
         _isKeepingAspectRatio = !_isKeepingAspectRatio;
         LinkChainImage.IsVisible = _isKeepingAspectRatio;
         UnlinkChainImage.IsVisible = !_isKeepingAspectRatio;
+        
+        ResetButton.IsVisible = true;
+        CancelButton.IsVisible = false;
     }
 
     private void Reset()
@@ -158,6 +191,9 @@ public partial class BatchResizeView : UserControl
         }
 
         SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
+
+        ResetButton.IsVisible = false;
+        CancelButton.IsVisible = true;
     }
 
     private void ResetProgress()
@@ -167,7 +203,6 @@ public partial class BatchResizeView : UserControl
 
         StartButton.IsEnabled = true;
 
-        CancelButtonTextBlock.Text = TranslationManager.Translation.Reset;
         CancelButton.Classes.Remove("errorHover");
         CancelButton.Classes.Add("altHover");
         
@@ -178,10 +213,16 @@ public partial class BatchResizeView : UserControl
     private async Task CancelBatchResize()
     {
         await _cancellationTokenSource?.CancelAsync();
-        CancelButtonTextBlock.Text = TranslationManager.Translation.Reset;
-        StartButton.IsEnabled = true;
-        _isRunning = false;
-        ProgressBar.Value = 0;
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            StartButton.IsEnabled = true;
+            _isRunning = false;
+            ProgressBar.Value = 0;
+
+            ResetButton.IsVisible = true;
+            CancelButton.IsVisible = false;
+        });
     }
 
     private async Task StartBatchResize()
@@ -190,10 +231,12 @@ public partial class BatchResizeView : UserControl
         {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            CancelButtonTextBlock.Text = TranslationManager.Translation.Cancel;
             CancelButton.Classes.Remove("altHover");
             CancelButton.Classes.Add("errorHover");
             StartButton.IsEnabled = false;
+            
+            CancelButton.IsVisible = true;
+            ResetButton.IsVisible = false;
             
             InputStackPanel.Opacity = 0.5;
             InputStackPanel.IsHitTestVisible = false;

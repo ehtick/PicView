@@ -4,7 +4,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
@@ -20,7 +19,6 @@ public partial class BatchResizeWindow : Window
 
     private void StartUp()
     {
-        ScrollViewer.MaxHeight = ScreenHelper.GetWindowMaxHeight();
         if (Settings.Theme.GlassTheme)
         {
             IconBorder.Background = Brushes.Transparent;
@@ -52,12 +50,9 @@ public partial class BatchResizeWindow : Window
         {
             MinWidth = MaxWidth = Width;
             Title = $"{TranslationManager.Translation.BatchResize}  - PicView";
-            
+
             // Keep window position when resizing
-            ClientSizeProperty.Changed.Subscribe(size =>
-            {
-                WindowResizing.HandleWindowResize(this, size);
-            });
+            ClientSizeProperty.Changed.Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
         };
         KeyDown += (_, e) =>
         {
