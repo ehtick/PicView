@@ -18,9 +18,11 @@ using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.MacOS;
 using PicView.Core.MacOS.FileAssociation;
+using PicView.Core.MacOS.FileFunctions;
 using PicView.Core.MacOS.Wallpaper;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
+#pragma warning disable CS0618 // Type or member is obsolete
 
 namespace PicView.Avalonia.MacOS;
 
@@ -73,26 +75,6 @@ public class App : Application, IPlatformSpecificService
             },DispatcherPriority.Send);
         
             _vm = new MainViewModel(this);
-            
-            // Can't get this to work
-            
-            // if (Current.TryGetFeature<IActivatableLifetime>() is { } activatableLifetime)
-            // {
-            //     activatableLifetime.Activated += async (_, e) =>
-            //     {
-            //         await TooltipHelper.ShowTooltipMessageAsync(activatableLifetime);
-            //         if (e is ProtocolActivatedEventArgs { Kind: ActivationKind.File } fileArgs)
-            //         {
-            //             await TooltipHelper.ShowTooltipMessageAsync($"App activated via Uri: {fileArgs.Uri}");
-            //             await NavigationManager.LoadPicFromStringAsync(fileArgs.Uri.ToString(), _vm).ConfigureAwait(false);
-            //         }
-            //         if (e is ProtocolActivatedEventArgs { Kind: ActivationKind.OpenUri } openArgs)
-            //         {
-            //             await TooltipHelper.ShowTooltipMessageAsync($"App activated via Uri: {openArgs.Uri}");
-            //             await  QuickLoad.QuickLoadAsync(_vm, openArgs.Uri.ToString()).ConfigureAwait(false);
-            //         }
-            //     };
-            // }
         
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -103,6 +85,7 @@ public class App : Application, IPlatformSpecificService
                 StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
 #endif
             },DispatcherPriority.Send);
+
             if (startUpFilePath is not null)
             {
                 await QuickLoad.QuickLoadAsync(_vm, startUpFilePath).ConfigureAwait(false);
@@ -474,7 +457,8 @@ public class App : Application, IPlatformSpecificService
     
     public void ShowFileProperties(string path)
     {
-        // TODO implement show file properties on macOS
+        _ = FileProperties.ShowFilePropertiesAsync(path);
+        // TODO: make interface async
     }
 
     public void Print(string path)
