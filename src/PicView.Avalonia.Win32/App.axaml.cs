@@ -44,8 +44,10 @@ public partial class App : Application, IPlatformSpecificService
 
     public override void Initialize()
     {
+#if DEBUG
         ProfileOptimization.SetProfileRoot(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/"));
         ProfileOptimization.StartProfile("ProfileOptimization");
+#endif
         AvaloniaXamlLoader.Load(this);
     }
 
