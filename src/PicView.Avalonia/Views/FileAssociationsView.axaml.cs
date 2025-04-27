@@ -26,7 +26,7 @@ public partial class FileAssociationsView : UserControl
         {
             > 500 and <= 650 => 340,
             >= 650 and <= 700 => 440,
-            >= 700 => 480,
+            >= 700 => 500,
             _ => 240
         };
 

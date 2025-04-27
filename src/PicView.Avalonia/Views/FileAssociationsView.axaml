@@ -24,17 +24,18 @@
                                         Mode=OneWay}"
             VerticalAlignment="Center" />
 
-        <StackPanel
+        <DockPanel
             Focusable="True"
             HorizontalAlignment="Center"
             IsHitTestVisible="{CompiledBinding !AssociationsViewModel.IsProcessing,
                                                Mode=OneWay}"
+            LastChildFill="True"
             Opacity="{CompiledBinding AssociationsViewModel.Opacity,
-                                      Mode=OneWay}"
-            Orientation="Vertical">
+                                      Mode=OneWay}">
 
             <TextBlock
                 Classes="txt"
+                DockPanel.Dock="Top"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                 FontSize="14"
                 Margin="0,20,0,0"
@@ -43,6 +44,7 @@
 
             <TextBlock
                 Classes="txt"
+                DockPanel.Dock="Top"
                 Foreground="{StaticResource SecondaryTextColor}"
                 HorizontalAlignment="Left"
                 Padding="0,5,10,15"
@@ -51,7 +53,7 @@
 
             <StackPanel
                 Background="Transparent"
-                HorizontalAlignment="Right"
+                DockPanel.Dock="Top"
                 Margin="0,0,0,5"
                 Orientation="Horizontal">
 
@@ -128,6 +130,7 @@
 
             <customControls:AutoScrollViewer
                 Background="Transparent"
+                DockPanel.Dock="Top"
                 Height="520"
                 x:Name="FileTypesScrollViewer">
                 <StackPanel x:Name="FileTypesContainer">
@@ -203,6 +206,6 @@
                 </Button>
 
             </DockPanel>
-        </StackPanel>
+        </DockPanel>
     </Panel>
 </UserControl>

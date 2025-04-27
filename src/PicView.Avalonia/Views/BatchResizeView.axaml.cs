@@ -128,6 +128,15 @@ public partial class BatchResizeView : UserControl
                     CancelButton.IsVisible = false;
                 });
             
+            this.WhenAny(x => x.OutputFolderTextBox.Text, x => x.Value)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Skip(1)
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                });
+            
             this.WhenAnyValue(x => x.ConversionComboBox.SelectedItem,
                     x => x.CompressionComboBox.SelectedItem,
                     x => x.HeightResizeBox,
@@ -135,6 +144,15 @@ public partial class BatchResizeView : UserControl
                     x => x.QualitySlider.Value,
                     x => x.ThumbnailsComboBox.SelectedItem,
                     x => x.IsQualityEnabledBox.IsChecked)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Skip(1)
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                });
+            
+            this.WhenAnyValue(x => x.ResizeComboBox.SelectedItem)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Skip(1)
                 .Subscribe(_ =>

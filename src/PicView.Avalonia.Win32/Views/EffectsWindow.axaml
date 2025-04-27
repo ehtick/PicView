@@ -132,7 +132,7 @@
                                 <MenuItem.Icon>
                                     <Image
                                         Height="12"
-                                        Source="{StaticResource CloseImage}"
+                                        Source="{StaticResource ClearImage}"
                                         Width="12" />
                                 </MenuItem.Icon>
                             </MenuItem>
@@ -161,7 +161,6 @@
                 Focusable="True"
                 Margin="0"
                 Padding="10,2,5,10"
-                PointerPressed="MoveWindow"
                 x:Name="EffectsView" />
         </StackPanel>
     </Border>

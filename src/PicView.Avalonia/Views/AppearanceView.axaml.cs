@@ -13,6 +13,9 @@ namespace PicView.Avalonia.Views;
 public partial class AppearanceView : UserControl
 {
     private readonly CompositeDisposable _disposables = new();
+    
+    private const string ActiveColorBtnClassName = "activeColorBtn";
+    private const string ActiveColorAccentBtnClassName = "activeColorAccentBtn";
     public AppearanceView()
     {
         InitializeComponent();
@@ -70,40 +73,40 @@ public partial class AppearanceView : UserControl
         switch ((ColorOptions)Settings.Theme.ColorTheme)
         {
             case ColorOptions.Raspberry:
-                RaspberryButton.Classes.Add("activeColorBtn");
+                RaspberryButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Teal:
-                TealButton.Classes.Add("activeColorBtn");
+                TealButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Emerald:
-                EmeraldButton.Classes.Add("activeColorBtn");
+                EmeraldButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Golden:
-                GoldButton.Classes.Add("activeColorBtn");
+                GoldButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Orange:
-                OrangeButton.Classes.Add("activeColorBtn");
+                OrangeButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Pink:
-                PinkButton.Classes.Add("activeColorBtn");
+                PinkButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Purple:
-                PurpleButton.Classes.Add("activeColorBtn");
+                PurpleButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Red:
-                RedButton.Classes.Add("activeColorBtn");
+                RedButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Ruby:
-                RubyButton.Classes.Add("activeColorBtn");
+                RubyButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Magenta:
-                MagentaButton.Classes.Add("activeColorBtn");
+                MagentaButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Blue:
-                BlueButton.Classes.Add("activeColorBtn");
+                BlueButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Cyan:
-                CyanButton.Classes.Add("activeColorBtn");
+                CyanButton.Classes.Add(ActiveColorBtnClassName);
                 break;
         }
         
@@ -157,7 +160,7 @@ public partial class AppearanceView : UserControl
 
         foreach (var button in buttons)
         {
-            button.Classes.Remove("activeColorBtn");
+            button.Classes.Remove(ActiveColorBtnClassName);
         }
     }
     
@@ -167,40 +170,40 @@ public partial class AppearanceView : UserControl
         switch (colorTheme)
         {
             default:
-                BlueButton.Classes.Add("activeColorBtn");
+                BlueButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Pink:
-                PinkButton.Classes.Add("activeColorBtn");
+                PinkButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Orange:
-                OrangeButton.Classes.Add("activeColorBtn");
+                OrangeButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Ruby:
-                RubyButton.Classes.Add("activeColorBtn");
+                RubyButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Red:
-                RedButton.Classes.Add("activeColorBtn");
+                RedButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Teal:
-                TealButton.Classes.Add("activeColorBtn");
+                TealButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Raspberry:
-                RaspberryButton.Classes.Add("activeColorBtn");
+                RaspberryButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Golden:
-                GoldButton.Classes.Add("activeColorBtn");
+                GoldButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Purple:
-                PurpleButton.Classes.Add("activeColorBtn");
+                PurpleButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Cyan:
-                CyanButton.Classes.Add("activeColorBtn");
+                CyanButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Magenta:
-                MagentaButton.Classes.Add("activeColorBtn");
+                MagentaButton.Classes.Add(ActiveColorBtnClassName);
                 break;
             case ColorOptions.Emerald:
-                EmeraldButton.Classes.Add("activeColorBtn");
+                EmeraldButton.Classes.Add(ActiveColorBtnClassName);
                 break;
         }
 
@@ -269,34 +272,34 @@ public partial class AppearanceView : UserControl
         switch (selectedBg)
         {
             default:
-                TransparentBgButton.Classes.Add("activeColorBtn");
+                TransparentBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 1:
-                NoiseTextureButton.Classes.Add("activeColorBtn");
+                NoiseTextureButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 2:
-                CheckerboardButton.Classes.Add("activeColorBtn");
+                CheckerboardButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 3:
-                CheckerboardAltButton.Classes.Add("activeColorBtn");
+                CheckerboardAltButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 4:
-                WhiteBgButton.Classes.Add("activeColorBtn");
+                WhiteBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 5:
-                GrayBgButton.Classes.Add("activeColorBtn");
+                GrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 6:
-                DarkGrayBgButton.Classes.Add("activeColorBtn");
+                DarkGrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 7:
-                DarkGraySemiTransparentBgButton.Classes.Add("activeColorBtn");
+                DarkGraySemiTransparentBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 8:
-                DarkGraySemiTransparentAltBgButton.Classes.Add("activeColorBtn");
+                DarkGraySemiTransparentAltBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 9:
-                BlackBgButton.Classes.Add("activeColorBtn");
+                BlackBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
         }
 
@@ -319,7 +322,7 @@ public partial class AppearanceView : UserControl
 
         foreach (var button in buttons)
         {
-            button.Classes.Remove("activeColorBtn");
+            button.Classes.Remove(ActiveColorAccentBtnClassName);
         }
     }
 }

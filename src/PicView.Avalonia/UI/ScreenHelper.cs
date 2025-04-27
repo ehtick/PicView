@@ -64,7 +64,8 @@ public static class ScreenHelper
         {
             > 500 and < 600 => 500,
             > 600 and < 700 => 550,
-            >= 700 => 700,
+            >= 650 and < 750 => 720,
+            >= 750 => 750,
             _ => SizeDefaults.WindowMinSize
         };
     }

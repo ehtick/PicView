@@ -182,9 +182,9 @@
                         <Setter Property="BorderThickness" Value="1" />
                         <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
                     </Style>
-                    <Style Selector="Button.colorBtn.activeColorBtn">
+                    <Style Selector="Button.colorBtn.activeColorAccentBtn">
                         <Setter Property="BorderThickness" Value="2" />
-                        <Setter Property="BorderBrush" Value="#FFFFFF" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
                     </Style>
                     <Style Selector="Button.colorBtn:pointerover">
                         <Setter Property="BorderThickness" Value="2" />

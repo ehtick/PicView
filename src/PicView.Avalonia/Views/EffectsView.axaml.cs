@@ -61,6 +61,8 @@ public partial class EffectsView : UserControl
 
     private void InitializeUIEvents(MainViewModel vm)
     {
+        CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
+        
         PointerPressed += OnPointerPressed;
         ClearEffectsItem.Click += async (_, _) => await RemoveEffects();
         ResetContrastBtn.Click += (_, _) => ContrastSlider.Value = 0;
