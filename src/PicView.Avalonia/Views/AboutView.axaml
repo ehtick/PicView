@@ -255,6 +255,17 @@
             <HyperlinkButton
                 HorizontalAlignment="Center"
                 Margin="0,1,0,5"
+                NavigateUri="https://signpath.org/"
+                ToolTip.Tip="https://signpath.org/">
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{StaticResource SecondaryTextColor}"
+                    Text="SignPath Foundation." />
+            </HyperlinkButton>
+
+            <HyperlinkButton
+                HorizontalAlignment="Center"
+                Margin="0,1,0,5"
                 NavigateUri="http://Ionicons.com/"
                 ToolTip.Tip="http://Ionicons.com/">
                 <TextBlock
