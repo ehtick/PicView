@@ -169,7 +169,7 @@ public static class GalleryLoad
         finally
         {
             IsLoading = false;
-            _cancellationTokenSource.Dispose();
+            _cancellationTokenSource?.Dispose();
             _cancellationTokenSource = null;
             _currentDirectory = null;
         }
