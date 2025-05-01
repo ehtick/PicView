@@ -130,7 +130,7 @@ public partial class BatchResizeView : UserControl
             
             this.WhenAny(x => x.OutputFolderTextBox.Text, x => x.Value)
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Skip(1)
+                .Skip(2)
                 .Subscribe(_ =>
                 {
                     ResetButton.IsVisible = true;
