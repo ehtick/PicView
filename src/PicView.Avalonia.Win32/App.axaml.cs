@@ -1,23 +1,19 @@
 ﻿using System.Runtime;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Clowd.Clipboard;
 using PicView.Avalonia.ColorManagement;
-using PicView.Avalonia.Functions;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
-using PicView.Core.ViewModels;
 using PicView.Core.WindowsNT;
 using PicView.Core.WindowsNT.FileAssociation;
 using PicView.Core.WindowsNT.FileHandling;
@@ -28,19 +24,12 @@ using Win32Clipboard = PicView.Core.WindowsNT.Copy.Win32Clipboard;
 
 namespace PicView.Avalonia.Win32;
 
-public partial class App : Application, IPlatformSpecificService
+public class App : Application, IPlatformSpecificService
 {
-    private WinMainWindow? _mainWindow;
-    private ExifWindow? _exifWindow;
-    private SettingsWindow? _settingsWindow;
-    private KeybindingsWindow? _keybindingsWindow;
-    private AboutWindow? _aboutWindow;
-    private SingleImageResizeWindow? _singleImageResizeWindow;
-    private BatchResizeWindow? _batchResizeWindow;
-    private EffectsWindow? _effectsWindow;
-    private MainViewModel? _vm;
-    
+    private static WinMainWindow? _mainWindow;
+    private static WindowManager? _windowManager;
     private TaskbarProgress? _taskbarProgress;
+    private MainViewModel? _vm;
 
     public override void Initialize()
     {
@@ -71,7 +60,7 @@ public partial class App : Application, IPlatformSpecificService
             {
                 return;
             }
-        
+
             TranslationManager.Init();
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -80,54 +69,57 @@ public partial class App : Application, IPlatformSpecificService
 
                 _mainWindow = new WinMainWindow();
                 desktop.MainWindow = _mainWindow;
-            },DispatcherPriority.Send);
-        
+            }, DispatcherPriority.Send);
+
             _vm = new MainViewModel(this);
-        
+
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 _mainWindow.DataContext = _vm;
                 StartUpHelper.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
-            },DispatcherPriority.Send);
+                _windowManager = new WindowManager();
+            }, DispatcherPriority.Send);
         }
         catch (Exception e)
         {
-            #if DEBUG
+#if DEBUG
             Console.WriteLine(e);
-            #endif
+#endif
         }
     }
-    
+
     #region Interface Implementations
-    
+
     public void SetTaskbarProgress(ulong progress, ulong maximum)
     {
         if (_taskbarProgress is null)
         {
             var handle = _mainWindow?.TryGetPlatformHandle()?.Handle;
-    
+
             // Ensure the handle is valid before proceeding
             if (handle == IntPtr.Zero || handle is null)
             {
                 return;
             }
+
             _taskbarProgress = new TaskbarProgress(handle.Value);
         }
 
         _taskbarProgress.SetProgress(progress, maximum);
     }
-    
+
     public void StopTaskbarProgress()
     {
         var handle = _mainWindow?.TryGetPlatformHandle()?.Handle;
-    
+
         // Ensure the handle is valid before proceeding
         if (handle == IntPtr.Zero || handle is null)
         {
             return;
         }
+
         _taskbarProgress?.StopProgress();
-        
+
         _taskbarProgress = null;
     }
 
@@ -163,311 +155,26 @@ public partial class App : Application, IPlatformSpecificService
         FileExplorer.ShowFileProperties(path);
     }
 
-    public void ShowAboutWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
+    public void ShowAboutWindow() =>
+        _windowManager?.ShowAboutWindow(_vm);
 
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
+    public void ShowExifWindow() =>
+        _windowManager?.ShowExifWindow(_vm);
 
-            if (_aboutWindow is null)
-            {
-                _aboutWindow = new AboutWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _aboutWindow.Show(desktop.MainWindow);
-                _aboutWindow.Closing += (s, e) => _aboutWindow = null;
-            }
-            else
-            {
-                if (_aboutWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_aboutWindow);
-                }
-                else
-                {
-                    _aboutWindow.Show();
-                }       
-            }
+    public void ShowKeybindingsWindow() =>
+        _windowManager?.ShowKeybindingsWindow(_vm);
 
-            _ = FunctionsMapper.CloseMenus();
-        }
-    }
+    public void ShowSettingsWindow() =>
+        _windowManager?.ShowSettingsWindow(_vm);
 
-    public void ShowExifWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
+    public void ShowSingleImageResizeWindow() =>
+        _windowManager?.ShowSingleImageResizeWindow(_vm);
 
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
+    public void ShowBatchResizeWindow() =>
+        _windowManager?.ShowBatchResizeWindow(_vm);
 
-            if (_exifWindow is null)
-            {
-                _exifWindow = new ExifWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _exifWindow.Show(desktop.MainWindow);
-                _exifWindow.Closing += (s, e) => _exifWindow = null;
-            }
-            else
-            {
-                if (_exifWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_exifWindow);
-                }
-                else
-                {
-                    _exifWindow.Show();
-                }       
-            }
-
-            _ = FunctionsMapper.CloseMenus();
-        }
-    }
-
-    public void ShowKeybindingsWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
-
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-
-            if (_keybindingsWindow is null)
-            {
-                _keybindingsWindow = new KeybindingsWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _keybindingsWindow.Show(desktop.MainWindow);
-                _keybindingsWindow.Closing += (s, e) => _keybindingsWindow = null;
-            }
-            else
-            {
-                if (_keybindingsWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_keybindingsWindow);
-                }
-                else
-                {
-                    _keybindingsWindow.Show();
-                }       
-            }
-
-            _ = FunctionsMapper.CloseMenus();
-        }
-    }
-
-    public void ShowSettingsWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-            if (_settingsWindow is null)
-            {
-                _vm.AssociationsViewModel ??= new FileAssociationsViewModel();
-                _vm.SettingsViewModel ??= new SettingsViewModel();
-                _settingsWindow = new SettingsWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _settingsWindow.Show(desktop.MainWindow);
-                _settingsWindow.Closing += (s, e) => _settingsWindow = null;
-            }
-            else
-            {
-                if (_settingsWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_settingsWindow);
-                }
-                else
-                {
-                    _settingsWindow.Show();
-                }         
-            }
-            _= FunctionsMapper.CloseMenus();
-            
-        }
-    }
-
-    public void ShowSingleImageResizeWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-            if (_singleImageResizeWindow is null)
-            {
-                _singleImageResizeWindow = new SingleImageResizeWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _singleImageResizeWindow.Show(desktop.MainWindow);
-                _singleImageResizeWindow.Closing += (s, e) => _singleImageResizeWindow = null;
-            }
-            else
-            {
-                if (_singleImageResizeWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_singleImageResizeWindow);
-                }
-                else
-                {
-                    _singleImageResizeWindow.Show();
-                }         
-            }
-            _= FunctionsMapper.CloseMenus();
-        }
-    }
-    
-    public void ShowBatchResizeWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-            if (_batchResizeWindow is null)
-            {
-                _batchResizeWindow = new BatchResizeWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                };
-                _batchResizeWindow.Show(desktop.MainWindow);
-                _batchResizeWindow.Closing += (s, e) => _batchResizeWindow = null;
-            }
-            else
-            {
-                if (_batchResizeWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_batchResizeWindow);
-                }
-                else
-                {
-                    _batchResizeWindow.Show();
-                }
-            }
-            _= FunctionsMapper.CloseMenus();
-        }   
-    }
-    
-    public void ShowEffectsWindow()
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-        return;
-        void Set()
-        {
-            if (Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-            if (_effectsWindow is null)
-            {
-                _effectsWindow = new EffectsWindow
-                {
-                    DataContext = _vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,    
-                };
-                _effectsWindow.Show(desktop.MainWindow);
-                _effectsWindow.Closing += (s, e) => _effectsWindow = null;
-            }
-            else
-            {
-                if (_effectsWindow.WindowState == WindowState.Minimized)
-                {
-                    WindowFunctions.ShowMinimizedWindow(_effectsWindow);
-                }
-                else
-                {
-                    _effectsWindow.Show();
-                }
-            }
-            _= FunctionsMapper.CloseMenus();
-        }
-    }
+    public void ShowEffectsWindow() =>
+        _windowManager?.ShowEffectsWindow(_vm);
 
     public void Print(string path)
     {
@@ -482,7 +189,7 @@ public partial class App : Application, IPlatformSpecificService
             WallpaperHelper.SetDesktopWallpaper(path, style);
         });
     }
-    
+
     public bool SetAsLockScreen(string path)
     {
         return false;
@@ -493,7 +200,7 @@ public partial class App : Application, IPlatformSpecificService
     {
         return Win32Clipboard.CopyFileToClipboard(false, path);
     }
-    
+
     public bool CutFile(string path)
     {
         return Win32Clipboard.CopyFileToClipboard(true, path);
@@ -508,7 +215,7 @@ public partial class App : Application, IPlatformSpecificService
     {
         return await ClipboardAvalonia.GetImageAsync().ConfigureAwait(false);
     }
-    
+
     public async Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)
     {
         return await ArchiveExtractionHelper.ExtractWithLocalSoftwareAsync(path, tempDirectory);
@@ -529,11 +236,11 @@ public partial class App : Application, IPlatformSpecificService
     {
         NativeMethods.DisableScreensaver();
     }
-    
+
     public void EnableScreensaver()
     {
         NativeMethods.EnableScreensaver();
     }
-    
+
     #endregion
 }

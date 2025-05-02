@@ -86,7 +86,8 @@
                 Focusable="True"
                 Margin="0"
                 Padding="10,2,5,10"
-                PointerPressed="MoveWindow" />
+                PointerPressed="MoveWindow"
+                x:Name="AboutView" />
         </StackPanel>
     </Border>
 </Window>

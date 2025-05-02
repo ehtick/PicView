@@ -8,10 +8,19 @@ using PicView.Core.FileHandling;
 
 namespace PicView.Avalonia.Navigation;
 
+/// <summary>
+/// Manages file list sorting and updating within the application.
+/// </summary>
 public static class FileListManager
 {
     private static CancellationTokenSource? _cancellationTokenSource;
-    
+
+    /// <summary>
+    /// Sorts an enumerable collection of file paths based on the specified sort order and platform-specific string comparison.
+    /// </summary>
+    /// <param name="files">The collection of file paths to sort.</param>
+    /// <param name="platformService">Platform-specific service for string comparison.</param>
+    /// <returns>A sorted list of file paths.</returns>
     public static List<string> SortIEnumerable(IEnumerable<string> files, IPlatformSpecificService? platformService)
     {
         var sortFilesBy = FileListHelper.GetSortOrder();
@@ -67,7 +76,13 @@ public static class FileListManager
                 return files.OrderBy(f => Guid.NewGuid()).ToList();
         }
     }
-    
+
+    /// <summary>
+    /// Updates the file list in the view model based on the specified sort order.
+    /// </summary>
+    /// <param name="platformSpecificService">Platform-specific service for file retrieval and sorting.</param>
+    /// <param name="vm">The main view model instance.</param>
+    /// <param name="sortFilesBy">The sort order to apply.</param>
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, FileListHelper.SortFilesBy sortFilesBy)
     {
         Settings.Sorting.SortPreference = (int)sortFilesBy;
@@ -79,6 +94,12 @@ public static class FileListManager
         await UpdateFileList(platformSpecificService, vm);
     }
 
+    /// <summary>
+    /// Updates the file list in the view model based on the specified sorting direction (ascending/descending).
+    /// </summary>
+    /// <param name="platformSpecificService">Platform-specific service for file retrieval and sorting.</param>
+    /// <param name="vm">The main view model instance.</param>
+    /// <param name="ascending">Whether to sort in ascending order (true) or descending order (false).</param>
     public static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm, bool ascending)
     {
         Settings.Sorting.Ascending = ascending;
@@ -89,6 +110,11 @@ public static class FileListManager
         await UpdateFileList(platformSpecificService, vm);
     }
 
+    /// <summary>
+    /// Updates the file list in the view model, refreshing the gallery and UI as necessary.
+    /// </summary>
+    /// <param name="platformSpecificService">Platform-specific service for file retrieval and sorting.</param>
+    /// <param name="vm">The main view model instance.</param>
     private static async Task UpdateFileList(IPlatformSpecificService? platformSpecificService, MainViewModel vm)
     {
         if (_cancellationTokenSource is not null)
