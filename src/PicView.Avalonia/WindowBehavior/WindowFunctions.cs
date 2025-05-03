@@ -361,8 +361,8 @@ public static class WindowFunctions
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
-            CenterWindowOnScreen();
             vm.IsAutoFit = true;
+            CenterWindowOnScreen();
             _ = ResizeAndFixRenderingError(vm); // Fixes incorrect render size
         }
         else
@@ -542,7 +542,7 @@ public static class WindowFunctions
 
     #region Window Size and Position
 
-    public static void CenterWindowOnScreen(bool horizontal = true)
+    public static void CenterWindowOnScreen(bool horizontal = true, bool top = false)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -567,7 +567,7 @@ public static class WindowFunctions
 
             // Calculate the position to center the window on the screen
             var centeredX = x + (screen.WorkingAreaWidth - windowSize.Width) / 2;
-            var centeredY = y + (screen.WorkingAreaHeight - windowSize.Height) / 2;
+            var centeredY = y + (top ? 0 : (screen.WorkingAreaHeight - windowSize.Height) / 2);
 
             // Set the window's new position
             window.Position = horizontal

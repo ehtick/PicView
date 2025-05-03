@@ -173,13 +173,9 @@
                 Width="45"
                 x:Name="LocateOnDiskButton" />
 
-            <buttons:StarOutlineButtons
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                DockPanel.Dock="Right"
-                x:Name="StarOutlineButtons" />
+            <buttons:StarOutlineButtons DockPanel.Dock="Right" x:Name="StarOutlineButtons" />
 
             <customControls:IconButton
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
@@ -191,6 +187,8 @@
                 Icon="{StaticResource StarOffImage}"
                 IconHeight="17"
                 IconWidth="17"
+                ToolTip.Tip="{CompiledBinding Translation.RemoveStarRating,
+                                              Mode=OneWay}"
                 Width="35"
                 x:Name="RemoveRatingButton" />
 

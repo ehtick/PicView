@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Gallery;

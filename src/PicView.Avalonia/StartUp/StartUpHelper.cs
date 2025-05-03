@@ -66,17 +66,8 @@ public static class StartUpHelper
         
         InitializeSettings(vm);
         
-        if (Settings.WindowProperties.AutoFit)
-        {
-            ScreenHelper.UpdateScreenSize(window);
-            HandleAutoFit(vm, window);
-        }
-        else
-        {
-            HandleNormalWindow(vm, window);
-        }
+        HandleWindowScalingMode(vm, window);
         
-        vm.ImageViewer = new ImageViewer();
         HandleStartUpMenuOrImage(vm, args);
         window.Show();
         
@@ -84,10 +75,20 @@ public static class StartUpHelper
     }
     
         public static void StartWithoutArguments(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop,
-        Window window)
+        Window window, string? arg = null)
     {
         InitializeSettings(vm);
         
+        HandleWindowScalingMode(vm, window);
+
+        HandleStartUpMenuOrImage(vm, arg is null ? [] : [arg]);
+        window.Show();
+        
+        HandlePostWindowUpdates(vm, settingsExists, desktop, window);
+    }
+
+    private static void HandleWindowScalingMode(MainViewModel vm, Window window)
+    {
         if (Settings.WindowProperties.AutoFit)
         {
             ScreenHelper.UpdateScreenSize(window);
@@ -97,10 +98,6 @@ public static class StartUpHelper
         {
             HandleNormalWindow(vm, window);
         }
-        window.Show();
-        vm.ImageViewer = new ImageViewer();
-        
-        HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
 
     private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop, Window window)
@@ -188,8 +185,10 @@ public static class StartUpHelper
         }
     }
 
-    private static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
+    public static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
     {
+        vm.ImageViewer = new ImageViewer();
+        
         if (args.Length > 1)
         {
             vm.CurrentView = vm.ImageViewer;
@@ -202,7 +201,7 @@ public static class StartUpHelper
                 ErrorHandling.ShowStartUpMenu(vm);
                 if (Settings.WindowProperties.AutoFit)
                 {
-                    WindowFunctions.CenterWindowOnScreen();
+                    WindowFunctions.CenterWindowOnScreen(false, true);
                 }
             }
             else

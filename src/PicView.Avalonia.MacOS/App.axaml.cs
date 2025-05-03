@@ -79,21 +79,17 @@ public class App : Application, IPlatformSpecificService
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 _mainWindow.DataContext = _vm;
-#if DEBUG
-                StartUpHelper.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
-#else
-                StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
-#endif
+                if (startUpFilePath is not null)
+                {
+                    StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow, startUpFilePath);
+                }
+                else
+                {
+                    StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
+                }
             },DispatcherPriority.Send);
-
-            if (startUpFilePath is not null)
-            {
-                await QuickLoad.QuickLoadAsync(_vm, startUpFilePath).ConfigureAwait(false);
-            }
-            else
-            {
-                ErrorHandling.ShowStartUpMenu(_vm);
-            }
+            
+            // Register for macOS file opening
             Current.UrlsOpened += async (_, e) =>
             {
                 await NavigationManager.LoadPicFromStringAsync(e.Urls[0], _vm).ConfigureAwait(false);

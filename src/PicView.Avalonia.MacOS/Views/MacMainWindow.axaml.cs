@@ -18,12 +18,12 @@ public partial class MacMainWindow : Window
             {
                 WindowResizing.HandleWindowResize(this, size);
             });
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
             this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
             {
-                if (DataContext is not MainViewModel vm)
-                {
-                    return;
-                }
                 switch (state)
                 {
                     case WindowState.FullScreen:
@@ -36,6 +36,11 @@ public partial class MacMainWindow : Window
                         vm.IsFullscreen = false;
                         break;
                 }
+            });
+            // Hide macOS buttons when interface is hidden
+            vm.WhenAnyValue(x => x.IsTopToolbarShown).Subscribe(shown =>
+            {
+                SystemDecorations = shown ? SystemDecorations.Full : SystemDecorations.None;
             });
         };
     }

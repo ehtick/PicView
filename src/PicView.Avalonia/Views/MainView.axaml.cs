@@ -78,6 +78,7 @@ public partial class MainView : UserControl
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 WallpaperMenuItem.IsVisible = false;
+                OpenWithMenuItem.IsVisible = false;
             }
             else
             {
