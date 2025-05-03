@@ -1,10 +1,10 @@
 ﻿param (
     [Parameter()]
     [string]$Platform,
-    
+
     [Parameter()]
     [string]$outputPath,
-	
+
     [Parameter()]
     [string]$appVersion
 )
@@ -66,9 +66,12 @@ $infoPlistPath = Join-Path -Path $contentsPath -ChildPath "Info.plist"
 # Read template as text
 $infoPlistContent = Get-Content $infoPlistTemplatePath -Raw
 
+# Map platform identifier to proper macOS architecture identifier
+$macOSArchitecture = if ($Platform -eq "arm64") { "arm64" } else { "x86_64" }
+
 # Replace placeholders with actual values
 $infoPlistContent = $infoPlistContent -replace "{{appVersion}}", $appVersion
-$infoPlistContent = $infoPlistContent -replace "{{platform}}", $Platform
+$infoPlistContent = $infoPlistContent -replace "{{platform}}", $macOSArchitecture
 
 # Save Info.plist with UTF-8 encoding without BOM
 $utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $false
