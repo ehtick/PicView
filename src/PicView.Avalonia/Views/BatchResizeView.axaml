@@ -125,6 +125,7 @@
 
                     <TextBlock
                         Classes="txt"
+                        IsEnabled="{Binding Path=IsChecked, ElementName=IsQualityEnabledBox}"
                         Margin="5,0,0,0"
                         Text="{CompiledBinding Translation.Quality,
                                                Mode=OneWay}"
