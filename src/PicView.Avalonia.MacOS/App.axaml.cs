@@ -2,6 +2,7 @@
 using System.Runtime;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
@@ -37,7 +38,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         ProfileOptimization.SetProfileRoot(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/"));
         ProfileOptimization.StartProfile("ProfileOptimization");
         #endif
-        base.OnFrameworkInitializationCompleted();
+        AvaloniaXamlLoader.Load(this);
     }
 
     public override async void OnFrameworkInitializationCompleted()
