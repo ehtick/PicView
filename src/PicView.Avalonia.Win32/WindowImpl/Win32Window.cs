@@ -12,6 +12,9 @@ public static class Win32Window
 {
     public static async Task Fullscreen(Window window, MainViewModel vm, bool saveSettings = true)
     {
+        // Save window size, so that restoring it will return to the same size and position
+        WindowResizing.SaveSize(window);
+        
         // Update view model properties
         vm.SizeToContent = SizeToContent.Manual;
         vm.IsFullscreen = true;
@@ -27,7 +30,7 @@ public static class Win32Window
         // Hide interface in fullscreen
         HideInterface(vm);
         
-        // Center window on screen
+        // Center it, to make sure it is positioned correctly
         CenterWindowOnScreen(window);
         
         WindowResizing.SetSize(vm);
@@ -50,6 +53,11 @@ public static class Win32Window
             if (Settings.WindowProperties.AutoFit)
             {
                 vm.SizeToContent = SizeToContent.Manual;
+            }
+            else
+            {
+                // Save window size, so that restoring it will return to the same size and position
+                WindowResizing.SaveSize(window);
             }
 
             window.WindowState = WindowState.Maximized;
@@ -238,18 +246,6 @@ public static class Win32Window
             vm.TopScreenMargin = noThickness;
             vm.BottomScreenMargin = noThickness;
         }
-    }
-    
-    
-    /// <summary>
-    /// Invokes an action on the UI thread
-    /// </summary>
-    private static void InvokeOnUIThread(Action action)
-    {
-        if (Dispatcher.UIThread.CheckAccess())
-            action();
-        else
-            Dispatcher.UIThread.InvokeAsync(action);
     }
     
     /// <summary>
