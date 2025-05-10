@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using ReactiveUI;
@@ -22,18 +23,27 @@ public partial class MacMainWindow : Window
             {
                 return;
             }
-            this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
+            this.WhenAnyValue(x => x.WindowState).Subscribe(async state =>
             {
                 switch (state)
                 {
                     case WindowState.FullScreen:
+                        if (!Settings.WindowProperties.Fullscreen)
+                        {
+                            await MacOSWindow.Fullscreen(this, vm); 
+                        }
+                        break;
                     case WindowState.Maximized:
-                        Settings.WindowProperties.Fullscreen = true;
-                        vm.IsFullscreen = true;
+                        if (!Settings.WindowProperties.Maximized)
+                        {
+                            await MacOSWindow.Maximize(this, vm); 
+                        }
                         break;
                     case WindowState.Normal:
-                        Settings.WindowProperties.Fullscreen = false;
-                        vm.IsFullscreen = false;
+                        if (Settings.WindowProperties.Maximized || Settings.WindowProperties.Fullscreen)
+                        {
+                            await MacOSWindow.Restore(this, vm);
+                        }
                         break;
                 }
             });

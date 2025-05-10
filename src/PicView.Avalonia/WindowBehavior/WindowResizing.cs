@@ -67,6 +67,18 @@ public static class WindowResizing
         }
     }
     
+    public static async Task SetSizeAsync(MainViewModel vm)
+    {
+        var size = GetSize(vm);
+
+        if (size is null)
+        {
+            return;
+        }
+        
+        await Dispatcher.UIThread.InvokeAsync(() => SetSize(size.Value, vm));
+    }
+    
     public static void SetSize(double width, double height, MainViewModel vm) 
         => SetSize(width, height, 0, 0, 0, vm);
 
