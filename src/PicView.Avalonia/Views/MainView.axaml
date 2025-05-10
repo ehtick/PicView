@@ -1258,9 +1258,9 @@
             Orientation="Horizontal"
             VerticalAlignment="Top"
             x:Name="AltButtonsPanel">
-            <buttons:AltMinimize />
-            <buttons:AltRestore />
-            <buttons:AltClose />
+            <buttons:AltMinimize x:Name="AltMinimize" />
+            <buttons:AltRestore x:Name="AltRestore" />
+            <buttons:AltClose x:Name="AltClose" />
         </StackPanel>
         <buttons:GalleryShortcut
             HorizontalAlignment="Right"

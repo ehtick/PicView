@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Converters;
@@ -24,6 +25,14 @@ public partial class MainView : UserControl
     public MainView()
     {
         InitializeComponent();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            // Move alt hover to left side on macOS and switch button order
+            AltButtonsPanel.HorizontalAlignment = HorizontalAlignment.Left; 
+            AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltClose),0);
+            AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltMinimize),2);
+        }
 
         if (!Settings.Theme.Dark && !Settings.Theme.GlassTheme)
         {
