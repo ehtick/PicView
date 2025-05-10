@@ -159,8 +159,6 @@
             <views:EffectsView
                 Background="{DynamicResource NoisyTexture}"
                 Focusable="True"
-                Margin="0"
-                Padding="10,2,5,10"
                 x:Name="EffectsView" />
         </StackPanel>
     </Border>
