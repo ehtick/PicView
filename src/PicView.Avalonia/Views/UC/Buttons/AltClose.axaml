@@ -13,7 +13,7 @@
     <Button
         Background="{DynamicResource AltBackgroundColor}"
         BorderThickness="1,0,0,1"
-        Classes="ButtonBorder noBorderHover"
+        Classes="ButtonBorder hover"
         ClickMode="Release"
         Command="{CompiledBinding ExitCommand}"
         CornerRadius="0,0,0,0"

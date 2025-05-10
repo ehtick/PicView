@@ -14,7 +14,7 @@
         Background="{DynamicResource AltBackgroundColor}"
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1,0,0,0"
-        Classes="ButtonBorder noBorderHover"
+        Classes="ButtonBorder hover"
         ClickMode="Release"
         Command="{CompiledBinding MinimizeCommand}"
         CornerRadius="0,0,0,10"
