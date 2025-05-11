@@ -220,9 +220,14 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         FileAssociationManager.Initialize(iIFileAssociationService);
     }
 
-    public Task<bool> DeleteFile(string path, bool recycle)
+    public async Task<bool> DeleteFile(string path, bool recycle)
     {
-         throw new NotImplementedException(); 
+        if (recycle)
+        {
+            return await Task.Run(() => OsxFileHelper.MoveFileToRecycleBinAsync(path));
+        }
+        await Task.Run(() => File.Delete(path));
+        return !File.Exists(path); 
     }
     
     #endregion
