@@ -4,22 +4,29 @@
 	<TargetFramework>net9.0</TargetFramework>
     <Platforms>x64;arm64</Platforms>
     <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+    
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Company>Ruben Hyldgaard Negendahl</Company>
-    <Product>PicView</Product>
     <UseAppHost>true</UseAppHost>
+    <ImplicitUsings>enable</ImplicitUsings>
+    
     <PublishAot>true</PublishAot>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <OptimizationPreference>Speed</OptimizationPreference>
     <Trimming>full</Trimming>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <LangVersion>preview</LangVersion>
+
     <Company>Ruben Hyldgaard Negendahl</Company>
     <Authors>Ruben Hyldgaard Negendahl</Authors>
     <Copyright>© Ruben Hyldgaard Negendahl</Copyright>
-    <ImplicitUsings>enable</ImplicitUsings>
+
     <Product>PicView</Product>
     <AssemblyName>PicView</AssemblyName>
+
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>

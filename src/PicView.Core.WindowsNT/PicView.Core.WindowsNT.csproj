@@ -7,6 +7,12 @@
     <Platforms>x64;arm64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>preview</LangVersion>
+
+    <PublishAot>true</PublishAot>
+    <Trimming>full</Trimming>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
