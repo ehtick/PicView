@@ -172,11 +172,10 @@ public partial class EditableTitlebar : UserControl
 
             if (saved)
             {
-                var deleteMsg = FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
-                if (!string.IsNullOrWhiteSpace(deleteMsg))
+                var success = await vm.PlatformService.DeleteFile(oldPath, true);
+                if (!success)
                 {
-                    // Show error message to user
-                    await TooltipHelper.ShowTooltipMessageAsync(deleteMsg);
+                    await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
                     vm.IsLoading = false;
                     return;
                 }

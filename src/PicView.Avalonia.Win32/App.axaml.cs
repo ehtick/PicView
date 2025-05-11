@@ -94,6 +94,9 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public int CombinedTitleButtonsWidth { get; set; } = 215;
 
     #region Interface Implementations
+    
+    public Task<bool> DeleteFile(string path, bool recycle) =>
+        Task.Run(() => WinFileHelper.DeleteFile(path, recycle));
 
     public void SetTaskbarProgress(ulong progress, ulong maximum)
     {

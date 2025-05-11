@@ -558,11 +558,11 @@ public static class FunctionsMapper
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFile() =>
-        await FileManager.DeleteFileWithOptionalDialog(true, Vm.PicViewer?.FileInfo?.FullName).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(true, Vm.PicViewer?.FileInfo?.FullName, Vm.PlatformService).ConfigureAwait(false);
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFilePermanently() =>
-        await FileManager.DeleteFileWithOptionalDialog(false, Vm.PicViewer?.FileInfo?.FullName).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(false, Vm.PicViewer?.FileInfo?.FullName, Vm.PlatformService).ConfigureAwait(false);
 
     public static async Task Rename()
     {

@@ -11,7 +11,7 @@ public class FileFunctionTest
         var path = TempFileHelper.TempFilePath;
         Assert.True(result);
         Assert.True(Directory.Exists(TempFileHelper.TempFilePath));
-        FileDeletionHelper.DeleteTempFiles();
+        TempFileHelper.DeleteTempFiles();
         Assert.False(Directory.Exists(path));
         Assert.False(Directory.Exists(TempFileHelper.TempFilePath));
     }

@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.PopUps;
-using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.FileSystem;
@@ -14,7 +14,7 @@ public static class FileManager
     /// <summary>
     ///     Deletes the current file, either permanently or by moving to recycle bin
     /// </summary>
-    public static async Task DeleteFileWithOptionalDialog(bool recycle, string path)
+    public static async Task DeleteFileWithOptionalDialog(bool recycle, string path, IPlatformSpecificService platformService)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
@@ -23,30 +23,25 @@ public static class FileManager
 
         try
         {
-            if (recycle && Settings.UIProperties.ShowRecycleConfirmation)
+            if (recycle && Settings.UIProperties.ShowRecycleConfirmation ||
+                !recycle && Settings.UIProperties.ShowPermanentDeletionConfirmation)
             {
                await Dispatcher.UIThread.InvokeAsync(ShowDeleteDialog);
             }
-            else if (!recycle && Settings.UIProperties.ShowPermanentDeletionConfirmation)
-            {
-                await Dispatcher.UIThread.InvokeAsync(ShowDeleteDialog);
-            }
             else
             {
-                var errorMsg =
-                    await Task.FromResult(
-                        FileDeletionHelper.DeleteFileWithErrorMsg(path, recycle));
+                var success = await platformService.DeleteFile(path, recycle);
 
-                if (!string.IsNullOrEmpty(errorMsg))
-                {
-                    await TooltipHelper.ShowTooltipMessageAsync(errorMsg, true);
-                }
-                else
+                if (success)
                 {
                     var msg = recycle
                         ? TranslationManager.Translation.SentFileToRecycleBin
                         : TranslationManager.Translation.DeletedFile;
                     await TooltipHelper.ShowTooltipMessageAsync(msg + Environment.NewLine + Path.GetFileName(path));
+                }
+                else
+                {
+                    await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError, true);
                 }
             }
         }

@@ -1,8 +1,8 @@
 ﻿using ImageMagick;
+using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.Converters;
@@ -56,7 +56,7 @@ internal static class ConversionHelper
         return await SaveImageFileHelper.ResizeImageAsync(fileInfo, 0, (uint)height).ConfigureAwait(false);
     }
 
-    public static async Task<string> ConvertTask(FileInfo fileInfo, int selectedIndex)
+    public static async Task<string> ConvertTask(FileInfo fileInfo, int selectedIndex, IPlatformSpecificService platform)
     {
         var currentExtension = fileInfo.Extension.ToLower();
         var newExtension = selectedIndex switch
@@ -83,7 +83,7 @@ internal static class ConversionHelper
             return string.Empty;
         }
 
-        FileDeletionHelper.DeleteFileWithErrorMsg(oldPath, false);
+        await platform.DeleteFile(oldPath, true);
         return newPath;
     }
     
@@ -94,7 +94,7 @@ internal static class ConversionHelper
             return;
         }
 
-        var newPath = await ConvertTask(vm.PicViewer.FileInfo, index);
+        var newPath = await ConvertTask(vm.PicViewer.FileInfo, index, vm.PlatformService);
         if (!string.IsNullOrWhiteSpace(newPath))
         {
             await NavigationManager.LoadPicFromStringAsync(newPath, vm);

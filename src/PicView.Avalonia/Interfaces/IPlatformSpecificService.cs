@@ -40,4 +40,6 @@ public interface IPlatformSpecificService
     string DefaultJsonKeyMap();
 
     void InitiateFileAssociationService();
+    
+    Task<bool> DeleteFile(string path, bool recycle);
 }

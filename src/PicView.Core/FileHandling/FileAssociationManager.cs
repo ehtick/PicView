@@ -1,4 +1,6 @@
-﻿namespace PicView.Core.FileHandling;
+﻿using PicView.Core.DebugTools;
+
+namespace PicView.Core.FileHandling;
 
 /// <summary>
 /// Platform-agnostic manager for file associations that delegates to platform-specific implementations
@@ -24,7 +26,10 @@ public static class FileAssociationManager
     /// <returns>True if successful, false otherwise</returns>
     public static async Task<bool> AssociateFile(string fileExtension, string? description = null)
     {
-        EnsureInitialized();
+        if (!EnsureInitialized())
+        {
+            return false;
+        }
         // Use provided description or generate a default one
         var fileDescription = description ?? $"{fileExtension.TrimStart('.')} Image File";
         return await _service.RegisterFileAssociation(fileExtension, fileDescription);
@@ -49,16 +54,23 @@ public static class FileAssociationManager
     /// </summary>
     public static async Task<bool> IsFileAssociated(string fileExtension)
     {
-        EnsureInitialized();
+        if (!EnsureInitialized())
+        {
+            return false;
+        }
         return await _service.IsFileAssociated(fileExtension);
     }
     
-    private static void EnsureInitialized()
+    private static bool EnsureInitialized()
     {
-        if (_service == null)
+        if (_service != null)
         {
-            throw new InvalidOperationException(
-                "FileAssociationManager has not been initialized. Call Initialize() with an appropriate implementation before using this class.");
+            return true;
         }
+
+        var ex = new InvalidOperationException(
+            "FileAssociationManager has not been initialized. Call Initialize() with an appropriate implementation before using this class.");
+        DebugHelper.LogDebug(nameof(FileAssociationManager), nameof(EnsureInitialized), ex);
+        return false;
     }
 }

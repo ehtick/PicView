@@ -1103,11 +1103,11 @@ public class MainViewModel : ReactiveObject
     private async Task CutFileTask(string path) =>
         await ClipboardFileOperations.CutFile(path, this).ConfigureAwait(false);
 
-    private static async Task DeleteFileTask(string path) =>
-        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path)).ConfigureAwait(false);
+    private async Task DeleteFileTask(string path) =>
+        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path, PlatformService)).ConfigureAwait(false);
 
-    private static async Task RecycleFileTask(string path) =>
-        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path)).ConfigureAwait(false);
+    private async Task RecycleFileTask(string path) =>
+        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path, PlatformService)).ConfigureAwait(false);
 
     private async Task DuplicateFileTask(string path) =>
         await ClipboardFileOperations.Duplicate(path, this).ConfigureAwait(false);

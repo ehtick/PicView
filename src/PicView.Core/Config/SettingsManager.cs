@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using PicView.Core.DebugTools;
 
 namespace PicView.Core.Config;
 
@@ -28,6 +28,7 @@ public static class SettingsManager
             {
                 return await LoadFromPathAsync(GetRoamingSettingsPath()).ConfigureAwait(false);
             }
+
             var path = GetUserSettingsPath();
             if (!string.IsNullOrEmpty(path))
             {
@@ -39,7 +40,7 @@ public static class SettingsManager
         }
         catch (Exception ex)
         {
-            LogError(nameof(LoadSettingsAsync), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
             SetDefaults();
             return false;
         }
@@ -52,38 +53,44 @@ public static class SettingsManager
     public static string GetUserSettingsPath()
     {
         var roamingPath = GetRoamingSettingsPath();
-        if (File.Exists(roamingPath))
-        {
-            return roamingPath;
-        }
-
-        return GetLocalSettingsPath();
+        return File.Exists(roamingPath) ? roamingPath : GetLocalSettingsPath();
     }
 
     /// <summary>
     ///     Gets the path to the roaming settings file
     /// </summary>
-    private static string GetRoamingSettingsPath()
-    {
-        return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), SettingsConfiguration.RoamingConfigPath);
-    }
+    private static string GetRoamingSettingsPath() =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            SettingsConfiguration.RoamingConfigPath);
 
     /// <summary>
     ///     Gets the path to the local settings file
     /// </summary>
-    private static string GetLocalSettingsPath()
-    {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsConfiguration.LocalConfigFilePath);
-    }
+    private static string GetLocalSettingsPath() =>
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingsConfiguration.LocalConfigFilePath);
 
     /// <summary>
     ///     Sets default settings values
     /// </summary>
     public static void SetDefaults()
     {
+        UIProperties uiProperties;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            uiProperties = new UIProperties
+            {
+                IsTaskbarProgressEnabled = false,
+                OpenInSameWindow = true
+            };
+        }
+        else
+        {
+            uiProperties = new UIProperties();
+        }
+
         Settings = new AppSettings
         {
-            UIProperties = new UIProperties(),
+            UIProperties = uiProperties,
             Gallery = new Gallery(),
             ImageScaling = new ImageScaling(),
             Sorting = new Sorting(),
@@ -93,6 +100,7 @@ public static class SettingsManager
             StartUp = new StartUp(),
             Version = SettingsConfiguration.CurrentSettingsVersion
         };
+
         // Get the default culture from the OS
         Settings.UIProperties.UserLanguage = CultureInfo.CurrentCulture.Name;
     }
@@ -109,7 +117,7 @@ public static class SettingsManager
         }
         catch (Exception ex)
         {
-            LogError(nameof(DeleteSettingFiles), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(DeleteSettingFiles), ex);
         }
     }
 
@@ -220,13 +228,13 @@ public static class SettingsManager
             }
             catch (Exception ex)
             {
-                LogError(nameof(SaveSettingsAsync), ex);
+                DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), ex);
                 return false;
             }
         }
         catch (Exception ex)
         {
-            LogError(nameof(SaveSettingsAsync), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), ex);
             return false;
         }
     }
@@ -289,7 +297,8 @@ public static class SettingsManager
             var jsonString = await File.ReadAllTextAsync(localPath).ConfigureAwait(false);
 
             if (JsonSerializer.Deserialize(
-                    jsonString, typeof(AppSettings), SettingsGenerationContext.Default) is not AppSettings existingSettings)
+                    jsonString, typeof(AppSettings),
+                    SettingsGenerationContext.Default) is not AppSettings existingSettings)
             {
                 return;
             }
@@ -303,7 +312,7 @@ public static class SettingsManager
         }
         catch (Exception ex)
         {
-            LogError(nameof(SynchronizeSettingsAsync), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SynchronizeSettingsAsync), ex);
         }
     }
 
@@ -321,7 +330,7 @@ public static class SettingsManager
         existingSettings.WindowProperties ??= newSettings.WindowProperties;
         existingSettings.Zoom ??= newSettings.Zoom;
         existingSettings.StartUp ??= newSettings.StartUp;
-    
+
         // Fallback for any properties missing in older versions
         foreach (var property in typeof(AppSettings).GetProperties())
         {
@@ -334,16 +343,5 @@ public static class SettingsManager
             var newValue = property.GetValue(newSettings);
             property.SetValue(existingSettings, newValue);
         }
-    }
-
-    /// <summary>
-    ///     Logs an error message
-    /// </summary>
-    private static void LogError(string methodName, Exception ex)
-    {
-#if DEBUG
-        Trace.WriteLine($"{nameof(SettingsManager)}: {methodName} error: {ex.Message}");
-        Trace.WriteLine(ex.StackTrace);
-#endif
     }
 }

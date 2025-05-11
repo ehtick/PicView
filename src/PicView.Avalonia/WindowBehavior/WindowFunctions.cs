@@ -62,7 +62,7 @@ public static class WindowFunctions
         Settings.StartUp.LastFile = lastFile;
         await SaveSettingsAsync();
         await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
-        FileDeletionHelper.DeleteTempFiles();
+        TempFileHelper.DeleteTempFiles();
         FileHistoryManager.SaveToFile();
         ArchiveExtraction.Cleanup();
         Environment.Exit(0);

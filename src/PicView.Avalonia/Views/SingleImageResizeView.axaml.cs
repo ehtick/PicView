@@ -9,7 +9,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using ReactiveUI;
@@ -215,7 +214,7 @@ public partial class SingleImageResizeView : UserControl
 
         if (Path.GetExtension(file) != ext)
         {
-            FileDeletionHelper.DeleteFileWithErrorMsg(file, true);
+            await vm.PlatformService.DeleteFile(file, true); 
         }
     }
 

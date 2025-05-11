@@ -219,6 +219,11 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         var iIFileAssociationService = new MacFileAssociationService();
         FileAssociationManager.Initialize(iIFileAssociationService);
     }
+
+    public Task<bool> DeleteFile(string path, bool recycle)
+    {
+         throw new NotImplementedException(); 
+    }
     
     #endregion
     
