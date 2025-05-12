@@ -18,104 +18,50 @@ public partial class GalleryView : UserControl
                 return;
             }
 
-            if (vm.IsUniformFullChecked)
-            {
-                FullGalleryComboBox.SelectedIndex = 0;
-            }
-            else if (vm.IsUniformToFillFullChecked)
-            {
-                FullGalleryComboBox.SelectedIndex = 1;
-            }
-            else if (vm.IsFillFullChecked)
-            {
-                FullGalleryComboBox.SelectedIndex = 2;
-            }
-            else if (vm.IsNoneFullChecked)
-            {
-                FullGalleryComboBox.SelectedIndex = 3;
-            }
-            else if (vm.IsSquareFullChecked)
+            if (Settings.Gallery.FullGalleryStretchMode.Equals("Square",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 FullGalleryComboBox.SelectedIndex = 4;
             }
-            else if (vm.IsFillSquareFullChecked)
+            else if (Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare",
+                         StringComparison.OrdinalIgnoreCase))
             {
                 FullGalleryComboBox.SelectedIndex = 5;
             }
-            else
+            else if (Enum.TryParse<Stretch>(Settings.Gallery.FullGalleryStretchMode,
+                         out var stretchMode))
             {
-                if (Settings.Gallery.FullGalleryStretchMode.Equals("Square",
-                        StringComparison.OrdinalIgnoreCase))
+                FullGalleryComboBox.SelectedIndex = stretchMode switch
                 {
-                    FullGalleryComboBox.SelectedIndex = 4;
-                }
-                else if (Settings.Gallery.FullGalleryStretchMode.Equals("FillSquare",
-                             StringComparison.OrdinalIgnoreCase))
-                {
-                    FullGalleryComboBox.SelectedIndex = 5;
-                }
-                else if (Enum.TryParse<Stretch>(Settings.Gallery.FullGalleryStretchMode,
-                             out var stretchMode))
-                {
-                    FullGalleryComboBox.SelectedIndex = stretchMode switch
-                    {
-                        Stretch.Uniform => 0,
-                        Stretch.UniformToFill => 1,
-                        Stretch.Fill => 2,
-                        Stretch.None => 3,
-                        _ => FullGalleryComboBox.SelectedIndex
-                    };
-                }
+                    Stretch.Uniform => 0,
+                    Stretch.UniformToFill => 1,
+                    Stretch.Fill => 2,
+                    Stretch.None => 3,
+                    _ => FullGalleryComboBox.SelectedIndex
+                };
             }
 
-            if (vm.IsUniformBottomChecked)
-            {
-                BottomGalleryComboBox.SelectedIndex = 0;
-            }
-            else if (vm.IsUniformToFillBottomChecked)
-            {
-                BottomGalleryComboBox.SelectedIndex = 1;
-            }
-            else if (vm.IsFillBottomChecked)
-            {
-                BottomGalleryComboBox.SelectedIndex = 2;
-            }
-            else if (vm.IsNoneBottomChecked)
-            {
-                BottomGalleryComboBox.SelectedIndex = 3;
-            }
-            else if (vm.IsSquareBottomChecked)
+            if (Settings.Gallery.BottomGalleryStretchMode.Equals("Square",
+                    StringComparison.OrdinalIgnoreCase))
             {
                 BottomGalleryComboBox.SelectedIndex = 4;
             }
-            else if (vm.IsFillSquareBottomChecked)
+            else if (Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare",
+                         StringComparison.OrdinalIgnoreCase))
             {
                 BottomGalleryComboBox.SelectedIndex = 5;
             }
-            else
+            else if (Enum.TryParse<Stretch>(Settings.Gallery.BottomGalleryStretchMode,
+                         out var stretchMode))
             {
-                if (Settings.Gallery.BottomGalleryStretchMode.Equals("Square",
-                        StringComparison.OrdinalIgnoreCase))
+                BottomGalleryComboBox.SelectedIndex = stretchMode switch
                 {
-                    BottomGalleryComboBox.SelectedIndex = 4;
-                }
-                else if (Settings.Gallery.BottomGalleryStretchMode.Equals("FillSquare",
-                             StringComparison.OrdinalIgnoreCase))
-                {
-                    BottomGalleryComboBox.SelectedIndex = 5;
-                }
-                else if (Enum.TryParse<Stretch>(Settings.Gallery.BottomGalleryStretchMode,
-                             out var stretchMode))
-                {
-                    BottomGalleryComboBox.SelectedIndex = stretchMode switch
-                    {
-                        Stretch.Uniform => 0,
-                        Stretch.UniformToFill => 1,
-                        Stretch.Fill => 2,
-                        Stretch.None => 3,
-                        _ => FullGalleryComboBox.SelectedIndex
-                    };
-                }
+                    Stretch.Uniform => 0,
+                    Stretch.UniformToFill => 1,
+                    Stretch.Fill => 2,
+                    Stretch.None => 3,
+                    _ => FullGalleryComboBox.SelectedIndex
+                };
             }
 
             FullGalleryComboBox.SelectionChanged += (_, _) => FullGalleryComboBox_SelectionChanged();

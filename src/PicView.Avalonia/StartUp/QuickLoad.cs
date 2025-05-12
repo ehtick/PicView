@@ -203,17 +203,17 @@ public static class QuickLoad
 
         if (Settings.Gallery.IsBottomGalleryShown)
         {
-            if (vm.IsUIShown)
+            bool loadGallery;
+            if (!vm.IsUIShown)
             {
-                vm.GalleryMode = GalleryMode.BottomNoAnimation;
-                tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
+                loadGallery = Settings.Gallery.ShowBottomGalleryInHiddenUI;
             }
-            else if (Settings.Gallery.ShowBottomGalleryInHiddenUI)
+            else
             {
-                vm.GalleryMode = GalleryMode.BottomNoAnimation;
-                tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
+                loadGallery = true;
             }
-            else if (Settings.WindowProperties.Fullscreen)
+            
+            if (loadGallery)
             {
                 vm.GalleryMode = GalleryMode.BottomNoAnimation;
                 tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));

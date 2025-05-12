@@ -23,33 +23,36 @@
             Text="{CompiledBinding Translation.GallerySettings,
                                    Mode=OneWay}" />
 
-        <ToggleButton
+        <Button
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding ToggleBottomGalleryCommand}"
-            IsChecked="{CompiledBinding IsBottomGalleryShown}"
             Margin="0,0,0,10"
-            ToolTip.Tip="{CompiledBinding Translation.ShowBottomGallery,
-                                          Mode=OneWay}"
+            Padding="0,10,0,10"
             Width="300"
             x:Name="ToggleBottomGalleryButton">
-            <TextBlock
-                Classes="txt"
-                Margin="0"
-                MaxWidth="240"
-                Padding="0,1,5,0"
-                Text="{CompiledBinding Translation.ShowBottomGallery,
-                                       Mode=OneWay}" />
-        </ToggleButton>
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    Height="20"
+                    Margin="9,0,9,0"
+                    Source="{StaticResource GalleryImage}"
+                    Width="20" />
+                <TextBlock
+                    Classes="txt"
+                    Margin="0"
+                    MaxWidth="240"
+                    Padding="0,1,5,0"
+                    Text="{CompiledBinding Translation.IsShowingBottomGallery}" />
+            </StackPanel>
+        </Button>
 
         <ToggleButton
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding ToggleBottomGalleryShownInHiddenUICommand}"
-            IsChecked="{CompiledBinding IsBottomGalleryShownInHiddenUI,
-                                        Mode=TwoWay}"
+            IsChecked="{CompiledBinding IsBottomGalleryShownInHiddenUI}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock

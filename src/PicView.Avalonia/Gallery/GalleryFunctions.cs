@@ -347,6 +347,7 @@ public static class GalleryFunctions
         }
 
         vm.Translation.IsShowingBottomGallery = TranslationManager.Translation.HideBottomGallery;
+        vm.IsBottomGalleryShown = true;
         if (!NavigationManager.CanNavigate(vm))
         {
             return;
