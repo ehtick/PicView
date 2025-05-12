@@ -374,7 +374,13 @@ public class PreLoader : IAsyncDisposable
             if (item.ImageModel is not null)
             {
                 item.ImageModel.FileInfo = null;
+
+                if (item.ImageModel.Image is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
             }
+            
 
             var removed = _preLoadList.TryRemove(key, out _);
 #if DEBUG
