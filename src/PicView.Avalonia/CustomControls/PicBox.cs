@@ -144,11 +144,13 @@ public class PicBox : Control, IDisposable
 
     private void UpdateSvgSource()
     {
-        if (Source is string svg)
+        if (Source is not string svg)
         {
-            var svgSource = SvgSource.Load(svg);
-            Source = new SvgImage { Source = svgSource };
+            return;
         }
+
+        var svgSource = SvgSource.Load(svg);
+        Source = new SvgImage { Source = svgSource };
     }
 
     private void UpdateAnimatedSource()

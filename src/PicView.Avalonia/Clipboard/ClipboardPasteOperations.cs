@@ -1,8 +1,8 @@
-﻿using System.Diagnostics;
-using Avalonia.Input;
+﻿using Avalonia.Input;
 using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Clipboard;
 
@@ -43,9 +43,7 @@ public static class ClipboardPasteOperations
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"Paste operation failed: {ex.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardPasteOperations), nameof(Paste), ex);
         }
     }
 }

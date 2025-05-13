@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Gallery;
@@ -86,8 +85,9 @@ public static class HideInterfaceLogic
             }
         }
         
-        WindowResizing.SetSize(vm);
         MenuManager.CloseMenus(vm);
+        await WindowResizing.SetSizeAsync(vm);
+
         await SaveSettingsAsync();
     }
     

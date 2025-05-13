@@ -1,8 +1,8 @@
-using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using PicView.Avalonia.Animations;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Clipboard;
 
@@ -45,9 +45,7 @@ public static class ClipboardService
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"{nameof(ClipboardService)} operation failed: {ex.Message}\n{ex.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardService), nameof(ExecuteClipboardOperation), ex);
             return false;
         }
     }

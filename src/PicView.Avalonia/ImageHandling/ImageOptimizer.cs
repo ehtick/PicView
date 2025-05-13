@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using PicView.Avalonia.Navigation;
+﻿using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.ImageHandling;
 
@@ -16,8 +16,6 @@ public static class ImageOptimizer
     /// <param name="vm">The main view model</param>
     public static async Task OptimizeImageAsync(MainViewModel vm)
     {
-        ArgumentNullException.ThrowIfNull(vm);
-
         if (!NavigationManager.CanNavigate(vm) || vm.PicViewer.FileInfo == null)
         {
             return;
@@ -35,7 +33,7 @@ public static class ImageOptimizer
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Error optimizing image: {ex.Message}");
+                DebugHelper.LogDebug(nameof(ImageOptimizer), nameof(OptimizeImageAsync), ex);
             }
         });
         

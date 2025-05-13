@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.PopUps;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.FileSystem;
@@ -172,10 +172,7 @@ public static class FileManager
     /// </summary>
     private static async Task LogAndShowError(Exception ex, string methodName)
     {
-#if DEBUG
-        Debug.WriteLine($"{nameof(FileManager)}.{methodName}: {ex.Message}");
-        Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-#endif
+        DebugHelper.LogDebug(nameof(FileManager), methodName, ex);
         await TooltipHelper.ShowTooltipMessageAsync(ex.Message);
     }
 

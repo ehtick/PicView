@@ -1,10 +1,10 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Avalonia.Platform.Storage;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
@@ -143,17 +143,14 @@ public static class ClipboardFileOperations
                     break;
                 case IStorageItem singleFile:
                 {
-                    var path = GetLocalPath(singleFile.Path);
-                    await NavigationManager.LoadPicFromStringAsync(path, vm);
+                    await NavigationManager.LoadPicFromStringAsync(singleFile.Path.AbsolutePath, vm);
                     break;
                 }
             }
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"{nameof(ClipboardFileOperations)} {nameof(PasteFiles)} {ex.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardFileOperations), nameof(PasteFiles), ex);
         }
     }
     
@@ -165,22 +162,12 @@ public static class ClipboardFileOperations
         }
 
         // Load the first file
-        var firstFile = storageItems[0];
-        var firstPath = GetLocalPath(firstFile.Path);
-        await NavigationManager.LoadPicFromStringAsync(firstPath, vm);
+        await NavigationManager.LoadPicFromStringAsync(storageItems[0].Path.AbsolutePath, vm);
 
         // Open consecutive files in a new process
         foreach (var file in storageItems.Skip(1))
         {
-            var path = GetLocalPath(file.Path);
-            ProcessHelper.StartNewProcess(path);
+            ProcessHelper.StartNewProcess(file.Path.AbsolutePath);
         }
-    }
-    
-    private static string GetLocalPath(Uri uri)
-    {
-        return RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
-            ? uri.AbsolutePath
-            : uri.LocalPath;
     }
 }

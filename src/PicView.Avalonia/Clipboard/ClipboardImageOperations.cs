@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
@@ -6,6 +5,7 @@ using Avalonia.Media.Imaging;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Clipboard;
@@ -80,11 +80,7 @@ public static class ClipboardImageOperations
             }
             catch (Exception ex)
             {
-#if DEBUG
-                Debug.WriteLine(
-                    $"{nameof(ClipboardImageOperations)} {nameof(CopyBase64ToClipboard)} error: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-#endif
+                DebugHelper.LogDebug(nameof(ClipboardImageOperations), nameof(CopyBase64ToClipboard), ex);
                 return false;
             }
         });
@@ -155,10 +151,7 @@ public static class ClipboardImageOperations
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"{nameof(ClipboardImageOperations)} {nameof(PasteClipboardImage)} error: {ex.Message}");
-            Debug.WriteLine(ex.StackTrace);
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardImageOperations), nameof(PasteClipboardImage), ex);
         }
     }
 
@@ -187,11 +180,7 @@ public static class ClipboardImageOperations
             catch (Exception ex)
             {
                 // Ignore format errors and try next format
-#if DEBUG
-                Debug.WriteLine(
-                    $"{nameof(ClipboardImageOperations)} {nameof(TryGetBitmapFromClipboard)} error: {ex.Message}");
-                Debug.WriteLine(ex.StackTrace);
-#endif
+                DebugHelper.LogDebug(nameof(ClipboardImageOperations), nameof(TryGetBitmapFromClipboard), ex);
             }
         }
 
