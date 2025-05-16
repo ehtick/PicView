@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text;
 using ImageMagick;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 
 namespace PicView.Core.ImageDecoding;
@@ -96,7 +97,7 @@ public static class EXIFHelper
         }
         catch (Exception e)
         {
-            // TODO: Log error
+            DebugHelper.LogDebug(nameof(EXIFHelper),  nameof(SetEXIFRating), e);
             return false;
         }
         return true;

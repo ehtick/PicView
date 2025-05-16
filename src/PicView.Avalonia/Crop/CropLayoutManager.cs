@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Crop;
 
@@ -56,7 +57,7 @@ public class CropLayoutManager(CropControl control)
         }
         catch (Exception e)
         {
-            //
+            DebugHelper.LogDebug(nameof(CropLayoutManager), nameof(UpdateLayout), e);
         }
     }
 

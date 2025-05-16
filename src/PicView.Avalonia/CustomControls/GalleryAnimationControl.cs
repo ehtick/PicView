@@ -10,6 +10,7 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Sizing;
 using ReactiveUI;
@@ -93,7 +94,7 @@ public class GalleryAnimationControl : UserControl
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception here
+                    DebugHelper.LogDebug(nameof(GalleryAnimationControl), nameof(OnControlLoaded), ex);
                     _isAnimating = false;
                 }
 

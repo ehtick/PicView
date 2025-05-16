@@ -9,8 +9,19 @@ using Avalonia.Threading;
 using PicView.Avalonia.UI;
 
 namespace PicView.Avalonia.Animations;
+
+/// <summary>
+/// Provides helper methods for creating and running animations within the Avalonia UI.
+/// </summary>
 public static class AnimationsHelper
 {
+    /// <summary>
+    /// Creates a height animation for a <see cref="Layoutable"/> control.
+    /// </summary>
+    /// <param name="from">The starting height value.</param>
+    /// <param name="to">The ending height value.</param>
+    /// <param name="speed">The duration of the animation in seconds.</param>
+    /// <returns>An <see cref="Animation"/> that animates the height property.</returns>
     public static Animation HeightAnimation(double from, double to, double speed)
     {
         return new Animation
@@ -48,11 +59,23 @@ public static class AnimationsHelper
         };
     }
 
-    public static Animation OpacityAnimation(double from, double to, double speed)
-    {
-        return OpacityAnimation(from, to, TimeSpan.FromSeconds(speed));
-    }
-    
+    /// <summary>
+    /// Creates an opacity animation for a <see cref="Visual"/> control.
+    /// </summary>
+    /// <param name="from">The starting opacity value.</param>
+    /// <param name="to">The ending opacity value.</param>
+    /// <param name="speed">The duration of the animation in seconds.</param>
+    /// <returns>An <see cref="Animation"/> that animates the opacity property.</returns>
+    public static Animation OpacityAnimation(double from, double to, double speed) =>
+        OpacityAnimation(from, to, TimeSpan.FromSeconds(speed));
+
+    /// <summary>
+    /// Creates an opacity animation for a <see cref="Visual"/> control.
+    /// </summary>
+    /// <param name="from">The starting opacity value.</param>
+    /// <param name="to">The ending opacity value.</param>
+    /// <param name="timeSpan">The duration of the animation as a <see cref="TimeSpan"/>.</param>
+    /// <returns>An <see cref="Animation"/> that animates the opacity property.</returns>
     public static Animation OpacityAnimation(double from, double to, TimeSpan timeSpan)
     {
         return new Animation
@@ -91,7 +114,8 @@ public static class AnimationsHelper
     }
     
     /// <summary>
-    /// Displays a brief animation to indicate a clipboard operation occurred
+    /// Displays a brief animation to indicate a clipboard operation occurred.
+    /// Fades a semi-transparent rectangle in and out to provide visual feedback.
     /// </summary>
     public static async Task CopyAnimation()
     {
@@ -124,11 +148,27 @@ public static class AnimationsHelper
         });
     }
     
-    public static Animation CenteringAnimation(double fromX, double fromY, double toX, double toY, double speed)
-    {
-        return CenteringAnimation(fromX, fromY, toX, toY, TimeSpan.FromSeconds(speed));
-    }
-    
+    /// <summary>
+    /// Creates an animation to move a <see cref="TranslateTransform"/> from a start position to an end position.
+    /// </summary>
+    /// <param name="fromX">The starting X position.</param>
+    /// <param name="fromY">The starting Y position.</param>
+    /// <param name="toX">The ending X position.</param>
+    /// <param name="toY">The ending Y position.</param>
+    /// <param name="speed">The duration of the animation in seconds.</param>
+    /// <returns>An <see cref="Animation"/> that animates the X and Y properties of a <see cref="TranslateTransform"/>.</returns>
+    public static Animation CenteringAnimation(double fromX, double fromY, double toX, double toY, double speed) => 
+        CenteringAnimation(fromX, fromY, toX, toY, TimeSpan.FromSeconds(speed));
+
+    /// <summary>
+    /// Creates an animation to move a <see cref="TranslateTransform"/> from a start position to an end position.
+    /// </summary>
+    /// <param name="fromX">The starting X position.</param>
+    /// <param name="fromY">The starting Y position.</param>
+    /// <param name="toX">The ending X position.</param>
+    /// <param name="toY">The ending Y position.</param>
+    /// <param name="duration">The duration of the animation as a <see cref="TimeSpan"/>.</param>
+    /// <returns>An <see cref="Animation"/> that animates the X and Y properties of a <see cref="TranslateTransform"/>.</returns>
     public static Animation CenteringAnimation(double fromX, double fromY, double toX, double toY, TimeSpan duration)
     {
         return new Animation
@@ -176,4 +216,3 @@ public static class AnimationsHelper
         };
     }
 }
-        

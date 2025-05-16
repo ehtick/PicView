@@ -5,6 +5,7 @@ using PicView.Avalonia.Animations;
 using ReactiveUI;
 
 namespace PicView.Avalonia.CustomControls;
+
 public class AnimatedMenu : UserControl
 {
     public static readonly AvaloniaProperty<bool> IsOpenProperty =

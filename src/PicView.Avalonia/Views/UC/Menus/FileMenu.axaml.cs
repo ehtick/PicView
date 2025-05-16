@@ -3,7 +3,7 @@ using PicView.Avalonia.CustomControls;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
-public partial class FileMenu  : AnimatedMenu
+public partial class FileMenu : AnimatedMenu
 {
     public FileMenu()
     {

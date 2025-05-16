@@ -4,7 +4,7 @@ public class FileHistoryEntries
 {
     public bool IsSortingDescending { get; set; } = true;
     
-    public List<Entry> Entries { get; set; }
+    public List<Entry>? Entries { get; set; }
 }
 
 public class Entry

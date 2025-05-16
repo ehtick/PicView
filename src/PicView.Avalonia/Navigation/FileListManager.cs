@@ -1,6 +1,4 @@
-﻿using Avalonia.Media;
-using Avalonia.Threading;
-using PicView.Avalonia.Gallery;
+﻿using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -150,14 +148,6 @@ public static class FileListManager
         {
             return;
         }
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            // Fixes the text alignment
-            // TODO: Find a better solution
-            UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Left;
-            UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Center;
-        });
 
         if (!_cancellationTokenSource.IsCancellationRequested)
         {

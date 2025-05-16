@@ -14,9 +14,6 @@ internal partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class KeybindingManager
 {
-    // TODO move to an interface, use this as default for Windows and make a macOS default
-    
-
     public static Dictionary<KeyGesture, Func<Task>>? CustomShortcuts { get; private set; }
 
     public static async Task LoadKeybindings(IPlatformSpecificService platformSpecificService)
