@@ -127,7 +127,7 @@ public partial class StartUpMenu : UserControl
         }
 
         var titleMaxWidth = ImageSizeCalculationHelper.GetTitleMaxWidth(vm.RotationAngle, width, height,
-            desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight, ImageSizeCalculationHelper.GetInterfaceSize(),
+            desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight, vm.PlatformWindowService.CombinedTitleButtonsWidth,
             desktop.MainWindow.Width);
 
         if (Settings.Zoom.ScrollEnabled)

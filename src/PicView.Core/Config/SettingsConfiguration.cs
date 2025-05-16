@@ -2,7 +2,7 @@
 
 public static class SettingsConfiguration
 {
-    public const double CurrentSettingsVersion = 1.3;
+    public const double CurrentSettingsVersion = 1.5;
     
     public const string ConfigFileName = "UserSettings.json";
     public const string LocalConfigFilePath = "Config/" + ConfigFileName;

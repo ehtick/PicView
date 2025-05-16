@@ -89,9 +89,16 @@ public static class StartUpHelper
 
     public static void HandleWindowScalingMode(MainViewModel vm, Window window)
     {
+        ScreenHelper.UpdateScreenSize(window);
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            if (Settings.WindowProperties.Padding <= 0)
+            {
+                Settings.WindowProperties.Padding = 45;
+            }
+        }
         if (Settings.WindowProperties.AutoFit)
         {
-            ScreenHelper.UpdateScreenSize(window);
             HandleAutoFit(vm, window);
         }
         else
@@ -361,7 +368,7 @@ public static class StartUpHelper
         vm.IsAutoFit  = Settings.WindowProperties.AutoFit;
         vm.IsStayingCentered  = Settings.WindowProperties.KeepCentered;
         vm.IsOpeningInSameWindow  = Settings.UIProperties.OpenInSameWindow;
-        vm.IsShowingConfirmationOnEsc  = Settings.UIProperties.ShowConfirmationOnEsc;
+        vm.IsShowingConfirmationOnEsc  = Settings.UIProperties.ShowConfirmationOnEsc;   
         vm.IsUsingTouchpad  = Settings.Zoom.IsUsingTouchPad;
         vm.IsAscending  = Settings.Sorting.Ascending;
         vm.BackgroundChoice = Settings.UIProperties.BgColorChoice;

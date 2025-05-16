@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.UI;
@@ -33,10 +32,6 @@ public static class ScreenHelper
         // Need to lock it to prevent multiple calls
         lock (Lock)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                // TODO: Get macOS dock size
-            }
             var screen = window.Screens.ScreenFromVisual(window);
         
             var monitorWidth = screen.WorkingArea.Width / screen.Scaling;

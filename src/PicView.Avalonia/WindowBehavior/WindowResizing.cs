@@ -226,6 +226,7 @@ public static class WindowResizing
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
             size = ImageSizeCalculationHelper.GetSideBySideImageSize(
+                vm.PlatformWindowService.Padding,
                 width,
                 height,
                 secondWidth,
@@ -233,7 +234,7 @@ public static class WindowResizing
                 screenSize,
                 desktopMinWidth,
                 desktopMinHeight,
-                ImageSizeCalculationHelper.GetInterfaceSize(),
+                vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,
                 vm.TitlebarHeight,
@@ -245,12 +246,13 @@ public static class WindowResizing
         else
         {
             size = ImageSizeCalculationHelper.GetImageSize(
+                vm.PlatformWindowService.Padding,
                 width,
                 height,
                 screenSize,
                 desktopMinWidth,
                 desktopMinHeight,
-                ImageSizeCalculationHelper.GetInterfaceSize(),
+                vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,
                 vm.TitlebarHeight,

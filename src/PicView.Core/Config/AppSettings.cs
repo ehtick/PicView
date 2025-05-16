@@ -2,7 +2,7 @@
 
 public class AppSettings
 {
-    public double Version { get; set; } = 1.4;
+    public double Version { get; set; } = SettingsConfiguration.CurrentSettingsVersion;
     public WindowProperties? WindowProperties { get; set; }
     public UIProperties? UIProperties { get; set; }
     public Theme? Theme { get; set; }
@@ -24,6 +24,7 @@ public class WindowProperties
     public bool Maximized { get; set; } = false;
     public bool Fullscreen { get; set; } = false;
     public bool KeepCentered { get; set; } = false;
+    public double Padding { get; set; } = 0;
 }
 
 public class UIProperties

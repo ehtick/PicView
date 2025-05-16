@@ -232,7 +232,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     
     #endregion
     
-    public int Padding { get; set; } // TODO should be the width or height of the dock. Half if auto-hiding
+    public double Padding { get; set; } // TODO should be the width or height of the dock. Half if auto-hiding
 
     public int CombinedTitleButtonsWidth { get; set; } = 165;
     
