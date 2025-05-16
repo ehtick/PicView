@@ -24,7 +24,7 @@ public class WindowProperties
     public bool Maximized { get; set; } = false;
     public bool Fullscreen { get; set; } = false;
     public bool KeepCentered { get; set; } = false;
-    public double Padding { get; set; } = 0;
+    public double Padding { get; set; } = -1;
 }
 
 public class UIProperties

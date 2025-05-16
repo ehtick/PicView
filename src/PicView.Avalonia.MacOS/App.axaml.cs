@@ -67,6 +67,11 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                 _mainWindow = new MacMainWindow();
                 desktop.MainWindow = _mainWindow;
             },DispatcherPriority.Send);
+
+            if (!settingsExists || Settings.WindowProperties.Padding < 0)
+            {
+                await DockSizeHelper.SetDockSizeAsync().ConfigureAwait(false);
+            }
         
             _vm = new MainViewModel(this, this);
         
@@ -94,6 +99,19 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                 }
             };
             Current.UrlsOpened -= handler;
+            
+            // Check if dock size has changed
+            var dockSize = await DockSizeHelper.GetDockSizeAsync().ConfigureAwait(false);
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            if (Settings.WindowProperties.Padding != dockSize)
+            {
+                Settings.WindowProperties.Padding = dockSize;
+                if (Settings.WindowProperties.AutoFit)
+                {
+                    await WindowResizing.SetSizeAsync(_vm);
+                }
+            }
+        
         }
         catch (Exception)
         {
@@ -231,8 +249,11 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     }
     
     #endregion
-    
-    public double Padding { get; set; } // TODO should be the width or height of the dock. Half if auto-hiding
+
+    public double Padding
+    {
+        get => Settings.WindowProperties.Padding / ScreenHelper.ScreenSize.Scaling;
+    }
 
     public int CombinedTitleButtonsWidth { get; set; } = 165;
     

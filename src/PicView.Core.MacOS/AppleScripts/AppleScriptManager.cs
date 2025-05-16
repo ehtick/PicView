@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using PicView.Core.DebugTools;
 
 namespace PicView.Core.MacOS.AppleScripts;
 
@@ -77,5 +78,39 @@ public static class AppleScriptManager
         // Check output for result
         var lastOutput = output.Last().Trim().ToLowerInvariant();
         return lastOutput is "true" or "1";
+    }
+    
+    public static async Task<string?> ExecuteAppleScriptWithResultAsync(string appleScript)
+    {
+        var scriptPath = Path.Combine(Path.GetTempPath(), $"picview_script_{Guid.NewGuid():N}.scpt");
+        await File.WriteAllTextAsync(scriptPath, appleScript);
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "osascript",
+                Arguments = scriptPath,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        process.Start();
+        var output = await process.StandardOutput.ReadToEndAsync();
+        await process.WaitForExitAsync();
+
+        try
+        {
+            File.Delete(scriptPath);
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(AppleScriptManager), nameof(ExecuteAppleScriptWithResultAsync), ex);
+        }
+
+        return process.ExitCode == 0 ? output.Trim() : null;
     }
 }

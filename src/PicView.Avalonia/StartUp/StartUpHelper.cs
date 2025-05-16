@@ -92,7 +92,7 @@ public static class StartUpHelper
         ScreenHelper.UpdateScreenSize(window);
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            if (Settings.WindowProperties.Padding <= 0)
+            if (Settings.WindowProperties.Padding < 0)
             {
                 Settings.WindowProperties.Padding = 45;
             }
@@ -158,11 +158,14 @@ public static class StartUpHelper
         Application.Current.Name = "PicView";
         
         vm.AssociationsViewModel ??= new FileAssociationsViewModel();
-        
-        if (Settings.UIProperties.OpenInSameWindow)
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            // No other instance is running, create named pipe server
-            _ = IPC.StartListeningForArguments(vm);
+            if (Settings.UIProperties.OpenInSameWindow)
+            {
+                // No other instance is running, create named pipe server
+                _ = IPC.StartListeningForArguments(vm);
+            }
         }
     }
 
