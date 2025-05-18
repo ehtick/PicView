@@ -24,7 +24,7 @@ public class WindowProperties
     public bool Maximized { get; set; } = false;
     public bool Fullscreen { get; set; } = false;
     public bool KeepCentered { get; set; } = false;
-    public double Margin { get; set; } = -1;
+    public double Margin { get; set; } = 15;
 }
 
 public class UIProperties
