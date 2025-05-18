@@ -172,7 +172,8 @@
                     Height="46"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
-                    ToolTip.Tip="{CompiledBinding Translation.OpenWith}">
+                    ToolTip.Tip="{CompiledBinding Translation.OpenWith}"
+                    x:Name="OpenWithButton">
                     <StackPanel Orientation="Horizontal">
                         <Path
                             Data="M0 0l20 10L0 20V0zm0 8v4l10-2L0 8z"

@@ -85,7 +85,8 @@
                 Header="{CompiledBinding Translation.Print,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding PicViewer.ImageSource,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                x:Name="PrintMenuItem">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource PrintGeometry}"

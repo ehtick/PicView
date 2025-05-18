@@ -309,6 +309,16 @@
                 </NativeMenu>
             </NativeMenuItem>
 
+            <!--  Window  -->
+            <NativeMenuItem Header="{CompiledBinding Translation.Window}">
+                <NativeMenu>
+                    <NativeMenuItem Command="{CompiledBinding NewWindowCommand}" Header="{CompiledBinding Translation.NewWindow, Mode=OneWay}" />
+                    <NativeMenuItemSeparator />
+                    <NativeMenuItem Command="{CompiledBinding MaximizeCommand}" Header="{CompiledBinding Translation.Maximize, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding ToggleFullscreenCommand}" Header="{CompiledBinding Translation.Fullscreen, Mode=OneWay}" />
+                </NativeMenu>
+            </NativeMenuItem>
+
         </NativeMenu>
     </NativeMenu.Menu>
 

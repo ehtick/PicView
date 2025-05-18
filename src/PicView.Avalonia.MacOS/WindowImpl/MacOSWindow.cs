@@ -56,7 +56,7 @@ public static class MacOSWindow
         {
             vm.SizeToContent = SizeToContent.WidthAndHeight;
             vm.CanResize = false;
-            WindowResizing.SetSize(vm);
+            await WindowResizing.SetSizeAsync(vm);
         }
         else
         {
@@ -84,7 +84,7 @@ public static class MacOSWindow
         vm.IsFullscreen = true;
         vm.IsMaximized = false;
         vm.CanResize = false;
-        WindowResizing.SetSize(vm);
+        await WindowResizing.SetSizeAsync(vm);
         
         if (saveSettings)
         {

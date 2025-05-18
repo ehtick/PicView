@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
 
@@ -16,6 +17,11 @@ public partial class FileMenu : AnimatedMenu
             else if (!Settings.Theme.Dark)
             {
                 TopBorder.Background = Brushes.White;
+            }
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                OpenWithButton.IsEnabled = false;
             }
         };
     }

@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -19,6 +20,10 @@ public partial class SettingsView : UserControl
     public SettingsView()
     {
         InitializeComponent();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            FileAssociationsTabItem.IsEnabled = false;
+        }
         Loaded += OnLoaded;
     }
 

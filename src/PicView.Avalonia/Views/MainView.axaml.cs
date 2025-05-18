@@ -28,10 +28,19 @@ public partial class MainView : UserControl
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
+            // TODO: Add macOS support
+            WallpaperMenuItem.IsVisible = false;
+            OpenWithMenuItem.IsVisible = false;
+            PrintMenuItem.IsVisible = false;
+            
             // Move alt hover to left side on macOS and switch button order
             AltButtonsPanel.HorizontalAlignment = HorizontalAlignment.Left; 
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltClose),0);
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltMinimize),2);
+        }
+        else
+        {
+            MacOSWallpaperMenuItem.IsVisible = false;
         }
 
         if (!Settings.Theme.Dark && !Settings.Theme.GlassTheme)
@@ -83,16 +92,6 @@ public partial class MainView : UserControl
             PointerPressed += PointerPressedBehavior;
 
             MainContextMenu.Opened += async (sender, args) =>  await OnMainContextMenuOpened(sender, args);
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                WallpaperMenuItem.IsVisible = false;
-                OpenWithMenuItem.IsVisible = false;
-            }
-            else
-            {
-                MacOSWallpaperMenuItem.IsVisible = false;
-            }
             
             if (!FileHistoryManager.IsSortingDescending)
             {
