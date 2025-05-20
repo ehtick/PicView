@@ -62,12 +62,7 @@ public partial class ImageViewer : UserControl
     {
         if (DataContext is not MainViewModel mainViewModel)
             return;
-
-        if (Settings.Zoom.IsUsingTouchPad)
-        {
-            // Use touch gestures for zooming
-            return;
-        }
+        
         var ctrl = e.KeyModifiers == KeyModifiers.Control;
         var shift = e.KeyModifiers == KeyModifiers.Shift;
         var reverse = e.Delta.Y < 0;
@@ -78,6 +73,10 @@ public partial class ImageViewer : UserControl
             {
                 if (ctrl && !Settings.Zoom.CtrlZoom)
                 {
+                    if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+                    {
+                        return;
+                    }
                     await LoadNextPic();
                     return;
                 }
@@ -105,6 +104,10 @@ public partial class ImageViewer : UserControl
         {
             if (ctrl)
             {
+                if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+                {
+                    return;
+                }
                 if (reverse)
                 {
                     ZoomOut(e);
@@ -143,6 +146,10 @@ public partial class ImageViewer : UserControl
         {
             if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
             {
+                if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+                {
+                    return;
+                }
                 await LoadNextPic();
             }
             else
@@ -167,6 +174,10 @@ public partial class ImageViewer : UserControl
 
         async Task LoadNextPic()
         {
+            if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+            {
+                return;
+            }
             bool next;
             if (reverse)
             {
