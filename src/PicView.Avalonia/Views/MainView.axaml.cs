@@ -108,7 +108,7 @@ public partial class MainView : UserControl
             }
             // Initialize the history menu controller
             // TODO: rewrite FileHistory to MVVM
-            FileHistoryMenuController = new FileHistoryMenuController(RecentFilesCM, HistorySortButton, HistoryClearButton, vm);
+            FileHistoryMenuController = new FileHistoryMenuController(RecentFilesCM, HistorySortButton, HistoryClearButton, HistoryFileButton, vm);
             HistoryFileButton.Click += async delegate
             {
                 await FunctionsMapper.ShowRecentHistoryFile();
