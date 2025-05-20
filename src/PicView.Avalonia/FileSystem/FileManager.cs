@@ -39,7 +39,7 @@ public static class FileManager
                         : TranslationManager.Translation.DeletedFile;
                     await TooltipHelper.ShowTooltipMessageAsync(msg + Environment.NewLine + Path.GetFileName(path));
                 }
-                else
+                else if (File.Exists(path))
                 {
                     await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError, true);
                 }

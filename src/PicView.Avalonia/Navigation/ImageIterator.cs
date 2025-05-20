@@ -6,6 +6,7 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -714,8 +715,8 @@ public class ImageIterator : IAsyncDisposable
         }
         catch (Exception e)
         {
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(IterateToIndex), e);
 #if DEBUG
-            Console.WriteLine($"{nameof(IterateToIndex)} exception: \n{e.Message}\n{e.StackTrace}");
             await TooltipHelper.ShowTooltipMessageAsync(e.Message);
 #endif
         }
@@ -803,11 +804,6 @@ public class ImageIterator : IAsyncDisposable
 
     #region IDisposable
 
-    public void Dispose()
-    {
-        Dispose(true);
-    }
-    
     public async ValueTask DisposeAsync()
     {
         await ClearAsync().ConfigureAwait(false);
