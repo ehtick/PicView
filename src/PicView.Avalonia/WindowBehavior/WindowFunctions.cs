@@ -63,7 +63,7 @@ public static class WindowFunctions
         await SaveSettingsAsync();
         await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
         TempFileHelper.DeleteTempFiles();
-        FileHistoryManager.SaveToFile();
+        await FileHistoryManager.SaveToFileAsync();
         ArchiveExtraction.Cleanup();
         Environment.Exit(0);
     }

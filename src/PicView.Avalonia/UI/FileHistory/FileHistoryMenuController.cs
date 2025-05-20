@@ -18,7 +18,7 @@ public class FileHistoryMenuController
     private readonly IconButton _sortButton;
     private readonly MainViewModel _viewModel;
 
-    public FileHistoryMenuController(Panel menuContainer, IconButton sortButton, Button clearButton,
+    public FileHistoryMenuController(Panel menuContainer, IconButton sortButton, Button clearButton, Button historyFileButton,
         MainViewModel viewModel)
     {
         _menuContainer = menuContainer;
@@ -32,6 +32,8 @@ public class FileHistoryMenuController
         // Setup event handlers
         _sortButton.Click += OnHistorySortButtonClicked;
         _clearButton.Click += OnHistoryClearButtonClicked;
+        
+        ToolTip.SetTip(historyFileButton, FileHistoryManager.CurrentFileHistoryFile);
     }
 
     /// <summary>

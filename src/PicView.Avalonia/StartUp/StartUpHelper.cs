@@ -87,7 +87,7 @@ public static class StartUpHelper
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
 
-    public static void HandleWindowScalingMode(MainViewModel vm, Window window)
+    private static void HandleWindowScalingMode(MainViewModel vm, Window window)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -105,7 +105,7 @@ public static class StartUpHelper
         }
     }
 
-    public static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop, Window window)
+    private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         ResourceLimits.LimitMemory(new Percentage(90));
         
@@ -118,6 +118,8 @@ public static class StartUpHelper
         {
             Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
         }
+        
+        Task.Run(FileHistoryManager.InitializeAsync);
 
         HandleThemeUpdates(vm);
         
@@ -144,7 +146,6 @@ public static class StartUpHelper
         HandleWindowControlSettings(vm, desktop);
         SetWindowEventHandlers(window);
         MenuManager.AddMenus();
-        FileHistoryManager.Initialize();
         
         if (!Settings.WindowProperties.AutoFit)
         {
@@ -196,7 +197,7 @@ public static class StartUpHelper
         }
     }
 
-    public static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
+    private static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
     {
         vm.ImageViewer = new ImageViewer();
         
@@ -207,8 +208,8 @@ public static class StartUpHelper
         }
         else StartUpMenuOrLastFile(vm);
     }
-    
-    public static void HandleStartUpMenuOrImage(MainViewModel vm, string? arg = null)
+
+    private static void HandleStartUpMenuOrImage(MainViewModel vm, string? arg = null)
     {
         vm.ImageViewer = new ImageViewer();
         
@@ -333,7 +334,7 @@ public static class StartUpHelper
         }
     }
 
-    public static void InitializeSettings(MainViewModel vm)
+    private static void InitializeSettings(MainViewModel vm)
     {    
         // Set corner radius on macOS
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))

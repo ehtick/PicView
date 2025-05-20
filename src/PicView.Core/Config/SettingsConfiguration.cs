@@ -4,12 +4,18 @@ public static class SettingsConfiguration
 {
     public const double CurrentSettingsVersion = 1.5;
     
+    public const string ConfigFolder = "Ruben2776/PicView/Config";
     public const string ConfigFileName = "UserSettings.json";
-    public const string LocalConfigFilePath = "Config/" + ConfigFileName;
-    public const string RoamingConfigFolder = "Ruben2776/PicView/Config";
-    public const string RoamingConfigPath = RoamingConfigFolder + "/" + ConfigFileName;
+    private static string ConfigPath => Path.Combine(ConfigFolder, ConfigFileName);
     
-    public const string HistoryFileName = "FileHistory.json";
-    public const string LocalHistoryFilePath = "Config/" + HistoryFileName;
-    public const string RoamingFileHistoryPath = RoamingConfigFolder + "/" + HistoryFileName;
+    public static string RoamingSettingsPath =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            ConfigPath);
+    
+    public static string LocalSettingsPath =>
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigPath);
+
+    public static string UserSettingsPath =>
+        File.Exists(RoamingSettingsPath) ? RoamingSettingsPath :
+        File.Exists(LocalSettingsPath) ? LocalSettingsPath : string.Empty;
 }
