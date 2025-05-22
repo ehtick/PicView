@@ -15,6 +15,8 @@ namespace PicView.Avalonia.UI;
 /// </summary>
 public static class UIHelper
 {
+    #region Controls
+
     public static MainView? GetMainView { get; private set; }
     public static Control? GetTitlebar { get; private set; }
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
@@ -35,55 +37,9 @@ public static class UIHelper
         GetToolTipMessage = GetMainView?.MainGrid.FindControl<ToolTipMessage>("ToolTipMessage");
     }
 
-    #region Navigation buttons
-
-    /// <summary>
-    /// Navigates to the next image using the bottom navigation button
-    /// </summary>
-    public static void NextButtonNavigation(MainViewModel vm) =>
-        SetButtonIntervalAndNavigate(GetBottomBar?.NextButton, true, false, vm);
-    
-    /// <summary>
-    /// Navigates to the previous image using the bottom navigation button
-    /// </summary>
-    public static void PreviousButtonNavigation(MainViewModel vm) =>
-        SetButtonIntervalAndNavigate(GetBottomBar?.PreviousButton, false, false, vm);
-    
-    /// <summary>
-    /// Navigates to the next image using the arrow button
-    /// </summary>
-    public static void NextArrowButtonNavigation(MainViewModel vm) =>
-        SetButtonIntervalAndNavigate(GetMainView?.ClickArrowRight?.PolyButton, true, true, vm);
-    
-    /// <summary>
-    /// Navigates to the previous image using the arrow button
-    /// </summary>
-    public static void PreviousArrowButtonNavigation(MainViewModel vm) =>
-        SetButtonIntervalAndNavigate(GetMainView?.ClickArrowLeft?.PolyButton, false, true, vm);
-
-    private static void SetButtonIntervalAndNavigate(RepeatButton? button, bool isNext, bool isArrow, MainViewModel vm)
-    {
-        if (button != null)
-        {
-            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-        }
-
-        Task.Run(() => NavigationManager.NavigateAndPositionCursor(isNext, isArrow, vm));
-    }
-    
-    private static void SetButtonIntervalAndNavigate(IconButton? button, bool isNext, bool isArrow, MainViewModel vm)
-    {
-        if (button != null)
-        {
-            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-        }
-
-        Task.Run(() => NavigationManager.NavigateAndPositionCursor(isNext, isArrow, vm));
-    }
-
     #endregion
-    
 
+    #region Helper functions
 
     /// <summary>
     ///     Scrolls to the end of the gallery if the <paramref name="last" /> parameter is true.
@@ -96,6 +52,7 @@ public static class UIHelper
         {
             return;
         }
+
         if (last)
         {
             await Dispatcher.UIThread.InvokeAsync(() => { GetGalleryView.GalleryListBox.ScrollToEnd(); });
@@ -112,9 +69,7 @@ public static class UIHelper
     /// <param name="next">True to move the cursor to the next button, false for the previous button.</param>
     /// <param name="arrow">True to move the cursor on the arrow, false to move the cursor on the button.</param>
     /// <param name="vm">The main view model instance.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task MoveCursorOnButtonClick(bool next, bool arrow, MainViewModel vm)
-    {
+    public static async Task MoveCursorOnButtonClick(bool next, bool arrow, MainViewModel vm) =>
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             var buttonName = GetNavigationButtonName(next, arrow);
@@ -123,7 +78,6 @@ public static class UIHelper
             var p = control.PointToScreen(point);
             vm.PlatformService?.SetCursorPos(p.X, p.Y);
         });
-    }
 
     /// <summary>
     ///     Gets the name of the navigation button based on input parameters.
@@ -131,27 +85,23 @@ public static class UIHelper
     /// <param name="next">True for the next button, false for the previous button.</param>
     /// <param name="arrow">True if the navigation uses arrow keys.</param>
     /// <returns>The name of the navigation button.</returns>
-    public static string GetNavigationButtonName(bool next, bool arrow)
-    {
-        return arrow
+    private static string GetNavigationButtonName(bool next, bool arrow) =>
+        arrow
             ? next ? "ClickArrowRight" : "ClickArrowLeft"
             : next
                 ? "NextButton"
                 : "PreviousButton";
-    }
 
     /// <summary>
     ///     Gets the control associated with the specified button name.
     /// </summary>
     /// <param name="buttonName">The name of the button.</param>
-    /// <param name="arrow">True if the control is an arrow button.</param>
+    /// <param name="isArrowButton">True if the control is an arrow button.</param>
     /// <returns>The control associated with the button.</returns>
-    public static Control GetButtonControl(string buttonName, bool arrow)
-    {
-        return arrow
+    private static Control GetButtonControl(string buttonName, bool isArrowButton) =>
+        isArrowButton
             ? GetMainView.GetControl<UserControl>(buttonName)
             : GetBottomBar.GetControl<Button>(buttonName);
-    }
 
     /// <summary>
     ///     Gets the point to click on the button based on the input parameters.
@@ -159,10 +109,58 @@ public static class UIHelper
     /// <param name="next">True for the next button, false for the previous button.</param>
     /// <param name="arrow">True if the navigation uses arrow keys.</param>
     /// <returns>The point to click on the button.</returns>
-    public static Point GetClickPoint(bool next, bool arrow)
-    {
-        return arrow
+    private static Point GetClickPoint(bool next, bool arrow) =>
+        arrow
             ? next ? new Point(65, 95) : new Point(15, 95)
             : new Point(50, 10);
+
+    #endregion
+
+    #region Navigation buttons
+
+    /// <summary>
+    /// Navigates to the next image using the bottom navigation button
+    /// </summary>
+    public static void NextButtonNavigation(MainViewModel vm) =>
+        SetButtonIntervalAndNavigate(GetBottomBar?.NextButton, true, false, vm);
+
+    /// <summary>
+    /// Navigates to the previous image using the bottom navigation button
+    /// </summary>
+    public static void PreviousButtonNavigation(MainViewModel vm) =>
+        SetButtonIntervalAndNavigate(GetBottomBar?.PreviousButton, false, false, vm);
+
+    /// <summary>
+    /// Navigates to the next image using the arrow button
+    /// </summary>
+    public static void NextArrowButtonNavigation(MainViewModel vm) =>
+        SetButtonIntervalAndNavigate(GetMainView?.ClickArrowRight?.PolyButton, true, true, vm);
+
+    /// <summary>
+    /// Navigates to the previous image using the arrow button
+    /// </summary>
+    public static void PreviousArrowButtonNavigation(MainViewModel vm) =>
+        SetButtonIntervalAndNavigate(GetMainView?.ClickArrowLeft?.PolyButton, false, true, vm);
+
+    private static void SetButtonIntervalAndNavigate(RepeatButton? button, bool isNext, bool isArrow, MainViewModel vm)
+    {
+        if (button != null)
+        {
+            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
+        }
+
+        Task.Run(() => NavigationManager.NavigateAndPositionCursor(isNext, isArrow, vm));
     }
+
+    private static void SetButtonIntervalAndNavigate(IconButton? button, bool isNext, bool isArrow, MainViewModel vm)
+    {
+        if (button != null)
+        {
+            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
+        }
+
+        Task.Run(() => NavigationManager.NavigateAndPositionCursor(isNext, isArrow, vm));
+    }
+
+    #endregion
 }
