@@ -1,10 +1,10 @@
-﻿using Avalonia.Media.Imaging;
-using ImageMagick;
+﻿using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
 using PicView.Core.Http;
@@ -89,14 +89,16 @@ public static class ImageLoader
 
     #region Load Pic From File
 
+    /// <summary>
+    /// Loads an image from a specified file and manages navigation within the directory or recreates the iterator.
+    /// </summary>
+    /// <param name="fileName">The full path of the file to load.</param>
+    /// <param name="vm">The main view model instance associated with the application context.</param>
+    /// <param name="imageIterator">An iterator for navigating through images in the directory.</param>
+    /// <param name="fileInfo">Optional file information, defaults to a new <c>FileInfo</c> instance for the given file name if not provided.</param>
     public static async Task LoadPicFromFile(string fileName, MainViewModel vm, ImageIterator imageIterator,
         FileInfo? fileInfo = null)
     {
-        if (vm is null)
-        {
-            return;
-        }
-
         fileInfo ??= new FileInfo(fileName);
         if (!fileInfo.Exists)
         {
@@ -107,6 +109,7 @@ public static class ImageLoader
 
         if (imageIterator is not null)
         {
+            // If image is in same directory as is being browsed, navigate to it. Otherwise, load without iterator.
             if (fileInfo.DirectoryName == imageIterator.InitialFileInfo.DirectoryName)
             {
                 var index = imageIterator.ImagePaths.IndexOf(fileInfo.FullName);
@@ -121,15 +124,22 @@ public static class ImageLoader
                 }
                 else
                 {
-                    await NavigationManager.LoadWithoutImageIterator(fileInfo, vm).ConfigureAwait(false);
+                    await LoadWithoutIterator();
                 }
             }
             else
             {
-                await NavigationManager.LoadWithoutImageIterator(fileInfo, vm).ConfigureAwait(false);
+                await LoadWithoutIterator();
             }
         }
         else
+        {
+            await LoadWithoutIterator();
+        }
+
+        return;
+
+        async Task LoadWithoutIterator()
         {
             if (Settings.UIProperties.IsTaskbarProgressEnabled)
             {
@@ -145,7 +155,7 @@ public static class ImageLoader
     #region Load Pic From Directory
 
     /// <summary>
-    ///     Loads a picture from a directory.
+    /// Loads a picture from a directory.
     /// </summary>
     /// <param name="file">The path to the directory containing the picture.</param>
     /// <param name="vm">The main view model instance.</param>
@@ -312,12 +322,9 @@ public static class ImageLoader
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine("LoadPicFromUrlAsync exception = \n" + e.Message);
-#endif
-            await Task.WhenAll(
-                TooltipHelper.ShowTooltipMessageAsync(e.Message, true),
-                ErrorHandling.ReloadAsync(vm)).ConfigureAwait(false);
+            DebugHelper.LogDebug(nameof(ImageLoader), nameof(LoadPicFromUrlAsync), e);
+            await ErrorHandling.ReloadAsync(vm);
+            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
             return;
         }
 
@@ -365,15 +372,11 @@ public static class ImageLoader
 
         await Task.Run(async () =>
         {
-            // TODO: Handle base64 if it's SVG image
             try
             {
                 var magickImage = ImageDecoder.Base64ToMagickImage(base64);
                 magickImage.Format = MagickFormat.Png;
-                await using var memoryStream = new MemoryStream();
-                await magickImage.WriteAsync(memoryStream);
-                memoryStream.Position = 0;
-                var bitmap = new Bitmap(memoryStream);
+                var bitmap = magickImage.ToWriteableBitmap();
                 var imageModel = new ImageModel
                 {
                     Image = bitmap,
@@ -386,18 +389,9 @@ public static class ImageLoader
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine("LoadPicFromBase64Async exception = \n" + e.Message);
-#endif
-                if (vm.PicViewer.FileInfo is not null && vm.PicViewer.FileInfo.Exists)
-                {
-                    await LoadPicFromFile(vm.PicViewer.FileInfo.FullName, vm, imageIterator, vm.PicViewer.FileInfo).ConfigureAwait(false);
-                }
-                else
-                {
-                    await imageIterator.DisposeAsync();
-                    await ErrorHandling.ReloadAsync(vm);
-                }
+                DebugHelper.LogDebug(nameof(ImageLoader), nameof(LoadPicFromBase64Async), e);
+                await imageIterator.DisposeAsync();
+                await ErrorHandling.ReloadAsync(vm);
             }
         });
         vm.IsLoading = false;
@@ -438,17 +432,19 @@ public static class ImageLoader
     #region Image Iterator Loading
 
     /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
-    public static async Task LastIterationAsync(ImageIterator imageIterator) => await imageIterator
-        .NextIteration(NavigateTo.Last, _cancellationTokenSource)
-        .ConfigureAwait(false);
+    public static async Task LastIterationAsync(ImageIterator imageIterator) =>
+        await imageIterator
+            .NextIteration(NavigateTo.Last, _cancellationTokenSource)
+            .ConfigureAwait(false);
 
     /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
-    public static async Task FirstIterationAsync(ImageIterator imageIterator) => await imageIterator
-        .NextIteration(NavigateTo.First, _cancellationTokenSource)
-        .ConfigureAwait(false);
+    public static async Task FirstIterationAsync(ImageIterator imageIterator) =>
+        await imageIterator
+            .NextIteration(NavigateTo.First, _cancellationTokenSource)
+            .ConfigureAwait(false);
 
     /// <summary>
-    ///     Checks if the previous iteration has been cancelled and starts the iteration at the given index
+    ///     Checks if the previous iteration has been canceled and starts the iteration at the given index
     /// </summary>
     /// <param name="index">The index to iterate to.</param>
     /// <param name="imageIterator">The ImageIterator instance.</param>
@@ -459,7 +455,7 @@ public static class ImageLoader
             await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
 
-        // Need to start in new task. This makes it more responsive, since it can get laggy when loading large images
+        // Need to start in a new task. This makes it more responsive, since it can get laggy when loading large images
         await Task.Run(async () =>
         {
             _cancellationTokenSource = new CancellationTokenSource();

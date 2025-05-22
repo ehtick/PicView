@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Avalonia.Media.Imaging;
 using ImageMagick;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 
 namespace PicView.Avalonia.ImageHandling;
@@ -12,7 +13,15 @@ public static class GetThumbnails
         try
         {
             using var magick = new MagickImage();
-            magick.Ping(path);
+            try
+            {
+                magick.Ping(path);
+            }
+            catch (Exception e)
+            {
+                DebugHelper.LogDebug(nameof(GetThumbnails), nameof(GetThumbAsync), e);
+                return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
+            }
             var profile = magick.GetExifProfile();
             if (profile == null)
             {
@@ -24,11 +33,12 @@ public static class GetThumbnails
             {
                 return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
             }
-            
+
             return thumbnail.ToWriteableBitmap();
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            DebugHelper.LogDebug(nameof(GetThumbnails), nameof(GetThumbAsync), e);
             return null;
         }
     }

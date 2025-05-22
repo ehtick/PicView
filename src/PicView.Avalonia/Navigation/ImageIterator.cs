@@ -384,9 +384,23 @@ public class ImageIterator : IAsyncDisposable
     
     public void Add(int index, ImageModel imageModel) =>
         PreLoader.Add(index, ImagePaths, imageModel);
+    
+    public void Add(string file, ImageModel imageModel)
+    {
+        file = file.Replace('/', '\\');
+        PreLoader.Add(ImagePaths.IndexOf(file), ImagePaths, imageModel);
+    }
 
     public PreLoadValue? GetPreLoadValue(int index)
     {
+        if (index < 0 || index >= ImagePaths.Count) return null;
+        return isRunning ? PreLoader.Get(ImagePaths[index], ImagePaths) 
+            : PreLoader.Get(index, ImagePaths);
+    }
+    
+    public PreLoadValue? GetPreLoadValue(string file)
+    {
+        var index = ImagePaths.IndexOf(file);
         if (index < 0 || index >= ImagePaths.Count) return null;
         return isRunning ? PreLoader.Get(ImagePaths[index], ImagePaths) 
             : PreLoader.Get(index, ImagePaths);

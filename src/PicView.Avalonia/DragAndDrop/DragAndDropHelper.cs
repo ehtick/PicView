@@ -1,10 +1,12 @@
 ﻿using System.Text;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
@@ -18,10 +20,12 @@ public static class DragAndDropHelper
 {
     private static DragDropView? _dragDropView;
 
+    private static PreLoadValue? _preLoadValue;
+
     public static async Task Drop(DragEventArgs e, MainViewModel vm)
     {
         RemoveDragDropView();
-
+        
         var files = e.Data.GetFiles();
         if (files == null)
         {
@@ -31,7 +35,7 @@ public static class DragAndDropHelper
 
         var storageItems = files as IStorageItem[] ?? files.ToArray();
         var firstFile = storageItems.FirstOrDefault();
-        var path = firstFile.Path.AbsolutePath;
+        var path = firstFile.Path.LocalPath;
         if (e.Data.Contains("text/x-moz-url"))
         {
             await HandleDropFromUrl(e, vm);
@@ -46,7 +50,26 @@ public static class DragAndDropHelper
             {
                 await Dispatcher.UIThread.InvokeAsync(() => vm.CurrentView = vm.ImageViewer);
             }
-            await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+            
+            if (_preLoadValue is not null)
+            {
+                
+                if (_preLoadValue.ImageModel.FileInfo.DirectoryName == Path.GetDirectoryName(path))
+                {
+                    NavigationManager.AddToPreloader(path, _preLoadValue.ImageModel);
+                    NavigationManager.ImageIterator.Resynchronize();
+                    await NavigationManager.LoadPicFromFile(path, vm, _preLoadValue.ImageModel.FileInfo);
+                }
+                else
+                {
+                    await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+                }
+            }
+            else
+            {
+                await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+            }
+            
         }
         else if (Directory.Exists(path))
         {
@@ -70,7 +93,7 @@ public static class DragAndDropHelper
         {
             foreach (var file in storageItems.Skip(1))
             {
-                var filepath = file.Path.AbsolutePath;
+                var filepath = file.Path.LocalPath;
                 if (filepath.IsSupported())
                 {
                     ProcessHelper.StartNewProcess(filepath);
@@ -112,12 +135,8 @@ public static class DragAndDropHelper
         }
     }
 
-    public static async Task DragEnter(DragEventArgs e, MainViewModel vm, Control control)
-    {
-        var files = e.Data.GetFiles();
-
-        await HandleDragEnter(files, e, vm, control);
-    }
+    public static async Task DragEnter(DragEventArgs e, MainViewModel vm, Control control) =>
+        await HandleDragEnter(e.Data.GetFiles(), e, vm, control);
 
     private static async Task HandleDragEnter(IEnumerable<IStorageItem> files, DragEventArgs e, MainViewModel vm, Control control)
     {
@@ -155,7 +174,7 @@ public static class DragAndDropHelper
             return;
         }
         var firstFile = fileArray[0];
-        var path = firstFile.Path.AbsolutePath;
+        var path = firstFile.Path.LocalPath;
         if (Directory.Exists(path))
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -187,10 +206,50 @@ public static class DragAndDropHelper
                 }
                 else
                 {
-                    var thumb = await GetThumbnails.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30)
-                        .ConfigureAwait(false);
-
+                    Bitmap? thumb;
+                    // ReSharper disable once MethodHasAsyncOverload
+                    var preload = NavigationManager.GetPreLoadValue(path);
+                    if (preload?.ImageModel?.Image is Bitmap bmp)
+                    {
+                        thumb = bmp;
+                    }
+                    else
+                    {
+                        thumb = await GetThumbnails.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30)
+                            .ConfigureAwait(false);
+                    }
                     await Dispatcher.UIThread.InvokeAsync(() => { _dragDropView?.UpdateThumbnail(thumb); });
+                    await Task.Run(async () =>
+                    {
+                        var fileInfo = new FileInfo(path);
+                        if (fileInfo.DirectoryName == NavigationManager.ImageIterator.InitialFileInfo.DirectoryName)
+                        {
+                            if (preload is null)
+                            {
+                                _preLoadValue = await NavigationManager.GetPreLoadValueAsync(path);
+                                thumb = _preLoadValue.ImageModel.Image as Bitmap;
+                                if (thumb is not null)
+                                {
+                                    await Dispatcher.UIThread.InvokeAsync(() =>
+                                    {
+                                        _dragDropView?.UpdateThumbnail(thumb);
+                                    }, DispatcherPriority.Loaded);
+                                }
+                            }
+                            else
+                            {
+                                _preLoadValue = preload;
+                            }
+                        }
+                        else if (preload is null)
+                        {
+                            thumb = await GetImage.GetDefaultBitmapAsync(fileInfo);
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                _dragDropView?.UpdateThumbnail(thumb);
+                            }, DispatcherPriority.Render);
+                        }
+                    });
                 }
             }
         }
@@ -220,10 +279,13 @@ public static class DragAndDropHelper
 
     public static void DragLeave(DragEventArgs e, Control control)
     {
-        if (!control.IsPointerOver)
+        if (control.IsPointerOver)
         {
-            RemoveDragDropView();
+            return;
         }
+
+        RemoveDragDropView();
+        _preLoadValue = null;
     }
 
     public static void RemoveDragDropView()
