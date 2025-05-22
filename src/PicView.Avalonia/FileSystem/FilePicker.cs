@@ -154,8 +154,7 @@ public static class FilePicker
     
     private static IStorageProvider? GetStorageProvider()
     {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-            desktop.MainWindow?.StorageProvider is { } provider)
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow.StorageProvider: { } provider })
         {
             return provider;
         }
