@@ -1,10 +1,15 @@
-﻿using Avalonia.Controls;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Controls;
 
 namespace PicView.Avalonia.Views;
-    public partial class NavigationView : UserControl
+public partial class NavigationView : UserControl
+{
+    public NavigationView()
     {
-        public NavigationView()
+        InitializeComponent();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            InitializeComponent();
+            TaskBarToggleButton.IsEnabled = false;
         }
     }
+}
