@@ -441,8 +441,8 @@ public static class NavigationManager
     public static void AddToPreloader(int index, ImageModel imageModel) =>
         ImageIterator?.Add(index, imageModel);
     
-    public static void AddToPreloader(string file, ImageModel imageModel) =>
-        ImageIterator?.Add(file, imageModel);
+    public static bool AddToPreloader(string file, ImageModel imageModel) =>
+        ImageIterator?.Add(file, imageModel) ?? false;
     public static async Task PreloadAsync() => 
         await ImageIterator?.PreloadAsync();
     

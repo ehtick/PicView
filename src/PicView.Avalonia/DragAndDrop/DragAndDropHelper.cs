@@ -56,9 +56,17 @@ public static class DragAndDropHelper
                 
                 if (_preLoadValue.ImageModel.FileInfo.DirectoryName == Path.GetDirectoryName(path))
                 {
-                    NavigationManager.AddToPreloader(path, _preLoadValue.ImageModel);
-                    NavigationManager.ImageIterator.Resynchronize();
-                    await NavigationManager.LoadPicFromFile(path, vm, _preLoadValue.ImageModel.FileInfo);
+                    // Check for edge case error
+                    var isAddedToPreloader = NavigationManager.AddToPreloader(path, _preLoadValue.ImageModel);
+                    if (isAddedToPreloader)
+                    {
+                        NavigationManager.ImageIterator.Resynchronize();
+                        await NavigationManager.LoadPicFromFile(path, vm, _preLoadValue.ImageModel.FileInfo);
+                    }
+                    else
+                    {
+                        await NavigationManager.LoadPicFromStringAsync(path, vm).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
