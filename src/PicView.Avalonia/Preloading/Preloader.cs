@@ -279,17 +279,17 @@ public class PreLoader : IAsyncDisposable
 
 
     /// <summary>
-    ///     Gets the preloaded value for a specific key asynchronously.
+    /// Retrieves a preloaded image value or loads it asynchronously if not already loaded.
     /// </summary>
-    /// <param name="key">The key of the preloaded value.</param>
+    /// <param name="key">The index of the image in the list.</param>
     /// <param name="list">The list of image paths.</param>
-    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public async Task<PreLoadValue?> GetAsync(int key, List<string> list)
+    /// <returns>The preloaded image value if found or successfully loaded; otherwise, null.</returns>
+    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<string> list)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
 #if DEBUG
-            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(GetAsync)} invalid parameters: \n{key}");
+            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(GetOrLoadAsync)} invalid parameters: \n{key}");
 #endif
             return null;
         }
@@ -309,8 +309,8 @@ public class PreLoader : IAsyncDisposable
     /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public async Task<PreLoadValue?> GetAsync(string fileName, List<string> list) =>
-        await GetAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo?.FullName == fileName),
+    public async Task<PreLoadValue?> GetOrLoadAsync(string fileName, List<string> list) =>
+        await GetOrLoadAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo?.FullName == fileName),
             list);
 
     #endregion

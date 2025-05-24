@@ -407,14 +407,14 @@ public class ImageIterator : IAsyncDisposable
     }
         
     
-    public async Task<PreLoadValue?> GetPreLoadValueAsync(int index) =>
-        await PreLoader.GetAsync(index, ImagePaths);
+    public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(int index) =>
+        await PreLoader.GetOrLoadAsync(index, ImagePaths);
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
         isRunning ? PreLoader.Get(_vm.PicViewer.FileInfo.FullName, ImagePaths) : PreLoader.Get(CurrentIndex, ImagePaths);
 
     public async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
-        isRunning ? await PreLoader.GetAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths) : await PreLoader.GetAsync(CurrentIndex, ImagePaths);
+        isRunning ? await PreLoader.GetOrLoadAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths) : await PreLoader.GetOrLoadAsync(CurrentIndex, ImagePaths);
 
     public PreLoadValue? GetNextPreLoadValue()
     {
@@ -425,7 +425,7 @@ public class ImageIterator : IAsyncDisposable
     public async Task<PreLoadValue?>? GetNextPreLoadValueAsync()
     {
         var nextIndex = GetIteration(CurrentIndex, NavigateTo.Next);
-        return isRunning ? await PreLoader.GetAsync(ImagePaths[nextIndex], ImagePaths) : await PreLoader.GetAsync(nextIndex, ImagePaths);
+        return isRunning ? await PreLoader.GetOrLoadAsync(ImagePaths[nextIndex], ImagePaths) : await PreLoader.GetOrLoadAsync(nextIndex, ImagePaths);
     }
 
     public void RemoveItemFromPreLoader(int index) => PreLoader.Remove(index, ImagePaths);
@@ -671,7 +671,7 @@ public class ImageIterator : IAsyncDisposable
             if (Settings.ImageScaling.ShowImageSideBySide)
             {
                 var nextIndex = GetIteration(index, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
-                var nextPreloadValue = await GetPreLoadValueAsync(nextIndex).ConfigureAwait(false);
+                var nextPreloadValue = await GetOrLoadPreLoadValueAsync(nextIndex).ConfigureAwait(false);
                 if (CurrentIndex != index)
                 {
                     // Skip loading if user went to next value

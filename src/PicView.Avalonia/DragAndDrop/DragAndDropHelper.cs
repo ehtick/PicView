@@ -195,7 +195,7 @@ public static class DragAndDropHelper
         }
         else if (path.IsSupported())
         {
-            await ShowFilePreview(path, control);
+            await ShowFilePreview(path);
         }
     }
 
@@ -221,7 +221,7 @@ public static class DragAndDropHelper
         });
     }
 
-    private static async Task ShowFilePreview(string path, Control control)
+    private static async Task ShowFilePreview(string path)
     {
         var ext = Path.GetExtension(path);
         if (ext.Equals(".svg", StringComparison.InvariantCultureIgnoreCase) ||
@@ -238,22 +238,23 @@ public static class DragAndDropHelper
     {
         Bitmap? thumb;
         // Try to get preloaded image first
-        var preload = NavigationManager.GetPreLoadValue(path);
+        var preload = NavigationManager.TryGetPreLoadValue(path);
         if (preload?.ImageModel?.Image is Bitmap bmp)
         {
             thumb = bmp;
+            
+            await UpdateThumbnailUI(thumb);
         }
         else
         {
             // Generate thumbnail
             thumb = await GetThumbnails.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30)
                 .ConfigureAwait(false);
+            await UpdateThumbnailUI(thumb);
+            
+            // Load full image in background
+            await PreloadFullImage(path, preload, thumb);
         }
-
-        await UpdateThumbnailUI(thumb);
-
-        // Load full image in background
-        await PreloadFullImage(path, preload, thumb);
     }
 
     private static async Task PreloadFullImage(string path, PreLoadValue? preload, Bitmap? thumb)

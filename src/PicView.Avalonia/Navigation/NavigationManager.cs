@@ -419,14 +419,14 @@ public static class NavigationManager
     
     public static FileInfo? GetInitialFileInfo => ImageIterator?.InitialFileInfo;
     
-    public static PreLoadValue? GetPreLoadValue(int index) => 
+    public static PreLoadValue? TryGetPreLoadValue(int index) => 
         ImageIterator?.GetPreLoadValue(index) ?? null;
-    public static PreLoadValue? GetPreLoadValue(string fileName) => 
+    public static PreLoadValue? TryGetPreLoadValue(string fileName) => 
         ImageIterator?.GetPreLoadValue(fileName) ?? null;
     public static async Task<PreLoadValue?> GetPreLoadValueAsync(int index) => 
-        await ImageIterator?.GetPreLoadValueAsync(index) ?? null;
+        await ImageIterator?.GetOrLoadPreLoadValueAsync(index) ?? null;
     public static async Task<PreLoadValue?> GetPreLoadValueAsync(string fileName) => 
-        await ImageIterator?.GetPreLoadValueAsync(GetFileNameIndex(fileName)) ?? null;
+        await ImageIterator?.GetOrLoadPreLoadValueAsync(GetFileNameIndex(fileName)) ?? null;
     public static PreLoadValue? GetCurrentPreLoadValue() => 
         ImageIterator?.GetCurrentPreLoadValue() ?? null;
     public static async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
