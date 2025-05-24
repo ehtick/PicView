@@ -127,6 +127,7 @@ internal static class IPC
             catch (Exception ex)
             {
                 DebugHelper.LogDebug(nameof(IPC), nameof(StartListeningForArguments), ex);
+                return;
             }
         }
         while (true); // Continuously listen for incoming connections
