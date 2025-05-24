@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Threading;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
@@ -516,7 +517,8 @@ public static class NavigationManager
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation,
+                vm.ImageViewer.SetTransform(imageModel.EXIFOrientation, imageModel.Format);
+                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, vm.RotationAngle,
                     vm);
             });
         }
@@ -566,6 +568,11 @@ public static class NavigationManager
         
                 UpdateImage.SetStats(vm, index, imageModel);
             }
+        }
+        
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            await WindowFunctions.ResizeAndFixRenderingError(vm);
         }
 
         vm.IsLoading = false;
