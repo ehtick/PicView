@@ -34,6 +34,7 @@ public static class GetThumbnails
                 return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
             }
 
+            thumbnail.AutoOrient();
             return thumbnail.ToWriteableBitmap();
         }
         catch (Exception e)
@@ -107,6 +108,7 @@ public static class GetThumbnails
 
         var geometry = new MagickGeometry(0, height);
         magick.Thumbnail(geometry);
+        magick.AutoOrient();
         return magick.ToWriteableBitmap();
     }
 }
