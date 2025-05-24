@@ -176,7 +176,15 @@ public static class SettingsManager
             throw new JsonException("Failed to deserialize settings");
         }
 
-        CurrentSettingsPath = path.Replace("/", "\\");
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            CurrentSettingsPath = path.Replace("/", "\\");
+        }
+        else
+        {
+            CurrentSettingsPath = path;
+        }
+        
         Settings = await UpgradeSettingsIfNeededAsync(settings).ConfigureAwait(false);
     }
 
