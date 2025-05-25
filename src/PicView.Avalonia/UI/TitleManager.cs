@@ -22,10 +22,11 @@ public static class TitleManager
         if (!NavigationManager.CanNavigate(vm))
         {
             string title;
-            var s = vm.PicViewer.Title;
-            if (!string.IsNullOrWhiteSpace(s.GetURL()))
+            var s = vm.PicViewer.WindowTitle;
+            var url = s.GetURL();
+            if (!string.IsNullOrWhiteSpace(url))
             {
-                title = vm.PicViewer.Title.GetURL();
+                title = url;
             }
             else if (s.Contains(TranslationManager.Translation.Base64Image))
             {
