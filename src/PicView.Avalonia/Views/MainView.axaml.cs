@@ -37,6 +37,7 @@ public partial class MainView : UserControl
             AltButtonsPanel.HorizontalAlignment = HorizontalAlignment.Left; 
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltClose),0);
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltMinimize),2);
+            AltMinimize.RenderTransform = new ScaleTransform{ScaleX = -1};
         }
         else
         {
