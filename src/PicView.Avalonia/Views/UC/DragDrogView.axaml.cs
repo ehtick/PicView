@@ -103,7 +103,7 @@ public partial class DragDropView : UserControl
         ContentHolder.IsVisible = true;
     }
 
-    private double CalculateScale(double width, double height, MainViewModel vm)
+    private static double CalculateScale(double width, double height, MainViewModel vm)
     {
         var screen = ScreenHelper.ScreenSize;
         var padding = vm.BottombarHeight + vm.TitlebarHeight + 50;
