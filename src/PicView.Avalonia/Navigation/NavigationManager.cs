@@ -554,6 +554,7 @@ public static class NavigationManager
         }
         else
         {
+            vm.IsSingleImage = false;
             var isTiffUpdated = await CheckIfTiffAndUpdate(vm, fileInfo, index); 
             if (!isTiffUpdated)
             {

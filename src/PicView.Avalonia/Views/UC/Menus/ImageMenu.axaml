@@ -270,8 +270,6 @@
                     CommandParameter="0"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
-                    IsEnabled="{CompiledBinding PicViewer.FileInfo,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
                     ToolTip.Tip="{CompiledBinding Translation.Slideshow,
                                                   Mode=OneWay}"
                     x:Name="SlideShowButton">
@@ -392,6 +390,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
                     IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide}"
+                    IsEnabled="{CompiledBinding !IsSingleImage}"
                     ToolTip.Tip="{CompiledBinding Translation.SideBySideTooltip}">
                     <TextBlock
                         Classes="txt btnTxt"
@@ -407,6 +406,7 @@
                     Command="{CompiledBinding ToggleBottomGalleryCommand}"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="46"
+                    IsEnabled="{CompiledBinding !IsSingleImage}"
                     ToolTip.Tip="{CompiledBinding Translation.IsShowingBottomGallery,
                                                   Mode=OneWay}"
                     Width="300">

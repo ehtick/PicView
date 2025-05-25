@@ -329,6 +329,7 @@ public static class UpdateImage
             vm.GalleryMargin = new Thickness(0);
         }
 
+        vm.IsSingleImage = true;
         await dispatchAction(() => { UIHelper.GetGalleryView.IsVisible = false; }, DispatcherPriority.Render);
         await NavigationManager.DisposeImageIteratorAsync();
     }
@@ -339,6 +340,7 @@ public static class UpdateImage
 
     public static void SetStats(MainViewModel vm, int index, ImageModel imageModel)
     {
+        vm.IsSingleImage = false;
         vm.PicViewer.PixelWidth = imageModel.PixelWidth;
         vm.PicViewer.PixelHeight = imageModel.PixelHeight;
         vm.GetIndex = index + 1;

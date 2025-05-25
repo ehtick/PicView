@@ -265,7 +265,6 @@ public class MainViewModel : ReactiveObject
         ChangeCtrlZoomCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ChangeCtrlZoom);
 
         ColorPickerCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ColorPicker);
-
         SlideshowCommand = FunctionsHelper.CreateReactiveCommand<int>(StartSlideShowTask);
 
         ToggleTaskbarProgressCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleTaskbarProgress);
@@ -370,7 +369,7 @@ public class MainViewModel : ReactiveObject
     {
         get
         {
-            if (!Settings.Gallery.IsBottomGalleryShown)
+            if (!Settings.Gallery.IsBottomGalleryShown || IsSingleImage || Slideshow.IsRunning)
             {
                 return 0;
             }
@@ -891,6 +890,12 @@ public class MainViewModel : ReactiveObject
             this.RaiseAndSetIfChanged(ref field, value);
             Settings.Zoom.IsUsingTouchPad = value;
         }
+    }
+
+    public bool IsSingleImage
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     #endregion Booleans
