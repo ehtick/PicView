@@ -19,7 +19,10 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.1/PicView-v3.1.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.1/PicView-v3.1.1-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.3/PicView-v3.1.3-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.3/PicView-v3.1.3-win-arm64.exe)
+
+[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.3-macOS-beta1/PicView-3.1.3-macOS-arm64.dmg)
+[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.3-macOS-beta1/PicView-3.1.3-macOS-x64.dmg) _(beta)_
 
 [Latest releases at PicView.org](https://picview.org/download)
 
@@ -194,8 +197,8 @@ Improvements to the current code or bug fixes are also welcome!
 
 
 ## Translators/Languages
-Simplified Chinese by <a href="https://github.com/Crystal-RainSlide">Crystal-RainSlide</a><br>
-Traditional Chinese by <a href="https://github.com/wcxu21">wcxu21</a><br>
+Simplified Chinese by <a href="https://github.com/Crystal-RainSlide">Crystal-RainSlide</a>, <a href="https://github.com/jasoneri">jasoneri</a><br>
+Traditional Chinese by <a href="https://github.com/wcxu21">wcxu21</a>, <a href="https://github.com/jasoneri">jasoneri</a><br>
 Spanish by <a href="https://github.com/lk-KEVIN">lk.KEVIN</a> <i>(needs updates)</i><br>
 Korean by <a href="https://github.com/VenusGirl">VenusGirl</a><br>
 German by <a href="https://github.com/Brotbox">Brotbox</a>, [uDEV2019](https://github.com/uDEV2019)<br>
