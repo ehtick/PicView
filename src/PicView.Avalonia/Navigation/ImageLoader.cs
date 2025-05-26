@@ -5,6 +5,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.DebugTools;
+using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
 using PicView.Core.Http;
@@ -234,11 +235,19 @@ public static class ImageLoader
         vm.IsLoading = true;
         TitleManager.SetLoadingTitle(vm);
 
+        string? prevArchiveLocation = null;
+        var previousArchiveExist = !string.IsNullOrEmpty(ArchiveExtraction.TempZipDirectory);
+        if (previousArchiveExist)
+        {
+            prevArchiveLocation = ArchiveExtraction.TempZipDirectory;
+        }
+
         var extraction = await ArchiveExtraction
             .ExtractArchiveAsync(path, vm.PlatformService.ExtractWithLocalSoftwareAsync).ConfigureAwait(false);
         if (!extraction)
         {
             await ErrorHandling.ReloadAsync(vm);
+            Clean();
             return;
         }
 
@@ -258,11 +267,31 @@ public static class ImageLoader
 
             FileHistoryManager.Add(path);
             MainKeyboardShortcuts.ClearKeyDownModifiers(); // Fix possible modifier key state issue
+            if (previousArchiveExist)
+            {
+                try
+                {
+                    Directory.Delete(prevArchiveLocation, true);
+                }
+                catch (Exception e)
+                {
+                    DebugHelper.LogDebug(nameof(ImageLoader), nameof(LoadPicFromArchiveAsync), e);
+                }
+            }
         }
         else
         {
             await imageIterator.DisposeAsync();
             await ErrorHandling.ReloadAsync(vm);
+            Clean();
+        }
+        
+        return;
+
+        void Clean()
+        {
+            TempFileHelper.DeleteTempFiles();
+            ArchiveExtraction.Cleanup();
         }
     }
 
@@ -344,6 +373,7 @@ public static class ImageLoader
         FileHistoryManager.Add(url);
 
         await NavigationManager.DisposeImageIteratorAsync();
+        TempFileHelper.TempFilePath = destination;
     }
 
     #endregion
