@@ -18,7 +18,6 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-
       # Step 3: Get version from Directory.Build.props using PowerShell
       - name: Get version from Directory.Build.props
         id: get-version
@@ -30,11 +29,17 @@ jobs:
           pwsh -File "${{ github.workspace }}\Build\Build Avalonia.Win32.ps1" -Platform "x64" -outputPath "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64"
         shell: pwsh
 
-      # Step 5 (x64): Compile .ISS to .EXE Installer for x64
+      # Step 5: Delete all PDB files from x64 output directory
+      - name: Remove all PDB files (x64)
+        run: |
+          Get-ChildItem -Path "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64" -Filter *.pdb -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue
+        shell: pwsh
+
+      # Step 6 (x64): Compile .ISS to .EXE Installer for x64
       - name: Compile .ISS to .EXE Installer (x64)
         run: |
           New-Item -Path "${{ github.workspace }}\Build\install" -ItemType Directory -Force
-          
+
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
             /DMyAppVersion="${{steps.get-version.outputs.version}}" `
@@ -46,18 +51,23 @@ jobs:
             /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
-        
-      # Step 6 (arm64): Publish arm64 version
+
+      # Step 7 (arm64): Publish arm64 version
       - name: Publish arm64 version
         run: |
           pwsh -File "${{ github.workspace }}\Build\Build Avalonia.Win32.ps1" -Platform "arm64" -outputPath "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64"
         shell: pwsh
 
+      # Step 8: Delete all PDB files from arm64 output directory
+      - name: Remove all PDB files (arm64)
+        run: |
+          Get-ChildItem -Path "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64" -Filter *.pdb -Recurse | Remove-Item -Force -ErrorAction SilentlyContinue
+        shell: pwsh
 
-      # Step 7 (arm64): Compile .ISS to .EXE Installer for arm64
+      # Step 9 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
         run: |
-          
+
           & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' `
             /O+ `
             /DMyAppVersion="${{steps.get-version.outputs.version}}" `
@@ -69,8 +79,8 @@ jobs:
             /DVersionInfoVersion="${{steps.get-version.outputs.clean-version}}" `
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
-        
-      # Step 8: Upload unsigned artifact
+
+      # Step 10: Upload unsigned artifact
       - name: upload-unsigned-artifact
         id: upload-unsigned-artifact
         uses: actions/upload-artifact@v4
@@ -83,8 +93,8 @@ jobs:
             ${{ github.workspace }}\Build\\PicView-v${{steps.get-version.outputs.version}}-win-arm64\
             ${{ github.workspace }}\Build\install\PicView-v${{steps.get-version.outputs.version}}-win-arm64.exe
           retention-days: 1
-      
-      # Step 9: Sign the binaries
+
+      # Step 11: Sign the binaries
       - name: Sign files
         uses: signpath/github-action-submit-signing-request@v1
         with:
@@ -96,7 +106,7 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: 'PicView-${{steps.get-version.outputs.version}}-signed'
 
-      # Step 10: Upload signed binaries
+      # Step 12: Upload signed binaries
       - name: upload-signed-artifact
         uses: actions/upload-artifact@v4
         with:
