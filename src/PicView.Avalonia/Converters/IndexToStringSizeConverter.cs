@@ -5,87 +5,50 @@ using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Converters;
 
-public class IndexToStringSizeConverter: IValueConverter
+public class IndexToStringSizeConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (!int.TryParse(value?.ToString(), out var index) || !int.TryParse(parameter?.ToString(), out var parameterIndex))
+        if (!int.TryParse(value?.ToString(), out var index) ||
+            !int.TryParse(parameter?.ToString(), out var parameterIndex))
         {
             return BindingOperations.DoNothing;
         }
 
-        switch (index)
+        return index switch
         {
-            case 1:
-                return TranslationManager.Translation.Thumbnail ?? "Thumb";
-            
-            case 2 when parameterIndex is 1:
-                return "medium";
-            case 2:
-                return "small";
-            
-            case 3 when parameterIndex is 1:
-                return "large";
-            case 3 when parameterIndex is 2:
-                return "medium";
-            case 3:
-                return "small";
-            
-            case 4 when parameterIndex is 1:
-                return "large";
-            case 4 when parameterIndex is 2:
-                return "medium";
-            case 4 when parameterIndex is 3:
-                return "small";
-            case 4:
-                return "xs";
-            
-            case 5 when parameterIndex is 1:
-                return "xl";
-            case 5 when parameterIndex is 2:
-                return "large";
-            case 5 when parameterIndex is 3:
-                return "medium";
-            case 5when parameterIndex is 4:
-                return "small";
-            case 5:
-                return "xs";
-            
-            
-            case 6 when parameterIndex is 1:
-                return "xl";
-            case 6 when parameterIndex is 2:
-                return "large";
-            case 6 when parameterIndex is 3:
-                return "medium";
-            case 6 when parameterIndex is 4:
-                return "small";
-            case 6 when parameterIndex is 5:
-                return "xs";
-            case 6:
-                return "xxs";
-            
-            case 7 when parameterIndex is 1:
-                return "xxl";
-            case 7 when parameterIndex is 2:
-                return "xl";
-            case 7 when parameterIndex is 3:
-                return "large";
-            case 7 when parameterIndex is 4:
-                return "medium";
-            case 7 when parameterIndex is 5:
-                return "small";
-            case 7 when parameterIndex is 6:
-                return "xs";
-            case 7:
-                return "xxs";
-            default:
-                return BindingOperations.DoNothing;
-        }
+            1 => TranslationManager.Translation.Thumbnail ?? "Thumb",
+            2 when parameterIndex is 1 => "medium",
+            2 => "small",
+            3 when parameterIndex is 1 => "large",
+            3 when parameterIndex is 2 => "medium",
+            3 => "small",
+            4 when parameterIndex is 1 => "large",
+            4 when parameterIndex is 2 => "medium",
+            4 when parameterIndex is 3 => "small",
+            4 => "xs",
+            5 when parameterIndex is 1 => "xl",
+            5 when parameterIndex is 2 => "large",
+            5 when parameterIndex is 3 => "medium",
+            5 when parameterIndex is 4 => "small",
+            5 => "xs",
+            6 when parameterIndex is 1 => "xl",
+            6 when parameterIndex is 2 => "large",
+            6 when parameterIndex is 3 => "medium",
+            6 when parameterIndex is 4 => "small",
+            6 when parameterIndex is 5 => "xs",
+            6 => "xxs",
+            7 when parameterIndex is 1 => "xxl",
+            7 when parameterIndex is 2 => "xl",
+            7 when parameterIndex is 3 => "large",
+            7 when parameterIndex is 4 => "medium",
+            7 when parameterIndex is 5 => "small",
+            7 when parameterIndex is 6 => "xs",
+            7 => "xxs",
+            _ => BindingOperations.DoNothing
+        };
     }
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        return BindingOperations.DoNothing;
-    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        BindingOperations.DoNothing;
 }

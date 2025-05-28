@@ -4,87 +4,50 @@ using Avalonia.Data.Converters;
 
 namespace PicView.Avalonia.Converters;
 
-public class IndexToPercentageSizeConverter: IValueConverter
+public class IndexToPercentageSizeConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (!int.TryParse(value?.ToString(), out var index) || !int.TryParse(parameter?.ToString(), out var parameterIndex))
+        if (!int.TryParse(value?.ToString(), out var index) ||
+            !int.TryParse(parameter?.ToString(), out var parameterIndex))
         {
             return BindingOperations.DoNothing;
         }
 
-        switch (index)
+        return index switch
         {
-            case 1:
-                return 30;
-            
-            case 2 when parameterIndex is 1:
-                return 30;
-            case 2:
-                return 50;
-            
-            case 3 when parameterIndex is 1:
-                return 70;
-            case 3 when parameterIndex is 2:
-                return 50;
-            case 3:
-                return 30;
-            
-            case 4 when parameterIndex is 1:
-                return 70;
-            case 4 when parameterIndex is 2:
-                return 50;
-            case 4 when parameterIndex is 3:
-                return 30;
-            case 4:
-                return 15;
-            
-            case 5 when parameterIndex is 1:
-                return 80;
-            case 5 when parameterIndex is 2:
-                return 70;
-            case 5 when parameterIndex is 3:
-                return 50;
-            case 5when parameterIndex is 4:
-                return 30;
-            case 5:
-                return 15;
-            
-            
-            case 6 when parameterIndex is 1:
-                return 80;
-            case 6 when parameterIndex is 2:
-                return 70;
-            case 6 when parameterIndex is 3:
-                return 60;
-            case 6 when parameterIndex is 4:
-                return 50;
-            case 6 when parameterIndex is 5:
-                return 40;
-            case 6:
-                return 30;
-            
-            case 7 when parameterIndex is 1:
-                return 85;
-            case 7 when parameterIndex is 2:
-                return 75;
-            case 7 when parameterIndex is 3:
-                return 65;
-            case 7 when parameterIndex is 4:
-                return 50;
-            case 7 when parameterIndex is 5:
-                return 40;
-            case 7 when parameterIndex is 6:
-                return 30;
-            case 7:
-                return 20;
-            default:
-                return BindingOperations.DoNothing;
-        }
+            1 => 30,
+            2 when parameterIndex is 1 => 30,
+            2 => 50,
+            3 when parameterIndex is 1 => 70,
+            3 when parameterIndex is 2 => 50,
+            3 => 30,
+            4 when parameterIndex is 1 => 70,
+            4 when parameterIndex is 2 => 50,
+            4 when parameterIndex is 3 => 30,
+            4 => 15,
+            5 when parameterIndex is 1 => 80,
+            5 when parameterIndex is 2 => 70,
+            5 when parameterIndex is 3 => 50,
+            5 when parameterIndex is 4 => 30,
+            5 => 15,
+            6 when parameterIndex is 1 => 80,
+            6 when parameterIndex is 2 => 70,
+            6 when parameterIndex is 3 => 60,
+            6 when parameterIndex is 4 => 50,
+            6 when parameterIndex is 5 => 40,
+            6 => 30,
+            7 when parameterIndex is 1 => 85,
+            7 when parameterIndex is 2 => 75,
+            7 when parameterIndex is 3 => 65,
+            7 when parameterIndex is 4 => 50,
+            7 when parameterIndex is 5 => 40,
+            7 when parameterIndex is 6 => 30,
+            7 => 20,
+            _ => BindingOperations.DoNothing
+        };
     }
 
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-    {
-        return BindingOperations.DoNothing;
-    }
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
+        BindingOperations.DoNothing;
 }

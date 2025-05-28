@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using ImageMagick;
+using PicView.Core.DebugTools;
 
 namespace PicView.Core.ImageDecoding;
 
@@ -32,6 +33,7 @@ public static class SaveImageFileHelper
         Percentage? percentage = null, bool losslessCompress = false, bool lossyCompress = false,
         bool respectAspectRatio = true)
     {
+        string? tempDestination = null;
         try
         {
             using MagickImage magickImage = new();
@@ -127,6 +129,7 @@ public static class SaveImageFileHelper
                 };
             }
 
+            // ---> Core Fix: Never write directly onto the file you just read
             if (destination is not null)
             {
                 await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(destination, ext) : destination)
@@ -135,14 +138,23 @@ public static class SaveImageFileHelper
             }
             else if (path is not null)
             {
-                await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(path, ext) : path)
+                // Write to temp file, then replace original
+                var dir = Path.GetDirectoryName(path)!;
+                var tempFile = Path.Combine(dir, $"{Path.GetFileNameWithoutExtension(path)}_tmp{Path.GetExtension(path)}");
+
+                tempDestination = tempFile;
+                await magickImage.WriteAsync(!keepExt ? Path.ChangeExtension(tempFile, ext) : tempFile)
                     .ConfigureAwait(false);
+
+                // Now move - overwrite
+                File.Replace(tempFile, path, null, true);
                 writtenFile = path;
             }
             else
             {
                 return false;
             }
+
 
             if (lossyCompress || losslessCompress)
             {
@@ -158,14 +170,27 @@ public static class SaveImageFileHelper
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Trace.WriteLine(exception);
-#endif
+            DebugHelper.LogDebug(nameof(SaveImageFileHelper), nameof(SaveImageAsync), exception);
+            // cleanup temp file if exists
+            if (tempDestination == null || !File.Exists(tempDestination))
+            {
+                return false;
+            }
+
+            try
+            {
+                File.Delete(tempDestination);
+            }
+            catch
+            {
+                DebugHelper.LogDebug(nameof(SaveImageFileHelper), nameof(SaveImageAsync),"Failed to delete file");
+            }
             return false;
         }
 
         return true;
     }
+
 
 
     /// <summary>

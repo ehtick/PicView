@@ -23,11 +23,11 @@ public class ImageIterator : IAsyncDisposable
 
     public List<string> ImagePaths { get; private set; }
     public int CurrentIndex { get; private set; }
-    
+
     public int GetNonZeroIndex => CurrentIndex + 1 > GetCount ? 1 : CurrentIndex + 1;
 
     public int NextIndex => GetIteration(CurrentIndex, NavigateTo.Next);
-    
+
     public int GetCount => ImagePaths.Count;
 
     public FileInfo InitialFileInfo { get; private set; } = null!;
@@ -36,8 +36,8 @@ public class ImageIterator : IAsyncDisposable
 
     private static FileSystemWatcher? _watcher;
 
-    private bool isRunning;
-    
+    private bool _isRunning;
+
     private readonly MainViewModel? _vm;
 
     #endregion
@@ -87,50 +87,74 @@ public class ImageIterator : IAsyncDisposable
             IncludeSubdirectories = Settings.Sorting.IncludeSubDirectories,
             NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
         };
-        
-        _watcher.Created += (_, e) => 
+
+        _watcher.Created += (_, e) =>
         {
-            if (!e.FullPath.IsSupported()) return; // Early exit
-            Task.Run(() => OnFileAdded(e)).ContinueWith(t => 
+            if (!e.FullPath.IsSupported())
+            {
+                return; // Early exit
+            }
+
+            if (_vm.IsEditableTitlebarOpen)
+            {
+                // Don't react to changes when renaming
+                return;
+            }
+
+            Task.Run(() => OnFileAdded(e)).ContinueWith(t =>
             {
                 if (t.Exception == null)
                 {
                     return;
                 }
-#if DEBUG
-                Console.WriteLine($"{nameof(OnFileAdded)} exception: \n{t.Exception.Message}\n{t.Exception.StackTrace}");
-                Dispatcher.UIThread.Post(() => _ = TooltipHelper.ShowTooltipMessageAsync(t.Exception.Message));
-#endif
+
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileAdded), t.Exception);
             });
         };
-        _watcher.Deleted += (_, e) => 
+        _watcher.Deleted += (_, e) =>
         {
-            if (!e.FullPath.IsSupported()) return; // Early exit
-            Task.Run(() => OnFileDeleted(e)).ContinueWith(t => 
+            if (!e.FullPath.IsSupported())
+            {
+                return; // Early exit
+            }
+
+            if (_vm.IsEditableTitlebarOpen)
+            {
+                // Don't react to changes when renaming
+                return;
+            }
+
+            Task.Run(() => OnFileDeleted(e)).ContinueWith(t =>
             {
                 if (t.Exception == null)
                 {
                     return;
                 }
-#if DEBUG
-                Console.WriteLine($"{nameof(OnFileDeleted)} exception: \n{t.Exception.Message}\n{t.Exception.StackTrace}");
-                Dispatcher.UIThread.Post(() => _ = TooltipHelper.ShowTooltipMessageAsync(t.Exception.Message));
-#endif
+
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileDeleted), t.Exception);
             });
         };
-        _watcher.Renamed += (_, e) => 
+        _watcher.Renamed += (_, e) =>
         {
-            if (!e.FullPath.IsSupported()) return; // Early exit
-            Task.Run(() => OnFileRenamed(e)).ContinueWith(t => 
+            if (!e.FullPath.IsSupported())
+            {
+                return; // Early exit
+            }
+
+            if (_vm.IsEditableTitlebarOpen)
+            {
+                // Don't react to changes when renaming
+                return;
+            }
+
+            Task.Run(() => OnFileRenamed(e)).ContinueWith(t =>
             {
                 if (t.Exception == null)
                 {
                     return;
                 }
-#if DEBUG
-                Console.WriteLine($"{nameof(IterateToIndex)} OnFileRenamed: \n{t.Exception.Message}\n{t.Exception.StackTrace}");
-                Dispatcher.UIThread.Post(() => _ = TooltipHelper.ShowTooltipMessageAsync(t.Exception.Message));
-#endif
+
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileRenamed), t.Exception);
             });
         };
     }
@@ -144,7 +168,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 return;
             }
-            
+
             var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
                 ? new FileInfo(_watcher.Path)
                 : fileInfo;
@@ -156,7 +180,7 @@ public class ImageIterator : IAsyncDisposable
             }
 
             ImagePaths = newList;
-            isRunning = true;
+            _isRunning = true;
 
             TitleManager.SetTitle(_vm);
 
@@ -164,7 +188,7 @@ public class ImageIterator : IAsyncDisposable
             if (index < 0)
             {
                 PreLoader.Resynchronize(ImagePaths);
-                isRunning = false;
+                _isRunning = false;
                 return;
             }
 
@@ -187,12 +211,13 @@ public class ImageIterator : IAsyncDisposable
         catch (Exception exception)
         {
 #if DEBUG
-            Console.WriteLine($"{nameof(ImageIterator)}.{nameof(OnFileAdded)} {exception.Message} \n{exception.StackTrace}");
+            Console.WriteLine(
+                $"{nameof(ImageIterator)}.{nameof(OnFileAdded)} {exception.Message} \n{exception.StackTrace}");
 #endif
         }
         finally
         {
-            isRunning = false;
+            _isRunning = false;
         }
     }
 
@@ -205,7 +230,7 @@ public class ImageIterator : IAsyncDisposable
                 return;
             }
 
-            isRunning = true;
+            _isRunning = true;
 
             var index = ImagePaths.IndexOf(e.FullPath);
             if (index < 0)
@@ -281,13 +306,13 @@ public class ImageIterator : IAsyncDisposable
         }
         finally
         {
-            isRunning = false;
+            _isRunning = false;
         }
     }
 
     private async Task OnFileRenamed(RenamedEventArgs e)
     {
-        try 
+        try
         {
             if (e.FullPath.IsSupported() == false)
             {
@@ -299,7 +324,7 @@ public class ImageIterator : IAsyncDisposable
                 return;
             }
 
-            isRunning = true;
+            _isRunning = true;
 
             var oldIndex = ImagePaths.IndexOf(e.OldFullPath);
             var currentIndex = CurrentIndex;
@@ -336,7 +361,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 return;
             }
-        
+
             if (sameFile)
             {
                 _vm.PicViewer.FileInfo = fileInfo;
@@ -346,10 +371,11 @@ public class ImageIterator : IAsyncDisposable
             PreLoader.RefreshFileInfo(oldIndex, fileInfo, ImagePaths);
             Resynchronize();
 
-            isRunning = false;
+            _isRunning = false;
             FileHistoryManager.Rename(e.OldFullPath, e.FullPath);
             await Dispatcher.UIThread.InvokeAsync(() =>
-                GalleryFunctions.RenameGalleryItem(oldIndex, index, Path.GetFileNameWithoutExtension(e.Name), e.FullPath,
+                GalleryFunctions.RenameGalleryItem(oldIndex, index, Path.GetFileNameWithoutExtension(e.Name),
+                    e.FullPath,
                     _vm));
             if (sameFile)
             {
@@ -360,19 +386,20 @@ public class ImageIterator : IAsyncDisposable
         catch (Exception exception)
         {
 #if DEBUG
-            Console.WriteLine($"{nameof(ImageIterator)}.{nameof(OnFileRenamed)} {exception.Message} \n{exception.StackTrace}");
+            Console.WriteLine(
+                $"{nameof(ImageIterator)}.{nameof(OnFileRenamed)} {exception.Message} \n{exception.StackTrace}");
 #endif
         }
         finally
         {
-            isRunning = false;
+            _isRunning = false;
         }
     }
 
     #endregion
 
     #region Preloader
-    
+
     public async Task ClearAsync() =>
         await PreLoader.ClearAsync().ConfigureAwait(false);
 
@@ -381,10 +408,10 @@ public class ImageIterator : IAsyncDisposable
 
     public async Task AddAsync(int index) =>
         await PreLoader.AddAsync(index, ImagePaths).ConfigureAwait(false);
-    
+
     public void Add(int index, ImageModel imageModel) =>
         PreLoader.Add(index, ImagePaths, imageModel);
-    
+
     public bool Add(string file, ImageModel imageModel)
     {
         file = file.Replace('/', '\\');
@@ -393,39 +420,55 @@ public class ImageIterator : IAsyncDisposable
 
     public PreLoadValue? GetPreLoadValue(int index)
     {
-        if (index < 0 || index >= ImagePaths.Count) return null;
-        return isRunning ? PreLoader.Get(ImagePaths[index], ImagePaths) 
+        if (index < 0 || index >= ImagePaths.Count)
+        {
+            return null;
+        }
+
+        return _isRunning
+            ? PreLoader.Get(ImagePaths[index], ImagePaths)
             : PreLoader.Get(index, ImagePaths);
     }
-    
+
     public PreLoadValue? GetPreLoadValue(string file)
     {
         var index = ImagePaths.IndexOf(file);
-        if (index < 0 || index >= ImagePaths.Count) return null;
-        return isRunning ? PreLoader.Get(ImagePaths[index], ImagePaths) 
+        if (index < 0 || index >= ImagePaths.Count)
+        {
+            return null;
+        }
+
+        return _isRunning
+            ? PreLoader.Get(ImagePaths[index], ImagePaths)
             : PreLoader.Get(index, ImagePaths);
     }
-        
-    
+
+
     public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(int index) =>
         await PreLoader.GetOrLoadAsync(index, ImagePaths);
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
-        isRunning ? PreLoader.Get(_vm.PicViewer.FileInfo.FullName, ImagePaths) : PreLoader.Get(CurrentIndex, ImagePaths);
+        _isRunning
+            ? PreLoader.Get(_vm.PicViewer.FileInfo.FullName, ImagePaths)
+            : PreLoader.Get(CurrentIndex, ImagePaths);
 
     public async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
-        isRunning ? await PreLoader.GetOrLoadAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths) : await PreLoader.GetOrLoadAsync(CurrentIndex, ImagePaths);
+        _isRunning
+            ? await PreLoader.GetOrLoadAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths)
+            : await PreLoader.GetOrLoadAsync(CurrentIndex, ImagePaths);
 
     public PreLoadValue? GetNextPreLoadValue()
     {
         var nextIndex = GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
-        return isRunning ? PreLoader.Get(ImagePaths[nextIndex], ImagePaths) : PreLoader.Get(nextIndex, ImagePaths);
+        return _isRunning ? PreLoader.Get(ImagePaths[nextIndex], ImagePaths) : PreLoader.Get(nextIndex, ImagePaths);
     }
 
     public async Task<PreLoadValue?>? GetNextPreLoadValueAsync()
     {
         var nextIndex = GetIteration(CurrentIndex, NavigateTo.Next);
-        return isRunning ? await PreLoader.GetOrLoadAsync(ImagePaths[nextIndex], ImagePaths) : await PreLoader.GetOrLoadAsync(nextIndex, ImagePaths);
+        return _isRunning
+            ? await PreLoader.GetOrLoadAsync(ImagePaths[nextIndex], ImagePaths)
+            : await PreLoader.GetOrLoadAsync(nextIndex, ImagePaths);
     }
 
     public void RemoveItemFromPreLoader(int index) => PreLoader.Remove(index, ImagePaths);
@@ -443,8 +486,9 @@ public class ImageIterator : IAsyncDisposable
     {
         try
         {
-            isRunning = true;
-            var fileList = await Task.FromResult(_vm.PlatformService.GetFiles(_vm.PicViewer.FileInfo)).ConfigureAwait(false);
+            _isRunning = true;
+            var fileList = await Task.FromResult(_vm.PlatformService.GetFiles(_vm.PicViewer.FileInfo))
+                .ConfigureAwait(false);
             var oldList = ImagePaths;
             ImagePaths = fileList;
             CurrentIndex = ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName);
@@ -452,14 +496,15 @@ public class ImageIterator : IAsyncDisposable
             await ClearAsync().ConfigureAwait(false);
             await PreloadAsync().ConfigureAwait(false);
             Resynchronize();
-            isRunning = false;
+            _isRunning = false;
             if (fileList.Count > oldList.Count)
             {
                 for (var i = 0; i < oldList.Count; i++)
                 {
                     if (i < fileList.Count && !oldList[i].Contains(fileList[i]))
                     {
-                        await GalleryFunctions.AddGalleryItem(fileList.IndexOf(fileList[i]), new FileInfo(fileList[i]), _vm, DispatcherPriority.Background);
+                        await GalleryFunctions.AddGalleryItem(fileList.IndexOf(fileList[i]), new FileInfo(fileList[i]),
+                            _vm, DispatcherPriority.Background);
                     }
                 }
             }
@@ -476,7 +521,7 @@ public class ImageIterator : IAsyncDisposable
         }
         finally
         {
-            isRunning = false;
+            _isRunning = false;
         }
     }
 
@@ -545,7 +590,7 @@ public class ImageIterator : IAsyncDisposable
 
             default:
 #if DEBUG
-         Console.WriteLine($"{nameof(ImageIterator)}: {navigateTo} is not a valid NavigateTo value.");       
+                Console.WriteLine($"{nameof(ImageIterator)}: {navigateTo} is not a valid NavigateTo value.");
 #endif
                 return -1;
         }
@@ -564,7 +609,7 @@ public class ImageIterator : IAsyncDisposable
 
         await NextIteration(index, cts).ConfigureAwait(false);
     }
-    
+
     public async Task NextIteration(int iteration, CancellationTokenSource cts)
     {
         // Handle side-by-side navigation
@@ -641,10 +686,12 @@ public class ImageIterator : IAsyncDisposable
                     catch (OperationCanceledException) when (!cts.IsCancellationRequested)
                     {
                         // This is a timeout, not cancellation from navigation
-                        preloadValue = new PreLoadValue(await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[CurrentIndex])))
-                        {
-                            IsLoading = false
-                        };
+                        preloadValue =
+                            new PreLoadValue(
+                                await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[CurrentIndex])))
+                            {
+                                IsLoading = false
+                            };
                     }
 
                     // Check if user navigated away during loading
@@ -657,10 +704,11 @@ public class ImageIterator : IAsyncDisposable
             }
             else
             {
-                var imageModel = await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[index])).ConfigureAwait(false);
+                var imageModel = await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[index]))
+                    .ConfigureAwait(false);
                 preloadValue = new PreLoadValue(imageModel);
             }
-            
+
             if (CurrentIndex != index)
             {
                 // Skip loading if user went to next value
@@ -699,10 +747,9 @@ public class ImageIterator : IAsyncDisposable
             {
                 if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        _vm.PlatformService.SetTaskbarProgress((ulong)CurrentIndex, (ulong)ImagePaths.Count);
-                    }, DispatcherPriority.Render);
+                    Dispatcher.UIThread.Invoke(
+                        () => { _vm.PlatformService.SetTaskbarProgress((ulong)CurrentIndex, (ulong)ImagePaths.Count); },
+                        DispatcherPriority.Render);
                 }
 
                 await PreLoader.PreLoadAsync(index, IsReversed, ImagePaths)
@@ -717,7 +764,8 @@ public class ImageIterator : IAsyncDisposable
                 FileHistoryManager.Add(ImagePaths[CurrentIndex]);
                 if (Settings.ImageScaling.ShowImageSideBySide)
                 {
-                    FileHistoryManager.Add(ImagePaths[GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next)]);
+                    FileHistoryManager.Add(
+                        ImagePaths[GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next)]);
                 }
             }
         }
@@ -741,9 +789,9 @@ public class ImageIterator : IAsyncDisposable
                 _vm.IsLoading = false;
             }
         }
-        
+
         return;
-        
+
         void LoadingPreview()
         {
             TitleManager.SetLoadingTitle(_vm);
@@ -753,7 +801,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 GalleryNavigation.CenterScrollToSelectedItem(_vm);
             }
-            
+
             var thumb = GetThumbnails.GetExifThumb(NavigationManager.GetFileNameAt(index));
 
             if (index != CurrentIndex)
@@ -773,6 +821,7 @@ public class ImageIterator : IAsyncDisposable
                 {
                     return;
                 }
+
                 _vm.PicViewer.ImageSource = thumb;
                 _vm.PicViewer.SecondaryImageSource = secondaryThumb;
                 _vm.IsLoading = thumb is null || secondaryThumb is null;
@@ -833,12 +882,12 @@ public class ImageIterator : IAsyncDisposable
 
         if (disposing)
         {
-            
             _watcher?.Dispose();
             if (!cleared)
             {
                 PreLoader.Clear();
             }
+
             _timer?.Dispose();
             PreLoader.Dispose();
         }
