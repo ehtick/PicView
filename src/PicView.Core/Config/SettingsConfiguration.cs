@@ -13,7 +13,7 @@ public static class SettingsConfiguration
             ConfigPath);
     
     public static string LocalSettingsPath =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigPath);
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", ConfigFileName);
 
     public static string UserSettingsPath =>
         File.Exists(RoamingSettingsPath) ? RoamingSettingsPath :

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -61,7 +62,9 @@ public static class SettingsManager
     }
 
     
-    public static AppSettings SetDefaults()
+    public static void SetDefaults() => Settings = GetDefaults();
+
+    public static AppSettings GetDefaults()
     {
         UIProperties uiProperties;
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -77,7 +80,7 @@ public static class SettingsManager
             uiProperties = new UIProperties();
         }
 
-        Settings = new AppSettings
+        var settings = new AppSettings
         {
             UIProperties = uiProperties,
             Gallery = new Gallery(),
@@ -91,9 +94,9 @@ public static class SettingsManager
         };
 
         // Get the default culture from the OS
-        Settings.UIProperties.UserLanguage = CultureInfo.CurrentCulture.Name;
+        settings.UIProperties.UserLanguage = CultureInfo.CurrentCulture.Name;
 
-        return Settings;
+        return settings;
     }
 
     /// <summary>
@@ -274,6 +277,7 @@ public static class SettingsManager
         await File.WriteAllTextAsync(path, json).ConfigureAwait(false);
     }
 
+
     /// <summary>
     ///     Upgrades settings to the current version if needed
     /// </summary>
@@ -281,12 +285,12 @@ public static class SettingsManager
     {
         if (settings.Version >= SettingsConfiguration.CurrentSettingsVersion)
         {
-            return settings.WindowProperties is null ? SetDefaults() : settings;
+            return settings.WindowProperties is null ? GetDefaults() : settings;
         }
 
         if (settings.WindowProperties is null)
         {
-            return SetDefaults();
+            return GetDefaults();
         }
 
         await SynchronizeSettingsAsync(settings).ConfigureAwait(false);
@@ -295,26 +299,12 @@ public static class SettingsManager
         return settings;
     }
 
-    /// <summary>
-    /// Synchronizes the provided settings with the existing settings by merging their values,
-    /// and saves the updated settings to the current settings path.
-    /// </summary>
-    /// <param name="newSettings">The new settings to merge with the existing settings.</param>
-    private static async Task SynchronizeSettingsAsync(AppSettings newSettings)
+    private static async Task SynchronizeSettingsAsync(AppSettings existingSettings)
     {
         try
         {
-            var jsonString = await File.ReadAllTextAsync(CurrentSettingsPath).ConfigureAwait(false);
-
-            if (JsonSerializer.Deserialize(
-                    jsonString, typeof(AppSettings),
-                    SettingsGenerationContext.Default) is not AppSettings existingSettings)
-            {
-                return;
-            }
-
             // Copy new property values to existing settings when missing
-            MergeSettings(existingSettings, newSettings);
+            MergeObjects(existingSettings, GetDefaults());
 
             // Save the synchronized settings
             Settings = existingSettings;
@@ -326,28 +316,54 @@ public static class SettingsManager
         }
     }
 
-    private static void MergeSettings(AppSettings existingSettings, AppSettings newSettings)
+    private static void MergeObjects<T>(T existing, T defaults) where T : class
     {
-        existingSettings.UIProperties ??= newSettings.UIProperties;
-        existingSettings.Gallery ??= newSettings.Gallery;
-        existingSettings.Theme ??= newSettings.Theme;
-        existingSettings.Sorting ??= newSettings.Sorting;
-        existingSettings.ImageScaling ??= newSettings.ImageScaling;
-        existingSettings.WindowProperties ??= newSettings.WindowProperties;
-        existingSettings.Zoom ??= newSettings.Zoom;
-        existingSettings.StartUp ??= newSettings.StartUp;
-
-        // Fallback for any properties missing in older versions
-        foreach (var property in typeof(AppSettings).GetProperties())
+        if (existing == null || defaults == null)
         {
-            var existingValue = property.GetValue(existingSettings);
-            if (existingValue != null)
+            return;
+        }
+
+        var type = typeof(T);
+        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+        foreach (var property in properties)
+        {
+            if (!property.CanWrite || !property.CanRead)
             {
                 continue;
             }
 
-            var newValue = property.GetValue(newSettings);
-            property.SetValue(existingSettings, newValue);
+            var existingValue = property.GetValue(existing);
+            var defaultValue = property.GetValue(defaults);
+
+            if (existingValue == null && defaultValue != null)
+            {
+                // If existing is null, use the default value
+                property.SetValue(existing, defaultValue);
+            }
+            else if (existingValue != null && defaultValue != null)
+            {
+                // If both exist and it's a complex type, merge recursively
+                if (!IsComplexType(property.PropertyType))
+                {
+                    continue;
+                }
+
+                var mergeMethod = typeof(SettingsManager)
+                    .GetMethod(nameof(MergeObjects), BindingFlags.NonPublic | BindingFlags.Static)
+                    ?.MakeGenericMethod(property.PropertyType);
+
+                mergeMethod?.Invoke(null, [existingValue, defaultValue]);
+            }
         }
+    }
+
+    private static bool IsComplexType(Type type)
+    {
+        return !type.IsPrimitive &&
+               type != typeof(string) &&
+               type != typeof(DateTime) &&
+               type != typeof(decimal) &&
+               type is { IsEnum: false, IsValueType: false };
     }
 }
