@@ -1,5 +1,6 @@
 name: Build PicView Win32
 
+
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
   pull_request:
     branches:
       - dev
+  workflow_dispatch:
 
 jobs:
   build:
