@@ -211,7 +211,9 @@ public static class SettingsManager
                 return await TrySaveLocal();
             }
 
+            DeleteBadPath();
             await SaveSettingsToPathAsync(CurrentSettingsPath).ConfigureAwait(false);
+
             return true;
 
         }
@@ -248,6 +250,35 @@ public static class SettingsManager
             EnsureDirectoryExists(localPath);
             await SaveSettingsToPathAsync(localPath).ConfigureAwait(false);
             return true;
+        }
+
+        // TODO delete this after next release
+        void DeleteBadPath()
+        {
+            if (!File.Exists(SettingsConfiguration.BadLocalSettingsPath))
+            {
+                return;
+            }
+
+            File.Delete(SettingsConfiguration.BadLocalSettingsPath);
+            
+            var firstDirectory = Path.GetDirectoryName(SettingsConfiguration.BadLocalSettingsPath);
+            if (Directory.Exists(firstDirectory))
+            {
+                Directory.Delete(firstDirectory);
+            }
+            var secondDirectory = Path.GetDirectoryName(firstDirectory);
+            if (Directory.Exists(secondDirectory))
+            {
+                Directory.Delete(secondDirectory);
+            }
+            var thirdDirectory = Path.GetDirectoryName(secondDirectory);
+            if (Directory.Exists(thirdDirectory))
+            {
+                Directory.Delete(thirdDirectory);
+            }
+
+            CurrentSettingsPath = SettingsConfiguration.LocalSettingsPath;
         }
     }
 
