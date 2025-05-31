@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using PicView.Core.DebugTools;
+using PicView.Core.FileHandling;
 
 namespace PicView.Core.Config;
 
@@ -16,38 +17,20 @@ internal partial class SettingsGenerationContext : JsonSerializerContext;
 /// </summary>
 public static class SettingsManager
 {
-    /// Gets the file path of the currently loaded settings.
-    /// This property represents the path to the settings file that was most recently
-    /// loaded into the application. If no settings file has been loaded, this property
-    /// will return null.
-    /// This value is updated whenever settings are read from a file, and it is used as
-    /// the default path for saving settings back to a file. The path is normalized to use
-    /// backslashes as directory separators.
-    /// This property is read-only and can only be set internally within the `SettingsManager`
-    /// class.
     public static string? CurrentSettingsPath { get; private set; }
 
-    /// Gets or sets the current application settings.
-    /// This property holds the application's configuration settings encapsulated in an `AppSettings` instance.
-    /// It is updated when settings are loaded, either from a file using `LoadSettingsAsync` or by setting default
-    /// values with the `SetDefaults` method.
-    /// Changes made to this property will affect the behavior and appearance of the application during runtime.
-    /// This property is managed internally within the `SettingsManager` class and cannot be set externally.
     public static AppSettings? Settings { get; private set; }
     
     public static async Task<bool> LoadSettingsAsync()
     {
         try
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return await LoadFromPathAsync(SettingsConfiguration.RoamingSettingsPath).ConfigureAwait(false);
-            }
-
-            var path = SettingsConfiguration.UserSettingsPath;
+            var path = ConfigFileManager.TryGetConfigFilePath(ConfigFileType.UserSettings);
             if (!string.IsNullOrEmpty(path))
             {
-                return await LoadFromPathAsync(path).ConfigureAwait(false);
+                CurrentSettingsPath = path;
+                await ReadSettingsFromPathAsync(path).ConfigureAwait(false);
+                return true;
             }
 
             SetDefaults();
@@ -124,45 +107,7 @@ public static class SettingsManager
             }
         }
     }
-
-    /// <summary>
-    ///     Loads settings from the specified path
-    /// </summary>
-    private static async Task<bool> LoadFromPathAsync(string path)
-    {
-        try
-        {
-            await ReadSettingsFromPathAsync(path).ConfigureAwait(false);
-            return true;
-        }
-        catch (Exception)
-        {
-            // If primary path fails, try the alternative path
-            var alternativePath = Path.GetDirectoryName(path)?.Contains("ApplicationData") == true
-                ? SettingsConfiguration.LocalSettingsPath
-                : SettingsConfiguration.RoamingSettingsPath;
-
-            if (File.Exists(alternativePath))
-            {
-                try
-                {
-                    await ReadSettingsFromPathAsync(alternativePath).ConfigureAwait(false);
-                    return true;
-                }
-                catch (Exception)
-                {
-                    SetDefaults();
-                }
-            }
-            else
-            {
-                SetDefaults();
-            }
-
-            return false;
-        }
-    }
-
+    
     /// <summary>
     /// Reads and deserializes the settings from the specified file path asynchronously.
     /// </summary>
@@ -204,108 +149,15 @@ public static class SettingsManager
             return false;
         }
 
-        try
+        var saveLocation = await SaveConfigFileAndReturnPathAsync();
+        if (string.IsNullOrWhiteSpace(saveLocation))
         {
-            if (string.IsNullOrWhiteSpace(CurrentSettingsPath))
-            {
-                return await TrySaveLocal();
-            }
-
-            DeleteBadPath();
-            await SaveSettingsToPathAsync(CurrentSettingsPath).ConfigureAwait(false);
-
-            return true;
-
-        }
-        catch (UnauthorizedAccessException)
-        {
-            // If unauthorized, try saving to roaming app data
-            try
-            {
-                return await TrySaveRoaming();
-            }
-            catch (Exception ex)
-            {
-                DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), ex);
-                return false;
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), "Empty save location");
             return false;
         }
 
-        async Task<bool> TrySaveRoaming()
-        {
-            var roamingPath = SettingsConfiguration.RoamingSettingsPath;
-            EnsureDirectoryExists(roamingPath);
-            await SaveSettingsToPathAsync(roamingPath).ConfigureAwait(false);
-            return true;
-        }
-        
-        async Task<bool> TrySaveLocal()
-        {
-            var localPath = SettingsConfiguration.LocalSettingsPath;
-            EnsureDirectoryExists(localPath);
-            await SaveSettingsToPathAsync(localPath).ConfigureAwait(false);
-            return true;
-        }
-
-        // TODO delete this after next release
-        void DeleteBadPath()
-        {
-            if (!File.Exists(SettingsConfiguration.BadLocalSettingsPath))
-            {
-                return;
-            }
-
-            File.Delete(SettingsConfiguration.BadLocalSettingsPath);
-            
-            var firstDirectory = Path.GetDirectoryName(SettingsConfiguration.BadLocalSettingsPath);
-            if (Directory.Exists(firstDirectory))
-            {
-                Directory.Delete(firstDirectory);
-            }
-            var secondDirectory = Path.GetDirectoryName(firstDirectory);
-            if (Directory.Exists(secondDirectory))
-            {
-                Directory.Delete(secondDirectory);
-            }
-            var thirdDirectory = Path.GetDirectoryName(secondDirectory);
-            if (Directory.Exists(thirdDirectory))
-            {
-                Directory.Delete(thirdDirectory);
-            }
-
-            CurrentSettingsPath = SettingsConfiguration.LocalSettingsPath;
-        }
-    }
-
-    /// <summary>
-    ///     Ensures that the directory for a file path exists
-    /// </summary>
-    private static void EnsureDirectoryExists(string filePath)
-    {
-        var directory = Path.GetDirectoryName(filePath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-    }
-
-    /// <summary>
-    ///     Saves settings to the specified path
-    /// </summary>
-    private static async Task SaveSettingsToPathAsync(string path)
-    {
-        if (Settings == null)
-        {
-            return;
-        }
-
-        var json = JsonSerializer.Serialize(Settings, typeof(AppSettings), SettingsGenerationContext.Default);
-        await File.WriteAllTextAsync(path, json).ConfigureAwait(false);
+        CurrentSettingsPath = saveLocation;
+        return true;
     }
 
 
@@ -339,13 +191,20 @@ public static class SettingsManager
 
             // Save the synchronized settings
             Settings = existingSettings;
-            await SaveSettingsToPathAsync(CurrentSettingsPath).ConfigureAwait(false);
+            await WriteJsonAsync();
         }
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(SettingsManager), nameof(SynchronizeSettingsAsync), ex);
         }
     }
+    
+    private static async Task WriteJsonAsync() =>
+        await JsonFileHelper.WriteJsonAsync(CurrentSettingsPath, Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
+    
+    private static async Task<string?> SaveConfigFileAndReturnPathAsync() =>
+        await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.UserSettings, CurrentSettingsPath,
+            Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
 
     private static void MergeObjects<T>(T existing, T defaults) where T : class
     {

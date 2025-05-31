@@ -226,4 +226,16 @@ public static partial class FileHelper
             options
         );
     }
+    
+    /// <summary>
+    ///     Ensures that the directory for a file path exists
+    /// </summary>
+    public static void EnsureDirectoryExists(string filePath)
+    {
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+    }
 }

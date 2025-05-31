@@ -13,14 +13,14 @@ public static class SettingsConfiguration
             ConfigPath);
     
     // TODO delete this after next release
-    public static string BadLocalSettingsPath =>
+    public static string OldLocalSettingsPath =>
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigPath);
     
     public static string LocalSettingsPath =>
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", ConfigFileName);
 
-    public static string UserSettingsPath =>
+    public static string CurrentUserSettingsPath =>
         File.Exists(RoamingSettingsPath) ? RoamingSettingsPath :
         File.Exists(LocalSettingsPath) ? LocalSettingsPath : 
-        File.Exists(BadLocalSettingsPath) ? BadLocalSettingsPath : string.Empty;
+        File.Exists(OldLocalSettingsPath) ? OldLocalSettingsPath : string.Empty;
 }
