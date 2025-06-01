@@ -1,12 +1,14 @@
 ﻿using Avalonia.Controls;
+using PicView.Core.Keybindings;
 
-namespace PicView.Avalonia.Views.UC.Buttons
+namespace PicView.Avalonia.Views.UC.Buttons;
+
+public partial class SettingsMenuButton : UserControl
 {
-    public partial class SettingsMenuButton : UserControl
+    public SettingsMenuButton()
     {
-        public SettingsMenuButton()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        ToolTip.SetTip(UserSettingsItem, CurrentSettingsPath);
+        ToolTip.SetTip(KeybindingsItem, KeybindingFunctions.CurrentKeybindingsPath);
     }
 }

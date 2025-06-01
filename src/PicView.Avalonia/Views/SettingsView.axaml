@@ -701,7 +701,8 @@
             <MenuItem
                 Command="{CompiledBinding ShowSettingsFileCommand}"
                 Foreground="{DynamicResource MainTextColor}"
-                Header="UserSettings.json">
+                Header="UserSettings.json"
+                x:Name="UserSettingsItem">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -712,7 +713,8 @@
             <MenuItem
                 Command="{CompiledBinding ShowKeybindingsFileCommand}"
                 Foreground="{DynamicResource MainTextColor}"
-                Header="keybindings.json">
+                Header="keybindings.json"
+                x:Name="KeybindingsItem">
                 <MenuItem.Icon>
                     <Image
                         Height="12"

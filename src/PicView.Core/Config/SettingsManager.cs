@@ -17,10 +17,39 @@ internal partial class SettingsGenerationContext : JsonSerializerContext;
 /// </summary>
 public static class SettingsManager
 {
+
+    /// <summary>
+    /// Gets the file path to the currently loaded settings file, if available.
+    /// </summary>
+    /// <remarks>
+    /// This property reflects the full path to the settings file currently in use by the application.
+    /// It is updated when settings are loaded via <see cref="SettingsManager.LoadSettingsAsync"/>
+    /// or saved using <see cref="SettingsManager.SaveSettingsAsync"/>. If no settings file is loaded,
+    /// the value will be null. This path can be used to reference the specific configuration file
+    /// being utilized or modified.
+    /// </remarks>
     public static string? CurrentSettingsPath { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the current application settings instance, which stores all configurable
+    /// values for the application's behavior, appearance, and functionality.
+    /// </summary>
+    /// <remarks>
+    /// This property can be used to retrieve or assign settings related to application preferences,
+    /// such as UI, theme, sorting, scaling, and startup configurations. The associated settings
+    /// are loaded via <see cref="SettingsManager.LoadSettingsAsync"/> or set to defaults using
+    /// <see cref="SettingsManager.SetDefaults"/>. Changes to the settings can be saved using
+    /// <see cref="SettingsManager.SaveSettingsAsync"/>.
+    /// </remarks>
     public static AppSettings? Settings { get; private set; }
-    
+
+    /// <summary>
+    /// Loads application settings asynchronously from a file or initializes them to default if loading fails.
+    /// </summary>
+    /// <returns>
+    /// A boolean indicating whether the settings were successfully loaded.
+    /// </returns>
+    /// <exception cref="JsonException">Thrown if deserialization of the settings file fails.</exception>
     public static async Task<bool> LoadSettingsAsync()
     {
         try
@@ -29,7 +58,15 @@ public static class SettingsManager
             if (!string.IsNullOrEmpty(path))
             {
                 CurrentSettingsPath = path;
-                await ReadSettingsFromPathAsync(path).ConfigureAwait(false);
+                var jsonString = await File.ReadAllTextAsync(path).ConfigureAwait(false);
+
+                if (JsonSerializer.Deserialize(
+                        jsonString, typeof(AppSettings), SettingsGenerationContext.Default) is not AppSettings settings)
+                {
+                    throw new JsonException("Failed to deserialize settings");
+                }
+
+                Settings = await UpgradeSettingsIfNeededAsync(settings).ConfigureAwait(false);
                 return true;
             }
 
@@ -44,9 +81,79 @@ public static class SettingsManager
         }
     }
 
+    /// <summary>
+    /// Asynchronously saves the current application settings to the appropriate file location.
+    /// </summary>
+    /// <returns>
+    /// Whether the settings were successfully saved.
+    /// </returns>
+    public static async Task<bool> SaveSettingsAsync()
+    {
+        if (Settings == null)
+        {
+            return false;
+        }
+
+        var saveLocation = await SaveConfigFileAndReturnPathAsync();
+        if (string.IsNullOrWhiteSpace(saveLocation))
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), "Empty save location");
+            return false;
+        }
+
+        CurrentSettingsPath = saveLocation;
+        return true;
+    }
     
+    private static async Task<AppSettings> UpgradeSettingsIfNeededAsync(AppSettings settings)
+    {
+        if (settings.Version >= SettingsConfiguration.CurrentSettingsVersion)
+        {
+            return settings.WindowProperties is null ? GetDefaults() : settings;
+        }
+
+        if (settings.WindowProperties is null)
+        {
+            return GetDefaults();
+        }
+
+        await SynchronizeSettingsAsync(settings).ConfigureAwait(false);
+        settings.Version = SettingsConfiguration.CurrentSettingsVersion;
+
+        return settings;
+    }
+
+    /// <summary>
+    /// Synchronizes the settings with defaults, adding missing properties and saving.
+    /// </summary>
+    private static async Task SynchronizeSettingsAsync(AppSettings existingSettings)
+    {
+        try
+        {
+            // Copy new property values to existing settings when missing
+            MergeObjects(existingSettings, GetDefaults());
+
+            // Save the synchronized settings
+            Settings = existingSettings;
+            await WriteJsonAsync();
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SynchronizeSettingsAsync), ex);
+        }
+    }
+
+    /// <summary>
+    /// Sets the application's settings to their default values.
+    /// </summary>
     public static void SetDefaults() => Settings = GetDefaults();
 
+    /// <summary>
+    /// Initializes and returns an instance of the default application settings.
+    /// </summary>
+    /// <returns>
+    /// An <see cref="AppSettings"/> object populated with default values.
+    /// </returns>
     public static AppSettings GetDefaults()
     {
         UIProperties uiProperties;
@@ -83,20 +190,30 @@ public static class SettingsManager
     }
 
     /// <summary>
-    ///     Deletes all settings files
+    /// Resets the application's settings to their default values and removes any existing settings file
+    /// to start with a clean configuration.
     /// </summary>
-    public static void DeleteSettingFiles()
+    /// <exception cref="IOException">Thrown if an error occurs while attempting to delete the existing settings file.</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown if access to the settings file is denied during deletion.</exception>
+    /// <remarks>
+    /// This method ensures that the default settings are applied and deletes the user settings file if it exists,
+    /// allowing the application configuration to be completely reset.
+    /// </remarks>
+    public static void ResetDefaults()
     {
         try
         {
-            DeleteFileIfExists(SettingsConfiguration.RoamingSettingsPath);
-            DeleteFileIfExists(SettingsConfiguration.LocalSettingsPath);
+            DeleteFileIfExists(SettingsConfiguration.CurrentUserSettingsPath);
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(SettingsManager), nameof(DeleteSettingFiles), ex);
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(ResetDefaults), ex);
         }
-        
+        finally
+        {
+            SetDefaults();
+        }
+
         return;
 
         void DeleteFileIfExists(string path)
@@ -107,105 +224,21 @@ public static class SettingsManager
             }
         }
     }
-    
-    /// <summary>
-    /// Reads and deserializes the settings from the specified file path asynchronously.
-    /// </summary>
-    /// <param name="path">The path to the JSON file containing the settings.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    /// <exception cref="JsonException">Thrown if deserialization of the settings fails.</exception>
-    private static async Task ReadSettingsFromPathAsync(string path)
-    {
-        var jsonString = await File.ReadAllTextAsync(path).ConfigureAwait(false);
 
-        if (JsonSerializer.Deserialize(
-                jsonString, typeof(AppSettings), SettingsGenerationContext.Default) is not AppSettings settings)
-        {
-            throw new JsonException("Failed to deserialize settings");
-        }
+    #region Helpers
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            CurrentSettingsPath = path.Replace("/", "\\");
-        }
-        else
-        {
-            CurrentSettingsPath = path;
-        }
-        
-        Settings = await UpgradeSettingsIfNeededAsync(settings).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Asynchronously saves the current application settings to the appropriate file location.
-    /// </summary>
-    /// <returns>
-    /// Whether the settings were successfully saved.
-    /// </returns>
-    public static async Task<bool> SaveSettingsAsync()
-    {
-        if (Settings == null)
-        {
-            return false;
-        }
-
-        var saveLocation = await SaveConfigFileAndReturnPathAsync();
-        if (string.IsNullOrWhiteSpace(saveLocation))
-        {
-            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SaveSettingsAsync), "Empty save location");
-            return false;
-        }
-
-        CurrentSettingsPath = saveLocation;
-        return true;
-    }
-
-
-    /// <summary>
-    ///     Upgrades settings to the current version if needed
-    /// </summary>
-    private static async Task<AppSettings> UpgradeSettingsIfNeededAsync(AppSettings settings)
-    {
-        if (settings.Version >= SettingsConfiguration.CurrentSettingsVersion)
-        {
-            return settings.WindowProperties is null ? GetDefaults() : settings;
-        }
-
-        if (settings.WindowProperties is null)
-        {
-            return GetDefaults();
-        }
-
-        await SynchronizeSettingsAsync(settings).ConfigureAwait(false);
-        settings.Version = SettingsConfiguration.CurrentSettingsVersion;
-
-        return settings;
-    }
-
-    private static async Task SynchronizeSettingsAsync(AppSettings existingSettings)
-    {
-        try
-        {
-            // Copy new property values to existing settings when missing
-            MergeObjects(existingSettings, GetDefaults());
-
-            // Save the synchronized settings
-            Settings = existingSettings;
-            await WriteJsonAsync();
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(SettingsManager), nameof(SynchronizeSettingsAsync), ex);
-        }
-    }
-    
     private static async Task WriteJsonAsync() =>
-        await JsonFileHelper.WriteJsonAsync(CurrentSettingsPath, Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
-    
+        await JsonFileHelper
+            .WriteJsonAsync(CurrentSettingsPath, Settings, typeof(AppSettings), SettingsGenerationContext.Default)
+            .ConfigureAwait(false);
+
     private static async Task<string?> SaveConfigFileAndReturnPathAsync() =>
         await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.UserSettings, CurrentSettingsPath,
             Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
 
+    /// <summary>
+    /// Recursively merges properties from defaults into existing settings.
+    /// </summary>
     private static void MergeObjects<T>(T existing, T defaults) where T : class
     {
         if (existing == null || defaults == null)
@@ -256,4 +289,6 @@ public static class SettingsManager
                type != typeof(decimal) &&
                type is { IsEnum: false, IsValueType: false };
     }
+
+    #endregion
 }

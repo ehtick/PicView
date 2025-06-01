@@ -21,8 +21,7 @@ public static class SettingsUpdater
 
         try
         {
-            DeleteSettingFiles();
-            SetDefaults();
+            ResetDefaults();
 
             ThemeManager.DetermineTheme(Application.Current, false);
         

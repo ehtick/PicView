@@ -39,7 +39,9 @@ public static class FileHistoryManager
     public static IReadOnlyList<Entry> AllEntries => Entries.AsReadOnly();
 
     /// <summary>
-    ///     Gets or sets the current index position in history.
+    /// Gets or sets the index of the current file entry in the history.
+    /// The setter clamps the value between -1 and the total count of entries minus one.
+    /// A value of -1 indicates no valid current entry.
     /// </summary>
     public static int CurrentIndex
     {
@@ -75,7 +77,7 @@ public static class FileHistoryManager
     {
         _fileLocation = ConfigFileManager.TryGetConfigFilePath(ConfigFileType.FileHistory);
         await LoadFromFileAsync().ConfigureAwait(false);
-        
+
         // Set the current index to the most recent entry.
         CurrentIndex = Count > 0 ? Count - 1 : -1;
     }
