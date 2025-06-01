@@ -135,7 +135,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     {
         Dispatcher.UIThread.Post(() =>
         {
-            var openWithView = new OpenWithView
+            var openWithView = new OpenWithView(path)
             {
                 DataContext = _vm
             };

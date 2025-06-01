@@ -12,9 +12,22 @@ namespace PicView.Avalonia.MacOS.Views;
 
 public partial class OpenWithView : Window
 {
-    private bool _isLaunchingApp = false;
+    private bool _isLaunchingApp;
+    
+    private string? _filePath;
 
     public OpenWithView()
+    {
+        Start();
+    }
+    
+    public OpenWithView(string path)
+    {
+        _filePath = path;
+        Start();
+    }
+    
+    public void Start()
     {
         InitializeComponent();
         Loaded += OnLoaded;
@@ -31,10 +44,15 @@ public partial class OpenWithView : Window
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (_filePath is null)
         {
-            return;
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+            _filePath = vm.PicViewer?.FileInfo?.FullName;
         }
+
 
         // Focus the window
         Focus();
@@ -43,7 +61,7 @@ public partial class OpenWithView : Window
 
         Task.Run(async () =>
         {
-            var apps = await GetAssociatedFiles.GetAssociatedFilesAsync(vm.PicViewer?.FileInfo?.FullName);
+            var apps = await GetAssociatedFiles.GetAssociatedFilesAsync(_filePath);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 foreach (var app in apps)
@@ -67,7 +85,7 @@ public partial class OpenWithView : Window
                     btn.Click += async (_, _) =>
                     {
                         _isLaunchingApp = true; // Prevent deactivated event from closing
-                        await AppLauncher.LaunchAppWithFileAsync(app.Path, vm.PicViewer?.FileInfo?.FullName);
+                        await AppLauncher.LaunchAppWithFileAsync(app.Path, _filePath);
                         Close(); // Close the window after launching the app
                     };
 

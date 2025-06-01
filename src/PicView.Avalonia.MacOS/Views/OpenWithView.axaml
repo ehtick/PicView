@@ -34,7 +34,7 @@
                                    Mode=OneWay}"
             TextAlignment="Center"
             VerticalAlignment="Top" />
-        <customControls:AutoScrollViewer Margin="0,20,0,0" Theme="{StaticResource Inline}">
+        <customControls:AutoScrollViewer Margin="0,20,0,20" Theme="{StaticResource Inline}">
             <StackPanel Margin="5,15,5,5" x:Name="ParentPanel" />
         </customControls:AutoScrollViewer>
         <Button
