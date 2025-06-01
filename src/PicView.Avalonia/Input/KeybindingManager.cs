@@ -18,14 +18,14 @@ public static class KeybindingManager
 
     public static async Task LoadKeybindings(IPlatformSpecificService platformSpecificService)
     {
-        try
-        {
-            var keybindings = await KeybindingFunctions.LoadKeyBindingsFile().ConfigureAwait(false);
-            await UpdateKeybindings(keybindings).ConfigureAwait(false);
-        }
-        catch (Exception)
+        var keybindings = await KeybindingFunctions.LoadKeyBindingsFile().ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(keybindings))
         {
             await SetDefaultKeybindings(platformSpecificService).ConfigureAwait(false);
+        }
+        else
+        {
+            await UpdateKeybindings(keybindings).ConfigureAwait(false);
         }
     }
 

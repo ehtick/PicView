@@ -18,14 +18,14 @@ public static class FileHistoryConfiguration
     public const int MaxPinnedEntries = 5;
     
     public const string HistoryFileName = "FileHistory.json";
-    public static string GetHistoryFilePath() => Path.Combine(SettingsConfiguration.ConfigFolder, HistoryFileName);
-    public static string GetRoamingFileHistoryPath() =>
+    public static string HistoryFilePath => Path.Combine(SettingsConfiguration.ConfigFolder, HistoryFileName);
+    public static string RoamingFileHistoryPath =>
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            GetHistoryFilePath());
+            HistoryFilePath);
     
-    private static string GetLocalFileHistoryPath() =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, GetHistoryFilePath());
-    public static string GetUserFileHistoryPath() =>
-        File.Exists(GetRoamingFileHistoryPath()) ? GetRoamingFileHistoryPath() :
-        File.Exists(GetLocalFileHistoryPath()) ? GetLocalFileHistoryPath() : string.Empty;
+    public static string LocalFileHistoryPath =>
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", HistoryFileName);
+    public static string CurrentUserFileHistoryPath =>
+        File.Exists(RoamingFileHistoryPath) ? RoamingFileHistoryPath :
+        File.Exists(LocalFileHistoryPath) ? LocalFileHistoryPath : string.Empty;
 }

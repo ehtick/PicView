@@ -1,7 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using PicView.Core.ArchiveHandling;
+using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 
@@ -73,71 +73,11 @@ public static class FileHistoryManager
     /// </summary>
     public static async Task InitializeAsync()
     {
-        var path = FileHistoryConfiguration.GetUserFileHistoryPath();
-        if (!File.Exists(path))
-        {
-            await CreateFileAsync().ConfigureAwait(false);
-        }
-        else
-        {
-            _fileLocation = path;
-        }
+        _fileLocation = ConfigFileManager.TryGetConfigFilePath(ConfigFileType.FileHistory);
         await LoadFromFileAsync().ConfigureAwait(false);
         
         // Set the current index to the most recent entry.
         CurrentIndex = Count > 0 ? Count - 1 : -1;
-    }
-
-    private static async Task CreateFileAsync()
-    {
-        // On macOS, always use roaming path.
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            _fileLocation = FileHistoryConfiguration.GetRoamingFileHistoryPath();
-            try
-            {
-                await Create();
-            }
-            catch (Exception e)
-            {
-                DebugHelper.LogDebug(nameof(FileHistoryManager), nameof(CreateFileAsync), e);
-                throw;
-            }
-        }
-        else
-        {
-            try
-            {
-                _fileLocation = FileHistoryConfiguration.GetUserFileHistoryPath();
-                await Create();
-            }
-            catch (Exception)
-            {
-                _fileLocation = FileHistoryConfiguration.GetRoamingFileHistoryPath();
-                try
-                {
-                    await Create();
-                }
-                catch (Exception exception)
-                {
-                    DebugHelper.LogDebug(nameof(FileHistoryManager), nameof(CreateFileAsync), exception);
-                }
-            }
-        }
-
-        return;
-
-        async Task Create()
-        {
-            var directory = Path.GetDirectoryName(_fileLocation);
-            if (directory != null && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
-            await using var fs = File.Create(_fileLocation);
-            fs.Seek(0, SeekOrigin.Begin);
-        }
     }
 
     /// <summary>
@@ -194,7 +134,7 @@ public static class FileHistoryManager
 
         if (existingIndex >= 0)
         {
-            // If entry already exists, just update current index to point to it.
+            // If entry already exists, update the current index to point to it.
             CurrentIndex = existingIndex;
             return;
         }
@@ -214,7 +154,7 @@ public static class FileHistoryManager
 
                 Entries.RemoveAt(i);
 
-                // Adjust current index since we removed an item.
+                // Adjust the current index since we removed an item.
                 if (CurrentIndex > i)
                 {
                     CurrentIndex--;
@@ -372,9 +312,9 @@ public static class FileHistoryManager
     {
         try
         {
-            if (_fileLocation == null)
+            if (string.IsNullOrWhiteSpace(_fileLocation))
             {
-                return;
+                _fileLocation = ConfigFileManager.TryGetConfigFilePath(ConfigFileType.FileHistory);
             }
 
             // Create a new sorted list with pinned entries first (max 5), then unpinned entries (max MaxHistoryEntries)
@@ -391,9 +331,8 @@ public static class FileHistoryManager
                 Entries = sortedEntries,
                 IsSortingDescending = IsSortingDescending
             };
-            var json = JsonSerializer.Serialize(historyEntries, typeof(FileHistoryEntries),
-                FileHistoryGenerationContext.Default);
-            await File.WriteAllTextAsync(_fileLocation, json).ConfigureAwait(false);
+            _fileLocation = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.FileHistory,
+                _fileLocation, historyEntries, typeof(FileHistoryEntries), FileHistoryGenerationContext.Default);
         }
         catch (Exception ex)
         {
@@ -404,17 +343,11 @@ public static class FileHistoryManager
     /// <summary>
     ///     Loads the history from the history file.
     /// </summary>
-    private static async Task LoadFromFileAsync(string? path = null)
+    private static async Task LoadFromFileAsync()
     {
         try
         {
-            var loadPath = path ?? _fileLocation;
-            if (string.IsNullOrEmpty(loadPath) || !File.Exists(loadPath))
-            {
-                return;
-            }
-
-            var jsonString = await File.ReadAllTextAsync(loadPath).ConfigureAwait(false);
+            var jsonString = await File.ReadAllTextAsync(_fileLocation).ConfigureAwait(false);
 
             if (JsonSerializer.Deserialize(jsonString, typeof(FileHistoryEntries),
                     FileHistoryGenerationContext.Default)
