@@ -30,7 +30,6 @@ public partial class MainView : UserControl
         {
             // TODO: Add macOS support
             WallpaperMenuItem.IsVisible = false;
-            OpenWithMenuItem.IsVisible = false;
             PrintMenuItem.IsVisible = false;
             
             // Move alt hover to left side on macOS and switch button order

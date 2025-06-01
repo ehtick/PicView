@@ -133,8 +133,15 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public void OpenWith(string path)
     {
-        // TODO: Implement OpenWith on macOS
-        ProcessHelper.OpenLink(path);
+        Dispatcher.UIThread.Post(() =>
+        {
+            var openWithView = new OpenWithView
+            {
+                DataContext = _vm
+            };
+            openWithView.Show();
+        }, DispatcherPriority.Input);
+        
     }
 
     public void LocateOnDisk(string path)
