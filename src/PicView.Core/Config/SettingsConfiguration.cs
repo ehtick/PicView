@@ -2,7 +2,7 @@
 
 public static class SettingsConfiguration
 {
-    public const double CurrentSettingsVersion = 1.5;
+    public const double CurrentSettingsVersion = 1.6;
     
     public const string ConfigFolder = "Ruben2776/PicView/Config";
     public const string ConfigFileName = "UserSettings.json";

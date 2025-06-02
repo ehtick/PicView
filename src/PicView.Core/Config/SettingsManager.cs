@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -130,10 +129,18 @@ public static class SettingsManager
     {
         try
         {
-            // Copy new property values to existing settings when missing
-            MergeObjects(existingSettings, GetDefaults());
-
-            // Save the synchronized settings
+            var newSettings = GetDefaults();
+            
+            existingSettings.UIProperties ??= newSettings.UIProperties;
+            existingSettings.Gallery ??= newSettings.Gallery;
+            existingSettings.Theme ??= newSettings.Theme;
+            existingSettings.Sorting ??= newSettings.Sorting;
+            existingSettings.ImageScaling ??= newSettings.ImageScaling;
+            existingSettings.WindowProperties ??= newSettings.WindowProperties;
+            existingSettings.Zoom ??= newSettings.Zoom;
+            existingSettings.StartUp ??= newSettings.StartUp;
+            existingSettings.Navigation ??= newSettings.Navigation;
+            
             Settings = existingSettings;
             await WriteJsonAsync();
         }
@@ -180,6 +187,7 @@ public static class SettingsManager
             WindowProperties = new WindowProperties(),
             Zoom = new Zoom(),
             StartUp = new StartUp(),
+            Navigation = new Navigation(),
             Version = SettingsConfiguration.CurrentSettingsVersion
         };
 
@@ -235,60 +243,6 @@ public static class SettingsManager
     private static async Task<string?> SaveConfigFileAndReturnPathAsync() =>
         await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.UserSettings, CurrentSettingsPath,
             Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
-
-    /// <summary>
-    /// Recursively merges properties from defaults into existing settings.
-    /// </summary>
-    private static void MergeObjects<T>(T existing, T defaults) where T : class
-    {
-        if (existing == null || defaults == null)
-        {
-            return;
-        }
-
-        var type = typeof(T);
-        var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-        foreach (var property in properties)
-        {
-            if (!property.CanWrite || !property.CanRead)
-            {
-                continue;
-            }
-
-            var existingValue = property.GetValue(existing);
-            var defaultValue = property.GetValue(defaults);
-
-            if (existingValue == null && defaultValue != null)
-            {
-                // If existing is null, use the default value
-                property.SetValue(existing, defaultValue);
-            }
-            else if (existingValue != null && defaultValue != null)
-            {
-                // If both exist and it's a complex type, merge recursively
-                if (!IsComplexType(property.PropertyType))
-                {
-                    continue;
-                }
-
-                var mergeMethod = typeof(SettingsManager)
-                    .GetMethod(nameof(MergeObjects), BindingFlags.NonPublic | BindingFlags.Static)
-                    ?.MakeGenericMethod(property.PropertyType);
-
-                mergeMethod?.Invoke(null, [existingValue, defaultValue]);
-            }
-        }
-    }
-
-    private static bool IsComplexType(Type type)
-    {
-        return !type.IsPrimitive &&
-               type != typeof(string) &&
-               type != typeof(DateTime) &&
-               type != typeof(decimal) &&
-               type is { IsEnum: false, IsValueType: false };
-    }
 
     #endregion
 }

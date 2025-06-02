@@ -11,6 +11,7 @@ public class AppSettings
     public Sorting? Sorting { get; set; }
     public Zoom? Zoom { get; set; }
     public StartUp? StartUp { get; set; }
+    public Navigation? Navigation { get; set; }
 }
 
 public class WindowProperties
@@ -102,4 +103,12 @@ public class StartUp
     public bool OpenSpecificFile { get; set; } = false;
     public string OpenSpecificString { get; set; } = "";
     public string? LastFile { get; set; } = "";
+}
+
+
+public class Navigation
+{
+    public bool IsFileWatcherEnabled { get; set; } = true;
+    public int PositiveIterations { get; set; } = 6;
+    public int NegativeIterations{ get; set; } = 4;
 }

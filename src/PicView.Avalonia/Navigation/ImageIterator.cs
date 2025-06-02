@@ -80,6 +80,11 @@ public class ImageIterator : IAsyncDisposable
         }
 
         _watcher?.Dispose();
+        
+        if (!Settings.Navigation.IsFileWatcherEnabled)
+        {
+            return;
+        }
         _watcher = new FileSystemWatcher(fileInfo.DirectoryName!)
         {
             EnableRaisingEvents = true,
@@ -90,7 +95,7 @@ public class ImageIterator : IAsyncDisposable
 
         _watcher.Created += (_, e) =>
         {
-            if (!e.FullPath.IsSupported())
+            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
             {
                 return; // Early exit
             }
@@ -113,7 +118,7 @@ public class ImageIterator : IAsyncDisposable
         };
         _watcher.Deleted += (_, e) =>
         {
-            if (!e.FullPath.IsSupported())
+            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
             {
                 return; // Early exit
             }
@@ -136,7 +141,7 @@ public class ImageIterator : IAsyncDisposable
         };
         _watcher.Renamed += (_, e) =>
         {
-            if (!e.FullPath.IsSupported())
+            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
             {
                 return; // Early exit
             }
