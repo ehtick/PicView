@@ -155,6 +155,12 @@ public static class ImageTitleFormatter
         {
             validatedFileInfo = fileInfo;
         }
+        
+        if (!Settings.Navigation.IsFileWatcherEnabled)
+        {
+            // Don't check if the file exists if file watcher disabled
+            return true;
+        }
 
         if (validatedFileInfo.Exists)
         {
