@@ -3,29 +3,30 @@ using Avalonia.Animation;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using PicView.Avalonia.AnimatedImage.Decoding;
+using SkiaSharp;
 
 namespace PicView.Avalonia.AnimatedImage;
 
 public class GifInstance : IGifInstance
 {
-    public IterationCount IterationCount { get; set; }
-    public bool AutoStart => true;
+    private readonly List<TimeSpan> _frameTimes;
     private readonly GifDecoder _gifDecoder;
     private readonly WriteableBitmap _targetBitmap;
-    private TimeSpan _totalTime;
-    private readonly List<TimeSpan> _frameTimes;
-    private uint _iterationCount;
     private int _currentFrameIndex;
-
-    public CancellationTokenSource CurrentCts { get; }
+    private uint _iterationCount;
+    private TimeSpan _totalTime;
 
     public GifInstance(Stream currentStream)
     {
         if (!currentStream.CanSeek)
+        {
             throw new InvalidDataException("The provided stream is not seekable.");
+        }
 
         if (!currentStream.CanRead)
+        {
             throw new InvalidOperationException("Can't read the stream provided.");
+        }
 
         currentStream.Seek(0, SeekOrigin.Begin);
 
@@ -34,7 +35,18 @@ public class GifInstance : IGifInstance
         _gifDecoder = new GifDecoder(currentStream, CurrentCts.Token);
         var pixSize = new PixelSize(_gifDecoder.Header.Dimensions.Width, _gifDecoder.Header.Dimensions.Height);
 
-        _targetBitmap = new WriteableBitmap(pixSize, new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Opaque);
+
+        // Different on os: https://github.com/mono/SkiaSharp/issues/1492#issuecomment-689015409
+        // ReSharper disable once SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
+        var format = SKImageInfo.PlatformColorType switch
+        {
+            SKColorType.Bgra8888 => PixelFormat.Bgra8888,
+            SKColorType.Rgba8888 => PixelFormat.Rgba8888,
+            _ => throw new NotSupportedException(
+                $"Unsupported color type: {SKImageInfo.PlatformColorType}")
+        };
+
+        _targetBitmap = new WriteableBitmap(pixSize, new Vector(96, 96), format, AlphaFormat.Opaque);
         GifPixelSize = pixSize;
 
         _totalTime = TimeSpan.Zero;
@@ -48,6 +60,11 @@ public class GifInstance : IGifInstance
         _gifDecoder.RenderFrame(0, _targetBitmap);
     }
 
+    public IterationCount IterationCount { get; set; }
+    public bool AutoStart => true;
+
+    public CancellationTokenSource CurrentCts { get; }
+
     public int GifFrameCount => _frameTimes.Count;
 
     public PixelSize GifPixelSize { get; }
@@ -55,8 +72,11 @@ public class GifInstance : IGifInstance
 
     public void Dispose()
     {
-        if (IsDisposed) return;
-            
+        if (IsDisposed)
+        {
+            return;
+        }
+
         GC.SuppressFinalize(this);
 
         IsDisposed = true;
@@ -76,7 +96,7 @@ public class GifInstance : IGifInstance
         {
             return null;
         }
-            
+
         var totalTicks = _totalTime.Ticks;
 
         if (totalTicks == 0)
@@ -88,10 +108,15 @@ public class GifInstance : IGifInstance
         var timeModulus = TimeSpan.FromTicks(elapsedTicks % totalTicks);
         var targetFrame = _frameTimes.FirstOrDefault(x => timeModulus < x);
         var currentFrame = _frameTimes.IndexOf(targetFrame);
-        if (currentFrame == -1) currentFrame = 0;
+        if (currentFrame == -1)
+        {
+            currentFrame = 0;
+        }
 
         if (_currentFrameIndex == currentFrame)
+        {
             return _targetBitmap;
+        }
 
         _iterationCount = (uint)(elapsedTicks / totalTicks);
 
@@ -107,6 +132,8 @@ public class GifInstance : IGifInstance
     }
 }
 
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.Delegate | AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
-public sealed class CanBeNullAttribute : Attribute { }
-
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Parameter | AttributeTargets.Property |
+                AttributeTargets.Delegate | AttributeTargets.Field)]
+public sealed class CanBeNullAttribute : Attribute
+{
+}
