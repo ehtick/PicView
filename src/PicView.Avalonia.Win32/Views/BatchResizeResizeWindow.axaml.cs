@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
@@ -46,22 +46,10 @@ public partial class BatchResizeWindow : Window
             CloseButton.Foreground = new SolidColorBrush(color);
         }
 
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.BatchResize + " - PicView");
         Loaded += delegate
         {
-            MinWidth = MaxWidth = Width;
-            Title = $"{TranslationManager.Translation.BatchResize}  - PicView";
-
-            // Keep window position when resizing
             ClientSizeProperty.Changed.Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
         };
     }
 
@@ -76,13 +64,7 @@ public partial class BatchResizeWindow : Window
         hostWindow?.BeginMoveDrag(e);
     }
 
-    private void Close(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void Close(object? sender, RoutedEventArgs e) => Close();
 
-    private void Minimize(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 }

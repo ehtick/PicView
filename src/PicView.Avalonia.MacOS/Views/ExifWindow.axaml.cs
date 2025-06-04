@@ -1,7 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -16,16 +16,7 @@ public partial class ExifWindow : Window
             WindowBorder.Background = Brushes.Transparent;
             XExifView.Background = Brushes.Transparent;
         }
-        Title = TranslationManager.Translation.ImageInfo + " - PicView";
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
-        };
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.ImageInfo + " - PicView");
     }
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)

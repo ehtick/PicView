@@ -3,8 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
-using PicView.Core.Localization;
+using PicView.Avalonia.UI;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -40,24 +39,7 @@ public partial class KeybindingsWindow : Window
             MinimizeButton.Foreground = new SolidColorBrush(color);
             CloseButton.Foreground = new SolidColorBrush(color);
         }
-        Loaded += delegate
-        {
-            MinWidth = MaxWidth = Width;
-            Title = $"{TranslationManager.Translation.ApplicationShortcuts}  - PicView";
-        };
-        KeyUp += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                if (!MainKeyboardShortcuts.IsEscKeyEnabled)
-                {
-                    return;
-                }
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
-        };
+        GenericWindowHelper.KeybindingsWindowInitialize(this);
     }
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)
@@ -68,13 +50,7 @@ public partial class KeybindingsWindow : Window
         hostWindow?.BeginMoveDrag(e);
     }
 
-    private void Close(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void Close(object? sender, RoutedEventArgs e) => Close();
 
-    private void Minimize(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 }

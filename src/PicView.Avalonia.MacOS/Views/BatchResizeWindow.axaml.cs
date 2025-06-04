@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
@@ -11,26 +11,14 @@ public partial class BatchResizeWindow : Window
     public BatchResizeWindow()
     {
         InitializeComponent();
-        Loaded += (_, _) =>
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.BatchResize + " - PicView");
+        Loaded += delegate
         {
-            MinWidth = MaxWidth = Bounds.Width;
-            Height = 500;
-            Title = TranslationManager.Translation.BatchResize + " - PicView";
-            
-            // Keep window position when resizing
             ClientSizeProperty.Changed.Subscribe(size =>
             {
+                Height = 500;
                 WindowResizing.HandleWindowResize(this, size);
             });
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
         };
     }
 

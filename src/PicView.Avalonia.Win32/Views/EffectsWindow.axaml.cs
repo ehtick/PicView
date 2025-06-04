@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
@@ -14,7 +14,6 @@ public partial class EffectsWindow : Window
     public EffectsWindow()
     {
         InitializeComponent();
-        Title = $"{TranslationManager.Translation.Effects}  - PicView";
         
         if (Settings.Theme.GlassTheme)
         {
@@ -43,29 +42,18 @@ public partial class EffectsWindow : Window
             MinimizeButton.Foreground = new SolidColorBrush(color);
             CloseButton.Foreground = new SolidColorBrush(color);
         }
-        else if (!Settings.Theme.Dark)
-        {
-        }
+        
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.Effects + " - PicView");
         Loaded += delegate
         {
-            ClearEffectsItem.Click += delegate
-            {
-                EffectsView?.RemoveEffects();
-            };
-            
             ClientSizeProperty.Changed.Subscribe(size =>
             {
                 WindowResizing.HandleWindowResize(this, size);
+                ClearEffectsItem.Click += delegate
+                {
+                    EffectsView?.RemoveEffects();
+                };
             });
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
         };
     }
 
@@ -77,13 +65,7 @@ public partial class EffectsWindow : Window
         hostWindow?.BeginMoveDrag(e);
     }
 
-    private void Close(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void Close(object? sender, RoutedEventArgs e) => Close();
 
-    private void Minimize(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 }

@@ -3,7 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -81,15 +82,10 @@ public partial class ExifWindow : Window
             RemoveRatingButton.Classes.Remove("noBorderHover");
             RemoveRatingButton.Classes.Add("hover");
         }
-        Title = TranslationManager.GetTranslation("ImageInfo") + " - PicView";
-        KeyDown += (_, e) =>
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.ImageInfo + " - PicView");
+        Loaded += delegate
         {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
+            ClientSizeProperty.Changed.Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
         };
     }
 
@@ -101,13 +97,7 @@ public partial class ExifWindow : Window
         hostWindow?.BeginMoveDrag(e);
     }
 
-    private void Close(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void Close(object? sender, RoutedEventArgs e) => Close();
 
-    private void Minimize(object? sender, RoutedEventArgs e)
-    {
-        WindowState = WindowState.Minimized;
-    }
+    private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 }

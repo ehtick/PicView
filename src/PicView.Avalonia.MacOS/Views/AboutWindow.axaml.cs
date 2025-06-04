@@ -1,11 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.Update;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.Update;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -18,20 +17,7 @@ public partial class AboutWindow : Window, IPlatformSpecificUpdate
         {
             XAboutView.Background = Brushes.Transparent;
         }
-        Loaded += delegate
-        {
-            MinWidth = MaxWidth = Bounds.Width;
-            Title = $"{TranslationManager.Translation.About} - PicView";
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
-        };
+        GenericWindowHelper.AboutWindowInitialize(this);
     }
     
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)

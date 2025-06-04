@@ -3,11 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using PicView.Avalonia.Input;
 using PicView.Avalonia.Interfaces;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.Win32.PlatformUpdate;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -44,20 +43,7 @@ public partial class AboutWindow : Window, IPlatformSpecificUpdate
             CloseButton.Foreground = new SolidColorBrush(color);
         }
 
-        Loaded += delegate
-        {
-            MinWidth = MaxWidth = Width;
-            Title = $"{TranslationManager.Translation.About}  - PicView";
-        };
-        KeyDown += (_, e) =>
-        {
-            if (e.Key is Key.Escape)
-            {
-                e.Handled = true;
-                MainKeyboardShortcuts.IsEscKeyEnabled = false;
-                Close();
-            }
-        };
+        GenericWindowHelper.AboutWindowInitialize(this);
     }
 
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
