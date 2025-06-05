@@ -218,12 +218,16 @@ public class LanguageModel
     public string? Minimize { get; set; }
     public string? MiscSettings { get; set; }
     public string? Modified { get; set; }
+    public string? Mouse { get; set; }
     public string? MouseDrag { get; set; }
     public string? MouseKeyBack { get; set; }
     public string? MouseKeyForward { get; set; }
+    public string? MouseSideButtons { get; set; }
     public string? MouseWheel { get; set; }
     public string? MoveToRecycleBin { get; set; }
     public string? MoveWindow { get; set; }
+    public string? NavigateBetweenDirectories { get; set; }
+    public string? NavigateFileHistory { get; set; }
     public string? Navigation { get; set; }
     public string? NearestNeighbor { get; set; }
     public string? NegativeColors { get; set; }

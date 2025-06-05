@@ -287,6 +287,10 @@ public class TranslationViewModel : ReactiveObject
         ConstrainBackgroundToImage = t.ConstrainBackgroundToImage;
         Window = t.Window;
         WindowMargin = t.WindowMargin;
+        Mouse = t.Mouse;
+        MouseSideButtons = t.MouseSideButtons;
+        NavigateFileHistory = t.NavigateFileHistory;
+        NavigateBetweenDirectories = t.NavigateBetweenDirectories;
     }
 
     #region Static Translation Strings
@@ -1101,18 +1105,6 @@ public class TranslationViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public string? LoopingDisabled
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? LoopingEnabled
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
     public string? Lossless
     {
         get;
@@ -1154,8 +1146,20 @@ public class TranslationViewModel : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+    
+    public string? Mouse
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public string? MouseDrag
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+    
+    public string? MouseSideButtons
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
@@ -1174,6 +1178,18 @@ public class TranslationViewModel : ReactiveObject
     }
 
     public string? MoveWindow
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? NavigateBetweenDirectories
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? NavigateFileHistory
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

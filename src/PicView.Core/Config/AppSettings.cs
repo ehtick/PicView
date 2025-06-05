@@ -111,4 +111,7 @@ public class Navigation
     public bool IsFileWatcherEnabled { get; set; } = true;
     public int PositiveIterations { get; set; } = 6;
     public int NegativeIterations{ get; set; } = 4;
+    public bool IsNavigatingFileHistory { get; set; } = true;
+    public bool IsNavigatingBetweenDirectories { get; set; } = false;
+
 }

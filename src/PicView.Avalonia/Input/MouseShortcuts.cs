@@ -19,11 +19,25 @@ public static class MouseShortcuts
 
         if (prop.IsXButton1Pressed)
         {
-            await FunctionsMapper.OpenPreviousFileHistoryEntry().ConfigureAwait(false);
+            if (Settings.Navigation.IsNavigatingFileHistory)
+            {
+                await FunctionsMapper.OpenPreviousFileHistoryEntry().ConfigureAwait(false);
+            }
+            else if (Settings.Navigation.IsNavigatingBetweenDirectories)
+            {
+                await FunctionsMapper.PrevFolder().ConfigureAwait(false);
+            }
         }
         else if (prop.IsXButton2Pressed)
         {
-            await FunctionsMapper.OpenNextFileHistoryEntry().ConfigureAwait(false);
+            if (Settings.Navigation.IsNavigatingFileHistory)
+            {
+                await FunctionsMapper.OpenNextFileHistoryEntry().ConfigureAwait(false);
+            }
+            else if (Settings.Navigation.IsNavigatingBetweenDirectories)
+            {
+                await FunctionsMapper.NextFolder().ConfigureAwait(false);
+            }
         }
     }
 }

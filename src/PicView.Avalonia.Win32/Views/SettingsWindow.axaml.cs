@@ -119,10 +119,7 @@ public partial class SettingsWindow : Window
         hostWindow?.BeginMoveDrag(e);
     }
 
-    private void Close(object? sender, RoutedEventArgs e)
-    {
-        Close();
-    }
+    private void Close(object? sender, RoutedEventArgs e) => Close();
 
     private void Minimize(object? sender, RoutedEventArgs e)
     {

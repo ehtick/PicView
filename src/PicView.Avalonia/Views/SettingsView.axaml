@@ -931,19 +931,19 @@
                 </customControls:AutoScrollViewer>
             </TabItem>
 
-            <!--  Mouse Wheel Settings  -->
-            <TabItem Classes="headerStyle" x:Name="MouseWheelTabItem">
+            <!--  Mouse Settings  -->
+            <TabItem Classes="headerStyle" x:Name="MouseTabItem">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <Image Classes="imageStyle" Source="{StaticResource MouseWheelIcon}" />
                         <TextBlock
                             Classes="txt txtShadow"
                             Foreground="{StaticResource SecondaryTextColor}"
-                            Text="{CompiledBinding Translation.MouseWheel}" />
+                            Text="{CompiledBinding Translation.Mouse}" />
                     </StackPanel>
                 </TabItem.Header>
                 <customControls:AutoScrollViewer Background="Transparent" Height="{Binding Path=Bounds.Height, ElementName=MainTabControl}">
-                    <views:MouseWheelView
+                    <views:MouseView
                         Background="Transparent"
                         Margin="{StaticResource TabMargin}"
                         Padding="{StaticResource TabPadding}" />

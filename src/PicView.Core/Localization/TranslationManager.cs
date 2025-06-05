@@ -161,6 +161,8 @@ public static class TranslationManager
             case "de":
                 // Handle German-speaking regions (Austria, Germany, Switzerland)
                 return "de";  // Map all 'de-*' to 'de'
+            case "pt":
+                return "pt";
             default:
                 // Fall back to the base language if it's available in the translation files
                 return GetLanguages()
