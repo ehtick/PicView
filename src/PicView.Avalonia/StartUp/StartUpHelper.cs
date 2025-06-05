@@ -233,11 +233,7 @@ public static class StartUpHelper
         {
             if (string.IsNullOrWhiteSpace(Settings.StartUp.LastFile))
             {
-                ErrorHandling.ShowStartUpMenu(vm);
-                if (Settings.WindowProperties.AutoFit)
-                {
-                    WindowFunctions.CenterWindowOnScreen(false, true);
-                }
+                ShowStartUpMenu();
             }
             else
             {
@@ -247,7 +243,15 @@ public static class StartUpHelper
         }
         else
         {
-            ErrorHandling.ShowStartUpMenu(vm);
+            ShowStartUpMenu();
+        }
+
+        return;
+
+        void ShowStartUpMenu()
+        {
+            // Starting it in Dispatcher with post fixes occurrences where the text is not centered or the text is missing
+            Dispatcher.UIThread.Post(() => { ErrorHandling.ShowStartUpMenu(vm); });
             if (Settings.WindowProperties.AutoFit)
             {
                 WindowFunctions.CenterWindowOnScreen();

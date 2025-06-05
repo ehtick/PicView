@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Gallery;
@@ -47,11 +48,9 @@ public static class ErrorHandling
                 }
                 vm.CurrentView = startUpMenu;
             }
-            else
-            {
-                TitleManager.SetNoImageTitle(vm);
-            }
+            
             TitleManager.SetNoImageTitle(vm);
+
             vm.GalleryMode = GalleryMode.Closed;
             GalleryFunctions.Clear();
             MenuManager.CloseMenus(vm);
@@ -61,6 +60,10 @@ public static class ErrorHandling
             vm.IsLoading = false;
 
             _ = NavigationManager.DisposeImageIteratorAsync();
+            if (UIHelper.GetEditableTitlebar is not null)
+            {
+                UIHelper.GetEditableTitlebar.TextBlock.TextAlignment = TextAlignment.Center;
+            }
         }
     }
 
