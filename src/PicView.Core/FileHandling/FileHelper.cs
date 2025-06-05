@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using PicView.Core.DebugTools;
 
 namespace PicView.Core.FileHandling;
 
@@ -23,9 +23,7 @@ public static partial class FileHelper
         }
         catch (Exception e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(RenameFile)} {path}, {newPath} exception: \n{e.Message}\n");
-#endif
+            DebugHelper.LogDebug(nameof(FileHelper), nameof(RenameFile), e);
             return false;
         }
 
@@ -51,9 +49,7 @@ public static partial class FileHelper
         }
         catch (Exception e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(GetURL)} {value} exception, \n {e.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(FileHelper), nameof(GetURL), e);
             return string.Empty;
         }
     }
@@ -144,9 +140,7 @@ public static partial class FileHelper
         }
         catch (Exception e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(DuplicateAndReturnFileNameAsync)} {currentFile} exception, \n {e.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(FileHelper), nameof(DuplicateAndReturnFileNameAsync), e);
             return string.Empty;
         }
     }
@@ -233,6 +227,14 @@ public static partial class FileHelper
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
+        }
+    }
+    
+    public static void DeleteDirectoryIfExists(string? directory)
+    {
+        if (!string.IsNullOrEmpty(directory) && Directory.Exists(directory))
+        {
+            Directory.Delete(directory);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using PicView.Core.DebugTools;
 
 namespace PicView.Core.FileHandling;
 
@@ -102,9 +102,7 @@ public static class FileListHelper
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(RetrieveFiles)} {fileInfo.Name} exception:\n{exception.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(FileListHelper), nameof(RetrieveFiles), exception);
             return new List<string>();
         }
 
