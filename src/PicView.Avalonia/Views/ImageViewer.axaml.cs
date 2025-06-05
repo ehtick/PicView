@@ -18,6 +18,8 @@ namespace PicView.Avalonia.Views;
 
 public partial class ImageViewer : UserControl
 {
+    private Zoom? _zoom;
+
     public ImageViewer()
     {
         InitializeComponent();
@@ -25,23 +27,27 @@ public partial class ImageViewer : UserControl
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
 
-        Loaded += delegate
-        {
-            InitializeZoom();
-            LostFocus += (_, _) =>
-            {
-                Zoom.Release();
-            };
-        };
+        Loaded += OnLoaded;
     }
-    
+
+    private void OnLoaded(object? sender, EventArgs e)
+    {
+        InitializeZoom();
+        LostFocus += OnLostFocus;
+    }
+
+    private void OnLostFocus(object? sender, EventArgs e)
+    {
+        _zoom?.Release();
+    }
+
     public void TriggerScalingModeUpdate(bool invalidate)
     {
-        var scalingMode = Settings.ImageScaling.IsScalingSetToNearestNeighbor 
-            ? BitmapInterpolationMode.LowQuality 
+        var scalingMode = Settings.ImageScaling.IsScalingSetToNearestNeighbor
+            ? BitmapInterpolationMode.LowQuality
             : BitmapInterpolationMode.HighQuality;
-        
-        RenderOptions.SetBitmapInterpolationMode(MainImage,scalingMode);
+
+        RenderOptions.SetBitmapInterpolationMode(MainImage, scalingMode);
         if (invalidate)
         {
             MainImage.InvalidateVisual();
@@ -50,65 +56,63 @@ public partial class ImageViewer : UserControl
 
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e)
     {
-        Zoom.ZoomTo(e.GetPosition(this), e.Delta.X > 0, DataContext as MainViewModel);
+        _zoom?.ZoomTo(e.GetPosition(this), e.Delta.X > 0, DataContext as MainViewModel);
     }
 
     public async Task PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         e.Handled = true;
-        await Main_OnPointerWheelChanged(e);
+        await HandlePointerWheelChanged(e);
     }
-    
-    private async Task Main_OnPointerWheelChanged(PointerWheelEventArgs e)
+
+    private async Task HandlePointerWheelChanged(PointerWheelEventArgs e)
     {
         if (DataContext is not MainViewModel mainViewModel)
+        {
             return;
-        
+        }
+
         var ctrl = e.KeyModifiers == KeyModifiers.Control;
         var shift = e.KeyModifiers == KeyModifiers.Shift;
         var reverse = e.Delta.Y < 0;
-        
+
         if (Settings.Zoom.ScrollEnabled)
         {
             if (!shift)
             {
                 if (ctrl && !Settings.Zoom.CtrlZoom)
                 {
-                    if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+                    if (IsTouchPadOrTouch(e))
                     {
                         return;
                     }
-                    await LoadNextPic();
+
+                    await LoadNextPicAsync(reverse, mainViewModel);
                     return;
                 }
-                if (ImageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto)
+
+                if (IsVerticalScrollBarVisible())
                 {
-                    if (reverse)
-                    {
-                        ImageScrollViewer.LineDown();
-                    }
-                    else
-                    {
-                        ImageScrollViewer.LineUp();
-                    }
+                    ScrollVertically(reverse);
                 }
                 else
                 {
-                    await LoadNextPic();
+                    await LoadNextPicAsync(reverse, mainViewModel);
                 }
+
                 return;
             }
-            
         }
 
         if (Settings.Zoom.CtrlZoom)
         {
             if (ctrl)
             {
-                if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+                if (IsTouchPadOrTouch(e))
                 {
                     return;
                 }
+
                 if (reverse)
                 {
                     ZoomOut(e);
@@ -120,14 +124,14 @@ public partial class ImageViewer : UserControl
             }
             else
             {
-                await ScrollOrNavigate();
+                await ScrollOrNavigateAsync(e, reverse, mainViewModel);
             }
         }
         else
         {
             if (ctrl)
             {
-                await ScrollOrNavigate();
+                await ScrollOrNavigateAsync(e, reverse, mainViewModel);
             }
             else
             {
@@ -141,94 +145,118 @@ public partial class ImageViewer : UserControl
                 }
             }
         }
-        return;
+    }
 
-        async Task ScrollOrNavigate()
+    private static bool IsTouchPadOrTouch(PointerEventArgs e)
+        => Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch;
+
+    private bool IsVerticalScrollBarVisible()
+        => ImageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto;
+
+    private void ScrollVertically(bool reverse)
+    {
+        if (reverse)
         {
-            if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
-            {
-                if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
-                {
-                    return;
-                }
-                await LoadNextPic();
-            }
-            else
-            {
-                if (ImageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto)
-                {
-                    if (reverse)
-                    {
-                        ImageScrollViewer.LineDown();
-                    }
-                    else
-                    {
-                        ImageScrollViewer.LineUp();
-                    }
-                }
-                else
-                {
-                    await LoadNextPic();
-                }
-            }
+            ImageScrollViewer.LineDown();
         }
-
-        async Task LoadNextPic()
+        else
         {
-            if (Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch)
+            ImageScrollViewer.LineUp();
+        }
+    }
+
+    private async Task ScrollOrNavigateAsync(PointerWheelEventArgs e, bool reverse, MainViewModel mainViewModel)
+    {
+        if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
+        {
+            if (IsTouchPadOrTouch(e))
             {
                 return;
             }
-            bool next;
-            if (reverse)
+
+            await LoadNextPicAsync(reverse, mainViewModel);
+        }
+        else
+        {
+            if (IsVerticalScrollBarVisible())
             {
-                next = Settings.Zoom.HorizontalReverseScroll;
+                ScrollVertically(reverse);
             }
             else
             {
-                next = !Settings.Zoom.HorizontalReverseScroll;
+                await LoadNextPicAsync(reverse, mainViewModel);
             }
-
-            await NavigationManager.Navigate(next, mainViewModel).ConfigureAwait(false);
         }
+    }
+
+    private static async Task LoadNextPicAsync(bool reverse, MainViewModel mainViewModel)
+    {
+        if (Settings.Zoom.IsUsingTouchPad)
+        {
+            return;
+        }
+
+        var next = reverse ? Settings.Zoom.HorizontalReverseScroll : !Settings.Zoom.HorizontalReverseScroll;
+        await NavigationManager.Navigate(next, mainViewModel).ConfigureAwait(false);
     }
 
     #region Zoom
 
-    private void InitializeZoom() => Zoom.InitializeZoom(MainBorder);
+    private void InitializeZoom() => _zoom = new Zoom(MainBorder);
 
-    public void ZoomIn(PointerWheelEventArgs e) => Zoom.ZoomIn(e, this, MainImage, DataContext as MainViewModel);
+    public void ZoomIn(PointerWheelEventArgs e) =>
+        _zoom?.ZoomIn(e, this, MainImage, DataContext as MainViewModel);
 
-    public void ZoomOut(PointerWheelEventArgs e) => Zoom.ZoomOut(e, this, MainImage, DataContext as MainViewModel);
+    public void ZoomOut(PointerWheelEventArgs e) =>
+        _zoom?.ZoomOut(e, this, MainImage, DataContext as MainViewModel);
 
-    public void ZoomIn() => Zoom.ZoomIn(DataContext as MainViewModel);
+    public void ZoomIn() => _zoom?.ZoomIn(DataContext as MainViewModel);
 
-    public void ZoomOut() => Zoom.ZoomOut( DataContext as MainViewModel);
-    
-    public void ResetZoom(bool enableAnimations = true) => Zoom.ResetZoom(enableAnimations, DataContext as MainViewModel);
-    
+    public void ZoomOut() => _zoom?.ZoomOut(DataContext as MainViewModel);
+
+    public void ResetZoom(bool enableAnimations = true) =>
+        _zoom?.ResetZoom(enableAnimations, DataContext as MainViewModel);
+
     #endregion
 
     #region Rotation and Flip
 
     public void Rotate(bool clockWise)
     {
-        if (DataContext is not MainViewModel vm)
-            return;
-        if (MainImage.Source is null)
+        if (DataContext is not MainViewModel vm || MainImage.Source is null)
         {
             return;
         }
-        var nextAngle = RotationHelper.Rotate(vm.RotationAngle, clockWise);
-        vm.RotationAngle = nextAngle switch
+
+        if (RotationHelper.IsValidRotation(vm.RotationAngle))
         {
-            360 => 0,
-            -90 => 270,
-            _ => nextAngle
-        };
+            var nextAngle = RotationHelper.Rotate(vm.RotationAngle, clockWise);
+            vm.RotationAngle = nextAngle switch
+            {
+                360 => 0,
+                -90 => 270,
+                _ => nextAngle
+            };
+        }
+        else
+        {
+            vm.RotationAngle = RotationHelper.NextRotationAngle(vm.RotationAngle, true);
+        }
 
-        var rotateTransform = new RotateTransform(vm.RotationAngle);
+        SetImageLayoutTransform(new RotateTransform(vm.RotationAngle));
+        WindowResizing.SetSize(vm);
+        MainImage.InvalidateVisual();
+    }
 
+    public void Rotate(double angle)
+    {
+        SetImageLayoutTransform(new RotateTransform(angle));
+        WindowResizing.SetSize(DataContext as MainViewModel);
+        MainImage.InvalidateVisual();
+    }
+
+    private void SetImageLayoutTransform(RotateTransform rotateTransform)
+    {
         if (Dispatcher.UIThread.CheckAccess())
         {
             ImageLayoutTransformControl.LayoutTransform = rotateTransform;
@@ -236,57 +264,29 @@ public partial class ImageViewer : UserControl
         else
         {
             Dispatcher.UIThread.Invoke(() =>
-            {
-                ImageLayoutTransformControl.LayoutTransform = rotateTransform;
-            });
+                ImageLayoutTransformControl.LayoutTransform = rotateTransform);
         }
-
-        WindowResizing.SetSize(vm);
-        MainImage.InvalidateVisual();
-    }
-    
-    public void Rotate(double angle)
-    {
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            var rotateTransform = new RotateTransform(angle);
-            ImageLayoutTransformControl.LayoutTransform = rotateTransform;
-            
-            WindowResizing.SetSize(DataContext as MainViewModel);
-            MainImage.InvalidateVisual();
-        });
     }
 
     public void Flip(bool animate)
     {
-        if (DataContext is not MainViewModel vm)
-            return;
-        if (MainImage.Source is null)
+        if (DataContext is not MainViewModel vm || MainImage.Source is null)
         {
             return;
         }
-        int prevScaleX;
+
+        var prevScaleX = vm.PicViewer.ScaleX;
         vm.PicViewer.ScaleX = vm.PicViewer.ScaleX == -1 ? 1 : -1;
-        if (vm.PicViewer.ScaleX == 1)
-        {
-            prevScaleX = 1;
-            vm.PicViewer.ScaleX = -1;
-            vm.Translation.IsFlipped = vm.Translation.UnFlip;
-        }
-        else
-        {
-            prevScaleX = -1;
-            vm.PicViewer.ScaleX = 1;
-            vm.Translation.IsFlipped = vm.Translation.Flip;
-        }
-        
+        vm.Translation.IsFlipped = vm.PicViewer.ScaleX == 1 ? vm.Translation.UnFlip : vm.Translation.Flip;
+
         if (animate)
         {
             var flipTransform = new ScaleTransform(prevScaleX, 1)
             {
                 Transitions =
                 [
-                    new DoubleTransition { Property = ScaleTransform.ScaleXProperty, Duration = TimeSpan.FromSeconds(.2) },
+                    new DoubleTransition
+                        { Property = ScaleTransform.ScaleXProperty, Duration = TimeSpan.FromSeconds(.2) }
                 ]
             };
             ImageLayoutTransformControl.RenderTransform = flipTransform;
@@ -294,27 +294,28 @@ public partial class ImageViewer : UserControl
         }
         else
         {
-            var flipTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
-            ImageLayoutTransformControl.RenderTransform = flipTransform;
+            ImageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
         }
     }
-    
+
     public void SetTransform(int scaleX, int rotationAngle)
     {
         if (DataContext is not MainViewModel vm)
+        {
             return;
+        }
 
         vm.PicViewer.ScaleX = scaleX;
         vm.RotationAngle = rotationAngle;
-        var flipTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
-        ImageLayoutTransformControl.RenderTransform = flipTransform;
-        
-        var rotateTransform = new RotateTransform(rotationAngle);
-        ImageLayoutTransformControl.LayoutTransform = rotateTransform;
-        
-        if (Zoom.IsZoomed)
+        ImageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
+        ImageLayoutTransformControl.LayoutTransform = new RotateTransform(rotationAngle);
+
+        if (_zoom is not null)
         {
-            ResetZoom(false);
+            if (_zoom.IsZoomed)
+            {
+                ResetZoom(false);
+            }
         }
     }
 
@@ -322,67 +323,68 @@ public partial class ImageViewer : UserControl
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
-            Set();
+            ApplyOrientationTransform(orientation, format, reset);
         }
         else
         {
-            Dispatcher.UIThread.InvokeAsync(Set, DispatcherPriority.Send);
-        }
-        return;
-
-        void Set()
-        {
-            if (Settings.Zoom.ScrollEnabled)
-            {
-                ImageScrollViewer.ScrollToHome();
-            }
-
-            if (format is MagickFormat.Heic or MagickFormat.Heif)
-            {
-                if (reset)
-                {
-                    SetTransform(1,0);
-                }
-                return;
-            }
-            
-            switch (orientation)
-            {
-                case null:
-                default:
-                case EXIFHelper.EXIFOrientation.None:
-                case EXIFHelper.EXIFOrientation.Horizontal:
-                    if (reset)
-                    {
-                        SetTransform(1,0);
-                    }
-                    return;
-                case EXIFHelper.EXIFOrientation.MirrorHorizontal:
-                    SetTransform(-1, 0);
-                    break;
-                case EXIFHelper.EXIFOrientation.Rotate180:
-                    SetTransform(1, 180);
-                    break;
-                case EXIFHelper.EXIFOrientation.MirrorVertical:
-                    SetTransform(-1, 180);
-                    break;
-                case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw:
-                    SetTransform(-1, 90); // should be 270, but it's not working
-                    break;
-                case EXIFHelper.EXIFOrientation.Rotate90Cw:
-                    SetTransform(1, 90);
-                    break;
-                case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw:
-                    SetTransform(-1, 270); // should be 90, but it's not working
-                    break;
-                case EXIFHelper.EXIFOrientation.Rotated270Cw:
-                    SetTransform(1, 270);
-                    break;
-            }
+            Dispatcher.UIThread.InvokeAsync(() =>
+                ApplyOrientationTransform(orientation, format, reset), DispatcherPriority.Send);
         }
     }
 
-    #endregion Rotation and Flip
+    private void ApplyOrientationTransform(EXIFHelper.EXIFOrientation? orientation, MagickFormat? format, bool reset)
+    {
+        if (Settings.Zoom.ScrollEnabled)
+        {
+            ImageScrollViewer.ScrollToHome();
+        }
+
+        if (format is MagickFormat.Heic or MagickFormat.Heif)
+        {
+            if (reset)
+            {
+                SetTransform(1, 0);
+            }
+
+            return;
+        }
+
+        switch (orientation)
+        {
+            case null:
+            case EXIFHelper.EXIFOrientation.None:
+            case EXIFHelper.EXIFOrientation.Horizontal:
+                if (reset)
+                {
+                    SetTransform(1, 0);
+                }
+
+                break;
+            case EXIFHelper.EXIFOrientation.MirrorHorizontal:
+                SetTransform(-1, 0);
+                break;
+            case EXIFHelper.EXIFOrientation.Rotate180:
+                SetTransform(1, 180);
+                break;
+            case EXIFHelper.EXIFOrientation.MirrorVertical:
+                SetTransform(-1, 180);
+                break;
+            case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw:
+                SetTransform(-1, 90);
+                break;
+            case EXIFHelper.EXIFOrientation.Rotate90Cw:
+                SetTransform(1, 90);
+                break;
+            case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw:
+                SetTransform(-1, 270);
+                break;
+            case EXIFHelper.EXIFOrientation.Rotated270Cw:
+                SetTransform(1, 270);
+                break;
+        }
+    }
+
+    #endregion
 
     #region Events
 
@@ -405,6 +407,7 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
+
         if (e.ClickCount == 2)
         {
             ResetZoom();
@@ -415,7 +418,8 @@ public partial class ImageViewer : UserControl
         }
     }
 
-    private void MainImage_OnPointerMoved(object? sender, PointerEventArgs e) => Zoom.Pan(e, this);
+    private void MainImage_OnPointerMoved(object? sender, PointerEventArgs e) =>
+        _zoom?.Pan(e, this);
 
     private void Pressed(PointerEventArgs e)
     {
@@ -423,11 +427,12 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
-        Zoom.Capture(e);
+
+        _zoom?.Capture(e);
     }
 
-    private void MainImage_OnPointerReleased(object? sender, PointerReleasedEventArgs e) => Zoom.Release();
+    private void MainImage_OnPointerReleased(object? sender, PointerReleasedEventArgs e) =>
+        _zoom?.Release();
 
-    #endregion Events
-    
+    #endregion
 }

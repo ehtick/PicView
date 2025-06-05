@@ -37,6 +37,4 @@ public static class KeybindingFunctions
         CurrentKeybindingsPath = path;
         return text;
     }
-
-
 }
