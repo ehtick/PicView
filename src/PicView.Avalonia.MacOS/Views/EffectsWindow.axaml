@@ -40,7 +40,6 @@
             <views:EffectsView
                 Background="{DynamicResource WindowBackgroundColor}"
                 Margin="0,28,0,0"
-                Padding="10,5,5,10"
                 PointerPressed="MoveWindow"
                 x:Name="XEffectsView" />
         </Panel>
