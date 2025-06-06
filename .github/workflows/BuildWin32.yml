@@ -1,6 +1,5 @@
 name: Build PicView Win32
 
-
 on:
   push:
     branches:
@@ -44,6 +43,12 @@ jobs:
           path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-win-x64/
           retention-days: 14
 
+      # Step 5.5 (x64): Remove .pdb files from x64 build before installer
+      - name: Remove .pdb files from x64 build for installer
+        run: |
+          Remove-Item -Path "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-x64\*.pdb" -Force -ErrorAction SilentlyContinue
+        shell: pwsh
+
       # Step 6 (x64): Install Inno Setup
       - name: Install Inno Setup
         run: |
@@ -66,7 +71,7 @@ jobs:
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
 
-      # Step 8 (x64): Upload the Inno Setup Installer for x64 as an artifact
+      # Step 8 (x64): Upload Inno Setup Installer for x64 as an artifact
       - name: Upload Inno Setup Installer (x64)
         uses: actions/upload-artifact@v4
         with:
@@ -88,6 +93,12 @@ jobs:
           path: ${{ github.workspace }}/Build/PicView-v${{steps.get-version.outputs.version}}-win-arm64/
           retention-days: 14
 
+      # Step 10.5 (arm64): Remove .pdb files from arm64 build before installer
+      - name: Remove .pdb files from arm64 build for installer
+        run: |
+          Remove-Item -Path "${{ github.workspace }}\Build\PicView-v${{steps.get-version.outputs.version}}-win-arm64\*.pdb" -Force -ErrorAction SilentlyContinue
+        shell: pwsh
+
       # Step 11 (arm64): Compile .ISS to .EXE Installer for arm64
       - name: Compile .ISS to .EXE Installer (arm64)
         run: |
@@ -104,7 +115,7 @@ jobs:
             "${{ github.workspace }}\Build\install.iss"
         shell: pwsh
 
-      # Step 12 (arm64): Upload the Inno Setup Installer for arm64 as an artifact
+      # Step 12 (arm64): Upload Inno Setup Installer for arm64 as an artifact
       - name: Upload Inno Setup Installer (arm64)
         uses: actions/upload-artifact@v4
         with:
