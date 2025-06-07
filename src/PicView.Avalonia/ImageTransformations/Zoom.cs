@@ -14,23 +14,28 @@ namespace PicView.Avalonia.ImageTransformations;
 public class Zoom
 {
     private bool _captured;
+    
     private Point _origin;
-
+    private Point _start;
+    
+    private TranslateTransform? _translateTransform;
     private ScaleTransform? _scaleTransform;
 
-    private Point _start;
-    private TranslateTransform? _translateTransform;
-    
-    public bool IsZoomed { get; private set; }
-
+    /// <summary>
+    /// Provides zoom functionality for UI elements, supporting both zoom-in and zoom-out operations.
+    /// Manages transformations such as scaling and translating for visual adjustments.
+    /// </summary>
     public Zoom(Border border)
     {
         InitializeZoom(border);
     }
 
-    /// <summary>
-    /// Initialize the necessary transforms for zooming
-    /// </summary>
+    /// Indicates whether the current zoom level is applied or not.
+    /// This property will return true if the zoom level is active and differs from the default state (non-zoomed).
+    /// When the zoom level is reset to default, the property will return false.
+    public bool IsZoomed { get; private set; }
+
+
     private void InitializeZoom(Border border)
     {
         border.RenderTransform = new TransformGroup
@@ -49,30 +54,43 @@ public class Zoom
             .Children.First(tr => tr is TranslateTransform);
 
         border.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
-        border.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Relative);
     }
 
-    public void ZoomIn(PointerWheelEventArgs e, Control parent, Control content, MainViewModel? vm = null)
-    {
-        ZoomTo(e, true, parent, content, vm);
-    }
+    /// <summary>
+    /// Zooms into the content within the specified parent control, scaling the view while retaining proper alignment.
+    /// </summary>
+    /// <param name="e">The pointer wheel event arguments containing the zoom gesture data.</param>
+    /// <param name="parent">The parent control acting as the container for the content being zoomed.</param>
+    /// <param name="content">The content control subjected to the zoom operation.</param>
+    /// <param name="vm">The main view model providing application state and behavior context.</param>
+    public void ZoomIn(PointerWheelEventArgs e, Control parent, Control content, MainViewModel vm) =>
+        HandlePointerWheelZoom(e, true, parent, content, vm);
 
-    public void ZoomOut(PointerWheelEventArgs e, Control parent, Control content, MainViewModel? vm = null)
-    {
-        ZoomTo(e, false, parent, content, vm);
-    }
+    /// <summary>
+    /// Zooms out the content within the specified parent control, scaling the view while retaining proper alignment.
+    /// </summary>
+    /// <param name="e">The pointer wheel event arguments containing the zoom gesture data.</param>
+    /// <param name="parent">The parent control acting as the container for the content being zoomed.</param>
+    /// <param name="content">The content control subjected to the zoom operation.</param>
+    /// <param name="vm">The main view model providing application state and behavior context.</param>
+    public void ZoomOut(PointerWheelEventArgs e, Control parent, Control content, MainViewModel vm) =>
+        HandlePointerWheelZoom(e, false, parent, content, vm);
 
-    public void ZoomIn(MainViewModel? vm = null)
-    {
+    /// <summary>
+    /// Zooms into the image using the current starting point and updates the application state.
+    /// </summary>
+    /// <param name="vm">The view model containing the application state and transformation details.</param>
+    public void ZoomIn(MainViewModel vm) =>
         ZoomTo(_start, true, vm);
-    }
 
-    public void ZoomOut(MainViewModel? vm = null)
-    {
+    /// <summary>
+    /// Zooms out the image using the current starting point and updates the application state.
+    /// </summary>
+    /// <param name="vm">The view model containing the application state and transformation details.</param>
+    public void ZoomOut(MainViewModel vm) =>
         ZoomTo(_start, false, vm);
-    }
 
-    private Point GetRelativePosition(Control parent, Control content)
+    private static Point GetRelativePosition(Control parent, Control content)
     {
         // Get center of the ImageViewer control
         var centerX = parent.Bounds.Width / 2;
@@ -83,14 +101,20 @@ public class Zoom
                ?? new Point(content.Bounds.Width / 2, content.Bounds.Height / 2);
     }
 
-    public void ZoomTo(PointerWheelEventArgs e, bool isZoomIn, Control parent, Control content,
-        MainViewModel? vm = null)
+    private void HandlePointerWheelZoom(PointerWheelEventArgs e, bool isZoomIn, Control parent, Control content,
+        MainViewModel vm)
     {
         var relativePosition = !content.IsPointerOver ? GetRelativePosition(parent, content) : e.GetPosition(content);
         ZoomTo(relativePosition, isZoomIn, vm);
     }
 
-    public void ZoomTo(Point point, bool isZoomIn, MainViewModel? vm = null)
+    /// <summary>
+    /// Adjust the zoom level at a specified point, either zooming in or out, based on the provided parameters.
+    /// </summary>
+    /// <param name="point">The reference point where the zooming action will be centered.</param>
+    /// <param name="isZoomIn">Determines whether to zoom in (true) or zoom out (false).</param>
+    /// <param name="vm">The main view model containing the application's state and settings.</param>
+    public void ZoomTo(Point point, bool isZoomIn, MainViewModel vm)
     {
         if (_scaleTransform == null || _translateTransform == null)
         {
@@ -138,12 +162,12 @@ public class Zoom
             }
             else
             {
-                ZoomTo(point, currentZoom, true, vm);
+                SetZoomAtPoint(point, currentZoom, true, vm);
             }
         }
     }
 
-    public void ZoomTo(Point point, double zoomValue, bool enableAnimations, MainViewModel? vm = null)
+    private void SetZoomAtPoint(Point point, double zoomValue, bool enableAnimations, MainViewModel vm)
     {
         if (_scaleTransform == null || _translateTransform == null)
         {
@@ -196,7 +220,12 @@ public class Zoom
         _ = TooltipHelper.ShowTooltipMessageAsync($"{Math.Floor(zoomValue * 100)}%", true, TimeSpan.FromSeconds(1));
     }
 
-    public void ResetZoom(bool enableAnimations, MainViewModel? vm = null)
+    /// <summary>
+    /// Resets the zoom to its default state.
+    /// </summary>
+    /// <param name="enableAnimations">Specifies whether animations should be applied during the reset.</param>
+    /// <param name="vm">The view model associated with the main application, used for managing zoom state and title updates.</param>
+    public void ResetZoom(bool enableAnimations, MainViewModel vm)
     {
         if (_scaleTransform == null || _translateTransform == null)
         {
@@ -246,6 +275,10 @@ public class Zoom
         TitleManager.SetTitle(vm);
     }
 
+    /// <summary>
+    /// Captures the current pointer position and initializes the origin point for zooming transformations.
+    /// </summary>
+    /// <param name="e">The pointer event arguments providing data about the pointer position and device state.</param>
     public void Capture(PointerEventArgs e)
     {
         if (_captured)
@@ -268,6 +301,11 @@ public class Zoom
         _captured = true;
     }
 
+    /// <summary>
+    /// Handles panning of the zoomed image by adjusting translation transforms based on pointer movement.
+    /// </summary>
+    /// <param name="e">Pointer event arguments containing details about the pointer's position and state.</param>
+    /// <param name="imageViewer">The image viewer instance on which the panning operation is performed.</param>
     public void Pan(PointerEventArgs e, ImageViewer imageViewer)
     {
         if (!_captured || _scaleTransform == null || !IsZoomed)
@@ -355,6 +393,9 @@ public class Zoom
         e.Handled = true;
     }
 
+    /// <summary>
+    /// Releases any current state of capturing associated with zoom or panning functionality.
+    /// </summary>
     public void Release()
     {
         _captured = false;

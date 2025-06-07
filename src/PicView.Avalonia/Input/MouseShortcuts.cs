@@ -1,13 +1,171 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
+using PicView.Avalonia.Navigation;
+using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.Input;
 
 public static class MouseShortcuts
 {
+    private static AutoScrollViewer? _imageScrollViewer;
+    private static Func<object?>? _getDataContext;
+    private static Func<PointerWheelEventArgs, Task>? _zoomIn;
+    private static Func<PointerWheelEventArgs, Task>? _zoomOut;
+
+    public static void InitializeMouseShortcuts(
+        AutoScrollViewer imageScrollViewer,
+        Func<object?> getDataContext,
+        Func<PointerWheelEventArgs, Task> zoomIn,
+        Func<PointerWheelEventArgs, Task> zoomOut)
+    {
+        _imageScrollViewer = imageScrollViewer;
+        _getDataContext = getDataContext;
+        _zoomIn = zoomIn;
+        _zoomOut = zoomOut;
+    }
+
+    public static async Task HandlePointerWheelChanged(PointerWheelEventArgs e)
+    {
+        if (_getDataContext() is not MainViewModel mainViewModel)
+        {
+            return;
+        }
+        
+        e.Handled = true;
+
+        var ctrl = e.KeyModifiers == KeyModifiers.Control;
+        var shift = e.KeyModifiers == KeyModifiers.Shift;
+        var reverse = e.Delta.Y < 0;
+
+        if (Settings.Zoom.ScrollEnabled)
+        {
+            if (!shift)
+            {
+                if (ctrl && !Settings.Zoom.CtrlZoom)
+                {
+                    if (IsTouchPadOrTouch(e))
+                    {
+                        return;
+                    }
+
+                    await LoadNextPicAsync(reverse, mainViewModel);
+                    return;
+                }
+
+                if (IsVerticalScrollBarVisible())
+                {
+                    ScrollVertically(reverse);
+                }
+                else
+                {
+                    await LoadNextPicAsync(reverse, mainViewModel);
+                }
+
+                return;
+            }
+        }
+
+        if (Settings.Zoom.CtrlZoom)
+        {
+            if (ctrl)
+            {
+                if (IsTouchPadOrTouch(e))
+                {
+                    return;
+                }
+
+                if (reverse)
+                {
+                    await _zoomOut(e);
+                }
+                else
+                {
+                    await _zoomIn(e);
+                }
+            }
+            else
+            {
+                await ScrollOrNavigateAsync(e, reverse, mainViewModel);
+            }
+        }
+        else
+        {
+            if (ctrl)
+            {
+                await ScrollOrNavigateAsync(e, reverse, mainViewModel);
+            }
+            else
+            {
+                if (reverse)
+                {
+                    await _zoomOut(e);
+                }
+                else
+                {
+                    await _zoomIn(e);
+                }
+            }
+        }
+    }
+
+    private static bool IsTouchPadOrTouch(PointerEventArgs e)
+        => Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch;
+
+    private static bool IsVerticalScrollBarVisible()
+        => _imageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto;
+
+    private static void ScrollVertically(bool reverse)
+    {
+        if (reverse)
+        {
+            _imageScrollViewer.LineDown();
+        }
+        else
+        {
+            _imageScrollViewer.LineUp();
+        }
+    }
+
+    private static async Task ScrollOrNavigateAsync(PointerWheelEventArgs e, bool reverse, MainViewModel mainViewModel)
+    {
+        if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
+        {
+            if (IsTouchPadOrTouch(e))
+            {
+                return;
+            }
+
+            await LoadNextPicAsync(reverse, mainViewModel);
+        }
+        else
+        {
+            if (IsVerticalScrollBarVisible())
+            {
+                ScrollVertically(reverse);
+            }
+            else
+            {
+                await LoadNextPicAsync(reverse, mainViewModel);
+            }
+        }
+    }
+
+    private static async Task LoadNextPicAsync(bool reverse, MainViewModel mainViewModel)
+    {
+        if (Settings.Zoom.IsUsingTouchPad)
+        {
+            return;
+        }
+
+        var next = reverse ? Settings.Zoom.HorizontalReverseScroll : !Settings.Zoom.HorizontalReverseScroll;
+        await NavigationManager.Navigate(next, mainViewModel).ConfigureAwait(false);
+    }
+    
     public static async Task MainWindow_PointerPressed(PointerPressedEventArgs e)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)

@@ -13,7 +13,7 @@ public partial class ClickArrowRight : UserControl
             {
                 return;
             }
-            PointerWheelChanged += async (_, e) => await vm.ImageViewer.PreviewOnPointerWheelChanged(this, e);
+            PointerWheelChanged += async (_, e) => await ImageViewer.PreviewOnPointerWheelChanged(this, e);
         };
     }
 }

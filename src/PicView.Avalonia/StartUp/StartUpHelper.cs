@@ -16,9 +16,7 @@ using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
-using PicView.Core.Gallery;
 using PicView.Core.ProcessHandling;
-using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
@@ -70,7 +68,7 @@ public static class StartUpHelper
             }
         }
         
-        InitializeSettings(vm);
+        SettingsUpdater.InitializeSettings(vm);
         
         HandleWindowScalingMode(vm, window);
         
@@ -83,7 +81,7 @@ public static class StartUpHelper
     public static void StartWithoutArguments(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop,
         Window window, string? arg = null)
     {
-        InitializeSettings(vm);
+        SettingsUpdater.InitializeSettings(vm);
         
         HandleWindowScalingMode(vm, window);
         
@@ -131,7 +129,7 @@ public static class StartUpHelper
         
         UIHelper.SetControls(desktop);
 
-        ValidateGallerySettings(vm, settingsExists);
+        SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
         
         // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
         if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
@@ -303,88 +301,6 @@ public static class StartUpHelper
                 Environment.Exit(0);
             });
         }
-    }
-
-    private static void ValidateGallerySettings(MainViewModel vm, bool settingsExists)
-    {
-        vm.GetFullGalleryItemHeight = Settings.Gallery.ExpandedGalleryItemSize;
-        vm.GetBottomGalleryItemHeight = Settings.Gallery.BottomGalleryItemSize;
-        if (!settingsExists)
-        {
-            vm.GetBottomGalleryItemHeight = GalleryDefaults.DefaultBottomGalleryHeight;
-            vm.GetFullGalleryItemHeight = GalleryDefaults.DefaultFullGalleryHeight;
-        }
-
-        // Set default gallery sizes if they are out of range or upgrading from an old version
-        if (vm.GetBottomGalleryItemHeight < vm.MinBottomGalleryItemHeight ||
-            vm.GetBottomGalleryItemHeight > vm.MaxBottomGalleryItemHeight)
-        {
-            vm.GetBottomGalleryItemHeight = GalleryDefaults.DefaultBottomGalleryHeight;
-        }
-
-        if (vm.GetFullGalleryItemHeight < vm.MinFullGalleryItemHeight ||
-            vm.GetFullGalleryItemHeight > vm.MaxFullGalleryItemHeight)
-        {
-            vm.GetFullGalleryItemHeight = GalleryDefaults.DefaultFullGalleryHeight;
-        }
-
-        if (settingsExists)
-        {
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(Settings.Gallery.BottomGalleryStretchMode))
-        {
-            Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
-        }
-
-        if (string.IsNullOrWhiteSpace(Settings.Gallery.FullGalleryStretchMode))
-        {
-            Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
-        }
-    }
-
-    private static void InitializeSettings(MainViewModel vm)
-    {    
-        // Set corner radius on macOS
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            vm.BottomCornerRadius = new CornerRadius(0, 0, 8, 8);
-        }
-        
-        vm.TitlebarHeight = Settings.WindowProperties.Fullscreen
-            || !Settings.UIProperties.ShowInterface
-            ? 0
-            : SizeDefaults.MainTitlebarHeight;
-        vm.BottombarHeight = Settings.WindowProperties.Fullscreen
-                             || !Settings.UIProperties.ShowInterface
-            ? 0
-            : SizeDefaults.BottombarHeight;
-        vm.GetNavSpeed = Settings.UIProperties.NavSpeed;
-        vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
-        vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
-        vm.PicViewer.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
-        vm.IsBottomGalleryShown = Settings.Gallery.IsBottomGalleryShown;
-        vm.IsBottomGalleryShownInHiddenUI = Settings.Gallery.ShowBottomGalleryInHiddenUI;
-        vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
-        vm.IsUIShown  = Settings.UIProperties.ShowInterface;
-        vm.IsTopToolbarShown  = Settings.UIProperties.ShowInterface;
-        vm.IsBottomToolbarShown   = Settings.UIProperties.ShowBottomNavBar &&
-                                    Settings.UIProperties.ShowInterface;
-        vm.IsShowingTaskbarProgress  = Settings.UIProperties.IsTaskbarProgressEnabled;
-        vm.IsFullscreen  = Settings.WindowProperties.Fullscreen;
-        vm.IsTopMost  = Settings.WindowProperties.TopMost;
-        vm.IsIncludingSubdirectories = Settings.Sorting.IncludeSubDirectories;
-        vm.IsStretched = Settings.ImageScaling.StretchImage;
-        vm.IsLooping  = Settings.UIProperties.Looping;
-        vm.IsAutoFit  = Settings.WindowProperties.AutoFit;
-        vm.IsStayingCentered  = Settings.WindowProperties.KeepCentered;
-        vm.IsOpeningInSameWindow  = Settings.UIProperties.OpenInSameWindow;
-        vm.IsShowingConfirmationOnEsc  = Settings.UIProperties.ShowConfirmationOnEsc;   
-        vm.IsUsingTouchpad  = Settings.Zoom.IsUsingTouchPad;
-        vm.IsAscending  = Settings.Sorting.Ascending;
-        vm.BackgroundChoice = Settings.UIProperties.BgColorChoice;
-        vm.IsConstrainingBackgroundColor = Settings.UIProperties.IsConstrainBackgroundColorEnabled;
     }
 
     private static void SetWindowEventHandlers(Window w)

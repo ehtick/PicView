@@ -14,126 +14,6 @@ namespace PicView.Avalonia.CustomControls;
 /// </summary>
 public class IconButton : Button
 {
-    #region Repeat
-
-     /// <summary>
-        /// Defines the <see cref="Interval"/> property.
-        /// </summary>
-        public static readonly StyledProperty<int> IntervalProperty =
-            AvaloniaProperty.Register<RepeatButton, int>(nameof(Interval), 100);
-
-        /// <summary>
-        /// Defines the <see cref="Delay"/> property.
-        /// </summary>
-        public static readonly StyledProperty<int> DelayProperty =
-            AvaloniaProperty.Register<RepeatButton, int>(nameof(Delay), 300);
-
-        private DispatcherTimer? _repeatTimer;
-
-        /// <summary>
-        /// Gets or sets the amount of time, in milliseconds, of repeating clicks.
-        /// </summary>
-        public int Interval
-        {
-            get => GetValue(IntervalProperty);
-            set => SetValue(IntervalProperty, value);
-        }
-
-        /// <summary>
-        /// Gets or sets the amount of time, in milliseconds, to wait before repeating begins.
-        /// </summary>
-        public int Delay
-        {
-            get => GetValue(DelayProperty);
-            set => SetValue(DelayProperty, value);
-        }
-        
-        public static readonly StyledProperty<bool> IsRepeatEnabledProperty =
-            AvaloniaProperty.Register<RepeatButton, bool>(nameof(IsRepeatEnabled), true);
-        
-        public bool IsRepeatEnabled
-        {
-            get => GetValue(IsRepeatEnabledProperty);
-            set => SetValue(IsRepeatEnabledProperty, value);
-        }
-
-        private void StartTimer()
-        {
-            if (!IsRepeatEnabled)
-            {
-                return;
-            }
-            if (_repeatTimer == null)
-            {
-                _repeatTimer = new DispatcherTimer();
-                _repeatTimer.Tick += RepeatTimerOnTick;
-            }
-
-            if (_repeatTimer.IsEnabled) return;
-
-            _repeatTimer.Interval = TimeSpan.FromMilliseconds(Delay);
-            _repeatTimer.Start();
-        }
-
-        private void RepeatTimerOnTick(object? sender, EventArgs e)
-        {
-            if (!IsRepeatEnabled)
-            {
-                return;
-            }
-            var interval = TimeSpan.FromMilliseconds(Interval);
-            if (_repeatTimer!.Interval != interval)
-            {
-                _repeatTimer.Interval = interval;
-            }
-            OnClick();
-        }
-
-        private void StopTimer()
-        {
-            _repeatTimer?.Stop();
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            base.OnKeyDown(e);
-
-            if (e.Key == Key.Space)
-            {
-                StartTimer();
-            }
-        }
-
-        protected override void OnKeyUp(KeyEventArgs e)
-        {
-            base.OnKeyUp(e);
-
-            StopTimer();
-        }
-
-        protected override void OnPointerPressed(PointerPressedEventArgs e)
-        {
-            base.OnPointerPressed(e);
-
-            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-            {
-                StartTimer();
-            }
-        }
-
-        protected override void OnPointerReleased(PointerReleasedEventArgs e)
-        {
-            base.OnPointerReleased(e);
-
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                StopTimer();
-            }
-        }
-    
-
-    #endregion
-    
     /// <summary>
     /// Defines the <see cref="Icon"/> property.
     /// The icon is displayed as a <see cref="DrawingImage"/> with support for dynamic brush changes.
@@ -180,9 +60,9 @@ public class IconButton : Button
     /// <summary>
     /// Gets or sets the <see cref="StreamGeometry"/> used as the icon's path data.
     /// </summary>
-    public StreamGeometry Data
+    public StreamGeometry? Data
     {
-        get => (StreamGeometry)GetValue(PathProperty);
+        get => (StreamGeometry)GetValue(PathProperty)!;
         set => SetValue(PathProperty, value);
     }
 
@@ -191,7 +71,7 @@ public class IconButton : Button
     /// </summary>
     public double IconWidth
     {
-        get => (double)GetValue(IconWidthProperty);
+        get => (double)GetValue(IconWidthProperty)!;
         set => SetValue(IconWidthProperty, value);
     }
 
@@ -200,7 +80,7 @@ public class IconButton : Button
     /// </summary>
     public double IconHeight
     {
-        get => (double)GetValue(IconHeightProperty);
+        get => (double)GetValue(IconHeightProperty)!;
         set => SetValue(IconHeightProperty, value);
     }
 
@@ -222,6 +102,7 @@ public class IconButton : Button
         {
             Content = BuildIcon();
         }
+
         if (change.Property == IsPressedProperty && change.GetNewValue<bool>() == false)
         {
             StopTimer();
@@ -288,7 +169,7 @@ public class IconButton : Button
                     {
                         if (drawing is GeometryDrawing { Pen: Pen pen })
                         {
-                            pen.Brush = new SolidColorBrush((Color)(secondaryAccentColor));
+                            pen.Brush = new SolidColorBrush((Color)secondaryAccentColor);
                         }
                     }
                 });
@@ -299,8 +180,9 @@ public class IconButton : Button
             {
                 if (Settings.Theme.GlassTheme)
                 {
-return;
+                    return;
                 }
+
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     if (!Application.Current.TryGetResource("MainTextColor", Application.Current.RequestedThemeVariant,
@@ -315,7 +197,7 @@ return;
                     {
                         if (drawing is GeometryDrawing { Pen: Pen pen })
                         {
-                            pen.Brush = new SolidColorBrush((Color)(mainTextColor));
+                            pen.Brush = new SolidColorBrush((Color)mainTextColor);
                         }
                     }
                 });
@@ -340,4 +222,129 @@ return;
 
         return pathIcon;
     }
+
+    #region Repeat
+
+    /// <summary>
+    /// Defines the <see cref="Interval"/> property.
+    /// </summary>
+    public static readonly StyledProperty<int> IntervalProperty =
+        AvaloniaProperty.Register<RepeatButton, int>(nameof(Interval), 100);
+
+    /// <summary>
+    /// Defines the <see cref="Delay"/> property.
+    /// </summary>
+    public static readonly StyledProperty<int> DelayProperty =
+        AvaloniaProperty.Register<RepeatButton, int>(nameof(Delay), 300);
+
+    private DispatcherTimer? _repeatTimer;
+
+    /// <summary>
+    /// Gets or sets the amount of time, in milliseconds, of repeating clicks.
+    /// </summary>
+    public int Interval
+    {
+        get => GetValue(IntervalProperty);
+        set => SetValue(IntervalProperty, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the amount of time, in milliseconds, to wait before repeating begins.
+    /// </summary>
+    public int Delay
+    {
+        get => GetValue(DelayProperty);
+        set => SetValue(DelayProperty, value);
+    }
+
+    public static readonly StyledProperty<bool> IsRepeatEnabledProperty =
+        AvaloniaProperty.Register<RepeatButton, bool>(nameof(IsRepeatEnabled), true);
+
+    public bool IsRepeatEnabled
+    {
+        get => GetValue(IsRepeatEnabledProperty);
+        set => SetValue(IsRepeatEnabledProperty, value);
+    }
+
+    private void StartTimer()
+    {
+        if (!IsRepeatEnabled)
+        {
+            return;
+        }
+
+        if (_repeatTimer == null)
+        {
+            _repeatTimer = new DispatcherTimer();
+            _repeatTimer.Tick += RepeatTimerOnTick;
+        }
+
+        if (_repeatTimer.IsEnabled)
+        {
+            return;
+        }
+
+        _repeatTimer.Interval = TimeSpan.FromMilliseconds(Delay);
+        _repeatTimer.Start();
+    }
+
+    private void RepeatTimerOnTick(object? sender, EventArgs e)
+    {
+        if (!IsRepeatEnabled)
+        {
+            return;
+        }
+
+        var interval = TimeSpan.FromMilliseconds(Interval);
+        if (_repeatTimer!.Interval != interval)
+        {
+            _repeatTimer.Interval = interval;
+        }
+
+        OnClick();
+    }
+
+    private void StopTimer()
+    {
+        _repeatTimer?.Stop();
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        if (e.Key == Key.Space)
+        {
+            StartTimer();
+        }
+    }
+
+    protected override void OnKeyUp(KeyEventArgs e)
+    {
+        base.OnKeyUp(e);
+
+        StopTimer();
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            StartTimer();
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+
+        if (e.InitialPressMouseButton == MouseButton.Left)
+        {
+            StopTimer();
+        }
+    }
+
+    #endregion
 }
