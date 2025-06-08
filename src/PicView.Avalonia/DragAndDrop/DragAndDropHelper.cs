@@ -6,11 +6,11 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.FileHandling;
+using PicView.Core.Preloading;
 using PicView.Core.ProcessHandling;
 using PicView.Core.Sizing;
 

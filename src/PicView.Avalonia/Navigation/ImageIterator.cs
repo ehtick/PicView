@@ -3,14 +3,15 @@ using Avalonia.Threading;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
+using PicView.Core.Models;
 using PicView.Core.Navigation;
+using PicView.Core.Preloading;
 using Timer = System.Timers.Timer;
 
 namespace PicView.Avalonia.Navigation;
@@ -32,7 +33,7 @@ public class ImageIterator : IAsyncDisposable
 
     public FileInfo InitialFileInfo { get; private set; } = null!;
     public bool IsReversed { get; private set; }
-    private PreLoader PreLoader { get; } = new();
+    private PreLoader PreLoader { get; } = new(GetImageModel.GetImageModelAsync);
 
     private static FileSystemWatcher? _watcher;
 

@@ -4,13 +4,13 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.SettingsManagement;

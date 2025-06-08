@@ -2,6 +2,7 @@ using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Models;
 
 namespace PicView.Avalonia.ImageHandling;
 

@@ -1,6 +1,6 @@
-﻿using PicView.Avalonia.ImageHandling;
+﻿using PicView.Core.Models;
 
-namespace PicView.Avalonia.Preloading;
+namespace PicView.Core.Preloading;
 
 /// <summary>
 /// Represents a preloaded image value.

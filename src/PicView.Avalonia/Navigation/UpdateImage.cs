@@ -4,12 +4,13 @@ using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.Preloading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Models;
+using PicView.Core.Preloading;
 using PicView.Core.Titles;
 
 // ReSharper disable RedundantAlwaysMatchSubpattern

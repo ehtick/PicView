@@ -11,6 +11,7 @@ using PicView.Core.Gallery;
 using PicView.Core.Http;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.Navigation;
 
 namespace PicView.Avalonia.Navigation;

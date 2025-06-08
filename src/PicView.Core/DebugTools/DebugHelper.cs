@@ -9,20 +9,19 @@ namespace PicView.Core.DebugTools;
 public static class DebugHelper
 {
     /// <summary>
-    ///     Logs detailed debug information for an exception, including the class name, method name, message, and stack trace.
-    ///     This method is intended to be used for development and debugging purposes only.
+    /// Logs detailed debug information for an exception, including the class name, method name, message, and stack trace.
+    /// This method is intended to be used for development and debugging purposes only.
     /// </summary>
     /// <param name="className">
-    ///     The name of the class where the exception occurred. Typically passed using
-    ///     <c>nameof(ClassName)</c>.
+    /// The name of the class where the exception occurred. Typically passed using <c>nameof(ClassName)</c>.
     /// </param>
     /// <param name="methodName">
-    ///     The name of the method where the exception occurred. Typically passed using
-    ///     <c>nameof(MethodName)</c>.
+    /// The name of the method where the exception occurred. Typically passed using
+    /// <c>nameof(MethodName)</c>.
     /// </param>
     /// <param name="exception">The exception that was thrown.</param>
     /// <example>
-    ///     <code>
+    /// <code>
     /// catch (Exception ex)
     /// {
     ///     DebugHelper.LogDebug(nameof(MyClass), nameof(MyMethod), ex);

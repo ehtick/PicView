@@ -1,4 +1,4 @@
-﻿namespace PicView.Avalonia.Preloading;
+﻿namespace PicView.Core.Preloading;
 
 public class PreLoaderConfig
 {

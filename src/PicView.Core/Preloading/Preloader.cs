@@ -1,27 +1,22 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using Avalonia.Media.Imaging;
-using PicView.Avalonia.ImageHandling;
+using ImageMagick;
 using PicView.Core.DebugTools;
+using PicView.Core.Models;
 using static System.GC;
 
-namespace PicView.Avalonia.Preloading;
+namespace PicView.Core.Preloading;
 
 /// <summary>
-///     The PreLoader class is responsible for preloading images asynchronously and caching them.
+/// The PreLoader class is responsible for preloading images asynchronously and caching them.
 /// </summary>
-public class PreLoader : IAsyncDisposable
+public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelLoader) : IAsyncDisposable
 {
 #if DEBUG
     // ReSharper disable once ConvertToConstant.Local
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private static bool _showAddRemove = true;
 #endif
-
-    /// <summary>
-    ///     Indicates whether the preloader is currently running.
-    /// </summary>
-    private int _isRunningFlag; // 0 = idle, 1 = running
 
     private readonly PreLoaderConfig _config = new();
 
@@ -31,10 +26,25 @@ public class PreLoader : IAsyncDisposable
 
     private CancellationTokenSource? _cancellationTokenSource;
 
+    private int _isRunningFlag; // 0 = idle, 1 = running
+
     /// <summary>
     ///     Gets the maximum count of preloaded images.
     /// </summary>
     public static int MaxCount => PreLoaderConfig.MaxCount;
+
+    #region Contains
+
+    /// <summary>
+    ///     Checks if a specific key exists in the preload list.
+    /// </summary>
+    /// <param name="key">The key to check.</param>
+    /// <param name="list">The list of image paths.</param>
+    /// <returns>True if the key exists; otherwise, false.</returns>
+    public bool Contains(int key, List<string> list) =>
+        list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
+
+    #endregion
 
     #region Add
 
@@ -66,11 +76,11 @@ public class PreLoader : IAsyncDisposable
         {
             return false;
         }
-    
+
         try
         {
             var fileInfo = imageModel.FileInfo = new FileInfo(list[index]);
-            imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
+            imageModel = await imageModelLoader(fileInfo, null!).ConfigureAwait(false);
             preLoadValue.ImageModel = imageModel;
 #if DEBUG
             if (_showAddRemove)
@@ -154,12 +164,12 @@ public class PreLoader : IAsyncDisposable
             DebugHelper.LogDebug(nameof(PreLoader), nameof(Resynchronize), "list is null");
             return;
         }
-        
+
         if (list.Count == 0 || _preLoadList.IsEmpty)
         {
             return;
         }
-        
+
         _cancellationTokenSource?.Cancel();
 
         // Create a reverse lookup from file path to current index
@@ -244,6 +254,7 @@ public class PreLoader : IAsyncDisposable
         {
             return Contains(key, list) ? _preLoadList[key] : null;
         }
+
         DebugHelper.LogDebug(nameof(PreLoader), nameof(Get), "invalid parameters:" + key);
         return null;
     }
@@ -301,19 +312,6 @@ public class PreLoader : IAsyncDisposable
 
     #endregion
 
-    #region Contains
-
-    /// <summary>
-    ///     Checks if a specific key exists in the preload list.
-    /// </summary>
-    /// <param name="key">The key to check.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the key exists; otherwise, false.</returns>
-    public bool Contains(int key, List<string> list) =>
-        list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
-
-    #endregion
-
     #region Remove and clear
 
     /// <summary>
@@ -352,7 +350,7 @@ public class PreLoader : IAsyncDisposable
                     disposable.Dispose();
                 }
             }
-            
+
 
             var removed = _preLoadList.TryRemove(key, out _);
 #if DEBUG
@@ -372,7 +370,7 @@ public class PreLoader : IAsyncDisposable
     }
 
     /// <summary>
-    ///     Removes an image from the preload list.
+    /// Removes an image from the preload list.
     /// </summary>
     /// <param name="fileName">The full path of the image to remove.</param>
     /// <param name="list">The list of image paths.</param>
@@ -384,8 +382,12 @@ public class PreLoader : IAsyncDisposable
     }
 
     /// <summary>
-    ///     Clears all preloaded images from the cache.
+    /// Clears all preloaded images and associated resources.
     /// </summary>
+    /// <remarks>
+    /// This method cancels any ongoing operations, disposes resources such as image bitmaps,
+    /// and clears the internal preload list. It logs a debug message when running in DEBUG mode.
+    /// </remarks>
     public void Clear()
     {
         _cancellationTokenSource?.Cancel();
@@ -395,15 +397,15 @@ public class PreLoader : IAsyncDisposable
         {
             lock (_lock)
             {
-                if (item.ImageModel?.Image is Bitmap img)
+                if (item.ImageModel?.Image is IDisposable disposable)
                 {
-                    img.Dispose();
+                    disposable.Dispose();
                 }
             }
         }
 
         _preLoadList.Clear();
-        
+
 #if DEBUG
         if (_showAddRemove)
         {
@@ -413,16 +415,8 @@ public class PreLoader : IAsyncDisposable
     }
 
     /// <summary>
-    ///     Clears all preloaded images from the cache asynchronously.
+    /// Clears all preloaded images asynchronously, canceling and disposing any active operations.
     /// </summary>
-    /// <remarks>
-    ///     <para>
-    ///         This method is used to clear the preloaded images when the image list changes.
-    ///     </para>
-    ///     <para>
-    ///         It is an asynchronous version of the <see cref="Clear" /> method.
-    ///     </para>
-    /// </remarks>
     public async Task ClearAsync()
     {
         try
@@ -607,7 +601,7 @@ public class PreLoader : IAsyncDisposable
         }
 
         _disposed = true;
-        
+
 #if DEBUG
         if (_showAddRemove)
         {
@@ -618,7 +612,11 @@ public class PreLoader : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_disposed) return;
+        if (_disposed)
+        {
+            return;
+        }
+
         await _cancellationTokenSource?.CancelAsync();
         _cancellationTokenSource?.Dispose();
         _cancellationTokenSource = null;

@@ -11,6 +11,7 @@ using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Models;
 
 namespace PicView.Avalonia.StartUp;
 

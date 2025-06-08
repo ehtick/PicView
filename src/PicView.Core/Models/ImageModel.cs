@@ -1,7 +1,8 @@
 ﻿using ImageMagick;
+using PicView.Avalonia.ImageHandling;
 using PicView.Core.ImageDecoding;
 
-namespace PicView.Avalonia.ImageHandling;
+namespace PicView.Core.Models;
 
 public class ImageModel
 {

@@ -1,10 +1,10 @@
 ﻿using ImageMagick;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.Titles;
 
 namespace PicView.Avalonia.UI;
