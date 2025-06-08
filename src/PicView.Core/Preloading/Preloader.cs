@@ -20,7 +20,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
 
     private readonly PreLoaderConfig _config = new();
 
-    private readonly Lock _lock = new();
+    private readonly Lock _disposeLock = new();
 
     private readonly ConcurrentDictionary<int, PreLoadValue> _preLoadList = new();
 
@@ -33,8 +33,6 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
     /// </summary>
     public static int MaxCount => PreLoaderConfig.MaxCount;
 
-    #region Contains
-
     /// <summary>
     ///     Checks if a specific key exists in the preload list.
     /// </summary>
@@ -43,8 +41,6 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
     /// <returns>True if the key exists; otherwise, false.</returns>
     public bool Contains(int key, List<string> list) =>
         list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
-
-    #endregion
 
     #region Add
 
@@ -58,9 +54,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
     {
         if (list == null || index < 0 || index >= list.Count)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(AddAsync)} invalid parameters: \n{index}");
-#endif
+            DebugHelper.LogDebug(nameof(PreLoader), nameof(AddAsync), "invalid parameters");
             return false;
         }
 
@@ -217,24 +211,26 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
             }
 
             // Attempt to move the entry to the new index
-            if (_preLoadList.TryRemove(oldIndex, out var removedValue))
+            if (!_preLoadList.TryRemove(oldIndex, out var removedValue))
             {
-                if (!_preLoadList.TryAdd(newIndex, removedValue))
-                {
+                continue;
+            }
+
+            if (!_preLoadList.TryAdd(newIndex, removedValue))
+            {
 #if DEBUG
-                    if (_showAddRemove)
-                    {
-                        Trace.WriteLine($"Failed to resynchronize {filePath} to index {newIndex}");
-                    }
-#endif
-                }
-#if DEBUG
-                else if (_showAddRemove)
+                if (_showAddRemove)
                 {
-                    Trace.WriteLine($"Resynchronized {filePath} from index {oldIndex} to {newIndex}");
+                    Trace.WriteLine($"Failed to resynchronize {filePath} to index {newIndex}");
                 }
 #endif
             }
+#if DEBUG
+            else if (_showAddRemove)
+            {
+                Trace.WriteLine($"Resynchronized {filePath} from index {oldIndex} to {newIndex}");
+            }
+#endif
         }
     }
 
@@ -297,7 +293,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         }
 
         await AddAsync(key, list);
-        return Get(key, list);
+        return _preLoadList[key];
     }
 
     /// <summary>
@@ -333,33 +329,22 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
             DebugHelper.LogDebug(nameof(PreLoader), nameof(Remove), "key does not exist: " + key);
             return false;
         }
-
-        if (!_preLoadList.TryGetValue(key, out var item))
-        {
-            return false;
-        }
-
         try
         {
-            if (item.ImageModel is not null)
+            if (_preLoadList.TryGetValue(key, out var item))
             {
-                item.ImageModel.FileInfo = null;
-
-                if (item.ImageModel.Image is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-            }
-
-
-            var removed = _preLoadList.TryRemove(key, out _);
+                var removed = _preLoadList.TryRemove(key, out _);
 #if DEBUG
-            if (removed && _showAddRemove)
-            {
-                Trace.WriteLine($"{Path.GetFileName(list[key])} removed at {list.IndexOf(list[key])}");
-            }
+                if (!removed || !_showAddRemove)
+                {
+                    return removed;
+                }
+
+                var name = item.ImageModel?.FileInfo?.Name ?? "Unknown";
+                Trace.WriteLine($"{name} removed at {key}");
 #endif
-            return removed;
+                return removed;
+            }
         }
         catch (Exception e)
         {
@@ -395,7 +380,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         _cancellationTokenSource = null;
         foreach (var item in _preLoadList.Values)
         {
-            lock (_lock)
+            lock (_disposeLock)
             {
                 if (item.ImageModel?.Image is IDisposable disposable)
                 {
@@ -430,9 +415,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         }
         catch (Exception e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(ClearAsync)} exception: \n{e.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(PreLoader), nameof(ClearAsync),  e);
         }
 
         Clear();
@@ -452,9 +435,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
     {
         if (list == null)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(PreLoader)}.{nameof(PreLoadAsync)} list null \n{currentIndex}");
-#endif
+            DebugHelper.LogDebug(nameof(PreLoader), nameof(PreLoadAsync),  $"list null \n{currentIndex}");
             return;
         }
 
@@ -514,7 +495,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
             prevStartingIndex = currentIndex - 1;
         }
 
-        var isPrettyMuchEmpty = _preLoadList.Count <= 1;
+        var isPreloadListUnderMax = _preLoadList.Count < PreLoaderConfig.MaxCount;
         var options = new ParallelOptions
         {
             MaxDegreeOfParallelism = _config.MaxParallelism,
@@ -534,7 +515,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
             await LoopAsync(options, false);
         }
 
-        if (!isPrettyMuchEmpty)
+        if (!isPreloadListUnderMax)
         {
             RemoveLoop();
         }
