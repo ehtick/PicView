@@ -25,8 +25,18 @@ public static class GetImageModel
         { ".svgz", ProcessSvgAsync },
         { ".b64", ProcessBase64Async }
     };
+    
+    /// <inheritdoc cref="GetImageModelAsync(System.IO.FileInfo, MagickImage)"/>
+    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo) =>
+        await GetImageModelAsync(fileInfo, null).ConfigureAwait(false);
 
-    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo, MagickImage? magickImage = null)
+    /// <summary>
+    /// Asynchronously retrieves an <see cref="ImageModel"/> instance based on the provided file and optional <see cref="MagickImage"/>.
+    /// </summary>
+    /// <param name="fileInfo">The file information of the image to process.</param>
+    /// <param name="magickImage">An optional <see cref="MagickImage"/> instance. If null, a new instance will be created internally.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains the constructed <see cref="ImageModel"/>.</returns>
+    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo, MagickImage? magickImage)
     {
         if (fileInfo is null)
         {

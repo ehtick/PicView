@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using static System.GC;
@@ -10,15 +9,13 @@ namespace PicView.Core.Preloading;
 /// <summary>
 /// The PreLoader class is responsible for preloading images asynchronously and caching them.
 /// </summary>
-public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelLoader) : IAsyncDisposable
+public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsyncDisposable
 {
 #if DEBUG
     // ReSharper disable once ConvertToConstant.Local
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
     private static bool _showAddRemove = true;
 #endif
-
-    private readonly PreLoaderConfig _config = new();
 
     private readonly Lock _disposeLock = new();
 
@@ -27,20 +24,6 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
     private CancellationTokenSource? _cancellationTokenSource;
 
     private int _isRunningFlag; // 0 = idle, 1 = running
-
-    /// <summary>
-    ///     Gets the maximum count of preloaded images.
-    /// </summary>
-    public static int MaxCount => PreLoaderConfig.MaxCount;
-
-    /// <summary>
-    ///     Checks if a specific key exists in the preload list.
-    /// </summary>
-    /// <param name="key">The key to check.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the key exists; otherwise, false.</returns>
-    public bool Contains(int key, List<string> list) =>
-        list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
     #region Add
 
@@ -58,9 +41,12 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
             return false;
         }
 
-        if (_preLoadList.ContainsKey(index))
+        if (_preLoadList.TryGetValue(index, out var value))
         {
-            return false;
+            if (value.ImageModel?.Image is not null)
+            {
+                return false;
+            }
         }
 
         var imageModel = new ImageModel();
@@ -74,7 +60,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         try
         {
             var fileInfo = imageModel.FileInfo = new FileInfo(list[index]);
-            imageModel = await imageModelLoader(fileInfo, null!).ConfigureAwait(false);
+            imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
             preLoadValue.ImageModel = imageModel;
 #if DEBUG
             if (_showAddRemove)
@@ -96,6 +82,13 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         }
     }
 
+    /// <summary>
+    /// Adds a preloaded image model to the preload list at the specified index.
+    /// </summary>
+    /// <param name="index">The index at which to add the image model.</param>
+    /// <param name="list">The list of image paths corresponding to the preload list.</param>
+    /// <param name="imageModel">The image model to preload.</param>
+    /// <returns>True if the image model was successfully added to the preload list; otherwise, false.</returns>
     public bool Add(int index, List<string> list, ImageModel imageModel)
     {
         if (list == null || index < 0 || index >= list.Count)
@@ -120,6 +113,12 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
 
     #region Refresh and resynchronize
 
+    /// <summary>
+    /// Updates the file information associated with a specific index in the preload list.
+    /// </summary>
+    /// <param name="index">The index of the item to update.</param>
+    /// <param name="fileInfo">The new file information to assign.</param>
+    /// <param name="list">The list of file paths.</param>
     public void RefreshFileInfo(int index, FileInfo fileInfo, List<string> list)
     {
         if (list == null)
@@ -236,7 +235,16 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
 
     #endregion
 
-    #region Get
+    #region Get and Contains
+
+    /// <summary>
+    ///     Checks if a specific key exists in the preload list.
+    /// </summary>
+    /// <param name="key">The key to check.</param>
+    /// <param name="list">The list of image paths.</param>
+    /// <returns>True if the key exists; otherwise, false.</returns>
+    public bool Contains(int key, List<string> list) =>
+        list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
     /// <summary>
     ///     Gets the preloaded value for a specific key.
@@ -513,7 +521,7 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
         var isPreloadListUnderMax = _preLoadList.Count < PreLoaderConfig.MaxCount;
         var options = new ParallelOptions
         {
-            MaxDegreeOfParallelism = _config.MaxParallelism,
+            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
             CancellationToken = token
         };
 
@@ -539,15 +547,25 @@ public class PreLoader(Func<FileInfo, MagickImage, Task<ImageModel>> imageModelL
 
         async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
         {
-            await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions, async (i, _) =>
+            if (positive)
             {
-                token.ThrowIfCancellationRequested();
-                var index = positive ? (nextStartingIndex + i) % count : (prevStartingIndex - i + count) % count;
-                if (await AddAsync(index, list))
-                {
-                    additions.Add(index);
-                }
-            });
+                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
+            }
+            else
+            {
+                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
+            }
+        }
+
+        async Task AddAddition(int index)
+        {
+            token.ThrowIfCancellationRequested();
+            if (await AddAsync(index, list))
+            {
+                additions.Add(index);
+            }
         }
 
         void RemoveLoop()

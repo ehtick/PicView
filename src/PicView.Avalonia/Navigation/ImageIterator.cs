@@ -544,7 +544,7 @@ public class ImageIterator : IAsyncDisposable
 
         if (skip100)
         {
-            if (ImagePaths.Count > PreLoader.MaxCount)
+            if (ImagePaths.Count > PreLoaderConfig.MaxCount)
             {
                 PreLoader.Clear();
             }
@@ -586,7 +586,7 @@ public class ImageIterator : IAsyncDisposable
 
             case NavigateTo.First:
             case NavigateTo.Last:
-                if (ImagePaths.Count > PreLoader.MaxCount)
+                if (ImagePaths.Count > PreLoaderConfig.MaxCount)
                 {
                     PreLoader.Clear();
                 }

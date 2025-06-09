@@ -7,8 +7,9 @@ namespace PicView.Core.Preloading;
 /// </summary>
 public class PreLoadValue
 {
-    private TaskCompletionSource<bool>? _loadingCompletionSource;
+    private readonly Lock _loadingLock = new();
     private bool _isLoading;
+    private TaskCompletionSource<bool>? _loadingCompletionSource;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PreLoadValue"/> class.
@@ -22,6 +23,7 @@ public class PreLoadValue
         {
             _loadingCompletionSource = new TaskCompletionSource<bool>();
         }
+
         IsLoading = isLoading;
     }
 
@@ -29,8 +31,6 @@ public class PreLoadValue
     /// Gets or sets the image model.
     /// </summary>
     public ImageModel ImageModel { get; set; }
-    
-    private readonly Lock _loadingLock = new();
 
     /// <summary>
     /// Gets or sets a value indicating whether the image is loading.
@@ -43,10 +43,13 @@ public class PreLoadValue
             lock (_loadingLock) // Ensure atomic operation
             {
                 var wasLoading = _isLoading;
-                if (wasLoading == value) return; // No change, exit early
+                if (wasLoading == value)
+                {
+                    return; // No change, exit early
+                }
 
                 _isLoading = value;
-            
+
                 // Signal completion when loading changes from true to false
                 if (wasLoading && !value && _loadingCompletionSource != null)
                 {
