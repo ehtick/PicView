@@ -405,7 +405,7 @@ public static class ImageLoader
         {
             try
             {
-                var magickImage = ImageDecoder.Base64ToMagickImage(base64);
+                var magickImage = Base64Decoder.Base64ToMagickImage(base64);
                 magickImage.Format = MagickFormat.Png;
                 var bitmap = magickImage.ToWriteableBitmap();
                 var imageModel = new ImageModel

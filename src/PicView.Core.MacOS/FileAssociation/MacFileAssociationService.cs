@@ -1,4 +1,4 @@
-using PicView.Core.FileHandling;
+using PicView.Core.FileAssociations;
 
 namespace PicView.Core.MacOS.FileAssociation;
 

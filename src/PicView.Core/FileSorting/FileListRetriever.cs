@@ -1,65 +1,10 @@
 ﻿using PicView.Core.DebugTools;
+using PicView.Core.FileHandling;
 
-namespace PicView.Core.FileHandling;
+namespace PicView.Core.FileSorting;
 
-public static class FileListHelper
+public static class FileListRetriever
 {
-    /// <summary>
-    /// Enumeration of different options to sort files by.
-    /// </summary>
-    public enum SortFilesBy
-    {
-        /// <summary>
-        /// Sort files by name.
-        /// </summary>
-        Name = 0,
-
-        /// <summary>
-        /// Sort files by file size.
-        /// </summary>
-        FileSize = 1,
-
-        /// <summary>
-        /// Sort files by creation time.
-        /// </summary>
-        CreationTime = 2,
-
-        /// <summary>
-        /// Sort files by extension.
-        /// </summary>
-        Extension = 3,
-
-        /// <summary>
-        /// Sort files by last access time.
-        /// </summary>
-        LastAccessTime = 4,
-
-        /// <summary>
-        /// Sort files by last write time.
-        /// </summary>
-        LastWriteTime = 5,
-
-        /// <summary>
-        /// Sort files randomly.
-        /// </summary>
-        Random = 6
-    }
-
-    public static SortFilesBy GetSortOrder()
-    {
-        return Settings.Sorting.SortPreference switch
-        {
-            0 => SortFilesBy.Name,
-            1 => SortFilesBy.FileSize,
-            2 => SortFilesBy.CreationTime,
-            3 => SortFilesBy.Extension,
-            4 => SortFilesBy.LastAccessTime,
-            5 => SortFilesBy.LastWriteTime,
-            6 => SortFilesBy.Random,
-            _ => SortFilesBy.Name,
-        };
-    }
-
     public static IEnumerable<string> RetrieveFiles(FileInfo fileInfo)
     {
         if (fileInfo == null)
@@ -102,7 +47,7 @@ public static class FileListHelper
         }
         catch (Exception exception)
         {
-            DebugHelper.LogDebug(nameof(FileListHelper), nameof(RetrieveFiles), exception);
+            DebugHelper.LogDebug(nameof(FileSortHelper), nameof(RetrieveFiles), exception);
             return new List<string>();
         }
 

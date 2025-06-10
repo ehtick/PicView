@@ -2,10 +2,10 @@ using System.Runtime.InteropServices;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Clipboard;

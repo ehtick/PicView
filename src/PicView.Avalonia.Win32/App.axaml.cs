@@ -13,6 +13,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.Win32.WindowImpl;
 using PicView.Core.FileHandling;
+using PicView.Core.FileSorting;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using PicView.Core.WindowsNT;
@@ -142,7 +143,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public List<string> GetFiles(FileInfo fileInfo)
     {
-        var files = FileListHelper.RetrieveFiles(fileInfo);
+        var files = FileListRetriever.RetrieveFiles(fileInfo);
         return FileListManager.SortIEnumerable(files, this);
     }
 

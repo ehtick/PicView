@@ -1,4 +1,4 @@
-namespace PicView.Core.FileHandling;
+namespace PicView.Core.FileAssociations;
 
 /// <summary>
 /// Interface for handling platform-specific file associations

@@ -1,4 +1,5 @@
 ﻿using PicView.Core.DebugTools;
+using PicView.Core.FileAssociations;
 
 namespace PicView.Core.FileHandling;
 

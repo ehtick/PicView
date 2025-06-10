@@ -8,6 +8,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
+using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -216,10 +217,7 @@ public class ImageIterator : IAsyncDisposable
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Console.WriteLine(
-                $"{nameof(ImageIterator)}.{nameof(OnFileAdded)} {exception.Message} \n{exception.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileAdded), exception);
         }
         finally
         {
@@ -249,9 +247,7 @@ public class ImageIterator : IAsyncDisposable
 
             if (!ImagePaths.Remove(e.FullPath))
             {
-#if DEBUG
-                Console.WriteLine($"Failed to remove {e.FullPath}");
-#endif
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileDeleted), $"Failed to remove {e.FullPath}");
                 return;
             }
 
@@ -305,10 +301,7 @@ public class ImageIterator : IAsyncDisposable
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Console.WriteLine(
-                $"{nameof(ImageIterator)}.{nameof(OnFileDeleted)} {exception.Message} \n{exception.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileDeleted), exception);
         }
         finally
         {
@@ -344,7 +337,7 @@ public class ImageIterator : IAsyncDisposable
             var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
                 ? new FileInfo(_watcher.Path)
                 : fileInfo;
-            var newList = FileListHelper.RetrieveFiles(sourceFileInfo).ToList();
+            var newList = FileListRetriever.RetrieveFiles(sourceFileInfo).ToList();
             if (newList.Count == 0)
             {
                 return;

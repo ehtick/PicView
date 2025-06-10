@@ -1,4 +1,4 @@
-﻿namespace PicView.Avalonia.ImageHandling;
+﻿namespace PicView.Core.ImageDecoding;
 
 public enum ImageType
 {

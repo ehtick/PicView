@@ -11,11 +11,11 @@ using Avalonia.Rendering.Composition;
 using Avalonia.Svg.Skia;
 using ImageMagick;
 using PicView.Avalonia.AnimatedImage;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
+using PicView.Core.ImageDecoding;
 using ReactiveUI;
 using Vector = Avalonia.Vector;
 

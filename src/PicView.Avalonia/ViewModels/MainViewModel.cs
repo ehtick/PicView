@@ -16,7 +16,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Wallpaper;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.FileHandling;
+using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
 using PicView.Core.ProcessHandling;
 using PicView.Core.Sizing;
@@ -691,7 +691,7 @@ public class MainViewModel : ReactiveObject
     
     #region Sorting Order
 
-    public FileListHelper.SortFilesBy SortOrder
+    public SortFilesBy SortOrder
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

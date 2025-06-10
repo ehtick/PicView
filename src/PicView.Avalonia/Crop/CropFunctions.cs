@@ -1,12 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Crop;

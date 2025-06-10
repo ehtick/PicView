@@ -94,7 +94,7 @@ public static class FileTypeResolver
             return new FileTypeStruct(LoadAbleFileType.Web, s);
         }
 
-        var base64String = Base64Helper.IsBase64String(s);
+        var base64String = Base64Decoder.IsBase64String(s);
 
         if (!string.IsNullOrEmpty(base64String))
         {

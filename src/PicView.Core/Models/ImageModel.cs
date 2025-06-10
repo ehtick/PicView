@@ -1,5 +1,4 @@
 ﻿using ImageMagick;
-using PicView.Avalonia.ImageHandling;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Core.Models;

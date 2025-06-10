@@ -1,5 +1,4 @@
-﻿using PicView.Avalonia.ImageHandling;
-using PicView.Core.ImageDecoding;
+﻿using PicView.Core.ImageDecoding;
 using PicView.Core.ImageEffects;
 using ReactiveUI;
 
