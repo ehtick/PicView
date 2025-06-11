@@ -165,11 +165,11 @@ public class FileAssociationsViewModel : ReactiveObject
     #region Initialize and filtering
     
     /// <summary>
-    /// Initializes file type groups by loading default file types from <see cref="FileTypeHelper"/>.
+    /// Initializes file type groups by loading default file types from <see cref="FileTypeGroupHelper"/>.
     /// </summary>
     private void InitializeFileTypes()
     {
-        var groups = FileTypeHelper.GetFileTypes();
+        var groups = FileTypeGroupHelper.GetFileTypes();
         
         _fileTypeGroupsList.Edit(list =>
         {
@@ -236,7 +236,7 @@ public class FileAssociationsViewModel : ReactiveObject
     }
     
     /// <summary>
-    /// Resets all file type selections to their default state as defined by <see cref="FileTypeHelper.GetFileTypes"/>.
+    /// Resets all file type selections to their default state as defined by <see cref="FileTypeGroupHelper.GetFileTypes"/>.
     /// </summary>
     /// <remarks>
     /// This method uses snapshots of collections to avoid enumeration modification exceptions.
@@ -244,7 +244,7 @@ public class FileAssociationsViewModel : ReactiveObject
     private void ResetFileTypesToDefault()
     {
         // Get fresh default file types
-        var defaultGroups = FileTypeHelper.GetFileTypes();
+        var defaultGroups = FileTypeGroupHelper.GetFileTypes();
         
         // Use snapshot to get current groups to avoid enumeration issues
         var currentGroups = FileTypeGroups.ToArray();

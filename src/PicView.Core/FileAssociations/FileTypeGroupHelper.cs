@@ -2,7 +2,7 @@
 
 namespace PicView.Core.FileAssociations;
 
-public static class FileTypeHelper
+public static class FileTypeGroupHelper
 {
     public static FileTypeGroup[] GetFileTypes()
     {

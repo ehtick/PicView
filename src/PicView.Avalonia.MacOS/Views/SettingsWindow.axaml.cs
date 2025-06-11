@@ -3,7 +3,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Core.FileHandling;
+using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.MacOS.FileAssociation;
 using PicView.Core.Sizing;

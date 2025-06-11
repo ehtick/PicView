@@ -12,7 +12,7 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.Win32.WindowImpl;
-using PicView.Core.FileHandling;
+using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;

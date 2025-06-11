@@ -5,7 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Core.FileHandling;
+using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.WindowsNT.FileAssociation;
 

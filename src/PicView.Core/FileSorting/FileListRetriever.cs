@@ -8,7 +8,9 @@ public static class FileListRetriever
     public static IEnumerable<string> RetrieveFiles(FileInfo fileInfo)
     {
         if (fileInfo == null)
+        {
             return new List<string>();
+        }
 
         // Check if the file is a directory or not
         var isDirectory = fileInfo.Attributes.HasFlag(FileAttributes.Directory);
@@ -16,7 +18,9 @@ public static class FileListRetriever
         // Get the directory path based on whether the file is a directory or not
         var directory = isDirectory ? fileInfo.FullName : fileInfo.DirectoryName;
         if (directory is null)
+        {
             return new List<string>();
+        }
 
         string[] enumerable;
         // Check if the subdirectories are to be included in the search
@@ -31,7 +35,7 @@ public static class FileListRetriever
                 files = Directory.EnumerateFiles(directory, "*.*", new EnumerationOptions
                 {
                     AttributesToSkip = default, // Pick up hidden files
-                    RecurseSubdirectories = true,
+                    RecurseSubdirectories = true
                 }).AsParallel();
             }
             else
@@ -47,7 +51,7 @@ public static class FileListRetriever
         }
         catch (Exception exception)
         {
-            DebugHelper.LogDebug(nameof(FileSortHelper), nameof(RetrieveFiles), exception);
+            DebugHelper.LogDebug(nameof(FileListRetriever), nameof(RetrieveFiles), exception);
             return new List<string>();
         }
 

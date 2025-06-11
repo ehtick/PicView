@@ -14,7 +14,7 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.FileHandling;
+using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
 using PicView.Core.MacOS;

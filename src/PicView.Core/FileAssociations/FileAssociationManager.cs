@@ -1,7 +1,6 @@
 ﻿using PicView.Core.DebugTools;
-using PicView.Core.FileAssociations;
 
-namespace PicView.Core.FileHandling;
+namespace PicView.Core.FileAssociations;
 
 /// <summary>
 /// Platform-agnostic manager for file associations that delegates to platform-specific implementations
