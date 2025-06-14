@@ -28,7 +28,7 @@ namespace PicView.Avalonia.UI.FileHistory
             }
 
             bool isSelected;
-            if (!string.IsNullOrWhiteSpace(ArchiveExtraction.TempZipDirectory))
+            if (ArchiveExtraction.IsArchived)
             {
                 isSelected = fileLocation == ArchiveExtraction.LastOpenedArchive;
             }

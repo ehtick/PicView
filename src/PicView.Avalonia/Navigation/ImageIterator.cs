@@ -5,6 +5,7 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.ArchiveHandling;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
@@ -55,7 +56,7 @@ public class ImageIterator : IAsyncDisposable
         FileInfo initialDirectory;
         if (Settings.Sorting.IncludeSubDirectories)
         {
-            if (!string.IsNullOrWhiteSpace(Settings.StartUp.StartUpDirectory))
+            if (!string.IsNullOrWhiteSpace(Settings.StartUp.StartUpDirectory) && !ArchiveExtraction.IsArchived)
             {
                 initialDirectory = new FileInfo(Settings.StartUp.StartUpDirectory);
             }

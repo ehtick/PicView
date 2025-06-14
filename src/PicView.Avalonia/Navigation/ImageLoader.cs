@@ -237,7 +237,7 @@ public static class ImageLoader
         TitleManager.SetLoadingTitle(vm);
 
         string? prevArchiveLocation = null;
-        var previousArchiveExist = !string.IsNullOrEmpty(ArchiveExtraction.TempZipDirectory);
+        var previousArchiveExist = ArchiveExtraction.IsArchived;
         if (previousArchiveExist)
         {
             prevArchiveLocation = ArchiveExtraction.TempZipDirectory;

@@ -15,6 +15,8 @@ public static class ArchiveExtraction
     public static string? TempZipDirectory { get; private set; }
         
     public static string? LastOpenedArchive { get; private set; }
+    
+    public static bool IsArchived => TempZipDirectory != null;
 
     /// <summary>
     ///     Asynchronously extracts supported files from a given archive to a temporary directory.
