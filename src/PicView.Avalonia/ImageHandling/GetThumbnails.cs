@@ -8,30 +8,30 @@ namespace PicView.Avalonia.ImageHandling;
 
 public static class GetThumbnails
 {
-    public static async Task<Bitmap?> GetThumbAsync(string path, uint height, FileInfo? fileInfo = null)
+    public static async Task<Bitmap?> GetThumbAsync(FileInfo? fileInfo, uint height)
     {
         try
         {
             using var magick = new MagickImage();
             try
             {
-                magick.Ping(path);
+                magick.Ping(fileInfo);
             }
             catch (Exception e)
             {
                 DebugHelper.LogDebug(nameof(GetThumbnails), nameof(GetThumbAsync), e);
-                return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
+                return await CreateThumbAsync(magick, fileInfo, height).ConfigureAwait(false);
             }
             var profile = magick.GetExifProfile();
             if (profile == null)
             {
-                return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
+                return await CreateThumbAsync(magick, fileInfo, height).ConfigureAwait(false);
             }
 
             var thumbnail = profile.CreateThumbnail();
             if (thumbnail == null)
             {
-                return await CreateThumbAsync(magick, path, height, fileInfo).ConfigureAwait(false);
+                return await CreateThumbAsync(magick, fileInfo, height).ConfigureAwait(false);
             }
 
             thumbnail.AutoOrient();
@@ -66,15 +66,13 @@ public static class GetThumbnails
         return thumbnail?.ToWriteableBitmap();
     }
 
-    public static async Task<Bitmap?> CreateThumbAsync(MagickImage magick, string path, uint height,
-        FileInfo? fileInfo = null)
+    public static async Task<Bitmap?> CreateThumbAsync(MagickImage magick, FileInfo fileInfo, uint height)
     {
         // TODO: extract thumbnails from PlatformService and convert to Avalonia image,
         // I.E. https://boldena.com/article/64006
         // https://github.com/AvaloniaUI/Avalonia/discussions/16703
         // https://stackoverflow.com/a/42178963/2923736 convert to DLLImport to LibraryImport, source generation & AOT support
         
-        fileInfo ??= new FileInfo(path);
         await using var fileStream = FileHelper.GetOptimizedFileStream(fileInfo);
 
         if (fileInfo.Length >= 2147483648)

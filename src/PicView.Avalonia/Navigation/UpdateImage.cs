@@ -30,7 +30,7 @@ public static class UpdateImage
     /// <param name="preLoadValue">The preloaded value of the current image.</param>
     /// <param name="nextPreloadValue">Optional: The preloaded value of the next image, used for side-by-side display.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task UpdateSource(MainViewModel vm, int index, List<string> imagePaths,
+    public static async Task UpdateSource(MainViewModel vm, int index, List<FileInfo> imagePaths,
         PreLoadValue? preLoadValue,
         PreLoadValue? nextPreloadValue = null)
     {
@@ -42,7 +42,7 @@ public static class UpdateImage
         }
         if (preLoadValue.ImageModel?.Image is null && index == NavigationManager.GetCurrentIndex)
         {
-            var fileInfo = preLoadValue.ImageModel?.FileInfo ?? new FileInfo(imagePaths[index]);
+            var fileInfo = preLoadValue.ImageModel?.FileInfo ?? imagePaths[index];
             preLoadValue.ImageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         }
         

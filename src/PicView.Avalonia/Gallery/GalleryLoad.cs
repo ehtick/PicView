@@ -114,7 +114,7 @@ public static class GalleryLoad
                             GalleryFunctions.ToggleGallery(vm);
                         }
 
-                        await NavigationManager.Navigate(fileInfos[i1].FullName, vm).ConfigureAwait(false);
+                        await NavigationManager.Navigate(fileInfos[i1], vm).ConfigureAwait(false);
                     };
                     galleryListBox.Items.Add(galleryItem);
                     if (i != NavigationManager.GetCurrentIndex)
@@ -198,8 +198,7 @@ public static class GalleryLoad
                     ? (startPosition + i) % endPosition
                     : (startPosition - i + endPosition) % endPosition;
 
-                var thumb = await GetThumbnails.GetThumbAsync(fileInfos[nextIndex].FullName, (uint)galleryItemSize,
-                    fileInfos[nextIndex]);
+                var thumb = await GetThumbnails.GetThumbAsync(fileInfos[nextIndex], (uint)galleryItemSize);
 
                 var isSvg = fileInfos[nextIndex].Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
                             fileInfos[nextIndex].Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);

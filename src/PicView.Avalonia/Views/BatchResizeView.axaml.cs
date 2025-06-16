@@ -326,7 +326,7 @@ public partial class BatchResizeView : UserControl
                 }
             }
 
-            var enumerable = files as string[] ?? files.ToArray();
+            var enumerable = files.ToArray();
             ProgressBar.Maximum = enumerable.Length;
             ProgressBar.Value = 0;
 
@@ -340,15 +340,13 @@ public partial class BatchResizeView : UserControl
             {
                 token.ThrowIfCancellationRequested();
 
-                var ext = Path.GetExtension(file);
-                var destination = Path.Combine(outputFolder, Path.GetFileName(file));
-                
-                var fileInfo = new FileInfo(file);
+                var ext = file.Extension.ToLower();
+                var destination = Path.Combine(outputFolder, file.Name);
                 
                 using var magick = new MagickImage();
                 magick.Ping(file);
                 
-                var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
+                var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{file.Length.GetReadableFileSize()}";
 
                 if (toConvert)
                 {
@@ -380,7 +378,7 @@ public partial class BatchResizeView : UserControl
                     }
                 }
 
-                await using var stream = FileHelper.GetOptimizedFileStream(fileInfo, true);
+                await using var stream = FileHelper.GetOptimizedFileStream(file, true);
 
                 var success = await SaveImageFileHelper.SaveImageAsync(
                     stream,
@@ -406,10 +404,10 @@ public partial class BatchResizeView : UserControl
 
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        BatchLogContainer.Children.Add(CreateTextBlockLog(Path.GetFileName(file), oldSize,
+                        BatchLogContainer.Children.Add(CreateTextBlockLog(file.Name, oldSize,
                             newSize));
                     });
-                    await ProcessThumbs(file, Path.GetDirectoryName(destination), quality, ext).ConfigureAwait(false);
+                    await ProcessThumbs(file.FullName, Path.GetDirectoryName(destination), quality, ext).ConfigureAwait(false);
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         ProgressBar.Value++;

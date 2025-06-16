@@ -9,7 +9,7 @@ public class SortFilesByToBoolConverter : IValueConverter
 {
     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        var sortOrder = FileSortHelper.GetSortOrder();
+        var sortOrder = FileSortOrder.GetSortOrder();
         if (Enum.TryParse<SortFilesBy>(parameter as string, true, out var result))
         {
             return sortOrder == result;

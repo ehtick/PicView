@@ -195,7 +195,7 @@ public static class DragAndDropHelper
         }
         else if (path.IsSupported())
         {
-            await ShowFilePreview(path);
+            await ShowFilePreview(new FileInfo(path));
         }
     }
 
@@ -221,24 +221,24 @@ public static class DragAndDropHelper
         });
     }
 
-    private static async Task ShowFilePreview(string path)
+    private static async Task ShowFilePreview(FileInfo fileInfo)
     {
-        var ext = Path.GetExtension(path);
+        var ext = fileInfo.Extension;
         if (ext.Equals(".svg", StringComparison.InvariantCultureIgnoreCase) ||
             ext.Equals(".svgz", StringComparison.InvariantCultureIgnoreCase))
         {
-            await Dispatcher.UIThread.InvokeAsync(() => _dragDropView?.UpdateSvgThumbnail(path));
+            await Dispatcher.UIThread.InvokeAsync(() => _dragDropView?.UpdateSvgThumbnail(fileInfo.FullName));
             return;
         }
 
-        await LoadAndShowThumbnail(path);
+        await LoadAndShowThumbnail(fileInfo);
     }
 
-    private static async Task LoadAndShowThumbnail(string path)
+    private static async Task LoadAndShowThumbnail(FileInfo fileInfo)
     {
         Bitmap? thumb;
         // Try to get preloaded image first
-        var preload = NavigationManager.TryGetPreLoadValue(path);
+        var preload = NavigationManager.TryGetPreLoadValue(fileInfo);
         if (preload?.ImageModel?.Image is Bitmap bmp)
         {
             thumb = bmp;
@@ -248,20 +248,19 @@ public static class DragAndDropHelper
         else
         {
             // Generate thumbnail
-            thumb = await GetThumbnails.GetThumbAsync(path, SizeDefaults.WindowMinSize - 30)
+            thumb = await GetThumbnails.GetThumbAsync(fileInfo, SizeDefaults.WindowMinSize - 30)
                 .ConfigureAwait(false);
             await UpdateThumbnailUI(thumb);
             
             // Load full image in background
-            await PreloadFullImage(path, preload, thumb);
+            await PreloadFullImage(fileInfo, preload, thumb);
         }
     }
 
-    private static async Task PreloadFullImage(string path, PreLoadValue? preload, Bitmap? thumb)
+    private static async Task PreloadFullImage(FileInfo fileInfo, PreLoadValue? preload, Bitmap? thumb)
     {
         await Task.Run(async () =>
         {
-            var fileInfo = new FileInfo(path);
             var sameDirectory = fileInfo.DirectoryName ==
                                 NavigationManager.ImageIterator.InitialFileInfo.DirectoryName;
 
@@ -269,7 +268,7 @@ public static class DragAndDropHelper
             {
                 if (preload is null)
                 {
-                    _preLoadValue = await NavigationManager.GetPreLoadValueAsync(path);
+                    _preLoadValue = await NavigationManager.GetPreLoadValueAsync(fileInfo);
                     thumb = _preLoadValue.ImageModel.Image as Bitmap;
                     if (thumb is not null)
                     {
@@ -353,7 +352,7 @@ public static class DragAndDropHelper
             if (currentDirectory == preloadDirectory)
             {
                 // Check for edge case error
-                var isAddedToPreloader = NavigationManager.AddToPreloader(path, _preLoadValue.ImageModel);
+                var isAddedToPreloader = NavigationManager.AddToPreloader(new FileInfo(path), _preLoadValue.ImageModel);
                 if (isAddedToPreloader)
                 {
                     NavigationManager.ImageIterator.Resynchronize();

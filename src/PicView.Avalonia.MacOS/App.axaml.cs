@@ -121,7 +121,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         // TODO: Implement SetCursorPos
     }
 
-    public List<string> GetFiles(FileInfo fileInfo)
+    public List<FileInfo> GetFiles(FileInfo fileInfo)
     {
         var files = FileListRetriever.RetrieveFiles(fileInfo);
         return FileListManager.SortIEnumerable(files, this);

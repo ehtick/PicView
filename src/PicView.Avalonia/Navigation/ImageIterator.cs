@@ -24,7 +24,7 @@ public class ImageIterator : IAsyncDisposable
 
     private bool _disposed;
 
-    public List<string> ImagePaths { get; private set; }
+    public List<FileInfo> ImagePaths { get; private set; }
     public int CurrentIndex { get; private set; }
 
     public int GetNonZeroIndex => CurrentIndex + 1 > GetCount ? 1 : CurrentIndex + 1;
@@ -70,11 +70,11 @@ public class ImageIterator : IAsyncDisposable
             initialDirectory = fileInfo;
         }
         ImagePaths = vm.PlatformService.GetFiles(initialDirectory);
-        CurrentIndex = Directory.Exists(fileInfo.FullName) ? 0 : ImagePaths.IndexOf(fileInfo.FullName);
+        CurrentIndex = ImagePaths.FindIndex(x => x.FullName.Equals(fileInfo.FullName));
         InitiateFileSystemWatcher(fileInfo);
     }
 
-    public ImageIterator(FileInfo fileInfo, List<string> imagePaths, int currentIndex, MainViewModel vm)
+    public ImageIterator(FileInfo fileInfo, List<FileInfo> imagePaths, int currentIndex, MainViewModel vm)
     {
 #if DEBUG
         ArgumentNullException.ThrowIfNull(fileInfo);
@@ -209,7 +209,7 @@ public class ImageIterator : IAsyncDisposable
 
             TitleManager.SetTitle(_vm);
 
-            var index = ImagePaths.IndexOf(e.FullPath);
+            var index = ImagePaths.FindIndex(x => x.FullName.Equals(e.FullPath));
             if (index < 0)
             {
                 PreLoader.Resynchronize(ImagePaths);
@@ -247,14 +247,10 @@ public class ImageIterator : IAsyncDisposable
     {
         try
         {
-            if (ImagePaths.Contains(e.FullPath) == false)
-            {
-                return;
-            }
 
             _isRunning = true;
 
-            var index = ImagePaths.IndexOf(e.FullPath);
+            var index = ImagePaths.FindIndex(x => x.FullName.Equals(e.FullPath));
             if (index < 0)
             {
                 return;
@@ -263,11 +259,7 @@ public class ImageIterator : IAsyncDisposable
             var currentIndex = CurrentIndex;
             var isSameFile = currentIndex == index;
 
-            if (!ImagePaths.Remove(e.FullPath))
-            {
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileDeleted), $"Failed to remove {e.FullPath}");
-                return;
-            }
+            ImagePaths.RemoveAt(index);
 
             if (isSameFile)
             {
@@ -281,7 +273,7 @@ public class ImageIterator : IAsyncDisposable
                 PreLoader.Resynchronize(ImagePaths);
                 var newIndex = GetIteration(index, NavigateTo.Previous);
                 CurrentIndex = newIndex;
-                _vm.PicViewer.FileInfo = new FileInfo(ImagePaths[CurrentIndex]);
+                _vm.PicViewer.FileInfo = ImagePaths[CurrentIndex];
                 await IterateToIndex(CurrentIndex, new CancellationTokenSource());
             }
             else
@@ -301,7 +293,7 @@ public class ImageIterator : IAsyncDisposable
                     }
                 }
 
-                var indexOf = ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName);
+                var indexOf = ImagePaths.FindIndex(x => x.FullName.Equals(_vm.PicViewer.FileInfo.FullName));
                 _vm.SelectedGalleryItemIndex = indexOf; // Fixes deselection bug 
                 CurrentIndex = indexOf;
                 if (isSameFile)
@@ -331,19 +323,20 @@ public class ImageIterator : IAsyncDisposable
     {
         try
         {
+            var index = ImagePaths.FindIndex(x => x.FullName.Equals(e.FullPath));
+            if (index < 0)
+            {
+                return;
+            }
             if (e.FullPath.IsSupported() == false)
             {
-                if (ImagePaths.Contains(e.OldFullPath))
-                {
-                    ImagePaths.Remove(e.OldFullPath);
-                }
-
+                ImagePaths.RemoveAt(index);
                 return;
             }
 
             _isRunning = true;
 
-            var oldIndex = ImagePaths.IndexOf(e.OldFullPath);
+            var oldIndex = ImagePaths.FindIndex(x => x.FullName.Equals(e.OldFullPath));;
             var currentIndex = CurrentIndex;
             var sameFile = currentIndex == oldIndex;
             var fileInfo = new FileInfo(e.FullPath);
@@ -367,12 +360,6 @@ public class ImageIterator : IAsyncDisposable
             }
 
             ImagePaths = newList;
-
-            var index = ImagePaths.IndexOf(e.FullPath);
-            if (index < 0)
-            {
-                return;
-            }
 
             if (fileInfo.Exists == false)
             {
@@ -429,11 +416,8 @@ public class ImageIterator : IAsyncDisposable
     public void Add(int index, ImageModel imageModel) =>
         PreLoader.Add(index, ImagePaths, imageModel);
 
-    public bool Add(string file, ImageModel imageModel)
-    {
-        file = file.Replace('/', '\\');
-        return PreLoader.Add(ImagePaths.IndexOf(file), ImagePaths, imageModel);
-    }
+    public bool Add(FileInfo file, ImageModel imageModel) =>
+        PreLoader.Add(ImagePaths.FindIndex(x => x.FullName.Equals(file.FullName)), ImagePaths, imageModel);
 
     public PreLoadValue? GetPreLoadValue(int index)
     {
@@ -447,9 +431,9 @@ public class ImageIterator : IAsyncDisposable
             : PreLoader.Get(index, ImagePaths);
     }
 
-    public PreLoadValue? GetPreLoadValue(string file)
+    public PreLoadValue? GetPreLoadValue(FileInfo file)
     {
-        var index = ImagePaths.IndexOf(file);
+        var index = ImagePaths.FindIndex(x => x.FullName.Equals(file.FullName));
         if (index < 0 || index >= ImagePaths.Count)
         {
             return null;
@@ -466,12 +450,12 @@ public class ImageIterator : IAsyncDisposable
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
         _isRunning
-            ? PreLoader.Get(_vm.PicViewer.FileInfo.FullName, ImagePaths)
+            ? PreLoader.Get(_vm.PicViewer.FileInfo, ImagePaths)
             : PreLoader.Get(CurrentIndex, ImagePaths);
 
     public async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
         _isRunning
-            ? await PreLoader.GetOrLoadAsync(_vm.PicViewer.FileInfo.FullName, ImagePaths)
+            ? await PreLoader.GetOrLoadAsync(_vm.PicViewer.FileInfo, ImagePaths)
             : await PreLoader.GetOrLoadAsync(CurrentIndex, ImagePaths);
 
     public PreLoadValue? GetNextPreLoadValue()
@@ -508,7 +492,7 @@ public class ImageIterator : IAsyncDisposable
                 .ConfigureAwait(false);
             var oldList = ImagePaths;
             ImagePaths = fileList;
-            CurrentIndex = ImagePaths.IndexOf(_vm.PicViewer.FileInfo.FullName);
+            CurrentIndex = ImagePaths.FindIndex(x => x.FullName.Equals(_vm.PicViewer.FileInfo.FullName));
             TitleManager.SetTitle(_vm);
             await ClearAsync().ConfigureAwait(false);
             await PreloadAsync().ConfigureAwait(false);
@@ -518,9 +502,9 @@ public class ImageIterator : IAsyncDisposable
             {
                 for (var i = 0; i < oldList.Count; i++)
                 {
-                    if (i < fileList.Count && !oldList[i].Contains(fileList[i]))
+                    if (i < fileList.Count && !oldList[i].FullName.Equals(fileList[i].FullName))
                     {
-                        await GalleryFunctions.AddGalleryItem(fileList.IndexOf(fileList[i]), new FileInfo(fileList[i]),
+                        await GalleryFunctions.AddGalleryItem(fileList.FindIndex(x => x.FullName.Equals(fileList[i].FullName)), fileList[i],
                             _vm, DispatcherPriority.Background);
                     }
                 }
@@ -529,7 +513,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 for (var i = 0; i < fileList.Count; i++)
                 {
-                    if (i < oldList.Count && fileList[i].Contains(oldList[i]))
+                    if (i < oldList.Count && fileList[i].FullName.Equals(oldList[i].FullName))
                     {
                         GalleryFunctions.RemoveGalleryItem(i, _vm);
                     }
@@ -705,7 +689,7 @@ public class ImageIterator : IAsyncDisposable
                         // This is a timeout, not cancellation from navigation
                         preloadValue =
                             new PreLoadValue(
-                                await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[CurrentIndex])))
+                                await GetImageModel.GetImageModelAsync(ImagePaths[CurrentIndex]))
                             {
                                 IsLoading = false
                             };
@@ -721,7 +705,7 @@ public class ImageIterator : IAsyncDisposable
             }
             else
             {
-                var imageModel = await GetImageModel.GetImageModelAsync(new FileInfo(ImagePaths[index]))
+                var imageModel = await GetImageModel.GetImageModelAsync(ImagePaths[index])
                     .ConfigureAwait(false);
                 preloadValue = new PreLoadValue(imageModel);
             }
@@ -780,11 +764,11 @@ public class ImageIterator : IAsyncDisposable
             // Add recent files
             if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath) && ImagePaths.Count > CurrentIndex)
             {
-                FileHistoryManager.Add(ImagePaths[CurrentIndex]);
+                FileHistoryManager.Add(ImagePaths[CurrentIndex].FullName);
                 if (Settings.ImageScaling.ShowImageSideBySide)
                 {
                     FileHistoryManager.Add(
-                        ImagePaths[GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next)]);
+                        ImagePaths[GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next)].FullName);
                 }
             }
         }
@@ -878,7 +862,7 @@ public class ImageIterator : IAsyncDisposable
         await IterateToIndex(index, cts).ConfigureAwait(false);
     }
 
-    public void UpdateFileListAndIndex(List<string> fileList, int index)
+    public void UpdateFileListAndIndex(List<FileInfo> fileList, int index)
     {
         ImagePaths = fileList;
         CurrentIndex = index;

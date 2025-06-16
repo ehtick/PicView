@@ -11,7 +11,7 @@ public interface IPlatformSpecificService
     void DisableScreensaver();
     void EnableScreensaver();
 
-    List<string> GetFiles(FileInfo fileInfo);
+    List<FileInfo> GetFiles(FileInfo fileInfo);
 
     int CompareStrings(string str1, string str2);
 

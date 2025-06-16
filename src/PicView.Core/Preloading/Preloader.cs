@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using PicView.Core.DebugTools;
 using PicView.Core.Models;
+using ZLinq;
 using static System.GC;
 
 namespace PicView.Core.Preloading;
@@ -33,7 +34,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="index">The index of the image in the list.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>True if the image was added successfully; otherwise, false.</returns>
-    public async Task<bool> AddAsync(int index, List<string> list)
+    public async Task<bool> AddAsync(int index, List<FileInfo> list)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -59,7 +60,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
         try
         {
-            var fileInfo = imageModel.FileInfo = new FileInfo(list[index]);
+            var fileInfo = imageModel.FileInfo = list[index];
             imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
             preLoadValue.ImageModel = imageModel;
 #if DEBUG
@@ -89,7 +90,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="list">The list of image paths corresponding to the preload list.</param>
     /// <param name="imageModel">The image model to preload.</param>
     /// <returns>True if the image model was successfully added to the preload list; otherwise, false.</returns>
-    public bool Add(int index, List<string> list, ImageModel imageModel)
+    public bool Add(int index, List<FileInfo> list, ImageModel imageModel)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -119,7 +120,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="index">The index of the item to update.</param>
     /// <param name="fileInfo">The new file information to assign.</param>
     /// <param name="list">The list of file paths.</param>
-    public void RefreshFileInfo(int index, FileInfo fileInfo, List<string> list)
+    public void RefreshFileInfo(int index, FileInfo fileInfo, List<FileInfo> list)
     {
         if (list == null)
         {
@@ -150,7 +151,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <remarks>
     ///     Call it after the file watcher detects changes, or the list is resorted
     /// </remarks>
-    public void Resynchronize(List<string> list)
+    public void Resynchronize(List<FileInfo> list)
     {
         if (list == null)
         {
@@ -166,7 +167,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         _cancellationTokenSource?.Cancel();
 
         // Create a reverse lookup from file path to current index
-        var reverseLookup = new Dictionary<string, int>(list.Count);
+        var reverseLookup = new Dictionary<FileInfo, int>(list.Count);
         for (var i = 0; i < list.Count; i++)
         {
             reverseLookup[list[i]] = i;
@@ -182,14 +183,14 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
                 continue;
             }
 
-            var filePath = preLoadValue.ImageModel?.FileInfo?.FullName;
-            if (string.IsNullOrEmpty(filePath))
+            var file = preLoadValue.ImageModel?.FileInfo;
+            if (file is null)
             {
                 Remove(oldIndex, list);
                 continue;
             }
 
-            if (!reverseLookup.TryGetValue(filePath, out var newIndex))
+            if (!reverseLookup.TryGetValue(file, out var newIndex))
             {
                 // File no longer exists in the list
                 Remove(oldIndex, list);
@@ -220,14 +221,14 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 #if DEBUG
                 if (_showAddRemove)
                 {
-                    Trace.WriteLine($"Failed to resynchronize {filePath} to index {newIndex}");
+                    Trace.WriteLine($"Failed to resynchronize {file} to index {newIndex}");
                 }
 #endif
             }
 #if DEBUG
             else if (_showAddRemove)
             {
-                Trace.WriteLine($"Resynchronized {filePath} from index {oldIndex} to {newIndex}");
+                Trace.WriteLine($"Resynchronized {file} from index {oldIndex} to {newIndex}");
             }
 #endif
         }
@@ -243,7 +244,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="key">The key to check.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>True if the key exists; otherwise, false.</returns>
-    public bool Contains(int key, List<string> list) =>
+    public bool Contains(int key, List<FileInfo> list) =>
         list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
     /// <summary>
@@ -252,7 +253,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="key">The key of the preloaded value.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public PreLoadValue? Get(int key, List<string> list)
+    public PreLoadValue? Get(int key, List<FileInfo> list)
     {
         if (list != null && key >= 0 && key < list.Count)
         {
@@ -269,14 +270,14 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public PreLoadValue? Get(string fileName, List<string> list)
+    public PreLoadValue? Get(FileInfo file, List<FileInfo> list)
     {
-        if (list == null || string.IsNullOrEmpty(fileName))
+        if (list == null || file is null)
         {
             return null;
         }
 
-        var index = list.IndexOf(fileName);
+        var index = list.IndexOf(file);
         return index >= 0 ? _preLoadList[index] : null;
     }
 
@@ -287,7 +288,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="key">The index of the image in the list.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>The preloaded image value if found or successfully loaded; otherwise, null.</returns>
-    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<string> list)
+    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
@@ -310,8 +311,8 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public async Task<PreLoadValue?> GetOrLoadAsync(string fileName, List<string> list) =>
-        await GetOrLoadAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo?.FullName == fileName),
+    public async Task<PreLoadValue?> GetOrLoadAsync(FileInfo fileName, List<FileInfo> list) =>
+        await GetOrLoadAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo == fileName),
             list);
 
     #endregion
@@ -324,7 +325,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="key">The key to remove.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>True if the key was removed; otherwise, false.</returns>
-    public bool Remove(int key, List<string> list)
+    public bool Remove(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
@@ -369,7 +370,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="fileName">The full path of the image to remove.</param>
     /// <param name="list">The list of image paths.</param>
     /// <returns>True if the image was successfully removed; otherwise, false.</returns>
-    public bool Remove(string fileName, List<string> list)
+    public bool Remove(string fileName, List<FileInfo> list)
     {
         if (string.IsNullOrEmpty(fileName))
         {
@@ -454,7 +455,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="currentIndex">The current index of the image.</param>
     /// <param name="reverse">Indicates whether to preload in reverse order.</param>
     /// <param name="list">The list of image paths.</param>
-    public async Task PreLoadAsync(int currentIndex, bool reverse, List<string> list)
+    public async Task PreLoadAsync(int currentIndex, bool reverse, List<FileInfo> list)
     {
         if (list == null)
         {
@@ -501,7 +502,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         }
     }
 
-    private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<string> list,
+    private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
         CancellationToken token)
     {
         var count = list.Count;
@@ -577,7 +578,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
                 return;
             }
 
-            var keysToRemove = _preLoadList.Keys
+            var keysToRemove = _preLoadList.Keys.AsValueEnumerable() 
                 .OrderByDescending(k => Math.Abs(k - currentIndex))
                 .Take(_preLoadList.Count - PreLoaderConfig.MaxCount);
 

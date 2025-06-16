@@ -114,7 +114,7 @@ public static class ImageLoader
             // If image is in same directory as is being browsed, navigate to it. Otherwise, load without iterator.
             if (fileInfo.DirectoryName == imageIterator.InitialFileInfo.DirectoryName)
             {
-                var index = imageIterator.ImagePaths.IndexOf(fileInfo.FullName);
+                var index = imageIterator.ImagePaths.IndexOf(fileInfo);
                 if (index != -1)
                 {
                     await imageIterator.IterateToIndex(index, _cancellationTokenSource).ConfigureAwait(false);
@@ -212,7 +212,7 @@ public static class ImageLoader
             return;
         }
 
-        var firstFileInfo = new FileInfo(newFileList[0]);
+        var firstFileInfo = newFileList[0];
         await NavigationManager.LoadWithoutImageIterator(firstFileInfo, vm, newFileList);
     }
 

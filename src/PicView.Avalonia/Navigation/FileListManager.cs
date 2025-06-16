@@ -19,9 +19,9 @@ public static class FileListManager
     /// <param name="files">The collection of file paths to sort.</param>
     /// <param name="platformService">Platform-specific service for string comparison.</param>
     /// <returns>A sorted list of file paths.</returns>
-    public static List<string> SortIEnumerable(IEnumerable<string> files, IPlatformSpecificService? platformService)
+    public static List<FileInfo> SortIEnumerable(IEnumerable<FileInfo> files, IPlatformSpecificService? platformService)
     {
-        var sortFilesBy = FileSortHelper.GetSortOrder();
+        var sortFilesBy = FileSortOrder.GetSortOrder();
 
         switch (sortFilesBy)
         {
@@ -30,44 +30,43 @@ public static class FileListManager
                 var list = files.ToList();
                 if (Settings.Sorting.Ascending)
                 {
-                    list.Sort(platformService.CompareStrings);
+                    list.Sort((x, y) => platformService.CompareStrings(x.Name, y.Name));
                 }
                 else
                 {
-                    list.Sort((x, y) => platformService.CompareStrings(y, x));
+                    list.Sort((x, y) => platformService.CompareStrings(y.Name, x.Name));
                 }
 
                 return list;
 
             case SortFilesBy.FileSize: // Sort by file size
-                var fileInfoList = files.Select(f => new FileInfo(f)).ToList();
                 var sortedBySize = Settings.Sorting.Ascending
-                    ? fileInfoList.OrderBy(f => f.Length)
-                    : fileInfoList.OrderByDescending(f => f.Length);
-                return sortedBySize.Select(f => f.FullName).ToList();
+                    ? files.OrderBy(x => x.Length)
+                    : files.OrderByDescending(x => x.Length);
+                return sortedBySize.ToList();
 
             case SortFilesBy.Extension: // Sort by file extension
                 var sortedByExtension = Settings.Sorting.Ascending
-                    ? files.OrderBy(Path.GetExtension)
-                    : files.OrderByDescending(Path.GetExtension);
+                    ? files.OrderBy(x => x.Extension)
+                    : files.OrderByDescending(x => x.Extension);
                 return sortedByExtension.ToList();
 
             case SortFilesBy.CreationTime: // Sort by file creation time
                 var sortedByCreationTime = Settings.Sorting.Ascending
-                    ? files.OrderBy(f => new FileInfo(f).CreationTime)
-                    : files.OrderByDescending(f => new FileInfo(f).CreationTime);
+                    ? files.OrderBy(x => x.CreationTime)
+                    : files.OrderByDescending(x => x.CreationTime);
                 return sortedByCreationTime.ToList();
 
             case SortFilesBy.LastAccessTime: // Sort by file last access time
                 var sortedByLastAccessTime = Settings.Sorting.Ascending
-                    ? files.OrderBy(f => new FileInfo(f).LastAccessTime)
-                    : files.OrderByDescending(f => new FileInfo(f).LastAccessTime);
+                    ? files.OrderBy(x => x.LastAccessTime)
+                    : files.OrderByDescending(x => x.LastAccessTime);
                 return sortedByLastAccessTime.ToList();
 
             case SortFilesBy.LastWriteTime: // Sort by file last write time
                 var sortedByLastWriteTime = Settings.Sorting.Ascending
-                    ? files.OrderBy(f => new FileInfo(f).LastWriteTime)
-                    : files.OrderByDescending(f => new FileInfo(f).LastWriteTime);
+                    ? files.OrderBy(x => x.LastWriteTime)
+                    : files.OrderByDescending(x => x.LastWriteTime);
                 return sortedByLastWriteTime.ToList();
 
             case SortFilesBy.Random: // Sort files randomly
@@ -131,7 +130,7 @@ public static class FileListManager
                     return false;
                 }
 
-                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.PicViewer.FileInfo.FullName));
+                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.PicViewer.FileInfo));
                 TitleManager.SetTitle(vm);
                 return true;
             }

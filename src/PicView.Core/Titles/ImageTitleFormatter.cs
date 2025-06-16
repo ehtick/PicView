@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Cysharp.Text;
+using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -18,8 +18,14 @@ public static class ImageTitleFormatter
     /// The name of the application.
     /// </summary>
     public const string AppName = "PicView";
+    
+    private const int MaxAspectRatioX = 48;
+    private const int MaxAspectRatioY = 18;
+    private const double NormalZoomLevel = 1.0;
+    private const double NoZoomLevel = 0.0;
 
-      /// <summary>
+
+    /// <summary>
     /// Generates the title strings based on the specified parameters, including image properties
     /// such as width, height, file name, zoom level, and current index in the file list.
     /// </summary>
@@ -30,7 +36,7 @@ public static class ImageTitleFormatter
     /// <param name="zoomValue">The current zoom level of the image.</param>
     /// <param name="filesList">The list of image file paths.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, List<string> filesList)
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, List<FileInfo> filesList)
     {
         if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
         {
@@ -52,12 +58,11 @@ public static class ImageTitleFormatter
     /// <param name="zoomValue">The current zoom level of the image.</param>
     /// <param name="filesList">The list of image file paths.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue, List<string> filesList)
+    public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue, List<FileInfo> filesList)
     {
         if (tiffNavigationInfo == null)
         {
-            return GenerateErrorTitle(
-                $"{nameof(ImageTitleFormatter)}:{nameof(GenerateTiffTitleStrings)} - TiffNavigationInfo is null");
+            return GenerateErrorTitle();
         }
 
         if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
@@ -69,7 +74,7 @@ public static class ImageTitleFormatter
         return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
     }
 
-    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, List<string> filesList, int index, string namePart)
+    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, List<FileInfo> filesList, int index, string namePart)
     {
         using var sb = ZString.CreateStringBuilder(true);
 
@@ -107,14 +112,14 @@ public static class ImageTitleFormatter
         };
     }
 
-    private static bool TryValidateAndGetFileInfo(int index, List<string> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
+    private static bool TryValidateAndGetFileInfo(int index, List<FileInfo> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
     {
         validatedFileInfo = null;
         errorTitle = default;
 
         if (index < 0 || index >= filesList.Count)
         {
-            errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - index invalid");
+            DebugHelper.LogDebug(nameof(ImageTitleFormatter), callerName, "index invalid");
             return false;
         }
 
@@ -122,11 +127,11 @@ public static class ImageTitleFormatter
         {
             try
             {
-                validatedFileInfo = new FileInfo(filesList[index]);
+                validatedFileInfo = filesList[index];
             }
             catch (Exception e)
             {
-                errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - FileInfo exception \n{e.Message}");
+                DebugHelper.LogDebug(nameof(ImageTitleFormatter), callerName, e);
                 return false;
             }
         }
@@ -146,7 +151,7 @@ public static class ImageTitleFormatter
             return true;
         }
 
-        errorTitle = GenerateErrorTitle($"{nameof(ImageTitleFormatter)}:{callerName} - FileInfo does not exist");
+        errorTitle = GenerateErrorTitle();
         return false;
     }
 
@@ -163,15 +168,9 @@ public static class ImageTitleFormatter
     /// <summary>
     /// Generates a set of error titles in case of invalid parameters or exceptions during title generation.
     /// </summary>
-    /// <param name="exception">A string representing the error message or exception details.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing error titles.</returns>
-    private static WindowTitles GenerateErrorTitle(string exception)
+    private static WindowTitles GenerateErrorTitle()
     {
-#if DEBUG
-        Trace.WriteLine(exception);
-        Debug.Assert(TranslationManager.Translation.UnexpectedError != null);
-#endif
-
         return new WindowTitles
         {
             BaseTitle = TranslationManager.Translation.UnexpectedError,
@@ -187,15 +186,15 @@ public static class ImageTitleFormatter
     /// <returns>A formatted string representing the zoom percentage, or null if the zoom is 0 or 100%.</returns>
     private static string? FormatZoomPercentage(double zoomValue)
     {
-        if (zoomValue is 0 or 1)
+        if (zoomValue is NoZoomLevel or NormalZoomLevel)
         {
             return null;
         }
 
-        var zoom = Math.Round(zoomValue * 100);
-
-        return zoom + "%";
+        var zoomPercentage = Math.Round(zoomValue * 100);
+        return $"{zoomPercentage}%";
     }
+
 
     /// <summary>
     /// Generates a window title for a single image, including its name, resolution, aspect ratio, and zoom level.
@@ -260,18 +259,18 @@ public static class ImageTitleFormatter
             return ") ";
         }
 
-        // Calculate the greatest common divisor
         var gcd = GCD(width, height);
-        var x = width / gcd;
-        var y = height / gcd;
+        var aspectX = width / gcd;
+        var aspectY = height / gcd;
 
-        // Check if aspect ratio is within specified limits
-        if (x > 48 || y > 18)
-        {
-            return ") ";
-        }
-
-        return $", {x}:{y}) ";
+        return IsAspectRatioWithinLimits(aspectX, aspectY) 
+            ? $", {aspectX}:{aspectY}) " 
+            : ") ";
+    }
+    
+    private static bool IsAspectRatioWithinLimits(int x, int y)
+    {
+        return x <= MaxAspectRatioX && y <= MaxAspectRatioY;
     }
 
     /// <summary>

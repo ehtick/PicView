@@ -121,7 +121,7 @@ public static class GalleryFunctions
         }
 
         GalleryItem? galleryItem;
-        var thumb = await GetThumbnails.GetThumbAsync(fileInfo.FullName, (uint)vm.GetGalleryItemHeight, fileInfo);
+        var thumb = await GetThumbnails.GetThumbAsync(fileInfo, (uint)vm.GetGalleryItemHeight);
         var galleryThumbInfo = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfo);
         try
         {
@@ -153,7 +153,7 @@ public static class GalleryFunctions
                         ToggleGallery(vm);
                     }
 
-                    await NavigationManager.Navigate(fileInfo.FullName, vm).ConfigureAwait(false);
+                    await NavigationManager.Navigate(fileInfo, vm).ConfigureAwait(false);
                 };
                 if (galleryListBox.Items.Count > index)
                 {

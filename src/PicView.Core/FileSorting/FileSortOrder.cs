@@ -1,6 +1,6 @@
 ﻿namespace PicView.Core.FileSorting;
 
-public static class FileSortHelper
+public static class FileSortOrder
 {
     public static SortFilesBy GetSortOrder()
     {

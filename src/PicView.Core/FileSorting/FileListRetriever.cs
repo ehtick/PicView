@@ -1,65 +1,46 @@
 ﻿using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using ZLinq;
 
 namespace PicView.Core.FileSorting;
 
 public static class FileListRetriever
 {
-    public static IEnumerable<string> RetrieveFiles(FileInfo fileInfo)
+    public static IEnumerable<FileInfo> RetrieveFiles(FileInfo fileInfo)
     {
-        if (fileInfo == null)
+        var directoryPath = fileInfo switch
         {
-            return new List<string>();
+            null => null,
+            { Attributes: var attr } when attr.HasFlag(FileAttributes.Directory) => fileInfo.FullName,
+            _ => fileInfo.DirectoryName
+        };
+
+        if (string.IsNullOrEmpty(directoryPath))
+        {
+            return [];
         }
 
-        // Check if the file is a directory or not
-        var isDirectory = fileInfo.Attributes.HasFlag(FileAttributes.Directory);
-
-        // Get the directory path based on whether the file is a directory or not
-        var directory = isDirectory ? fileInfo.FullName : fileInfo.DirectoryName;
-        if (directory is null)
-        {
-            return new List<string>();
-        }
-
-        string[] enumerable;
-        // Check if the subdirectories are to be included in the search
         var recurseSubdirectories =
             Settings.Sorting.IncludeSubDirectories && string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath);
+
         try
         {
-            // Get the list of files in the directory
-            IEnumerable<string> files;
             if (recurseSubdirectories)
             {
-                files = Directory.EnumerateFiles(directory, "*.*", new EnumerationOptions
-                {
-                    AttributesToSkip = default, // Pick up hidden files
-                    RecurseSubdirectories = true
-                }).AsParallel();
+                return new DirectoryInfo(directoryPath)
+                    .DescendantsAndSelf()
+                    .OfType<FileInfo>()
+                    .Where(x => x.Extension.IsSupported()).ToList();
             }
-            else
-            {
-                files = Directory.EnumerateFiles(directory, "*.*", new EnumerationOptions
-                {
-                    AttributesToSkip = default,
-                    RecurseSubdirectories = false
-                });
-            }
-
-            enumerable = files as string[] ?? files.ToArray();
+            return new DirectoryInfo(directoryPath)
+                .ChildrenAndSelf()
+                .OfType<FileInfo>()
+                .Where(x => x.Extension.IsSupported()).ToList();
         }
         catch (Exception exception)
         {
             DebugHelper.LogDebug(nameof(FileListRetriever), nameof(RetrieveFiles), exception);
-            return new List<string>();
-        }
-
-        return enumerable.Where(IsExtensionValid);
-
-        bool IsExtensionValid(string f)
-        {
-            return SupportedFiles.FileExtensions.Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase);
+            return [];
         }
     }
 }

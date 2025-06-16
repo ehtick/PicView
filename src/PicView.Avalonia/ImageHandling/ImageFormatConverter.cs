@@ -60,7 +60,7 @@ public static class ImageFormatConverter
             // Different path - try to get from preload
             else
             {
-                var preloadValue = await NavigationManager.GetPreLoadValueAsync(path).ConfigureAwait(false);
+                var preloadValue = await NavigationManager.GetPreLoadValueAsync(new FileInfo(path)).ConfigureAwait(false);
                 if (preloadValue?.ImageModel.Image is Bitmap bitmap)
                 {
                     source = bitmap;
