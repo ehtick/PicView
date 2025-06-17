@@ -12,7 +12,7 @@ namespace PicView.Avalonia.Views;
                 {
                     MouseSideButtonBox.SelectedIndex = 0;
                 }
-                else if (Settings.Navigation.IsNavigatingFileHistory)
+                else if (Settings.Navigation.IsNavigatingBetweenDirectories)
                 {
                     MouseSideButtonBox.SelectedIndex = 1;
                 }
