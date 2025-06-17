@@ -8,7 +8,9 @@ using static System.GC;
 namespace PicView.Core.Preloading;
 
 /// <summary>
-/// The PreLoader class is responsible for preloading images asynchronously and caching them.
+/// The <see cref="PreLoader"/> class is responsible for asynchronously preloading images
+/// and caching them for efficient retrieval. It provides methods to add, remove, refresh,
+/// and resynchronize preloaded images, manage cache size, and handle asynchronous disposal.
 /// </summary>
 public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsyncDisposable
 {
@@ -30,10 +32,15 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
     /// <summary>
     ///     Adds an image to the preload list asynchronously.
+    ///     If the image already exists and is loaded, the operation is skipped.
+    ///     On success, the image is loaded and cached for future retrieval.
     /// </summary>
     /// <param name="index">The index of the image in the list.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the image was added successfully; otherwise, false.</returns>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     A task representing the asynchronous operation. 
+    ///     Returns <c>true</c> if the image was added and loaded successfully; otherwise, <c>false</c>.
+    /// </returns>
     public async Task<bool> AddAsync(int index, List<FileInfo> list)
     {
         if (list == null || index < 0 || index >= list.Count)
@@ -85,11 +92,14 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
     /// <summary>
     /// Adds a preloaded image model to the preload list at the specified index.
+    /// Does not perform loading, only inserts an existing model.
     /// </summary>
     /// <param name="index">The index at which to add the image model.</param>
-    /// <param name="list">The list of image paths corresponding to the preload list.</param>
+    /// <param name="list">The list of image file paths corresponding to the preload list.</param>
     /// <param name="imageModel">The image model to preload.</param>
-    /// <returns>True if the image model was successfully added to the preload list; otherwise, false.</returns>
+    /// <returns>
+    ///     <c>true</c> if the image model was successfully added to the preload list; otherwise, <c>false</c>.
+    /// </returns>
     public bool Add(int index, List<FileInfo> list, ImageModel imageModel)
     {
         if (list == null || index < 0 || index >= list.Count)
@@ -115,7 +125,8 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     #region Refresh and resynchronize
 
     /// <summary>
-    /// Updates the file information associated with a specific index in the preload list.
+    /// Updates the <see cref="FileInfo"/> associated with a specific index in the preload list.
+    /// Useful if the file information has changed due to file operations.
     /// </summary>
     /// <param name="index">The index of the item to update.</param>
     /// <param name="fileInfo">The new file information to assign.</param>
@@ -145,11 +156,12 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     }
 
     /// <summary>
-    ///     Resynchronizes the preload list with the given list of image paths.
+    ///     Resynchronizes the preload list with the given list of image file paths.
+    ///     Moves or removes entries as needed to match the new ordering or contents.
     /// </summary>
-    /// <param name="list">The list of image paths.</param>
+    /// <param name="list">The list of image file paths to sync with.</param>
     /// <remarks>
-    ///     Call it after the file watcher detects changes, or the list is resorted
+    ///     Call this method after the file watcher detects changes, or the list is resorted.
     /// </remarks>
     public void Resynchronize(List<FileInfo> list)
     {
@@ -241,18 +253,22 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <summary>
     ///     Checks if a specific key exists in the preload list.
     /// </summary>
-    /// <param name="key">The key to check.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the key exists; otherwise, false.</returns>
+    /// <param name="key">The key (index) to check.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     <c>true</c> if the key exists in the preload list and is a valid index in <paramref name="list"/>; otherwise, <c>false</c>.
+    /// </returns>
     public bool Contains(int key, List<FileInfo> list) =>
         list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
     /// <summary>
-    ///     Gets the preloaded value for a specific key.
+    ///     Gets the preloaded value for a specific key (index).
     /// </summary>
-    /// <param name="key">The key of the preloaded value.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
+    /// <param name="key">The key (index) of the preloaded value.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// </returns>
     public PreLoadValue? Get(int key, List<FileInfo> list)
     {
         if (list != null && key >= 0 && key < list.Count)
@@ -265,11 +281,13 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     }
 
     /// <summary>
-    ///     Gets the preloaded value for a specific file name. Should only be used when resynchronizing.
+    ///     Gets the preloaded value for a specific file. Should only be used when resynchronizing.
     /// </summary>
-    /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
+    /// <param name="file">The <see cref="FileInfo"/> of the image file to retrieve the preloaded value for.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// </returns>
     public PreLoadValue? Get(FileInfo file, List<FileInfo> list)
     {
         if (list == null || file is null)
@@ -283,11 +301,13 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
 
     /// <summary>
-    /// Retrieves a preloaded image value or loads it asynchronously if not already loaded.
+    /// Retrieves a preloaded image value for the specified index, or loads it asynchronously if not already loaded.
     /// </summary>
     /// <param name="key">The index of the image in the list.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>The preloaded image value if found or successfully loaded; otherwise, null.</returns>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     The <see cref="PreLoadValue"/> if found or successfully loaded; otherwise, <c>null</c>.
+    /// </returns>
     public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
@@ -306,25 +326,50 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     }
 
     /// <summary>
-    ///     Gets the preloaded value for a specific file name asynchronously. Should only be used when resynchronizing.
+    ///     Gets the preloaded value for a specific file asynchronously. Should only be used when resynchronizing.
     /// </summary>
-    /// <param name="fileName">The full path of the image file to retrieve the preloaded value for.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>The preloaded value if it exists; otherwise, null.</returns>
-    public async Task<PreLoadValue?> GetOrLoadAsync(FileInfo fileName, List<FileInfo> list) =>
-        await GetOrLoadAsync(_preLoadList.Values.ToList().FindIndex(x => x.ImageModel?.FileInfo == fileName),
-            list);
+    /// <param name="fileInfo">The <see cref="FileInfo"/> of the image file to retrieve the preloaded value for.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// </returns>
+    public async Task<PreLoadValue?> GetOrLoadAsync(FileInfo fileInfo, List<FileInfo> list)
+    {
+        if (list == null || fileInfo == null) return null;
+
+        // Find the entry without creating a new list
+        var entry = _preLoadList.
+            AsValueEnumerable()
+            .FirstOrDefault(kvp => kvp.Value.ImageModel?.FileInfo?.FullName == fileInfo.FullName);
+
+        if (entry.Value != null)
+        {
+            return await GetOrLoadAsync(entry.Key, list);
+        }
+
+        // If not found in cache, find its index in the master list and load
+        var index = list.FindIndex(f => f.FullName == fileInfo.FullName);
+        if (index != -1)
+        {
+            return await GetOrLoadAsync(index, list);
+        }
+
+        return null;
+    }
 
     #endregion
 
     #region Remove and clear
 
     /// <summary>
-    ///     Removes a specific key from the preload list.
+    ///     Removes a specific key (index) from the preload list.
+    ///     Disposes the associated image if necessary.
     /// </summary>
-    /// <param name="key">The key to remove.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the key was removed; otherwise, false.</returns>
+    /// <param name="key">The key (index) to remove.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     <c>true</c> if the key was removed; otherwise, <c>false</c>.
+    /// </returns>
     public bool Remove(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
@@ -364,12 +409,15 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         return false;
     }
 
+
     /// <summary>
-    /// Removes an image from the preload list.
+    /// Removes an image from the preload list by file name.
     /// </summary>
-    /// <param name="fileName">The full path of the image to remove.</param>
-    /// <param name="list">The list of image paths.</param>
-    /// <returns>True if the image was successfully removed; otherwise, false.</returns>
+    /// <param name="fileName">The full file name of the image to remove.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <returns>
+    ///     <c>true</c> if the image was successfully removed; otherwise, <c>false</c>.
+    /// </returns>
     public bool Remove(string fileName, List<FileInfo> list)
     {
         if (string.IsNullOrEmpty(fileName))
@@ -378,25 +426,17 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         }
 
         // Iterate the dictionary directly to find the matching entry
-        // ReSharper disable once LoopCanBeConvertedToQuery
-        foreach (var kvp in _preLoadList)
-        {
-            if (kvp.Value.ImageModel?.FileInfo?.FullName == fileName)
-            {
-                return Remove(kvp.Key, list);
-            }
-        }
-
-        return false;
+        return (from kvp in _preLoadList where kvp.Value.ImageModel?.FileInfo?.FullName == fileName 
+            select Remove(kvp.Key, list))
+            .AsValueEnumerable()
+            .FirstOrDefault();
     }
 
     /// <summary>
     /// Clears all preloaded images and associated resources.
-    /// </summary>
-    /// <remarks>
-    /// This method cancels any ongoing operations, disposes resources such as image bitmaps,
+    /// Cancels any ongoing operations, disposes resources such as image bitmaps,
     /// and clears the internal preload list. It logs a debug message when running in DEBUG mode.
-    /// </remarks>
+    /// </summary>
     public void Clear()
     {
         _cancellationTokenSource?.Cancel();
@@ -425,7 +465,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
     /// <summary>
     /// Clears all preloaded images asynchronously, canceling and disposing any active operations.
-    /// </summary>
+    /// </summary>      
     public async Task ClearAsync()
     {
         try
@@ -448,7 +488,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     #endregion
 
     #region Preload
-
+    
     /// <summary>
     ///     Preloads images asynchronously.
     /// </summary>
@@ -471,7 +511,8 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 #if DEBUG
         if (_showAddRemove)
         {
-            Trace.WriteLine($"\nPreLoading started at {currentIndex}\n");
+            var direction = reverse ? "backwards" : "forwards";
+            Trace.WriteLine($"\nPreLoading started {direction} at {currentIndex}\n");
         }
 #endif
 
@@ -502,6 +543,16 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         }
     }
 
+    
+    /// <summary>
+    /// Performs the internal logic for preloading images asynchronously.
+    /// Loads images ahead and/or behind the current index, manages the cache size,
+    /// and removes excess entries outside the configured range.
+    /// </summary>
+    /// <param name="currentIndex">The current index for preloading.</param>
+    /// <param name="reverse">Whether to preload in reverse order.</param>
+    /// <param name="list">The list of image file paths.</param>
+    /// <param name="token">A <see cref="CancellationToken"/> to observe while waiting for tasks to complete.</param>
     private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
         CancellationToken token)
     {
@@ -571,23 +622,20 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
         void RemoveLoop()
         {
-            // Remove items outside the preload range
-            if (list.Count <= PreLoaderConfig.MaxCount + PreLoaderConfig.NegativeIterations ||
-                _preLoadList.Count <= PreLoaderConfig.MaxCount)
+            if (_preLoadList.Count < PreLoaderConfig.MaxCount)
             {
                 return;
             }
 
-            var keysToRemove = _preLoadList.Keys.AsValueEnumerable() 
-                .OrderByDescending(k => Math.Abs(k - currentIndex))
-                .Take(_preLoadList.Count - PreLoaderConfig.MaxCount);
+            var keysToRemove = 
+                (from key in _preLoadList.Keys let distance = Math.Min(Math.Abs(key - currentIndex), list.Count - Math.Abs(key - currentIndex)) 
+                    where distance > PreLoaderConfig.PositiveIterations && distance > PreLoaderConfig.NegativeIterations 
+                    where !additions.Contains(key) select key)
+                .AsValueEnumerable();
 
             foreach (var key in keysToRemove)
             {
-                if (!additions.Contains(key))
-                {
-                    Remove(key, list);
-                }
+                Remove(key, list);
             }
         }
     }

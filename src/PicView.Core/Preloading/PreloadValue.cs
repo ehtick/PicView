@@ -71,6 +71,11 @@ public class PreLoadValue
     /// <returns>A task that completes when IsLoading becomes false.</returns>
     public Task WaitForLoadingCompleteAsync()
     {
-        return !_isLoading ? Task.CompletedTask : _loadingCompletionSource?.Task ?? Task.CompletedTask;
+        lock (_loadingLock)
+        {
+            return !_isLoading 
+                ? Task.CompletedTask 
+                : _loadingCompletionSource?.Task ?? Task.CompletedTask;
+        }
     }
 }
