@@ -7,7 +7,6 @@ using Avalonia.Threading;
 using Clowd.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
@@ -143,8 +142,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public List<FileInfo> GetFiles(FileInfo fileInfo)
     {
-        var files = FileListRetriever.RetrieveFiles(fileInfo);
-        return FileListManager.SortIEnumerable(files, this);
+        return FileListRetriever.RetrieveFiles(fileInfo, CompareStrings);
     }
 
     public int CompareStrings(string str1, string str2)

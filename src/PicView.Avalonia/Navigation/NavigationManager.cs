@@ -27,7 +27,6 @@ public static class NavigationManager
     // Should be updated to handle multiple iterators in the future when adding tab support
     public static ImageIterator? ImageIterator { get; private set; }
 
-
     /// <summary>
     /// Loads a picture from a given file, reloads the ImageIterator and loads the corresponding gallery from the file's
     /// directory.
@@ -157,15 +156,33 @@ public static class NavigationManager
             await GalleryNavigation.ScrollGallery(next);
             return;
         }
+        
+        var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
+        int nextIteration;
 
         if (ImageIterator.CurrentIndex < 0 || ImageIterator.CurrentIndex >= ImageIterator.ImagePaths.Count)
         {
-            ErrorHandling.ShowStartUpMenu(vm);
-            return;
+            if (vm.PicViewer.FileInfo is not null)
+            {
+                var newIndex = ImageIterator.ImagePaths.FindIndex(x => x.FullName.Equals(vm.PicViewer.FileInfo.FullName));
+                if (newIndex == -1)
+                {
+                    ErrorHandling.ShowStartUpMenu(vm);
+                    return;
+                }
+                nextIteration = newIndex;
+            }
+            else
+            {
+                ErrorHandling.ShowStartUpMenu(vm);
+                return;
+            }
         }
-
-        var navigateTo = next ? NavigateTo.Next : NavigateTo.Previous;
-        var nextIteration = ImageIterator.GetIteration(ImageIterator.CurrentIndex, navigateTo);
+        else
+        {
+            nextIteration = ImageIterator.GetIteration(ImageIterator.CurrentIndex, navigateTo);
+        }
+         
         var currentFileName = ImageIterator.ImagePaths[ImageIterator.CurrentIndex].FullName;
         if (TiffManager.IsTiff(currentFileName))
         {

@@ -6,7 +6,7 @@ namespace PicView.Core.FileSorting;
 
 public static class FileListRetriever
 {
-    public static IEnumerable<FileInfo> RetrieveFiles(FileInfo fileInfo)
+    public static List<FileInfo> RetrieveFiles(FileInfo fileInfo, Func<string, string, int> platformService)
     {
         var directoryPath = fileInfo switch
         {
@@ -27,15 +27,17 @@ public static class FileListRetriever
         {
             if (recurseSubdirectories)
             {
-                return new DirectoryInfo(directoryPath)
+                var recurseList = new DirectoryInfo(directoryPath)
                     .DescendantsAndSelf()
                     .OfType<FileInfo>()
-                    .Where(x => x.Extension.IsSupported()).ToList();
+                    .Where(x => x.Extension.IsSupported());
+                return FileSortOrder.SortIEnumerable(recurseList, platformService);
             }
-            return new DirectoryInfo(directoryPath)
+            var list = new DirectoryInfo(directoryPath)
                 .ChildrenAndSelf()
                 .OfType<FileInfo>()
-                .Where(x => x.Extension.IsSupported()).ToList();
+                .Where(x => x.Extension.IsSupported());
+            return FileSortOrder.SortIEnumerable(list, platformService);
         }
         catch (Exception exception)
         {

@@ -12,7 +12,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
-using PicView.Core.FileSorting;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Titles;
@@ -246,6 +245,11 @@ public partial class BatchResizeView : UserControl
 
     private async Task StartBatchResize()
     {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        
         try
         {
             _cancellationTokenSource = new CancellationTokenSource();
@@ -262,8 +266,7 @@ public partial class BatchResizeView : UserControl
 
             _isRunning = true;
 
-            var files = await Task.FromResult(
-                    FileListRetriever.RetrieveFiles(new FileInfo(SourceFolderTextBox.Text)))
+            var files = await Task.FromResult(vm.PlatformService.GetFiles(new FileInfo(SourceFolderTextBox.Text)))
                 .ConfigureAwait(true);
 
             if (!Directory.Exists(OutputFolderTextBox.Text))

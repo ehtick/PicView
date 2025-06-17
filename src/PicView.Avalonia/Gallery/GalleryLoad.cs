@@ -35,8 +35,6 @@ public static class GalleryLoad
             {
                 return;
             }
-
-            return;
         }
 
         await Dispatcher.UIThread.InvokeAsync(() =>

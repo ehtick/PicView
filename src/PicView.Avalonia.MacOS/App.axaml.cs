@@ -123,8 +123,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public List<FileInfo> GetFiles(FileInfo fileInfo)
     {
-        var files = FileListRetriever.RetrieveFiles(fileInfo);
-        return FileListManager.SortIEnumerable(files, this);
+        return FileListRetriever.RetrieveFiles(fileInfo, CompareStrings);
     }
 
     public int CompareStrings(string str1, string str2)
