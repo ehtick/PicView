@@ -560,19 +560,8 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         CancellationToken token)
     {
         var count = list.Count;
-
-        int nextStartingIndex, prevStartingIndex;
-        if (reverse)
-        {
-            nextStartingIndex = (currentIndex - 1 + count) % count;
-            prevStartingIndex = currentIndex + 1;
-        }
-        else
-        {
-            nextStartingIndex = (currentIndex + 1) % count;
-            prevStartingIndex = currentIndex - 1;
-        }
-
+        var nextStartingIndex = (currentIndex + 1) % count;
+        var prevStartingIndex = (currentIndex - 1 + count) % count;
         var isPreloadListUnderMax = _preLoadList.Count < PreLoaderConfig.MaxCount;
         var options = new ParallelOptions
         {
@@ -630,9 +619,10 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
                 return;
             }
 
+            // Remove keys that are too far from the current index
             var keysToRemove = 
                 (from key in _preLoadList.Keys let distance = Math.Min(Math.Abs(key - currentIndex), list.Count - Math.Abs(key - currentIndex)) 
-                    where distance > PreLoaderConfig.PositiveIterations && distance > PreLoaderConfig.NegativeIterations 
+                    where distance > PreLoaderConfig.PositiveIterations && distance > PreLoaderConfig.NegativeIterations
                     where !additions.Contains(key) select key)
                 .AsValueEnumerable();
 

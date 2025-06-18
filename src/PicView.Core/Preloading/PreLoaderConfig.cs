@@ -7,7 +7,7 @@ public static class PreLoaderConfig
     
     /// Total items to preload forward and backward.
     public static int MaxCount => PositiveIterations + NegativeIterations; 
-
+    
     /// Leave a few cores for the UI thread and other system processes to ensure responsiveness.
     public static int MaxParallelism { get; } = Math.Max(1, Environment.ProcessorCount - 3);
 }
