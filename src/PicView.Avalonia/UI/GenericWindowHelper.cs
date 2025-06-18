@@ -48,7 +48,11 @@ public static class GenericWindowHelper
     {
         window.Loaded += delegate
         {
-            window.MinWidth = window.MaxWidth = window.Width;
+            if (!double.IsNaN(window.Width) && !double.IsInfinity(window.Width))
+            {
+                window.MinWidth = window.MaxWidth = window.Width;
+            }
+            
             window.Title = title;
         };
         window.KeyDown += (_, e) =>
