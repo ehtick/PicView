@@ -117,7 +117,9 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         }
 
         var preLoadValue = new PreLoadValue(imageModel);
-        return _preLoadList.TryAdd(index, preLoadValue);
+
+        _preLoadList.TryAdd(index, preLoadValue);
+        return _preLoadList.ContainsKey(index);
     }
 
     #endregion
@@ -295,8 +297,12 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
             return null;
         }
 
-        var index = list.IndexOf(file);
-        return index >= 0 ? _preLoadList[index] : null;
+        var index = list.FindIndex(x => x.FullName == file.FullName);
+        if (index > -1 && index < list.Count)
+        {
+            return _preLoadList.GetValueOrDefault(index);
+        }
+        return null;
     }
 
 

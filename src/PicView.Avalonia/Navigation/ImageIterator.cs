@@ -433,22 +433,15 @@ public class ImageIterator : IAsyncDisposable
             : PreLoader.Get(index, ImagePaths);
     }
 
-    public PreLoadValue? GetPreLoadValue(FileInfo file)
-    {
-        var index = ImagePaths.FindIndex(x => x.FullName.Equals(file.FullName));
-        if (index < 0 || index >= ImagePaths.Count)
-        {
-            return null;
-        }
-
-        return _isRunning
-            ? PreLoader.Get(ImagePaths[index], ImagePaths)
-            : PreLoader.Get(index, ImagePaths);
-    }
+    public PreLoadValue? GetPreLoadValue(FileInfo file) =>
+        PreLoader.Get(file, ImagePaths);
 
 
     public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(int index) =>
         await PreLoader.GetOrLoadAsync(index, ImagePaths);
+    
+    public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(FileInfo file) =>
+        await PreLoader.GetOrLoadAsync(file, ImagePaths);
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
         _isRunning
