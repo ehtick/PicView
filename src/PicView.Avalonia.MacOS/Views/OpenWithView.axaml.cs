@@ -91,6 +91,7 @@ public partial class OpenWithView : Window
 
                     ParentPanel.Children.Add(btn);
                 }
+                SpinWaiter.IsVisible = false;
             });
         });
     }
