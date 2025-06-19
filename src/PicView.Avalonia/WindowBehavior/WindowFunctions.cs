@@ -213,7 +213,7 @@ public static class WindowFunctions
         vm.SizeToContent = SizeToContent.Manual;
         vm.CanResize = true;
         Settings.WindowProperties.AutoFit = false;
-        WindowResizing.SetSize(vm);
+        await WindowResizing.SetSizeAsync(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
         await SaveSettingsAsync().ConfigureAwait(false);
     }
@@ -225,7 +225,7 @@ public static class WindowFunctions
         Settings.WindowProperties.AutoFit = false;
         Settings.ImageScaling.StretchImage = true;
         vm.IsStretched = true;
-        WindowResizing.SetSize(vm);
+        await WindowResizing.SetSizeAsync(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
         await SaveSettingsAsync().ConfigureAwait(false);
     }
@@ -234,7 +234,7 @@ public static class WindowFunctions
     {
         Settings.ImageScaling.StretchImage = true;
         vm.IsStretched = true;
-        WindowResizing.SetSize(vm);
+        await WindowResizing.SetSizeAsync(vm);
         vm.ImageViewer.MainImage.InvalidateVisual();
         await SaveSettingsAsync().ConfigureAwait(false);
     }
