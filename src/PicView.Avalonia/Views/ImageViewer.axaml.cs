@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageTransformations;
+using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
@@ -13,7 +14,7 @@ namespace PicView.Avalonia.Views;
 
 public partial class ImageViewer : UserControl
 {
-    private ImageTransformer? _imageTransformer;
+    private RotationTransformer? _imageTransformer;
     private Zoom? _zoom;
 
     public ImageViewer()
@@ -48,7 +49,7 @@ public partial class ImageViewer : UserControl
 
     private void InitializeImageTransformer()
     {
-        _imageTransformer = new ImageTransformer(
+        _imageTransformer = new RotationTransformer(
             ImageLayoutTransformControl,
             MainImage,
             () => DataContext,

@@ -9,9 +9,9 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ImageTransformations;
 
-namespace PicView.Avalonia.ImageTransformations;
+namespace PicView.Avalonia.ImageTransformations.Rotation;
 
-public class ImageTransformer(
+public class RotationTransformer(
     LayoutTransformControl imageLayoutTransformControl,
     PicBox mainImage,
     Func<object?> getDataContext,

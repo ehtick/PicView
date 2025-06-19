@@ -9,7 +9,7 @@ using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.ImageTransformations;
+using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.LockScreen;
 using PicView.Avalonia.Navigation;
@@ -139,18 +139,18 @@ public class MainViewModel : ReactiveObject
         RotateLeftCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.RotateLeft);
         RotateLeftButtonCommand = FunctionsHelper.CreateReactiveCommand(async () =>
         {
-            await Rotation.RotateLeft(this, Rotation.RotationButton.RotateLeftButton);
+            await RotationNavigation.RotateLeft(this, RotationButton.RotateLeftButton);
         });
 
         RotateRightCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.RotateRight);
         RotateRightButtonCommand = FunctionsHelper.CreateReactiveCommand(async () =>
         {
-            await Rotation.RotateRight(this, Rotation.RotationButton.RotateRightButton);
+            await RotationNavigation.RotateRight(this, RotationButton.RotateRightButton);
         });
 
         RotateRightWindowBorderButtonCommand = FunctionsHelper.CreateReactiveCommand(async () =>
         {
-            await Rotation.RotateRight(this, Rotation.RotationButton.WindowBorderButton);
+            await RotationNavigation.RotateRight(this, RotationButton.WindowBorderButton);
         });
 
         FlipCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Flip);

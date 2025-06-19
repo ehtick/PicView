@@ -7,7 +7,7 @@ using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.ImageTransformations;
+using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
@@ -256,21 +256,21 @@ public static class FunctionsMapper
         await NavigationManager.Prev100(Vm).ConfigureAwait(false);
     
 
-    /// <inheritdoc cref="Rotation.NavigateUp(MainViewModel)" />
+    /// <inheritdoc cref="RotationNaRotationNavigationp(MainViewModel)" />
     public static async Task Up() =>
-        await Rotation.NavigateUp(Vm).ConfigureAwait(false);
+        await RotationNavigation.NavigateUp(Vm).ConfigureAwait(false);
 
-    /// <inheritdoc cref="Rotation.RotateRight(MainViewModel)" />
+    /// <inheritdoc cref="RotationNavigation.RotateRight(MainViewModel)" />
     public static async Task RotateRight() =>
-        await Rotation.RotateRight(Vm).ConfigureAwait(false);
+        await RotationNavigation.RotateRight(Vm).ConfigureAwait(false);
 
-    /// <inheritdoc cref="Rotation.RotateLeft(MainViewModel)" />
+    /// <inheritdoc cref="RotationNavigation.RotateLeft(MainViewModel)" />
     public static async Task RotateLeft() =>
-        await Rotation.RotateLeft(Vm).ConfigureAwait(false);
+        await RotationNavigation.RotateLeft(Vm).ConfigureAwait(false);
 
-    /// <inheritdoc cref="Rotation.NavigateDown(MainViewModel)" />
+    /// <inheritdoc cref="RotationNavigation.NavigateDown(MainViewModel)" />
     public static async Task Down() =>
-        await Rotation.NavigateDown(Vm).ConfigureAwait(false);
+        await RotationNavigation.NavigateDown(Vm).ConfigureAwait(false);
     
     public static async Task ScrollDown()
     {
@@ -410,15 +410,9 @@ public static class FunctionsMapper
     /// <inheritdoc cref="DialogManager.Close(MainViewModel)" />
     public static async Task Close() =>
         await DialogManager.Close(Vm).ConfigureAwait(false);
-    
-    public static async Task Center()
-    {
-        // TODO: Needs refactor, add async overload for Center
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Rotation.Center(Vm);
-        });
-    }
+
+    public static async Task Center() =>
+        await UIHelper.CenterAsync(Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="Interfaces.IPlatformWindowService.MaximizeRestore" />
     public static Task Maximize()
@@ -634,7 +628,7 @@ public static class FunctionsMapper
 
     public static Task Flip()
     {
-        Rotation.Flip(Vm);
+        RotationNavigation.Flip(Vm);
         return Task.CompletedTask;
     }
 

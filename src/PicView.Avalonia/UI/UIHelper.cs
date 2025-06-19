@@ -4,10 +4,12 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.WindowBehavior;
 
 namespace PicView.Avalonia.UI;
 
@@ -46,6 +48,40 @@ public static class UIHelper
     {
         vm = GetMainView.DataContext as MainViewModel;
         return vm is not null;
+    }
+    
+    /// <summary>
+    /// Centers the window or gallery based on current state
+    /// </summary>
+    public static void Center(MainViewModel? vm)
+    {
+        if (vm is null)
+        {
+            return;
+        }
+        
+        if (GalleryFunctions.IsFullGalleryOpen)
+        {
+            GalleryFunctions.CenterGallery(vm);
+        }
+        else
+        {
+            WindowFunctions.CenterWindowOnScreen();
+        }
+    }
+    
+    /// <inheritdoc cref="Center"/>
+    public static async Task CenterAsync(MainViewModel? vm)
+    {
+        if (vm is null)
+        {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            Center(vm);
+        });
     }
 
     /// <summary>

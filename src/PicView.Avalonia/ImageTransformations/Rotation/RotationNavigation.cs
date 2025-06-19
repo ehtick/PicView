@@ -5,20 +5,13 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.Menus;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 
-namespace PicView.Avalonia.ImageTransformations;
-public static class Rotation
-{
-    public enum RotationButton
-    {
-        WindowBorderButton,
-        RotateRightButton,
-        RotateLeftButton
-    }
+namespace PicView.Avalonia.ImageTransformations.Rotation;
 
+public static class RotationNavigation
+{
     public static async Task RotateRight(MainViewModel? vm)
     {
         if (vm is null)
@@ -33,11 +26,11 @@ public static class Rotation
 
         await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Rotate(false); });
     }
-    
+
     public static async Task RotateRight(MainViewModel? vm, RotationButton rotationButton)
     {
         await RotateRight(vm);
-        
+
         // Check if it should move the cursor
         if (!Settings.WindowProperties.AutoFit)
         {
@@ -87,7 +80,7 @@ public static class Rotation
             }
         });
     }
-            
+
     public static async Task RotateLeft(MainViewModel? vm)
     {
         if (vm is null)
@@ -99,21 +92,23 @@ public static class Rotation
         {
             return;
         }
+
         await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Rotate(true); });
     }
 
     public static async Task RotateLeft(MainViewModel vm, RotationButton rotationButton)
     {
         await RotateLeft(vm);
-        
+
         // Check if it should move the cursor
         if (!Settings.WindowProperties.AutoFit)
         {
             return;
         }
+
         await MoveCursorAfterRotation(vm, rotationButton);
     }
-    
+
     public static void Flip(MainViewModel vm)
     {
         if (vm.PicViewer.ScaleX == 1)
@@ -129,7 +124,7 @@ public static class Rotation
 
         Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });
     }
-    
+
     /// <summary>
     /// Navigates up or rotates the image based on current state
     /// </summary>
@@ -146,7 +141,7 @@ public static class Rotation
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() => 
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             if (vm.IsScrollingEnabled)
             {
@@ -175,7 +170,7 @@ public static class Rotation
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() => 
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             if (vm.IsScrollingEnabled)
             {
@@ -186,25 +181,5 @@ public static class Rotation
                 vm.ImageViewer.Rotate(false);
             }
         });
-    }
-
-    /// <summary>
-    /// Centers the window or gallery based on current state
-    /// </summary>
-    public static void Center(MainViewModel? vm)
-    {
-        if (vm is null)
-        {
-            return;
-        }
-        
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            GalleryFunctions.CenterGallery(vm);
-        }
-        else
-        {
-            WindowFunctions.CenterWindowOnScreen();
-        }
     }
 }
