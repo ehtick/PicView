@@ -59,7 +59,7 @@ public static class WindowFunctions
             lastFile = !string.IsNullOrWhiteSpace(url) ? url : FileHistoryManager.GetLastEntry();
         }
 
-        Settings.StartUp.LastFile = lastFile;
+        Settings.StartUp.LastFile = lastFile ?? "";
         await SaveSettingsAsync();
         await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
         TempFileHelper.DeleteTempFiles();

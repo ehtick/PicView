@@ -98,7 +98,11 @@ public class ImageIterator : IAsyncDisposable
     private void InitiateFileSystemWatcher(FileInfo fileInfo)
     {
         InitialFileInfo = fileInfo;
-        Settings.StartUp.StartUpDirectory = fileInfo.DirectoryName;
+        if (!fileInfo.FullName.Contains(Settings.StartUp.StartUpDirectory))
+        {
+            Settings.StartUp.StartUpDirectory = fileInfo.DirectoryName;
+        }
+        
         if (_watcher is not null)
         {
             _watcher.Dispose();
