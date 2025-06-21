@@ -35,7 +35,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="root">
-                    <Grid>
+                    <Grid Background="Transparent">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="5" />
