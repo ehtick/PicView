@@ -11,8 +11,8 @@ public static class GetImageModel
     // Group extensions by how they should be handled
     private static readonly Dictionary<string, Func<FileInfo, ImageModel, Task>> ExtensionHandlers = new()
     {
-        { ".webp", ProcessAnimatedWebpAsync },
-        { ".gif", ProcessAnimatedGifAsync },
+        { ".webp", ProcessWebpAsync },
+        { ".gif", ProcessGifAsync },
         { ".png", ProcessStandardBitmapAsync },
         { ".jpg", ProcessStandardBitmapAsync },
         { ".jpeg", ProcessStandardBitmapAsync },
@@ -52,8 +52,9 @@ public static class GetImageModel
             // Initialize MagickImage if not provided
             magickImage ??= CreateAndPingMagickImage(fileInfo);
 
-            // Extract metadata early
-            ExtractImageMetadata(magickImage, imageModel);
+            // Extract metadata
+            imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
+            imageModel.Format = magickImage.Format;
 
             // Process the image based on extension
             var ext = fileInfo.Extension.ToLowerInvariant();
@@ -81,12 +82,6 @@ public static class GetImageModel
         var magickImage = new MagickImage();
         magickImage.Ping(fileInfo);
         return magickImage;
-    }
-
-    private static void ExtractImageMetadata(MagickImage magickImage, ImageModel imageModel)
-    {
-        imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
-        imageModel.Format = magickImage.Format;
     }
 
     private static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, ImageType imageType = ImageType.Bitmap)
@@ -118,14 +113,14 @@ public static class GetImageModel
         SetBitmapProperties(bitmap, imageModel);
     }
 
-    private static async Task ProcessAnimatedWebpAsync(FileInfo fileInfo, ImageModel imageModel)
+    private static async Task ProcessWebpAsync(FileInfo fileInfo, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetStandardBitmapAsync(fileInfo).ConfigureAwait(false);
         var imageType = ImageAnalyzer.IsAnimated(fileInfo) ? ImageType.AnimatedWebp : ImageType.Bitmap;
         SetBitmapProperties(bitmap, imageModel, imageType);
     }
 
-    private static async Task ProcessAnimatedGifAsync(FileInfo fileInfo, ImageModel imageModel)
+    private static async Task ProcessGifAsync(FileInfo fileInfo, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetStandardBitmapAsync(fileInfo).ConfigureAwait(false);
         var imageType = ImageAnalyzer.IsAnimated(fileInfo) ? ImageType.AnimatedGif : ImageType.Bitmap;

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using ImageMagick;
+using PicView.Core.DebugTools;
 
 namespace PicView.Core.ImageDecoding;
 
@@ -24,12 +25,20 @@ public static class ImageAnalyzer
             magickImageCollection.Ping(file);
             return magickImageCollection.Count;
         }
+#if DEBUG
+        catch (MagickCorruptImageErrorException ex)
+        {
+            // This can happen with malformed or unsupported image files.
+            // We'll treat it as a non-animated image with 0 frames.
+
+            Trace.WriteLine($"Caught a corrupt image exception for file '{file}'. Treating as 0 frames. Details: {ex.Message}");
+            DebugHelper.LogDebug(nameof(ImageAnalyzer),nameof(GetImageFrames), ex);
+            return 0;
+        }
+#endif
         catch (MagickException ex)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(GetImageFrames)} Exception \n{ex}");
-#endif
-
+            DebugHelper.LogDebug(nameof(ImageAnalyzer),nameof(GetImageFrames), ex);
             return 0;
         }
     }
@@ -39,17 +48,9 @@ public static class ImageAnalyzer
     /// </summary>
     /// <param name="fileInfo">File information for the image</param>
     /// <returns>True if the image is animated; otherwise, false</returns>
-    public static bool IsAnimated(FileInfo fileInfo)
-    {
-        if (fileInfo is not { Exists: true })
-        {
-            return false;
-        }
-        
-        var frames = GetImageFrames(fileInfo.FullName);
-        return frames > 1;
-    }
-        
+    public static bool IsAnimated(FileInfo fileInfo) => 
+        GetImageFrames(fileInfo.FullName) > 1;
+
     /// <summary>
     ///     Retrieves the compression quality of the specified image file.
     /// </summary>
