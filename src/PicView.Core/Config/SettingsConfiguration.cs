@@ -12,15 +12,10 @@ public static class SettingsConfiguration
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             ConfigPath);
     
-    // TODO delete this after next release
-    public static string OldLocalSettingsPath =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigPath);
-    
     public static string LocalSettingsPath =>
         Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", ConfigFileName);
 
     public static string CurrentUserSettingsPath =>
         File.Exists(RoamingSettingsPath) ? RoamingSettingsPath :
-        File.Exists(LocalSettingsPath) ? LocalSettingsPath : 
-        File.Exists(OldLocalSettingsPath) ? OldLocalSettingsPath : string.Empty;
+        File.Exists(LocalSettingsPath) ? LocalSettingsPath : string.Empty;
 }

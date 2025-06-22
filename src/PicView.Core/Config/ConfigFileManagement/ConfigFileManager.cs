@@ -30,11 +30,6 @@ public static class ConfigFileManager
 
         try
         {
-            if (type == ConfigFileType.UserSettings)
-            {
-                CleanupOldConfigPath();
-            }
-
             if (!FileHelper.IsPathWritable(path))
             {
                 return await TrySaveRoaming();
@@ -70,25 +65,6 @@ public static class ConfigFileManager
             await JsonFileHelper.WriteJsonAsync(roamingPath, value, inputType, context).ConfigureAwait(false);
 
             return roamingPath;
-        }
-
-        // TODO delete this after next release
-        void CleanupOldConfigPath()
-        {
-            if (!File.Exists(SettingsConfiguration.OldLocalSettingsPath))
-            {
-                return;
-            }
-
-            path = SettingsConfiguration.LocalSettingsPath;
-
-            File.Delete(SettingsConfiguration.OldLocalSettingsPath);
-
-            FileHelper.DeleteDirectoryIfExists(Path.GetDirectoryName(SettingsConfiguration.OldLocalSettingsPath));
-            FileHelper.DeleteDirectoryIfExists(
-                Path.GetDirectoryName(Path.GetDirectoryName(SettingsConfiguration.OldLocalSettingsPath)));
-            FileHelper.DeleteDirectoryIfExists(Path.GetDirectoryName(
-                Path.GetDirectoryName(Path.GetDirectoryName(SettingsConfiguration.OldLocalSettingsPath))));
         }
     }
 
