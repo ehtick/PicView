@@ -1,6 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
 using ImageMagick;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -158,6 +157,7 @@ public static class ExifHandling
             vm.Exif.ExifVersion = EXIFHelper.GetExifVersion(profile);
             vm.Exif.LensModel = profile?.GetValue(ExifTag.LensModel)?.Value ?? string.Empty;
             vm.Exif.LensMaker = profile?.GetValue(ExifTag.LensMake)?.Value ?? string.Empty;
+            vm.Exif.Comment = EXIFHelper.GetUserComment(profile);
         }
         catch (Exception e)
         {

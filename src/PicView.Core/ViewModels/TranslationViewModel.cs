@@ -291,6 +291,7 @@ public class TranslationViewModel : ReactiveObject
         MouseSideButtons = t.MouseSideButtons;
         NavigateFileHistory = t.NavigateFileHistory;
         NavigateBetweenDirectories = t.NavigateBetweenDirectories;
+        Comment = t.Comment;
     }
 
     #region Static Translation Strings
@@ -572,6 +573,12 @@ public class TranslationViewModel : ReactiveObject
     }
 
     public string? ColorRepresentation
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    public string? Comment
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);

@@ -70,6 +70,7 @@ public class LanguageModel
     public string? ColorPickerToolTooltip { get; set; }
     public string? ColorRepresentation { get; set; }
     public string? ColorTone { get; set; }
+    public string? Comment {get; set; }
     public string? CompressedBitsPixel { get; set; }
     public string? Compression { get; set; }
     public string? ConstrainBackgroundToImage { get; set; }

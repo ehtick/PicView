@@ -54,8 +54,6 @@ public partial class ExifView : UserControl
                 return;
             }
             
-            ExifHandling.UpdateExifValues(vm);
-            
             _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
             {
                 ExifHandling.UpdateExifValues(vm);

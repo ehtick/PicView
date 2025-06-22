@@ -488,4 +488,16 @@ public static class EXIFHelper
         var subjectTag = profile?.GetValue(ExifTag.XPSubject)?.Value;
         return subjectTag?.GetValue(0)?.ToString() ?? string.Empty;
     }
+    
+    public static string GetUserComment(IExifProfile? profile)
+    {
+        var commentBytes = profile?.GetValue(ExifTag.UserComment)?.Value;
+        var decodedComment = commentBytes is null ? string.Empty : Encoding.ASCII.GetString(commentBytes);
+        if (string.IsNullOrEmpty(decodedComment))
+        {
+            return string.Empty;
+        }
+
+        return decodedComment.StartsWith("UNICODE") ? decodedComment.Replace("UNICODE", "") : decodedComment;;
+    }
 }

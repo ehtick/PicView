@@ -135,6 +135,12 @@ public class ExifViewModel : ReactiveObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+    
+    public string? Comment
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 
     public string? CompressedBitsPixel
     {

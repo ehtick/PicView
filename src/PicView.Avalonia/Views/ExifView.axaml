@@ -21,6 +21,8 @@
             <Style Selector="TextBox.x">
                 <Setter Property="Background" Value="{DynamicResource DisabledBackgroundColor}" />
                 <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="MaxHeight" Value="66" />
             </Style>
         </Styles>
     </UserControl.Styles>
@@ -717,6 +719,35 @@
                             </customControls:CopyButton>
                         </StackPanel>
                     </StackPanel>
+                </StackPanel>
+
+                <!--  Comment  -->
+                <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                    <TextBlock
+                        Classes="txt"
+                        Margin="0,8,2,0"
+                        Text="Comment"
+                        Width="100" />
+                    <customControls:FuncTextBox
+                        Classes=" TStyle x"
+                        IsReadOnly="True"
+                        MaxHeight="600"
+                        Text="{CompiledBinding Exif.Comment,
+                                               Mode=OneWay}"
+                        Width="630" />
+                    <customControls:CopyButton
+                        Classes="altHover BorderStyle"
+                        CopyText="{CompiledBinding Exif.Comment,
+                                                   Mode=OneWay}"
+                        ToolTip.Tip="{CompiledBinding Translation.Copy,
+                                                      Mode=OneWay}">
+                        <Path
+                            Data="{StaticResource CopyGeometry}"
+                            Fill="{StaticResource SecondaryTextColor}"
+                            Height="16"
+                            Stretch="Fill"
+                            Width="16" />
+                    </customControls:CopyButton>
                 </StackPanel>
             </StackPanel>
 
