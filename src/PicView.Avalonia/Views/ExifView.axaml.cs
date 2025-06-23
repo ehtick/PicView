@@ -2,6 +2,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
@@ -57,6 +58,13 @@ public partial class ExifView : UserControl
             _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo).Select(x => x is not null).Subscribe(_ =>
             {
                 ExifHandling.UpdateExifValues(vm);
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (DirectoryNameTextBox.Text != vm.PicViewer.FileInfo.DirectoryName)
+                    {
+                        DirectoryNameTextBox.Text = vm.PicViewer.FileInfo.DirectoryName;
+                    }
+                });
             });
             ResetButton.Click += (_, _) =>
             {
@@ -87,6 +95,51 @@ public partial class ExifView : UserControl
                     return;
                 }
                 await SendToImageSaver( vm.PicViewer.FileInfo?.FullName, file, PixelWidthTextBox.Text, PixelHeightTextBox.Text, ext).ConfigureAwait(false);
+            };
+            FileNameTextBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
+
+                var newPath = Path.Combine(vm.PicViewer.FileInfo.DirectoryName, FileNameTextBox.Text);
+                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
+                if (renamed)
+                {
+                    await NavigationManager.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
+                }
+            };
+            FullPathTextBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
+
+                var newPath = FullPathTextBox.Text;
+                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
+                if (renamed)
+                {
+                    await NavigationManager.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
+                }
+            };
+            DirectoryNameTextBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
+                
+                var oldDirectory = vm.PicViewer.FileInfo.DirectoryName;
+                var newDirectory = DirectoryNameTextBox.Text;
+
+                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var newPath = oldPath.Replace(oldDirectory, newDirectory);
+
+                await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
             };
         };
     }
