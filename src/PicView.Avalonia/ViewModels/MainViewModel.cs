@@ -1133,10 +1133,13 @@ public class MainViewModel : ReactiveObject
         await FileManager.LocateOnDisk(path, this).ConfigureAwait(false);
 
     private async Task SetAsWallpaperTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
+        await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
 
     private async Task SetAsWallpaperFilledTask(string path) =>
         await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
+    
+    private async Task SetAsWallpaperFittedTask(string path) =>
+        await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
 
     private async Task SetAsWallpaperTiledTask(string path) =>
         await SetAsWallpaperTask(path, WallpaperStyle.Tile).ConfigureAwait(false);

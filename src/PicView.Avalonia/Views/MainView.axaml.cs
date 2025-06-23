@@ -29,7 +29,6 @@ public partial class MainView : UserControl
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             // TODO: Add macOS support
-            WallpaperMenuItem.IsVisible = false;
             PrintMenuItem.IsVisible = false;
             
             // Move alt hover to left side on macOS and switch button order
@@ -37,10 +36,6 @@ public partial class MainView : UserControl
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltClose),0);
             AltButtonsPanel.Children.Move(AltButtonsPanel.Children.IndexOf(AltMinimize),2);
             AltMinimize.RenderTransform = new ScaleTransform{ScaleX = -1};
-        }
-        else
-        {
-            MacOSWallpaperMenuItem.IsVisible = false;
         }
 
         if (!Settings.Theme.Dark && !Settings.Theme.GlassTheme)

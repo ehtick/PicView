@@ -157,7 +157,7 @@
 
                 <!--  Set as wallpaper fit  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperCommand}"
+                    Command="{CompiledBinding SetAsWallpaperFittedTask}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Fit,
