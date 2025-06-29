@@ -333,9 +333,9 @@ public static class ImageLoader
                 var displayProgress = HttpManager.GetProgressDisplay(totalFileSize, totalBytesDownloaded,
                     progressPercentage);
                 var title = $"{fileName} {TranslationManager.Translation.Downloading} {displayProgress}";
-                vm.PicViewer.Title = title;
-                vm.PicViewer.TitleTooltip = title;
-                vm.PicViewer.WindowTitle = title;
+                vm.PicViewer.Title.Value = title;
+                vm.PicViewer.TitleTooltip.Value = title;
+                vm.PicViewer.WindowTitle.Value = title;
                 if (Settings.UIProperties.IsTaskbarProgressEnabled)
                 {
                     vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded, (ulong)totalFileSize);
@@ -369,8 +369,8 @@ public static class ImageLoader
         await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType, url, vm);
 
         vm.IsLoading = false;
-        vm.PicViewer.FileInfo = fileInfo;
-        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
+        vm.PicViewer.FileInfo.Value = fileInfo;
+        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
         FileHistoryManager.Add(url);
 
         await NavigationManager.DisposeImageIteratorAsync();
@@ -391,8 +391,8 @@ public static class ImageLoader
     {
         TitleManager.SetLoadingTitle(vm);
         vm.IsLoading = true;
-        vm.PicViewer.ImageSource = null;
-        vm.PicViewer.FileInfo = null;
+        vm.PicViewer.ImageSource.Value = null;
+        vm.PicViewer.FileInfo.Value = null;
 
         if (_cancellationTokenSource is not null)
         {

@@ -33,7 +33,7 @@ public static class CropFunctions
             return;
         }
 
-        if (vm?.PicViewer.ImageSource is not Bitmap bitmap)
+        if (vm?.PicViewer.ImageSource.CurrentValue is not Bitmap bitmap)
         {
             return;
         }
@@ -48,14 +48,14 @@ public static class CropFunctions
             await WindowResizing.SetSizeAsync(vm);
         }
 
-        var size = new Size(vm.PicViewer.ImageWidth, vm.PicViewer.ImageHeight);
+        var size = new Size(vm.PicViewer.ImageWidth.CurrentValue, vm.PicViewer.ImageHeight.CurrentValue);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             vm.Crop = new ImageCropperViewModel(bitmap)
             {
                 ImageWidth = size.Width,
                 ImageHeight = size.Height,
-                AspectRatio = vm.PicViewer.AspectRatio
+                AspectRatio = vm.PicViewer.AspectRatio.CurrentValue
             };
             var cropControl = new CropControl
             {
@@ -68,8 +68,8 @@ public static class CropFunctions
         });
 
         IsCropping = true;
-        vm.PicViewer.Title = TranslationManager.Translation.CropMessage;
-        vm.PicViewer.TitleTooltip = TranslationManager.Translation.CropMessage;
+        vm.PicViewer.Title.Value = TranslationManager.Translation.CropMessage;
+        vm.PicViewer.TitleTooltip.Value = TranslationManager.Translation.CropMessage;
 
         await FunctionsMapper.CloseMenus();
 
@@ -92,15 +92,15 @@ public static class CropFunctions
         TitleManager.SetTitle(vm);
 
         // Reset image type to fix issue with animated images
-        switch (vm.PicViewer.ImageType)
+        switch (vm.PicViewer.ImageType.CurrentValue)
         {
             case ImageType.AnimatedWebp:
-                vm.PicViewer.ImageType = ImageType.Bitmap;
-                vm.PicViewer.ImageType = ImageType.AnimatedWebp;
+                vm.PicViewer.ImageType.Value = ImageType.Bitmap;
+                vm.PicViewer.ImageType.Value = ImageType.AnimatedWebp;
                 break;
             case ImageType.AnimatedGif:
-                vm.PicViewer.ImageType = ImageType.Bitmap;
-                vm.PicViewer.ImageType = ImageType.AnimatedGif;
+                vm.PicViewer.ImageType.Value = ImageType.Bitmap;
+                vm.PicViewer.ImageType.Value = ImageType.AnimatedGif;
                 break;
         }
 
@@ -114,7 +114,7 @@ public static class CropFunctions
             return false;
         }
 
-        if (vm?.PicViewer.ImageSource is not Bitmap || Settings.ImageScaling.ShowImageSideBySide)
+        if (vm?.PicViewer.ImageSource.CurrentValue is not Bitmap || Settings.ImageScaling.ShowImageSideBySide)
         {
             vm.ShouldCropBeEnabled = false;
             return false;
@@ -130,7 +130,7 @@ public static class CropFunctions
             return false;
         }
 
-        if (vm.RotationAngle is 0 && vm.PicViewer.ScaleX is 1)
+        if (vm.RotationAngle is 0 && vm.PicViewer.ScaleX.CurrentValue is 1)
         {
             vm.ShouldCropBeEnabled = true;
             return true;

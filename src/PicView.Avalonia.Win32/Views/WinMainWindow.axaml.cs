@@ -5,15 +5,22 @@ using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using ReactiveUI;
+using R3;
+using R3.Avalonia;
 
 namespace PicView.Avalonia.Win32.Views;
 
 public partial class WinMainWindow : Window
 {
+    private readonly AvaloniaRenderingFrameProvider _frameProvider;
+    
     public WinMainWindow()
     {
         InitializeComponent();
+        
+        // initialize RenderingFrameProvider
+        _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
+        UIHelper.SetFrameProvider(_frameProvider);
         
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -42,9 +49,8 @@ public partial class WinMainWindow : Window
                 DragAndDropHelper.RemoveDragDropView();
             };
             
-            this.WhenAnyValue(x => x.WindowState).Subscribe(state =>
+            Observable.EveryValueChanged(this, x => x.WindowState, _frameProvider).Subscribe( state =>
             {
-
                 switch (state)
                 {
                     case WindowState.FullScreen:
@@ -100,5 +106,10 @@ public partial class WinMainWindow : Window
         }
         var wm = (MainViewModel)DataContext;
         WindowResizing.SetSize(wm);
+    }
+    
+    protected override void OnClosed(EventArgs e)
+    {
+        _frameProvider.Dispose();
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
@@ -12,7 +11,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Avalonia.Views;
 
@@ -41,13 +40,11 @@ public partial class SingleImageResizeView : UserControl
             BgPanel.Background = Brushes.Transparent;
         }
 
-        _aspectRatio = (double)vm.PicViewer.PixelWidth / vm.PicViewer.PixelHeight;
+        _aspectRatio = (double)vm.PicViewer.PixelWidth.CurrentValue / vm.PicViewer.PixelHeight.CurrentValue;
 
         RegisterEventHandlers(vm);
 
-        _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Select(x => x is not null)
+        Observable.EveryValueChanged(vm.PicViewer, x => x.FileInfo.Value, UIHelper.GetFrameProvider)
             .Subscribe(_ =>
             {
                 UpdateQualitySliderState();
@@ -126,10 +123,10 @@ public partial class SingleImageResizeView : UserControl
                 QualitySlider.IsEnabled = true;
                 QualitySlider.Value = 75;
             }
-            else if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.Extension))
+            else if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.CurrentValue.Extension))
             {
                 QualitySlider.IsEnabled = true;
-                QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
+                QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.CurrentValue.FullName);
             }
             else
             {
@@ -168,10 +165,10 @@ public partial class SingleImageResizeView : UserControl
             return;
         }
 
-        var fileInfoFullName = vm.PicViewer.FileInfo.FullName;
+        var fileInfoFullName = vm.PicViewer.FileInfo.CurrentValue.FullName;
         var ext = GetSelectedFileExtension(vm, ref fileInfoFullName);
 
-        var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.FullName, ext);
+        var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.CurrentValue.FullName, ext);
         if (file is null)
         {
             return;
@@ -182,7 +179,7 @@ public partial class SingleImageResizeView : UserControl
 
     private async Task SaveImage(MainViewModel vm)
     {
-        await DoSaveImage(vm, vm.PicViewer.FileInfo.FullName).ConfigureAwait(false);
+        await DoSaveImage(vm, vm.PicViewer.FileInfo.CurrentValue.FullName).ConfigureAwait(false);
     }
 
     private async Task DoSaveImage(MainViewModel vm, string destination)
@@ -197,7 +194,7 @@ public partial class SingleImageResizeView : UserControl
 
         const int rotationAngle = 0; // TODO: Add rotation control
 
-        var file = vm.PicViewer.FileInfo.FullName;
+        var file = vm.PicViewer.FileInfo.CurrentValue.FullName;
         var ext = GetSelectedFileExtension(vm, ref destination);
         destination = Path.ChangeExtension(destination, ext);
         var sameFile = file.Equals(destination, StringComparison.OrdinalIgnoreCase);
@@ -233,7 +230,7 @@ public partial class SingleImageResizeView : UserControl
 
     private string GetSelectedFileExtension(MainViewModel vm, ref string destination)
     {
-        var ext = vm.PicViewer.FileInfo.Extension;
+        var ext = vm.PicViewer.FileInfo.CurrentValue.Extension;
         if (NoConversion.IsSelected)
         {
             return ext;
@@ -309,10 +306,10 @@ public partial class SingleImageResizeView : UserControl
         PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
         PixelHeightTextBox.Text = vm.PicViewer.PixelHeight.ToString();
 
-        if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.Extension))
+        if (IsOriginalFileQualityFormat(vm.PicViewer.FileInfo.CurrentValue.Extension))
         {
             QualitySlider.IsEnabled = true;
-            QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.FullName);
+            QualitySlider.Value = ImageAnalyzer.GetCompressionQuality(vm.PicViewer.FileInfo.CurrentValue.FullName);
         }
         else
         {

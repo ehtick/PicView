@@ -33,7 +33,7 @@ public static class ClipboardFileOperations
         {
             vm.IsLoading = true;
             
-            if (path == vm.PicViewer.FileInfo?.FullName)
+            if (path == vm.PicViewer.FileInfo?.CurrentValue.FullName)
             {
                 await DuplicateCurrentFile(vm);
             }
@@ -66,8 +66,8 @@ public static class ClipboardFileOperations
             return;
         }
 
-        var oldPath = vm.PicViewer.FileInfo.FullName;
-        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.PicViewer.FileInfo);
+        var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
+        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.PicViewer.FileInfo.CurrentValue);
 
         if (string.IsNullOrWhiteSpace(duplicatedPath) || !File.Exists(duplicatedPath))
         {

@@ -29,7 +29,7 @@ public static class ImageOptimizer
                 {
                     OptimalCompression = true
                 };
-                optimizer.LosslessCompress(vm.PicViewer.FileInfo.FullName);
+                optimizer.LosslessCompress(vm.PicViewer.FileInfo.CurrentValue.FullName);
             }
             catch (Exception ex)
             {

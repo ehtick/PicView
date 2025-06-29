@@ -99,7 +99,7 @@ public static class ErrorHandling
         {
             if (!NavigationManager.CanNavigate(vm))
             {
-                var url = vm.PicViewer.Title.GetURL();
+                var url = vm.PicViewer.Title.CurrentValue.GetURL();
                 if (!string.IsNullOrEmpty(url))
                 {
                     await NavigationManager.LoadPicFromUrlAsync(url, vm).ConfigureAwait(false);

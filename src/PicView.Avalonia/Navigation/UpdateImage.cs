@@ -83,10 +83,10 @@ public static class UpdateImage
 
             if (Settings.ImageScaling.ShowImageSideBySide && nextPreloadValue is { ImageModel: not null })
             {
-                vm.PicViewer.SecondaryImageSource = nextPreloadValue.ImageModel.Image;
+                vm.PicViewer.SecondaryImageSource.Value = nextPreloadValue.ImageModel.Image;
                 if (preLoadValue is { ImageModel: not null})
                 {
-                    vm.PicViewer.ImageSource = preLoadValue.ImageModel.Image;
+                    vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
                 }
             }
             else if (preLoadValue is { ImageModel: not null})
@@ -96,9 +96,9 @@ public static class UpdateImage
                     vm.ImageViewer.MainImage.InitialAnimatedSource = preLoadValue.ImageModel.FileInfo.FullName;
                 }
                 
-                vm.PicViewer.ImageSource = preLoadValue.ImageModel.Image;
-                vm.PicViewer.SecondaryImageSource = null;
-                vm.PicViewer.ImageType = preLoadValue.ImageModel.ImageType;
+                vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
+                vm.PicViewer.SecondaryImageSource.Value = null;
+                vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
             }
             else
             {
@@ -190,9 +190,9 @@ public static class UpdateImage
         MainViewModel vm)
     {
         var source = await Task.Run( () => tiffNavigationInfo.Pages[tiffNavigationInfo.CurrentPage].ToWriteableBitmap()).ConfigureAwait(false);
-        vm.PicViewer.ImageSource = source;
-        vm.PicViewer.SecondaryImageSource = null;
-        vm.PicViewer.ImageType = ImageType.Bitmap;
+        vm.PicViewer.ImageSource.Value = source;
+        vm.PicViewer.SecondaryImageSource.Value = null;
+        vm.PicViewer.ImageType.Value = ImageType.Bitmap;
         var width = source?.PixelSize.Width ?? 0;
         var height = source?.PixelSize.Height ?? 0;
         
@@ -250,21 +250,21 @@ public static class UpdateImage
             var path = source as string;
             using var magickImage = new MagickImage();
             magickImage.Ping(path);
-            vm.PicViewer.ImageSource = source;
-            vm.PicViewer.ImageType = ImageType.Svg;
+            vm.PicViewer.ImageSource.Value = source;
+            vm.PicViewer.ImageType.Value = ImageType.Svg;
             width = (int)magickImage.Width;
             height = (int)magickImage.Height;
         }
         else
         {
             var bitmap = source as Bitmap;
-            vm.PicViewer.ImageSource = source;
-            vm.PicViewer.ImageType = imageType == ImageType.Invalid ? ImageType.Bitmap : imageType;
+            vm.PicViewer.ImageSource.Value = source;
+            vm.PicViewer.ImageType.Value = imageType == ImageType.Invalid ? ImageType.Bitmap : imageType;
             width = bitmap?.PixelSize.Width ?? 0;
             height = bitmap?.PixelSize.Height ?? 0;
         }
 
-        vm.PicViewer.FileInfo = null;
+        vm.PicViewer.FileInfo.Value = null;
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -276,14 +276,14 @@ public static class UpdateImage
         }, DispatcherPriority.Send);
 
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 1);
-        vm.PicViewer.WindowTitle = singeImageWindowTitles.TitleWithAppName;
-        vm.PicViewer.Title = singeImageWindowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.WindowTitle.Value = singeImageWindowTitles.TitleWithAppName;
+        vm.PicViewer.Title.Value = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.TitleTooltip.Value = singeImageWindowTitles.BaseTitle;
 
         vm.PlatformService.StopTaskbarProgress();
 
-        vm.PicViewer.PixelWidth = width;
-        vm.PicViewer.PixelHeight = height;
+        vm.PicViewer.PixelWidth.Value = width;
+        vm.PicViewer.PixelHeight.Value = height;
 
         if (Settings.Gallery.IsBottomGalleryShown)
         {
@@ -303,11 +303,11 @@ public static class UpdateImage
     public static void SetStats(MainViewModel vm, ImageModel imageModel)
     {
         vm.IsSingleImage = false;
-        vm.PicViewer.PixelWidth = imageModel.PixelWidth;
-        vm.PicViewer.PixelHeight = imageModel.PixelHeight;
+        vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
+        vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
         vm.GetIndex = NavigationManager.GetNonZeroIndex;
-        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
-        vm.PicViewer.FileInfo = imageModel.FileInfo;
+        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
+        vm.PicViewer.FileInfo.Value = imageModel.FileInfo;
         vm.ZoomValue = 1;
 
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -318,7 +318,7 @@ public static class UpdateImage
         }
 
         // Reset effects
-        vm.PicViewer.EffectConfig = null;
+        vm.PicViewer.EffectConfig.Value = null;
     }
 
     #endregion

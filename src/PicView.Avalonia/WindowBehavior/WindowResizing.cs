@@ -99,13 +99,13 @@ public static class WindowResizing
     public static void SetSize(ImageSize size, MainViewModel vm)
     {
         vm.TitleMaxWidth = size.TitleMaxWidth;
-        vm.PicViewer.ImageWidth = size.Width;
-        vm.PicViewer.SecondaryImageWidth = size.SecondaryWidth;
-        vm.PicViewer.ImageHeight = size.Height;
+        vm.PicViewer.ImageWidth.Value = size.Width;
+        vm.PicViewer.SecondaryImageWidth.Value = size.SecondaryWidth;
+        vm.PicViewer.ImageHeight.Value = size.Height;
         vm.GalleryMargin = new Thickness(0, 0, 0, size.Margin);
 
-        vm.PicViewer.ScrollViewerWidth = size.ScrollViewerWidth;
-        vm.PicViewer.ScrollViewerHeight = size.ScrollViewerHeight;
+        vm.PicViewer.ScrollViewerWidth.Value = size.ScrollViewerWidth;
+        vm.PicViewer.ScrollViewerHeight.Value = size.ScrollViewerHeight;
 
         if (Settings.WindowProperties.AutoFit)
         {
@@ -127,7 +127,7 @@ public static class WindowResizing
             vm.GalleryWidth = double.NaN;
         }
 
-        vm.PicViewer.AspectRatio = size.AspectRatio;
+        vm.PicViewer.AspectRatio.Value = size.AspectRatio;
     }
 
     public static ImageSize? GetSize(MainViewModel vm)
@@ -138,7 +138,7 @@ public static class WindowResizing
         {
             if (vm.PicViewer.FileInfo is null)
             {
-                if (vm.PicViewer.ImageSource is Bitmap bitmap)
+                if (vm.PicViewer.ImageSource.CurrentValue is Bitmap bitmap)
                 {
                     firstWidth = bitmap.PixelSize.Width;
                     firstHeight = bitmap.PixelSize.Height;
@@ -148,12 +148,12 @@ public static class WindowResizing
                     return null;
                 }
             }
-            else if (vm.PicViewer.FileInfo?.Exists != null)
+            else if (vm.PicViewer.FileInfo?.CurrentValue?.Exists != null)
             {
                 try
                 {
                     var magickImage = new MagickImage();
-                    magickImage.Ping(vm.PicViewer.FileInfo);
+                    magickImage.Ping(vm.PicViewer.FileInfo.CurrentValue);
                     firstWidth = magickImage.Width;
                     firstHeight = magickImage.Height;
                 }
@@ -170,8 +170,8 @@ public static class WindowResizing
         }
         else
         {
-            firstWidth = preloadValue.ImageModel?.PixelWidth ?? vm.PicViewer.ImageWidth;
-            firstHeight = preloadValue.ImageModel?.PixelHeight ?? vm.PicViewer.ImageHeight;
+            firstWidth = preloadValue.ImageModel?.PixelWidth ?? vm.PicViewer.ImageWidth.CurrentValue;
+            firstHeight = preloadValue.ImageModel?.PixelHeight ?? vm.PicViewer.ImageHeight.CurrentValue;
         }
 
         if (!Settings.ImageScaling.ShowImageSideBySide)
@@ -207,8 +207,8 @@ public static class WindowResizing
         double rotation,
         MainViewModel vm)
     {
-        width = width == 0 ? vm.PicViewer.ImageWidth : width;
-        height = height == 0 ? vm.PicViewer.ImageHeight : height;
+        width = width == 0 ? vm.PicViewer.ImageWidth.CurrentValue : width;
+        height = height == 0 ? vm.PicViewer.ImageHeight.CurrentValue : height;
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return null;

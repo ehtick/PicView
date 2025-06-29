@@ -23,7 +23,7 @@ public static class ClipboardImageOperations
     public static async Task<bool> CopyImageToClipboard(MainViewModel vm)
     {
         var clipboard = ClipboardService.GetClipboard();
-        if (clipboard == null || vm.PicViewer.ImageSource is not Bitmap bitmap)
+        if (clipboard == null || vm.PicViewer.ImageSource.CurrentValue is not Bitmap bitmap)
         {
             return false;
         }
@@ -93,12 +93,12 @@ public static class ClipboardImageOperations
             return Convert.ToBase64String(await File.ReadAllBytesAsync(path));
         }
 
-        switch (vm.PicViewer.ImageType)
+        switch (vm.PicViewer.ImageType.CurrentValue)
         {
             case ImageType.AnimatedGif:
             case ImageType.AnimatedWebp:
             case ImageType.Bitmap:
-                if (vm.PicViewer.ImageSource is not Bitmap bitmap)
+                if (vm.PicViewer.ImageSource.CurrentValue is not Bitmap bitmap)
                 {
                     return string.Empty;
                 }

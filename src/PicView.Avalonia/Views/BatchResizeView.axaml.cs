@@ -117,7 +117,7 @@ public partial class BatchResizeView : UserControl
                 return;
             }
 
-            SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
+            SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.DirectoryName ?? string.Empty;
             
             this.WhenAny(x => x.SourceFolderTextBox.Text, x => x.Value)
                 .ObserveOn(RxApp.MainThreadScheduler)
@@ -208,7 +208,7 @@ public partial class BatchResizeView : UserControl
             return;
         }
 
-        SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? string.Empty;
+        SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.DirectoryName ?? string.Empty;
 
         ResetButton.IsVisible = false;
         CancelButton.IsVisible = true;

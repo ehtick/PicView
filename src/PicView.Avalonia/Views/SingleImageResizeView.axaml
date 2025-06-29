@@ -1,13 +1,11 @@
 ﻿<UserControl
     d:DesignHeight="450"
     d:DesignWidth="800"
-    mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.SingleImageResizeView"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -33,7 +31,7 @@
                             Foreground="{StaticResource SecondaryTextColor}"
                             Height="35"
                             Margin="0"
-                            Text="{CompiledBinding PicViewer.PixelWidth,
+                            Text="{CompiledBinding PicViewer.PixelWidth.Value,
                                                    Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.SizeTooltip,
                                                           Mode=OneWay}"
@@ -80,7 +78,7 @@
                             Foreground="{StaticResource SecondaryTextColor}"
                             Height="35"
                             Margin="0"
-                            Text="{CompiledBinding PicViewer.PixelHeight,
+                            Text="{CompiledBinding PicViewer.PixelHeight.Value,
                                                    Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.SizeTooltip,
                                                           Mode=OneWay}"

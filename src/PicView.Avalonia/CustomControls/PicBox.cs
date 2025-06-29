@@ -282,7 +282,7 @@ public class PicBox : Control, IDisposable
             return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
         }
 
-        if (vm.PicViewer.FileInfo?.Exists != true)
+        if (vm.PicViewer.FileInfo?.CurrentValue.Exists != true)
         {
             return new Size();
         }
@@ -290,7 +290,7 @@ public class PicBox : Control, IDisposable
         try
         {
             using var magickImage = new MagickImage();
-            magickImage.Ping(vm.PicViewer.FileInfo);
+            magickImage.Ping(vm.PicViewer.FileInfo.CurrentValue);
             return new Size(magickImage.Width, magickImage.Height);
         }
         catch (Exception exception)

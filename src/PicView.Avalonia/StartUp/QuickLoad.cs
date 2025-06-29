@@ -49,7 +49,7 @@ public static class QuickLoad
 
         var magickImage = new MagickImage();
         magickImage.Ping(fileInfo);
-        vm.PicViewer.FileInfo = fileInfo;
+        vm.PicViewer.FileInfo.Value = fileInfo;
         var isLargeImage = magickImage.Width * magickImage.Height > 5000000; // ~5 megapixels threshold
         if (isLargeImage || Settings.ImageScaling.ShowImageSideBySide)
         {
@@ -144,7 +144,7 @@ public static class QuickLoad
         NavigationManager.InitializeImageIterator(vm);
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage);
         var secondaryPreloadValue = await NavigationManager.GetNextPreLoadValueAsync();
-        vm.PicViewer.SecondaryImageSource = secondaryPreloadValue?.ImageModel?.Image;
+        vm.PicViewer.SecondaryImageSource.Value = secondaryPreloadValue?.ImageModel?.Image;
         SetPicViewerValues(vm, imageModel, fileInfo);
         await RenderingFixes(vm, imageModel, secondaryPreloadValue.ImageModel);
         TitleManager.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
@@ -169,13 +169,13 @@ public static class QuickLoad
             vm.ImageViewer.MainImage.InitialAnimatedSource = fileInfo.FullName;
         }
         
-        vm.PicViewer.ImageSource = imageModel.Image;
-        vm.PicViewer.ImageType = imageModel.ImageType;
+        vm.PicViewer.ImageSource.Value = imageModel.Image;
+        vm.PicViewer.ImageType.Value = imageModel.ImageType;
         vm.ZoomValue = 1;
-        vm.PicViewer.PixelWidth = imageModel.PixelWidth;
-        vm.PicViewer.PixelHeight = imageModel.PixelHeight;
+        vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
+        vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
 
-        vm.PicViewer.ExifOrientation = imageModel.EXIFOrientation;
+        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
     }
 
     /// <summary>

@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media.Imaging;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
@@ -21,7 +20,7 @@ public static class FileSaverHelper
         }
         else
         {
-            await SaveFileAsync(vm.PicViewer.FileInfo.FullName, vm.PicViewer.FileInfo.FullName, vm);
+            await SaveFileAsync(vm.PicViewer.FileInfo.CurrentValue.FullName, vm.PicViewer.FileInfo.CurrentValue.FullName, vm);
         }
         
         //TODO: Add visual design to tell the user that file was saved
@@ -35,7 +34,7 @@ public static class FileSaverHelper
         }
         
         // Suggest random filename for saving, if it is not an existing file
-        var fileName = vm.PicViewer.FileInfo is null ? Path.GetRandomFileName() : vm.PicViewer.FileInfo.Name;
+        var fileName = vm.PicViewer.FileInfo is null ? Path.GetRandomFileName() : vm.PicViewer.FileInfo.CurrentValue.Name;
 
         await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
     }
@@ -74,13 +73,13 @@ public static class FileSaverHelper
             
             try
             {
-                switch (vm.PicViewer.ImageType)
+                switch (vm.PicViewer.ImageType.CurrentValue)
                 {
                     case ImageType.AnimatedGif: // TODO: Add animated GIF support
                     case ImageType.AnimatedWebp: // TODO: Add animated WebP support
                     case ImageType.Bitmap:
                     {
-                        if (vm.PicViewer.ImageSource is not Bitmap bitmap)
+                        if (vm.PicViewer.ImageSource.CurrentValue is not Bitmap bitmap)
                         {
                             throw new InvalidOperationException("No bitmap available for saving.");
                         }

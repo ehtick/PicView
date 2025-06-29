@@ -10,6 +10,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
+using R3.Avalonia;
 
 namespace PicView.Avalonia.UI;
 
@@ -26,6 +27,9 @@ public static class UIHelper
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar? GetBottomBar { get; private set; }
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
+    
+    public static AvaloniaRenderingFrameProvider ? GetFrameProvider { get; private set; }
+    public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) => GetFrameProvider = frameProvider;
 
     /// <summary>
     /// Sets up control references from the main desktop application

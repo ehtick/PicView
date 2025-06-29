@@ -1,12 +1,12 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.MacOS.FileAssociation;
-using Avalonia;
 using PicView.Core.MacOS.AppLauncher;
+using PicView.Core.MacOS.FileAssociation;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -50,7 +50,7 @@ public partial class OpenWithView : Window
             {
                 return;
             }
-            _filePath = vm.PicViewer?.FileInfo?.FullName;
+            _filePath = vm.PicViewer?.FileInfo?.CurrentValue.FullName;
         }
 
 

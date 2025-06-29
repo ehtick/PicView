@@ -74,9 +74,9 @@ public partial class ImageInfoView : UserControl
                     ExifHandling.UpdateExifValues(vm);
                     Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        if (DirectoryNameTextBox.Text != vm.PicViewer.FileInfo.DirectoryName)
+                        if (DirectoryNameTextBox.Text != vm.PicViewer.FileInfo.CurrentValue.DirectoryName)
                         {
-                            DirectoryNameTextBox.Text = vm.PicViewer.FileInfo.DirectoryName;
+                            DirectoryNameTextBox.Text = vm.PicViewer.FileInfo.CurrentValue.DirectoryName;
                         }
                     });
                 });
@@ -85,9 +85,9 @@ public partial class ImageInfoView : UserControl
                 PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
                 PixelHeightTextBox.Text = vm.PicViewer.PixelHeight.ToString();
                 AdjustAspectRatio(PixelWidthTextBox);
-                FullPathTextBox.Text = vm.PicViewer.FileInfo?.FullName ?? "";
-                DirectoryNameTextBox.Text = vm.PicViewer.FileInfo?.DirectoryName ?? "";
-                FileNameTextBox.Text = vm.PicViewer.FileInfo?.Name ?? "";
+                FullPathTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.FullName ?? "";
+                DirectoryNameTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.DirectoryName ?? "";
+                FileNameTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.Name ?? "";
             };
 
             SaveButton.Click += async (_, _) =>
@@ -95,22 +95,22 @@ public partial class ImageInfoView : UserControl
                 var ext = GetExtension();
                 var location = FullPathTextBox.Text; // TODO check if this is a valid path
                 // and sync with file name/directory text boxes
-                await SendToImageSaver(vm.PicViewer.FileInfo?.FullName, location, PixelWidthTextBox.Text,
+                await SendToImageSaver(vm.PicViewer.FileInfo?.CurrentValue.FullName, location, PixelWidthTextBox.Text,
                     PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
 
             SaveAsButton.Click += async (_, _) =>
             {
-                var fileInfoFullName = vm.PicViewer.FileInfo.FullName;
+                var fileInfoFullName = vm.PicViewer.FileInfo.CurrentValue.FullName;
                 var ext = DetermineFileExtension(vm, ref fileInfoFullName);
 
-                var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.FullName, ext);
+                var file = await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.CurrentValue.FullName, ext);
                 if (file is null)
                 {
                     return;
                 }
 
-                await SendToImageSaver(vm.PicViewer.FileInfo?.FullName, file, PixelWidthTextBox.Text,
+                await SendToImageSaver(vm.PicViewer.FileInfo?.CurrentValue.FullName, file, PixelWidthTextBox.Text,
                     PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
             FileNameTextBox.KeyDown += async (_, e) =>
@@ -120,8 +120,8 @@ public partial class ImageInfoView : UserControl
                     return;
                 }
 
-                var newPath = Path.Combine(vm.PicViewer.FileInfo.DirectoryName, FileNameTextBox.Text);
-                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var newPath = Path.Combine(vm.PicViewer.FileInfo.CurrentValue.DirectoryName, FileNameTextBox.Text);
+                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
                 var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
                 if (renamed)
                 {
@@ -136,7 +136,7 @@ public partial class ImageInfoView : UserControl
                 }
 
                 var newPath = FullPathTextBox.Text;
-                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
                 var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
                 if (renamed)
                 {
@@ -150,10 +150,10 @@ public partial class ImageInfoView : UserControl
                     return;
                 }
 
-                var oldDirectory = vm.PicViewer.FileInfo.DirectoryName;
+                var oldDirectory = vm.PicViewer.FileInfo.CurrentValue.DirectoryName;
                 var newDirectory = DirectoryNameTextBox.Text;
 
-                var oldPath = vm.PicViewer.FileInfo.FullName;
+                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
                 var newPath = oldPath.Replace(oldDirectory, newDirectory);
 
                 await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
@@ -197,7 +197,7 @@ public partial class ImageInfoView : UserControl
             return;
         }
 
-        var aspectRatio = (double)vm.PicViewer.PixelWidth / vm.PicViewer.PixelHeight;
+        var aspectRatio = (double)vm.PicViewer.PixelWidth.CurrentValue / vm.PicViewer.PixelHeight.CurrentValue;
         AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
             aspectRatio, DataContext as MainViewModel);
 
@@ -219,7 +219,7 @@ public partial class ImageInfoView : UserControl
 
         var gcd = ImageTitleFormatter.GCD(width, height);
         AspectRatioTextBox.Text =
-            AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
+            AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue);
     }
 
     private static async Task DoResize(MainViewModel vm, bool isWidth, object width, object height)
@@ -233,7 +233,7 @@ public partial class ImageInfoView : UserControl
 
             if (widthValue > 0)
             {
-                var success = await ConversionHelper.ResizeByWidth(vm.PicViewer.FileInfo, widthValue)
+                var success = await ConversionHelper.ResizeByWidth(vm.PicViewer.FileInfo.CurrentValue, widthValue)
                     .ConfigureAwait(false);
                 if (success)
                 {
@@ -250,7 +250,7 @@ public partial class ImageInfoView : UserControl
 
             if (heightValue > 0)
             {
-                var success = await ConversionHelper.ResizeByHeight(vm.PicViewer.FileInfo, heightValue)
+                var success = await ConversionHelper.ResizeByHeight(vm.PicViewer.FileInfo.CurrentValue, heightValue)
                     .ConfigureAwait(false);
                 if (success)
                 {
@@ -276,7 +276,7 @@ public partial class ImageInfoView : UserControl
 
     private string DetermineFileExtension(MainViewModel vm, ref string destination)
     {
-        var ext = vm.PicViewer.FileInfo.Extension;
+        var ext = vm.PicViewer.FileInfo.CurrentValue.Extension;
         if (NoConversion.IsSelected)
         {
             return ext;

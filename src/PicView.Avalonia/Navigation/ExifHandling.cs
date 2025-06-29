@@ -13,7 +13,7 @@ public static class ExifHandling
 {
     public static void UpdateExifValues(MainViewModel vm)
     {
-        if (vm.PicViewer?.FileInfo is null || vm.PicViewer is { PixelWidth: <= 0, PixelHeight: <= 0 })
+        if (vm.PicViewer?.FileInfo is null || vm.PicViewer is { PixelWidth.CurrentValue: <= 0, PixelHeight.CurrentValue: <= 0 })
         {
             return;
         }
@@ -21,11 +21,11 @@ public static class ExifHandling
         
         try
         {
-            if (!vm.PicViewer.FileInfo.Exists)
+            if (!vm.PicViewer.FileInfo.CurrentValue.Exists)
             {
                 return;
             }
-            magick.Ping(vm.PicViewer.FileInfo);
+            magick.Ping(vm.PicViewer.FileInfo.CurrentValue);
             var profile = magick.GetExifProfile();
 
             if (profile != null)
@@ -44,16 +44,16 @@ public static class ExifHandling
                 }
             }
 
-            if (vm.Exif.DpiX is 0 && vm.PicViewer.ImageType is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
+            if (vm.Exif.DpiX is 0 && vm.PicViewer.ImageType.CurrentValue is ImageType.Bitmap or ImageType.AnimatedGif or ImageType.AnimatedWebp)
             {
-                if (vm.PicViewer.ImageSource is Bitmap bmp)
+                if (vm.PicViewer.ImageSource.CurrentValue is Bitmap bmp)
                 {
                     vm.Exif.DpiX = bmp?.Dpi.X ?? 0;
                     vm.Exif.DpiY = bmp?.Dpi.Y ?? 0;
                 }
             }
 
-            vm.Exif.Orientation = vm.PicViewer.ExifOrientation switch
+            vm.Exif.Orientation = vm.PicViewer.ExifOrientation.CurrentValue switch
             {
                 EXIFHelper.EXIFOrientation.Horizontal => TranslationManager.Translation.Normal,
                 EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
@@ -82,7 +82,7 @@ public static class ExifHandling
             }
             else 
             {
-                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight, vm.Exif.DpiX, vm.Exif.DpiY);
+                var printSizes = AspectRatioHelper.GetPrintSizes( vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue, vm.Exif.DpiX, vm.Exif.DpiY);
 
                 vm.Exif.PrintSizeCm = printSizes.PrintSizeCm;
                 vm.Exif.PrintSizeInch = printSizes.PrintSizeInch;
@@ -91,10 +91,10 @@ public static class ExifHandling
                 vm.Exif.Resolution = $"{vm.Exif.DpiX} x {vm.Exif.DpiY} {TranslationManager.Translation.Dpi}";
             }
 
-            var gcd = ImageTitleFormatter.GCD(vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
+            var gcd = ImageTitleFormatter.GCD(vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue);
             if (gcd != 0) // Check for zero before division
             {
-                vm.Exif.AspectRatio = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight);
+                vm.Exif.AspectRatio = AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue);
             }
             else
             {

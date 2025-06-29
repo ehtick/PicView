@@ -22,6 +22,7 @@ internal class Program
             .LogToTrace()
 #endif
             .UseReactiveUI()
+            .UseR3()
             .With(new SkiaOptions
             {
                 MaxGpuResourceSizeBytes = 256_000_000,

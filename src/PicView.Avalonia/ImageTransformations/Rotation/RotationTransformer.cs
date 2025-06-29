@@ -75,7 +75,7 @@ public class RotationTransformer(
 
         if (animate)
         {
-            var flipTransform = new ScaleTransform(prevScaleX, 1)
+            var flipTransform = new ScaleTransform(prevScaleX.CurrentValue, 1)
             {
                 Transitions =
                 [
@@ -84,11 +84,11 @@ public class RotationTransformer(
                 ]
             };
             imageLayoutTransformControl.RenderTransform = flipTransform;
-            flipTransform.ScaleX = vm.PicViewer.ScaleX;
+            flipTransform.ScaleX = vm.PicViewer.ScaleX.CurrentValue;
         }
         else
         {
-            imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
+            imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX.CurrentValue, 1);
         }
     }
 
@@ -99,9 +99,9 @@ public class RotationTransformer(
             return;
         }
 
-        vm.PicViewer.ScaleX = scaleX;
+        vm.PicViewer.ScaleX.Value = scaleX;
         vm.RotationAngle = rotationAngle;
-        imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
+        imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX.CurrentValue, 1);
         imageLayoutTransformControl.LayoutTransform = new RotateTransform(rotationAngle);
 
         resetZoom?.Invoke();

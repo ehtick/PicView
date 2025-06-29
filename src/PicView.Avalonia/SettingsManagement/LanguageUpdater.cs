@@ -18,7 +18,7 @@ public static class LanguageUpdater
 
         translationViewModel.UpdateLanguage();
 
-        translationViewModel.IsFlipped = picViewerModel.ScaleX == 1 ? translationViewModel.Flip : translationViewModel.UnFlip;
+        translationViewModel.IsFlipped = picViewerModel.ScaleX.CurrentValue == 1 ? translationViewModel.Flip : translationViewModel.UnFlip;
         
         translationViewModel.IsShowingUI = !Settings.UIProperties.ShowInterface ? translationViewModel.ShowUI : translationViewModel.HideUI;
         

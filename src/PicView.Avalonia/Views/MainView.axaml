@@ -80,7 +80,7 @@
             <!--  Print  -->
             <MenuItem
                 Command="{CompiledBinding PrintCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Print,
                                          Mode=OneWay}"
@@ -100,7 +100,7 @@
             <!--  Open with  -->
             <MenuItem
                 Command="{CompiledBinding OpenWithCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.OpenWith,
                                          Mode=OneWay}"
@@ -120,7 +120,7 @@
             <!--  Locate on disk  -->
             <MenuItem
                 Command="{CompiledBinding LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.ShowInFolder,
                                          Mode=OneWay}"
@@ -682,7 +682,7 @@
             <!--  Set as wallpaper  -->
             <MenuItem
                 Command="{CompiledBinding SetAsWallpaperCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.SetAsWallpaper,
                                          Mode=OneWay}"
@@ -724,7 +724,7 @@
                 <!--  File properties  -->
                 <MenuItem
                     Command="{CompiledBinding FilePropertiesCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.FileProperties,
                                              Mode=OneWay}"
@@ -862,7 +862,7 @@
             <!--  Delete file  -->
             <MenuItem
                 Command="{CompiledBinding RecycleFileCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.DeleteFile,
                                          Mode=OneWay}"
@@ -895,7 +895,7 @@
             <!--  Copy  -->
             <MenuItem
                 Command="{CompiledBinding CopyFileCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Copy,
                                          Mode=OneWay}">
@@ -928,7 +928,7 @@
                 <!--  Copy file path  -->
                 <MenuItem
                     Command="{CompiledBinding CopyFilePathCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{Binding Translation.FileCopyPath, Mode=OneWay}"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
@@ -946,7 +946,7 @@
                 <!--  Copy base64  -->
                 <MenuItem
                     Command="{CompiledBinding CopyBase64Command}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -971,7 +971,7 @@
                 <!--  Duplicate file  -->
                 <MenuItem
                     Command="{CompiledBinding DuplicateFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.DuplicateFile,
                                              Mode=OneWay}"
@@ -1010,7 +1010,7 @@
             <!--  Copy file  -->
             <MenuItem
                 Command="{CompiledBinding CopyFileCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.CopyFile,
                                          Mode=OneWay}"

@@ -19,10 +19,14 @@ public static class TitleManager
     /// <remarks>Can be used to refresh the title when files are added or removed.</remarks>
     public static void SetTitle(MainViewModel vm)
     {
+        var pWidth = vm.PicViewer.PixelWidth.Value;
+        var pHeight = vm.PicViewer.PixelHeight.Value;
+        var fileInfo = vm.PicViewer.FileInfo.Value;
+        
         if (!NavigationManager.CanNavigate(vm))
         {
             string title;
-            var s = vm.PicViewer.WindowTitle;
+            var s = vm.PicViewer.WindowTitle.Value;
             var url = s.GetURL();
             if (!string.IsNullOrWhiteSpace(url))
             {
@@ -38,17 +42,17 @@ public static class TitleManager
             }
 
             var singleImageWindowTitles =
-                ImageTitleFormatter.GenerateTitleForSingleImage(vm.PicViewer.PixelWidth, vm.PicViewer.PixelWidth, title, vm.ZoomValue);
-            vm.PicViewer.WindowTitle = singleImageWindowTitles.BaseTitle;
-            vm.PicViewer.Title = singleImageWindowTitles.TitleWithAppName;
-            vm.PicViewer.TitleTooltip = singleImageWindowTitles.TitleWithAppName;
+                ImageTitleFormatter.GenerateTitleForSingleImage(pWidth, pHeight, title, vm.ZoomValue);
+            vm.PicViewer.WindowTitle.Value = singleImageWindowTitles.BaseTitle;
+            vm.PicViewer.Title.Value = singleImageWindowTitles.TitleWithAppName;
+            vm.PicViewer.TitleTooltip.Value = singleImageWindowTitles.TitleWithAppName;
             return;
         }
 
         if (NavigationManager.TiffNavigationInfo is not null)
         {
-            SetTiffTitle(NavigationManager.TiffNavigationInfo, vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight,
-                NavigationManager.GetCurrentIndex, vm.PicViewer.FileInfo, vm);
+            SetTiffTitle(NavigationManager.TiffNavigationInfo, pWidth, pHeight,
+                NavigationManager.GetCurrentIndex, vm.PicViewer.FileInfo.Value, vm);
             return;
         }
 
@@ -56,9 +60,9 @@ public static class TitleManager
         {
             var imageModel1 = new ImageModel
             {
-                FileInfo = vm.PicViewer.FileInfo,
-                PixelWidth = vm.PicViewer.PixelWidth,
-                PixelHeight = vm.PicViewer.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo.Value,
+                PixelWidth = vm.PicViewer.PixelWidth.Value,
+                PixelHeight = vm.PicViewer.PixelHeight.Value
             };
             var nextFileName = NavigationManager.GetNextFileName;
             using var magickImage = new MagickImage();
@@ -73,12 +77,12 @@ public static class TitleManager
             return;
         }
 
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(vm.PicViewer.PixelWidth, vm.PicViewer.PixelHeight,
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(pWidth, pHeight,
             NavigationManager.GetCurrentIndex,
-            vm.PicViewer.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle = windowTitles.TitleWithAppName;
-        vm.PicViewer.Title = windowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip = windowTitles.FilePathTitle;
+            fileInfo, vm.ZoomValue, NavigationManager.GetCollection);
+        vm.PicViewer.WindowTitle.Value = windowTitles.TitleWithAppName;
+        vm.PicViewer.Title.Value = windowTitles.BaseTitle;
+        vm.PicViewer.TitleTooltip.Value = windowTitles.FilePathTitle;
     }
 
     /// <summary>
@@ -88,9 +92,8 @@ public static class TitleManager
     /// <param name="vm">The main view model instance.</param>
     public static void SetLoadingTitle(MainViewModel vm)
     {
-        vm.PicViewer.WindowTitle = $"{TranslationManager.Translation.Loading} - PicView";
-        vm.PicViewer.Title = TranslationManager.Translation.Loading;
-        vm.PicViewer.TitleTooltip = vm.PicViewer.Title;
+        vm.PicViewer.TitleTooltip.Value = vm.PicViewer.WindowTitle.Value = $"{TranslationManager.Translation.Loading} - PicView";
+        vm.PicViewer.Title.Value = TranslationManager.Translation.Loading;
     }
 
     /// <summary>
@@ -110,18 +113,18 @@ public static class TitleManager
             }
             imageModel = new ImageModel
             {
-                FileInfo = vm.PicViewer.FileInfo,
-                PixelWidth = vm.PicViewer.PixelWidth,
-                PixelHeight = vm.PicViewer.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo.Value,
+                PixelWidth = vm.PicViewer.PixelWidth.Value,
+                PixelHeight = vm.PicViewer.PixelHeight.Value
             };
         }
 
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,
             NavigationManager.GetCurrentIndex,
             imageModel.FileInfo, vm.ZoomValue, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle = windowTitles.TitleWithAppName;
-        vm.PicViewer.Title = windowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip = windowTitles.FilePathTitle;
+        vm.PicViewer.WindowTitle.Value = windowTitles.TitleWithAppName;
+        vm.PicViewer.Title.Value = windowTitles.BaseTitle;
+        vm.PicViewer.TitleTooltip.Value = windowTitles.FilePathTitle;
     }
 
     /// <summary>
@@ -143,9 +146,9 @@ public static class TitleManager
     {
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo,
             tiffNavigationInfo, 1, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle = singeImageWindowTitles.TitleWithAppName;
-        vm.PicViewer.Title = singeImageWindowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.WindowTitle.Value = singeImageWindowTitles.TitleWithAppName;
+        vm.PicViewer.Title.Value = singeImageWindowTitles.BaseTitle;
+        vm.PicViewer.TitleTooltip.Value = singeImageWindowTitles.BaseTitle;
     }
 
     /// <summary>
@@ -207,9 +210,9 @@ public static class TitleManager
             }
             imageModel1 = new ImageModel
             {
-                FileInfo = vm.PicViewer.FileInfo,
-                PixelWidth = vm.PicViewer.PixelWidth,
-                PixelHeight = vm.PicViewer.PixelHeight
+                FileInfo = vm.PicViewer.FileInfo.Value,
+                PixelWidth = vm.PicViewer.PixelWidth.Value,
+                PixelHeight = vm.PicViewer.PixelHeight.Value
             };
         }
         if (!ValidateImageModel(imageModel2, vm))
@@ -242,9 +245,9 @@ public static class TitleManager
         var windowTitle = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd {secondWindowTitles.BaseTitle} - PicView";
         var title = $"{firstWindowTitles.BaseTitle} \u21dc || \u21dd  {secondWindowTitles.BaseTitle}";
         var titleTooltip = $"{firstWindowTitles.FilePathTitle} \u21dc || \u21dd  {secondWindowTitles.FilePathTitle}";
-        vm.PicViewer.WindowTitle = windowTitle;
-        vm.PicViewer.Title = title;
-        vm.PicViewer.TitleTooltip = titleTooltip;
+        vm.PicViewer.WindowTitle.Value = windowTitle;
+        vm.PicViewer.Title.Value = title;
+        vm.PicViewer.TitleTooltip.Value = titleTooltip;
     }
 
     /// <summary>
@@ -257,16 +260,16 @@ public static class TitleManager
     /// </remarks>
     public static void SetNoImageTitle(MainViewModel vm)
     {
-        vm.PicViewer.Title = TranslationManager.Translation.NoImage;
-        vm.PicViewer.WindowTitle = TranslationManager.Translation.NoImage + " - PicView";
-        vm.PicViewer.TitleTooltip = TranslationManager.Translation.NoImage;
+        vm.PicViewer.Title.Value = TranslationManager.Translation.NoImage;
+        vm.PicViewer.WindowTitle.Value = TranslationManager.Translation.NoImage + " - PicView";
+        vm.PicViewer.TitleTooltip.Value = TranslationManager.Translation.NoImage;
     }
 
     private static void ReturnError(MainViewModel vm)
     {
-        vm.PicViewer.WindowTitle =
-            vm.PicViewer.Title =
-                vm.PicViewer.TitleTooltip = TranslationManager.GetTranslation("UnableToRender");
+        vm.PicViewer.WindowTitle.Value =
+            vm.PicViewer.Title.Value =
+                vm.PicViewer.TitleTooltip.Value = TranslationManager.GetTranslation("UnableToRender");
     }
 
     private static bool ValidateImageModel(ImageModel? imageModel, MainViewModel vm)

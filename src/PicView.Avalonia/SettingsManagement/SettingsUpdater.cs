@@ -56,7 +56,7 @@ public static class SettingsUpdater
     }
 
     public static void InitializeSettings(MainViewModel vm)
-    {    
+    {
         // Set corner radius on macOS
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -74,7 +74,7 @@ public static class SettingsUpdater
         vm.GetNavSpeed = Settings.UIProperties.NavSpeed;
         vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
         vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
-        vm.PicViewer.IsShowingSideBySide = Settings.ImageScaling.ShowImageSideBySide;
+        vm.PicViewer.IsShowingSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
         vm.IsBottomGalleryShown = Settings.Gallery.IsBottomGalleryShown;
         vm.IsBottomGalleryShownInHiddenUI = Settings.Gallery.ShowBottomGalleryInHiddenUI;
         vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
@@ -312,8 +312,8 @@ public static class SettingsUpdater
     public static void TurnOffSideBySide(MainViewModel vm)
     {
         Settings.ImageScaling.ShowImageSideBySide = false;
-        vm.PicViewer.IsShowingSideBySide = false;
-        vm.PicViewer.SecondaryImageSource = null;
+        vm.PicViewer.IsShowingSideBySide.Value = false;
+        vm.PicViewer.SecondaryImageSource.Value = null;
         WindowResizing.SetSize(vm);
         TitleManager.SetTitle(vm);
     }
@@ -321,7 +321,7 @@ public static class SettingsUpdater
     public static async Task TurnOnSideBySide(MainViewModel vm)
     {
         Settings.ImageScaling.ShowImageSideBySide = true;
-        vm.PicViewer.IsShowingSideBySide = true;
+        vm.PicViewer.IsShowingSideBySide.Value = true;
         if (NavigationManager.CanNavigate(vm))
         {
             var preloadValue = await NavigationManager.GetNextPreLoadValueAsync();
@@ -332,15 +332,15 @@ public static class SettingsUpdater
 #endif
                 return;
             }
-            vm.PicViewer.SecondaryImageSource = preloadValue.ImageModel.Image;
+            vm.PicViewer.SecondaryImageSource.Value = preloadValue.ImageModel.Image;
             var imageModel1 = new ImageModel
             {
-                FileInfo = vm.PicViewer.FileInfo,
-                PixelWidth = (int)vm.PicViewer.ImageWidth,
-                PixelHeight = (int)vm.PicViewer.ImageHeight,
-                ImageType = vm.PicViewer.ImageType,
+                FileInfo = vm.PicViewer.FileInfo.CurrentValue,
+                PixelWidth = (int)vm.PicViewer.ImageWidth.CurrentValue,
+                PixelHeight = (int)vm.PicViewer.ImageHeight.CurrentValue,
+                ImageType = vm.PicViewer.ImageType.CurrentValue,
                 Image = vm.PicViewer.ImageSource,
-                EXIFOrientation = vm.PicViewer.ExifOrientation
+                EXIFOrientation = vm.PicViewer.ExifOrientation.CurrentValue
             };
             var imageModel2 = new ImageModel
             {
@@ -353,7 +353,7 @@ public static class SettingsUpdater
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                WindowResizing.SetSize(vm.PicViewer.ImageWidth, vm.PicViewer.ImageHeight, preloadValue.ImageModel.PixelWidth,
+                WindowResizing.SetSize(vm.PicViewer.ImageWidth.CurrentValue, vm.PicViewer.ImageHeight.CurrentValue, preloadValue.ImageModel.PixelWidth,
                     preloadValue.ImageModel.PixelHeight, vm.RotationAngle, vm);
                 TitleManager.SetSideBySideTitle(vm, imageModel1, imageModel2);
             });

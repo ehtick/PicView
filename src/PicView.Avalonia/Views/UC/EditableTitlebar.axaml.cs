@@ -4,7 +4,6 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
@@ -60,7 +59,7 @@ public partial class EditableTitlebar : UserControl
         vm.IsEditableTitlebarOpen = false;
         Cursor = new Cursor(StandardCursorType.Arrow);
         MainKeyboardShortcuts.IsKeysEnabled = true;
-        TextBlock.Text = vm.PicViewer.Title;
+        TextBlock.Text = vm.PicViewer.Title.CurrentValue;
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -109,8 +108,8 @@ public partial class EditableTitlebar : UserControl
 
         if (e.Key == Key.Enter)
         {
-            var oldPath = vm.PicViewer.FileInfo.FullName;
-            var newPath = Path.Combine(vm.PicViewer.FileInfo.DirectoryName, TextBox.Text);
+            var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
+            var newPath = Path.Combine(vm.PicViewer.FileInfo.CurrentValue.DirectoryName, TextBox.Text);
             Task.Run(async () =>
             {
                 if (newPath == oldPath)
@@ -154,7 +153,7 @@ public partial class EditableTitlebar : UserControl
             return;
         }
 
-        var filename = vm.PicViewer.FileInfo.Name;
+        var filename = vm.PicViewer.FileInfo.CurrentValue.Name;
         TextBox.Text = filename;
 
         var start = TextBox.Text.Length - filename.Length;

@@ -8,7 +8,7 @@
     MinWidth="{CompiledBinding WindowMinSize}"
     SizeChanged="Control_OnSizeChanged"
     SizeToContent="{CompiledBinding SizeToContent}"
-    Title="{CompiledBinding PicViewer.WindowTitle}"
+    Title="{CompiledBinding PicViewer.WindowTitle.Value}"
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -43,7 +43,7 @@
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItem
                         Command="{CompiledBinding LocateOnDiskCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.ShowInFolder,
                                                  Mode=OneWay}"
@@ -52,7 +52,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding DeleteFileCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.DeleteFile,
                                                  Mode=OneWay}"
@@ -61,7 +61,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding ReloadCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.Reload,
                                                  Mode=OneWay}"
@@ -71,7 +71,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding RenameCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.RenameFile,
                                                  Mode=OneWay}"
@@ -82,7 +82,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding CopyFileCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.CopyFile,
                                                  Mode=OneWay}"
@@ -90,7 +90,7 @@
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItem
                         Command="{CompiledBinding CopyImageCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.CopyImage,
                                                  Mode=OneWay}"
@@ -98,7 +98,7 @@
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItem
                         Command="{CompiledBinding CopyFilePathCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.FileCopyPath,
                                                  Mode=OneWay}"
@@ -106,7 +106,7 @@
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItem
                         Command="{CompiledBinding DuplicateFileCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.DuplicateFile,
                                                  Mode=OneWay}"
@@ -139,7 +139,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding CropCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.Crop,
                                                  Mode=OneWay}"
@@ -148,7 +148,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding SetAsWallpaperCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.SetAsWallpaper,
                                                  Mode=OneWay}"
@@ -158,7 +158,7 @@
                     <NativeMenuItem Command="{CompiledBinding ShowExifWindowCommand}" Header="{CompiledBinding Translation.ImageInfo, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding FilePropertiesCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.FileProperties,
                                                  Mode=OneWay}"
@@ -170,7 +170,7 @@
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding OptimizeImageCommand}"
-                        CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.OptimizeImage,
                                                  Mode=OneWay}"

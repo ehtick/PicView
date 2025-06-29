@@ -25,7 +25,7 @@ internal static class ConversionHelper
     public static async Task ResizeImageByPercentage(int percentage, MainViewModel vm)
     {
         TitleManager.SetLoadingTitle(vm);
-        var success = await ResizeImageByPercentage(vm.PicViewer.FileInfo, percentage);
+        var success = await ResizeImageByPercentage(vm.PicViewer.FileInfo.CurrentValue, percentage);
         if (success)
         {
             await NavigationManager.QuickReload();
@@ -94,7 +94,7 @@ internal static class ConversionHelper
             return;
         }
 
-        var newPath = await ConvertTask(vm.PicViewer.FileInfo, index, vm.PlatformService);
+        var newPath = await ConvertTask(vm.PicViewer.FileInfo.CurrentValue, index, vm.PlatformService);
         if (!string.IsNullOrWhiteSpace(newPath))
         {
             await NavigationManager.LoadPicFromStringAsync(newPath, vm);
@@ -109,10 +109,10 @@ internal static class ConversionHelper
             return;
         }
 
-        if (vm.PicViewer.FileInfo.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
+        if (vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
+            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
         {
             vm.ShouldOptimizeImageBeEnabled = true;
         }

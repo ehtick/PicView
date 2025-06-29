@@ -122,14 +122,14 @@ public static class RotationNavigation
 
     public static void Flip(MainViewModel vm)
     {
-        if (vm.PicViewer.ScaleX == 1)
+        if (vm.PicViewer.ScaleX.CurrentValue == 1)
         {
-            vm.PicViewer.ScaleX = -1;
+            vm.PicViewer.ScaleX.Value = -1;
             vm.Translation.IsFlipped = vm.Translation.UnFlip;
         }
         else
         {
-            vm.PicViewer.ScaleX = 1;
+            vm.PicViewer.ScaleX.Value = 1;
             vm.Translation.IsFlipped = vm.Translation.Flip;
         }
 

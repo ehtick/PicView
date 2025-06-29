@@ -71,7 +71,7 @@ public static class HideInterfaceLogic
                                 GalleryFunctions.OpenBottomGallery(vm);
                             }
                         });
-                        _ = GalleryLoad.LoadGallery(vm, vm.PicViewer.FileInfo.DirectoryName);
+                        _ = GalleryLoad.LoadGallery(vm, vm.PicViewer.FileInfo.CurrentValue.DirectoryName);
                     }
 
                     vm.IsBottomGalleryShown = true;

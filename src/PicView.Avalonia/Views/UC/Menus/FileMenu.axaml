@@ -63,7 +63,7 @@
                     Canvas.Left="45"
                     Classes="hover btn"
                     Command="{CompiledBinding PrintCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource PrintGeometry}"
                     IconHeight="17"
@@ -78,7 +78,7 @@
                     Canvas.Left="90"
                     Classes="hover btn"
                     Command="{CompiledBinding RecycleFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource RecycleGeometry}"
                     IconHeight="17"
@@ -104,7 +104,7 @@
                     Canvas.Left="180"
                     Classes="hover btn"
                     Command="{CompiledBinding CopyFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource CopyGeometry}"
                     IconHeight="17"
@@ -118,7 +118,7 @@
                     Canvas.Left="225"
                     Classes="hover btn"
                     Command="{CompiledBinding DuplicateFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource DuplicateGeometry}"
                     IconHeight="17"
@@ -168,7 +168,7 @@
                     Canvas.Top="104"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding OpenWithCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Height="46"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
@@ -194,7 +194,7 @@
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding LocateOnDiskCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Height="46"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,

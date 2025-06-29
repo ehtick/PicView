@@ -73,16 +73,16 @@ public partial class EffectsView : UserControl
 
         if (vm.PicViewer.EffectConfig == null)
         {
-            vm.PicViewer.EffectConfig = new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value = new ImageEffectConfig();
             HideResetBtn();
         }
-        else if (IsDefaultEffectConfig(vm.PicViewer.EffectConfig))
+        else if (IsDefaultEffectConfig(vm.PicViewer.EffectConfig.CurrentValue))
         {
             HideResetBtn();
         }
         else
         {
-            ApplyEffectConfig(vm.PicViewer.EffectConfig);
+            ApplyEffectConfig(vm.PicViewer.EffectConfig.CurrentValue);
         }
     }
 
@@ -108,37 +108,37 @@ public partial class EffectsView : UserControl
 
         BrightnessSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.Brightness = new Percentage(e.NewValue));
             HideCancelBtn();
         };
         ContrastSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.Contrast = new Percentage(e.NewValue));
             HideCancelBtn();
         };
         PencilSketchSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.SketchStrokeWidth = e.NewValue);
             HideCancelBtn();
         };
         PosterizeSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.PosterizeLevel = (int)e.NewValue == 1 ? 2 : (int)e.NewValue);
             HideCancelBtn();
         };
         SolarizeSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.Solarize = new Percentage(e.NewValue));
             HideCancelBtn();
         };
         BlurSlider.ValueChanged += (s, e) =>
         {
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             UpdateEffectConfig(vm, config => config.BlurLevel = e.NewValue);
             HideCancelBtn();
         };
@@ -147,21 +147,21 @@ public partial class EffectsView : UserControl
         {
             var isBlackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue &&
                                   BlackAndWhiteToggleButton.IsChecked.Value;
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             await UpdateToggleEffect(vm, BlackAndWhiteToggleButton, config => config.BlackAndWhite = isBlackAndWhite);
             HideCancelBtn();
         };
         NegativeToggleButton.Click += async delegate
         {
             var isNegative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             await UpdateToggleEffect(vm, NegativeToggleButton, config => config.Negative = isNegative);
             HideCancelBtn();
         };
         OldMovieToggleButton.Click += async delegate
         {
             var isOldMovie = OldMovieToggleButton.IsChecked.HasValue && OldMovieToggleButton.IsChecked.Value;
-            vm.PicViewer.EffectConfig ??= new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
             await UpdateToggleEffect(vm, OldMovieToggleButton, config => config.OldMovie = isOldMovie);
             HideCancelBtn();
         };
@@ -245,11 +245,11 @@ public partial class EffectsView : UserControl
         try
         {
             var magick = await ImageEffectsHelper
-                .ApplyEffects(vm.PicViewer.FileInfo, vm.PicViewer.EffectConfig, _cancellationTokenSource.Token)
+                .ApplyEffects(vm.PicViewer.FileInfo.CurrentValue, vm.PicViewer.EffectConfig.CurrentValue, _cancellationTokenSource.Token)
                 .ConfigureAwait(false);
             if (magick is not null)
             {
-                vm.PicViewer.ImageSource = magick.ToWriteableBitmap();
+                vm.PicViewer.ImageSource.Value = magick.ToWriteableBitmap();
             }
         }
         finally
@@ -293,7 +293,7 @@ public partial class EffectsView : UserControl
         BlurSlider.Value = 0;
         if (DataContext is MainViewModel vm)
         {
-            vm.PicViewer.EffectConfig = new ImageEffectConfig();
+            vm.PicViewer.EffectConfig.Value = new ImageEffectConfig();
         }
     }
 
@@ -335,7 +335,7 @@ public partial class EffectsView : UserControl
     /// <param name="updateAction">An action that updates the effect configuration.</param>
     private void UpdateEffectConfig(MainViewModel vm, Action<ImageEffectConfig> updateAction)
     {
-        updateAction(vm.PicViewer.EffectConfig);
+        updateAction(vm.PicViewer.EffectConfig.CurrentValue);
         DebounceSliderChange();
     }
 
@@ -356,7 +356,7 @@ public partial class EffectsView : UserControl
             return;
         }
 
-        updateAction(vm.PicViewer.EffectConfig);
+        updateAction(vm.PicViewer.EffectConfig.CurrentValue);
         await ApplyEffectsDebounced();
     }
 

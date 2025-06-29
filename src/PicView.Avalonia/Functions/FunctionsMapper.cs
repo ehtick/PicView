@@ -536,11 +536,11 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="FileManager.OpenWith(string, MainViewModel)" />
     public static async Task OpenWith() =>
-        await Task.Run(() => Vm?.PlatformService?.OpenWith(Vm.PicViewer.FileInfo?.FullName)).ConfigureAwait(false);
+        await Task.Run(() => Vm?.PlatformService?.OpenWith(Vm.PicViewer.FileInfo?.CurrentValue.FullName)).ConfigureAwait(false);
     
     /// <inheritdoc cref="FileManager.LocateOnDisk(string, MainViewModel)" />
     public static async Task OpenInExplorer()=>
-        await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.PicViewer.FileInfo?.FullName)).ConfigureAwait(false);
+        await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.PicViewer.FileInfo?.CurrentValue.FullName)).ConfigureAwait(false);
 
     /// <inheritdoc cref="FileSaverHelper.SaveCurrentFile(MainViewModel)" />
     public static async Task Save() =>
@@ -552,11 +552,11 @@ public static class FunctionsMapper
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFile() =>
-        await FileManager.DeleteFileWithOptionalDialog(true, Vm.PicViewer?.FileInfo?.FullName, Vm.PlatformService).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(true, Vm.PicViewer?.FileInfo?.CurrentValue.FullName, Vm.PlatformService).ConfigureAwait(false);
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public static async Task DeleteFilePermanently() =>
-        await FileManager.DeleteFileWithOptionalDialog(false, Vm.PicViewer?.FileInfo?.FullName, Vm.PlatformService).ConfigureAwait(false);
+        await FileManager.DeleteFileWithOptionalDialog(false, Vm.PicViewer?.FileInfo?.CurrentValue.FullName, Vm.PlatformService).ConfigureAwait(false);
 
     public static async Task Rename()
     {
@@ -569,7 +569,7 @@ public static class FunctionsMapper
     
     /// <inheritdoc cref="FileManager.ShowFileProperties(string, MainViewModel)" />
     public static async Task ShowFileProperties() =>
-        await Task.Run(() => Vm?.PlatformService?.ShowFileProperties(Vm.PicViewer.FileInfo?.FullName)).ConfigureAwait(false);
+        await Task.Run(() => Vm?.PlatformService?.ShowFileProperties(Vm.PicViewer.FileInfo?.CurrentValue.FullName)).ConfigureAwait(false);
     
     #endregion
 
@@ -577,11 +577,11 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="ClipboardFileOperations.CopyFileToClipboard(string, MainViewModel)" />
     public static async Task CopyFile() =>
-        await ClipboardFileOperations.CopyFileToClipboard(Vm?.PicViewer.FileInfo?.FullName, Vm).ConfigureAwait(false);
+        await ClipboardFileOperations.CopyFileToClipboard(Vm?.PicViewer.FileInfo?.CurrentValue.FullName, Vm).ConfigureAwait(false);
     
     /// <inheritdoc cref="ClipboardTextOperations.CopyTextToClipboard(string)" />
     public static async Task CopyFilePath() => 
-        await ClipboardTextOperations.CopyTextToClipboard(Vm?.PicViewer.FileInfo?.FullName).ConfigureAwait(false);
+        await ClipboardTextOperations.CopyTextToClipboard(Vm?.PicViewer.FileInfo?.CurrentValue.FullName).ConfigureAwait(false);
 
     /// <inheritdoc cref="ClipboardImageOperations.CopyImageToClipboard(MainViewModel)" />
     public static async Task CopyImage() => 
@@ -589,15 +589,15 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string, MainViewModel)" />
     public static async Task CopyBase64() =>
-        await ClipboardImageOperations.CopyBase64ToClipboard(Vm.PicViewer.FileInfo?.FullName, vm: Vm).ConfigureAwait(false);
+        await ClipboardImageOperations.CopyBase64ToClipboard(Vm.PicViewer.FileInfo?.CurrentValue.FullName, vm: Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
     public static async Task DuplicateFile() => 
-        await ClipboardFileOperations.Duplicate(Vm.PicViewer.FileInfo?.FullName, Vm).ConfigureAwait(false);
+        await ClipboardFileOperations.Duplicate(Vm.PicViewer.FileInfo?.CurrentValue.FullName, Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="ClipboardFileOperations.CutFile(string, MainViewModel)" />
     public static async Task CutFile() =>
-        await ClipboardFileOperations.CutFile(Vm.PicViewer.FileInfo.FullName, Vm).ConfigureAwait(false);
+        await ClipboardFileOperations.CutFile(Vm.PicViewer.FileInfo.CurrentValue.FullName, Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="ClipboardPasteOperations.Paste(MainViewModel)" />
     public static async Task Paste() =>
@@ -697,7 +697,7 @@ public static class FunctionsMapper
             return;
         }
 
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 0); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 0); });
         Vm.EXIFRating = 0;
     }
 
@@ -709,7 +709,7 @@ public static class FunctionsMapper
             return;
         }
 
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 1); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 1); });
         Vm.EXIFRating = 1;
     }
 
@@ -720,7 +720,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 2); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 2); });
         Vm.EXIFRating = 2;
     }
 
@@ -731,7 +731,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 3); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 3); });
         Vm.EXIFRating = 3;
     }
 
@@ -742,7 +742,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 4); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 4); });
         Vm.EXIFRating = 4;
     }
 
@@ -753,7 +753,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.FullName, 5); });
+        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 5); });
         Vm.EXIFRating = 5;
     }
 
@@ -799,25 +799,25 @@ public static class FunctionsMapper
         await SetAsWallpaperFilled();
 
     public static async Task SetAsWallpaperTiled() =>
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.FullName, 0)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.CurrentValue.FullName, 0)).ConfigureAwait(false);
     
     public static async Task SetAsWallpaperCentered() =>
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.FullName, 1)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.CurrentValue.FullName, 1)).ConfigureAwait(false);
     
     public static async Task SetAsWallpaperStretched() =>
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.FullName, 2)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.CurrentValue.FullName, 2)).ConfigureAwait(false);
     
     public static async Task SetAsWallpaperFitted() =>
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.FullName, 3)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.CurrentValue.FullName, 3)).ConfigureAwait(false);
     
     public static async Task SetAsWallpaperFilled() =>
-        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.FullName, 4)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsWallpaper(Vm.PicViewer.FileInfo.CurrentValue.FullName, 4)).ConfigureAwait(false);
     
     public static async Task SetAsLockscreenCentered() =>
-        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.PicViewer.FileInfo.FullName)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.PicViewer.FileInfo.CurrentValue.FullName)).ConfigureAwait(false);
     
     public static async Task SetAsLockScreen() =>
-        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.PicViewer.FileInfo.FullName)).ConfigureAwait(false);
+        await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.PicViewer.FileInfo.CurrentValue.FullName)).ConfigureAwait(false);
 
     #endregion
 
@@ -834,9 +834,9 @@ public static class FunctionsMapper
         var getFromArgs = false;
         if (Vm?.PicViewer.FileInfo is not null)
         {
-            if (Vm.PicViewer.FileInfo.Exists)
+            if (Vm.PicViewer.FileInfo.CurrentValue.Exists)
             {
-                openFile = Vm.PicViewer.FileInfo.FullName;
+                openFile = Vm.PicViewer.FileInfo.CurrentValue.FullName;
             }
             else
             {

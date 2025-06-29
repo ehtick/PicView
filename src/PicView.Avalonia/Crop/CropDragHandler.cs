@@ -68,8 +68,8 @@ public class CropDragHandler(CropControl control)
         var newTop = _originalRect.Y + delta.Y;
 
         // Clamp the newLeft and newTop values to keep the rectangle within bounds
-        newLeft = Math.Max(0, Math.Min(vm.PicViewer.ImageWidth - vm.Crop.SelectionWidth, newLeft));
-        newTop = Math.Max(0, Math.Min(vm.PicViewer.ImageHeight - vm.Crop.SelectionHeight, newTop));
+        newLeft = Math.Max(0, Math.Min(vm.PicViewer.ImageWidth.CurrentValue - vm.Crop.SelectionWidth, newLeft));
+        newTop = Math.Max(0, Math.Min(vm.PicViewer.ImageHeight.CurrentValue - vm.Crop.SelectionHeight, newTop));
 
         // Only proceed if new positions are valid (i.e., not NaN)
         if (double.IsNaN(newLeft) || double.IsNaN(newTop))

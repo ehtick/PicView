@@ -17,14 +17,14 @@ public class CropLayoutManager(CropControl control)
         }
 
         // Ensure image dimensions are valid before proceeding
-        if (vm.PicViewer.ImageWidth <= 0 || vm.PicViewer.ImageHeight <= 0)
+        if (vm.PicViewer.ImageWidth.CurrentValue <= 0 || vm.PicViewer.ImageHeight.CurrentValue <= 0)
         {
             return;
         }
 
         // Set initial width and height for the crop rectangle
-        var pixelWidth = vm.PicViewer.ImageWidth / vm.PicViewer.AspectRatio;
-        var pixelHeight = vm.PicViewer.ImageHeight / vm.PicViewer.AspectRatio;
+        var pixelWidth = vm.PicViewer.ImageWidth.CurrentValue / vm.PicViewer.AspectRatio.CurrentValue;
+        var pixelHeight = vm.PicViewer.ImageHeight.CurrentValue / vm.PicViewer.AspectRatio.CurrentValue;
 
         if (pixelWidth >= DefaultSelectionSize * 2 || pixelHeight >= DefaultSelectionSize * 2)
         {
@@ -38,8 +38,8 @@ public class CropLayoutManager(CropControl control)
         }
 
         // Calculate centered position
-        vm.Crop.SelectionX = Convert.ToInt32((vm.PicViewer.ImageWidth - vm.Crop.SelectionWidth) / 2);
-        vm.Crop.SelectionY = Convert.ToInt32((vm.PicViewer.ImageHeight - vm.Crop.SelectionHeight) / 2);
+        vm.Crop.SelectionX = Convert.ToInt32((vm.PicViewer.ImageWidth.CurrentValue - vm.Crop.SelectionWidth) / 2);
+        vm.Crop.SelectionY = Convert.ToInt32((vm.PicViewer.ImageHeight.CurrentValue - vm.Crop.SelectionHeight) / 2);
 
         // Apply the calculated position to the MainRectangle
         Canvas.SetLeft(control.MainRectangle, vm.Crop.SelectionX);
@@ -76,13 +76,13 @@ public class CropLayoutManager(CropControl control)
 
         // Calculate the positions and sizes for the surrounding rectangles
         // Top Rectangle (above MainRectangle)
-        control.TopRectangle.Width = vm.PicViewer.ImageWidth;
+        control.TopRectangle.Width = vm.PicViewer.ImageWidth.CurrentValue;
         control.TopRectangle.Height = top < 0 ? 0 : top;
         Canvas.SetTop(control.TopRectangle, 0);
 
         // Bottom Rectangle (below MainRectangle)
-        control.BottomRectangle.Width = vm.PicViewer.ImageWidth;
-        var newBottomRectangleHeight = vm.PicViewer.ImageHeight - bottom < 0 ? 0 : vm.PicViewer.ImageHeight - bottom;
+        control.BottomRectangle.Width = vm.PicViewer.ImageWidth.CurrentValue;
+        var newBottomRectangleHeight = vm.PicViewer.ImageHeight.CurrentValue - bottom < 0 ? 0 : vm.PicViewer.ImageHeight.CurrentValue - bottom;
         control.BottomRectangle.Height = newBottomRectangleHeight;
         Canvas.SetTop(control.BottomRectangle, bottom);
 
@@ -93,7 +93,7 @@ public class CropLayoutManager(CropControl control)
         Canvas.SetTop(control.LeftRectangle, top);
 
         // Right Rectangle (right of MainRectangle)
-        var newRightRectangleWidth = vm.PicViewer.ImageWidth - right < 0 ? 0 : vm.PicViewer.ImageWidth - right;
+        var newRightRectangleWidth = vm.PicViewer.ImageWidth.CurrentValue - right < 0 ? 0 : vm.PicViewer.ImageWidth.CurrentValue - right;
         control.RightRectangle.Width = newRightRectangleWidth;
         control.RightRectangle.Height = vm.Crop.SelectionHeight;
         Canvas.SetLeft(control.RightRectangle, right);

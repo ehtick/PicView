@@ -64,7 +64,7 @@
             <!--  Print  -->
             <MenuItem
                 Command="{CompiledBinding PrintCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Print,
                                          Mode=OneWay}"
@@ -84,7 +84,7 @@
             <!--  Open with  -->
             <MenuItem
                 Command="{CompiledBinding OpenWithCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.OpenWith,
                                          Mode=OneWay}"
@@ -104,7 +104,7 @@
             <!--  Locate on disk  -->
             <MenuItem
                 Command="{CompiledBinding LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.ShowInFolder,
                                          Mode=OneWay}"
@@ -139,7 +139,7 @@
                 <!--  Set as wallpaper filled  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperFilledCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Fill,
                                              Mode=OneWay}"
@@ -158,7 +158,7 @@
                 <!--  Set as wallpaper fit  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperFittedTask}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Fit,
                                              Mode=OneWay}"
@@ -177,7 +177,7 @@
                 <!--  Set as wallpaper stretched  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperStretchedCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Stretch,
                                              Mode=OneWay}"
@@ -198,7 +198,7 @@
                 <!--  Set as wallpaper centered  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperCenteredCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Center,
                                              Mode=OneWay}"
@@ -217,7 +217,7 @@
                 <!--  Set as wallpaper tiled  -->
                 <MenuItem
                     Command="{CompiledBinding SetAsWallpaperTiledCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Tile,
                                              Mode=OneWay}"
@@ -237,7 +237,7 @@
             <!--  File properties  -->
             <MenuItem
                 Command="{CompiledBinding FilePropertiesCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.FileProperties,
                                          Mode=OneWay}"
@@ -273,7 +273,7 @@
             <!--  Delete file  -->
             <MenuItem
                 Command="{CompiledBinding RecycleFileCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.DeleteFile,
                                          Mode=OneWay}"
@@ -294,7 +294,7 @@
             <!--  Copy  -->
             <MenuItem
                 Command="{CompiledBinding CopyFileCommand}"
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Copy,
                                          Mode=OneWay}">
@@ -310,7 +310,7 @@
                 <!--  Copy file  -->
                 <MenuItem
                     Command="{CompiledBinding CopyFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.CopyFile,
                                              Mode=OneWay}"
@@ -346,7 +346,7 @@
                 <!--  Copy file path  -->
                 <MenuItem
                     Command="{CompiledBinding CopyFilePathCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{Binding Translation.FileCopyPath, Mode=OneWay}"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
@@ -364,7 +364,7 @@
                 <!--  Copy base64  -->
                 <MenuItem
                     Command="{CompiledBinding CopyBase64Command}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -389,7 +389,7 @@
                 <!--  Duplicate file  -->
                 <MenuItem
                     Command="{CompiledBinding DuplicateFileCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.DuplicateFile,
                                              Mode=OneWay}"
@@ -465,11 +465,11 @@
                             Background="{DynamicResource SecondaryBackgroundColor}"
                             Classes="hover TStyle x"
                             Foreground="{StaticResource SecondaryTextColor}"
-                            Text="{Binding PicViewer.FileInfo.Name, FallbackValue=''}"
+                            Text="{Binding PicViewer.FileInfo.CurrentValue.Name, FallbackValue=''}"
                             x:Name="FileNameTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.Name,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.Name,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">
@@ -494,12 +494,12 @@
                             Background="{DynamicResource SecondaryBackgroundColor}"
                             Classes="hover TStyle x"
                             Foreground="{StaticResource SecondaryTextColor}"
-                            Text="{CompiledBinding PicViewer.FileInfo.DirectoryName,
+                            Text="{CompiledBinding PicViewer.FileInfo.CurrentValue.DirectoryName,
                                                    FallbackValue=''}"
                             x:Name="DirectoryNameTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.DirectoryName,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.DirectoryName,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy}">
                             <Path
@@ -523,12 +523,12 @@
                             Background="{DynamicResource SecondaryBackgroundColor}"
                             Classes="hover TStyle x"
                             Foreground="{StaticResource SecondaryTextColor}"
-                            Text="{CompiledBinding PicViewer.FileInfo.FullName,
+                            Text="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                    FallbackValue=''}"
                             x:Name="FullPathTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.FullName,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">
@@ -552,11 +552,11 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding PicViewer.FileInfo.CreationTime,
+                            Text="{CompiledBinding PicViewer.FileInfo.CurrentValue.CreationTime,
                                                    FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.CreationTime,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.CreationTime,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">
@@ -580,11 +580,11 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding PicViewer.FileInfo.LastWriteTime,
+                            Text="{CompiledBinding PicViewer.FileInfo.CurrentValue.LastWriteTime,
                                                    FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.LastWriteTime,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.LastWriteTime,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy}">
                             <Path
@@ -607,11 +607,11 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding PicViewer.FileInfo.LastAccessTime,
+                            Text="{CompiledBinding PicViewer.FileInfo.CurrentValue.LastAccessTime,
                                                    FallbackValue=''}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding PicViewer.FileInfo.LastAccessTime,
+                            CopyText="{CompiledBinding PicViewer.FileInfo.CurrentValue.LastAccessTime,
                                                        FallbackValue=''}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">

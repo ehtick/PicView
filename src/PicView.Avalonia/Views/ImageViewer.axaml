@@ -17,33 +17,33 @@
     <LayoutTransformControl x:Name="ImageLayoutTransformControl">
         <customControls:AutoScrollViewer
             Focusable="False"
-            Height="{CompiledBinding PicViewer.ScrollViewerHeight,
+            Height="{CompiledBinding PicViewer.ScrollViewerHeight.Value,
                                      Mode=OneWay}"
             ScrollChanged="ImageScrollViewer_OnScrollChanged"
             Theme="{StaticResource Main}"
             VerticalScrollBarVisibility="{CompiledBinding ToggleScrollBarVisibility}"
-            Width="{CompiledBinding PicViewer.ScrollViewerWidth,
+            Width="{CompiledBinding PicViewer.ScrollViewerWidth.Value,
                                     Mode=OneWay}"
             x:Name="ImageScrollViewer">
-            <Border     
+            <Border
                 Background="{CompiledBinding ConstrainedImageBackground,
-                                 Mode=OneWay}"
-                Height="{CompiledBinding PicViewer.ImageHeight,
+                                             Mode=OneWay}"
+                Height="{CompiledBinding PicViewer.ImageHeight.Value,
                                          Mode=OneWay}"
-                Width="{CompiledBinding PicViewer.ImageWidth,
+                Width="{CompiledBinding PicViewer.ImageWidth.Value,
                                         Mode=OneWay}"
                 x:Name="MainBorder">
-                <customControls:PicBox 
-                    ImageType="{CompiledBinding PicViewer.ImageType,
+                <customControls:PicBox
+                    ImageType="{CompiledBinding PicViewer.ImageType.Value,
                                                 Mode=OneWay}"
                     PointerMoved="MainImage_OnPointerMoved"
                     PointerPressed="MainImage_OnPointerPressed"
                     PointerReleased="MainImage_OnPointerReleased"
-                    SecondaryImageWidth="{CompiledBinding PicViewer.SecondaryImageWidth,
+                    SecondaryImageWidth="{CompiledBinding PicViewer.SecondaryImageWidth.Value,
                                                           Mode=OneWay}"
-                    SecondarySource="{CompiledBinding PicViewer.SecondaryImageSource,
+                    SecondarySource="{CompiledBinding PicViewer.SecondaryImageSource.Value,
                                                       Mode=OneWay}"
-                    Source="{CompiledBinding PicViewer.ImageSource,
+                    Source="{CompiledBinding PicViewer.ImageSource.Value,
                                              Mode=OneWay}"
                     UseLayoutRounding="True"
                     x:Name="MainImage" />

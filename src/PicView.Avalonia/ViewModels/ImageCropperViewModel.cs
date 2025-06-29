@@ -126,7 +126,7 @@ public class ImageCropperViewModel : ReactiveObject
         
         CropFunctions.CloseCropControl(vm);
 
-        if (vm.PicViewer.FileInfo.FullName == saveFileDialog)
+        if (vm.PicViewer.FileInfo.CurrentValue.FullName == saveFileDialog)
         {
             await ErrorHandling.ReloadAsync(vm);
         }
@@ -135,7 +135,7 @@ public class ImageCropperViewModel : ReactiveObject
     private async Task CopyCroppedImageAsync()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm) return;
-        if (vm.PicViewer.ImageSource is not Bitmap sourceBitmap) return;
+        if (vm.PicViewer.ImageSource.CurrentValue is not Bitmap sourceBitmap) return;
 
         var x = Convert.ToInt32(SelectionX / AspectRatio);
         var y = Convert.ToInt32(SelectionY / AspectRatio);
@@ -151,7 +151,7 @@ public class ImageCropperViewModel : ReactiveObject
     }
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
-      => NavigationManager.IsCollectionEmpty ? CreateNewCroppedImage() : (vm.PicViewer.FileInfo.FullName, vm.PicViewer.FileInfo, null);
+      => NavigationManager.IsCollectionEmpty ? CreateNewCroppedImage() : (vm.PicViewer.FileInfo.Value.FullName, vm.PicViewer.FileInfo.Value, null);
 
     private (string fileName, FileInfo fileInfo, Bitmap bitmap) CreateNewCroppedImage()
     {
