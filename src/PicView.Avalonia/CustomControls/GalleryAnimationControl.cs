@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -13,12 +12,29 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Sizing;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
 public class GalleryAnimationControl : UserControl
 {
+    #region Cleanup
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        base.OnUnloaded(e);
+
+        if (Parent is Control parent)
+        {
+            parent.SizeChanged -= ParentSizeChanged;
+        }
+
+        Loaded -= OnControlLoaded;
+        RemoveHandler(PointerPressedEvent, PreviewPointerPressedEvent);
+    }
+
+    #endregion
+
     #region Fields and Properties
 
     private const double FastAnimationSpeed = 0.3;
@@ -56,9 +72,8 @@ public class GalleryAnimationControl : UserControl
     {
         AddHandler(PointerPressedEvent, PreviewPointerPressedEvent, RoutingStrategies.Tunnel);
 
-        this.WhenAnyValue(x => x.GalleryMode)
-            .WhereNotNull()
-            .SelectMany(async galleryMode =>
+        Observable.EveryValueChanged(this, x => x.GalleryMode, UIHelper.GetFrameProvider)
+            .SelectAwait(async (galleryMode, _) =>
             {
                 try
                 {
@@ -418,23 +433,6 @@ public class GalleryAnimationControl : UserControl
 
         // Disable right click selection, to not interfere with context menu
         e.Handled = true;
-    }
-
-    #endregion
-    
-    #region Cleanup
-
-    protected override void OnUnloaded(RoutedEventArgs e)
-    {
-        base.OnUnloaded(e);
-
-        if (Parent is Control parent)
-        {
-            parent.SizeChanged -= ParentSizeChanged;
-        }
-
-        Loaded -= OnControlLoaded;
-        RemoveHandler(PointerPressedEvent, PreviewPointerPressedEvent);
     }
 
     #endregion

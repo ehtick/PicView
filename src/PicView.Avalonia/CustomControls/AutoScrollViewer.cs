@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -9,7 +8,7 @@ using Avalonia.Media;
 using Avalonia.VisualTree;
 using PicView.Avalonia.UI;
 using R3;
-using CompositeDisposable = System.Reactive.Disposables.CompositeDisposable;
+using CompositeDisposable = R3.CompositeDisposable;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -125,7 +124,7 @@ public class AutoScrollViewer : ScrollViewer
                         break;
                 }
             })
-            .DisposeWith(_disposables);
+            .AddTo(_disposables);
 
         // Handle all types of focus loss events to end auto-scrolling
         LostFocus += (_, _) => IsAutoScrolling = false;

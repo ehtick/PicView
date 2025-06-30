@@ -16,7 +16,8 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
-using ReactiveUI;
+using R3;
+using CompositeDisposable = R3.CompositeDisposable;
 using Vector = Avalonia.Vector;
 
 namespace PicView.Avalonia.CustomControls;
@@ -46,7 +47,7 @@ public class PicBox : Control, IDisposable
     private FileStream? _stream;
     private IGifInstance? _animInstance;
     public string? InitialAnimatedSource;
-    private readonly IDisposable? _imageTypeSubscription;
+    private readonly CompositeDisposable _imageTypeSubscription = new();
     private bool _isDisposed;
 
     public static readonly StyledProperty<object?> SourceProperty =
@@ -110,11 +111,9 @@ public class PicBox : Control, IDisposable
         AffectsRender<PicBox>(SourceProperty);
     }
 
-    public PicBox()
-    {
-        _imageTypeSubscription = this.WhenAnyValue(x => x.ImageType)
-            .Subscribe(UpdateSource);
-    }
+    public PicBox() =>
+        Observable.EveryValueChanged(this, x => x.ImageType, UIHelper.GetFrameProvider)
+            .Subscribe(UpdateSource).AddTo(_imageTypeSubscription);
 
     #endregion
 
@@ -554,7 +553,6 @@ public class PicBox : Control, IDisposable
             return;
         }
 
-        _imageTypeSubscription?.Dispose();
         _animInstance?.Dispose();
         _stream?.Dispose();
         DestroyVisual();
