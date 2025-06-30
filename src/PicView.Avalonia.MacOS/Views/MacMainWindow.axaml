@@ -128,7 +128,7 @@
                         Command="{CompiledBinding RotateRightCommand}"
                         Header="{CompiledBinding Translation.RotateRight.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{CompiledBinding PicViewer.FileInfo/Value,
+                        IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItem
                         Command="{CompiledBinding FlipCommand}"

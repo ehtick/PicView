@@ -5,14 +5,12 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using R3;
 using R3.Avalonia;
-using ReactiveUI;
 
 namespace PicView.Avalonia.MacOS.Views;
 
 public partial class MacMainWindow : Window
 {
     private readonly AvaloniaRenderingFrameProvider _frameProvider;
-    private IDisposable? _windowStateSubscription;
 
     public MacMainWindow()
     {

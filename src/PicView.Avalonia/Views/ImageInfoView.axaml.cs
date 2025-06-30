@@ -1,16 +1,15 @@
-﻿using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Threading;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Resizing;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Titles;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Avalonia.Views;
 
@@ -54,7 +53,7 @@ public partial class ImageInfoView : UserControl
                 // Context menu doesn't want to be opened normally
                 MainContextMenu.Open();
             };
-            
+
             CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
 
             PixelWidthTextBox.KeyDown += async (s, e) => await ResizeImageOnEnter(s, e);
@@ -68,18 +67,15 @@ public partial class ImageInfoView : UserControl
                 return;
             }
 
-            _imageUpdateSubscription = vm.PicViewer.WhenAnyValue(x => x.FileInfo).Select(x => x is not null)
-                .Subscribe(_ =>
+            Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider).Subscribe(x =>
+            {
+                ExifHandling.UpdateExifValues(vm);
+                if (DirectoryNameTextBox.Text != x.DirectoryName)
                 {
-                    ExifHandling.UpdateExifValues(vm);
-                    Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        if (DirectoryNameTextBox.Text != vm.PicViewer.FileInfo.CurrentValue.DirectoryName)
-                        {
-                            DirectoryNameTextBox.Text = vm.PicViewer.FileInfo.CurrentValue.DirectoryName;
-                        }
-                    });
-                });
+                    DirectoryNameTextBox.Text = x.DirectoryName;
+                }
+            });
+            
             ResetButton.Click += (_, _) =>
             {
                 PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
@@ -219,7 +215,8 @@ public partial class ImageInfoView : UserControl
 
         var gcd = ImageTitleFormatter.GCD(width, height);
         AspectRatioTextBox.Text =
-            AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue);
+            AspectRatioHelper.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue,
+                vm.PicViewer.PixelHeight.CurrentValue);
     }
 
     private static async Task DoResize(MainViewModel vm, bool isWidth, object width, object height)
