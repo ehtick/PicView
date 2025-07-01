@@ -42,7 +42,7 @@
                     x:Name="TitleText" />
             </Panel>
 
-            <views:SettingsView Background="{DynamicResource WindowBackgroundColor}" x:Name="XSettingsView" />
+            <views:SettingsView Background="{DynamicResource WindowBackgroundColor}" x:Name="SettingsView" />
         </StackPanel>
     </Border>
 </Window>

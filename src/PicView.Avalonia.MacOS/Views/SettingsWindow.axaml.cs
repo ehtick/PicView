@@ -24,7 +24,7 @@ public partial class SettingsWindow : Window
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {
             TitleText.Background = Brushes.Transparent;
-            XSettingsView.Background = Brushes.Transparent;
+            SettingsView.Background = Brushes.Transparent;
             SettingsButton.Background = Brushes.Transparent;
         }
         Loaded += delegate

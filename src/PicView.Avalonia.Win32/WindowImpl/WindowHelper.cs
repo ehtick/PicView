@@ -195,6 +195,7 @@ public class WindowManager : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
+
                 _settingsWindow.Show(desktop.MainWindow);
                 _settingsWindow.Closing += (s, e) => _settingsWindow = null;
             }

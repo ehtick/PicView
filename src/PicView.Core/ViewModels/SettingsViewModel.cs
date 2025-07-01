@@ -1,66 +1,43 @@
-﻿using System.Reactive;
-using ReactiveUI;
+﻿using R3;
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace PicView.Core.ViewModels;
 
-
-public class SettingsViewModel : ReactiveObject
+public class SettingsViewModel : IDisposable
 {
+    public BindableReactiveProperty<double> WindowMargin { get; } = new();
+
+    public void Dispose()
+    {
+        Disposable.Dispose(IsBackButtonEnabled, IsForwardButtonEnabled, GoForwardCommand, GoBackCommand);
+        Disposable.Dispose(IsShowingRecycleDialog, IsShowingPermanentDeletionDialog, WindowMargin);
+    }
 
     #region Tab history navigation
-    
-    public bool IsBackButtonEnabled
+
+    public BindableReactiveProperty<bool> IsBackButtonEnabled { get; } = new();
+
+    public BindableReactiveProperty<bool> IsForwardButtonEnabled { get; } = new();
+    public ReactiveCommand? GoForwardCommand { get; set; }
+
+    public ReactiveCommand? GoBackCommand { get; set; }
+
+    public void InitializeNavigation (Action goBack, Action goForward)
     {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        GoForwardCommand = IsForwardButtonEnabled.ToReactiveCommand(_ => { goForward(); });
+        GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ => { goBack(); });
     }
 
-    public bool IsForwardButtonEnabled
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-    public ReactiveCommand<Unit, Unit>? GoForwardCommand
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public ReactiveCommand<Unit, Unit>? GoBackCommand
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-    
     #endregion
 
     #region UI
-    
-    public bool IsShowingRecycleDialog
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.UIProperties.ShowRecycleConfirmation = value;
-        } 
-    } = Settings.UIProperties.ShowRecycleConfirmation;
 
-    public bool IsShowingPermanentDeletionDialog
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.UIProperties.ShowPermanentDeletionConfirmation = value;
-        }
-    } = Settings.UIProperties.ShowPermanentDeletionConfirmation;
+    public BindableReactiveProperty<bool> IsShowingRecycleDialog { get; } =
+        new(Settings.UIProperties.ShowRecycleConfirmation);
+
+    public BindableReactiveProperty<bool> IsShowingPermanentDeletionDialog { get; } =
+        new(Settings.UIProperties.ShowPermanentDeletionConfirmation);
 
     #endregion
-    
-    public double WindowMargin
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
 }

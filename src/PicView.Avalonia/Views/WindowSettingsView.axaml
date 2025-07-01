@@ -61,7 +61,7 @@
             Minimum="0"
             TickFrequency="1"
             TickPlacement="BottomRight"
-            Value="{CompiledBinding SettingsViewModel.WindowMargin}"
+            Value="{CompiledBinding SettingsViewModel.WindowMargin.Value}"
             Width="300" />
         <TextBlock
             Classes="txt"
@@ -69,7 +69,7 @@
             Foreground="{StaticResource MainTextColorFaded}"
             IsEnabled="{CompiledBinding IsAutoFit}"
             Margin="0,0,0,15"
-            Text="{CompiledBinding SettingsViewModel.WindowMargin,
+            Text="{CompiledBinding SettingsViewModel.WindowMargin.Value,
                                    Mode=OneWay}" />
 
         <TextBlock

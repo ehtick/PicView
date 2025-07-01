@@ -7,15 +7,19 @@ using Avalonia.Media;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Keybindings;
 using PicView.Core.Sizing;
-using ReactiveUI;
+using R3;
+
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace PicView.Avalonia.Views;
 
 public partial class SettingsView : UserControl
 {
+    private static CompositeDisposable? _marginSubscription;
     private readonly Stack<TabItem?> _backStack = new();
     private readonly Stack<TabItem?> _forwardStack = new();
     private TabItem? _currentTab;
@@ -27,6 +31,7 @@ public partial class SettingsView : UserControl
         {
             FileAssociationsTabItem.IsEnabled = false;
         }
+
         Loaded += OnLoaded;
     }
 
@@ -34,10 +39,27 @@ public partial class SettingsView : UserControl
 
     private void OnLoaded(object? sender, EventArgs e)
     {
-        CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        var settingsVm = vm.SettingsViewModel;
+        settingsVm.InitializeNavigation(GoBack, GoForward);
+        settingsVm.WindowMargin.Value = Settings.WindowProperties.Margin;
+        _marginSubscription = new CompositeDisposable();
+        Observable.EveryValueChanged(settingsVm.WindowMargin, x => x.Value)
+            .SubscribeAwait(async (x, _) =>
+            {
+                Settings.WindowProperties.Margin = x;
+                if (Settings.WindowProperties.AutoFit)
+                {
+                    await WindowResizing.SetSizeAsync(vm);
+                    WindowFunctions.CenterWindowOnScreen();
+                }
+            }).AddTo(_marginSubscription);
         SetupUI();
         AttachEventHandlers();
-        SetupCommands();
         Task.Run(() =>
         {
             if (string.IsNullOrWhiteSpace(SettingsConfiguration.CurrentUserSettingsPath))
@@ -67,17 +89,6 @@ public partial class SettingsView : UserControl
         PointerPressed += OnPointerPressed;
     }
 
-    private void SetupCommands()
-    {
-        if (ViewModel is not { SettingsViewModel: { } svm })
-        {
-            return;
-        }
-
-        svm.GoBackCommand = ReactiveCommand.Create(GoBack, svm.WhenAnyValue(x => x.IsBackButtonEnabled));
-        svm.GoForwardCommand = ReactiveCommand.Create(GoForward, svm.WhenAnyValue(x => x.IsForwardButtonEnabled));
-    }
-
     private void OnTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (MainTabControl.SelectedItem is TabItem selectedTab && _currentTab != selectedTab)
@@ -99,7 +110,7 @@ public partial class SettingsView : UserControl
         UpdateNavigationButtons();
     }
 
-    private void GoBack()
+    public void GoBack()
     {
         if (!_backStack.TryPop(out var previousTab))
         {
@@ -112,7 +123,7 @@ public partial class SettingsView : UserControl
         UpdateNavigationButtons();
     }
 
-    private void GoForward()
+    public void GoForward()
     {
         if (!_forwardStack.TryPop(out var nextTab))
         {
@@ -137,8 +148,8 @@ public partial class SettingsView : UserControl
             return;
         }
 
-        svm.IsBackButtonEnabled = _backStack.Count > 0;
-        svm.IsForwardButtonEnabled = _forwardStack.Count > 0;
+        svm.IsBackButtonEnabled.Value = _backStack.Count > 0;
+        svm.IsForwardButtonEnabled.Value = _forwardStack.Count > 0;
     }
 
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
