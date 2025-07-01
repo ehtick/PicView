@@ -1,8 +1,9 @@
 using Avalonia.Media;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
@@ -25,7 +26,11 @@ public partial class ToolsMenu : AnimatedMenu
             {
                 TopBorder.Background = Brushes.White;
             }
-            this.WhenAnyValue(x => x.IsOpen).Subscribe(_ => DetermineIfOptimizeImageShouldBeEnabled());
+            Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
+                .Subscribe(_ =>
+                {
+                    DetermineIfOptimizeImageShouldBeEnabled();
+                });
         };
     }
 

@@ -30,7 +30,7 @@ public partial class MacMainWindow : Window
             {
                 return;
             }
-            Observable.EveryValueChanged(this, x => x.WindowState, _frameProvider).SelectAwait(async (state, _) =>
+            Observable.EveryValueChanged(this, x => x.WindowState, _frameProvider).SubscribeAwait(async (state, _) =>
             {
                 switch (state)
                 {
@@ -55,8 +55,7 @@ public partial class MacMainWindow : Window
                         }
                         break;
                 }
-                return Unit.Default;
-            }).Subscribe();
+            });
             
             // Hide macOS buttons when interface is hidden
             Observable.EveryValueChanged(vm, x => x.IsTopToolbarShown, _frameProvider).Subscribe(shown =>

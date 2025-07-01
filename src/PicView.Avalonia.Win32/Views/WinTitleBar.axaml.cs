@@ -1,12 +1,13 @@
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.DragAndDrop;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using ReactiveUI;
+using R3;
+using Observable = R3.Observable;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -93,51 +94,61 @@ public partial class WinTitleBar : UserControl
                 return;
             }
 
-            this.WhenAnyValue(x => x.RotationContextMenu.IsOpen).Skip(1).Subscribe(_ =>
-            {
-                Rotation0Item.IsChecked = false;
-                Rotation90Item.IsChecked = false;
-                Rotation180Item.IsChecked = false;
-                Rotation270Item.IsChecked = false;
-                switch (vm.RotationAngle)
+            Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
+                .Subscribe(_ =>
                 {
-                    case 0:
-                        Rotation0Item.IsChecked = true;
-                        break;
-                    case 90:
-                        Rotation90Item.IsChecked = true;
-                        break;
-                    case 180:
-                        Rotation180Item.IsChecked = true;
-                        break;
-                    case 270:
-                        Rotation270Item.IsChecked = true;
-                        break;
-                    
-                }
-            });
+                    UpdateRotation();
+                });
 
             RotateLeftButton.PointerPressed += (_, e) =>
             {
-                if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-                {
-                    // Context menu doesn't want to be opened normally
-                    RotationContextMenu.Open();
-                    return;
-                }
+                OpenContextMenu(e);
             };
             FlipButton.PointerPressed += (_, e) =>
             {
-                if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-                {
-                    // Context menu doesn't want to be opened normally
-                    RotationContextMenu.Open();
-                    return;
-                }
+                OpenContextMenu(e);
             };
             
         };
+    }
 
+    private void OpenContextMenu(PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+        {
+            return;
+        }
+
+        // Context menu doesn't want to be opened normally
+        RotationContextMenu.Open();
+    }
+
+    private void UpdateRotation()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        Rotation0Item.IsChecked = false;
+        Rotation90Item.IsChecked = false;
+        Rotation180Item.IsChecked = false;
+        Rotation270Item.IsChecked = false;
+        switch (vm.RotationAngle)
+        {
+            case 0:
+                Rotation0Item.IsChecked = true;
+                break;
+            case 90:
+                Rotation90Item.IsChecked = true;
+                break;
+            case 180:
+                Rotation180Item.IsChecked = true;
+                break;
+            case 270:
+                Rotation270Item.IsChecked = true;
+                break;
+                    
+        }
     }
 
     private void MoveWindow(PointerPressedEventArgs e)
