@@ -1,300 +1,158 @@
-﻿using ReactiveUI;
+﻿using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class ExifViewModel : ReactiveObject
+public class ExifViewModel : IDisposable
 {
-    public double DpiX
+    public void Dispose()
     {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public double DpiY
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-    
-    public string? PrintSizeInch
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? PrintSizeCm
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? SizeMp
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Resolution
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? BitDepth
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? AspectRatio
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Latitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Longitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Altitude
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? GoogleLink
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? BingLink
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Authors
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? DateTaken
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Copyright
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Title
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Subject
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Software
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? ResolutionUnit
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? ColorRepresentation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public string? Compression
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
+        Disposable.Dispose(DpiX,
+            DpiY,
+            PrintSizeCm,
+            PrintSizeCm,
+            SizeMp,
+            ResolutionUnit,
+            BitDepth,
+            AspectRatio,
+            Latitude,
+            Longitude,
+            Altitude,
+            GoogleLink,
+            BingLink,
+            Authors,
+            DateTaken,
+            Copyright,
+            Title,
+            Subject,
+            Software,
+            ResolutionUnit,
+            ColorRepresentation,
+            Compression,
+            Comment,
+            CompressedBitsPixel,
+            CameraMaker,
+            CameraModel,
+            ExposureProgram,
+            ExposureTime,
+            ExposureBias,
+            FNumber,
+            MaxAperture,
+            DigitalZoom,
+            FocalLength35Mm,
+            FocalLength,
+            ISOSpeed,
+            MeteringMode,
+            Contrast,
+            Saturation,
+            Brightness,
+            Sharpness,
+            WhiteBalance,
+            FlashMode,
+            FlashEnergy,
+            LightSource,
+            PhotometricInterpretation,
+            Orientation,
+            ExifVersion,
+            LensMaker,
+            LensModel);
     }
     
-    public string? Comment
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<double> DpiX { get; } = new();
 
-    public string? CompressedBitsPixel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<double> DpiY { get; } = new();
+    
+    public BindableReactiveProperty<string?> PrintSizeInch { get; } = new();
 
-    public string? CameraMaker
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> PrintSizeCm { get; } = new();
 
-    public string? CameraModel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> SizeMp { get; } = new();
 
-    public string? ExposureProgram
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Resolution { get; } = new();
 
-    public string? ExposureTime
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> BitDepth { get; } = new();
 
-    public string? ExposureBias
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> AspectRatio { get; } = new();
 
-    public string? FNumber
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Latitude { get; } = new();
 
-    public string? MaxAperture
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Longitude { get; } = new();
 
-    public string? DigitalZoom
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Altitude { get; } = new();
 
-    public string? FocalLength35Mm
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> GoogleLink { get; } = new();
 
-    public string? FocalLength
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> BingLink { get; } = new();
 
-    public string? ISOSpeed
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Authors { get; } = new();
 
-    public string? MeteringMode
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> DateTaken { get; } = new();
 
-    public string? Contrast
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Copyright { get; } = new();
 
-    public string? Saturation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Title { get; } = new();
 
-    public string? Sharpness
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Subject { get; } = new();
 
-    public string? WhiteBalance
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Software { get; } = new();
 
-    public string? FlashMode
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> ResolutionUnit { get; } = new();
 
-    public string? FlashEnergy
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> ColorRepresentation { get; } = new();
 
-    public string? LightSource
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> Compression { get; } = new();
+    
+    public BindableReactiveProperty<string?> Comment { get; } = new();
 
-    public string? Brightness
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> CompressedBitsPixel { get; } = new();
 
-    public string? PhotometricInterpretation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> CameraMaker { get; } = new();
 
-    public string? Orientation
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> CameraModel { get; } = new();
 
-    public string? ExifVersion
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> ExposureProgram { get; } = new();
 
-    public string? LensModel
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<string?> ExposureTime { get; } = new();
 
-    public string? LensMaker
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }    
+    public BindableReactiveProperty<string?> ExposureBias { get; } = new();
+
+    public BindableReactiveProperty<string?> FNumber { get; } = new();
+
+    public BindableReactiveProperty<string?> MaxAperture { get; } = new();
+
+    public BindableReactiveProperty<string?> DigitalZoom { get; } = new();
+
+    public BindableReactiveProperty<string?> FocalLength35Mm { get; } = new();
+
+    public BindableReactiveProperty<string?> FocalLength { get; } = new();
+
+    // ReSharper disable once InconsistentNaming
+    public BindableReactiveProperty<string?> ISOSpeed { get; } = new();
+
+    public BindableReactiveProperty<string?> MeteringMode { get; } = new();
+
+    public BindableReactiveProperty<string?> Contrast { get; } = new();
+
+    public BindableReactiveProperty<string?> Saturation { get; } = new();
+
+    public BindableReactiveProperty<string?> Sharpness { get; } = new();
+
+    public BindableReactiveProperty<string?> WhiteBalance { get; } = new();
+
+    public BindableReactiveProperty<string?> FlashMode { get; } = new();
+
+    public BindableReactiveProperty<string?> FlashEnergy { get; } = new();
+
+    public BindableReactiveProperty<string?> LightSource { get; } = new();
+
+    public BindableReactiveProperty<string?> Brightness { get; } = new();
+
+    public BindableReactiveProperty<string?> PhotometricInterpretation { get; } = new();
+
+    public BindableReactiveProperty<string?> Orientation { get; } = new();
+
+    public BindableReactiveProperty<string?> ExifVersion { get; } = new();
+
+    public BindableReactiveProperty<string?> LensModel { get; } = new();
+
+    public BindableReactiveProperty<string?> LensMaker { get; } = new();    
 }

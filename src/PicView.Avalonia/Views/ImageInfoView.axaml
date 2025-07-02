@@ -619,11 +619,11 @@
                         <customControls:FuncTextBox
                             Classes="TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.BitDepth,
+                            Text="{CompiledBinding Exif.BitDepth.Value,
                                                    Mode=OneWay}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.BitDepth,
+                            CopyText="{CompiledBinding Exif.BitDepth.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -714,12 +714,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.SizeMp,
+                            Text="{CompiledBinding Exif.SizeMp.Value,
                                                    Mode=OneWay}"
                             x:Name="SizeMpTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.SizeMp,
+                            CopyText="{CompiledBinding Exif.SizeMp.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -744,11 +744,11 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Resolution,
+                            Text="{CompiledBinding Exif.Resolution.Value,
                                                    Mode=OneWay}" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Resolution,
+                            CopyText="{CompiledBinding Exif.Resolution.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">
@@ -772,12 +772,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.PrintSizeCm,
+                            Text="{CompiledBinding Exif.PrintSizeCm.Value,
                                                    Mode=OneWay}"
                             x:Name="PrintSizeCmTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.PrintSizeCm,
+                            CopyText="{CompiledBinding Exif.PrintSizeCm.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -801,12 +801,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.PrintSizeInch,
+                            Text="{CompiledBinding Exif.PrintSizeInch.Value,
                                                    Mode=OneWay}"
                             x:Name="PrintSizeInchTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.PrintSizeInch,
+                            CopyText="{CompiledBinding Exif.PrintSizeInch.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -830,12 +830,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.AspectRatio,
+                            Text="{CompiledBinding Exif.AspectRatio.Value,
                                                    Mode=OneWay}"
                             x:Name="AspectRatioTextBox" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.AspectRatio,
+                            CopyText="{CompiledBinding Exif.AspectRatio.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -956,12 +956,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.DateTaken,
+                            Text="{CompiledBinding Exif.DateTaken.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.DateTaken,
+                            CopyText="{CompiledBinding Exif.DateTaken.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -984,12 +984,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Authors,
+                            Text="{CompiledBinding Exif.Authors.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Authors,
+                            CopyText="{CompiledBinding Exif.Authors.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1014,12 +1014,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Copyright,
+                            Text="{CompiledBinding Exif.Copyright.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Copyright,
+                            CopyText="{CompiledBinding Exif.Copyright.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1042,12 +1042,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Software,
+                            Text="{CompiledBinding Exif.Software.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Software,
+                            CopyText="{CompiledBinding Exif.Software.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1073,12 +1073,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Title,
+                                Text="{CompiledBinding Exif.Title.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Title,
+                                CopyText="{CompiledBinding Exif.Title.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1101,12 +1101,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Subject,
+                                Text="{CompiledBinding Exif.Subject.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Subject,
+                                CopyText="{CompiledBinding Exif.Subject.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1132,12 +1132,12 @@
                         Classes=" TStyle x"
                         IsReadOnly="True"
                         MaxHeight="600"
-                        Text="{CompiledBinding Exif.Comment,
+                        Text="{CompiledBinding Exif.Comment.Value,
                                                Mode=OneWay}"
                         Width="630" />
                     <customControls:CopyButton
                         Classes="altHover BorderStyle"
-                        CopyText="{CompiledBinding Exif.Comment,
+                        CopyText="{CompiledBinding Exif.Comment.Value,
                                                    Mode=OneWay}"
                         ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                       Mode=OneWay}">
@@ -1185,12 +1185,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Latitude,
+                            Text="{CompiledBinding Exif.Latitude.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Latitude,
+                            CopyText="{CompiledBinding Exif.Latitude.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1214,12 +1214,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.Longitude,
+                            Text="{CompiledBinding Exif.Longitude.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.Longitude,
+                            CopyText="{CompiledBinding Exif.Longitude.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1244,12 +1244,12 @@
                     <customControls:FuncTextBox
                         Classes=" TStyle x"
                         IsReadOnly="True"
-                        Text="{CompiledBinding Exif.Altitude,
+                        Text="{CompiledBinding Exif.Altitude.Value,
                                                Mode=OneWay}"
                         Width="230" />
                     <customControls:CopyButton
                         Classes="altHover BorderStyle"
-                        CopyText="{CompiledBinding Exif.Altitude,
+                        CopyText="{CompiledBinding Exif.Altitude.Value,
                                                    Mode=OneWay}"
                         ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                       Mode=OneWay}">
@@ -1326,12 +1326,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.ResolutionUnit,
+                            Text="{CompiledBinding Exif.ResolutionUnit.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.ResolutionUnit,
+                            CopyText="{CompiledBinding Exif.ResolutionUnit.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1355,12 +1355,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.ColorRepresentation,
+                            Text="{CompiledBinding Exif.ColorRepresentation.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.ColorRepresentation,
+                            CopyText="{CompiledBinding Exif.ColorRepresentation.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1387,12 +1387,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Compression,
+                                Text="{CompiledBinding Exif.Compression.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Compression,
+                                CopyText="{CompiledBinding Exif.Compression.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1415,12 +1415,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.CompressedBitsPixel,
+                                Text="{CompiledBinding Exif.CompressedBitsPixel.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.CompressedBitsPixel,
+                                CopyText="{CompiledBinding Exif.CompressedBitsPixel.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1476,12 +1476,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.CameraMaker,
+                            Text="{CompiledBinding Exif.CameraMaker.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.CameraMaker,
+                            CopyText="{CompiledBinding Exif.CameraMaker.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy,
                                                           Mode=OneWay}">
@@ -1504,12 +1504,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.CameraModel,
+                            Text="{CompiledBinding Exif.CameraModel.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.CameraModel,
+                            CopyText="{CompiledBinding Exif.CameraModel.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">
@@ -1535,12 +1535,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.FNumber,
+                                Text="{CompiledBinding Exif.FNumber.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.FNumber,
+                                CopyText="{CompiledBinding Exif.FNumber.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1563,12 +1563,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.MaxAperture,
+                                Text="{CompiledBinding Exif.MaxAperture.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.LensMaker,
+                                CopyText="{CompiledBinding Exif.LensMaker.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1595,12 +1595,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.ExposureBias,
+                                Text="{CompiledBinding Exif.ExposureBias.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.ExposureBias,
+                                CopyText="{CompiledBinding Exif.ExposureBias.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1623,12 +1623,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.ExposureTime,
+                                Text="{CompiledBinding Exif.ExposureTime.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.ExposureTime,
+                                CopyText="{CompiledBinding Exif.ExposureTime.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1655,12 +1655,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.ExposureProgram,
+                                Text="{CompiledBinding Exif.ExposureProgram.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.ExposureProgram,
+                                CopyText="{CompiledBinding Exif.ExposureProgram.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1682,12 +1682,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.DigitalZoom,
+                                Text="{CompiledBinding Exif.DigitalZoom.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.DigitalZoom,
+                                CopyText="{CompiledBinding Exif.DigitalZoom.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1714,12 +1714,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.FocalLength,
+                                Text="{CompiledBinding Exif.FocalLength.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.FocalLength,
+                                CopyText="{CompiledBinding Exif.FocalLength.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1742,12 +1742,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.FocalLength35Mm,
+                                Text="{CompiledBinding Exif.FocalLength35Mm.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.FocalLength35Mm,
+                                CopyText="{CompiledBinding Exif.FocalLength35Mm.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1774,12 +1774,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.ISOSpeed,
+                                Text="{CompiledBinding Exif.ISOSpeed.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.ISOSpeed,
+                                CopyText="{CompiledBinding Exif.ISOSpeed.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1802,12 +1802,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.MeteringMode,
+                                Text="{CompiledBinding Exif.MeteringMode.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.MeteringMode,
+                                CopyText="{CompiledBinding Exif.MeteringMode.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1834,12 +1834,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Contrast,
+                                Text="{CompiledBinding Exif.Contrast.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Contrast,
+                                CopyText="{CompiledBinding Exif.Contrast.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1862,12 +1862,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Saturation,
+                                Text="{CompiledBinding Exif.Saturation.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Saturation,
+                                CopyText="{CompiledBinding Exif.Saturation.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1894,12 +1894,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Sharpness,
+                                Text="{CompiledBinding Exif.Sharpness.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Sharpness,
+                                CopyText="{CompiledBinding Exif.Sharpness.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1922,12 +1922,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.WhiteBalance,
+                                Text="{CompiledBinding Exif.WhiteBalance.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.WhiteBalance,
+                                CopyText="{CompiledBinding Exif.WhiteBalance.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1954,12 +1954,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.FlashEnergy,
+                                Text="{CompiledBinding Exif.FlashEnergy.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.FlashEnergy,
+                                CopyText="{CompiledBinding Exif.FlashEnergy.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -1982,12 +1982,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.FlashMode,
+                                Text="{CompiledBinding Exif.FlashMode.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.FlashMode,
+                                CopyText="{CompiledBinding Exif.FlashMode.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2014,12 +2014,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.LightSource,
+                                Text="{CompiledBinding Exif.LightSource.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.LightSource,
+                                CopyText="{CompiledBinding Exif.LightSource.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2042,12 +2042,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Brightness,
+                                Text="{CompiledBinding Exif.Brightness.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Brightness,
+                                CopyText="{CompiledBinding Exif.Brightness.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2074,12 +2074,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.PhotometricInterpretation,
+                                Text="{CompiledBinding Exif.PhotometricInterpretation.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.PhotometricInterpretation,
+                                CopyText="{CompiledBinding Exif.PhotometricInterpretation.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2102,12 +2102,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.Orientation,
+                                Text="{CompiledBinding Exif.Orientation.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.Orientation,
+                                CopyText="{CompiledBinding Exif.Orientation.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2134,12 +2134,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.LensMaker,
+                                Text="{CompiledBinding Exif.LensMaker.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.LensMaker,
+                                CopyText="{CompiledBinding Exif.LensMaker.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2162,12 +2162,12 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding Exif.LensModel,
+                                Text="{CompiledBinding Exif.LensModel.Value,
                                                        Mode=OneWay}"
                                 Width="230" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding Exif.LensModel,
+                                CopyText="{CompiledBinding Exif.LensModel.Value,
                                                            Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                               Mode=OneWay}">
@@ -2193,12 +2193,12 @@
                         <customControls:FuncTextBox
                             Classes=" TStyle x"
                             IsReadOnly="True"
-                            Text="{CompiledBinding Exif.ExifVersion,
+                            Text="{CompiledBinding Exif.ExifVersion.Value,
                                                    Mode=OneWay}"
                             Width="230" />
                         <customControls:CopyButton
                             Classes="altHover BorderStyle"
-                            CopyText="{CompiledBinding Exif.ExifVersion,
+                            CopyText="{CompiledBinding Exif.ExifVersion.Value,
                                                        Mode=OneWay}"
                             ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                           Mode=OneWay}">

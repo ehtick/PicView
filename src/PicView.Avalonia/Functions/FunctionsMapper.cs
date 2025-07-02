@@ -768,12 +768,12 @@ public static class FunctionsMapper
         {
             return;
         }
-        if (string.IsNullOrEmpty(Vm.Exif.GoogleLink))
+        if (string.IsNullOrEmpty(Vm.Exif.GoogleLink.CurrentValue))
         {
             return;
         }
 
-        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.GoogleLink));
+        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.GoogleLink.CurrentValue));
     }
     
     public static async Task OpenBingMaps()
@@ -783,12 +783,12 @@ public static class FunctionsMapper
         {
             return;
         }
-        if (string.IsNullOrEmpty(Vm.Exif.BingLink))
+        if (string.IsNullOrEmpty(Vm.Exif.BingLink.CurrentValue))
         {
             return;
         }
 
-        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.BingLink));
+        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.BingLink.CurrentValue));
     }
 
     #endregion
