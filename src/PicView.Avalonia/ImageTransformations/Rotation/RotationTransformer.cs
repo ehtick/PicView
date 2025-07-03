@@ -64,32 +64,36 @@ public class RotationTransformer(
         }
     }
 
+    private ScaleTransform? _scaleTransform;
     public void Flip(bool animate)
     {
         if (getDataContext() is not MainViewModel vm || mainImage.Source is null)
         {
             return;
         }
+        
+        _scaleTransform ??= new ScaleTransform();
 
         var prevScaleX = vm.PicViewer.ScaleX;
+        var newScaleX = prevScaleX == -1 ? 1 : -1;
 
         if (animate)
         {
-            var flipTransform = new ScaleTransform(prevScaleX, 1)
-            {
-                Transitions =
-                [
-                    new DoubleTransition
-                        { Property = ScaleTransform.ScaleXProperty, Duration = TimeSpan.FromSeconds(.2) }
-                ]
-            };
-            imageLayoutTransformControl.RenderTransform = flipTransform;
-            flipTransform.ScaleX = vm.PicViewer.ScaleX;
+            _scaleTransform.Transitions ??=
+            [
+                new DoubleTransition
+                {
+                    Property = ScaleTransform.ScaleXProperty,
+                    Duration = TimeSpan.FromSeconds(.2)
+                }
+            ];
         }
         else
         {
-            imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX, 1);
+            _scaleTransform.Transitions = null;
         }
+        imageLayoutTransformControl.RenderTransform = _scaleTransform;
+        _scaleTransform.ScaleX = newScaleX;
     }
 
     public void SetTransform(int scaleX, int rotationAngle)

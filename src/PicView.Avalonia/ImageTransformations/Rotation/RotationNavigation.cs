@@ -122,6 +122,8 @@ public static class RotationNavigation
 
     public static void Flip(MainViewModel vm)
     {
+        Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });
+        
         if (vm.PicViewer.ScaleX == 1)
         {
             vm.PicViewer.ScaleX = -1;
@@ -132,8 +134,6 @@ public static class RotationNavigation
             vm.PicViewer.ScaleX = 1;
             vm.Translation.IsFlipped = vm.Translation.Flip;
         }
-
-        Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });
     }
 
     /// <summary>
