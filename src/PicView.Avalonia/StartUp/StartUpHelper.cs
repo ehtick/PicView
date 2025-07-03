@@ -17,7 +17,6 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
 using PicView.Core.ProcessHandling;
-using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -159,8 +158,6 @@ public static class StartUpHelper
         }
 
         Application.Current.Name = "PicView";
-        
-        vm.AssociationsViewModel ??= new FileAssociationsViewModel();
 
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {

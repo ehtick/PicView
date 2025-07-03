@@ -62,7 +62,7 @@
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding ShowSideBySideCommand}"
-            IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide}"
+            IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock

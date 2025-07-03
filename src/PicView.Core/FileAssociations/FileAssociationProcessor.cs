@@ -1,10 +1,8 @@
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PicView.Core.FileHandling;
 using PicView.Core.ProcessHandling;
 
 namespace PicView.Core.FileAssociations;
@@ -29,7 +27,7 @@ public static class FileAssociationProcessor
     /// </summary>
     /// <param name="groups">Collection of file type groups to process</param>
     /// <returns>True if successful, false otherwise</returns>
-    public static async Task<bool> SetFileAssociations(ReadOnlyObservableCollection<FileTypeGroup> groups)
+    public static async Task<bool> SetFileAssociations(List<FileTypeGroup> groups)
     {
         try
         {
@@ -84,7 +82,7 @@ public static class FileAssociationProcessor
 
     #region Private Helper Methods
 
-    private static async Task<bool> HandleNonAdminWindowsAssociations(ReadOnlyObservableCollection<FileTypeGroup> groups)
+    private static async Task<bool> HandleNonAdminWindowsAssociations(List<FileTypeGroup> groups)
     {
         try
         {
@@ -161,7 +159,7 @@ public static class FileAssociationProcessor
         }
     }
 
-    private static async Task<bool> HandleDirectAssociations(ReadOnlyObservableCollection<FileTypeGroup> groups)
+    private static async Task<bool> HandleDirectAssociations(List<FileTypeGroup> groups)
     {
         foreach (var group in groups)
         {

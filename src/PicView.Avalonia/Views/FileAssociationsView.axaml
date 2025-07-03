@@ -20,17 +20,17 @@
 
         <uc:SpinWaiter
             HorizontalAlignment="Center"
-            IsVisible="{CompiledBinding AssociationsViewModel.IsProcessing,
+            IsVisible="{CompiledBinding AssociationsViewModel.IsProcessing.Value,
                                         Mode=OneWay}"
             VerticalAlignment="Center" />
 
         <DockPanel
             Focusable="True"
             HorizontalAlignment="Center"
-            IsHitTestVisible="{CompiledBinding !AssociationsViewModel.IsProcessing,
+            IsHitTestVisible="{CompiledBinding !AssociationsViewModel.IsProcessing.Value,
                                                Mode=OneWay}"
             LastChildFill="True"
-            Opacity="{CompiledBinding AssociationsViewModel.Opacity,
+            Opacity="{CompiledBinding AssociationsViewModel.Opacity.Value,
                                       Mode=OneWay}">
 
             <TextBlock
@@ -74,7 +74,7 @@
                         Foreground="{DynamicResource MainTextColor}"
                         HorizontalAlignment="Left"
                         Padding="23,7,4,6"
-                        Text="{CompiledBinding AssociationsViewModel.FilterText,
+                        Text="{CompiledBinding AssociationsViewModel.FilterText.Value,
                                                FallbackValue='',
                                                Mode=TwoWay}"
                         Watermark="{CompiledBinding Translation.Filter.Value,
@@ -91,7 +91,7 @@
                         HorizontalAlignment="Right"
                         IconHeight="12"
                         IconWidth="12"
-                        IsVisible="{CompiledBinding AssociationsViewModel.FilterText,
+                        IsVisible="{CompiledBinding AssociationsViewModel.FilterText.Value,
                                                     Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                         Padding="10,3,10,3"
                         x:Name="ClearButton" />
