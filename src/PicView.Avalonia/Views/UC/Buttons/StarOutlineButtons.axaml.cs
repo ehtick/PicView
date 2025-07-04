@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -14,11 +15,19 @@ public partial class StarOutlineButtons : UserControl
     private DrawingImage? _filledStar;
     private DrawingImage? _outlinedStar;
     private Image[]? _starIcons;
+    
+    private readonly CompositeDisposable _disposables = new();
 
     public StarOutlineButtons()
     {
         InitializeComponent();
         Loaded += OnLoaded;
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        Disposable.Dispose(_disposables);
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -40,10 +49,8 @@ public partial class StarOutlineButtons : UserControl
         }
 
         Observable.EveryValueChanged(vm.Exif, x => x.ExifRating.Value, UIHelper.GetFrameProvider)
-            .Subscribe(SetStars);
-
-        // Set initial star rating
-        SetStars(vm.Exif.ExifRating.CurrentValue);
+            .Subscribe(SetStars)
+            .AddTo(_disposables);
     }
 
     private void SetStars(uint rating)
