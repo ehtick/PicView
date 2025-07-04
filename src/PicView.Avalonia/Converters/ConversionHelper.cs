@@ -3,6 +3,7 @@ using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.Converters;
@@ -109,15 +110,23 @@ internal static class ConversionHelper
             return;
         }
 
-        if (vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
-            || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
+        try
         {
-            vm.ShouldOptimizeImageBeEnabled = true;
+            if (vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpg", StringComparison.InvariantCultureIgnoreCase)
+                || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".jpeg", StringComparison.InvariantCultureIgnoreCase)
+                || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".png", StringComparison.InvariantCultureIgnoreCase)
+                || vm.PicViewer.FileInfo.CurrentValue.Extension.Equals(".gif", StringComparison.InvariantCultureIgnoreCase))
+            {
+                vm.ShouldOptimizeImageBeEnabled = true;
+            }
+            else
+            {
+                vm.ShouldOptimizeImageBeEnabled = false;
+            }
         }
-        else
+        catch (Exception e)
         {
+            DebugHelper.LogDebug(nameof(ConversionHelper), nameof(DetermineIfOptimizeImageShouldBeEnabled), e);
             vm.ShouldOptimizeImageBeEnabled = false;
         }
     }

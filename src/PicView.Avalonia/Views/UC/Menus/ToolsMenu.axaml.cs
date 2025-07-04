@@ -27,6 +27,7 @@ public partial class ToolsMenu : AnimatedMenu
                 TopBorder.Background = Brushes.White;
             }
             Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
+                .Skip(1)
                 .Subscribe(_ =>
                 {
                     DetermineIfOptimizeImageShouldBeEnabled();

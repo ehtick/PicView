@@ -28,12 +28,14 @@ public partial class ImageMenu  : AnimatedMenu
             }
             GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
             Observable.EveryValueChanged(this, x => x.IsVisible, UIHelper.GetFrameProvider)
+                .Skip(1)
                 .Where(isVisible => !isVisible)
                 .Subscribe(_ =>
                 {
                     SlideShowButton.Flyout.Hide();
                 });
             Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
+                .Skip(1)
                 .Subscribe(_ =>
                 {
                     DetermineIfCropShouldBeEnabled();
