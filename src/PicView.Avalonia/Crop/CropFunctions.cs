@@ -51,12 +51,11 @@ public static class CropFunctions
         var size = new Size(vm.PicViewer.ImageWidth.CurrentValue, vm.PicViewer.ImageHeight.CurrentValue);
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            vm.Crop = new ImageCropperViewModel(bitmap)
-            {
-                ImageWidth = size.Width,
-                ImageHeight = size.Height,
-                AspectRatio = vm.PicViewer.AspectRatio.CurrentValue
-            };
+            vm.Crop = new ImageCropperViewModel(bitmap);
+            vm.Crop.ImageWidth.Value = size.Width;
+            vm.Crop.ImageHeight.Value = size.Height;
+            vm.Crop.AspectRatio.Value = vm.PicViewer.AspectRatio.CurrentValue;
+            
             var cropControl = new CropControl
             {
                 DataContext = vm,

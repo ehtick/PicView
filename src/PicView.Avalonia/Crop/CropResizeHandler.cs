@@ -21,8 +21,8 @@ public class CropResizeHandler(CropControl control)
         }
 
         _resizeStart = e.GetPosition(control.RootCanvas);
-        _originalRect = new Rect(Canvas.GetLeft(control.MainRectangle), Canvas.GetTop(control.MainRectangle), vm.Crop.SelectionWidth,
-            vm.Crop.SelectionHeight);
+        _originalRect = new Rect(Canvas.GetLeft(control.MainRectangle), Canvas.GetTop(control.MainRectangle), vm.Crop.SelectionWidth.CurrentValue,
+            vm.Crop.SelectionHeight.CurrentValue);
         _isResizing = true;
     }
 

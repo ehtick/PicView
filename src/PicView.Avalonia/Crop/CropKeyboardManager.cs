@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Avalonia.Input;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
@@ -21,7 +20,7 @@ public class CropKeyboardManager(CropControl control)
         switch (e.Key)
         {
             case Key.Enter:
-                await vm.Crop.CropImageCommand.Execute();
+                await vm.Crop.SaveCroppedImageAsync();
                 return;
             case Key.Escape:
                 CropFunctions.CloseCropControl(UIHelper.GetMainView.DataContext as MainViewModel);
@@ -86,11 +85,11 @@ public class CropKeyboardManager(CropControl control)
                 case "Save":
                 case "SaveAs":
                 case "GalleryClick":
-                    await vm.Crop.CropImageCommand.Execute();
+                    await vm.Crop.SaveCroppedImageAsync();
                     return;
                 case "CopyImage":
                 case "CopyFile":
-                    await vm.Crop.CopyCropImageCommand.Execute();
+                    await vm.Crop.CopyCroppedImageAsync();
                     return;
             }
         }

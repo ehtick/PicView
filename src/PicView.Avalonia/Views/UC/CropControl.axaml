@@ -56,7 +56,7 @@
     </UserControl.ContextMenu>
     <Panel>
         <!--  Image control to display the bitmap  -->
-        <Image Source="{Binding Crop.Bitmap}" x:Name="ImageControl" />
+        <Image Source="{Binding Crop.Bitmap.Value}" x:Name="ImageControl" />
 
         <Canvas Background="Transparent" x:Name="RootCanvas">
 
@@ -76,11 +76,11 @@
                     Foreground="{DynamicResource MainTextColor}">
                     <Run Text="{CompiledBinding Translation.Width.Value, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding Crop.PixelSelectionWidth, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Crop.PixelSelectionWidth.Value, Mode=OneWay}" />
                     <Run Text=" x " />
                     <Run Text="{CompiledBinding Translation.Height.Value, Mode=OneWay}" />
                     <Run Text=": " />
-                    <Run Text="{CompiledBinding Crop.PixelSelectionHeight, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding Crop.PixelSelectionHeight.Value, Mode=OneWay}" />
                 </TextBlock>
             </Border>
 
@@ -89,8 +89,8 @@
                 Background="Transparent"
                 BorderBrush="#fff"
                 BorderThickness="2"
-                Height="{CompiledBinding Crop.SelectionHeight}"
-                Width="{CompiledBinding Crop.SelectionWidth}"
+                Height="{CompiledBinding Crop.SelectionHeight.Value}"
+                Width="{CompiledBinding Crop.SelectionWidth.Value}"
                 x:Name="MainRectangle" />
 
             <!--  Top Left  -->

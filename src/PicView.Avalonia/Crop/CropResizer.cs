@@ -96,15 +96,15 @@ public static class CropResizer
         }
         
         // Apply bounds constraints
-        ApplyBoundsConstraints(ref newX, ref newY, ref newWidth, ref newHeight, vm.ImageWidth, vm.ImageHeight);
+        ApplyBoundsConstraints(ref newX, ref newY, ref newWidth, ref newHeight, vm.ImageWidth.CurrentValue, vm.ImageHeight.CurrentValue);
         
         // Update the view model
         try
         {
-            vm.SelectionX = Convert.ToInt32(newX);
-            vm.SelectionY = Convert.ToInt32(newY);
-            vm.SelectionWidth = Convert.ToInt32(newWidth);
-            vm.SelectionHeight = Convert.ToInt32(newHeight);
+            vm.SelectionX.Value = Convert.ToInt32(newX);
+            vm.SelectionY.Value = Convert.ToInt32(newY);
+            vm.SetSelectionWidth(Convert.ToUInt32(newWidth));
+            vm.SetSelectionHeight(Convert.ToUInt32(newHeight));
         }
         catch (Exception exception)
         {
