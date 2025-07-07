@@ -4,6 +4,7 @@ using R3;
 
 namespace PicView.Avalonia.ViewModels;
 
+// TODO: Move this to Core by using interfaces
 public class NavigationViewModel : IDisposable
 {
     // Reload

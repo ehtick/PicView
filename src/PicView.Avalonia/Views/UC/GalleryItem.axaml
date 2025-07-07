@@ -105,7 +105,7 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperCommand}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.SetAsWallpaper.Value,

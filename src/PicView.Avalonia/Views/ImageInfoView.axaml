@@ -138,7 +138,7 @@
 
                 <!--  Set as wallpaper filled  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperFilledCommand}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperFilledCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Fill.Value,
@@ -157,7 +157,7 @@
 
                 <!--  Set as wallpaper fit  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperFittedTask}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperFittedCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Fit.Value,
@@ -176,7 +176,7 @@
 
                 <!--  Set as wallpaper stretched  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperStretchedCommand}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperStretchedCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Stretch.Value,
@@ -197,7 +197,7 @@
 
                 <!--  Set as wallpaper centered  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperCenteredCommand}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperCenteredCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Center.Value,
@@ -216,7 +216,7 @@
 
                 <!--  Set as wallpaper tiled  -->
                 <MenuItem
-                    Command="{CompiledBinding SetAsWallpaperTiledCommand}"
+                    Command="{CompiledBinding Tools.SetAsWallpaperTiledCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.Tile.Value,

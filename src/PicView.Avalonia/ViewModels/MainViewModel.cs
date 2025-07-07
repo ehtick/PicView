@@ -7,13 +7,10 @@ using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.LockScreen;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Wallpaper;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileSorting;
 using PicView.Core.ProcessHandling;
@@ -30,12 +27,13 @@ public class MainViewModel : ReactiveObject
     public readonly IPlatformWindowService? PlatformWindowService;
     
     public TranslationViewModel Translation { get; } = new();
-    public GlobalSettingsViewModel? GLobalSettings { get; } = new();
+    public ToolsViewModel? GLobalSettings { get; } = new();
     public SettingsViewModel? SettingsViewModel { get; set; }
     public ImageCropperViewModel? Crop { get; set; }
     public NavigationViewModel Navigation { get; } = new();
     public PicViewerModel PicViewer { get; } = new();
     public GalleryViewModel? Gallery { get; } = new();
+    public ToolsViewModel? Tools { get; } = new();
     public ExifViewModel? Exif { get; set;  }
     
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
@@ -177,12 +175,6 @@ public class MainViewModel : ReactiveObject
 
         LocateOnDiskCommand = FunctionsHelper.CreateReactiveCommand<string>(LocateOnDiskTask);
 
-        SetAsWallpaperCommand = FunctionsHelper.CreateReactiveCommand<string>(SetAsWallpaperTask);
-        SetAsWallpaperTiledCommand = FunctionsHelper.CreateReactiveCommand<string>(SetAsWallpaperTiledTask);
-        SetAsWallpaperStretchedCommand = FunctionsHelper.CreateReactiveCommand<string>(SetAsWallpaperStretchedTask);
-        SetAsWallpaperCenteredCommand = FunctionsHelper.CreateReactiveCommand<string>(SetAsWallpaperCenteredTask);
-        SetAsWallpaperFilledCommand = FunctionsHelper.CreateReactiveCommand<string>(SetAsWallpaperFilledTask);
-
         #endregion File commands
 
         #region UI Commands
@@ -323,12 +315,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ColorPickerCommand { get; }
 
     public ReactiveCommand<int, Unit>? SlideshowCommand { get; }
-
-    public ReactiveCommand<string, Unit>? SetAsWallpaperCommand { get; }
-    public ReactiveCommand<string, Unit>? SetAsWallpaperFilledCommand { get; }
-    public ReactiveCommand<string, Unit>? SetAsWallpaperStretchedCommand { get; }
-    public ReactiveCommand<string, Unit>? SetAsWallpaperTiledCommand { get; }
-    public ReactiveCommand<string, Unit>? SetAsWallpaperCenteredCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ResetSettingsCommand { get; }
 
@@ -782,32 +768,6 @@ public class MainViewModel : ReactiveObject
 
     private async Task LocateOnDiskTask(string path) =>
         await FileManager.LocateOnDisk(path, this).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperFilledTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Fill).ConfigureAwait(false);
-    
-    private async Task SetAsWallpaperFittedTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Fit).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperTiledTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Tile).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperStretchedTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Stretch).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperCenteredTask(string path) =>
-        await SetAsWallpaperTask(path, WallpaperStyle.Center).ConfigureAwait(false);
-
-    private async Task SetAsWallpaperTask(string path, WallpaperStyle style) =>
-        await WallpaperManager.SetAsWallpaper(path, style, this).ConfigureAwait(false);
-
-    private async Task SetAsLockScreenTask(string path) =>
-        await LockScreenHelper.SetAsLockScreenTask(path, this).ConfigureAwait(false);
-
-    private void SetGalleryItemStretch(string value) => GalleryHelper.SetGalleryItemStretch(value, this);
 
     public async Task StartSlideShowTask(int milliseconds) =>
         await Slideshow.StartSlideshow(this, milliseconds);

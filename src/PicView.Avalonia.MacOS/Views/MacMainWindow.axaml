@@ -147,7 +147,7 @@
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
-                        Command="{CompiledBinding SetAsWallpaperCommand}"
+                        Command="{CompiledBinding Tools.SetAsWallpaperCommand}"
                         CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                            FallbackValue=''}"
                         Header="{CompiledBinding Translation.SetAsWallpaper.Value,

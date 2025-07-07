@@ -684,7 +684,7 @@
 
             <!--  Set as wallpaper  -->
             <MenuItem
-                Command="{CompiledBinding SetAsWallpaperCommand}"
+                Command="{CompiledBinding Tools.SetAsWallpaperCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.SetAsWallpaper.Value,
