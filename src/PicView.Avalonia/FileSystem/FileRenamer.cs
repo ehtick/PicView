@@ -10,22 +10,22 @@ public static class FileRenamer
     private const int FileInUseRetryCount = 100;
     private const int FileInUseRetryDelayMs = 50;
 
-    public static async Task<bool> AttemptRenameAsync(string oldPath, string newPath, MainViewModel vm)
+    public static async Task<bool> AttemptRenameAsync(string oldPath, string newPath, MainViewModel vm, uint? width = null, uint? height = null, uint? quality = null)
     {
         vm.IsLoading = true;
 
         if (Path.GetExtension(newPath) != Path.GetExtension(oldPath))
         {
-            return await HandleExtensionChangeAsync(vm, oldPath, newPath);
+            return await HandleExtensionAsync(vm, oldPath, newPath, width, height, quality);
         }
 
         return await HandleSimpleRenameAsync(vm, oldPath, newPath);
     }
 
-    private static async Task<bool> HandleExtensionChangeAsync(MainViewModel vm, string oldPath, string newPath)
+    private static async Task<bool> HandleExtensionAsync(MainViewModel vm, string oldPath, string newPath, uint? width = null, uint? height = null, uint? quality = null)
     {
         var saved = await SaveImageFileHelper
-            .SaveImageAsync(null, oldPath, newPath, null, null, null, Path.GetExtension(newPath)).ConfigureAwait(false);
+            .SaveImageAsync(null, oldPath, newPath, width, height, quality, Path.GetExtension(newPath)).ConfigureAwait(false);
 
         var attempts = 0;
         while (FileHelper.IsFileInUse(oldPath) && attempts++ < FileInUseRetryCount)
@@ -33,18 +33,18 @@ public static class FileRenamer
             await Task.Delay(FileInUseRetryDelayMs);
         }
 
-        if (!saved)
+        // ReSharper disable once InvertIf
+        if (saved)
         {
-            return true;
-        }
+            var success = await vm.PlatformService.DeleteFile(oldPath, true);
+            if (success || File.Exists(newPath))
+            {
+                return true;
+            }
 
-        var success = await vm.PlatformService.DeleteFile(oldPath, true);
-        if (success || File.Exists(newPath))
-        {
-            return true;
+            await ErrorHandling.ReloadAsync(vm);
         }
-
-        await ErrorHandling.ReloadAsync(vm);
+        
         return false;
     }
 
