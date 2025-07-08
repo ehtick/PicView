@@ -93,7 +93,7 @@
             Minimum="0.05"
             TickFrequency="0.01"
             TickPlacement="BottomRight"
-            Value="{CompiledBinding GetNavSpeed,
+            Value="{CompiledBinding SettingsViewModel.NavSpeed.Value,
                                     Mode=TwoWay}"
             Width="300" />
 
@@ -102,7 +102,7 @@
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             Foreground="{DynamicResource MainTextColorFaded}"
             Margin="0,0,0,15">
-            <Run Text="{CompiledBinding GetNavSpeed, Mode=OneWay}" />
+            <Run Text="{CompiledBinding SettingsViewModel.GetNavSpeed.Value, Mode=OneWay}" />
             <Run Text="{CompiledBinding Translation.SecAbbreviation.Value, Mode=OneWay}" />
         </TextBlock>
     </StackPanel>

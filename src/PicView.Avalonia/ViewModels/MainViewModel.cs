@@ -477,38 +477,6 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public double GetSlideshowSpeed
-    {
-        get;
-        set
-        {
-            var roundedValue = Math.Round(value, 2);
-            this.RaiseAndSetIfChanged(ref field, roundedValue);
-            Settings.UIProperties.SlideShowTimer = roundedValue;
-        }
-    }
-
-    public double GetNavSpeed
-    {
-        get => Math.Round(field, 2);
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.UIProperties.NavSpeed = value;
-        }
-    }
-
-    public double GetZoomSpeed
-    {
-        get;
-        set
-        {
-            var roundedValue = Math.Round(value, 2);
-            this.RaiseAndSetIfChanged(ref field, roundedValue);
-            Settings.Zoom.ZoomSpeed = roundedValue;
-        }
-    }
-
     #region Size
 
     public double TitleMaxWidth

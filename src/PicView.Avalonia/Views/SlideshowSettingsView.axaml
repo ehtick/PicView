@@ -39,14 +39,14 @@
             Minimum="1"
             TickFrequency="1"
             TickPlacement="BottomRight"
-            Value="{CompiledBinding GetSlideshowSpeed}"
+            Value="{CompiledBinding SettingsViewModel.SlideshowSpeed.Value}"
             Width="300" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             Foreground="{DynamicResource MainTextColorFaded}"
             Margin="0,0,0,15">
-            <Run Text="{CompiledBinding GetSlideshowSpeed, Mode=OneWay}" />
+            <Run Text="{CompiledBinding SettingsViewModel.GetSlideshowSpeed.Value, Mode=OneWay}" />
             <Run Text="{CompiledBinding Translation.SecAbbreviation.Value, Mode=OneWay}" />
         </TextBlock>
     </StackPanel>

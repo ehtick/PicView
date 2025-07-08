@@ -11,6 +11,7 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Keybindings;
 using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
 using R3;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -19,10 +20,16 @@ namespace PicView.Avalonia.Views;
 
 public partial class SettingsView : UserControl
 {
+    #region Fields
+
     private static CompositeDisposable? _marginSubscription;
     private readonly Stack<TabItem?> _backStack = new();
     private readonly Stack<TabItem?> _forwardStack = new();
     private TabItem? _currentTab;
+
+    #endregion
+
+    #region Constructor
 
     public SettingsView()
     {
@@ -35,18 +42,50 @@ public partial class SettingsView : UserControl
         Loaded += OnLoaded;
     }
 
+    #endregion
+
+    #region Properties
+
     private MainViewModel? ViewModel => DataContext as MainViewModel;
+
+    #endregion
+
+    #region Initialization
 
     private void OnLoaded(object? sender, EventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainViewModel)
         {
             return;
         }
 
-        var settingsVm = vm.SettingsViewModel;
-        settingsVm.InitializeNavigation(GoBack, GoForward);
-        settingsVm.WindowMargin.Value = Settings.WindowProperties.Margin;
+        InitializeViewModel();
+        SetupUI();
+        AttachEventHandlers();
+        LoadInitialSettings();
+    }
+
+    private void InitializeViewModel()
+    {
+        if (ViewModel is not { } vm)
+        {
+            return;
+        }
+
+        Task.Run(() =>
+        {
+            var settingsVm = vm.SettingsViewModel;
+            settingsVm.InitializeNavigation(GoBack, GoForward);
+            settingsVm.WindowMargin.Value = Settings.WindowProperties.Margin;
+
+            SubscribeToMarginChanges(vm, settingsVm);
+
+            settingsVm.SubscriptionSettingsUpdate();
+        });
+    }
+
+    private static void SubscribeToMarginChanges(MainViewModel vm, SettingsViewModel settingsVm)
+    {
         _marginSubscription = new CompositeDisposable();
         Observable.EveryValueChanged(settingsVm.WindowMargin, x => x.Value)
             .SubscribeAwait(async (x, _) =>
@@ -58,8 +97,10 @@ public partial class SettingsView : UserControl
                     WindowFunctions.CenterWindowOnScreen();
                 }
             }).AddTo(_marginSubscription);
-        SetupUI();
-        AttachEventHandlers();
+    }
+
+    private void LoadInitialSettings()
+    {
         Task.Run(() =>
         {
             if (string.IsNullOrWhiteSpace(SettingsConfiguration.CurrentUserSettingsPath))
@@ -73,6 +114,10 @@ public partial class SettingsView : UserControl
             }
         });
     }
+
+    #endregion
+
+    #region UI Setup and Event Handlers
 
     private void SetupUI()
     {
@@ -88,6 +133,10 @@ public partial class SettingsView : UserControl
         MainTabControl.SelectionChanged += OnTabSelectionChanged;
         PointerPressed += OnPointerPressed;
     }
+
+    #endregion
+
+    #region Navigation
 
     private void OnTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
@@ -152,6 +201,10 @@ public partial class SettingsView : UserControl
         svm.IsForwardButtonEnabled.Value = _forwardStack.Count > 0;
     }
 
+    #endregion
+
+    #region Input Handlers
+
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -177,4 +230,6 @@ public partial class SettingsView : UserControl
             ContextMenu.Open();
         }
     }
+
+    #endregion
 }

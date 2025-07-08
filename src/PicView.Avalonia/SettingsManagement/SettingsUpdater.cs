@@ -75,9 +75,6 @@ public static class SettingsUpdater
                                               || !Settings.UIProperties.ShowInterface
             ? 0
             : SizeDefaults.BottombarHeight;
-        vm.GetNavSpeed = Settings.UIProperties.NavSpeed;
-        vm.GetSlideshowSpeed = Settings.UIProperties.SlideShowTimer;
-        vm.GetZoomSpeed = Settings.Zoom.ZoomSpeed;
         vm.PicViewer.IsShowingSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
         vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
         vm.IsUIShown  = Settings.UIProperties.ShowInterface;

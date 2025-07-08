@@ -71,14 +71,14 @@
             Minimum=".1"
             TickFrequency=".05"
             TickPlacement="BottomRight"
-            Value="{CompiledBinding GetZoomSpeed}"
+            Value="{CompiledBinding SettingsViewModel.ZoomSpeed.Value}"
             Width="300" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             Foreground="{StaticResource MainTextColorFaded}"
             Margin="0,0,0,15"
-            Text="{CompiledBinding GetZoomSpeed,
+            Text="{CompiledBinding SettingsViewModel.GetZoomSpeed.Value,
                                    Mode=OneWay}" />
 
     </StackPanel>
