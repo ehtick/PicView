@@ -1,4 +1,9 @@
-﻿using PicView.Avalonia.UI;
+﻿using PicView.Avalonia.Clipboard;
+using PicView.Avalonia.FileSystem;
+using PicView.Avalonia.Functions;
+using PicView.Avalonia.ImageTransformations.Rotation;
+using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.Wallpaper;
 using R3;
 
@@ -8,103 +13,135 @@ public class ToolsViewModel : IDisposable
 {
     
     // Open related
-    public ReactiveCommand<string> OpenFileCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand OpenFileCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await FunctionsMapper.Open();
     });
     
     public ReactiveCommand OpenLastFileCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await FunctionsMapper.OpenLastFile();
     });
     
     public ReactiveCommand<string> OpenWithCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await FileManager.OpenWith(path, vm).ConfigureAwait(false);
+        }
     });
     // Save related
-    public ReactiveCommand<string> SaveFileCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand<string> SaveFileCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await FunctionsMapper.Save();
     });
     
-    public ReactiveCommand<string> SaveFileAsCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand<string> SaveFileAsCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await FunctionsMapper.SaveAs();
     });
     
     // File Tasks
     public ReactiveCommand<string> RecycleFileCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path, vm.PlatformService)).ConfigureAwait(false);
+        }
+    });
+    
+    public ReactiveCommand<string> DeleteFilePermanentlyCommand { get; } = new(async (path, _) =>
+    {
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path, vm.PlatformService)).ConfigureAwait(false);
+        }
     });
     
     public ReactiveCommand<string> LocateOnDiskCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await FileManager.LocateOnDisk(path, vm).ConfigureAwait(false);
+        }
     });
     
     public ReactiveCommand<string> FilePropertiesCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await FileManager.ShowFileProperties(path, vm).ConfigureAwait(false);
+        }
     });
     
     public ReactiveCommand<string> PrintCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await FileManager.Print(path, vm).ConfigureAwait(false);
+        }
     });
     
-    public ReactiveCommand<string> RenameCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand<string> RenameCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
-    });
-    
-    public ReactiveCommand<string> ResizeCommand { get; } = new(async (path, _) =>
-    {
-        await Task.Delay(1); // TODO implement
-    });
-    
-    public ReactiveCommand<string> ConvertCommand { get; } = new(async (path, _) =>
-    {
-        await Task.Delay(1); // TODO implement
+        await Task.Run(FunctionsMapper.Rename);
     });
 
     
     // Copy related
-    public ReactiveCommand<string> PasteCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand<string> PasteCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await Task.Run(FunctionsMapper.Paste);
     });
     
     public ReactiveCommand<string> DuplicateFileCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await ClipboardFileOperations.Duplicate(path, vm).ConfigureAwait(false);
+        }
     });
     
-    public ReactiveCommand<string> CopyImageCommand { get; } = new(async (path, _) =>
+    public ReactiveCommand<string> CopyImageCommand { get; } = new(async (_, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await FunctionsMapper.CopyImage().ConfigureAwait(false);
     });
     
     public ReactiveCommand<string> CopyFileCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await ClipboardFileOperations.CopyFileToClipboard(path, vm).ConfigureAwait(false);
+        }
     });
     
     public ReactiveCommand<string> CopyFilePathCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        await ClipboardTextOperations.CopyTextToClipboard(path).ConfigureAwait(false);
     });
     
     public ReactiveCommand<string> CutCommand { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await ClipboardFileOperations.CutFile(path, vm).ConfigureAwait(false);
+        }
     });
     
     public ReactiveCommand<string> CopyBase64Command { get; } = new(async (path, _) =>
     {
-        await Task.Delay(1); // TODO implement
+        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        {
+            await ClipboardImageOperations.CopyBase64ToClipboard(path, vm).ConfigureAwait(false);
+        }
     });
+    
+    
+    public async Task StartSlideShowTask(int milliseconds) =>
+        await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
+    
+    public async Task RotateTask(int angle) =>
+        await RotationNavigation.RotateTo(UIHelper.GetMainView.DataContext as MainViewModel, angle);
     
     // Wallpaper
     public ReactiveCommand<string> SetAsWallpaperCommand { get; } = new(async (path, _) =>

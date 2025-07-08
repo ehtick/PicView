@@ -58,7 +58,7 @@
         <Border.ContextMenu>
             <ContextMenu x:Name="GalleryContextMenu">
                 <MenuItem
-                    Command="{CompiledBinding PrintCommand}"
+                    Command="{CompiledBinding Tools.PrintCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.Print.Value,
@@ -73,7 +73,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem
-                    Command="{CompiledBinding OpenWithCommand}"
+                    Command="{CompiledBinding Tools.OpenWithCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.OpenWith.Value,
@@ -89,7 +89,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem
-                    Command="{CompiledBinding LocateOnDiskCommand}"
+                    Command="{CompiledBinding Tools.LocateOnDiskCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.ShowInFolder.Value,
@@ -121,7 +121,7 @@
                 </MenuItem>
                 <Separator />
                 <MenuItem
-                    Command="{CompiledBinding CopyFileCommand}"
+                    Command="{CompiledBinding Tools.CopyFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.CopyFile.Value,
@@ -162,7 +162,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem
-                    Command="{CompiledBinding DuplicateFileCommand}"
+                    Command="{CompiledBinding Tools.DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.DuplicateFile.Value,
@@ -180,7 +180,7 @@
                 <Separator />
 
                 <MenuItem
-                    Command="{CompiledBinding RecycleFileCommand}"
+                    Command="{CompiledBinding Tools.RecycleFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.DeleteFile.Value,

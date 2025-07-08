@@ -15,28 +15,28 @@
     <UserControl.ContextMenu>
         <ContextMenu x:Name="RotationContextMenu">
             <MenuItem
-                Command="{CompiledBinding RotateToCommand}"
+                Command="{CompiledBinding Tools.RotateTask}"
                 CommandParameter="0"
                 GroupName="RotationGroup"
                 Header="0°"
                 ToggleType="Radio"
                 x:Name="Rotation0Item" />
             <MenuItem
-                Command="{CompiledBinding RotateToCommand}"
+                Command="{CompiledBinding Tools.RotateTask}"
                 CommandParameter="90"
                 GroupName="RotationGroup"
                 Header="90°"
                 ToggleType="Radio"
                 x:Name="Rotation90Item" />
             <MenuItem
-                Command="{CompiledBinding RotateToCommand}"
+                Command="{CompiledBinding Tools.RotateTask}"
                 CommandParameter="180"
                 GroupName="RotationGroup"
                 Header="180°"
                 ToggleType="Radio"
                 x:Name="Rotation180Item" />
             <MenuItem
-                Command="{CompiledBinding RotateToCommand}"
+                Command="{CompiledBinding Tools.RotateTask}"
                 CommandParameter="270"
                 GroupName="RotationGroup"
                 Header="270°"

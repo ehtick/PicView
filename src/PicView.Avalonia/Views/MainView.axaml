@@ -29,7 +29,7 @@
 
             <!--  Open  -->
             <MenuItem
-                Command="{CompiledBinding OpenFileCommand}"
+                Command="{CompiledBinding Tools.OpenFileCommand}"
                 Header="{CompiledBinding Translation.Open.Value,
                                          Mode=OneWay}"
                 MinWidth="180">
@@ -45,7 +45,7 @@
 
             <!--  Save  -->
             <MenuItem
-                Command="{CompiledBinding SaveFileCommand}"
+                Command="{CompiledBinding Tools.SaveFileCommand}"
                 Header="{CompiledBinding Translation.Save.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
@@ -62,7 +62,7 @@
 
             <!--  Save as  -->
             <MenuItem
-                Command="{CompiledBinding SaveFileAsCommand}"
+                Command="{CompiledBinding Tools.SaveFileAsCommand}"
                 Header="{CompiledBinding Translation.SaveAs.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
@@ -79,7 +79,7 @@
 
             <!--  Print  -->
             <MenuItem
-                Command="{CompiledBinding PrintCommand}"
+                Command="{CompiledBinding Tools.PrintCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Print.Value,
@@ -99,7 +99,7 @@
 
             <!--  Open with  -->
             <MenuItem
-                Command="{CompiledBinding OpenWithCommand}"
+                Command="{CompiledBinding Tools.OpenWithCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.OpenWith.Value,
@@ -119,7 +119,7 @@
 
             <!--  Locate on disk  -->
             <MenuItem
-                Command="{CompiledBinding LocateOnDiskCommand}"
+                Command="{CompiledBinding Tools.LocateOnDiskCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.ShowInFolder.Value,
@@ -726,7 +726,7 @@
 
                 <!--  File properties  -->
                 <MenuItem
-                    Command="{CompiledBinding FilePropertiesCommand}"
+                    Command="{CompiledBinding Tools.FilePropertiesCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.FileProperties.Value,
@@ -865,7 +865,7 @@
 
             <!--  Delete file  -->
             <MenuItem
-                Command="{CompiledBinding RecycleFileCommand}"
+                Command="{CompiledBinding Tools.RecycleFileCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.DeleteFile.Value,
@@ -885,7 +885,7 @@
             <Separator />
 
             <!--  Paste  -->
-            <MenuItem Command="{CompiledBinding PasteCommand}" Header="{CompiledBinding Translation.Paste.Value, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Tools.PasteCommand}" Header="{CompiledBinding Translation.Paste.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource PasteGeometry}"
@@ -898,7 +898,7 @@
 
             <!--  Copy  -->
             <MenuItem
-                Command="{CompiledBinding CopyFileCommand}"
+                Command="{CompiledBinding Tools.CopyFileCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Copy.Value,
@@ -914,7 +914,7 @@
 
                 <!--  Copy image  -->
                 <MenuItem
-                    Command="{CompiledBinding CopyImageCommand}"
+                    Command="{CompiledBinding Tools.CopyImageCommand}"
                     Header="{CompiledBinding Translation.CopyImage.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
@@ -931,7 +931,7 @@
 
                 <!--  Copy file path  -->
                 <MenuItem
-                    Command="{CompiledBinding CopyFilePathCommand}"
+                    Command="{CompiledBinding Tools.CopyFilePathCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{Binding Translation.FileCopyPath.Value, Mode=OneWay}"
@@ -949,7 +949,7 @@
 
                 <!--  Copy base64  -->
                 <MenuItem
-                    Command="{CompiledBinding CopyBase64Command}"
+                    Command="{CompiledBinding Tools.CopyBase64Command}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
@@ -974,7 +974,7 @@
 
                 <!--  Duplicate file  -->
                 <MenuItem
-                    Command="{CompiledBinding DuplicateFileCommand}"
+                    Command="{CompiledBinding Tools.DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.DuplicateFile.Value,
@@ -995,7 +995,7 @@
 
             <!--  Copy file  -->
             <MenuItem
-                Command="{CompiledBinding CopyFileCommand}"
+                Command="{CompiledBinding Tools.CopyFileCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.CopyFile.Value,

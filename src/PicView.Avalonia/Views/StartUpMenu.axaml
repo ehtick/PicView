@@ -42,7 +42,7 @@
             VerticalAlignment="Center"
             x:Name="Buttons">
 
-            <Button Command="{CompiledBinding OpenFileCommand}" x:Name="SelectFileButton">
+            <Button Command="{CompiledBinding Tools.OpenFileCommand}" x:Name="SelectFileButton">
                 <StackPanel Orientation="Horizontal">
                     <Image Height="20.091">
                         <Image.Source>
@@ -83,7 +83,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Command="{CompiledBinding OpenLastFileCommand}" x:Name="OpenLastFileButton">
+            <Button Command="{CompiledBinding Tools.OpenLastFileCommand}" x:Name="OpenLastFileButton">
                 <StackPanel Height="30" Orientation="Horizontal">
                     <Image Height="20.091">
                         <Image.Source>
@@ -124,7 +124,7 @@
                 </StackPanel>
             </Button>
 
-            <Button Command="{CompiledBinding PasteCommand}" x:Name="PasteButton">
+            <Button Command="{CompiledBinding Tools.PasteCommand}" x:Name="PasteButton">
                 <StackPanel Height="30" Orientation="Horizontal">
                     <Path
                         Data="{StaticResource PasteGeometry}"

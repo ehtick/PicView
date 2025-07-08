@@ -94,7 +94,7 @@
                     BorderThickness="0,0,1,0"
                     Classes="errorHover"
                     ClickMode="Release"
-                    Command="{CompiledBinding RecycleFileCommand}"
+                    Command="{CompiledBinding Tools.RecycleFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource RecycleGeometry}"
@@ -130,7 +130,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding OpenWithCommand}"
+                    Command="{CompiledBinding Tools.OpenWithCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource OpenWithGeometry}"
@@ -148,7 +148,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding PrintCommand}"
+                    Command="{CompiledBinding Tools.PrintCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource PrintGeometry}"
@@ -166,7 +166,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding CopyImageCommand}"
+                    Command="{CompiledBinding Tools.CopyImageCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     DockPanel.Dock="Right"
@@ -183,7 +183,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding CopyFileCommand}"
+                    Command="{CompiledBinding Tools.CopyFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource CopyGeometry}"
@@ -201,7 +201,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding DuplicateFileCommand}"
+                    Command="{CompiledBinding Tools.DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource DuplicateGeometry}"
@@ -219,7 +219,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding LocateOnDiskCommand}"
+                    Command="{CompiledBinding Tools.LocateOnDiskCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource ShowInFolderGeometry}"

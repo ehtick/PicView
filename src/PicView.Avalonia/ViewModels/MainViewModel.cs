@@ -3,13 +3,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using PicView.Avalonia.Clipboard;
-using PicView.Avalonia.Converters;
-using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileSorting;
@@ -111,7 +107,6 @@ public class MainViewModel : ReactiveObject
         {
             await RotationNavigation.RotateRight(this, RotationButton.RotateRightButton);
         });
-        RotateToCommand = FunctionsHelper.CreateReactiveCommand<string>(RotateToTask);
 
         RotateRightWindowBorderButtonCommand = FunctionsHelper.CreateReactiveCommand(async () =>
         {
@@ -134,49 +129,6 @@ public class MainViewModel : ReactiveObject
 
         #endregion Image commands
 
-        #region File commands
-
-        OpenFileCommand = FunctionsHelper.CreateReactiveCommand(() => { Task.Run(FunctionsMapper.Open); });
-
-        OpenLastFileCommand = FunctionsHelper.CreateReactiveCommand(() => { Task.Run(FunctionsMapper.OpenLastFile); });
-
-        SaveFileCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Save);
-
-        SaveFileAsCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SaveAs);
-
-        CopyFileCommand = FunctionsHelper.CreateReactiveCommand<string>(CopyFileTask);
-
-        CopyFilePathCommand = FunctionsHelper.CreateReactiveCommand<string>(CopyFilePathTask);
-
-        FilePropertiesCommand = FunctionsHelper.CreateReactiveCommand<string>(ShowFilePropertiesTask);
-
-        CopyImageCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.CopyImage);
-
-        CopyBase64Command = FunctionsHelper.CreateReactiveCommand<string>(CopyBase64Task);
-
-        CutCommand = FunctionsHelper.CreateReactiveCommand<string>(CutFileTask);
-
-        PasteCommand = FunctionsHelper.CreateReactiveCommand(() => { Task.Run(FunctionsMapper.Paste); });
-
-        OpenWithCommand = FunctionsHelper.CreateReactiveCommand<string>(OpenWithTask);
-
-        RenameCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Rename);
-
-        ResizeCommand = FunctionsHelper.CreateReactiveCommand<int>(ResizeImageByPercentage);
-        ConvertCommand = FunctionsHelper.CreateReactiveCommand<int>(ConvertFileExtension);
-
-        DuplicateFileCommand = FunctionsHelper.CreateReactiveCommand<string>(DuplicateFileTask);
-
-        PrintCommand = FunctionsHelper.CreateReactiveCommand<string>(PrintTask);
-
-        DeleteFileCommand = FunctionsHelper.CreateReactiveCommand<string>(DeleteFileTask);
-
-        RecycleFileCommand = FunctionsHelper.CreateReactiveCommand<string>(RecycleFileTask);
-
-        LocateOnDiskCommand = FunctionsHelper.CreateReactiveCommand<string>(LocateOnDiskTask);
-
-        #endregion File commands
-
         #region UI Commands
 
         ToggleUICommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleInterface);
@@ -196,7 +148,6 @@ public class MainViewModel : ReactiveObject
         ChangeCtrlZoomCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ChangeCtrlZoom);
 
         ColorPickerCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ColorPicker);
-        SlideshowCommand = FunctionsHelper.CreateReactiveCommand<int>(StartSlideShowTask);
 
         ToggleTaskbarProgressCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleTaskbarProgress);
         
@@ -241,35 +192,16 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? MaximizeCommand { get; }
     public ReactiveCommand<Unit, Unit>? RestoreCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleFullscreenCommand { get; }
-    public ReactiveCommand<Unit, Unit>? OpenFileCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SaveFileCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SaveFileAsCommand { get; }
-    public ReactiveCommand<Unit, Unit>? OpenLastFileCommand { get; }
-    public ReactiveCommand<Unit, Unit>? PasteCommand { get; }
-    public ReactiveCommand<string, Unit>? CopyFileCommand { get; }
-    public ReactiveCommand<string, Unit>? CopyBase64Command { get; }
-    public ReactiveCommand<string, Unit>? CopyFilePathCommand { get; }
-    public ReactiveCommand<string, Unit>? FilePropertiesCommand { get; }
-    public ReactiveCommand<Unit, Unit>? CopyImageCommand { get; }
-    public ReactiveCommand<string, Unit>? CutCommand { get; }
-    public ReactiveCommand<string, Unit>? PrintCommand { get; }
-    public ReactiveCommand<string, Unit>? DeleteFileCommand { get; }
-    public ReactiveCommand<string, Unit>? RecycleFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? CloseMenuCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleFileMenuCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleImageMenuCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleSettingsMenuCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleToolsMenuCommand { get; }
-    public ReactiveCommand<string, Unit>? LocateOnDiskCommand { get; }
-    public ReactiveCommand<string, Unit>? OpenWithCommand { get; }
-    public ReactiveCommand<Unit, Unit>? RenameCommand { get; }
     public ReactiveCommand<Unit, Unit>? NewWindowCommand { get; }
-    public ReactiveCommand<string, Unit>? DuplicateFileCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleLoopingCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateLeftCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateLeftButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateRightCommand { get; }
-    public ReactiveCommand<string, Unit>? RotateToCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateRightButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateRightWindowBorderButtonCommand { get; }
     public ReactiveCommand<Unit, Unit>? FlipCommand { get; }
@@ -296,8 +228,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ShowEffectsWindowCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? OptimizeImageCommand { get; }
-    public ReactiveCommand<int, Unit>? ResizeCommand { get; }
-    public ReactiveCommand<int, Unit>? ConvertCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? SortFilesByNameCommand { get; }
     public ReactiveCommand<Unit, Unit>? SortFilesBySizeCommand { get; }
@@ -313,8 +243,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ToggleSubdirectoriesCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ColorPickerCommand { get; }
-
-    public ReactiveCommand<int, Unit>? SlideshowCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ResetSettingsCommand { get; }
 
@@ -725,63 +653,4 @@ public class MainViewModel : ReactiveObject
     #endregion Menus
 
     #endregion Fields
-
-    #region Methods
-
-    #region Tasks
-
-    private async Task ResizeImageByPercentage(int percentage) =>
-        await ConversionHelper.ResizeImageByPercentage(percentage, this).ConfigureAwait(false);
-
-    private async Task ConvertFileExtension(int index) =>
-        await ConversionHelper.ConvertFileExtension(index, this).ConfigureAwait(false);
-
-    private async Task CopyFileTask(string path) => 
-        await ClipboardFileOperations.CopyFileToClipboard(path, this).ConfigureAwait(false);
-
-    private static async Task CopyFilePathTask(string path) => 
-        await ClipboardTextOperations.CopyTextToClipboard(path).ConfigureAwait(false);
-
-    private async Task CopyBase64Task(string path) =>
-        await ClipboardImageOperations.CopyBase64ToClipboard(path, this).ConfigureAwait(false);
-
-    private async Task CutFileTask(string path) =>
-        await ClipboardFileOperations.CutFile(path, this).ConfigureAwait(false);
-
-    private async Task DeleteFileTask(string path) =>
-        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path, PlatformService)).ConfigureAwait(false);
-
-    private async Task RecycleFileTask(string path) =>
-        await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path, PlatformService)).ConfigureAwait(false);
-
-    private async Task DuplicateFileTask(string path) =>
-        await ClipboardFileOperations.Duplicate(path, this).ConfigureAwait(false);
-
-    private async Task ShowFilePropertiesTask(string path) =>
-        await FileManager.ShowFileProperties(path, this).ConfigureAwait(false);
-
-    private async Task PrintTask(string path) =>
-        await FileManager.Print(path, this).ConfigureAwait(false);
-
-    private async Task OpenWithTask(string path) => 
-        await FileManager.OpenWith(path, this).ConfigureAwait(false);
-
-    private async Task LocateOnDiskTask(string path) =>
-        await FileManager.LocateOnDisk(path, this).ConfigureAwait(false);
-
-    public async Task StartSlideShowTask(int milliseconds) =>
-        await Slideshow.StartSlideshow(this, milliseconds);
-
-    public async Task RotateToTask(string angle)
-    {
-        if (int.TryParse(angle, out var result))
-        {
-            await RotationNavigation.RotateTo(this, result);
-        }
-    }
-        
-    
-    #endregion
-
-    #endregion Methods
 }

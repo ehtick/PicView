@@ -62,7 +62,7 @@
                 <customControls:IconButton
                     Canvas.Left="45"
                     Classes="hover btn"
-                    Command="{CompiledBinding PrintCommand}"
+                    Command="{CompiledBinding Tools.PrintCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource PrintGeometry}"
@@ -77,7 +77,7 @@
                 <customControls:IconButton
                     Canvas.Left="90"
                     Classes="hover btn"
-                    Command="{CompiledBinding RecycleFileCommand}"
+                    Command="{CompiledBinding Tools.RecycleFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource RecycleGeometry}"
@@ -91,7 +91,7 @@
                 <customControls:IconButton
                     Canvas.Left="135"
                     Classes="hover btn"
-                    Command="{CompiledBinding SaveFileCommand}"
+                    Command="{CompiledBinding Tools.SaveFileCommand}"
                     Data="{StaticResource SaveGeometry}"
                     IconHeight="17"
                     IconWidth="17"
@@ -103,7 +103,7 @@
                 <customControls:IconButton
                     Canvas.Left="180"
                     Classes="hover btn"
-                    Command="{CompiledBinding CopyFileCommand}"
+                    Command="{CompiledBinding Tools.CopyFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource CopyGeometry}"
@@ -117,7 +117,7 @@
                 <customControls:IconButton
                     Canvas.Left="225"
                     Classes="hover btn"
-                    Command="{CompiledBinding DuplicateFileCommand}"
+                    Command="{CompiledBinding Tools.DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Data="{StaticResource DuplicateGeometry}"
@@ -145,7 +145,7 @@
                     Canvas.Left="7"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding OpenFileCommand}"
+                    Command="{CompiledBinding Tools.OpenFileCommand}"
                     Height="46"
                     ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value,
                                                   Mode=OneWay}">
@@ -167,7 +167,7 @@
                     Canvas.Left="7"
                     Canvas.Top="104"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding OpenWithCommand}"
+                    Command="{CompiledBinding Tools.OpenWithCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Height="46"
@@ -193,7 +193,7 @@
                     Canvas.Left="160"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding LocateOnDiskCommand}"
+                    Command="{CompiledBinding Tools.LocateOnDiskCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                        FallbackValue=''}"
                     Height="46"
@@ -218,7 +218,7 @@
                     Canvas.Left="160"
                     Canvas.Top="104"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding SaveFileAsCommand}"
+                    Command="{CompiledBinding Tools.SaveFileAsCommand}"
                     Height="46"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
@@ -242,7 +242,7 @@
                     Canvas.Left="7"
                     Canvas.Top="155"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding PasteCommand}"
+                    Command="{CompiledBinding Tools.PasteCommand}"
                     Height="46"
                     ToolTip.Tip="{CompiledBinding Translation.Paste.Value,
                                                   Mode=OneWay}">
