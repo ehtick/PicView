@@ -53,6 +53,18 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<bool> IsBottomGalleryShownInHiddenUI { get; } =
         new(Settings.Gallery.ShowBottomGalleryInHiddenUI);
     
+    public BindableReactiveProperty< bool> IsOpeningInSameWindow{ get; } = new(Settings.UIProperties.OpenInSameWindow);
+
+    public BindableReactiveProperty< bool >IsShowingConfirmationOnEsc{ get; } = new(Settings.UIProperties.ShowConfirmationOnEsc);
+    
+    public BindableReactiveProperty< bool >IsStayingCentered{ get; } = new(Settings.WindowProperties.KeepCentered);
+    
+    public BindableReactiveProperty< bool >IsUsingTouchpad{ get; } = new(Settings.Zoom.IsUsingTouchPad);
+    
+    public BindableReactiveProperty< bool >IsConstrainingBackgroundColor{ get; } = new(Settings.UIProperties.IsConstrainBackgroundColorEnabled);
+    
+    public BindableReactiveProperty< bool >IsAvoidingZoomingOut{ get; } = new(Settings.Zoom.AvoidZoomingOut);
+    
     public BindableReactiveProperty<double> WindowMargin { get; } = new();
     
     public BindableReactiveProperty<double> NavSpeed { get; } = new(Settings.UIProperties.NavSpeed);
@@ -63,7 +75,7 @@ public class SettingsViewModel : IDisposable
     
     public BindableReactiveProperty<double> SlideshowSpeed { get; } = new(Settings.UIProperties.SlideShowTimer);
     public BindableReactiveProperty<double> GetSlideshowSpeed { get; } = new();
-    
+
     public void SubscriptionSettingsUpdate()
     {
         Observable.EveryValueChanged(this, x => x.NavSpeed.CurrentValue)
@@ -85,5 +97,21 @@ public class SettingsViewModel : IDisposable
                 Settings.UIProperties.SlideShowTimer = roundedValue;
                 GetSlideshowSpeed.Value = roundedValue;
             }).AddTo(_disposables);
+
+
+        Observable.EveryValueChanged(this, x => x.IsAvoidingZoomingOut.CurrentValue)
+            .Subscribe(x => Settings.Zoom.AvoidZoomingOut = x).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.IsUsingTouchpad.CurrentValue)
+            .Subscribe(x => Settings.Zoom.IsUsingTouchPad = x).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.IsStayingCentered.CurrentValue)
+            .Subscribe(x => Settings.WindowProperties.KeepCentered = x).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.IsShowingConfirmationOnEsc.CurrentValue)
+            .Subscribe(x => Settings.UIProperties.ShowConfirmationOnEsc = x).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.IsOpeningInSameWindow.CurrentValue)
+            .Subscribe(x => Settings.UIProperties.OpenInSameWindow = x).AddTo(_disposables);
     }
 }

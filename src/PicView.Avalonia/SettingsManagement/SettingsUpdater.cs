@@ -76,7 +76,6 @@ public static class SettingsUpdater
             ? 0
             : SizeDefaults.BottombarHeight;
         vm.PicViewer.IsShowingSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
-        vm.IsAvoidingZoomingOut  = Settings.Zoom.AvoidZoomingOut;
         vm.IsUIShown  = Settings.UIProperties.ShowInterface;
         vm.IsTopToolbarShown  = Settings.UIProperties.ShowInterface;
         vm.IsBottomToolbarShown   = Settings.UIProperties.ShowBottomNavBar &&
@@ -88,13 +87,8 @@ public static class SettingsUpdater
         vm.IsStretched = Settings.ImageScaling.StretchImage;
         vm.IsLooping  = Settings.UIProperties.Looping;
         vm.IsAutoFit  = Settings.WindowProperties.AutoFit;
-        vm.IsStayingCentered  = Settings.WindowProperties.KeepCentered;
-        vm.IsOpeningInSameWindow  = Settings.UIProperties.OpenInSameWindow;
-        vm.IsShowingConfirmationOnEsc  = Settings.UIProperties.ShowConfirmationOnEsc;   
-        vm.IsUsingTouchpad  = Settings.Zoom.IsUsingTouchPad;
         vm.IsAscending  = Settings.Sorting.Ascending;
         vm.MainWindow.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
-        vm.IsConstrainingBackgroundColor = Settings.UIProperties.IsConstrainBackgroundColorEnabled;
     }
     
     public static async Task ResetSettings(MainViewModel vm)
@@ -177,14 +171,21 @@ public static class SettingsUpdater
     {
         Settings.Zoom.IsUsingTouchPad = false;
         vm.Translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingMouse;
-        vm.IsUsingTouchpad = false;
+        if (vm.SettingsViewModel is not null)
+        {
+            vm.SettingsViewModel.IsUsingTouchpad.Value = false;
+        }
+        
     }
     
     public static void TurnOnUsingTouchpad(MainViewModel vm)
     {
         Settings.Zoom.IsUsingTouchPad = true;
         vm.Translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingTouchpad;
-        vm.IsUsingTouchpad = true;
+        if (vm.SettingsViewModel is not null)
+        {
+            vm.SettingsViewModel.IsUsingTouchpad.Value = true;
+        }
     }
     
     public static async Task ToggleSubdirectories(MainViewModel vm)
@@ -259,12 +260,18 @@ public static class SettingsUpdater
         if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
         {
             Settings.UIProperties.IsConstrainBackgroundColorEnabled = false;
-            vm.IsConstrainingBackgroundColor = false;
+            if (vm.SettingsViewModel is not null)
+            {
+                vm.SettingsViewModel.IsConstrainingBackgroundColor.Value = false;
+            }
         }
         else
         {
             Settings.UIProperties.IsConstrainBackgroundColorEnabled = true;
-            vm.IsConstrainingBackgroundColor = true;
+            if (vm.SettingsViewModel is not null)
+            {
+                vm.SettingsViewModel.IsConstrainingBackgroundColor.Value = true;
+            }
         }
         
         await Dispatcher.UIThread.InvokeAsync(() =>

@@ -288,15 +288,7 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsAvoidingZoomingOut
-    {
-        get;
-        set
-        {
-            Settings.Zoom.AvoidZoomingOut = value;
-            this.RaiseAndSetIfChanged(ref field, value);
-        }
-    }
+
 
     public IImage? ChangeCtrlZoomImage
     {
@@ -374,11 +366,7 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsConstrainingBackgroundColor
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+
 
     public bool IsIncludingSubdirectories
     {
@@ -415,35 +403,9 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsStayingCentered
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.WindowProperties.KeepCentered = value;
-        }
-    }
 
-    public bool IsOpeningInSameWindow
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.UIProperties.OpenInSameWindow = value;
-        }
-    }
 
-    public bool IsShowingConfirmationOnEsc
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.UIProperties.ShowConfirmationOnEsc = value;
-        }
-    }
+
 
     public bool IsEditableTitlebarOpen
     {
@@ -451,15 +413,7 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    public bool IsUsingTouchpad
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.Zoom.IsUsingTouchPad = value;
-        }
-    }
+
 
     public bool IsSingleImage
     {

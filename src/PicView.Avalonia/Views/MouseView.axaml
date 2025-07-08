@@ -89,7 +89,7 @@
             <StackPanel Orientation="Horizontal">
                 <Image
                     Height="18"
-                    IsVisible="{CompiledBinding IsUsingTouchpad}"
+                    IsVisible="{CompiledBinding SettingsViewModel.IsUsingTouchpad.Value}"
                     Margin="10,0,10,0"
                     Width="18">
                     <DrawingImage>
@@ -129,7 +129,7 @@
                 </Image>
                 <Image
                     Height="18"
-                    IsVisible="{CompiledBinding !IsUsingTouchpad}"
+                    IsVisible="{CompiledBinding !SettingsViewModel.IsUsingTouchpad.Value}"
                     Margin="10,0,10,0"
                     Source="{StaticResource MouseWheelIcon}"
                     Width="18" />

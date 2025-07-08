@@ -28,7 +28,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover alt changeColor"
-            IsChecked="{CompiledBinding IsAvoidingZoomingOut}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsAvoidingZoomingOut.Value}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock
