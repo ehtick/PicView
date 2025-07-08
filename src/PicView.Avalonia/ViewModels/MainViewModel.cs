@@ -29,7 +29,6 @@ public class MainViewModel : ReactiveObject
     public GalleryViewModel Gallery { get; } = new();
     public ToolsViewModel Tools { get; } = new();
     public ExifViewModel? Exif { get; set;  }
-    
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)
@@ -145,8 +144,6 @@ public class MainViewModel : ReactiveObject
 
         ChangeCtrlZoomCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ChangeCtrlZoom);
 
-        ColorPickerCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ColorPicker);
-
         ToggleTaskbarProgressCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleTaskbarProgress);
         
         ToggleConstrainBackgroundColorCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleConstrainBackgroundColor);
@@ -239,8 +236,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ToggleScrollCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ToggleSubdirectoriesCommand { get; }
-
-    public ReactiveCommand<Unit, Unit>? ColorPickerCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ResetSettingsCommand { get; }
 
