@@ -210,7 +210,7 @@ public class Zoom
             return;
         }
 
-        vm.GlobalSettings.RotationAngle.Value = zoomValue;
+        vm.GlobalSettings.ZoomValue.Value = zoomValue;
         if (!IsZoomed)
         {
             return;

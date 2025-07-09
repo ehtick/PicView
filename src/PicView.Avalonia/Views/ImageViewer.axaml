@@ -1,5 +1,5 @@
 <UserControl
-    Background="{CompiledBinding MainWindow.ImageBackground,
+    Background="{CompiledBinding MainWindow.ImageBackground.Value,
                                  Mode=OneWay}"
     PointerPressed="InputElement_OnPointerPressed"
     mc:Ignorable="d"

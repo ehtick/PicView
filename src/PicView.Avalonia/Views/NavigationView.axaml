@@ -27,7 +27,7 @@
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding ToggleSubdirectoriesCommand}"
-            IsChecked="{CompiledBinding IsIncludingSubdirectories}"
+            IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock
@@ -44,7 +44,7 @@
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding ToggleLoopingCommand}"
-            IsChecked="{CompiledBinding IsLooping}"
+            IsChecked="{CompiledBinding GlobalSettings.IsLooping.Value}"
             Margin="0,0,0,10"
             ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
                                           Mode=OneWay}"

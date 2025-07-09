@@ -96,7 +96,7 @@ public static class Win32Window
         {
             vm.MainWindow.SizeToContent.Value = SizeToContent.WidthAndHeight;
             vm.MainWindow.CanResize.Value = false;
-            vm.IsAutoFit = true;
+            vm.GlobalSettings.IsAutoFit.Value = true;
             if (Settings.WindowProperties.KeepCentered)
             {
                 WindowFunctions.CenterWindowOnScreen();

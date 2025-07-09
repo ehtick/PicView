@@ -211,7 +211,7 @@
                         Command="{CompiledBinding ChangeAutoFitCommand}"
                         Header="{CompiledBinding Translation.AutoFitWindow.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsAutoFit}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsAutoFit.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItem Command="{CompiledBinding ToggleUICommand}" Header="{CompiledBinding Translation.IsShowingUI.Value, Mode=OneWay}" />
                     <NativeMenuItem Command="{CompiledBinding Gallery.ToggleGalleryCommand}" Header="{CompiledBinding Translation.ShowImageGallery.Value, Mode=OneWay}" />
@@ -282,33 +282,33 @@
                         Command="{CompiledBinding ToggleLoopingCommand}"
                         Header="{CompiledBinding Translation.IsLooping.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsLooping}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsLooping.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItem
                         Command="{CompiledBinding StretchCommand}"
                         Header="{CompiledBinding Translation.Stretch.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsStretched}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsStretched.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItem
                         Command="{CompiledBinding ToggleScrollCommand}"
                         Header="{CompiledBinding Translation.ToggleScroll.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsScrollingEnabled}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsScrollingEnabled.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding ChangeTopMostCommand}"
                         Header="{CompiledBinding Translation.StayTopMost.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsTopMost}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsTopMost.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding ToggleSubdirectoriesCommand}"
                         Header="{CompiledBinding Translation.SearchSubdirectory.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding IsIncludingSubdirectories}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding ShowKeybindingsWindowCommand}" Header="{CompiledBinding Translation.ApplicationShortcuts.Value, Mode=OneWay}" />

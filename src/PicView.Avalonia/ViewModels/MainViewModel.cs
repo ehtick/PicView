@@ -163,8 +163,6 @@ public class MainViewModel : ReactiveObject
         ResetSettingsCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ResetSettings);
 
         RestartCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Restart);
-
-        ToggleUsingTouchpadCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleUsingTouchpad);
         
         ToggleOpeningInSameWindowCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleOpeningInSameWindow);
         
@@ -205,7 +203,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ChangeAutoFitCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeTopMostCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeCtrlZoomCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ToggleUsingTouchpadCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleUICommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleOpeningInSameWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ChangeBackgroundCommand { get; }
@@ -355,48 +352,7 @@ public class MainViewModel : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref field, value);
     } = true;
 
-    public bool IsTopMost
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
 
-
-
-    public bool IsIncludingSubdirectories
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsScrollingEnabled
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsStretched
-    {
-        get;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref field, value);
-            Settings.ImageScaling.StretchImage = value;
-            WindowResizing.SetSize(this);
-        }
-    }
-
-    public bool IsLooping
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsAutoFit
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
 
 
 

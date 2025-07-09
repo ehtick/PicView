@@ -343,7 +343,7 @@
                     Command="{CompiledBinding ToggleSubdirectoriesCommand}"
                     Header="{CompiledBinding Translation.SearchSubdirectory.Value,
                                              Mode=OneWay}"
-                    IsChecked="{Binding IsIncludingSubdirectories}"
+                    IsChecked="{Binding GlobalSettings.IsIncludingSubdirectories.Value}"
                     ToggleType="CheckBox" />
 
                 <Separator />
@@ -352,7 +352,7 @@
                 <MenuItem
                     Header="{CompiledBinding Translation.IsLooping.Value,
                                              Mode=OneWay}"
-                    IsChecked="{Binding IsLooping}"
+                    IsChecked="{Binding GlobalSettings.IsLooping.Value}"
                     ToggleType="CheckBox" />
 
                 <Separator />
@@ -361,7 +361,7 @@
                 <MenuItem
                     Header="{CompiledBinding Translation.IsScrolling.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsScrollingEnabled}"
+                    IsChecked="{CompiledBinding GlobalSettings.IsScrollingEnabled.Value}"
                     ToggleType="CheckBox" />
 
                 <!--  Toggle stretching  -->
@@ -369,7 +369,7 @@
                     Command="{CompiledBinding StretchCommand}"
                     Header="{CompiledBinding Translation.Stretch.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsStretched}"
+                    IsChecked="{CompiledBinding GlobalSettings.IsStretched.Value}"
                     ToggleType="CheckBox" />
 
                 <!--  Toggle side-by-side  -->
@@ -387,7 +387,7 @@
                     Command="{CompiledBinding ChangeTopMostCommand}"
                     Header="{CompiledBinding Translation.StayTopMost.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsTopMost}"
+                    IsChecked="{CompiledBinding GlobalSettings.IsTopMost.Value}"
                     ToggleType="CheckBox" />
 
                 <!--  Toggle auto fit  -->
@@ -395,7 +395,7 @@
                     Command="{CompiledBinding ChangeAutoFitCommand}"
                     Header="{CompiledBinding Translation.AutoFitWindow.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsAutoFit}"
+                    IsChecked="{CompiledBinding GlobalSettings.IsAutoFit.Value}"
                     ToggleType="CheckBox" />
 
                 <Separator />

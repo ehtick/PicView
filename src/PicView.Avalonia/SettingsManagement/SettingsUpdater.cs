@@ -82,11 +82,6 @@ public static class SettingsUpdater
                                     Settings.UIProperties.ShowInterface;
         vm.IsShowingTaskbarProgress  = Settings.UIProperties.IsTaskbarProgressEnabled;
         vm.IsFullscreen  = Settings.WindowProperties.Fullscreen;
-        vm.IsTopMost  = Settings.WindowProperties.TopMost;
-        vm.IsIncludingSubdirectories = Settings.Sorting.IncludeSubDirectories;
-        vm.IsStretched = Settings.ImageScaling.StretchImage;
-        vm.IsLooping  = Settings.UIProperties.Looping;
-        vm.IsAutoFit  = Settings.WindowProperties.AutoFit;
         vm.IsAscending  = Settings.Sorting.Ascending;
         vm.MainWindow.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
     }
@@ -200,10 +195,24 @@ public static class SettingsUpdater
         }
         await SaveSettingsAsync();
     }
+
+    public static async Task ToggleStretch(MainViewModel vm)
+    {
+        if (Settings.ImageScaling.StretchImage)
+        {
+            Settings.ImageScaling.StretchImage = false;
+        }
+        else
+        {
+            Settings.ImageScaling.StretchImage = true;
+        }
+        await WindowResizing.SetSizeAsync(vm).ConfigureAwait(false);
+        await SaveSettingsAsync();
+    }
     
     public static async Task TurnOffSubdirectories(MainViewModel vm)
     {
-        vm.IsIncludingSubdirectories = false;
+        vm.GlobalSettings.IsIncludingSubdirectories.Value = false;
         Settings.Sorting.IncludeSubDirectories = false;
 
         if (!NavigationManager.CanNavigate(vm))
@@ -217,7 +226,7 @@ public static class SettingsUpdater
     
     public static async Task TurnOnSubdirectories(MainViewModel vm)
     {
-        vm.IsIncludingSubdirectories = true;
+        vm.GlobalSettings.IsIncludingSubdirectories.Value = true;
         Settings.Sorting.IncludeSubDirectories = true;
         
         if (!NavigationManager.CanNavigate(vm))
@@ -394,7 +403,7 @@ public static class SettingsUpdater
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
         vm.Translation.IsScrolling.Value = TranslationManager.Translation.ScrollingDisabled;
-        vm.IsScrollingEnabled = false;
+        vm.GlobalSettings.IsScrollingEnabled.Value = false;
         Settings.Zoom.ScrollEnabled = false;
         vm.MainWindow.RightControlOffSetMargin.Value = new Thickness(0);
     }
@@ -403,7 +412,7 @@ public static class SettingsUpdater
     {
         vm.ToggleScrollBarVisibility = ScrollBarVisibility.Visible;
         vm.Translation.IsScrolling.Value = TranslationManager.Translation.ScrollingEnabled;
-        vm.IsScrollingEnabled = true;
+        vm.GlobalSettings.IsScrollingEnabled.Value = true;
         Settings.Zoom.ScrollEnabled = true;
         vm.MainWindow.RightControlOffSetMargin.Value = new Thickness(0,0,30,0);
     }
@@ -457,7 +466,7 @@ public static class SettingsUpdater
         vm.Translation.IsLooping.Value = value
             ? TranslationManager.Translation.LoopingEnabled
             : TranslationManager.Translation.LoopingDisabled;
-        vm.IsLooping = value;
+        vm.GlobalSettings.IsLooping.Value = value;
 
         var msg = value
             ? TranslationManager.Translation.LoopingEnabled
@@ -471,7 +480,7 @@ public static class SettingsUpdater
     {
         Settings.UIProperties.Looping = false;
         vm.Translation.IsLooping.Value = TranslationManager.Translation.LoopingDisabled;
-        vm.IsLooping = false;
+        vm.GlobalSettings.IsLooping.Value = false;
     }
     
     #endregion

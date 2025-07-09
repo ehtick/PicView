@@ -2,14 +2,22 @@
 
 namespace PicView.Core.ViewModels;
 
-public class GlobalSettingsViewModel : IDisposable
+public class GlobalSettingsViewModel
 {
+    public BindableReactiveProperty<bool> IsTopMost { get; } = new(Settings.WindowProperties.TopMost);
 
-    public BindableReactiveProperty<double> RotationAngle { get; } = new();
+    public BindableReactiveProperty<bool> IsIncludingSubdirectories { get; } =
+        new(Settings.Sorting.IncludeSubDirectories);
+
+    public BindableReactiveProperty<bool> IsScrollingEnabled { get; } = new();
+
+    public BindableReactiveProperty<bool> IsStretched { get; } = new(Settings.ImageScaling.StretchImage);
+
+    public BindableReactiveProperty<bool> IsLooping { get; } = new(Settings.UIProperties.Looping);
+
+    public BindableReactiveProperty<bool> IsAutoFit { get; } = new(Settings.WindowProperties.AutoFit);
+
+    public BindableReactiveProperty<double> RotationAngle { get; } = new(0);
 
     public BindableReactiveProperty<double> ZoomValue { get; } = new();
-    public void Dispose()
-    {
-        Disposable.Dispose();
-    }
 }

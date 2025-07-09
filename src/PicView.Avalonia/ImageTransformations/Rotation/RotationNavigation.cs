@@ -154,7 +154,7 @@ public static class RotationNavigation
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (vm.IsScrollingEnabled)
+            if (vm.GlobalSettings.IsScrollingEnabled.CurrentValue)
             {
                 vm.ImageViewer.ImageScrollViewer.LineUp();
             }
@@ -183,7 +183,7 @@ public static class RotationNavigation
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (vm.IsScrollingEnabled)
+            if (vm.GlobalSettings.IsScrollingEnabled.CurrentValue)
             {
                 vm.ImageViewer.ImageScrollViewer.LineDown();
             }

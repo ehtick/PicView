@@ -895,10 +895,6 @@ public static class FunctionsMapper
     public static async Task ShowRecentHistoryFile() =>
         await Task.Run(() => Vm?.PlatformService?.OpenWith(FileHistoryManager.CurrentFileHistoryFile)).ConfigureAwait(false);
     
-    /// <inheritdoc cref="SettingsUpdater.ToggleUsingTouchpad(MainViewModel)" />
-    public static async Task ToggleUsingTouchpad() =>
-        await SettingsUpdater.ToggleUsingTouchpad(Vm).ConfigureAwait(false);
-    
     public static async Task ToggleOpeningInSameWindow() =>
         await SettingsUpdater.ToggleOpeningInSameWindow(Vm).ConfigureAwait(false);
 

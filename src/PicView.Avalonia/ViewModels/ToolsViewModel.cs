@@ -3,6 +3,7 @@ using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Wallpaper;
 using R3;
@@ -137,11 +138,21 @@ public class ToolsViewModel : IDisposable
     });
     
     
+    
+    public ReactiveCommand ToggleUsingTouchPadCommand { get; } = new(async (_, _) =>
+    {
+        await SettingsUpdater.ToggleUsingTouchpad(UIHelper.GetMainView.DataContext as MainViewModel);
+    });
+    
+    
     public async Task StartSlideShowTask(int milliseconds) =>
         await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
     
     public async Task RotateTask(int angle) =>
         await RotationNavigation.RotateTo(UIHelper.GetMainView.DataContext as MainViewModel, angle);
+
+    public async Task StretchedCommand() =>
+        await SettingsUpdater.ToggleStretch(UIHelper.GetMainView.DataContext as MainViewModel);
     
     // Wallpaper
     public ReactiveCommand<string> SetAsWallpaperCommand { get; } = new(async (path, _) =>
@@ -173,7 +184,7 @@ public class ToolsViewModel : IDisposable
     {
         await WallpaperManager.SetAsWallpaper(path, WallpaperStyle.Fit, UIHelper.GetMainView.DataContext as MainViewModel).ConfigureAwait(false);
     });
-    
+
     public void Dispose()
     {
         Disposable.Dispose(SetAsWallpaperCommand,

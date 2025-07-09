@@ -7,7 +7,6 @@ namespace PicView.Core.ViewModels;
 public class SettingsViewModel : IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
-
     public BindableReactiveProperty<bool> IsShowingRecycleDialog { get; } =
         new(Settings.UIProperties.ShowRecycleConfirmation);
 
@@ -31,7 +30,7 @@ public class SettingsViewModel : IDisposable
 
     public BindableReactiveProperty<bool> IsAvoidingZoomingOut { get; } = new(Settings.Zoom.AvoidZoomingOut);
 
-    public BindableReactiveProperty<double> WindowMargin { get; } = new();
+    public BindableReactiveProperty<double> WindowMargin { get; } = new(Settings.WindowProperties.Margin);
 
     public BindableReactiveProperty<double> NavSpeed { get; } = new(Settings.UIProperties.NavSpeed);
     public BindableReactiveProperty<double> GetNavSpeed { get; } = new();
@@ -109,6 +108,9 @@ public class SettingsViewModel : IDisposable
 
         Observable.EveryValueChanged(this, x => x.IsOpeningInSameWindow.CurrentValue)
             .Subscribe(x => Settings.UIProperties.OpenInSameWindow = x).AddTo(_disposables);
+        
+        Observable.EveryValueChanged(this, x => x.WindowMargin.CurrentValue)
+            .Subscribe(x => Settings.WindowProperties.Margin = x).AddTo(_disposables);
     }
 
     #region Tab history navigation

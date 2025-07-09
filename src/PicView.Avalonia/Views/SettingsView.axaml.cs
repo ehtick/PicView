@@ -72,31 +72,28 @@ public partial class SettingsView : UserControl
             return;
         }
 
+        var settingsVm = vm.SettingsViewModel;
         Task.Run(() =>
         {
-            var settingsVm = vm.SettingsViewModel;
             settingsVm.InitializeNavigation(GoBack, GoForward);
-            settingsVm.WindowMargin.Value = Settings.WindowProperties.Margin;
-
-            SubscribeToMarginChanges(vm, settingsVm);
-
             settingsVm.SubscriptionSettingsUpdate();
         });
+        SubscribeToChanges(vm, settingsVm);
     }
 
-    private static void SubscribeToMarginChanges(MainViewModel vm, SettingsViewModel settingsVm)
+    private static void SubscribeToChanges(MainViewModel vm, SettingsViewModel settingsVm)
     {
         _marginSubscription = new CompositeDisposable();
-        Observable.EveryValueChanged(settingsVm.WindowMargin, x => x.Value)
-            .SubscribeAwait(async (x, _) =>
+        Observable.EveryValueChanged(settingsVm.WindowMargin, x => x.CurrentValue, UIHelper.GetFrameProvider)
+            .Skip(1)
+            .Subscribe(x => 
             {
                 Settings.WindowProperties.Margin = x;
-                if (Settings.WindowProperties.AutoFit)
-                {
-                    await WindowResizing.SetSizeAsync(vm);
-                    WindowFunctions.CenterWindowOnScreen();
-                }
+                WindowResizing.SetSize(vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue, 0,
+                    0, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
+                WindowFunctions.CenterWindowOnScreen();
             }).AddTo(_marginSubscription);
+        
     }
 
     private void LoadInitialSettings()

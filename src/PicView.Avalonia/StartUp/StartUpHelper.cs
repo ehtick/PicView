@@ -127,7 +127,11 @@ public static class StartUpHelper
         HandleThemeUpdates(vm);
         
         UIHelper.SetControls(desktop);
-        SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+        Task.Run(() =>
+        {
+            HandleWindowControlSettings(vm, desktop);
+            SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+        });
         
         // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
         if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
@@ -145,7 +149,7 @@ public static class StartUpHelper
             }, DispatcherPriority.Normal).Wait();
         }
         
-        HandleWindowControlSettings(vm, desktop);
+
         SetWindowEventHandlers(window);
         MenuManager.AddMenus();
         
@@ -188,7 +192,7 @@ public static class StartUpHelper
         else
         {
             vm.ToggleScrollBarVisibility = ScrollBarVisibility.Disabled;
-            vm.IsScrollingEnabled = false;
+            vm.GlobalSettings.IsScrollingEnabled.Value = false;
         }
 
         if (Settings.WindowProperties.TopMost)
@@ -256,7 +260,7 @@ public static class StartUpHelper
     private static void HandleNormalWindow(MainViewModel vm, Window window)
     {
         vm.MainWindow.CanResize.Value = true;
-        vm.IsAutoFit = false;
+        vm.GlobalSettings.IsAutoFit.Value = false;
         if (Settings.UIProperties.ShowInterface)
         {
             vm.IsTopToolbarShown = true;
@@ -269,7 +273,7 @@ public static class StartUpHelper
     {
         vm.MainWindow.SizeToContent.Value = SizeToContent.WidthAndHeight;
         vm.MainWindow.CanResize.Value = false;
-        vm.IsAutoFit = true;
+        vm.GlobalSettings.IsAutoFit.Value = true;
         if (Settings.UIProperties.ShowInterface)
         {
             vm.IsTopToolbarShown = true;
