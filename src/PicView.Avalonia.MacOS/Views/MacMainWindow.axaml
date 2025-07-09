@@ -223,50 +223,50 @@
             <NativeMenuItem Header="{CompiledBinding Translation.SortFilesBy.Value, Mode=OneWay}">
                 <NativeMenu>
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesByNameCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesByNameCommand}"
                         Header="{CompiledBinding Translation.FileName.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=Name}"
                         ToggleType="Radio" />
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesBySizeCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesBySizeCommand}"
                         Header="{CompiledBinding Translation.FileSize.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=FileSize}"
                         ToggleType="Radio" />
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesByExtensionCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesByExtensionCommand}"
                         Header="{CompiledBinding Translation.FileExtension.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=FileExtension}"
                         ToggleType="Radio" />
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesByCreationTimeCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesByCreationTimeCommand}"
                         Header="{CompiledBinding Translation.Created.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=Created}"
                         ToggleType="Radio" />
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesByLastAccessTimeCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesByLastAccessTimeCommand}"
                         Header="{CompiledBinding Translation.LastAccessTime.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=LastAccessTime}"
                         ToggleType="Radio" />
                     <NativeMenuItem
-                        Command="{CompiledBinding SortFilesRandomlyCommand}"
+                        Command="{CompiledBinding Sorting.SortFilesRandomlyCommand}"
                         Header="{CompiledBinding Translation.Random.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding SortOrder,
+                        IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                     Converter={StaticResource EnumToBoolConverter},
                                                     ConverterParameter=Random}"
                         ToggleType="Radio" />

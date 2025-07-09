@@ -82,7 +82,6 @@ public static class SettingsUpdater
                                     Settings.UIProperties.ShowInterface;
         vm.IsShowingTaskbarProgress  = Settings.UIProperties.IsTaskbarProgressEnabled;
         vm.MainWindow.IsFullscreen.Value  = Settings.WindowProperties.Fullscreen;
-        vm.IsAscending  = Settings.Sorting.Ascending;
         vm.MainWindow.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
     }
     

@@ -493,7 +493,7 @@ public static class NavigationManager
         }
     }
     
-    /// <inheritdoc cref="NavigateBetweenDirectories(bool, next, MainViewModel vm)"/>
+    /// <inheritdoc cref="NavigateBetweenDirectories(bool next, MainViewModel vm)"/>
     public static async Task NavigateBetweenDirectories(bool next) =>
         await NavigateBetweenDirectories(next, UIHelper.GetMainView.DataContext as MainViewModel);
         

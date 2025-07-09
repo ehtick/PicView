@@ -6,7 +6,6 @@ using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.FileSorting;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
 using ReactiveUI;
@@ -25,6 +24,7 @@ public class MainViewModel : ReactiveObject
     public SettingsViewModel? SettingsViewModel { get; set; }
     public ImageCropperViewModel? Crop { get; set; }
     public NavigationViewModel Navigation { get; } = new();
+    public FileSortingViewModel Sorting { get; } = new();
     public PicViewerModel PicViewer { get; } = new();
     public GalleryViewModel Gallery { get; } = new();
     public ToolsViewModel Tools { get; } = new();
@@ -56,26 +56,6 @@ public class MainViewModel : ReactiveObject
         ShowEffectsWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowEffectsWindow);
 
         #endregion Window commands
-
-        #region Sort Commands
-
-        SortFilesByNameCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesByName);
-
-        SortFilesByCreationTimeCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesByCreationTime);
-
-        SortFilesByLastAccessTimeCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesByLastAccessTime);
-
-        SortFilesBySizeCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesBySize);
-
-        SortFilesByExtensionCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesByExtension);
-
-        SortFilesRandomlyCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesRandomly);
-
-        SortFilesAscendingCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesAscending);
-
-        SortFilesDescendingCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.SortFilesDescending);
-
-        #endregion Sort Commands
 
         #region Menus
 
@@ -221,15 +201,6 @@ public class MainViewModel : ReactiveObject
 
     public ReactiveCommand<Unit, Unit>? OptimizeImageCommand { get; }
 
-    public ReactiveCommand<Unit, Unit>? SortFilesByNameCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesBySizeCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesByExtensionCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesByCreationTimeCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesByLastAccessTimeCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesRandomlyCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesAscendingCommand { get; }
-    public ReactiveCommand<Unit, Unit>? SortFilesDescendingCommand { get; }
-
     public ReactiveCommand<Unit, Unit>? ToggleScrollCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? ToggleSubdirectoriesCommand { get; }
@@ -249,22 +220,6 @@ public class MainViewModel : ReactiveObject
     #endregion Commands
 
     #region Fields
-    
-    #region Sorting Order
-
-    public SortFilesBy SortOrder
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    public bool IsAscending
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
-
-    #endregion Sorting Order
 
     #region Booleans
 

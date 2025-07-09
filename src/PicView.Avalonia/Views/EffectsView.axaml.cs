@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -8,10 +6,10 @@ using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageEffects;
-using ReactiveUI;
-using Timer = System.Timers.Timer;
+using R3;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -25,8 +23,6 @@ public partial class EffectsView : UserControl
 {
     private readonly ImageEffectConfig _defaultEffectConfig = new();
     private readonly CompositeDisposable _disposables = new();
-    private CancellationTokenSource? _cancellationTokenSource;
-    private Timer? _debounceTimer;
     private bool _reloading;
 
     /// <summary>
@@ -42,7 +38,7 @@ public partial class EffectsView : UserControl
 
     /// <summary>
     /// Handles the control's Loaded event.
-    /// Initializes the view model, UI event handlers, and debounce timer.
+    /// Initializes the view model, UI event handlers, and reactive subscriptions.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">Event arguments.</param>
@@ -55,7 +51,7 @@ public partial class EffectsView : UserControl
 
         InitializeViewModel(vm);
         InitializeUIEvents(vm);
-        InitializeDebounceTimer();
+        InitializeReactiveEffects(vm);
     }
 
     /// <summary>
@@ -66,10 +62,9 @@ public partial class EffectsView : UserControl
     private void InitializeViewModel(MainViewModel vm)
     {
         // Reset on file change
-        vm.ObservableForProperty(v => v.PicViewer.FileInfo)
-            .ObserveOn(RxApp.MainThreadScheduler)
+        Observable.EveryValueChanged(vm, v => v.PicViewer.FileInfo.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(_ => Reset())
-            .DisposeWith(_disposables);
+            .AddTo(_disposables);
 
         if (vm.PicViewer.EffectConfig == null)
         {
@@ -87,15 +82,15 @@ public partial class EffectsView : UserControl
     }
 
     /// <summary>
-    /// Initializes UI event handlers for buttons and sliders.
+    /// Initializes UI event handlers for buttons. Slider events are handled reactively.
     /// </summary>
     /// <param name="vm">The main view model to use for event handling.</param>
     private void InitializeUIEvents(MainViewModel vm)
     {
         CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
-
         PointerPressed += OnPointerPressed;
         ClearEffectsItem.Click += async (_, _) => await RemoveEffects();
+
         ResetContrastBtn.Click += (_, _) => ContrastSlider.Value = 0;
         ResetBrightnessBtn.Click += (_, _) => BrightnessSlider.Value = 0;
         ResetPencilSketchBtn.Click += (_, _) => PencilSketchSlider.Value = 0;
@@ -106,65 +101,97 @@ public partial class EffectsView : UserControl
         ResetButton.Click += async (_, _) => await RemoveEffects();
         CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
 
-        BrightnessSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.Brightness = new Percentage(e.NewValue));
-            HideCancelBtn();
-        };
-        ContrastSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.Contrast = new Percentage(e.NewValue));
-            HideCancelBtn();
-        };
-        PencilSketchSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.SketchStrokeWidth = e.NewValue);
-            HideCancelBtn();
-        };
-        PosterizeSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.PosterizeLevel = (int)e.NewValue == 1 ? 2 : (int)e.NewValue);
-            HideCancelBtn();
-        };
-        SolarizeSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.Solarize = new Percentage(e.NewValue));
-            HideCancelBtn();
-        };
-        BlurSlider.ValueChanged += (s, e) =>
-        {
-            vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            UpdateEffectConfig(vm, config => config.BlurLevel = e.NewValue);
-            HideCancelBtn();
-        };
-
         BlackAndWhiteToggleButton.Click += async delegate
         {
-            var isBlackAndWhite = BlackAndWhiteToggleButton.IsChecked.HasValue &&
-                                  BlackAndWhiteToggleButton.IsChecked.Value;
             vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            await UpdateToggleEffect(vm, BlackAndWhiteToggleButton, config => config.BlackAndWhite = isBlackAndWhite);
+            var isBlackAndWhite = BlackAndWhiteToggleButton.IsChecked ?? false;
+            await UpdateToggleEffect(vm, config => config.BlackAndWhite = isBlackAndWhite);
             HideCancelBtn();
         };
         NegativeToggleButton.Click += async delegate
         {
-            var isNegative = NegativeToggleButton.IsChecked.HasValue && NegativeToggleButton.IsChecked.Value;
             vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            await UpdateToggleEffect(vm, NegativeToggleButton, config => config.Negative = isNegative);
+            var isNegative = NegativeToggleButton.IsChecked ?? false;
+            await UpdateToggleEffect(vm, config => config.Negative = isNegative);
             HideCancelBtn();
         };
         OldMovieToggleButton.Click += async delegate
         {
-            var isOldMovie = OldMovieToggleButton.IsChecked.HasValue && OldMovieToggleButton.IsChecked.Value;
             vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-            await UpdateToggleEffect(vm, OldMovieToggleButton, config => config.OldMovie = isOldMovie);
+            var isOldMovie = OldMovieToggleButton.IsChecked ?? false;
+            await UpdateToggleEffect(vm, config => config.OldMovie = isOldMovie);
             HideCancelBtn();
         };
+    }
+
+    /// <summary>
+    /// Initializes reactive subscriptions for slider value changes to apply effects with a debounce.
+    /// </summary>
+    /// <param name="vm">The main view model.</param>
+    private void InitializeReactiveEffects(MainViewModel vm)
+    {
+        // Create a merged stream of ValueChanged events from all sliders
+        var sliderValueChanges = Observable.Merge(
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => BrightnessSlider.ValueChanged += h,
+                h => BrightnessSlider.ValueChanged -= h),
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => ContrastSlider.ValueChanged += h,
+                h => ContrastSlider.ValueChanged -= h),
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => PencilSketchSlider.ValueChanged += h,
+                h => PencilSketchSlider.ValueChanged -= h),
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => PosterizeSlider.ValueChanged += h,
+                h => PosterizeSlider.ValueChanged -= h),
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => SolarizeSlider.ValueChanged += h,
+                h => SolarizeSlider.ValueChanged -= h),
+            Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => BlurSlider.ValueChanged += h,
+                h => BlurSlider.ValueChanged -= h)
+        );
+
+        sliderValueChanges
+            .Debounce(TimeSpan.FromMilliseconds(300))
+            .ObserveOn(UIHelper.GetFrameProvider) // Ensure we're on the UI thread to access UI properties
+            .Select(_ =>
+            {
+                // Update the config with the latest slider values
+                var config = vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
+                config.Brightness = new Percentage(BrightnessSlider.Value);
+                config.Contrast = new Percentage(ContrastSlider.Value);
+                config.SketchStrokeWidth = PencilSketchSlider.Value;
+                config.PosterizeLevel = (int)PosterizeSlider.Value == 1 ? 2 : (int)PosterizeSlider.Value;
+                config.Solarize = new Percentage(SolarizeSlider.Value);
+                config.BlurLevel = BlurSlider.Value;
+                HideCancelBtn();
+                return config;
+            })
+            // Switch to a background thread to apply effects asynchronously.
+            // SelectAwait automatically handles cancellation of previous operations.
+            .SelectAwait(async (config, ct) =>
+            {
+                if (_reloading)
+                {
+                    return (null, vm);
+                }
+
+                vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+
+                var magick = await ImageEffectsHelper.ApplyEffects(
+                    vm.PicViewer.FileInfo.CurrentValue,
+                    config,
+                    ct);
+
+                return (magick, vm);
+            })
+            .ObserveOn(UIHelper.GetFrameProvider) // Switch back to the UI thread to update the UI
+            .Subscribe(result =>
+            {
+                var (magick, viewModel) = result;
+                if (magick is not null)
+                {
+                    viewModel.PicViewer.ImageSource.Value = magick.ToWriteableBitmap();
+                }
+
+                viewModel.MainWindow.IsLoadingIndicatorShown.Value = false;
+            })
+            .AddTo(_disposables);
     }
 
     /// <summary>
@@ -201,51 +228,22 @@ public partial class EffectsView : UserControl
     }
 
     /// <summary>
-    /// Initializes the debounce timer used to delay applying effects until user input has stopped.
-    /// </summary>
-    private void InitializeDebounceTimer()
-    {
-        _debounceTimer = new Timer { Interval = 300, AutoReset = false };
-        _debounceTimer.Elapsed += async (_, _) => await ApplyEffectsDebounced();
-    }
-
-    /// <summary>
-    /// Restarts the debounce timer to delay effect application.
-    /// </summary>
-    private void DebounceSliderChange()
-    {
-        _debounceTimer.Stop();
-        _debounceTimer.Start();
-    }
-
-    /// <summary>
-    /// Applies image effects after the debounce period has elapsed.
-    /// Cancels any pending effect application operations.
+    /// Applies image effects immediately based on the current configuration.
     /// </summary>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private async Task ApplyEffectsDebounced()
+    private async Task ApplyCurrentEffectsAsync()
     {
-        if (_reloading)
+        if (_reloading || DataContext is not MainViewModel vm)
         {
             return;
         }
 
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
-        }
-
-        _cancellationTokenSource = new CancellationTokenSource();
-
-        MainViewModel? vm = null;
-        await Dispatcher.UIThread.InvokeAsync(() => { vm = DataContext as MainViewModel; });
-
         vm.MainWindow.IsLoadingIndicatorShown.Value = true;
-
         try
         {
             var magick = await ImageEffectsHelper
-                .ApplyEffects(vm.PicViewer.FileInfo.CurrentValue, vm.PicViewer.EffectConfig.CurrentValue, _cancellationTokenSource.Token)
+                .ApplyEffects(vm.PicViewer.FileInfo.CurrentValue, vm.PicViewer.EffectConfig.CurrentValue,
+                    CancellationToken.None)
                 .ConfigureAwait(false);
             if (magick is not null)
             {
@@ -254,7 +252,7 @@ public partial class EffectsView : UserControl
         }
         finally
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+            await Dispatcher.UIThread.InvokeAsync(() => { vm.MainWindow.IsLoadingIndicatorShown.Value = false; });
         }
     }
 
@@ -303,21 +301,9 @@ public partial class EffectsView : UserControl
     /// <param name="config">The effect configuration to apply.</param>
     private void ApplyEffectConfig(ImageEffectConfig config)
     {
-        if (config.BlackAndWhite)
-        {
-            BlackAndWhiteToggleButton.IsChecked = true;
-        }
-
-        if (config.OldMovie)
-        {
-            OldMovieToggleButton.IsChecked = true;
-        }
-
-        if (config.Negative)
-        {
-            NegativeToggleButton.IsChecked = true;
-        }
-
+        BlackAndWhiteToggleButton.IsChecked = config.BlackAndWhite;
+        OldMovieToggleButton.IsChecked = config.OldMovie;
+        NegativeToggleButton.IsChecked = config.Negative;
         BrightnessSlider.Value = config.Brightness.ToInt32();
         ContrastSlider.Value = config.Contrast.ToInt32();
         PencilSketchSlider.Value = config.SketchStrokeWidth;
@@ -329,35 +315,15 @@ public partial class EffectsView : UserControl
     }
 
     /// <summary>
-    /// Updates the effect configuration and triggers a debounced effect application.
+    /// Updates a toggle effect in the effect configuration and applies the effects immediately.
     /// </summary>
     /// <param name="vm">The main view model.</param>
-    /// <param name="updateAction">An action that updates the effect configuration.</param>
-    private void UpdateEffectConfig(MainViewModel vm, Action<ImageEffectConfig> updateAction)
-    {
-        updateAction(vm.PicViewer.EffectConfig.CurrentValue);
-        DebounceSliderChange();
-    }
-
-    /// <summary>
-    /// Updates a toggle effect in the effect configuration and applies the effects.
-    /// </summary>
-    /// <param name="vm">The main view model.</param>
-    /// <param name="toggleButton">The toggle button that was clicked.</param>
     /// <param name="updateAction">An action that updates the effect configuration.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    private async Task UpdateToggleEffect(MainViewModel vm, ToggleButton toggleButton,
-        Action<ImageEffectConfig> updateAction)
+    private async Task UpdateToggleEffect(MainViewModel vm, Action<ImageEffectConfig> updateAction)
     {
-        var shouldReturn = false;
-        await Dispatcher.UIThread.InvokeAsync(() => shouldReturn = !toggleButton.IsChecked.HasValue);
-        if (shouldReturn)
-        {
-            return;
-        }
-
         updateAction(vm.PicViewer.EffectConfig.CurrentValue);
-        await ApplyEffectsDebounced();
+        await ApplyCurrentEffectsAsync();
     }
 
     /// <summary>
@@ -381,7 +347,7 @@ public partial class EffectsView : UserControl
 
     /// <summary>
     /// Cleans up resources used by this control.
-    /// Disposes of disposables, timers, and cancellation tokens.
+    /// Disposes of disposables.
     /// </summary>
     private void CleanUp()
     {
@@ -391,9 +357,6 @@ public partial class EffectsView : UserControl
         }
 
         _disposables.Dispose();
-        _debounceTimer?.Dispose();
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
     }
 
     /// <summary>

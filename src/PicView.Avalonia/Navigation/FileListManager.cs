@@ -69,7 +69,8 @@ public static class FileListManager
                     return false;
                 }
 
-                NavigationManager.UpdateFileListAndIndex(files, files.IndexOf(vm.PicViewer.FileInfo.CurrentValue));
+                var index = files.FindIndex(info => info.FullName.Equals(vm.PicViewer.FileInfo.CurrentValue.FullName));
+                NavigationManager.UpdateFileListAndIndex(files, index);;
                 TitleManager.SetTitle(vm);
                 return true;
             }

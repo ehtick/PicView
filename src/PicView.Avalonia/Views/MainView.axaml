@@ -151,66 +151,66 @@
 
                 <!--  Sort files by name  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesByNameCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesByNameCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.FileName.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=Name}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by size  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesBySizeCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesBySizeCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.FileSize.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=FileSize}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by extension  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesByExtensionCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesByExtensionCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.FileExtension.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=Extension}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by creation time  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesByCreationTimeCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesByCreationTimeCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.Created.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=CreationTime}"
                     ToggleType="Radio" />
 
                 <!--  Sort files by last access time  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesByLastAccessTimeCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesByLastAccessTimeCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.LastAccessTime.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=LastAccessTime}"
                     ToggleType="Radio" />
 
                 <!--  Sort files randomly  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesRandomlyCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesRandomlyCommand}"
                     GroupName="SortType"
                     Header="{CompiledBinding Translation.Random.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding SortOrder,
+                    IsChecked="{CompiledBinding Sorting.SortOrder.Value,
                                                 Converter={StaticResource EnumToBoolConverter},
                                                 ConverterParameter=Random}"
                     ToggleType="Radio" />
@@ -219,19 +219,20 @@
 
                 <!--  Sort files ascending  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesAscendingCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesAscendingCommand}"
                     GroupName="SortDirection"
                     Header="{CompiledBinding Translation.Ascending.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding IsAscending}"
+                    IsChecked="{CompiledBinding Sorting.IsAscending.Value}"
                     ToggleType="Radio" />
 
                 <!--  Sort files descending  -->
                 <MenuItem
-                    Command="{CompiledBinding SortFilesDescendingCommand}"
+                    Command="{CompiledBinding Sorting.SortFilesDescendingCommand}"
                     GroupName="SortDirection"
                     Header="{CompiledBinding Translation.Descending.Value,
                                              Mode=OneWay}"
+                    IsChecked="{CompiledBinding !Sorting.IsAscending.Value}"
                     ToggleType="Radio" />
             </MenuItem>
 
