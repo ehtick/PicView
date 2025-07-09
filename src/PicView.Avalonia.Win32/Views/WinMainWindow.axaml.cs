@@ -35,10 +35,9 @@ public partial class WinMainWindow : Window
             }
 
             // Keep window position when resizing
-            ClientSizeProperty.Changed.Subscribe(size =>
-            {
-                WindowResizing.HandleWindowResize(this, size);
-            });
+            ClientSizeProperty.Changed.ToObservable()
+                .ObserveOn(_frameProvider)
+                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
             ScalingChanged += (_, _) =>
             {
                 ScreenHelper.UpdateScreenSize(this);

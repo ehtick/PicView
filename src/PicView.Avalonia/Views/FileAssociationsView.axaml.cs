@@ -94,7 +94,7 @@ public partial class FileAssociationsView : UserControl
                 Tag = "group",
                 Name = fileTypeGroup.Name,
                 IsThreeState = true,
-                IsChecked = fileTypeGroup.IsSelected
+                IsChecked = fileTypeGroup.IsSelected.CurrentValue
             };
                 
             var groupTextBlock = new TextBlock
@@ -119,7 +119,7 @@ public partial class FileAssociationsView : UserControl
 
                 foreach (var fileType in fileTypeGroup.FileTypes)
                 {
-                    fileType.IsSelected = isChecked;
+                    fileType.IsSelected.Value = isChecked;
                 }
                 UpdateCheckBoxesFromViewModel();
             };
@@ -131,7 +131,7 @@ public partial class FileAssociationsView : UserControl
                 {
                     Classes = { "altHover", "x", "changeColor" },
                     Tag = fileType.Extension,
-                    IsChecked = fileType.IsSelected,
+                    IsChecked = fileType.IsSelected.CurrentValue,
                     IsThreeState = true
                 };
                     
@@ -155,7 +155,7 @@ public partial class FileAssociationsView : UserControl
                 fileCheckBox.IsCheckedChanged += delegate
                 {
                     // Update the model - important to handle null state correctly
-                    fileType.IsSelected = fileCheckBox.IsChecked;
+                    fileType.IsSelected.Value = fileCheckBox.IsChecked;
     
                     // Now update the group checkbox state
                     UpdateGroupCheckboxState(fileTypeGroup);
@@ -165,7 +165,7 @@ public partial class FileAssociationsView : UserControl
                 Observable.EveryValueChanged(fileType, x => x.IsSelected, UIHelper.GetFrameProvider)
                     .Subscribe( isSelected =>
                     {
-                        fileCheckBox.IsChecked = isSelected;
+                        fileCheckBox.IsChecked = isSelected.CurrentValue;
                     })
                     .AddTo(_disposables);
                     
@@ -173,7 +173,7 @@ public partial class FileAssociationsView : UserControl
                 Observable.EveryValueChanged(fileType, x => x.IsVisible, UIHelper.GetFrameProvider)
                     .Subscribe(isVisible =>
                     {
-                        fileCheckBox.IsVisible = isVisible;
+                        fileCheckBox.IsVisible = isVisible.CurrentValue;
                     })
                     .AddTo(_disposables);
             }
@@ -229,7 +229,7 @@ public partial class FileAssociationsView : UserControl
             groupCheckbox.IsChecked = null;
             
         // Update the ViewModel
-        group.IsSelected = groupCheckbox.IsChecked;
+        group.IsSelected.Value = groupCheckbox.IsChecked;
     }
 
     private static bool IsCheckboxInGroup(CheckBox checkbox, FileTypeGroup group)
@@ -264,9 +264,9 @@ public partial class FileAssociationsView : UserControl
                     
             foreach (var fileType in group.FileTypes)
             {
-                if (!fileType.IsSelected.HasValue)
+                if (!fileType.IsSelected.CurrentValue.HasValue)
                     anySelected = null;
-                else if (!fileType.IsSelected.Value)
+                else if (!fileType.IsSelected.CurrentValue.Value)
                     allSelected = false;
                 else
                     anySelected = true;

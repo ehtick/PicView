@@ -2,12 +2,10 @@
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Markup.Xaml.Styling;
-using Avalonia.ReactiveUI;
 using Avalonia.Themes.Simple;
 using PicView.Avalonia.MacOS;
 using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.Config;
 
 namespace PicView.Tests;
 
@@ -16,7 +14,6 @@ public class AvaloniaTest
     [assembly: AvaloniaTestApplication(typeof(AvaloniaTest))]
     [AvaloniaFact]
     public static AppBuilder BuildAvaloniaApp() => AppBuilder.Configure<App>()
-        .UseReactiveUI()
         .LogToTrace()
         .UseHeadless(new AvaloniaHeadlessPlatformOptions());
 

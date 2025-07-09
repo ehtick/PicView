@@ -2,13 +2,16 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
+using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class EffectsWindow : Window
+public partial class EffectsWindow : Window, IDisposable
 {
+    private readonly CompositeDisposable _disposables = new();
     public EffectsWindow()
     {
         InitializeComponent();
@@ -21,10 +24,10 @@ public partial class EffectsWindow : Window
             MinWidth = MaxWidth = Bounds.Width;
             Title = $"{TranslationManager.Translation.Effects} - PicView";
             
-            ClientSizeProperty.Changed.Subscribe(size =>
-            {
-                WindowResizing.HandleWindowResize(this, size);
-            });
+            ClientSizeProperty.Changed.ToObservable()
+                .ObserveOn(UIHelper.GetFrameProvider)
+                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); })
+                .AddTo(_disposables);
         };
         KeyDown += (_, e) =>
         {
@@ -43,5 +46,11 @@ public partial class EffectsWindow : Window
 
         var hostWindow = (Window)VisualRoot;
         hostWindow?.BeginMoveDrag(e);
+    }
+    
+    public void Dispose()
+    {
+        Disposable.Dispose(_disposables);
+        GC.SuppressFinalize(this);
     }
 }

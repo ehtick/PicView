@@ -1,4 +1,3 @@
-using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -15,7 +14,7 @@ using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Titles;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Avalonia.Views;
 
@@ -25,6 +24,8 @@ public partial class BatchResizeView : UserControl
     private bool _isRunning;
 
     private CancellationTokenSource? _cancellationTokenSource;
+    
+    private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
     public BatchResizeView()
     {
@@ -119,47 +120,52 @@ public partial class BatchResizeView : UserControl
 
             SourceFolderTextBox.Text = vm.PicViewer.FileInfo?.CurrentValue.DirectoryName ?? string.Empty;
             
-            this.WhenAny(x => x.SourceFolderTextBox.Text, x => x.Value)
-                .ObserveOn(RxApp.MainThreadScheduler)
+            Observable.EveryValueChanged(this, x => x.SourceFolderTextBox.Text, UIHelper.GetFrameProvider)
+                .Skip(1)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                })
+                .AddTo(_disposables);
+            
+            Observable.EveryValueChanged(this, x => x.OutputFolderTextBox.Text, UIHelper.GetFrameProvider)
+                .Skip(1)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Subscribe(_ =>
+                {
+                    ResetButton.IsVisible = true;
+                    CancelButton.IsVisible = false;
+                })
+                .AddTo(_disposables);
+            
+            Observable.EveryValueChanged(this, x => x.ConversionComboBox.SelectedItem, UIHelper.GetFrameProvider)
                 .Skip(1)
                 .Subscribe(_ =>
                 {
                     ResetButton.IsVisible = true;
                     CancelButton.IsVisible = false;
-                });
+                })
+                .AddTo(_disposables);
             
-            this.WhenAny(x => x.OutputFolderTextBox.Text, x => x.Value)
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Skip(2)
-                .Subscribe(_ =>
-                {
-                    ResetButton.IsVisible = true;
-                    CancelButton.IsVisible = false;
-                });
-            
-            this.WhenAnyValue(x => x.ConversionComboBox.SelectedItem,
-                    x => x.CompressionComboBox.SelectedItem,
-                    x => x.HeightResizeBox,
-                    x => x.WidthResizeBox,
-                    x => x.QualitySlider.Value,
-                    x => x.ThumbnailsComboBox.SelectedItem,
-                    x => x.IsQualityEnabledBox.IsChecked)
-                .ObserveOn(RxApp.MainThreadScheduler)
+            Observable.EveryValueChanged(this, x => x.CompressionComboBox.SelectedItem, UIHelper.GetFrameProvider)
                 .Skip(1)
                 .Subscribe(_ =>
                 {
                     ResetButton.IsVisible = true;
                     CancelButton.IsVisible = false;
-                });
+                })
+                .AddTo(_disposables);
             
-            this.WhenAnyValue(x => x.ResizeComboBox.SelectedItem)
-                .ObserveOn(RxApp.MainThreadScheduler)
+            Observable.EveryValueChanged(this, x => x.HeightResizeBox, UIHelper.GetFrameProvider)
                 .Skip(1)
                 .Subscribe(_ =>
                 {
                     ResetButton.IsVisible = true;
                     CancelButton.IsVisible = false;
-                });
+                })
+                .AddTo(_disposables);
         };
     }
 

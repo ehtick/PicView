@@ -22,10 +22,8 @@ public partial class MacMainWindow : Window
         Loaded += delegate
         {
             // Keep window position when resizing
-            ClientSizeProperty.Changed.Subscribe(size =>
-            {
-                WindowResizing.HandleWindowResize(this, size);
-            });
+            ClientSizeProperty.Changed.ToObservable()
+                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
             if (DataContext is not MainViewModel vm)
             {
                 return;

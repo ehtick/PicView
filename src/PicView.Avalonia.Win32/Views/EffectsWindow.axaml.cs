@@ -6,11 +6,13 @@ using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
+using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class EffectsWindow : Window
+public partial class EffectsWindow : Window, IDisposable
 {
+    private readonly CompositeDisposable _disposables = new();
     public EffectsWindow()
     {
         InitializeComponent();
@@ -46,14 +48,14 @@ public partial class EffectsWindow : Window
         GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.Effects + " - PicView");
         Loaded += delegate
         {
-            ClientSizeProperty.Changed.Subscribe(size =>
+            ClientSizeProperty.Changed.ToObservable()
+                .ObserveOn(UIHelper.GetFrameProvider)
+                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); })
+                .AddTo(_disposables);
+            ClearEffectsItem.Click += delegate
             {
-                WindowResizing.HandleWindowResize(this, size);
-                ClearEffectsItem.Click += delegate
-                {
-                    EffectsView?.RemoveEffects();
-                };
-            });
+                EffectsView?.RemoveEffects();
+            };
         };
     }
 
@@ -68,4 +70,10 @@ public partial class EffectsWindow : Window
     private void Close(object? sender, RoutedEventArgs e) => Close();
 
     private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    
+    public void Dispose()
+    {
+        Disposable.Dispose(_disposables);
+        GC.SuppressFinalize(this);
+    }
 }

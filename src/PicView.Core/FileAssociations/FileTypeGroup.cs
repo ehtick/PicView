@@ -1,23 +1,24 @@
 ﻿using System.Collections.ObjectModel;
-using ReactiveUI;
+using R3;
 
 namespace PicView.Core.FileAssociations;
 
-public class FileTypeGroup : ReactiveObject
+public class FileTypeGroup : IDisposable
 {
     public string Name { get; set; }
     public ObservableCollection<FileTypeItem> FileTypes { get; }
 
-    public bool? IsSelected
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<bool?> IsSelected { get; } = new();
 
     public FileTypeGroup(string name, IEnumerable<FileTypeItem> fileTypes, bool? isSelected = true)
     {
         Name = name;
         FileTypes = new ObservableCollection<FileTypeItem>(fileTypes);
-        IsSelected = isSelected;
+        IsSelected.Value = isSelected;
+    }
+
+    public void Dispose()
+    {
+        Disposable.Dispose();
     }
 }

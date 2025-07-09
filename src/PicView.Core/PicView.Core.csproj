@@ -27,7 +27,6 @@
   <ItemGroup>
     <PackageReference Include="Magick.NET-Q8-OpenMP-x64" Version="14.6.0" />
     <PackageReference Include="R3" Version="1.3.0" />
-    <PackageReference Include="ReactiveUI" Version="20.4.1" />
     <PackageReference Include="SharpCompress" Version="0.40.0" />
     <PackageReference Include="ZLinq" Version="1.4.12" />
     <PackageReference Include="ZLinq.FileSystem" Version="1.4.12" />

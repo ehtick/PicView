@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.ReactiveUI;
 
 namespace PicView.Avalonia.Win32;
 
@@ -21,7 +20,6 @@ internal class Program
 #if DEBUG
             .LogToTrace()
 #endif
-            .UseReactiveUI()
             .UseR3()
             .With(new SkiaOptions
             {

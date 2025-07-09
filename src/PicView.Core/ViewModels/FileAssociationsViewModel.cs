@@ -116,10 +116,10 @@ public class FileAssociationsViewModel : IDisposable
     {
         foreach (var group in FileTypeGroups)
         {
-            group.IsSelected = group.IsSelected;
+            group.IsSelected.Value = group.IsSelected.CurrentValue;
             foreach (var fileType in group.FileTypes)
             {
-                fileType.IsSelected = fileType.IsSelected;
+                fileType.IsSelected.Value = fileType.IsSelected.Value;
             }
         }
     }
@@ -137,7 +137,7 @@ public class FileAssociationsViewModel : IDisposable
                 continue;
             }
 
-            group.IsSelected = defaultGroup.IsSelected;
+            group.IsSelected.Value = defaultGroup.IsSelected.CurrentValue;
 
             var fileTypes = group.FileTypes.ToArray();
             foreach (var fileType in fileTypes)
@@ -147,7 +147,7 @@ public class FileAssociationsViewModel : IDisposable
 
                 if (defaultType != null)
                 {
-                    fileType.IsSelected = defaultType.IsSelected;
+                    fileType.IsSelected.Value = defaultType.IsSelected.CurrentValue;
                 }
             }
         }
@@ -159,11 +159,11 @@ public class FileAssociationsViewModel : IDisposable
 
         foreach (var group in currentGroups)
         {
-            group.IsSelected = false;
+            group.IsSelected.Value = false;
             var fileTypes = group.FileTypes.ToArray();
             foreach (var fileType in fileTypes)
             {
-                fileType.IsSelected = false;
+                fileType.IsSelected.Value = false;
             }
         }
     }
@@ -177,7 +177,7 @@ public class FileAssociationsViewModel : IDisposable
             var fileTypes = group.FileTypes.ToArray();
             foreach (var fileType in fileTypes)
             {
-                if (!fileType.IsVisible)
+                if (!fileType.IsVisible.CurrentValue)
                 {
                     continue;
                 }
@@ -190,7 +190,7 @@ public class FileAssociationsViewModel : IDisposable
                     continue;
                 }
 
-                fileType.IsSelected = true;
+                fileType.IsSelected.Value = true;
             }
         }
     }
@@ -203,7 +203,7 @@ public class FileAssociationsViewModel : IDisposable
 
         foreach (var group in currentGroups)
         {
-            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible))
+            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible.CurrentValue))
             {
                 totalVisible++;
                 if (fileType.IsSelected == null)
@@ -217,9 +217,9 @@ public class FileAssociationsViewModel : IDisposable
 
         foreach (var group in currentGroups)
         {
-            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible))
+            foreach (var fileType in group.FileTypes.Where(ft => ft.IsVisible.CurrentValue))
             {
-                fileType.IsSelected = setToUnchecked ? false : null;
+                fileType.IsSelected.Value = setToUnchecked ? false : null;
             }
         }
     }

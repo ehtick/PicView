@@ -1,8 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Platform;
-using Avalonia.ReactiveUI;
 
 namespace PicView.Avalonia.MacOS;
 
@@ -22,7 +19,7 @@ internal class Program
 #if DEBUG
             .LogToTrace()
 #endif
-            .UseReactiveUI()
+            .UseR3()
             .UseAvaloniaNative()
             .UseSkia()
             .With(new SkiaOptions

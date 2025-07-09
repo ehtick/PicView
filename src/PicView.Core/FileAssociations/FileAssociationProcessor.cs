@@ -93,7 +93,7 @@ public static class FileAssociationProcessor
             {
                 foreach (var fileType in group.FileTypes)
                 {
-                    if (!fileType.IsSelected.HasValue)
+                    if (!fileType.IsSelected.CurrentValue.HasValue)
                     {
                         continue; // Skip null selections
                     }
@@ -111,7 +111,7 @@ public static class FileAssociationProcessor
                                 cleanExt = "." + cleanExt;
                             }
 
-                            if (fileType.IsSelected.Value)
+                            if (fileType.IsSelected.CurrentValue.Value)
                             {
                                 // Add to association list
                                 instructions.ExtensionsToAssociate.Add(new AssociationItem
@@ -165,7 +165,7 @@ public static class FileAssociationProcessor
         {
             foreach (var fileType in group.FileTypes)
             {
-                if (!fileType.IsSelected.HasValue)
+                if (!fileType.IsSelected.CurrentValue.HasValue)
                 {
                     continue;
                 }
@@ -182,7 +182,7 @@ public static class FileAssociationProcessor
                             cleanExt = "." + cleanExt;
                         }
 
-                        if (fileType.IsSelected.Value)
+                        if (fileType.IsSelected.CurrentValue.Value)
                         {
                             await FileAssociationManager.AssociateFile(cleanExt, fileType.Description);
                         }

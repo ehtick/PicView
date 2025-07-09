@@ -1,30 +1,27 @@
-﻿using ReactiveUI;
+﻿using R3;
 
 namespace PicView.Core.FileAssociations;
 
-public class FileTypeItem : ReactiveObject
+public class FileTypeItem : IDisposable
 {
     public string Description { get; }
     public string[] Extensions { get; }
     
     public string Extension => string.Join(", ", Extensions);
 
-    public bool? IsSelected
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    }
+    public BindableReactiveProperty<bool?> IsSelected { get; } = new();
 
-    public bool IsVisible
-    {
-        get;
-        set => this.RaiseAndSetIfChanged(ref field, value);
-    } = true;
+    public BindableReactiveProperty<bool> IsVisible { get; } = new(true);
 
     public FileTypeItem(string description, string[] extensions, bool? isSelected = true)
     {
         Description = description;
         Extensions = extensions;
-        IsSelected = isSelected;
+        IsSelected.Value = isSelected;
+    }
+
+    public void Dispose()
+    {
+        Disposable.Dispose(IsSelected, IsVisible);
     }
 }

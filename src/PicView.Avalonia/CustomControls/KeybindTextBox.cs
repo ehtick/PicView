@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
 using PicView.Core.Localization;
+using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -45,7 +46,7 @@ public class KeybindTextBox : TextBox
 
     public KeybindTextBox()
     {
-        this.GetObservable(MethodNameProperty).Subscribe(_ => Text = GetFunctionKey());
+        this.GetObservable(MethodNameProperty).ToObservable().Subscribe(_ => Text = GetFunctionKey());
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             AddHandler(KeyUpEvent, KeyDownHandler, RoutingStrategies.Tunnel);
