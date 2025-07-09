@@ -264,7 +264,7 @@
                     Canvas.Left="160"
                     Canvas.Top="155"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding NewWindowCommand}"
+                    Command="{CompiledBinding Window.NewWindow}"
                     Height="46"
                     ToolTip.Tip="{Binding Translation.NewWindow.Value, Mode=OneWay}">
                     <StackPanel Orientation="Horizontal">

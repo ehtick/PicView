@@ -5,7 +5,6 @@ using PicView.Avalonia.Functions;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
-using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
 using ReactiveUI;
 using ImageViewer = PicView.Avalonia.Views.ImageViewer;
@@ -19,6 +18,7 @@ public class MainViewModel : ReactiveObject
     
     public TranslationViewModel Translation { get; } = new();
     public MainWindowViewModel MainWindow { get; } = new();
+    public WindowViewModel Window { get; } = new();
     public GlobalSettingsViewModel GlobalSettings { get; } = new();
     public SettingsViewModel? SettingsViewModel { get; set; }
     public ImageCropperViewModel? Crop { get; set; }
@@ -35,23 +35,6 @@ public class MainViewModel : ReactiveObject
         FunctionsMapper.Vm = this;
         PlatformService = platformSpecificService;
         PlatformWindowService = platformWindowService;
-
-        #region Window commands
-
-        RestoreCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Restore);
-        ToggleFullscreenCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleFullscreen);
-        NewWindowCommand = FunctionsHelper.CreateReactiveCommand(ProcessHelper.StartNewProcess);
-
-        ShowExifWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowExifWindow);
-        ShowSettingsWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowSettingsWindow);
-        ShowKeybindingsWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowKeybindingsWindow);
-        ShowAboutWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowAboutWindow);
-        ShowBatchResizeWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowBatchResizeWindow);
-        ShowSingleImageResizeWindowCommand =
-            FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowSingleImageResizeWindow);
-        ShowEffectsWindowCommand = FunctionsHelper.CreateReactiveCommand(PlatformWindowService.ShowEffectsWindow);
-
-        #endregion Window commands
 
 
 
@@ -129,10 +112,6 @@ public class MainViewModel : ReactiveObject
         RestartCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.Restart);
         
         ToggleOpeningInSameWindowCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ToggleOpeningInSameWindow);
-        
-        ShowSettingsFileCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ShowSettingsFile);
-        
-        ShowKeybindingsFileCommand = FunctionsHelper.CreateReactiveCommand(FunctionsMapper.ShowKeybindingsFile);
 
         #endregion Settings commands
     }
@@ -143,9 +122,6 @@ public class MainViewModel : ReactiveObject
     }
 
     #region Commands
-    public ReactiveCommand<Unit, Unit>? RestoreCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ToggleFullscreenCommand { get; }
-    public ReactiveCommand<Unit, Unit>? NewWindowCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleLoopingCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateLeftCommand { get; }
     public ReactiveCommand<Unit, Unit>? RotateLeftButtonCommand { get; }
@@ -166,13 +142,6 @@ public class MainViewModel : ReactiveObject
 
     public ReactiveCommand<Unit, Unit>? ToggleFadeInButtonsOnHoverCommand { get; }
     public ReactiveCommand<Unit, Unit>? ToggleTaskbarProgressCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowExifWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowAboutWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowSettingsWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowKeybindingsWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowBatchResizeWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowSingleImageResizeWindowCommand { get; }
-    public ReactiveCommand<Unit, Unit>? ShowEffectsWindowCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? OptimizeImageCommand { get; }
 
@@ -185,10 +154,6 @@ public class MainViewModel : ReactiveObject
     public ReactiveCommand<Unit, Unit>? ShowSideBySideCommand { get; }
 
     public ReactiveCommand<Unit, Unit>? RestartCommand { get; }
-    
-    public ReactiveCommand<Unit, Unit>? ShowSettingsFileCommand { get; }
-    
-    public ReactiveCommand<Unit, Unit>? ShowKeybindingsFileCommand { get; }
     
     public ReactiveCommand<Unit, Unit>? ToggleConstrainBackgroundColorCommand { get; }
 

@@ -27,7 +27,7 @@
         <customControls:IconButton.Flyout>
             <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
                 <MenuItem
-                    Command="{CompiledBinding ShowSettingsFileCommand}"
+                    Command="{CompiledBinding Tools.ShowSettingsFileCommand}"
                     Foreground="{DynamicResource MainTextColor}"
                     Header="UserSettings.json"
                     x:Name="UserSettingsItem">
@@ -39,7 +39,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem
-                    Command="{CompiledBinding ShowKeybindingsFileCommand}"
+                    Command="{CompiledBinding Tools.ShowKeybindingsFileCommand}"
                     Foreground="{DynamicResource MainTextColor}"
                     Header="keybindings.json"
                     x:Name="KeybindingsItem">

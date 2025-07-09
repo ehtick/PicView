@@ -25,12 +25,12 @@
             <NativeMenuItem Header="{CompiledBinding Translation.File.Value}">
                 <NativeMenu>
                     <NativeMenuItem Command="{CompiledBinding Tools.OpenFileCommand}" Header="{CompiledBinding Translation.Open.Value, Mode=OneWay}" />
-                    <!--  <NativeMenuItem  -->
-                    <!--  Command="{CompiledBinding OpenWithCommand}"  -->
-                    <!--  CommandParameter="{CompiledBinding PicViewer.FileInfo.FullName,  -->
-                    <!--  FallbackValue=''}"  -->
-                    <!--  Header="{CompiledBinding Translation.OpenWith,  -->
-                    <!--  Mode=OneWay}" />  -->
+                    <NativeMenuItem
+                        Command="{CompiledBinding Tools.OpenWithCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.OpenWith,
+                                                 Mode=OneWay}" />
                     <NativeMenuItem Command="{CompiledBinding Tools.SaveFileCommand}" Header="{CompiledBinding Translation.Save.Value, Mode=OneWay}" />
                     <NativeMenuItem Command="{CompiledBinding Tools.SaveFileAsCommand}" Header="{CompiledBinding Translation.SaveAs.Value, Mode=OneWay}" />
                     <NativeMenuItem
@@ -67,7 +67,7 @@
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
-                    <NativeMenuItem Command="{CompiledBinding NewWindowCommand}" Header="{CompiledBinding Translation.NewWindow.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.NewWindow}" Header="{CompiledBinding Translation.NewWindow.Value, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding Tools.RenameCommand}"
@@ -155,7 +155,7 @@
                         IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowExifWindowCommand}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowExifWindow}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding Tools.FilePropertiesCommand}"
                         CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
@@ -165,8 +165,8 @@
                         IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowSingleImageResizeWindowCommand}" Header="{CompiledBinding Translation.ResizeImage.Value, Mode=OneWay}" />
-                    <NativeMenuItem Command="{CompiledBinding ShowBatchResizeWindowCommand}" Header="{CompiledBinding Translation.BatchResize.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowSingleImageResizeWindow}" Header="{CompiledBinding Translation.ResizeImage.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowBatchResizeWindow}" Header="{CompiledBinding Translation.BatchResize.Value, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem
                         Command="{CompiledBinding OptimizeImageCommand}"
@@ -177,7 +177,7 @@
                         IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowEffectsWindowCommand}" Header="{CompiledBinding Translation.Effects.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowEffectsWindow}" Header="{CompiledBinding Translation.Effects.Value, Mode=OneWay}" />
                 </NativeMenu>
             </NativeMenuItem>
 
@@ -206,7 +206,7 @@
             <!--  Interface configuration  -->
             <NativeMenuItem Header="{CompiledBinding Translation.InterfaceConfiguration.Value, Mode=OneWay}">
                 <NativeMenu>
-                    <NativeMenuItem Command="{CompiledBinding ToggleFullscreenCommand}" Header="{CompiledBinding Translation.ToggleFullscreen.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding MainWindow.ToggleFullscreenCommand}" Header="{CompiledBinding Translation.ToggleFullscreen.Value, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding ChangeAutoFitCommand}"
                         Header="{CompiledBinding Translation.AutoFitWindow.Value,
@@ -311,21 +311,21 @@
                         IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
                         ToggleType="CheckBox" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowKeybindingsWindowCommand}" Header="{CompiledBinding Translation.ApplicationShortcuts.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowKeybindingsWindow}" Header="{CompiledBinding Translation.ApplicationShortcuts.Value, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowAboutWindowCommand}" Header="{CompiledBinding Translation.About.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowAboutWindow}" Header="{CompiledBinding Translation.About.Value, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding ShowSettingsWindowCommand}" Header="{CompiledBinding Translation.ShowAllSettingsWindow.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowSettingsWindow}" Header="{CompiledBinding Translation.ShowAllSettingsWindow.Value, Mode=OneWay}" />
                 </NativeMenu>
             </NativeMenuItem>
 
             <!--  Window  -->
             <NativeMenuItem Header="{CompiledBinding Translation.Window.Value, Mode=OneWay}">
                 <NativeMenu>
-                    <NativeMenuItem Command="{CompiledBinding NewWindowCommand}" Header="{CompiledBinding Translation.NewWindow.Value, Mode=OneWay, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.NewWindow}" Header="{CompiledBinding Translation.NewWindow.Value, Mode=OneWay, Mode=OneWay}" />
                     <NativeMenuItemSeparator />
                     <NativeMenuItem Command="{CompiledBinding MainWindow.MaximizeCommand}" Header="{CompiledBinding Translation.Maximize.Value, Mode=OneWay}" />
-                    <NativeMenuItem Command="{CompiledBinding ToggleFullscreenCommand}" Header="{CompiledBinding Translation.Fullscreen.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding MainWindow.ToggleFullscreenCommand}" Header="{CompiledBinding Translation.Fullscreen.Value, Mode=OneWay}" />
                 </NativeMenu>
             </NativeMenuItem>
 

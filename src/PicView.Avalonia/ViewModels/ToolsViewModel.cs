@@ -12,6 +12,15 @@ namespace PicView.Avalonia.ViewModels;
 
 public class ToolsViewModel : IDisposable
 {
+    public ReactiveCommand ShowSettingsFileCommand { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ShowSettingsFile();
+    });
+        
+    public ReactiveCommand ShowKeybindingsFileCommand { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ShowSettingsFile();
+    });
     
     // Open related
     public ReactiveCommand OpenFileCommand { get; } = new(async (_, _) =>
@@ -119,14 +128,6 @@ public class ToolsViewModel : IDisposable
     public ReactiveCommand<string> CopyFilePathCommand { get; } = new(async (path, _) =>
     {
         await ClipboardTextOperations.CopyTextToClipboard(path).ConfigureAwait(false);
-    });
-    
-    public ReactiveCommand<string> CutCommand { get; } = new(async (path, _) =>
-    {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await ClipboardFileOperations.CutFile(path, vm).ConfigureAwait(false);
-        }
     });
     
     public ReactiveCommand<string> CopyBase64Command { get; } = new(async (path, _) =>

@@ -104,6 +104,16 @@ public class MainWindowViewModel : IDisposable
         await WindowFunctions.Minimize();
     });
     
+    public ReactiveCommand RestoreCommand { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.Restore();
+    });
+    
+    public ReactiveCommand ToggleFullscreenCommand { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ToggleFullscreen();
+    });
+    
 
     private void SetButtonValues()
     {

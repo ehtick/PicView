@@ -45,7 +45,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding ShowBatchResizeWindowCommand}"
+                    Command="{CompiledBinding Window.ShowBatchResizeWindow}"
                     CornerRadius="8,0,0,0"
                     Height="45"
                     ToolTip.Tip="{CompiledBinding Translation.BatchResize.Value,
@@ -76,7 +76,7 @@
                     BorderThickness="0,0,1,0"
                     Canvas.Left="179"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding ShowEffectsWindowCommand}"
+                    Command="{CompiledBinding Window.ShowEffectsWindow}"
                     Height="45"
                     ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip.Value,
                                                   Mode=OneWay}"
@@ -129,7 +129,7 @@
                     Canvas.Left="7"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding ShowExifWindowCommand}"
+                    Command="{CompiledBinding Window.ShowExifWindow}"
                     Height="46"
                     Width="169">
                     <StackPanel Orientation="Horizontal">
@@ -216,7 +216,7 @@
                     Canvas.Left="7"
                     Canvas.Top="155"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding ShowKeybindingsWindowCommand}"
+                    Command="{CompiledBinding Window.ShowKeybindingsWindow}"
                     Height="46"
                     ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts.Value,
                                                   Mode=OneWay}"

@@ -45,7 +45,7 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding ShowAboutWindowCommand}"
+                    Command="{CompiledBinding Window.ShowAboutWindow}"
                     CornerRadius="8,0,0,0"
                     Height="46"
                     ToolTip.Tip="{CompiledBinding Translation.AboutWindow.Value,
@@ -76,7 +76,7 @@
                     BorderThickness="0,0,1,0"
                     Canvas.Left="178"
                     Classes="noBorderHover"
-                    Command="{Binding ShowSettingsWindowCommand}"
+                    Command="{Binding Window.ShowSettingsWindow}"
                     Height="46"
                     ToolTip.Tip="{CompiledBinding Translation.ShowAllSettingsWindow.Value,
                                                   Mode=OneWay}"

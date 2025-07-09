@@ -191,7 +191,7 @@
                     Canvas.Left="7"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding ShowSingleImageResizeWindowCommand}"
+                    Command="{CompiledBinding Window.ShowSingleImageResizeWindow}"
                     Height="46"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
