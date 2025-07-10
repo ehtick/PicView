@@ -59,7 +59,7 @@ public class PicViewerModel : IDisposable
     public BindableReactiveProperty<EXIFHelper.EXIFOrientation?> ExifOrientation { get; } = new();
 
     // Used to flip the flip button
-    public BindableReactiveProperty<int> ScaleX { get; } = new();
+    public BindableReactiveProperty<int> ScaleX { get; } = new(1);
 
     public BindableReactiveProperty<string> Title { get; } = new();
 

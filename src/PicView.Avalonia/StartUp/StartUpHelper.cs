@@ -252,10 +252,13 @@ public static class StartUpHelper
         {
             // Starting it in Dispatcher with post fixes occurrences where the text is not centered or the text is missing
             Dispatcher.UIThread.Post(() => { ErrorHandling.ShowStartUpMenu(vm); });
-            if (Settings.WindowProperties.AutoFit)
+            Dispatcher.UIThread.Post(() =>
             {
-                WindowFunctions.CenterWindowOnScreen();
-            }
+                if (Settings.WindowProperties.AutoFit)
+                {
+                    WindowFunctions.CenterWindowOnScreen();
+                }
+            }, DispatcherPriority.Background);
         }
     }
 
