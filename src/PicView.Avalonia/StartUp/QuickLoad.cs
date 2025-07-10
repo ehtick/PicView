@@ -278,7 +278,7 @@ public static class QuickLoad
         if (Settings.Gallery.IsBottomGalleryShown)
         {
             bool loadGallery;
-            if (!vm.MainWindow.IsLoadingIndicatorShown.CurrentValue)
+            if (!vm.MainWindow.IsUIShown.CurrentValue)
             {
                 loadGallery = Settings.Gallery.ShowBottomGalleryInHiddenUI;
             }
