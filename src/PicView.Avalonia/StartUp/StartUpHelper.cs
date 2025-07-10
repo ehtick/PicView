@@ -55,14 +55,7 @@ public static class StartUpHelper
                 }
                 else
                 {
-                    if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                    {
-                        if (Settings.UIProperties.OpenInSameWindow &&
-                            ProcessHelper.CheckIfAnotherInstanceIsRunning())
-                        {
-                            HandleMultipleInstances(args);
-                        }
-                    }
+                    IPC.SendWithArgs(args);
                 }
             }
         }
@@ -172,7 +165,7 @@ public static class StartUpHelper
 
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            if (Settings.UIProperties.OpenInSameWindow && !ProcessHelper.CheckIfAnotherInstanceIsRunning())
+            if (!ProcessHelper.CheckIfAnotherInstanceIsRunning())
             {
                 // No other instance is running, create named pipe server
                 _ = IPC.StartListeningForArguments(vm);
@@ -291,27 +284,6 @@ public static class StartUpHelper
             vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-    }
-
-    private static void HandleMultipleInstances(string[] args)
-    {
-        if (args.Length > 1)
-        {
-            Task.Run(async () =>
-            {
-                var retries = 0;
-                while (!await IPC.SendArgumentToRunningInstance(args[1]))
-                {
-                    await Task.Delay(1000);
-                    if (++retries > 20)
-                    {
-                        break;
-                    }
-                }
-
-                Environment.Exit(0);
-            });
-        }
     }
 
     private static void SetWindowEventHandlers(Window w)

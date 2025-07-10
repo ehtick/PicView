@@ -292,13 +292,13 @@ public static class SettingsUpdater
     {
         if (Settings.UIProperties.OpenInSameWindow)
         {
-            _ = IPC.StartListeningForArguments(vm);
-            Settings.UIProperties.OpenInSameWindow = true;
+            IPC.StopListening();
+            Settings.UIProperties.OpenInSameWindow = false;
         }
         else
         {
-            IPC.StopListening();
-            Settings.UIProperties.OpenInSameWindow = false;
+            _ = IPC.StartListeningForArguments(vm);
+            Settings.UIProperties.OpenInSameWindow = true;
         }
 
         await SaveSettingsAsync();

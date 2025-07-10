@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -15,7 +16,7 @@ namespace PicView.Avalonia.Navigation;
 /// enabling the transfer of commands or data between them.
 /// </summary>
 // ReSharper disable once InconsistentNaming
-internal static class IPC
+public static class IPC
 {
     /// <summary>
     /// The default name for the named pipe used by the application.
@@ -24,6 +25,40 @@ internal static class IPC
     private const string PipeName = "PicViewPipe";
     
     private static bool? _isRunning;
+    
+    public static void SendWithArgs(string[] args)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            return;
+        }
+
+        if (Settings.UIProperties.OpenInSameWindow && ProcessHelper.CheckIfAnotherInstanceIsRunning())
+        {
+            RetrySendingArgs(args);
+        }
+    }
+
+    private static void RetrySendingArgs(string[] args)
+    {
+        if (args.Length > 1)
+        {
+            Task.Run(async () =>
+            {
+                var retries = 0;
+                while (!await SendArgumentToRunningInstance(args[1]))
+                {
+                    await Task.Delay(1000);
+                    if (++retries > 20)
+                    {
+                        break;
+                    }
+                }
+
+                Environment.Exit(0);
+            });
+        }
+    }
 
     /// <summary>
     /// Sends an argument to a running instance of the application via the specified named pipe.
@@ -36,7 +71,7 @@ internal static class IPC
     /// it sends the argument. In case of a timeout or other exceptions, these errors are caught and logged in debug mode.
     /// This can be used to pass new command-line arguments to a running instance instead of starting a new instance.
     /// </remarks>
-    internal static async Task<bool> SendArgumentToRunningInstance(string arg)
+    public static async Task<bool> SendArgumentToRunningInstance(string arg)
     {
         await using var pipeClient = new NamedPipeClientStream(PipeName);
         try
@@ -75,7 +110,7 @@ internal static class IPC
     /// it reads the incoming arguments and processes them. The arguments can include file paths or commands, 
     /// and they are passed to the main view model to update the UI accordingly.
     /// </remarks>
-    internal static async Task StartListeningForArguments(MainViewModel vm)
+    public static async Task StartListeningForArguments(MainViewModel vm)
     {
         if (_isRunning.HasValue && !_isRunning.Value)
         {
