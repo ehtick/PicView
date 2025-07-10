@@ -24,6 +24,7 @@ public partial class EffectsView : UserControl
     private readonly ImageEffectConfig _defaultEffectConfig = new();
     private readonly CompositeDisposable _disposables = new();
     private bool _reloading;
+    private readonly TimeSpan _debBounceTime = TimeSpan.FromMilliseconds(50);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EffectsView"/> class.
@@ -147,7 +148,7 @@ public partial class EffectsView : UserControl
         );
 
         sliderValueChanges
-            .Debounce(TimeSpan.FromMilliseconds(300))
+            .Debounce(_debBounceTime)
             .ObserveOn(UIHelper.GetFrameProvider)
             .Select(_ =>
             {
@@ -209,6 +210,10 @@ public partial class EffectsView : UserControl
     /// </summary>
     private void HideCancelBtn()
     {
+        if (_reloading)
+        {
+            return;
+        }
         ResetButton.IsVisible = true;
         CancelButton.IsVisible = false;
     }
@@ -251,7 +256,7 @@ public partial class EffectsView : UserControl
         }
         finally
         {
-            await Dispatcher.UIThread.InvokeAsync(() => { vm.MainWindow.IsLoadingIndicatorShown.Value = false; });
+           vm.MainWindow.IsLoadingIndicatorShown.Value = false;
         }
     }
 
@@ -269,6 +274,7 @@ public partial class EffectsView : UserControl
         }
         finally
         {
+            await Task.Delay(_debBounceTime); // Fixes HideCancelBtn resetting erroneously 
             _reloading = false;
         }
     }
