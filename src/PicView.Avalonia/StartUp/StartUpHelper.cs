@@ -160,6 +160,13 @@ public static class StartUpHelper
                 vm.PlatformWindowService.Fullscreen(false);
             }, DispatcherPriority.Background).Wait();
         }
+        else if (Settings.WindowProperties.AutoFit && Settings.ImageScaling.ShowImageSideBySide)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                WindowFunctions.CenterWindowOnScreen();
+            }, DispatcherPriority.Background).Wait();
+        }
 
         Application.Current.Name = "PicView";
 

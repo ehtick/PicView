@@ -6,7 +6,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -65,8 +64,7 @@ public static class QuickLoad
         {
             await SingeImageLoadingAsync(vm, fileInfo, magickImage).ConfigureAwait(false);
         }
-
-        vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+        
         vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
     }
 
@@ -128,8 +126,6 @@ public static class QuickLoad
                 () => { WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, vm); },
                 DispatcherPriority.Send);
         }
-
-        await RenderingFixes(vm, imageModel, null);
         return imageModel;
     }
 
@@ -144,14 +140,16 @@ public static class QuickLoad
         NavigationManager.InitializeImageIterator(vm);
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage);
         var secondaryPreloadValue = await NavigationManager.GetNextPreLoadValueAsync();
-        vm.PicViewer.SecondaryImageSource.Value = secondaryPreloadValue?.ImageModel?.Image;
-        SetPicViewerValues(vm, imageModel, fileInfo);
-        await RenderingFixes(vm, imageModel, secondaryPreloadValue.ImageModel);
-        TitleManager.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
 
-        // Sometimes the images are not rendered in side by side, this fixes it
-        // TODO: Improve and fix side by side and remove this hack 
-        Dispatcher.UIThread.Post(() => { vm.ImageViewer?.MainImage?.InvalidateVisual(); });
+        vm.PicViewer.SecondaryImageSource.Value = secondaryPreloadValue?.ImageModel?.Image;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
+            WindowResizing.SetSize(magickImage.Width, magickImage.Height, secondaryPreloadValue.ImageModel.PixelWidth, secondaryPreloadValue.ImageModel.PixelHeight, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
+        }, DispatcherPriority.Send);
+        SetPicViewerValues(vm, imageModel, fileInfo);
+        
+        TitleManager.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
         await StartPreloaderAndGalleryAsync(vm, imageModel, fileInfo);
     }
 
@@ -179,70 +177,6 @@ public static class QuickLoad
     }
 
     /// <summary>
-    /// Applies rendering fixes to address specific issues with image display, scaling,
-    /// and scrolling behavior. Handles 1:1 aspect ratio images, adapts rendering to fit
-    /// within the bounds of the viewport, and applies necessary adjustments if side-by-side
-    /// display settings are enabled.
-    /// </summary>
-    /// <param name="vm">The main view model containing the state of the application and UI elements.</param>
-    /// <param name="imageModel">The primary image model to be rendered and processed.</param>
-    /// <param name="secondaryModel">The optional secondary image model, used for side-by-side image rendering.</param>
-    private static async Task RenderingFixes(MainViewModel vm, ImageModel imageModel, ImageModel? secondaryModel)
-    {
-        // When width and height are the same, it renders image incorrectly at startup,
-        // so need to handle it specially
-        var is1To1 = imageModel.PixelWidth == imageModel.PixelHeight;
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (is1To1)
-            {
-                var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight,
-                    secondaryModel?.PixelWidth ?? 0, secondaryModel?.PixelHeight ?? 0, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
-                if (!size.HasValue)
-                {
-                    DebugHelper.LogDebug(nameof(QuickLoadAsync), nameof(RenderingFixes), "Size is null");
-                    ErrorHandling.ShowStartUpMenu(vm);
-                    return;
-                }
-
-                WindowResizing.SetSize(size.Value, vm);
-                vm.ImageViewer.MainBorder.Height = size.Value.Width;
-                vm.ImageViewer.MainBorder.Width = size.Value.Height;
-            }
-            else if (imageModel.PixelWidth <= UIHelper.GetMainView.Bounds.Width &&
-                     imageModel.PixelHeight <= UIHelper.GetMainView.Bounds.Height)
-            {
-                SetSize(vm, imageModel, secondaryModel);
-            }
-            else if (Settings.ImageScaling.ShowImageSideBySide)
-            {
-                SetSize(vm, imageModel, secondaryModel);
-                if (Settings.WindowProperties.AutoFit)
-                {
-                    WindowFunctions.CenterWindowOnScreen();
-                }
-            }
-        }, DispatcherPriority.Send);
-
-        if (Settings.Zoom.ScrollEnabled)
-        {
-            // Bad fix for scrolling
-            // TODO: Implement proper startup scrolling fix
-            Settings.Zoom.ScrollEnabled = false;
-            await Dispatcher.UIThread.InvokeAsync(() => SetSize(vm, imageModel, secondaryModel),
-                DispatcherPriority.Render);
-            Settings.Zoom.ScrollEnabled = true;
-            await Dispatcher.UIThread.InvokeAsync(() => SetSize(vm, imageModel, secondaryModel),
-                DispatcherPriority.Send);
-            if (Settings.WindowProperties.AutoFit)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => WindowFunctions.CenterWindowOnScreen());
-            }
-        }
-    }
-
-    /// <summary>
     /// Initiates the preloader and bottom gallery loading process for the application.
     /// </summary>
     /// <param name="vm">The main view model.</param>
@@ -251,6 +185,8 @@ public static class QuickLoad
     private static async Task StartPreloaderAndGalleryAsync(MainViewModel vm, ImageModel imageModel,
         FileInfo fileInfo)
     {
+        vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+        
         // Add recent files, except when browsing archive
         if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
         {
@@ -295,19 +231,5 @@ public static class QuickLoad
         }
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
-    }
-
-    private static void SetSize(MainViewModel vm, ImageModel imageModel, ImageModel? secondaryModel)
-    {
-        var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight,
-            secondaryModel?.PixelWidth ?? 0, secondaryModel?.PixelHeight ?? 0, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
-        if (!size.HasValue)
-        {
-            DebugHelper.LogDebug(nameof(QuickLoadAsync), nameof(SetSize), "Size is null");
-            ErrorHandling.ShowStartUpMenu(vm);
-            return;
-        }
-
-        WindowResizing.SetSize(size.Value, vm);
     }
 }
