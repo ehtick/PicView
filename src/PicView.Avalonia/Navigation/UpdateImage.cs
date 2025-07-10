@@ -87,6 +87,7 @@ public static class UpdateImage
                 if (preLoadValue is { ImageModel: not null})
                 {
                     vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
+                    vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
                 }
             }
             else if (preLoadValue is { ImageModel: not null})

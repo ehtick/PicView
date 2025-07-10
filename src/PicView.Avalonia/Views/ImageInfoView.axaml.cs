@@ -156,7 +156,7 @@ public partial class ImageInfoView : UserControl
         };
     }
 
-    private static async Task SendToImageSaver(string? location, string destination, string? width, string? height,
+    private async Task SendToImageSaver(string? location, string destination, string? width, string? height,
         string ext)
     {
         if (!uint.TryParse(width, out var widthValue) || !uint.TryParse(height, out var heightValue))
@@ -164,8 +164,17 @@ public partial class ImageInfoView : UserControl
             return;
         }
 
-        await SaveImageFileHelper.SaveImageAsync(null, location, destination, widthValue, heightValue, null, ext)
-            .ConfigureAwait(false);
+        if (ext != Path.GetExtension(location))
+        {
+            destination = Path.ChangeExtension(destination, ext);
+            await FileRenamer.AttemptRenameAsync(location, destination, DataContext as MainViewModel,
+                widthValue, heightValue);
+        }
+        else
+        {
+            await SaveImageFileHelper.SaveImageAsync(null, location, destination, widthValue, heightValue, null, ext)
+                .ConfigureAwait(false);
+        }
     }
 
     private string GetExtension() => ConversionComboBox.SelectedIndex switch

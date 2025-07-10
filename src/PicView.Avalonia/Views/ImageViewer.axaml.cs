@@ -23,6 +23,7 @@ public partial class ImageViewer : UserControl
         ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
