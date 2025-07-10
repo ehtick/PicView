@@ -18,7 +18,7 @@ namespace PicView.Avalonia.Views;
 public partial class SingleImageResizeView : UserControl
 {
     private double _aspectRatio;
-    private IDisposable? _imageUpdateSubscription;
+    private readonly CompositeDisposable _imageUpdateSubscription = new();
     private bool _isKeepingAspectRatio = true;
 
     public SingleImageResizeView()
@@ -49,7 +49,7 @@ public partial class SingleImageResizeView : UserControl
             {
                 UpdateQualitySliderState();
                 ShowCancelButton();
-            });
+            }).AddTo(_imageUpdateSubscription);
     }
 
     private void OnUnloaded(object? sender, EventArgs e)

@@ -270,7 +270,7 @@ public class Zoom
             return;
         }
 
-        vm.GlobalSettings.RotationAngle.Value = 1;
+        vm.GlobalSettings.ZoomValue.Value = 1;
         TooltipHelper.StopTooltipMessage();
         TitleManager.SetTitle(vm);
     }

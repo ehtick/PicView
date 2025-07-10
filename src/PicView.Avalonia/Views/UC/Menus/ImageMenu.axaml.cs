@@ -34,8 +34,9 @@ public partial class ImageMenu  : AnimatedMenu
                 {
                     SlideShowButton.Flyout.Hide();
                 });
+            // Determine if crop should be enabled every time it opens
             Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
-                .Skip(1)
+                .Where(x => x)
                 .Subscribe(_ =>
                 {
                     DetermineIfCropShouldBeEnabled();
