@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -11,9 +12,9 @@ public class CopyButton : Button
         
     protected override Type StyleKeyOverride => typeof(Button);
         
-    public string CopyText
+    public string? CopyText
     {
-        get => (string)GetValue(CopyTextProperty);
+        get => (string)GetValue(CopyTextProperty)!;
         set => SetValue(CopyTextProperty, value);
     }
 
@@ -24,15 +25,22 @@ public class CopyButton : Button
 
     private async void CopyButton_OnClick(object? sender, RoutedEventArgs args)
     {
-        if (string.IsNullOrWhiteSpace(CopyText))
+        try
         {
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(CopyText))
+            {
+                return;
+            }
 
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel?.Clipboard != null)
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(CopyText);
+            }
+        }
+        catch (Exception e)
         {
-            await topLevel.Clipboard.SetTextAsync(CopyText);
+            DebugHelper.LogDebug(nameof(CopyButton), nameof(CopyButton_OnClick), e);
         }
     }
 

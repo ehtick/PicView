@@ -61,11 +61,11 @@ public class PicViewerModel : IDisposable
     // Used to flip the flip button
     public BindableReactiveProperty<int> ScaleX { get; } = new(1);
 
-    public BindableReactiveProperty<string> Title { get; } = new();
+    public BindableReactiveProperty<string>? Title { get; } = new();
 
-    public BindableReactiveProperty<string> TitleTooltip { get; } = new();
+    public BindableReactiveProperty<string>? TitleTooltip { get; } = new();
 
-    public BindableReactiveProperty<string> WindowTitle { get; } = new();
+    public BindableReactiveProperty<string>? WindowTitle { get; } = new();
     
     public BindableReactiveProperty<int> Index { get; } = new();
     public BindableReactiveProperty<int> GetIndex { get; } = new();

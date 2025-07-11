@@ -156,15 +156,6 @@ public static class ImageTitleFormatter
     }
 
 
-    /// <inheritdoc cref="GenerateTitleStrings(int, int, int, FileInfo, double, List{string})" />
-    public static WindowTitles GenerateTitleStrings(double width, double height, int index, FileInfo? fileInfo,
-        double zoomValue, List<string> filesList)
-    {
-        var newWidth = Convert.ToInt32(width);
-        var newHeight = Convert.ToInt32(height);
-        return GenerateTitleStrings(newWidth, newHeight, index, fileInfo, zoomValue, filesList);
-    }
-
     /// <summary>
     /// Generates a set of error titles in case of invalid parameters or exceptions during title generation.
     /// </summary>
@@ -173,9 +164,9 @@ public static class ImageTitleFormatter
     {
         return new WindowTitles
         {
-            BaseTitle = TranslationManager.Translation.UnexpectedError,
-            TitleWithAppName = TranslationManager.Translation.UnexpectedError,
-            FilePathTitle = TranslationManager.Translation.UnexpectedError
+            BaseTitle = TranslationManager.Translation.UnexpectedError ?? "",
+            TitleWithAppName = TranslationManager.Translation.UnexpectedError ?? "",
+            FilePathTitle = TranslationManager.Translation.UnexpectedError ?? ""
         };
     }
 
@@ -235,14 +226,6 @@ public static class ImageTitleFormatter
             TitleWithAppName = fullTitle,
             FilePathTitle = baseTitle
         };
-    }
-
-    /// <inheritdoc cref="GenerateTitleForSingleImage(int, int, string, double)" />
-    public static WindowTitles GenerateTitleForSingleImage(double width, double height, string name, double zoomValue)
-    {
-        var newWidth = Convert.ToInt32(width);
-        var newHeight = Convert.ToInt32(height);
-        return GenerateTitleForSingleImage(newWidth, newHeight, name, zoomValue);
     }
 
     /// <summary>

@@ -93,7 +93,7 @@ public static class TitleManager
     public static void SetLoadingTitle(MainViewModel vm)
     {
         vm.PicViewer.TitleTooltip.Value = vm.PicViewer.WindowTitle.Value = $"{TranslationManager.Translation.Loading} - PicView";
-        vm.PicViewer.Title.Value = TranslationManager.Translation.Loading;
+        vm.PicViewer.Title.Value = TranslationManager.Translation.Loading ?? string.Empty;
     }
 
     /// <summary>
@@ -260,9 +260,9 @@ public static class TitleManager
     /// </remarks>
     public static void SetNoImageTitle(MainViewModel vm)
     {
-        vm.PicViewer.Title.Value = TranslationManager.Translation.NoImage;
+        vm.PicViewer.Title.Value = TranslationManager.Translation.NoImage ?? string.Empty;
         vm.PicViewer.WindowTitle.Value = TranslationManager.Translation.NoImage + " - PicView";
-        vm.PicViewer.TitleTooltip.Value = TranslationManager.Translation.NoImage;
+        vm.PicViewer.TitleTooltip.Value = TranslationManager.Translation.NoImage ?? string.Empty;
     }
 
     private static void ReturnError(MainViewModel vm)
