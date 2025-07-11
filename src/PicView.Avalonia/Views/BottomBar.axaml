@@ -273,7 +273,6 @@
                     IconWidth="17"
                     IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsRepeatEnabled="False"
                     IsTabStop="False"
                     Width="90"
                     x:Name="PreviousButton" />
