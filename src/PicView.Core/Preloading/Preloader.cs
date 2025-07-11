@@ -17,7 +17,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 #if DEBUG
     // ReSharper disable once ConvertToConstant.Local
     // ReSharper disable once FieldCanBeMadeReadOnly.Local
-    private static bool _showAddRemove = true;
+    private static bool _showAddRemove = false;
 #endif
 
     private readonly Lock _disposeLock = new();
