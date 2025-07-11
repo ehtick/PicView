@@ -22,25 +22,23 @@ public static class SettingsUpdater
         {
             return;
         }
-        vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.Value  = Settings.Gallery.ExpandedGalleryItemSize;
-        vm.Gallery.GalleryItem.BottomGalleryItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
+        gallery.GalleryItem.ExpandedGalleryItemHeight.Value  = Settings.Gallery.ExpandedGalleryItemSize;
+        gallery.GalleryItem.BottomGalleryItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
         if (!settingsExists)
         {
-            vm.Gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
-            vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
+            gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
+            gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
         }
 
         // Set default gallery sizes if they are out of range or upgrading from an old version
-        if (vm.Gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue < GalleryDefaults.MinBottomGalleryItemHeight ||
-            vm.Gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue > GalleryDefaults.MaxBottomGalleryItemHeight)
+        if (gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue is < GalleryDefaults.MinBottomGalleryItemHeight or > GalleryDefaults.MaxBottomGalleryItemHeight)
         {
-            vm.Gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
+            gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
         }
 
-        if (vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue < GalleryDefaults.MinFullGalleryItemHeight ||
-            vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue > GalleryDefaults.MaxFullGalleryItemHeight)
+        if (gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue is < GalleryDefaults.MinFullGalleryItemHeight or > GalleryDefaults.MaxFullGalleryItemHeight)
         {
-            vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
+            gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
         }
 
         if (settingsExists)

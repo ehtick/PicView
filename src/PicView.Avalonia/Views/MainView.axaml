@@ -378,7 +378,7 @@
                     Command="{CompiledBinding Tools.ShowSideBySideCommand}"
                     Header="{CompiledBinding Translation.SideBySide.Value,
                                              Mode=OneWay}"
-                    IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide}"
+                    IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
                     ToggleType="CheckBox" />
 
                 <Separator />
@@ -406,7 +406,7 @@
                     <MenuItem.Icon>
                         <Image
                             Height="12"
-                            Source="{CompiledBinding MainWindow.ChangeCtrlZoomImage}"
+                            Source="{CompiledBinding MainWindow.ChangeCtrlZoomImage.Value}"
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>

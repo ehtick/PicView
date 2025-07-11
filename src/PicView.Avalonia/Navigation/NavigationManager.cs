@@ -130,7 +130,7 @@ public static class NavigationManager
     public static bool CanNavigate(MainViewModel vm) =>
         ImageIterator?.ImagePaths is not null &&
         ImageIterator.ImagePaths.Count > 0 && !CropFunctions.IsCropping &&
-        !DialogManager.IsDialogOpen && vm is { MainWindow.IsLoadingIndicatorShown.Value: false, PicViewer.FileInfo: not null };
+        !DialogManager.IsDialogOpen && vm is { MainWindow.IsEditableTitlebarOpen.CurrentValue: false, PicViewer.FileInfo.CurrentValue: not null };
 
     /// <summary>
     ///     Navigates to the next or previous image based on the <paramref name="next" /> parameter.
