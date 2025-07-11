@@ -244,11 +244,9 @@
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource FilePropertiesGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
+                    <Image
                         Height="12"
-                        Stretch="Fill"
+                        Source="{StaticResource FileUserImage}"
                         Width="12" />
                 </MenuItem.Icon>
             </MenuItem>

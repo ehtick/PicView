@@ -67,12 +67,10 @@ public partial class MainView : UserControl
             HistoryFileButton.PointerEntered += delegate       
             {
                 HistoryFileNameTextBlock.Foreground = secondaryBrush;
-                HistoryFileButtonPath.Fill = secondaryBrush;
             };
             HistoryFileButton.PointerExited += delegate       
             {
                 HistoryFileNameTextBlock.Foreground = brush;
-                HistoryFileButtonPath.Fill = brush;
             };
         }
 
