@@ -3,11 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using PicView.Avalonia.Converters;
 using PicView.Avalonia.FileSystem;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.ImageDecoding;
 using PicView.Core.Titles;
 using R3;
 
@@ -163,18 +163,9 @@ public partial class ImageInfoView : UserControl
         {
             return;
         }
-
-        if (ext != Path.GetExtension(location))
-        {
-            destination = Path.ChangeExtension(destination, ext);
-            await FileRenamer.AttemptRenameAsync(location, destination, DataContext as MainViewModel,
-                widthValue, heightValue);
-        }
-        else
-        {
-            await SaveImageFileHelper.SaveImageAsync(null, location, destination, widthValue, heightValue, null, ext)
-                .ConfigureAwait(false);
-        }
+        var sameFile = destination.Equals(location, StringComparison.OrdinalIgnoreCase);
+        await SaveImageHandler.SaveImageWithPossibleNavigation(DataContext as MainViewModel, location, destination,  sameFile, ext, widthValue, heightValue,
+            null, null, true);
     }
 
     private string GetExtension() => ConversionComboBox.SelectedIndex switch

@@ -61,6 +61,10 @@ public static class SaveImageFileHelper
             {
                 magickImage.Resize(percentage.Value);
             }
+            else if (width is > 0 && height is > 0)
+            {
+                 magickImage.Resize(width.Value, height.Value);
+            }
             else if (width is not null)
             {
                 if (height is not null)

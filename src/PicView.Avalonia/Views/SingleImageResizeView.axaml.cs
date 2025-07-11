@@ -5,12 +5,11 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.FileSystem;
-using PicView.Avalonia.Navigation;
+using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageDecoding;
-using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Avalonia.Views;
@@ -191,34 +190,19 @@ public partial class SingleImageResizeView : UserControl
         }
 
         await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(true));
-
-        const int rotationAngle = 0; // TODO: Add rotation control
-
-        var file = vm.PicViewer.FileInfo.CurrentValue.FullName;
+        
+        var path = vm.PicViewer.FileInfo.CurrentValue.FullName;
         var ext = GetSelectedFileExtension(vm, ref destination);
         destination = Path.ChangeExtension(destination, ext);
-        var sameFile = file.Equals(destination, StringComparison.OrdinalIgnoreCase);
+        var sameFile = path.Equals(destination, StringComparison.OrdinalIgnoreCase);
 
         var quality = GetQualityValue(ext, destination);
 
-        var success = await SaveImageFileHelper.SaveImageAsync(
-            null, file, sameFile ? null : destination, width, height, quality,
-            ext, rotationAngle, null, _isKeepingAspectRatio).ConfigureAwait(false);
+        await SaveImageHandler.SaveImageWithPossibleNavigation(vm, path, destination, sameFile, ext, width, height,
+            quality, null, _isKeepingAspectRatio);
 
         await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(false));
-
-        if (!success)
-        {
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.SavingFileFailed);
-            return;
-        }
-
-        await HandlePostSaveActions(vm, file, destination);
-
-        if (Path.GetExtension(file) != ext)
-        {
-            await vm.PlatformService.DeleteFile(file, true); 
-        }
+        
     }
 
     private void SetLoadingState(bool isLoading)
@@ -287,18 +271,6 @@ public partial class SingleImageResizeView : UserControl
         }
 
         return null;
-    }
-
-    private static async Task HandlePostSaveActions(MainViewModel vm, string file, string destination)
-    {
-        if (destination == file)
-        {
-            await NavigationManager.QuickReload().ConfigureAwait(false);
-        }
-        else if (Path.GetDirectoryName(file) == Path.GetDirectoryName(destination))
-        {
-            await NavigationManager.LoadPicFromFile(destination, vm).ConfigureAwait(false);
-        }
     }
 
     private void ResetSettings(MainViewModel vm)
