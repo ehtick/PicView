@@ -76,6 +76,8 @@ public partial class ImageInfoView : UserControl
                 }
                 FileSizeBox.Text = vm.PicViewer.FileInfo?.CurrentValue?.Length.GetReadableFileSize();
                 ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm);
+                GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
+                BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
             }).AddTo(_disposables);
             
             ResetButton.Click += (_, _) =>
