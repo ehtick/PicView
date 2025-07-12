@@ -121,12 +121,11 @@ public class PicBox : Control, IDisposable
 
     private void UpdateSource(ImageType imageType)
     {
-        CleanupResources();
-
         switch (imageType)
         {
             case ImageType.Svg:
                 UpdateSvgSource();
+                CleanupResources();
                 break;
             case ImageType.AnimatedGif:
             case ImageType.AnimatedWebp:
@@ -134,9 +133,11 @@ public class PicBox : Control, IDisposable
                 break;
             case ImageType.Bitmap:
                 UpdateBitmapSource();
+                CleanupResources();
                 break;
             case ImageType.Invalid:
             default:
+                CleanupResources();
                 // TODO: Add invalid image graphic
                 break;
         }
@@ -486,6 +487,10 @@ public class PicBox : Control, IDisposable
             : new WebpInstance(fileStream);
 
         _animInstance.IterationCount = IterationCount.Infinite;
+        if (_customVisual is null)
+        {
+            CreateVisual();
+        }
         _customVisual?.SendHandlerMessage(_animInstance);
         AnimationUpdate();
     }
@@ -494,7 +499,7 @@ public class PicBox : Control, IDisposable
     {
         if (_customVisual is null)
         {
-            return;
+            CreateVisual();
         }
 
         var sourceSize = Bounds.Size;
@@ -510,15 +515,23 @@ public class PicBox : Control, IDisposable
 
     private void CreateVisual()
     {
-        var compositor = ElementComposition.GetElementVisual(this)?.Compositor;
-        if (compositor == null || _customVisual?.Compositor == compositor)
+        try
         {
-            return;
-        }
+            var compositor = ElementComposition.GetElementVisual(this)?.Compositor;
+            if (compositor == null || _customVisual?.Compositor == compositor)
+            {
+                return;
+            }
 
-        _customVisual ??= compositor.CreateCustomVisual(new CustomVisualHandler());
-        ElementComposition.SetElementChildVisual(this, _customVisual);
-        _customVisual.SendHandlerMessage(CustomVisualHandler.StartMessage);
+            _customVisual ??= compositor.CreateCustomVisual(new CustomVisualHandler());
+            ElementComposition.SetElementChildVisual(this, _customVisual);
+            _customVisual.SendHandlerMessage(CustomVisualHandler.StartMessage);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(CreateVisual), e);
+            _customVisual?.SendHandlerMessage(CustomVisualHandler.StartMessage);
+        }
     }
 
     private void DestroyVisual()
