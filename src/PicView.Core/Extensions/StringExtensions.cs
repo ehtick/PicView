@@ -8,21 +8,6 @@ namespace PicView.Core.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Converts the first character of the string to lowercase.
-    /// </summary>
-    /// <param name="input">The input string.</param>
-    /// <returns>A string with the first character capitalized. If the string is null or empty, an empty string is returned.</returns>
-    public static string FirstCharToLower(this string input)
-    {
-        return input switch
-        {
-            null => string.Empty,
-            "" => string.Empty,
-            _ => string.Concat(input[0].ToString().ToLower(), input.AsSpan(1))
-        };
-    }
-
-    /// <summary>
     /// Shortens the given string <paramref name="name"/> to the specified <paramref name="amount"/> and appends "..." to it.
     /// </summary>
     /// <param name="name">The string to shorten.</param>

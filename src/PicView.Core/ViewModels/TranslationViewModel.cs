@@ -1,4 +1,5 @@
-﻿using PicView.Core.Localization;
+﻿using PicView.Core.Extensions;
+using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -13,8 +14,8 @@ public class TranslationViewModel : IDisposable
     public void UpdateLanguage()
     {
         var t = TranslationManager.Translation;
-        
-        File .Value = t.File;
+
+        File.Value = string.Concat(t.File[0].ToString().ToUpper(), t.File.AsSpan(1));
         SelectFile .Value = t.OpenFileDialog;
         OpenLastFile .Value = t.OpenLastFile;
         Paste .Value = t.FilePaste;
