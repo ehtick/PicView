@@ -7,6 +7,11 @@ using Path = Avalonia.Controls.Shapes.Path;
 
 namespace PicView.Avalonia.CustomControls;
 
+/// <summary>
+/// A custom text box control that extends the base TextBox class.
+/// This control includes functionality for handling context menu events and pointer interactions,
+/// with specific behavior when clicking into the textbox without initial focus.
+/// </summary>
 public class FuncTextBox : TextBox
 {
     private bool _contextMenuLoaded;

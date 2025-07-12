@@ -22,6 +22,10 @@ using Vector = Avalonia.Vector;
 
 namespace PicView.Avalonia.CustomControls;
 
+/// <summary>
+/// Custom control for displaying images with additional functionalities
+/// such as handling image types, side-by-side with a secondary source, and animated rendering.
+/// </summary>
 public class PicBox : Control, IDisposable
 {
     #region Helper Methods

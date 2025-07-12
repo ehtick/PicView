@@ -8,15 +8,17 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
+/// <summary>
+/// A custom TextBox control for managing key bindings.
+/// </summary>
 public class KeybindTextBox : TextBox
 {
-    protected override Type StyleKeyOverride => typeof(TextBox);
-    
     public static readonly AvaloniaProperty<KeyGesture?> KeybindProperty =
         AvaloniaProperty.Register<KeybindTextBox, KeyGesture?>(nameof(Keybind));
 
@@ -25,10 +27,30 @@ public class KeybindTextBox : TextBox
 
     public static readonly AvaloniaProperty<bool?> AltProperty =
         AvaloniaProperty.Register<KeybindTextBox, bool?>(nameof(Alt));
+    
+    private readonly CompositeDisposable _disposables = new();
+
+    public KeybindTextBox()
+    {
+        SubscribeToMethodNameChanges();
+        SetupKeyEventHandlers();
+
+        GotFocus += OnGotFocus;
+        LostFocus += OnLostFocus;
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _disposables.Dispose();
+    }
+
+    protected override Type StyleKeyOverride => typeof(TextBox);
+
 
     public KeyGesture? Keybind
     {
-        get => (KeyGesture?)GetValue(KeybindProperty);
+        get => GetValue(KeybindProperty) as KeyGesture;
         set => SetValue(KeybindProperty, value);
     }
 
@@ -44,63 +66,91 @@ public class KeybindTextBox : TextBox
         set => SetValue(AltProperty, value);
     }
 
-    public KeybindTextBox()
+    private void SubscribeToMethodNameChanges()
     {
-        this.GetObservable(MethodNameProperty).ToObservable().Subscribe(_ => Text = GetFunctionKey());
+        this.GetObservable(MethodNameProperty).ToObservable()
+            .Subscribe(_ => Text = GetFunctionKey())
+            .AddTo(_disposables);
+    }
+
+    private void SetupKeyEventHandlers()
+    {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            AddHandler(KeyUpEvent, KeyDownHandler, RoutingStrategies.Tunnel);
-            // On macOS, we only get KeyUp, because the option to select a different character
-            // when a key is held down interferes with the keyboard shortcuts
+            var keyUp = Observable.FromEventHandler<KeyEventArgs>(handler => KeyUp += handler, handler => KeyUp -= handler);
+            keyUp.Select(e => e.e)
+                .ObserveOn(UIHelper.GetFrameProvider)
+                .SubscribeAwait(async (e, _) => await AssociateKey(e))
+                .AddTo(_disposables);
+            // On macOS, we only get KeyUp because the option to select a different character
+            // when a key is held down interferes with keyboard shortcuts
         }
         else
         {
-            AddHandler(KeyDownEvent, KeyDownHandler, RoutingStrategies.Tunnel);
-            AddHandler(KeyUpEvent, KeyUpHandler, RoutingStrategies.Tunnel);
+            var keyDown = Observable.FromEventHandler<KeyEventArgs>(handler => KeyDown += handler, handler => KeyDown -= handler);
+            keyDown.Select(e => e.e)
+                .ObserveOn(UIHelper.GetFrameProvider)
+                .SubscribeAwait(async (e, _) =>  await AssociateKey(e))
+                .AddTo(_disposables);
+            
+            var keyUp = Observable.FromEventHandler<KeyEventArgs>(handler => KeyUp += handler, handler => KeyUp -= handler);
+            keyUp.Select(e => e.e)
+                .ObserveOn(UIHelper.GetFrameProvider)
+                .Subscribe(_ => KeyUpHandler())
+                .AddTo(_disposables);
         }
-        
-        GotFocus += delegate
-        {
-            if (IsReadOnly)
-            {
-                if (!this.TryFindResource("MainBorderColor", ThemeVariant.Default, out var borderColor))
-                    return;
-                var borderBrush = new SolidColorBrush((Color)(borderColor ?? Color.Parse("#FFf6f4f4")));
-                BorderBrush = borderBrush;
-                return;
-            }
-            if (!this.TryFindResource("MainTextColorFaded", ThemeVariant.Default, out var color))
-                return;
-            var foreground = new SolidColorBrush((Color)(color ?? Color.Parse("#d6d4d4")));
-            Foreground = foreground;
-            Text = TranslationManager.Translation.PressKey;
-            CaretIndex = 0;
-            MainKeyboardShortcuts.IsEscKeyEnabled = false;
-        };
-        LostFocus += delegate
-        {
-            if (!this.TryFindResource("MainTextColor", ThemeVariant.Default, out var color))
-                return;
-            var foreground = new SolidColorBrush((Color)(color ?? Color.Parse("#FFf6f4f4")));
-            Foreground = foreground;
-            Text = GetFunctionKey();
-            MainKeyboardShortcuts.IsEscKeyEnabled = true;
-        };
     }
 
-    private void KeyUpHandler(object? sender, KeyEventArgs e)
+    private void OnGotFocus(object? sender, GotFocusEventArgs e)
     {
-        // TODO: figure out how to clear focus
-        if (!this.TryFindResource("MainTextColor", ThemeVariant.Default, out var color))
+        if (IsReadOnly)
+        {
+            ApplyReadOnlyBorderColor();
             return;
-        var foreground = new SolidColorBrush((Color)(color ?? Color.Parse("#FFf6f4f4")));
-        Foreground = foreground;
+        }
+
+        ApplyEditableForegroundColor();
+        Text = TranslationManager.Translation.PressKey;
+        CaretIndex = 0;
+        MainKeyboardShortcuts.IsEscKeyEnabled = false;
+    }
+
+    private void OnLostFocus(object? sender, RoutedEventArgs e)
+    {
+        ApplyDefaultForegroundColor();
+        Text = GetFunctionKey();
+        MainKeyboardShortcuts.IsEscKeyEnabled = true;
+    }
+
+    private void KeyUpHandler()
+    {
+        ApplyDefaultForegroundColor();
         Text = GetFunctionKey();
     }
 
-    private async Task KeyDownHandler(object? sender, KeyEventArgs e)
+    private void ApplyReadOnlyBorderColor()
     {
-        await AssociateKey(e);
+        if (this.TryFindResource("MainBorderColor", ThemeVariant.Default, out var borderColor))
+        {
+            var borderBrush = new SolidColorBrush((Color)(borderColor ?? Color.Parse("#FFf6f4f4")));
+            BorderBrush = borderBrush;
+        }
+    }
+
+    private void ApplyEditableForegroundColor()
+    {
+        if (this.TryFindResource("MainTextColorFaded", ThemeVariant.Default, out var color))
+        {
+            Foreground = new SolidColorBrush((Color)(color ?? Color.Parse("#d6d4d4")));
+        }
+    }
+
+    private void ApplyDefaultForegroundColor()
+    {
+        if (this.TryFindResource("MainTextColor", ThemeVariant.Default, out var color))
+        {
+            Foreground = new SolidColorBrush((Color)(color ?? Color.Parse("#FFf6f4f4")));
+        }
     }
 
     private async Task AssociateKey(KeyEventArgs e)
@@ -131,11 +181,8 @@ public class KeybindTextBox : TextBox
         {
             e.Handled = true;
             MainKeyboardShortcuts.IsEscKeyEnabled = false;
-            
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                Text = string.Empty;
-            });
+
+            await Dispatcher.UIThread.InvokeAsync(() => { Text = string.Empty; });
 
             Remove();
             await Save();
@@ -167,13 +214,14 @@ public class KeybindTextBox : TextBox
             {
                 Remove();
             }
+
             var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
             KeybindingManager.CustomShortcuts[keyGesture] = function;
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            KeyUpHandler(this, e);
+            KeyUpHandler();
         }
 
         await Save();
@@ -195,13 +243,13 @@ public class KeybindTextBox : TextBox
         }
     }
 
-    public string? GetFunctionKey()
+    private string GetFunctionKey()
     {
         if (string.IsNullOrEmpty(MethodName))
         {
             return string.Empty;
         }
-        
+
         if (IsReadOnly)
         {
             switch (MethodName)
@@ -209,26 +257,26 @@ public class KeybindTextBox : TextBox
                 case "ScrollUpInternal":
                     var rotateRightKey = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Up")
                         ?.Select(x => x.Key).ToList() ?? null;
-                    return rotateRightKey is not { Count: > 0 } ?
-                        string.Empty :
+                    return rotateRightKey is not { Count: > 0 } ? string.Empty :
                         Alt ? rotateRightKey.LastOrDefault().ToString() : rotateRightKey.FirstOrDefault().ToString();
 
                 case "ScrollDownInternal":
                     var rotateLeftKey = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == "Down")
                         ?.Select(x => x.Key).ToList() ?? null;
-                    return rotateLeftKey is not { Count: > 0 } ?
-                        string.Empty :
+                    return rotateLeftKey is not { Count: > 0 } ? string.Empty :
                         Alt ? rotateLeftKey.LastOrDefault().ToString() : rotateLeftKey.FirstOrDefault().ToString();
             }
         }
 
         // Find the key associated with the specified function
-        var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)?.Select(x => x.Key).ToList() ?? null;
+        var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)?.Select(x => x.Key)
+            .ToList() ?? null;
 
         if (keys is null)
         {
             return string.Empty;
         }
+
         return keys.Count switch
         {
             <= 0 => string.Empty,
