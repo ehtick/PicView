@@ -29,13 +29,14 @@ public static class MenuManager
     {
         return new T
         {
+            Name = typeof(T).Name,
             VerticalAlignment = VerticalAlignment.Bottom,
             HorizontalAlignment = HorizontalAlignment.Center,
             Margin = margin,
             IsVisible = false
         };
     }
-    
+
     /// <summary>
     /// Closes all menus
     /// </summary>
@@ -87,10 +88,10 @@ public static class MenuManager
 
         // Get the current state of the menu being toggled
         var currentState = GetMenuState(vm, menuType);
-        
+
         // Close all menus
         CloseMenus(vm);
-        
+
         // Only open the menu if it wasn't already open (toggle behavior)
         if (!currentState)
         {
@@ -98,7 +99,7 @@ public static class MenuManager
         }
         // If it was already open, it remains closed after CloseMenus()
     }
-    
+
     private static bool GetMenuState(MainViewModel vm, MenuType menuType)
     {
         return menuType switch
@@ -110,7 +111,7 @@ public static class MenuManager
             _ => false
         };
     }
-    
+
     private static void SetMenuState(MainViewModel vm, MenuType menuType, bool state)
     {
         switch (menuType)

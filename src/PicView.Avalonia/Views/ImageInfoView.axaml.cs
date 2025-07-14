@@ -9,7 +9,6 @@ using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
-using PicView.Core.FileHandling;
 using PicView.Core.Titles;
 using R3;
 
@@ -72,7 +71,7 @@ public partial class ImageInfoView : UserControl
             Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider)
                 .Subscribe(UpdateValues).AddTo(_disposables);
 
-            vm.Exif.RemoveImageDataCommand.SubscribeAwait(RemoveValues);
+            vm.Exif.RemoveImageDataCommand.Delay(TimeSpan.FromSeconds(2)).Subscribe(UpdateValues);
 
             ResetButton.Click += (_, _) =>
             {
@@ -153,21 +152,6 @@ public partial class ImageInfoView : UserControl
                 await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
             };
         };
-    }
-
-    private async ValueTask RemoveValues(FileInfo arg1, CancellationToken arg2)
-    {
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-        
-        while (FileHelper.IsFileInUse(vm.PicViewer.FileInfo.CurrentValue.FullName))
-        {
-            await Task.Delay(100, arg2).ConfigureAwait(false);
-        }
-        
-        UpdateValues(arg1);
     }
 
     private void UpdateValues(FileInfo? fileInfo)

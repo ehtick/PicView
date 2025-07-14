@@ -4,10 +4,12 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC.Menus;
 using PicView.Core.DebugTools;
 using PicView.Core.Sizing;
 
@@ -84,6 +86,35 @@ public static class WindowResizing
             vm.PlatformService?.SetCursorPos(p.X, p.Y);
             vm.MainWindow.IsClickArrowRightClicked = false;
         }
+
+        if (vm.MainWindow.IsRotateLeftClicked)
+        {
+            var imageMenu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
+            var leftRotationBtn = imageMenu.GetControl<IconButton>("RotateLeftButton");
+            var point = new Point(20, 15);
+            var p = leftRotationBtn.PointToScreen(point);
+            vm.PlatformService?.SetCursorPos(p.X, p.Y);
+            vm.MainWindow.IsRotateLeftClicked = false;
+        }
+
+        if (vm.MainWindow.IsRotateRightClicked)
+        {
+            var imageMenu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
+            var rightRotationBtn = imageMenu.GetControl<IconButton>("RotateRightButton");
+            var point = new Point(20, 15);
+            var p = rightRotationBtn.PointToScreen(point);
+            vm.PlatformService?.SetCursorPos(p.X, p.Y);
+            vm.MainWindow.IsRotateRightClicked = false;
+        }
+
+        if (vm.MainWindow.IsTopToolbarRotationClicked)
+        {
+            var rotationRightBtn = UIHelper.GetTitlebar.GetControl<IconButton>("RotateRightButton");
+            var point = new Point(11, 7);
+            var p = rotationRightBtn.PointToScreen(point);
+            vm.PlatformService?.SetCursorPos(p.X, p.Y);
+            vm.MainWindow.IsTopToolbarRotationClicked = false;
+        }
     }
 
     #endregion
@@ -146,13 +177,14 @@ public static class WindowResizing
 
         vm.PicViewer.ScrollViewerWidth.Value = size.ScrollViewerWidth;
         vm.PicViewer.ScrollViewerHeight.Value = size.ScrollViewerHeight;
-        
+
         vm.PicViewer.AspectRatio.Value = size.AspectRatio;
 
         if (vm.Gallery is not { } gallery)
         {
             return;
         }
+
         gallery.GalleryMargin.Value = new Thickness(0, 0, 0, size.Margin);
         if (Settings.WindowProperties.AutoFit)
         {
@@ -245,7 +277,8 @@ public static class WindowResizing
             secondHeight = 0;
         }
 
-        return GetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
+        return GetSize(firstWidth, firstHeight, secondWidth, secondHeight, vm.GlobalSettings.RotationAngle.CurrentValue,
+            vm);
     }
 
     public static ImageSize? GetSize(double width, double height, double secondWidth, double secondHeight,

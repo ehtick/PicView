@@ -22,38 +22,39 @@ public partial class WinTitleBar : UserControl
             {
                 TopWindowBorder.Background = Brushes.Transparent;
                 TopWindowBorder.BorderThickness = new Thickness(0);
-            
+
                 LogoBorder.Background = Brushes.Transparent;
                 LogoBorder.BorderThickness = new Thickness(0);
-            
+
                 LogoBorder.Background = Brushes.Transparent;
                 LogoBorder.BorderThickness = new Thickness(0);
-            
+
                 EditableTitlebar.Background = Brushes.Transparent;
                 EditableTitlebar.BorderThickness = new Thickness(0);
-                
+
                 CloseButton.Background = Brushes.Transparent;
                 CloseButton.BorderThickness = new Thickness(0);
-                
+
                 MinimizeButton.Background = Brushes.Transparent;
                 MinimizeButton.BorderThickness = new Thickness(0);
-                
+
                 RestoreButton.Background = Brushes.Transparent;
                 RestoreButton.BorderThickness = new Thickness(0);
-                
+
                 FullscreenButton.Background = Brushes.Transparent;
                 FullscreenButton.BorderThickness = new Thickness(0);
-                
+
                 FlipButton.Background = Brushes.Transparent;
                 FlipButton.BorderThickness = new Thickness(0);
-                
+
                 GalleryButton.Background = Brushes.Transparent;
                 GalleryButton.BorderThickness = new Thickness(0);
-                
+
                 RotateRightButton.Background = Brushes.Transparent;
                 RotateRightButton.BorderThickness = new Thickness(0);
-                
-                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
+
+                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant,
+                        out var color))
                 {
                     return;
                 }
@@ -73,21 +74,19 @@ public partial class WinTitleBar : UserControl
                     GalleryButton.Foreground = new SolidColorBrush(secondaryTextColor);
                     RotateRightButton.Foreground = new SolidColorBrush(secondaryTextColor);
                 }
-                #if DEBUG
+#if DEBUG
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
                     throw;
                 }
-                #else
+#else
                 catch (Exception) { }
-                #endif
+#endif
             }
+
             PointerPressed += (_, e) => MoveWindow(e);
-            PointerExited += (_, _) =>
-            {
-                DragAndDropHelper.RemoveDragDropView();
-            };
+            PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
 
             if (DataContext is not MainViewModel vm)
             {
@@ -95,32 +94,24 @@ public partial class WinTitleBar : UserControl
             }
 
             Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
-                .Subscribe(_ =>
-                {
-                    UpdateRotation();
-                });
+                .Subscribe(_ => { UpdateRotation(); });
 
-            RotateLeftButton.PointerPressed += (_, e) =>
-            {
-                OpenContextMenu(e);
-            };
-            FlipButton.PointerPressed += (_, e) =>
-            {
-                OpenContextMenu(e);
-            };
-            
+            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
+            RotateRightButton.Click += (_, e) => { vm.MainWindow.IsTopToolbarRotationClicked = true; };
+            FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
         };
     }
 
-    private void OpenContextMenu(PointerPressedEventArgs e)
+    private bool OpenContextMenu(PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
         {
-            return;
+            return false;
         }
 
         // Context menu doesn't want to be opened normally
         RotationContextMenu.Open();
+        return true;
     }
 
     private void UpdateRotation()
@@ -129,6 +120,7 @@ public partial class WinTitleBar : UserControl
         {
             return;
         }
+
         Rotation0Item.IsChecked = false;
         Rotation90Item.IsChecked = false;
         Rotation180Item.IsChecked = false;
@@ -147,18 +139,21 @@ public partial class WinTitleBar : UserControl
             case 270:
                 Rotation270Item.IsChecked = true;
                 break;
-                    
         }
     }
 
     private void MoveWindow(PointerPressedEventArgs e)
     {
-        if (VisualRoot is null || DataContext is not MainViewModel vm) { return; }
-        
+        if (VisualRoot is null || DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
         if (vm.MainWindow.IsEditableTitlebarOpen.Value)
         {
             return;
         }
+
         WindowFunctions.WindowDragAndDoubleClickBehavior((Window)VisualRoot, e, vm.PlatformWindowService);
     }
 }

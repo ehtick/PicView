@@ -209,25 +209,7 @@ public class ToolsViewModel : IDisposable
     // Image related
     public ReactiveCommand RotateLeftCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateLeft(); });
 
-    public ReactiveCommand RotateLeftButtonCommand { get; } = new(async (_, _) =>
-    {
-        await RotationNavigation.RotateLeft(UIHelper.GetMainView.DataContext as MainViewModel,
-            RotationButton.RotateLeftButton);
-    });
-
     public ReactiveCommand RotateRightCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateRight(); });
-
-    public ReactiveCommand RotateRightButtonCommand { get; } = new(async (_, _) =>
-    {
-        await RotationNavigation.RotateRight(UIHelper.GetMainView.DataContext as MainViewModel,
-            RotationButton.RotateLeftButton);
-    });
-
-    public ReactiveCommand RotateRightWindowBorderButtonCommand { get; } = new(async (_, _) =>
-    {
-        await RotationNavigation.RotateRight(UIHelper.GetMainView.DataContext as MainViewModel,
-            RotationButton.WindowBorderButton);
-    });
 
     public ReactiveCommand FlipCommand { get; } = new(async (_, _) => { await FunctionsMapper.Flip(); });
 

@@ -1,12 +1,7 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.ImageTransformations.Rotation;
@@ -28,69 +23,13 @@ public static class RotationNavigation
         await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Rotate(false); });
     }
 
-    public static async Task RotateRight(MainViewModel? vm, RotationButton rotationButton)
-    {
-        await RotateRight(vm);
-
-        // Check if it should move the cursor
-        if (!Settings.WindowProperties.AutoFit)
-        {
-            return;
-        }
-
-        await MoveCursorAfterRotation(vm, rotationButton);
-    }
-    
     public static async Task RotateTo(MainViewModel? vm, int angle)
     {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            vm.ImageViewer.Rotate(angle);
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Rotate(angle); });
         vm.GlobalSettings.RotationAngle.Value = angle;
         await WindowResizing.SetSizeAsync(vm);
     }
 
-    private static async Task MoveCursorAfterRotation(MainViewModel? vm, RotationButton rotationButton)
-    {
-        // Move cursor when button is clicked
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            try
-            {
-                Button? button;
-                ImageMenu? menu;
-                switch (rotationButton)
-                {
-                    case RotationButton.WindowBorderButton:
-                        button = UIHelper.GetTitlebar.GetControl<Button>("RotateRightButton");
-                        break;
-                    case RotationButton.RotateRightButton:
-                        menu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
-                        button = menu?.GetControl<Button>("RotateRightButton");
-                        break;
-                    case RotationButton.RotateLeftButton:
-                        menu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
-                        button = menu?.GetControl<Button>("RotateLeftButton");
-                        break;
-                    default:
-                        return;
-                }
-
-                if (button is null || !button.IsPointerOver)
-                {
-                    return;
-                }
-
-                var p = button.PointToScreen(new Point(10, 15));
-                vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            }
-            catch (Exception e)
-            {
-                DebugHelper.LogDebug(nameof(Rotation), nameof(MoveCursorAfterRotation), e);
-            }
-        });
-    }
 
     public static async Task RotateLeft(MainViewModel? vm)
     {
@@ -107,23 +46,10 @@ public static class RotationNavigation
         await Dispatcher.UIThread.InvokeAsync(() => { vm.ImageViewer.Rotate(true); });
     }
 
-    public static async Task RotateLeft(MainViewModel vm, RotationButton rotationButton)
-    {
-        await RotateLeft(vm);
-
-        // Check if it should move the cursor
-        if (!Settings.WindowProperties.AutoFit)
-        {
-            return;
-        }
-
-        await MoveCursorAfterRotation(vm, rotationButton);
-    }
-
     public static void Flip(MainViewModel vm)
     {
         Dispatcher.UIThread.Invoke(() => { vm.ImageViewer.Flip(true); });
-        
+
         if (vm.PicViewer.ScaleX.CurrentValue == 1)
         {
             vm.PicViewer.ScaleX.Value = -1;

@@ -46,7 +46,8 @@
                 ToggleType="Radio"
                 x:Name="Rotation270Item" />
             <Separator />
-            <MenuItem Command="{CompiledBinding Tools.FlipCommand}" Header="{CompiledBinding Translation.IsFlipped.Value}">
+            <MenuItem Command="{CompiledBinding Tools.FlipCommand}"
+                      Header="{CompiledBinding Translation.IsFlipped.Value}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource FlipGeometry}"
@@ -99,7 +100,7 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="hover"
-            Command="{CompiledBinding Tools.RotateRightWindowBorderButtonCommand}"
+            Command="{CompiledBinding Tools.RotateRightCommand}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
             Icon="{StaticResource RefreshCcwDot}"

@@ -100,7 +100,7 @@
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"
                 Classes="hover"
-                Command="{CompiledBinding Tools.RotateRightWindowBorderButtonCommand}"
+                Command="{CompiledBinding Tools.RotateRightCommand}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
                 Icon="{StaticResource RefreshCcwDot}"
@@ -110,11 +110,10 @@
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
-                Name="RotateRightButton"
                 ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
                                               Mode=OneWay}"
                 Width="30"
-                x:Name="RotateLeftButton" />
+                x:Name="RotateRightButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"

@@ -18,6 +18,33 @@ public partial class ImageMenu : AnimatedMenu
         InitializeComponent();
         Loaded += delegate
         {
+            GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
+            Observable.EveryValueChanged(this, x => x.IsVisible, UIHelper.GetFrameProvider)
+                .Skip(1)
+                .Where(isVisible => !isVisible)
+                .Subscribe(_ => { SlideShowButton.Flyout.Hide(); });
+            // Determine if crop should be enabled every time it opens
+            Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
+                .Where(x => x)
+                .Subscribe(_ => { DetermineIfCropShouldBeEnabled(); });
+
+            Item2.Header = $"2 {TranslationManager.Translation.SecAbbreviation}";
+            Item5.Header = $"5 {TranslationManager.Translation.SecAbbreviation}";
+            Item10.Header = $"10 {TranslationManager.Translation.SecAbbreviation}";
+            Item20.Header = $"20 {TranslationManager.Translation.SecAbbreviation}";
+            Item30.Header = $"30 {TranslationManager.Translation.SecAbbreviation}";
+            Item60.Header = $"60 {TranslationManager.Translation.SecAbbreviation}";
+            Item90.Header = $"90 {TranslationManager.Translation.SecAbbreviation}";
+            Item120.Header = $"120 {TranslationManager.Translation.SecAbbreviation}";
+
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+
+            RotateLeftButton.Click += (_, _) => vm.MainWindow.IsRotateLeftClicked = true;
+            RotateRightButton.Click += (_, _) => vm.MainWindow.IsRotateRightClicked = true;
+
             if (Settings.Theme.GlassTheme)
             {
                 GoToPicButton.Classes.Remove("noBorderHover");
@@ -74,25 +101,6 @@ public partial class ImageMenu : AnimatedMenu
                     }
                 }
             }
-
-            GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
-            Observable.EveryValueChanged(this, x => x.IsVisible, UIHelper.GetFrameProvider)
-                .Skip(1)
-                .Where(isVisible => !isVisible)
-                .Subscribe(_ => { SlideShowButton.Flyout.Hide(); });
-            // Determine if crop should be enabled every time it opens
-            Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
-                .Where(x => x)
-                .Subscribe(_ => { DetermineIfCropShouldBeEnabled(); });
-
-            Item2.Header = $"2 {TranslationManager.Translation.SecAbbreviation}";
-            Item5.Header = $"5 {TranslationManager.Translation.SecAbbreviation}";
-            Item10.Header = $"10 {TranslationManager.Translation.SecAbbreviation}";
-            Item20.Header = $"20 {TranslationManager.Translation.SecAbbreviation}";
-            Item30.Header = $"30 {TranslationManager.Translation.SecAbbreviation}";
-            Item60.Header = $"60 {TranslationManager.Translation.SecAbbreviation}";
-            Item90.Header = $"90 {TranslationManager.Translation.SecAbbreviation}";
-            Item120.Header = $"120 {TranslationManager.Translation.SecAbbreviation}";
         };
     }
 
