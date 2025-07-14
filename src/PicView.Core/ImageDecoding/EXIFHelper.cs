@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using ImageMagick;
 using PicView.Core.DebugTools;
+using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 
 namespace PicView.Core.ImageDecoding;
@@ -31,6 +32,29 @@ public static class EXIFHelper
         Rotated270Cw = 8
     }
 
+    public static async Task<bool> RemoveExifProfile(FileInfo fileInfo)
+    {
+        try
+        {
+            using var magickImage = new MagickImage(fileInfo);
+            var profile = magickImage.GetExifProfile();
+            if (profile is null)
+            {
+                return false;
+            }
+
+            magickImage.RemoveProfile(profile);
+            await using var fileStream = FileHelper.GetOptimizedFileStream(fileInfo, true);
+            await magickImage.WriteAsync(fileStream);
+            return true;
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(EXIFHelper), nameof(RemoveExifProfile), e);
+            return false;
+        }
+    }
+
     public static EXIFOrientation GetImageOrientation(MagickImage magickImage)
     {
         var profile = magickImage.GetExifProfile();
@@ -55,14 +79,14 @@ public static class EXIFHelper
             _ => EXIFOrientation.None
         };
     }
-    
+
     public static EXIFOrientation GetImageOrientation(string filePath)
     {
         using var magickImage = new MagickImage();
         magickImage.Ping(filePath);
         return GetImageOrientation(magickImage);
     }
-    
+
     public static EXIFOrientation GetImageOrientation(FileInfo fileInfo)
     {
         return GetImageOrientation(fileInfo.FullName);
@@ -72,10 +96,15 @@ public static class EXIFHelper
     public static bool SetEXIFRating(string filePath, ushort rating)
     {
         if (!File.Exists(filePath))
+        {
             throw new FileNotFoundException();
+        }
 
         if (rating > 5)
+        {
             throw new ArgumentOutOfRangeException(nameof(rating));
+        }
+
         try
         {
             using var image = new MagickImage(filePath);
@@ -85,10 +114,14 @@ public static class EXIFHelper
                 profile = new ExifProfile(filePath);
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (profile is null || image is null)
+                {
                     throw new Exception("Failed to create EXIF profile or image.");
+                }
             }
             else if (image is null)
+            {
                 throw new Exception("Failed to create image.");
+            }
 
             profile.SetValue(ExifTag.Rating, rating);
             image.SetProfile(profile);
@@ -97,9 +130,10 @@ public static class EXIFHelper
         }
         catch (Exception e)
         {
-            DebugHelper.LogDebug(nameof(EXIFHelper),  nameof(SetEXIFRating), e);
+            DebugHelper.LogDebug(nameof(EXIFHelper), nameof(SetEXIFRating), e);
             return false;
         }
+
         return true;
     }
 
@@ -124,7 +158,8 @@ public static class EXIFHelper
             profile?.GetValue(ExifTag.DateTimeOriginal)?.Value ??
             profile?.GetValue(ExifTag.DateTimeDigitized)?.Value ?? string.Empty;
         if (!string.IsNullOrEmpty(getDateTaken) &&
-            DateTime.TryParseExact(getDateTaken, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out var formattedDateTime))
+            DateTime.TryParseExact(getDateTaken, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out var formattedDateTime))
         {
             return formattedDateTime.ToString(CultureInfo.CurrentCulture);
         }
@@ -144,6 +179,7 @@ public static class EXIFHelper
         {
             return null;
         }
+
         var gpsLong = profile.GetValue(ExifTag.GPSLongitude);
         var gpsLongRef = profile.GetValue(ExifTag.GPSLongitudeRef);
         var gpsLatitude = profile.GetValue(ExifTag.GPSLatitude);
@@ -155,14 +191,18 @@ public static class EXIFHelper
             return null;
         }
 
-        var latitudeValue = GetCoordinates(gpsLatitudeRef.ToString(), gpsLatitude.Value).ToString(CultureInfo.InvariantCulture);
-        var longitudeValue = GetCoordinates(gpsLongRef.ToString(), gpsLong.Value).ToString(CultureInfo.InvariantCulture);
+        var latitudeValue = GetCoordinates(gpsLatitudeRef.ToString(), gpsLatitude.Value)
+            .ToString(CultureInfo.InvariantCulture);
+        var longitudeValue =
+            GetCoordinates(gpsLongRef.ToString(), gpsLong.Value).ToString(CultureInfo.InvariantCulture);
 
         var googleLink = $"https://www.google.com/maps/search/?api=1&query={latitudeValue},{longitudeValue}";
         var bingLink = $"https://bing.com/maps/default.aspx?cp={latitudeValue}~{longitudeValue}&lvl=16.0&sty=c";
 
-        var latitudeString = $"{gpsLatitude.Value[0]}\u00b0{gpsLatitude.Value[1]}'{gpsLatitude.Value[2].ToDouble():0.##}\"{gpsLatitudeRef}";
-        var longitudeString = $"{gpsLong.Value[0]}\u00b0{gpsLong.Value[1]}'{gpsLong.Value[2].ToDouble():0.##}\"{gpsLongRef}";
+        var latitudeString =
+            $"{gpsLatitude.Value[0]}\u00b0{gpsLatitude.Value[1]}'{gpsLatitude.Value[2].ToDouble():0.##}\"{gpsLatitudeRef}";
+        var longitudeString =
+            $"{gpsLong.Value[0]}\u00b0{gpsLong.Value[1]}'{gpsLong.Value[2].ToDouble():0.##}\"{gpsLongRef}";
 
         return [latitudeString, longitudeString, googleLink, bingLink];
 
@@ -179,7 +219,10 @@ public static class EXIFHelper
 
             var coordinate = degrees + minutes / 60d + seconds / 3600d;
             if (gpsRef is "S" or "W")
+            {
                 coordinate *= -1;
+            }
+
             return coordinate;
         }
     }
@@ -191,6 +234,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return colorSpace switch
         {
             1 => "sRGB",
@@ -207,6 +251,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return exposureProgram switch
         {
             0 => TranslationManager.GetTranslation("NotDefined"),
@@ -240,6 +285,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return isoSpeed.ToString() ?? string.Empty;
     }
 
@@ -250,6 +296,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return saturation switch
         {
             0 => TranslationManager.GetTranslation("Normal"),
@@ -266,6 +313,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return contrast switch
         {
             0 => TranslationManager.GetTranslation("Normal"),
@@ -282,6 +330,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return sharpness switch
         {
             0 => TranslationManager.GetTranslation("Normal"),
@@ -298,6 +347,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return whiteBalance switch
         {
             0 => TranslationManager.GetTranslation("Auto"),
@@ -313,6 +363,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return resolutionUnit switch
         {
             1 => TranslationManager.GetTranslation("None"),
@@ -345,52 +396,74 @@ public static class EXIFHelper
                 return TranslationManager.GetTranslation("FlashFired");
 
             case 5:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 7:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 15:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 16:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 29:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 31:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 65:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction");
 
             case 69:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 71:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 73:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction");
 
             case 77:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 79:
-                return TranslationManager.GetTranslation("Unknown") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("Unknown") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             case 89:
-                return TranslationManager.GetTranslation("FlashDidNotFire") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashDidNotFire") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction");
 
             case 93:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction");
 
             case 95:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightDetected");
 
             case 97:
-                return TranslationManager.GetTranslation("FlashFired") + ", " + TranslationManager.GetTranslation("RedEyeReduction") + ", " + TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
+                return TranslationManager.GetTranslation("FlashFired") + ", " +
+                       TranslationManager.GetTranslation("RedEyeReduction") + ", " +
+                       TranslationManager.GetTranslation("StrobeReturnLightNotDetected");
 
             default: return string.Empty;
         }
@@ -403,6 +476,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return lightSource switch
         {
             0 => TranslationManager.GetTranslation("Unknown"),
@@ -437,6 +511,7 @@ public static class EXIFHelper
         {
             return string.Empty;
         }
+
         return photometricInterpretation switch
         {
             0 => "WhiteIsZero",
@@ -473,6 +548,7 @@ public static class EXIFHelper
         {
             return title;
         }
+
         var titleTag = profile?.GetValue(ExifTag.ImageDescription)?.Value;
         return titleTag ?? string.Empty;
     }
@@ -485,10 +561,11 @@ public static class EXIFHelper
         {
             return subject;
         }
+
         var subjectTag = profile?.GetValue(ExifTag.XPSubject)?.Value;
         return subjectTag?.GetValue(0)?.ToString() ?? string.Empty;
     }
-    
+
     public static string GetUserComment(IExifProfile? profile)
     {
         var commentBytes = profile?.GetValue(ExifTag.UserComment)?.Value;
@@ -498,6 +575,7 @@ public static class EXIFHelper
             return string.Empty;
         }
 
-        return decodedComment.StartsWith("UNICODE") ? decodedComment.Replace("UNICODE", "") : decodedComment;;
+        return decodedComment.StartsWith("UNICODE") ? decodedComment.Replace("UNICODE", "") : decodedComment;
+        ;
     }
 }

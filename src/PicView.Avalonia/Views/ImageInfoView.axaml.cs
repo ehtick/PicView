@@ -9,6 +9,7 @@ using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
+using PicView.Core.FileHandling;
 using PicView.Core.Titles;
 using R3;
 
@@ -17,6 +18,7 @@ namespace PicView.Avalonia.Views;
 public partial class ImageInfoView : UserControl
 {
     private readonly CompositeDisposable _disposables = new();
+
     public ImageInfoView()
     {
         InitializeComponent();
@@ -67,19 +69,11 @@ public partial class ImageInfoView : UserControl
                 return;
             }
 
-            Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider).Subscribe(x =>
-            {
-                ExifHandling.UpdateExifValues(vm);
-                if (DirectoryNameTextBox.Text != x.DirectoryName)
-                {
-                    DirectoryNameTextBox.Text = x.DirectoryName;
-                }
-                FileSizeBox.Text = vm.PicViewer.FileInfo?.CurrentValue?.Length.GetReadableFileSize();
-                ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm);
-                GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
-                BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
-            }).AddTo(_disposables);
-            
+            Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider)
+                .Subscribe(UpdateValues).AddTo(_disposables);
+
+            vm.Exif.RemoveImageDataCommand.SubscribeAwait(RemoveValues);
+
             ResetButton.Click += (_, _) =>
             {
                 PixelWidthTextBox.Text = vm.PicViewer.PixelWidth.ToString();
@@ -161,6 +155,40 @@ public partial class ImageInfoView : UserControl
         };
     }
 
+    private async ValueTask RemoveValues(FileInfo arg1, CancellationToken arg2)
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        
+        while (FileHelper.IsFileInUse(vm.PicViewer.FileInfo.CurrentValue.FullName))
+        {
+            await Task.Delay(100, arg2).ConfigureAwait(false);
+        }
+        
+        UpdateValues(arg1);
+    }
+
+    private void UpdateValues(FileInfo? fileInfo)
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        ExifHandling.UpdateExifValues(vm);
+        if (DirectoryNameTextBox.Text != fileInfo.DirectoryName)
+        {
+            DirectoryNameTextBox.Text = fileInfo.DirectoryName;
+        }
+
+        FileSizeBox.Text = vm.PicViewer.FileInfo?.CurrentValue?.Length.GetReadableFileSize();
+        ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm);
+        GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
+        BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
+    }
+
     private async Task SendToImageSaver(string? location, string destination, string? width, string? height,
         string ext)
     {
@@ -168,8 +196,10 @@ public partial class ImageInfoView : UserControl
         {
             return;
         }
+
         var sameFile = destination.Equals(location, StringComparison.OrdinalIgnoreCase);
-        await SaveImageHandler.SaveImageWithPossibleNavigation(DataContext as MainViewModel, location, destination,  sameFile, ext, widthValue, heightValue,
+        await SaveImageHandler.SaveImageWithPossibleNavigation(DataContext as MainViewModel, location, destination,
+            sameFile, ext, widthValue, heightValue,
             null, null, true);
     }
 
@@ -206,7 +236,8 @@ public partial class ImageInfoView : UserControl
             return;
         }
 
-        var printSizes = AspectRatioHelper.GetPrintSizes(width, height, vm.Exif.DpiX.CurrentValue, vm.Exif.DpiY.CurrentValue);
+        var printSizes =
+            AspectRatioHelper.GetPrintSizes(width, height, vm.Exif.DpiX.CurrentValue, vm.Exif.DpiY.CurrentValue);
         PrintSizeInchTextBox.Text = printSizes.PrintSizeInch;
         PrintSizeCmTextBox.Text = printSizes.PrintSizeCm;
         SizeMpTextBox.Text = printSizes.SizeMp;

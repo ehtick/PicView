@@ -70,7 +70,7 @@ public class LanguageModel
     public string? ColorPickerToolTooltip { get; set; }
     public string? ColorRepresentation { get; set; }
     public string? ColorTone { get; set; }
-    public string? Comment {get; set; }
+    public string? Comment { get; set; }
     public string? CompressedBitsPixel { get; set; }
     public string? Compression { get; set; }
     public string? ConstrainBackgroundToImage { get; set; }
@@ -282,6 +282,7 @@ public class LanguageModel
     public string? RecentFiles { get; set; }
     public string? RedEyeReduction { get; set; }
     public string? Reload { get; set; }
+    public string? RemoveImageData { get; set; }
     public string? RemoveStarRating { get; set; }
     public string? RenameFile { get; set; }
     public string? Reset { get; set; }
@@ -398,7 +399,7 @@ public class LanguageModel
     public string? WidthAndHeight { get; set; }
     public string? Window { get; set; }
     public string? WindowManagement { get; set; }
-    public string? WindowMargin{ get; set; }
+    public string? WindowMargin { get; set; }
     public string? WindowScaling { get; set; }
     public string? Zoom { get; set; }
     public string? ZoomIn { get; set; }

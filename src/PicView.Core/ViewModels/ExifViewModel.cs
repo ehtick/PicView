@@ -16,116 +16,29 @@ public class ExifViewModel : IDisposable
         SetExifRating2Command = new ReactiveCommand<string>(Set2Star);
         SetExifRating3Command = new ReactiveCommand<string>(Set3Star);
         SetExifRating4Command = new ReactiveCommand<string>(Set4Star);
-        SetExifRating5Command = new ReactiveCommand<string>(Set5Star);            
-    }
-    
-    private void Set0Star(string value)
-    {
-        EXIFHelper.SetEXIFRating(value, 0);
-        ExifRating.Value = 0;
+        SetExifRating5Command = new ReactiveCommand<string>(Set5Star);
     }
 
-    private void Set1Star(string value)
+    public ReactiveCommand<FileInfo> RemoveImageDataCommand { get; } = new(async (value, _) =>
     {
-        EXIFHelper.SetEXIFRating(value, 1);
-        ExifRating.Value = 1;
-    }
+        await EXIFHelper.RemoveExifProfile(value);
+    });
 
-    private void Set2Star(string value)
-    {
-        EXIFHelper.SetEXIFRating(value, 2);
-        ExifRating.Value = 2;
-    }
-
-    private void Set3Star(string value)
-    {
-        EXIFHelper.SetEXIFRating(value, 3);
-        ExifRating.Value = 3;
-    }
-
-    private void Set4Star(string value)
-    {
-        EXIFHelper.SetEXIFRating(value, 4);
-        ExifRating.Value = 4;
-    }
-
-    private void Set5Star(string value)
-    {
-        EXIFHelper.SetEXIFRating(value, 5);
-        ExifRating.Value = 5;
-    }
-
-    public void Dispose()
-    {
-        Disposable.Dispose(
-            DpiX,
-            DpiY,
-            PrintSizeCm,
-            PrintSizeCm,
-            SizeMp,
-            ResolutionUnit,
-            BitDepth,
-            AspectRatio,
-            Latitude,
-            Longitude,
-            Altitude,
-            GoogleLink,
-            BingLink,
-            Authors,
-            DateTaken,
-            Copyright,
-            Title,
-            Subject,
-            Software,
-            ResolutionUnit,
-            ColorRepresentation,
-            Compression,
-            Comment,
-            CompressedBitsPixel,
-            CameraMaker,
-            CameraModel,
-            ExposureProgram,
-            ExposureTime,
-            ExposureBias,
-            FNumber,
-            MaxAperture,
-            DigitalZoom,
-            FocalLength35Mm,
-            FocalLength,
-            ISOSpeed,
-            MeteringMode,
-            Contrast,
-            Saturation,
-            Brightness,
-            Sharpness,
-            WhiteBalance,
-            FlashMode,
-            FlashEnergy,
-            LightSource,
-            PhotometricInterpretation,
-            Orientation,
-            ExifVersion,
-            LensMaker,
-            LensModel);
-    }
     public ReactiveCommand? OpenGoogleLinkCommand { get; }
     public ReactiveCommand? OpenBingLinkCommand { get; }
-    
+
     public ReactiveCommand<string>? SetExifRating0Command { get; set; }
     public ReactiveCommand<string>? SetExifRating1Command { get; set; }
     public ReactiveCommand<string>? SetExifRating2Command { get; set; }
     public ReactiveCommand<string>? SetExifRating3Command { get; set; }
     public ReactiveCommand<string>? SetExifRating4Command { get; set; }
     public ReactiveCommand<string>? SetExifRating5Command { get; set; }
-    
-    public void OpenGoogleMaps(Unit unit) => ProcessHelper.OpenLink(GoogleLink.CurrentValue);
-    public void OpenBingMaps(Unit unit) => ProcessHelper.OpenLink(BingLink.CurrentValue);
-    
+
     public BindableReactiveProperty<uint> ExifRating { get; } = new();
     public BindableReactiveProperty<double> DpiX { get; } = new();
 
     public BindableReactiveProperty<double> DpiY { get; } = new();
-    
+
     public BindableReactiveProperty<string?> PrintSizeInch { get; } = new();
 
     public BindableReactiveProperty<string?> PrintSizeCm { get; } = new();
@@ -165,7 +78,7 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> ColorRepresentation { get; } = new();
 
     public BindableReactiveProperty<string?> Compression { get; } = new();
-    
+
     public BindableReactiveProperty<string?> Comment { get; } = new();
 
     public BindableReactiveProperty<string?> CompressedBitsPixel { get; } = new();
@@ -219,5 +132,99 @@ public class ExifViewModel : IDisposable
 
     public BindableReactiveProperty<string?> LensModel { get; } = new();
 
-    public BindableReactiveProperty<string?> LensMaker { get; } = new();    
+    public BindableReactiveProperty<string?> LensMaker { get; } = new();
+
+    public void Dispose()
+    {
+        Disposable.Dispose(
+            DpiX,
+            DpiY,
+            PrintSizeCm,
+            PrintSizeCm,
+            SizeMp,
+            ResolutionUnit,
+            BitDepth,
+            AspectRatio,
+            Latitude,
+            Longitude,
+            Altitude,
+            GoogleLink,
+            BingLink,
+            Authors,
+            DateTaken,
+            Copyright,
+            Title,
+            Subject,
+            Software,
+            ResolutionUnit,
+            RemoveImageDataCommand,
+            ColorRepresentation,
+            Compression,
+            Comment,
+            CompressedBitsPixel,
+            CameraMaker,
+            CameraModel,
+            ExposureProgram,
+            ExposureTime,
+            ExposureBias,
+            FNumber,
+            MaxAperture,
+            DigitalZoom,
+            FocalLength35Mm,
+            FocalLength,
+            ISOSpeed,
+            MeteringMode,
+            Contrast,
+            Saturation,
+            Brightness,
+            Sharpness,
+            WhiteBalance,
+            FlashMode,
+            FlashEnergy,
+            LightSource,
+            PhotometricInterpretation,
+            Orientation,
+            ExifVersion,
+            LensMaker,
+            LensModel);
+    }
+
+    private void Set0Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 0);
+        ExifRating.Value = 0;
+    }
+
+    private void Set1Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 1);
+        ExifRating.Value = 1;
+    }
+
+    private void Set2Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 2);
+        ExifRating.Value = 2;
+    }
+
+    private void Set3Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 3);
+        ExifRating.Value = 3;
+    }
+
+    private void Set4Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 4);
+        ExifRating.Value = 4;
+    }
+
+    private void Set5Star(string value)
+    {
+        EXIFHelper.SetEXIFRating(value, 5);
+        ExifRating.Value = 5;
+    }
+
+    public void OpenGoogleMaps(Unit unit) => ProcessHelper.OpenLink(GoogleLink.CurrentValue);
+    public void OpenBingMaps(Unit unit) => ProcessHelper.OpenLink(BingLink.CurrentValue);
 }

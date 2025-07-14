@@ -120,6 +120,16 @@
                 </MenuItem.Icon>
             </MenuItem>
 
+            <!--  Remove image data  -->
+            <MenuItem
+                Command="{CompiledBinding Exif.RemoveImageDataCommand}"
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.Value,
+                                                   FallbackValue=''}"
+                Header="{CompiledBinding Translation.RemoveImageData.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}" />
+
             <!--  Set as wallpaper  -->
             <MenuItem
                 Header="{CompiledBinding Translation.SetAsWallpaper.Value,
@@ -192,7 +202,6 @@
                             Width="13" />
                     </MenuItem.Icon>
                 </MenuItem>
-
 
 
                 <!--  Set as wallpaper centered  -->
