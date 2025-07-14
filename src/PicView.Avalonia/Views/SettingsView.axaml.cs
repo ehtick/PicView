@@ -20,15 +20,6 @@ namespace PicView.Avalonia.Views;
 
 public partial class SettingsView : UserControl
 {
-    #region Fields
-
-    private static CompositeDisposable? _marginSubscription;
-    private readonly Stack<TabItem?> _backStack = new();
-    private readonly Stack<TabItem?> _forwardStack = new();
-    private TabItem? _currentTab;
-
-    #endregion
-
     #region Constructor
 
     public SettingsView()
@@ -47,6 +38,45 @@ public partial class SettingsView : UserControl
     #region Properties
 
     private MainViewModel? ViewModel => DataContext as MainViewModel;
+
+    #endregion
+
+    #region Input Handlers
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+        var properties = e.GetCurrentPoint(topLevel).Properties;
+
+        if (properties.IsXButton1Pressed)
+        {
+            GoBack();
+        }
+
+        if (properties.IsXButton2Pressed)
+        {
+            GoForward();
+        }
+
+        if (properties.IsRightButtonPressed)
+        {
+            ContextMenu.Open();
+        }
+    }
+
+    #endregion
+
+    #region Fields
+
+    private static CompositeDisposable? _marginSubscription;
+    private readonly Stack<TabItem?> _backStack = new();
+    private readonly Stack<TabItem?> _forwardStack = new();
+    private TabItem? _currentTab;
 
     #endregion
 
@@ -86,7 +116,7 @@ public partial class SettingsView : UserControl
         _marginSubscription = new CompositeDisposable();
         Observable.EveryValueChanged(settingsVm.WindowMargin, x => x.CurrentValue, UIHelper.GetFrameProvider)
             .Skip(1)
-            .Subscribe(x => 
+            .Subscribe(x =>
             {
                 Settings.WindowProperties.Margin = x;
                 WindowResizing.SetSize(vm.PicViewer.PixelWidth.CurrentValue, vm.PicViewer.PixelHeight.CurrentValue, 0,
@@ -126,6 +156,7 @@ public partial class SettingsView : UserControl
 
     private void AttachEventHandlers()
     {
+        CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
         MainTabControl.SelectionChanged += OnTabSelectionChanged;
         PointerPressed += OnPointerPressed;
     }
@@ -202,36 +233,6 @@ public partial class SettingsView : UserControl
 
         svm.IsBackButtonEnabled.Value = _backStack.Count > 0;
         svm.IsForwardButtonEnabled.Value = _forwardStack.Count > 0;
-    }
-
-    #endregion
-
-    #region Input Handlers
-
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
-        var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
-        var properties = e.GetCurrentPoint(topLevel).Properties;
-
-        if (properties.IsXButton1Pressed)
-        {
-            GoBack();
-        }
-
-        if (properties.IsXButton2Pressed)
-        {
-            GoForward();
-        }
-
-        if (properties.IsRightButtonPressed)
-        {
-            ContextMenu.Open();
-        }
     }
 
     #endregion

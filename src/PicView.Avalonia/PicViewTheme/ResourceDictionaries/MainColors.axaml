@@ -5,11 +5,11 @@
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
-            <Color x:Key="MainTextColor">#FFf6f4f4</Color>
+            <Color x:Key="MainTextColor">#E2E0E0</Color>
             <Color x:Key="MainTextColorFaded">#d6d4d4</Color>
 
             <!--  Used for icons that should stay white in both themes  -->
-            <Color x:Key="SecondaryTextColor">#FFf6f4f4</Color>
+            <Color x:Key="SecondaryTextColor">#fff</Color>
 
             <Color x:Key="MainBackgroundColor">#CC2b2b2b</Color>
             <Color x:Key="SecondaryBackgroundColor">#CC252525</Color>
@@ -94,7 +94,7 @@
             <Color x:Key="MainButtonBackgroundColor">#fff</Color>
             <Color x:Key="SecondaryButtonBackgroundColor">#F1E1E1E1</Color>
 
-            <Color x:Key="MainBorderColor">#78B5B5B5</Color>
+            <Color x:Key="MainBorderColor">#DEDEDE</Color>
             <Color x:Key="SecondaryBorderColor">#95B5B5B5</Color>
             <Color x:Key="TertiaryBorderColor">#77D8D8D8</Color>
 

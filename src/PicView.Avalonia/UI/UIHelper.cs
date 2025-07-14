@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
@@ -25,9 +27,11 @@ public static class UIHelper
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar? GetBottomBar { get; private set; }
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
-    
-    public static AvaloniaRenderingFrameProvider ? GetFrameProvider { get; private set; }
-    public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) => GetFrameProvider = frameProvider;
+
+    public static AvaloniaRenderingFrameProvider? GetFrameProvider { get; private set; }
+
+    public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) =>
+        GetFrameProvider = frameProvider;
 
     /// <summary>
     /// Sets up control references from the main desktop application
@@ -45,13 +49,13 @@ public static class UIHelper
     #endregion
 
     #region Helper functions
-    
+
     public static bool TryGetMainViewModel([NotNullWhen(true)] out MainViewModel? vm)
     {
         vm = GetMainView.DataContext as MainViewModel;
         return vm is not null;
     }
-    
+
     /// <summary>
     /// Centers the window or gallery based on current state
     /// </summary>
@@ -61,7 +65,7 @@ public static class UIHelper
         {
             return;
         }
-        
+
         if (GalleryFunctions.IsFullGalleryOpen)
         {
             GalleryFunctions.CenterGallery(vm);
@@ -71,7 +75,7 @@ public static class UIHelper
             WindowFunctions.CenterWindowOnScreen();
         }
     }
-    
+
     /// <inheritdoc cref="Center"/>
     public static async Task CenterAsync(MainViewModel? vm)
     {
@@ -80,10 +84,7 @@ public static class UIHelper
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            Center(vm);
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => { Center(vm); });
     }
 
     /// <summary>
@@ -107,7 +108,7 @@ public static class UIHelper
             await Dispatcher.UIThread.InvokeAsync(() => { GetGalleryView.GalleryListBox.ScrollToHome(); });
         }
     }
-    
+
     public static void SetButtonInterval(RepeatButton? button)
     {
         if (button != null)
@@ -115,14 +116,60 @@ public static class UIHelper
             button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
         }
     }
-    
-    public static void SetButtonInterval(IconButton? button)   
+
+    public static void SetButtonInterval(IconButton? button)
     {
         if (button != null)
         {
             button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
         }
     }
-    
+
+    public static void SetButtonHover(Control button, SolidColorBrush brush)
+    {
+        button.PointerEntered += (_, _) =>
+        {
+            if (!Application.Current.TryGetResource("SecondaryTextColor",
+                    Application.Current.RequestedThemeVariant, out var textColor))
+            {
+                return;
+            }
+
+            if (textColor is not Color color)
+            {
+                return;
+            }
+
+            brush.Color = color;
+        };
+        button.PointerExited += (s, e) =>
+        {
+            if (!Application.Current.TryGetResource("MainTextColor",
+                    Application.Current.RequestedThemeVariant, out var textColor))
+            {
+                return;
+            }
+
+            if (textColor is not Color color)
+            {
+                return;
+            }
+
+            brush.Color = color;
+        };
+    }
+
+    public static void SwitchHoverClass(Control control)
+    {
+        control.Classes.Remove("altHover");
+        control.Classes.Add("hover");
+    }
+
+    public static void SwitchHoverBorderClass(Control control)
+    {
+        control.Classes.Remove("noBorderHover");
+        control.Classes.Add("hover");
+    }
+
     #endregion
 }

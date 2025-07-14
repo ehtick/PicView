@@ -54,7 +54,7 @@ public static class AnimationsHelper
                         }
                     },
                     Cue = new Cue(1d)
-                },
+                }
             }
         };
     }
@@ -108,11 +108,11 @@ public static class AnimationsHelper
                         }
                     },
                     Cue = new Cue(1d)
-                },
+                }
             }
         };
     }
-    
+
     /// <summary>
     /// Displays a brief animation to indicate a clipboard operation occurred.
     /// Fades a semi-transparent rectangle in and out to provide visual feedback.
@@ -142,12 +142,9 @@ public static class AnimationsHelper
         await endOpacityAnimation.RunAsync(rectangle);
         await Task.Delay(200);
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            UIHelper.GetMainView.MainGrid.Children.Remove(rectangle);
-        });
+        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetMainView.MainGrid.Children.Remove(rectangle); });
     }
-    
+
     /// <summary>
     /// Creates an animation to move a <see cref="TranslateTransform"/> from a start position to an end position.
     /// </summary>
@@ -157,7 +154,7 @@ public static class AnimationsHelper
     /// <param name="toY">The ending Y position.</param>
     /// <param name="speed">The duration of the animation in seconds.</param>
     /// <returns>An <see cref="Animation"/> that animates the X and Y properties of a <see cref="TranslateTransform"/>.</returns>
-    public static Animation CenteringAnimation(double fromX, double fromY, double toX, double toY, double speed) => 
+    public static Animation CenteringAnimation(double fromX, double fromY, double toX, double toY, double speed) =>
         CenteringAnimation(fromX, fromY, toX, toY, TimeSpan.FromSeconds(speed));
 
     /// <summary>
@@ -211,7 +208,7 @@ public static class AnimationsHelper
                         }
                     },
                     Cue = new Cue(1d)
-                },
+                }
             }
         };
     }

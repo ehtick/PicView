@@ -12,16 +12,18 @@
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
+
+    <UserControl.Resources>
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="BatchBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="EffectsBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ImageInfoBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="OptimizeBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ChangeBgBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="KeybindingBrush" />
+        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="InterfaceBrush" />
+    </UserControl.Resources>
+
     <StackPanel>
-        <StackPanel.Styles>
-            <Styles>
-                <Style Selector="TextBlock.btnTxt">
-                    <Setter Property="MaxWidth" Value="132" />
-                    <Setter Property="VerticalAlignment" Value="Center" />
-                    <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
-                </Style>
-            </Styles>
-        </StackPanel.Styles>
 
         <Border
             Background="{DynamicResource MenuBackgroundColor}"
@@ -40,72 +42,53 @@
                     Width="359"
                     x:Name="TopBorder" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
+                    Canvas.Left="-1"
+                    Canvas.Top="-1"
                     Classes="noBorderHover"
                     Command="{CompiledBinding Window.ShowBatchResizeWindow}"
                     CornerRadius="8,0,0,0"
-                    Height="45"
+                    FontSize="14"
+                    Foreground="{StaticResource BatchBrush}"
+                    Height="46"
+                    Icon="{StaticResource BatchResizeImage}"
+                    IconHeight="22"
+                    IconMargin="17,0,0,0"
+                    IconWidth="22"
+                    Text="{CompiledBinding Translation.BatchResize.Value,
+                                           Mode=OneWay}"
+                    TextMargin="10,0,7,0"
+                    TextMaxWidth="130"
                     ToolTip.Tip="{CompiledBinding Translation.BatchResize.Value,
                                                   Mode=OneWay}"
-                    Width="179"
-                    x:Name="BatchResizeButton">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="22"
-                            Margin="17,0,0,0"
-                            Source="{StaticResource BatchResizeImage}"
-                            Width="22" />
-                        <TextBlock
-                            Classes="txt"
-                            FontSize="14"
-                            Foreground="{DynamicResource MainTextColor}"
-                            Margin="10,0,7,0"
-                            MaxWidth="130"
-                            Text="{CompiledBinding Translation.BatchResize.Value,
-                                                   Mode=OneWay}"
-                            VerticalAlignment="Center" />
-                    </StackPanel>
-                </Button>
+                    Width="180"
+                    x:Name="BatchResizeButton" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
                     Canvas.Left="179"
+                    Canvas.Top="-1"
                     Classes="noBorderHover"
                     Command="{CompiledBinding Window.ShowEffectsWindow}"
+                    FontSize="14"
+                    Foreground="{StaticResource EffectsBrush}"
                     Height="45"
+                    Icon="{StaticResource FlaskImage}"
+                    IconHeight="20"
+                    IconMargin="11,0,0,0"
+                    IconWidth="20"
+                    Text="{CompiledBinding Translation.Effects.Value,
+                                           Mode=OneWay}"
+                    TextMargin="10,0,6,0"
                     ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip.Value,
                                                   Mode=OneWay}"
                     Width="136"
-                    x:Name="EffectsButton">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="20"
-                            Margin="11,0,0,0"
-                            Width="20">
-                            <DrawingImage>
-                                <DrawingImage.Drawing>
-                                    <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
-                                        <GeometryDrawing Brush="{DynamicResource Brush0}" Geometry="F1 M512,512z M0,0z M469.11,382.76L325,153.92 325,74 357,74 357,32 155,32 155,74 187,74 187,153.92 42.89,382.76C29.89,403.4 28.11,426.49 39.89,447.86 51.67,469.23 71.59,480 96,480L416,480C440.41,480 460.32,469.24 472.1,447.86 483.88,426.48 482.14,403.4 469.11,382.76z M224.39,173.39A29.76,29.76,0,0,0,229.01,157.39L229.01,74 283.01,74 283.01,158.59A25.85,25.85,0,0,0,287.01,172.41L356.82,283 155.18,283z" />
-                                    </DrawingGroup>
-                                </DrawingImage.Drawing>
-                            </DrawingImage>
-                        </Image>
-                        <TextBlock
-                            Classes="txt"
-                            FontSize="14"
-                            Foreground="{DynamicResource MainTextColor}"
-                            Margin="10,0,6,0"
-                            MaxWidth="130"
-                            Text="{CompiledBinding Translation.Effects.Value,
-                                                   Mode=OneWay}"
-                            VerticalAlignment="Center" />
-                    </StackPanel>
-                </Button>
+                    x:Name="EffectsButton" />
 
                 <customControls:IconButton
                     Background="Transparent"
@@ -124,130 +107,117 @@
                                                   Mode=OneWay}"
                     Width="45" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="7"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding Window.ShowExifWindow}"
+                    Data="{StaticResource ImageInfoGeometry}"
+                    Foreground="{StaticResource ImageInfoBrush}"
                     Height="46"
-                    Width="169">
-                    <StackPanel Orientation="Horizontal">
-                        <Path
-                            Data="{StaticResource ImageInfoGeometry}"
-                            Fill="{DynamicResource Brush0}"
-                            Height="17"
-                            Margin="9,0,2,0"
-                            Stretch="Fill"
-                            Width="17" />
-                        <TextBlock
-                            Classes="txt btnTxt"
-                            Margin="10,0,6,0"
-                            Text="{CompiledBinding Translation.ImageInfo.Value,
-                                                   Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    IconHeight="17"
+                    IconMargin="9,0,2,0"
+                    IconWidth="17"
+                    Text="{CompiledBinding Translation.ImageInfo.Value,
+                                           Mode=OneWay}"
+                    TextMargin="10,0,6,0"
+                    TextMaxWidth="132"
+                    Width="169"
+                    x:Name="ImageInfoButton" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="182"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding Tools.OptimizeImageCommand}"
+                    Foreground="{StaticResource OptimizeBrush}"
                     Height="46"
+                    Icon="{StaticResource PortalImage}"
+                    IconHeight="20"
+                    IconMargin="9,0,10,0"
+                    IconWidth="20"
                     IsEnabled="{CompiledBinding PicViewer.ShouldOptimizeImageBeEnabled.Value,
                                                 Mode=OneWay}"
+                    Text="{CompiledBinding Translation.OptimizeImage.Value,
+                                           Mode=OneWay}"
                     ToolTip.Tip="{CompiledBinding Translation.OptimizeImage.Value,
                                                   Mode=OneWay}"
                     Width="169"
-                    x:Name="OptimizeImageButton">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="20"
-                            Margin="9,0,10,0"
-                            Source="{StaticResource PortalImage}"
-                            Width="20" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.OptimizeImage.Value, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    x:Name="OptimizeImageButton" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="7"
                     Canvas.Top="104"
                     Classes="ButtonBorder altHover"
+                    Data="{StaticResource BrushGeometry}"
+                    Foreground="{DynamicResource DisabledTextColor}"
                     Height="46"
+                    IconHeight="17"
+                    IconMargin="9,0,12,0"
+                    IconWidth="17"
                     IsEnabled="False"
+                    Text="{CompiledBinding Translation.ColorPickerTool.Value,
+                                           Mode=OneWay}"
                     ToolTip.Tip="{CompiledBinding Translation.ColorPickerToolTooltip.Value,
                                                   Mode=OneWay}"
-                    Width="169">
-                    <StackPanel Orientation="Horizontal">
-                        <Path
-                            Data="{StaticResource BrushGeometry}"
-                            Fill="{DynamicResource Brush0}"
-                            Height="17"
-                            Margin="9,0,12,0"
-                            Stretch="Fill"
-                            Width="17" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ColorPickerTool.Value, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    Width="169" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="182"
                     Canvas.Top="104"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding Tools.ChangeBackgroundCommand}"
+                    Foreground="{StaticResource ChangeBgBrush}"
                     Height="46"
-                    Width="169">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="20"
-                            Margin="10,0,10,0"
-                            Source="{StaticResource CanvasImage}"
-                            Width="20" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ChangeBackground.Value, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    Icon="{StaticResource PaletteImage}"
+                    IconHeight="17"
+                    IconMargin="10,0,10,0"
+                    IconWidth="17"
+                    Text="{CompiledBinding Translation.ChangeBackground.Value,
+                                           Mode=OneWay}"
+                    Width="169"
+                    x:Name="ChangeBgButton" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="7"
                     Canvas.Top="155"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding Window.ShowKeybindingsWindow}"
+                    Foreground="{StaticResource KeybindingBrush}"
                     Height="46"
+                    Icon="{StaticResource ShortcutsImage}"
+                    IconHeight="18"
+                    IconMargin="9,0,12,0"
+                    IconWidth="18"
+                    Text="{CompiledBinding Translation.ApplicationShortcuts.Value,
+                                           Mode=OneWay}"
                     ToolTip.Tip="{CompiledBinding Translation.ApplicationShortcuts.Value,
                                                   Mode=OneWay}"
-                    Width="169">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="17"
-                            Margin="9,0,12,0"
-                            Source="{StaticResource ShortcutsImage}"
-                            Width="17" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.ApplicationShortcuts.Value, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    Width="169"
+                    x:Name="KeybindingsButton" />
 
-                <Button
+                <customControls:TextIconButton
                     Background="{DynamicResource MenuButtonColor}"
                     Canvas.Left="182"
                     Canvas.Top="155"
                     Classes="ButtonBorder altHover"
                     Command="{CompiledBinding Tools.ToggleUICommand}"
+                    Foreground="{StaticResource InterfaceBrush}"
                     Height="46"
-                    Width="169">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Height="18"
-                            Margin="11,0,12,0"
-                            Source="{StaticResource EyeOffImage}"
-                            Width="18" />
-                        <TextBlock Classes="txt btnTxt" Text="{CompiledBinding Translation.IsShowingUI.Value, Mode=OneWay}" />
-                    </StackPanel>
-                </Button>
+                    Icon="{StaticResource EyeOffImage}"
+                    IconHeight="20"
+                    IconMargin="11,0,12,0"
+                    IconWidth="20"
+                    Text="{CompiledBinding Translation.IsShowingUI.Value,
+                                           Mode=OneWay}"
+                    Width="169"
+                    x:Name="InterfaceButton" />
+
             </Canvas>
         </Border>
         <Polygon

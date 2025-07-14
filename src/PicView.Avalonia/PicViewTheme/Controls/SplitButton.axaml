@@ -141,6 +141,69 @@
             </ControlTemplate>
         </Setter>
 
+        <Style Selector="^.hover:pointerover /template/ Button#PART_PrimaryButton">
+            <Style.Animations>
+                <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">
+                    <KeyFrame>
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{DynamicResource MainTextColor}" />
+                        </Setter>
+                        <Setter Property="Background">
+                            <SolidColorBrush Color="{DynamicResource SecondaryBackgroundColor}" />
+                        </Setter>
+                        <Setter Property="BorderBrush">
+                            <SolidColorBrush Color="{DynamicResource MainBorderColor}" />
+                        </Setter>
+                    </KeyFrame>
+                    <KeyFrame Cue="1">
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{StaticResource SecondaryTextColor}" />
+                        </Setter>
+                        <Setter Property="Background">
+                            <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                        </Setter>
+                        <Setter Property="BorderBrush">
+                            <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                        </Setter>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+        <Style Selector="^.hover:pointerover /template/ Button#PART_SecondaryButton">
+            <Style.Animations>
+                <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">
+                    <KeyFrame>
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{DynamicResource MainTextColor}" />
+                        </Setter>
+                        <Setter Property="Background">
+                            <SolidColorBrush Color="{DynamicResource SecondaryBackgroundColor}" />
+                        </Setter>
+                        <Setter Property="BorderBrush">
+                            <SolidColorBrush Color="{DynamicResource MainBorderColor}" />
+                        </Setter>
+                    </KeyFrame>
+                    <KeyFrame Cue="1">
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{StaticResource SecondaryTextColor}" />
+                        </Setter>
+                        <Setter Property="Background">
+                            <SolidColorBrush Color="{DynamicResource SecondaryAccentColor}" />
+                        </Setter>
+                        <Setter Property="BorderBrush">
+                            <SolidColorBrush Color="{DynamicResource SecondaryAccentColor}" />
+                        </Setter>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+
         <Style Selector="^.altHover:pointerover /template/ Button#PART_PrimaryButton">
             <Style.Animations>
                 <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">
@@ -272,6 +335,9 @@
 
         <Style Selector="^.up /template/ PathIcon#PART_ChevronIcon">
             <Setter Property="Data" Value="{StaticResource ChevronUpGeometry}" />
+        </Style>
+        <Style Selector="^.up:pointerover /template/ PathIcon#PART_ChevronIcon">
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

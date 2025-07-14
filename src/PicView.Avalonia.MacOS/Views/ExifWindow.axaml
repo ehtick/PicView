@@ -75,10 +75,10 @@
                 Command="{CompiledBinding Tools.OpenWithCommand}"
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
-                Data="{StaticResource OpenWithGeometry}"
                 DockPanel.Dock="Right"
                 Foreground="{StaticResource SecondaryTextColor}"
                 Height="28"
+                Icon="{StaticResource OpenExternalImage}"
                 IconHeight="17"
                 IconWidth="17"
                 ToolTip.Tip="{CompiledBinding Translation.OpenWith.Value,

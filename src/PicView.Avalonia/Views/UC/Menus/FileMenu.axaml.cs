@@ -17,6 +17,24 @@ public partial class FileMenu : AnimatedMenu
             else if (!Settings.Theme.Dark)
             {
                 TopBorder.Background = Brushes.White;
+
+                NewWindowButton.Classes.Remove("altHover");
+                NewWindowButton.Classes.Add("hover");
+
+                PasteButton.Classes.Remove("altHover");
+                PasteButton.Classes.Add("hover");
+
+                SaveAsButton.Classes.Remove("altHover");
+                SaveAsButton.Classes.Add("hover");
+
+                ShowInFolderButton.Classes.Remove("altHover");
+                ShowInFolderButton.Classes.Add("hover");
+
+                OpenWithButton.Classes.Remove("altHover");
+                OpenWithButton.Classes.Add("hover");
+
+                OpenButton.Classes.Remove("altHover");
+                OpenButton.Classes.Add("hover");
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))

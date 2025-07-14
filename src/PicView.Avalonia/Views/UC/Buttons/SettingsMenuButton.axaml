@@ -17,7 +17,7 @@
         BorderThickness="1,0,0,0"
         Classes="hover"
         ClickMode="Press"
-        Foreground="{StaticResource SecondaryTextColor}"
+        Foreground="{DynamicResource MainTextColor}"
         Icon="{StaticResource MenuImage}"
         IconHeight="12"
         IconWidth="12"

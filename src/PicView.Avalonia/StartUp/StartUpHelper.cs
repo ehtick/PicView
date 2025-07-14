@@ -22,7 +22,8 @@ namespace PicView.Avalonia.StartUp;
 
 public static class StartUpHelper
 {
-    public static void StartWithArguments(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop,
+    public static void StartWithArguments(MainViewModel vm, bool settingsExists,
+        IClassicDesktopStyleApplicationLifetime desktop,
         Window window)
     {
         var args = Environment.GetCommandLineArgs();
@@ -59,27 +60,28 @@ public static class StartUpHelper
                 }
             }
         }
-        
+
         SettingsUpdater.InitializeSettings(vm);
-        
+
         HandleWindowScalingMode(vm, window);
-        
+
         HandleStartUpMenuOrImage(vm, args);
         window.Show();
-        
+
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
-    
-    public static void StartWithoutArguments(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop,
+
+    public static void StartWithoutArguments(MainViewModel vm, bool settingsExists,
+        IClassicDesktopStyleApplicationLifetime desktop,
         Window window, string? arg = null)
     {
         SettingsUpdater.InitializeSettings(vm);
-        
+
         HandleWindowScalingMode(vm, window);
-        
+
         HandleStartUpMenuOrImage(vm, arg);
         window.Show();
-        
+
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
 
@@ -91,6 +93,7 @@ public static class StartUpHelper
         {
             Settings.WindowProperties.Margin = 45;
         }
+
         if (Settings.WindowProperties.AutoFit)
         {
             HandleAutoFit(vm, window);
@@ -101,10 +104,11 @@ public static class StartUpHelper
         }
     }
 
-    private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists, IClassicDesktopStyleApplicationLifetime desktop, Window window)
+    private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists,
+        IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         ResourceLimits.LimitMemory(new Percentage(90));
-        
+
         Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
         if (settingsExists)
         {
@@ -114,51 +118,45 @@ public static class StartUpHelper
         {
             Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
         }
-        
+
         Task.Run(FileHistoryManager.InitializeAsync);
 
         HandleThemeUpdates(vm);
-        
+
         UIHelper.SetControls(desktop);
         Task.Run(() =>
         {
             HandleWindowControlSettings(vm, desktop);
             SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
         });
-        
+
         vm.MainWindow.LayoutButtonSubscription();
-        
+
         SetWindowEventHandlers(window);
         MenuManager.AddMenus();
-        
+
         if (!Settings.WindowProperties.AutoFit)
         {
             // Need to update the screen size after the window is shown,
             // to avoid rendering error when switching between auto-fit
             ScreenHelper.UpdateScreenSize(window);
         }
-        
+
         // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
         if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                vm.PlatformWindowService.Maximize(false);
-            }, DispatcherPriority.Background).Wait();
+            Dispatcher.UIThread
+                .InvokeAsync(() => { vm.PlatformWindowService.Maximize(false); }, DispatcherPriority.Background).Wait();
         }
         else if (Settings.WindowProperties.Fullscreen)
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                vm.PlatformWindowService.Fullscreen(false);
-            }, DispatcherPriority.Background).Wait();
+            Dispatcher.UIThread.InvokeAsync(() => { vm.PlatformWindowService.Fullscreen(false); },
+                DispatcherPriority.Background).Wait();
         }
         else if (Settings.WindowProperties.AutoFit && Settings.ImageScaling.ShowImageSideBySide)
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                WindowFunctions.CenterWindowOnScreen();
-            }, DispatcherPriority.Background).Wait();
+            Dispatcher.UIThread
+                .InvokeAsync(() => { WindowFunctions.CenterWindowOnScreen(); }, DispatcherPriority.Background).Wait();
         }
 
         Application.Current.Name = "PicView";
@@ -205,27 +203,33 @@ public static class StartUpHelper
     private static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
     {
         vm.ImageViewer = new ImageViewer();
-        
+
         if (args.Length > 1)
         {
             vm.MainWindow.CurrentView.Value = vm.ImageViewer;
             Task.Run(() => QuickLoad.QuickLoadAsync(vm, args[1]));
         }
-        else StartUpMenuOrLastFile(vm);
+        else
+        {
+            StartUpMenuOrLastFile(vm);
+        }
     }
 
     private static void HandleStartUpMenuOrImage(MainViewModel vm, string? arg = null)
     {
         vm.ImageViewer = new ImageViewer();
-        
+
         if (arg is not null)
         {
             vm.MainWindow.CurrentView.Value = vm.ImageViewer;
             Task.Run(() => QuickLoad.QuickLoadAsync(vm, arg));
         }
-        else StartUpMenuOrLastFile(vm);
+        else
+        {
+            StartUpMenuOrLastFile(vm);
+        }
     }
-    
+
     private static void StartUpMenuOrLastFile(MainViewModel vm)
     {
         if (Settings.StartUp.OpenLastFile)
@@ -270,6 +274,7 @@ public static class StartUpHelper
             vm.MainWindow.IsTopToolbarShown.Value = true;
             vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
+
         WindowFunctions.InitializeWindowSizeAndPosition(window);
     }
 
@@ -283,6 +288,7 @@ public static class StartUpHelper
             vm.MainWindow.IsTopToolbarShown.Value = true;
             vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
+
         window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
 
@@ -291,7 +297,7 @@ public static class StartUpHelper
         w.KeyDown += async (_, e) => await MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
         w.KeyUp += (_, e) => MainKeyboardShortcuts.MainWindow_KeysUp(e);
         w.PointerPressed += async (_, e) => await MouseShortcuts.MainWindow_PointerPressed(e).ConfigureAwait(false);
-        
+
         w.Deactivated += delegate
         {
             MainKeyboardShortcuts.Reset();

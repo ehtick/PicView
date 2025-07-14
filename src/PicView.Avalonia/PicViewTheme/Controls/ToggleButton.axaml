@@ -89,6 +89,10 @@
             </Style.Animations>
             <Setter Property="Background" Value="{DynamicResource AccentColor}" />
         </Style>
+        <Style Selector="^.hover:pointerover /template/ Image#TickMark">
+            <Setter Property="Source" Value="{DynamicResource SquareCheckAltImage}" />
+        </Style>
+
         <Style Selector="^.altHover:pointerover /template/ Border#border">
             <Style.Animations>
                 <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">
@@ -113,6 +117,25 @@
             <Setter Property="Background" Value="{DynamicResource AltBackgroundHoverColor}" />
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
+
+        <Style Selector="^.foregroundHover:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Style.Animations>
+                <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">
+                    <KeyFrame>
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{DynamicResource MainTextColor}" />
+                        </Setter>
+                    </KeyFrame>
+                    <KeyFrame Cue="1">
+                        <Setter Property="Foreground">
+                            <SolidColorBrush Color="{DynamicResource AccentColor}" />
+                        </Setter>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+            <Setter Property="Foreground" Value="{DynamicResource AccentColor}" />
+        </Style>
+
         <Style Selector="^.noBorderHover:pointerover /template/ Border#border">
             <Style.Animations>
                 <Animation Duration="{StaticResource ButtonHoverAnimationDuration}" IterationCount="1">

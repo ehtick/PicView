@@ -14,59 +14,11 @@ public partial class BottomBar : UserControl
     public BottomBar()
     {
         InitializeComponent();
-        
+
         Loaded += delegate
         {
             PointerPressed += (_, e) => MoveWindow(e);
-            PointerExited += (_, _) =>
-            {
-                DragAndDropHelper.RemoveDragDropView();
-            };
-
-            if (Settings.Theme.GlassTheme)
-            {
-                MainBottomBorder.Background = Brushes.Transparent;
-                MainBottomBorder.BorderThickness = new Thickness(0);
-                
-                FileMenuButton.Background = Brushes.Transparent;
-                FileMenuButton.Classes.Remove("noBorderHover");
-                FileMenuButton.Classes.Add("hover");
-                
-                ImageMenuButton.Background = Brushes.Transparent;
-                ImageMenuButton.Classes.Remove("noBorderHover");
-                ImageMenuButton.Classes.Add("hover");
-                
-                ToolsMenuButton.Background = Brushes.Transparent;
-                ToolsMenuButton.Classes.Remove("noBorderHover");
-                ToolsMenuButton.Classes.Add("hover");
-                
-                SettingsMenuButton.Background = Brushes.Transparent;
-                SettingsMenuButton.Classes.Remove("noBorderHover");
-                SettingsMenuButton.Classes.Add("hover");
-            
-                NextButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
-                
-                PreviousButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
-
-                if (!Application.Current.TryGetResource("SecondaryTextColor",
-                        Application.Current.RequestedThemeVariant, out var textColor))
-                {
-                    return;
-                }
-
-                if (textColor is not Color color)
-                {
-                    return;
-                }
-
-                FileMenuButton.Foreground = new SolidColorBrush(color);
-                ImageMenuButton.Foreground = new SolidColorBrush(color);
-                ToolsMenuButton.Foreground = new SolidColorBrush(color);
-                SettingsMenuButton.Foreground = new SolidColorBrush(color);
-            
-                NextButton.Foreground = new SolidColorBrush(color);
-                PreviousButton.Foreground = new SolidColorBrush(color);
-            }
+            PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
 
             if (DataContext is not MainViewModel vm)
             {
@@ -83,13 +35,91 @@ public partial class BottomBar : UserControl
                 vm.MainWindow.IsNavigationButtonRightClicked = true;
                 UIHelper.SetButtonInterval(NextButton);
             };
+
+            if (!Application.Current.TryGetResource("SecondaryTextColor",
+                    Application.Current.RequestedThemeVariant, out var textColor))
+            {
+                return;
+            }
+
+            if (textColor is not Color color)
+            {
+                return;
+            }
+
+            if (Settings.Theme.GlassTheme)
+            {
+                MainBottomBorder.Background = Brushes.Transparent;
+                MainBottomBorder.BorderThickness = new Thickness(0);
+
+                FileMenuButton.Background = Brushes.Transparent;
+                FileMenuButton.Classes.Remove("noBorderHover");
+                FileMenuButton.Classes.Add("hover");
+
+                ImageMenuButton.Background = Brushes.Transparent;
+                ImageMenuButton.Classes.Remove("noBorderHover");
+                ImageMenuButton.Classes.Add("hover");
+
+                ToolsMenuButton.Background = Brushes.Transparent;
+                ToolsMenuButton.Classes.Remove("noBorderHover");
+                ToolsMenuButton.Classes.Add("hover");
+
+                SettingsMenuButton.Background = Brushes.Transparent;
+                SettingsMenuButton.Classes.Remove("noBorderHover");
+                SettingsMenuButton.Classes.Add("hover");
+
+                NextButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+
+                PreviousButton.Background = new SolidColorBrush(Color.FromArgb(15, 255, 255, 255));
+
+                FileMenuButton.Foreground = new SolidColorBrush(color);
+                ImageMenuButton.Foreground = new SolidColorBrush(color);
+                ToolsMenuButton.Foreground = new SolidColorBrush(color);
+                SettingsMenuButton.Foreground = new SolidColorBrush(color);
+
+                NextButton.Foreground = new SolidColorBrush(color);
+                PreviousButton.Foreground = new SolidColorBrush(color);
+            }
+            else if (!Settings.Theme.Dark)
+            {
+                FileMenuButton.Classes.Remove("noBorderHover");
+                FileMenuButton.Classes.Add("noBorderHoverAlt");
+
+                ImageMenuButton.Classes.Remove("noBorderHover");
+                ImageMenuButton.Classes.Add("noBorderHoverAlt");
+                if (TryGetResource("ImageMenuBrush", Application.Current.RequestedThemeVariant,
+                        out var imageMenuBrush))
+                {
+                    if (imageMenuBrush is SolidColorBrush brush)
+                    {
+                        UIHelper.SetButtonHover(ImageMenuButton, brush);
+                    }
+                }
+
+                ToolsMenuButton.Classes.Remove("noBorderHover");
+                ToolsMenuButton.Classes.Add("noBorderHoverAlt");
+                if (TryGetResource("ToolsMenuBrush", Application.Current.RequestedThemeVariant,
+                        out var toolsMenuBrush))
+                {
+                    if (toolsMenuBrush is SolidColorBrush brush)
+                    {
+                        UIHelper.SetButtonHover(ToolsMenuButton, brush);
+                    }
+                }
+
+                SettingsMenuButton.Classes.Remove("noBorderHover");
+                SettingsMenuButton.Classes.Add("noBorderHoverAlt");
+            }
         };
     }
 
     private void MoveWindow(PointerPressedEventArgs e)
     {
-        if (VisualRoot is null) { return; }
-        
+        if (VisualRoot is null)
+        {
+            return;
+        }
+
         if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
         {
             // Context menu doesn't want to be opened normally

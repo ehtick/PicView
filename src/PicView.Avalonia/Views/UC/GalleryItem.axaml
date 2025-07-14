@@ -24,7 +24,8 @@
                                 Mode=OneWay}"
         x:DataType="viewModels:MainViewModel"
         x:Name="ImageBorder">
-        <customControls:ThumbImage Stretch="{CompiledBinding Gallery.GalleryStretch.Value, Mode=OneWay}" x:Name="GalleryImage" />
+        <customControls:ThumbImage Stretch="{CompiledBinding Gallery.GalleryStretch.Value, Mode=OneWay}"
+                                   x:Name="GalleryImage" />
         <ToolTip.Tip>
             <StackPanel MaxWidth="600">
                 <TextBlock
@@ -57,6 +58,8 @@
         </ToolTip.Tip>
         <Border.ContextMenu>
             <ContextMenu x:Name="GalleryContextMenu">
+
+                <!--  Print  -->
                 <MenuItem
                     Command="{CompiledBinding Tools.PrintCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
@@ -72,22 +75,25 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
+
+                <!--  Open with  -->
                 <MenuItem
                     Command="{CompiledBinding Tools.OpenWithCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
+                    Foreground="{DynamicResource MainTextColor}"
                     Header="{CompiledBinding Translation.OpenWith.Value,
                                              Mode=OneWay}"
                     x:Name="OpenWith">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource OpenWithGeometry}"
-                            Fill="{DynamicResource MainTextColor}"
+                        <Image
                             Height="12"
-                            Stretch="Fill"
+                            Source="{StaticResource OpenExternalImage}"
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
+
+                <!--  Locate on disk  -->
                 <MenuItem
                     Command="{CompiledBinding Tools.LocateOnDiskCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
@@ -104,20 +110,118 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
+
+                <!--  Set as wallpaper  -->
                 <MenuItem
-                    Command="{CompiledBinding Tools.SetAsWallpaperCommand}"
-                    CommandParameter="{CompiledBinding Path=Text,
-                                                       ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.SetAsWallpaper.Value,
-                                             Mode=OneWay}">
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}"
+                    x:Name="WallpaperMenuItem">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource PanoramaGeometry}"
                             Fill="{DynamicResource MainTextColor}"
-                            Height="12"
+                            Height="10.40"
                             Stretch="Fill"
-                            Width="12" />
+                            Width="13" />
                     </MenuItem.Icon>
+
+                    <!--  Set as wallpaper filled  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.SetAsWallpaperFilledCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.Fill.Value,
+                                                 Mode=OneWay}"
+                        IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <MenuItem.Icon>
+                            <Path
+                                Data="{StaticResource PanoramaGeometry}"
+                                Fill="{DynamicResource MainTextColor}"
+                                Height="10.40"
+                                Stretch="Fill"
+                                Width="13" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Set as wallpaper fit  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.SetAsWallpaperFittedCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.Fit.Value,
+                                                 Mode=OneWay}"
+                        IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <MenuItem.Icon>
+                            <Path
+                                Data="{StaticResource PanoramaGeometry}"
+                                Fill="{DynamicResource MainTextColor}"
+                                Height="10.40"
+                                Stretch="Fill"
+                                Width="13" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Set as wallpaper stretched  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.SetAsWallpaperStretchedCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.Stretch.Value,
+                                                 Mode=OneWay}"
+                        IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <MenuItem.Icon>
+                            <Path
+                                Data="{StaticResource PanoramaGeometry}"
+                                Fill="{DynamicResource MainTextColor}"
+                                Height="10.40"
+                                Stretch="Fill"
+                                Width="13" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+
+                    <!--  Set as wallpaper centered  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.SetAsWallpaperCenteredCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.Center.Value,
+                                                 Mode=OneWay}"
+                        IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <MenuItem.Icon>
+                            <Path
+                                Data="{StaticResource PanoramaGeometry}"
+                                Fill="{DynamicResource MainTextColor}"
+                                Height="10.40"
+                                Stretch="Fill"
+                                Width="13" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Set as wallpaper tiled  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.SetAsWallpaperTiledCommand}"
+                        CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                           FallbackValue=''}"
+                        Header="{CompiledBinding Translation.Tile.Value,
+                                                 Mode=OneWay}"
+                        IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <MenuItem.Icon>
+                            <Path
+                                Data="{StaticResource PanoramaGeometry}"
+                                Fill="{DynamicResource MainTextColor}"
+                                Height="10.40"
+                                Stretch="Fill"
+                                Width="13" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
                 <Separator />
                 <MenuItem
