@@ -21,103 +21,86 @@ public static class WindowResizing
 
     public static void HandleWindowResize(Window window, AvaloniaPropertyChangedEventArgs<Size> size)
     {
-        if (!Settings.WindowProperties.AutoFit)
+        if (!Settings.WindowProperties.AutoFit ||
+            !size.OldValue.HasValue || !size.NewValue.HasValue ||
+            size.Sender != window || size.OldValue.Value.Width == 0 || size.OldValue.Value.Height == 0 ||
+            size.NewValue.Value.Width == 0 || size.NewValue.Value.Height == 0 ||
+            window.DataContext is not MainViewModel vm)
         {
             return;
         }
 
-        if (!size.OldValue.HasValue || !size.NewValue.HasValue)
-        {
-            return;
-        }
 
-        if (size.OldValue.Value.Width == 0 || size.OldValue.Value.Height == 0 ||
-            size.NewValue.Value.Width == 0 || size.NewValue.Value.Height == 0)
-        {
-            return;
-        }
+        var oldSize = size.OldValue.Value;
+        var newSize = size.NewValue.Value;
 
-        if (size.Sender != window)
-        {
-            return;
-        }
-
-        var x = (size.OldValue.Value.Width - size.NewValue.Value.Width) / 2;
-        var y = (size.OldValue.Value.Height - size.NewValue.Value.Height) / 2;
+        var x = (oldSize.Width - newSize.Width) / 2;
+        var y = (oldSize.Height - newSize.Height) / 2;
 
         window.Position = new PixelPoint(window.Position.X + (int)x, window.Position.Y + (int)y);
-        if (window.DataContext is not MainViewModel vm)
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonLeftClicked,
+            clicked => vm.MainWindow.IsNavigationButtonLeftClicked = clicked,
+            () => UIHelper.GetBottomBar.GetControl<Button>("PreviousButton"),
+            new Point(50, 10));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonRightClicked,
+            clicked => vm.MainWindow.IsNavigationButtonRightClicked = clicked,
+            () => UIHelper.GetBottomBar.GetControl<Button>("NextButton"),
+            new Point(50, 10));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsClickArrowLeftClicked,
+            clicked => vm.MainWindow.IsClickArrowLeftClicked = clicked,
+            () => UIHelper.GetMainView.GetControl<UserControl>("ClickArrowLeft"),
+            new Point(15, 95));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsClickArrowRightClicked,
+            clicked => vm.MainWindow.IsClickArrowRightClicked = clicked,
+            () => UIHelper.GetMainView.GetControl<UserControl>("ClickArrowRight"),
+            new Point(65, 95));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsRotateLeftClicked,
+            clicked => vm.MainWindow.IsRotateLeftClicked = clicked,
+            () => UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault()
+                ?.GetControl<IconButton>("RotateLeftButton"),
+            new Point(20, 15));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsRotateRightClicked,
+            clicked => vm.MainWindow.IsRotateRightClicked = clicked,
+            () => UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault()
+                ?.GetControl<IconButton>("RotateRightButton"),
+            new Point(20, 15));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsTopToolbarRotationClicked,
+            clicked => vm.MainWindow.IsTopToolbarRotationClicked = clicked,
+            () => UIHelper.GetTitlebar.GetControl<IconButton>("RotateRightButton"),
+            new Point(11, 7));
+    }
+
+    private static void RepositionCursorIfTriggered(
+        MainViewModel vm,
+        bool isTriggered,
+        Action<bool> setTrigger,
+        Func<Control?> controlProvider,
+        Point offset)
+    {
+        if (!isTriggered)
         {
             return;
         }
 
-        if (vm.MainWindow.IsNavigationButtonLeftClicked)
+        var control = controlProvider();
+        if (control is not null)
         {
-            var leftButton = UIHelper.GetBottomBar.GetControl<Button>("PreviousButton");
-            var point = new Point(50, 10);
-            var p = leftButton.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsNavigationButtonLeftClicked = false;
+            var screenPoint = control.PointToScreen(offset);
+            vm.PlatformService?.SetCursorPos(screenPoint.X, screenPoint.Y);
         }
 
-        if (vm.MainWindow.IsNavigationButtonRightClicked)
-        {
-            var rightButton = UIHelper.GetBottomBar.GetControl<Button>("NextButton");
-            var point = new Point(50, 10);
-            var p = rightButton.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsNavigationButtonRightClicked = false;
-        }
-
-        if (vm.MainWindow.IsClickArrowLeftClicked)
-        {
-            var clickArrowLeft = UIHelper.GetMainView.GetControl<UserControl>("ClickArrowLeft");
-            var point = new Point(15, 95);
-            var p = clickArrowLeft.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsClickArrowLeftClicked = false;
-        }
-
-        if (vm.MainWindow.IsClickArrowRightClicked)
-        {
-            var clickArrowRight = UIHelper.GetMainView.GetControl<UserControl>("ClickArrowRight");
-            var point = new Point(65, 95);
-            var p = clickArrowRight.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsClickArrowRightClicked = false;
-        }
-
-        if (vm.MainWindow.IsRotateLeftClicked)
-        {
-            var imageMenu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
-            var leftRotationBtn = imageMenu.GetControl<IconButton>("RotateLeftButton");
-            var point = new Point(20, 15);
-            var p = leftRotationBtn.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsRotateLeftClicked = false;
-        }
-
-        if (vm.MainWindow.IsRotateRightClicked)
-        {
-            var imageMenu = UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault();
-            var rightRotationBtn = imageMenu.GetControl<IconButton>("RotateRightButton");
-            var point = new Point(20, 15);
-            var p = rightRotationBtn.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsRotateRightClicked = false;
-        }
-
-        if (vm.MainWindow.IsTopToolbarRotationClicked)
-        {
-            var rotationRightBtn = UIHelper.GetTitlebar.GetControl<IconButton>("RotateRightButton");
-            var point = new Point(11, 7);
-            var p = rotationRightBtn.PointToScreen(point);
-            vm.PlatformService?.SetCursorPos(p.X, p.Y);
-            vm.MainWindow.IsTopToolbarRotationClicked = false;
-        }
+        setTrigger(false);
     }
 
     #endregion
+
 
     #region Set Window Size
 

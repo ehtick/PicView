@@ -97,7 +97,10 @@ public partial class WinTitleBar : UserControl
                 .Subscribe(_ => { UpdateRotation(); });
 
             RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
-            RotateRightButton.Click += (_, e) => { vm.MainWindow.IsTopToolbarRotationClicked = true; };
+            RotateRightButton.Click += (_, e) =>
+            {
+                vm.MainWindow.IsTopToolbarRotationClicked = Settings.WindowProperties.AutoFit;
+            };
             FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
         };
     }

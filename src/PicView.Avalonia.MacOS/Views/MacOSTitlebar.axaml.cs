@@ -5,6 +5,7 @@ using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.DebugTools;
 using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
@@ -19,20 +20,21 @@ public partial class MacOSTitlebar : UserControl
             if (Settings.Theme.GlassTheme)
             {
                 TopWindowBorder.Background = Brushes.Transparent;
-            
+
                 EditableTitlebar.Background = Brushes.Transparent;
                 EditableTitlebar.BorderThickness = new Thickness(0);
-                
+
                 FlipButton.Background = Brushes.Transparent;
                 FlipButton.BorderThickness = new Thickness(0);
-                
+
                 GalleryButton.Background = Brushes.Transparent;
                 GalleryButton.BorderThickness = new Thickness(0);
-                
+
                 RotateRightButton.Background = Brushes.Transparent;
                 RotateRightButton.BorderThickness = new Thickness(0);
-                
-                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
+
+                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant,
+                        out var color))
                 {
                     return;
                 }
@@ -49,36 +51,35 @@ public partial class MacOSTitlebar : UserControl
                     GalleryButton.Foreground = new SolidColorBrush(secondaryTextColor);
                     RotateRightButton.Foreground = new SolidColorBrush(secondaryTextColor);
                 }
-                #if DEBUG
+#if DEBUG
                 catch (Exception e)
                 {
-                    Console.WriteLine(e);
-                    throw;
+                    DebugHelper.LogDebug(nameof(MacOSTitlebar), nameof(LoadedEvent), e);
                 }
-                #else
+#else
                 catch (Exception) { }
-                #endif
+#endif
             }
-            
-            Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
-                .Subscribe(_ =>
-                {
-                    UpdateRotation();
-                });
 
-            RotateRightButton.PointerPressed += (_, e) =>
+            Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
+                .Subscribe(_ => { UpdateRotation(); });
+
+            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
+            RotateRightButton.Click += (_, e) =>
             {
-                OpenContextMenu(e);
+                if (DataContext is not MainViewModel vm)
+                {
+                    return;
+                }
+
+                vm.MainWindow.IsTopToolbarRotationClicked = Settings.WindowProperties.AutoFit;
             };
-            FlipButton.PointerPressed += (_, e) =>
-            {
-                OpenContextMenu(e);
-            };
+            FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
         };
         PointerPressed += (_, e) => MoveWindow(e);
     }
-    
-    
+
+
     private void OpenContextMenu(PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
@@ -96,6 +97,7 @@ public partial class MacOSTitlebar : UserControl
         {
             return;
         }
+
         Rotation0Item.IsChecked = false;
         Rotation90Item.IsChecked = false;
         Rotation180Item.IsChecked = false;
@@ -114,13 +116,15 @@ public partial class MacOSTitlebar : UserControl
             case 270:
                 Rotation270Item.IsChecked = true;
                 break;
-                    
         }
     }
 
     private void MoveWindow(PointerPressedEventArgs e)
     {
-        if (VisualRoot is null || DataContext is not MainViewModel vm) { return; }
+        if (VisualRoot is null || DataContext is not MainViewModel vm)
+        {
+            return;
+        }
 
         var hostWindow = (Window)VisualRoot;
         WindowFunctions.WindowDragAndDoubleClickBehavior(hostWindow, e, vm.PlatformWindowService);

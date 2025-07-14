@@ -42,8 +42,9 @@ public partial class ImageMenu : AnimatedMenu
                 return;
             }
 
-            RotateLeftButton.Click += (_, _) => vm.MainWindow.IsRotateLeftClicked = true;
-            RotateRightButton.Click += (_, _) => vm.MainWindow.IsRotateRightClicked = true;
+            RotateLeftButton.Click += (_, _) => vm.MainWindow.IsRotateLeftClicked = Settings.WindowProperties.AutoFit;
+            RotateRightButton.Click += (_, _) => vm.MainWindow.IsRotateRightClicked = Settings.WindowProperties.AutoFit;
+
 
             if (Settings.Theme.GlassTheme)
             {
