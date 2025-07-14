@@ -30,7 +30,6 @@ public static class WindowResizing
             return;
         }
 
-
         var oldSize = size.OldValue.Value;
         var newSize = size.NewValue.Value;
 
@@ -38,6 +37,16 @@ public static class WindowResizing
         var y = (oldSize.Height - newSize.Height) / 2;
 
         window.Position = new PixelPoint(window.Position.X + (int)x, window.Position.Y + (int)y);
+
+        if (vm.MainWindow is
+            {
+                IsNavigationButtonLeftClicked: false, IsNavigationButtonRightClicked: false,
+                IsClickArrowLeftClicked: false, IsClickArrowRightClicked: false, IsRotateLeftClicked: false,
+                IsRotateRightClicked: false, IsTopToolbarRotationClicked: false
+            })
+        {
+            return;
+        }
 
         RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonLeftClicked,
             clicked => vm.MainWindow.IsNavigationButtonLeftClicked = clicked,
