@@ -10,11 +10,14 @@ namespace PicView.Avalonia.Win32.WindowImpl;
 
 public static class Win32Window
 {
+    public static bool IsChangingWindowState { get; private set; }
+
     public static async Task Fullscreen(Window window, MainViewModel vm, bool saveSettings = true)
     {
+        IsChangingWindowState = true;
         // Save window size, so that restoring it will return to the same size and position
         WindowResizing.SaveSize(window);
-        
+
         MenuManager.CloseMenus(vm);
 
         // Update view model properties
@@ -31,13 +34,18 @@ public static class Win32Window
 
         // Hide interface in fullscreen
         HideInterface(vm);
-        
+
         vm.PicViewer.GalleryWidth.Value = double.NaN;
-        
+
         await WindowResizing.SetSizeAsync(vm);
 
         // Center it, to make sure it is positioned correctly
         CenterWindowOnScreen(window);
+
+        // Fixes https://github.com/Ruben2776/PicView/issues/226
+        await WindowFunctions.ResizeAndFixRenderingError(vm);
+
+        IsChangingWindowState = false;
 
         if (saveSettings)
         {
@@ -50,13 +58,15 @@ public static class Win32Window
     /// </summary>
     public static async Task Maximize(Window window, MainViewModel vm, bool saveSettings = true)
     {
+        IsChangingWindowState = true;
+
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             if (Settings.WindowProperties.AutoFit)
             {
                 vm.MainWindow.SizeToContent.Value = SizeToContent.Manual;
             }
-            
+
             // Save window size, so that restoring it will return to the same size and position
             WindowResizing.SaveSize(window);
 
@@ -70,6 +80,7 @@ public static class Win32Window
         vm.MainWindow.IsFullscreen.Value = false;
         vm.MainWindow.CanResize.Value = false;
 
+        IsChangingWindowState = false;
         if (saveSettings)
         {
             await SaveSettingsAsync().ConfigureAwait(false);
@@ -78,6 +89,8 @@ public static class Win32Window
 
     public static async Task Restore(Window window, MainViewModel vm, bool saveSettings = true)
     {
+        IsChangingWindowState = true;
+
         // Update settings
         Settings.WindowProperties.Maximized = false;
         Settings.WindowProperties.Fullscreen = false;
@@ -97,24 +110,27 @@ public static class Win32Window
             vm.MainWindow.SizeToContent.Value = SizeToContent.WidthAndHeight;
             vm.MainWindow.CanResize.Value = false;
             vm.GlobalSettings.IsAutoFit.Value = true;
+            if (Settings.WindowProperties.KeepCentered)
+            {
+                WindowFunctions.CenterWindowOnScreen();
+            }
+            else
+            {
+                WindowFunctions.InitializeWindowSizeAndPosition(window);
+            }
+
+            await WindowFunctions.ResizeAndFixRenderingError(vm); // Fixes incorrect render size
         }
         else
         {
             vm.MainWindow.SizeToContent.Value = SizeToContent.Manual;
             vm.MainWindow.CanResize.Value = true;
-            vm.GlobalSettings.IsAutoFit.Value = false;
-        }
-        
-        await WindowResizing.SetSizeAsync(vm);
-        
-        if (Settings.WindowProperties.KeepCentered)
-        {
-            WindowFunctions.CenterWindowOnScreen();
-        }
-        else
-        {
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
+
+        await WindowResizing.SetSizeAsync(vm);
+
+        IsChangingWindowState = false;
 
         if (saveSettings)
         {
@@ -194,7 +210,7 @@ public static class Win32Window
 
             // Set the window's new position
             window.Position = new PixelPoint((int)centeredX, (int)centeredY);
-        },DispatcherPriority.Background);
+        });
     }
 
     /// <summary>
