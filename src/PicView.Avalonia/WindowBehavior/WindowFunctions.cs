@@ -173,8 +173,13 @@ public static class WindowFunctions
         }
 
         WindowResizing.SetSize(size.Value, vm);
-        vm.ImageViewer.MainBorder.Height = size.Value.Width;
+        vm.ImageViewer.MainBorder.Height = size!.Value.Width;
         vm.ImageViewer.MainBorder.Width = size.Value.Height;
+    }
+    
+    public static void FixBorderLayout(MainViewModel vm)
+    {
+        vm.ImageViewer.MainBorder.Height = double.NaN;
     }
 
     public static void ShowMinimizedWindow(Window window)

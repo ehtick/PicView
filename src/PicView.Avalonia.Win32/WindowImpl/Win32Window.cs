@@ -46,10 +46,12 @@ public static class Win32Window
         // Fixes https://github.com/Ruben2776/PicView/issues/226
         await WindowFunctions.ResizeAndFixRenderingError(vm);
 
+        // Fix 1to1 incorrect rendering and not filling the whole window #226
         if (vm.PicViewer.PixelWidth.CurrentValue == vm.PicViewer.PixelHeight.CurrentValue)
         {
             WindowFunctions.Fix1to1(vm);
         }
+        WindowFunctions.FixBorderLayout(vm);
 
         Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.Background);
 
