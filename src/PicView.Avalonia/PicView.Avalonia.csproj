@@ -22,7 +22,7 @@
   <PropertyGroup Label="Avalonia">
     <AvaloniaXamlIlDebuggerLaunch>False</AvaloniaXamlIlDebuggerLaunch>
   </PropertyGroup>
-  
+
 
   <PropertyGroup Condition="'$(Platform)' == 'x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -48,12 +48,12 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
-  
+
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
-  
+
   <ItemGroup>
     <Compile Update="Views\UC\DragDrogView.axaml.cs">
       <DependentUpon>DragDrogView.axaml</DependentUpon>
@@ -113,12 +113,12 @@
     </Compile>
   </ItemGroup>
 
-  
+
   <ItemGroup>
     <None Remove="DarkTheme\Resources\noisy-texture-200x200-o4-d31-c-161616-t0.png" />
   </ItemGroup>
 
-  
+
   <ItemGroup>
     <AvaloniaResource Include="PicViewTheme\Resources\noisy-texture-200x200-o4-d31-c-161616-t0.png" />
   </ItemGroup>
@@ -133,25 +133,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\ImageInfoView.axaml.cs">
+    <Compile Update="Views\Main\ImageInfoView.axaml.cs">
       <DependentUpon>ExifView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\AppearanceView.axaml.cs">
+    <Compile Update="Views\Main\AppearanceView.axaml.cs">
       <DependentUpon>AppearanceView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\AboutView.axaml.cs">
+    <Compile Update="Views\Main\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\KeybindingsView.axaml.cs">
+    <Compile Update="Views\Main\KeybindingsView.axaml.cs">
       <DependentUpon>ShortcutsView.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\GeneralSettingsView.axaml.cs">
+    <Compile Update="Views\Config\GeneralSettingsView.axaml.cs">
       <DependentUpon>GeneralSettingsView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UC\Buttons\StarOutlineButtons.axaml.cs">
       <DependentUpon>StarOutlineButtons.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ImageViewer.axaml.cs">
+    <Compile Update="Views\UC\ImageViewer.axaml.cs">
       <DependentUpon>ImageViewer.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UC\Menus\ToolsMenu.axaml.cs">
@@ -169,7 +169,7 @@
     <Compile Update="Views\UC\TitleTextbox.axaml.cs">
       <DependentUpon>TitleTextBox.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\AppearanceView.axaml.cs">
+    <Compile Update="Views\Config\AppearanceView.axaml.cs">
       <DependentUpon>AppearanceView.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -182,7 +182,7 @@
     <ProjectReference Include="..\PicView.Core\PicView.Core.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<InternalsVisibleTo Include="PicView.Tests" />
-	</ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="PicView.Tests" />
+  </ItemGroup>
 </Project>

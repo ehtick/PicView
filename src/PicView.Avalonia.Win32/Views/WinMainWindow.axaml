@@ -11,6 +11,7 @@
     x:Class="PicView.Avalonia.Win32.Views.WinMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
     xmlns:views1="clr-namespace:PicView.Avalonia.Win32.Views"
@@ -20,7 +21,7 @@
         <DockPanel LastChildFill="True">
             <views1:WinTitleBar DockPanel.Dock="Top" x:Name="Titlebar" />
             <views:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
-            <views:MainView x:Name="MainView" />
+            <main:MainView x:Name="MainView" />
         </DockPanel>
     </Border>
 </Window>

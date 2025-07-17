@@ -12,6 +12,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
@@ -36,7 +37,7 @@
                     TextAlignment="Center" />
             </DockPanel>
             <customControls:AutoScrollViewer Background="{DynamicResource WindowBackgroundColor}" PointerPressed="MoveWindow">
-                <views:BatchResizeView Padding="5,0" x:Name="XAboutView" />
+                <main:BatchResizeView Padding="5,0" x:Name="XAboutView" />
             </customControls:AutoScrollViewer>
         </StackPanel>
     </Border>

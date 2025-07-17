@@ -8,6 +8,7 @@
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -82,7 +83,7 @@
                 Height="1"
                 x:Name="BorderRectangle" />
 
-            <views:AboutView
+            <main:AboutView
                 Background="{DynamicResource NoisyTexture}"
                 Focusable="True"
                 Margin="0"

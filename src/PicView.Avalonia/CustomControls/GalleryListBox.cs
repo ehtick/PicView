@@ -7,6 +7,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Views.UC;
+using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
 namespace PicView.Avalonia.CustomControls;
 

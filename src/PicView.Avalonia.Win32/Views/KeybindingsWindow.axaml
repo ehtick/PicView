@@ -5,6 +5,7 @@
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -91,7 +92,7 @@
                 Margin="0,28,0,0"
                 Padding="5,2,5,10"
                 Theme="{StaticResource Main}">
-                <views:KeybindingsView Background="Transparent" PointerPressed="MoveWindow" />
+                <main:KeybindingsView Background="Transparent" PointerPressed="MoveWindow" />
             </customControls:AutoScrollViewer>
         </Panel>
     </Border>

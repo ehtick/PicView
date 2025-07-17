@@ -9,6 +9,7 @@ using PicView.Avalonia.Views.UC;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
+using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
 namespace PicView.Avalonia.Gallery;
 

@@ -11,6 +11,8 @@ using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using R3.Avalonia;
+using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
+using MainView = PicView.Avalonia.Views.Main.MainView;
 
 namespace PicView.Avalonia.UI;
 

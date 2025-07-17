@@ -13,6 +13,7 @@
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:converters1="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
     xmlns:views1="clr-namespace:PicView.Avalonia.MacOS.Views"
@@ -335,6 +336,6 @@
     <DockPanel LastChildFill="True">
         <views1:MacOSTitlebar DockPanel.Dock="Top" x:Name="Titlebar" />
         <views:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
-        <views:MainView Background="Transparent" x:Name="MainView" />
+        <main:MainView Background="Transparent" x:Name="MainView" />
     </DockPanel>
 </Window>
