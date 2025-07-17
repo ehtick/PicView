@@ -29,6 +29,7 @@ public static class BackgroundManager
         SemiTransparentDarkGray = 7,
         SemiTransparentDarkerGray = 8,
         NearBlack = 9,
+        DarkGray = 10,
         
         // For cycling purpose
         [SuppressMessage("Design", "CA1069:Enums values should not be duplicated")] 
@@ -63,6 +64,7 @@ public static class BackgroundManager
         BackgroundType.SemiTransparentDarkGray => new SolidColorBrush(Color.FromArgb(200, 100, 100, 100)),
         BackgroundType.SemiTransparentDarkerGray => new SolidColorBrush(Color.FromArgb(200, 50, 50, 50)),
         BackgroundType.NearBlack => new SolidColorBrush(Color.FromRgb(5, 5, 5)),
+        BackgroundType.DarkGray => new SolidColorBrush(Color.FromRgb(48, 48, 48)),
         _ => new SolidColorBrush(Colors.Transparent)
     };
 

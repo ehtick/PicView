@@ -221,6 +221,20 @@
                 Click="BgButton_OnClick"
                 x:Name="NoiseTextureButton" />
 
+            <!--  Dark Gray Semi Transparent Alt  -->
+            <Button
+                Background="#C8323232"
+                Classes="colorBtn"
+                Click="BgButton_OnClick"
+                x:Name="DarkGraySemiTransparentAltBgButton" />
+
+            <!--  Dark Gray Semi Transparent  -->
+            <Button
+                Background="#C8646464"
+                Classes="colorBtn"
+                Click="BgButton_OnClick"
+                x:Name="DarkGraySemiTransparentBgButton" />
+
             <!--  Checkerboard  -->
             <Button
                 Background="Transparent"
@@ -249,26 +263,19 @@
                 Click="BgButton_OnClick"
                 x:Name="GrayBgButton" />
 
-            <!--  Dark Gray  -->
+            <!--  Medium Gray  -->
             <Button
                 Background="#9B9B9B"
                 Classes="colorBtn"
                 Click="BgButton_OnClick"
+                x:Name="MediumGrayBgButton" />
+
+            <!--  Dark Gray  -->
+            <Button
+                Background="#303030"
+                Classes="colorBtn"
+                Click="BgButton_OnClick"
                 x:Name="DarkGrayBgButton" />
-
-            <!--  Dark Gray Semi Transparent  -->
-            <Button
-                Background="#C8646464"
-                Classes="colorBtn"
-                Click="BgButton_OnClick"
-                x:Name="DarkGraySemiTransparentBgButton" />
-
-            <!--  Dark Gray Semi Transparent Alt  -->
-            <Button
-                Background="#C8323232"
-                Classes="colorBtn"
-                Click="BgButton_OnClick"
-                x:Name="DarkGraySemiTransparentAltBgButton" />
 
             <!--  Black  -->
             <Button

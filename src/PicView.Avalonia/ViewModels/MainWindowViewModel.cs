@@ -5,6 +5,7 @@ using Avalonia.Media;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Sizing;
 using R3;
 
 namespace PicView.Avalonia.ViewModels;
@@ -35,7 +36,7 @@ public class MainWindowViewModel : IDisposable
 
     public BindableReactiveProperty<int> BackgroundChoice { get; } = new();
 
-    public BindableReactiveProperty<double> WindowMinSize { get; } = new();
+    public BindableReactiveProperty<double> WindowMinSize { get; } = new(SizeDefaults.WindowMinSize);
 
     public BindableReactiveProperty<double> TitlebarHeight { get; } = new();
 

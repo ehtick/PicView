@@ -254,10 +254,11 @@ public partial class AppearanceView : UserControl
             nameof(CheckerboardAltButton) => 3,
             nameof(WhiteBgButton) => 4,
             nameof(GrayBgButton) => 5,
-            nameof(DarkGrayBgButton) => 6,
+            nameof(MediumGrayBgButton) => 6,
             nameof(DarkGraySemiTransparentBgButton) => 7,
             nameof(DarkGraySemiTransparentAltBgButton) => 8,
             nameof(BlackBgButton) => 9,
+            nameof(DarkGrayBgButton) => 10,
             _ => 0
         };
 
@@ -289,7 +290,7 @@ public partial class AppearanceView : UserControl
                 GrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 6:
-                DarkGrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
+                MediumGrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
             case 7:
                 DarkGraySemiTransparentBgButton.Classes.Add(ActiveColorAccentBtnClassName);
@@ -299,6 +300,9 @@ public partial class AppearanceView : UserControl
                 break;
             case 9:
                 BlackBgButton.Classes.Add(ActiveColorAccentBtnClassName);
+                break;
+            case 10:
+                DarkGrayBgButton.Classes.Add(ActiveColorAccentBtnClassName);
                 break;
         }
 
