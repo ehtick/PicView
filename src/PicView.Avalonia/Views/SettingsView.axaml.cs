@@ -20,8 +20,6 @@ namespace PicView.Avalonia.Views;
 
 public partial class SettingsView : UserControl
 {
-    #region Constructor
-
     public SettingsView()
     {
         InitializeComponent();
@@ -33,45 +31,11 @@ public partial class SettingsView : UserControl
         Loaded += OnLoaded;
     }
 
-    #endregion
-
     #region Properties
 
     private MainViewModel? ViewModel => DataContext as MainViewModel;
 
-    #endregion
-
-    #region Input Handlers
-
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
-        var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
-        var properties = e.GetCurrentPoint(topLevel).Properties;
-
-        if (properties.IsXButton1Pressed)
-        {
-            GoBack();
-        }
-
-        if (properties.IsXButton2Pressed)
-        {
-            GoForward();
-        }
-
-        if (properties.IsRightButtonPressed)
-        {
-            ContextMenu.Open();
-        }
-    }
-
-    #endregion
-
-    #region Fields
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e) => HandleMouseButtonNavigation(e);
 
     private static CompositeDisposable? _marginSubscription;
     private readonly Stack<TabItem?> _backStack = new();
@@ -125,7 +89,7 @@ public partial class SettingsView : UserControl
             }).AddTo(_marginSubscription);
     }
 
-    private void LoadInitialSettings()
+    private static void LoadInitialSettings()
     {
         Task.Run(() =>
         {
@@ -140,10 +104,6 @@ public partial class SettingsView : UserControl
             }
         });
     }
-
-    #endregion
-
-    #region UI Setup and Event Handlers
 
     private void SetupUI()
     {
@@ -171,6 +131,32 @@ public partial class SettingsView : UserControl
     #endregion
 
     #region Navigation
+
+    private void HandleMouseButtonNavigation(PointerPressedEventArgs e)
+    {
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+        var properties = e.GetCurrentPoint(topLevel).Properties;
+
+        if (properties.IsXButton1Pressed)
+        {
+            GoBack();
+        }
+
+        if (properties.IsXButton2Pressed)
+        {
+            GoForward();
+        }
+
+        if (properties.IsRightButtonPressed)
+        {
+            ContextMenu.Open();
+        }
+    }
 
     private void OnTabSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
