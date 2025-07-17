@@ -122,19 +122,26 @@ public static class HideInterfaceLogic
     {
         Settings.Gallery.ShowBottomGalleryInHiddenUI = !Settings.Gallery
             .ShowBottomGalleryInHiddenUI;
-        vm.Gallery.IsBottomGalleryShownInHiddenUI.Value = Settings.Gallery.ShowBottomGalleryInHiddenUI;
-
-        if (!GalleryFunctions.IsFullGalleryOpen && vm.Gallery is not null)
+        if (vm.Gallery is not { } gallery)
         {
-            if (!Settings.UIProperties.ShowInterface && !Settings.Gallery
-                    .ShowBottomGalleryInHiddenUI)
-            {
-                vm.Gallery.IsBottomGalleryShown.Value = false;
-            }
-            else
-            {
-                vm.Gallery.IsBottomGalleryShown.Value = Settings.Gallery.IsBottomGalleryShown;
-            }
+            return;
+        }
+        gallery.IsBottomGalleryShownInHiddenUI.Value = Settings.Gallery.ShowBottomGalleryInHiddenUI;
+
+        if (!Settings.UIProperties.ShowInterface && !Settings.Gallery
+                .ShowBottomGalleryInHiddenUI)
+        {
+            gallery.IsBottomGalleryShown.Value = false;
+        }
+        else
+        {
+            gallery.IsBottomGalleryShown.Value = Settings.Gallery.IsBottomGalleryShown;
+        }
+        
+        await WindowResizing.SetSizeAsync(vm);
+        if (gallery.IsBottomGalleryShown.Value)
+        {
+            gallery.GalleryMode.Value = GalleryMode.ClosedToBottom;
         }
         
         await SaveSettingsAsync();
