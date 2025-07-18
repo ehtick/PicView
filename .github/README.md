@@ -47,9 +47,9 @@ winget install picview
 
 ___
 
-PicView is portable by default. Settings and keybindings are stored in the same directory _(unless there is no write permissions)_. No system files are modified or installation necessary. Perfect for storing on a portable USB drive. 
+PicView is portable by default. Settings and keybindings are stored in its directory (unless it lacks write permissions), meaning no system files are modified and no installation is necessary. Perfect for storing on a portable USB drive. 
 
-If installing, it will set file associations.
+Using the installer will also set file associations for you.
 
 <br>
 
@@ -100,7 +100,7 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 
 Perform operations such as _renaming_, _file conversion_, _copying_, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
 
-Changing size can be done by editing the `width` and/or `height` text-boxes. Use the `%` keyboard button to resize it by percentage.
+You can change the image size by editing the `width` and/or `height` textboxes. To resize by a percentage, simply add the `%` symbol after the value.
 
 <h1 align="center">
     <img src="https://picview.org/assets/screenshots/exifwindow/gps3.0.webp" />
@@ -139,7 +139,7 @@ The bottom gallery can be turned on or off
 ### Convert/Optimize all your pictures
 All files from the `Source folder` will be selected for processing and will be sent to `Output folder`. The default name for the output folder will be **Processed Pictures**.
 
-If the *Output folder* is the same as the *Source folder*, or left blank, the files will be overwrittten.
+If the *Output folder* is the same as the *Source folder*, or left blank, the original files will be overwritten. 
 
 The `Convert to` dropdown option allows you to convert all the files to a popular format.
 
@@ -158,7 +158,7 @@ ___
 
 ![Screenshot 2025-01-26 141624](https://github.com/user-attachments/assets/5ff7834a-3461-4b39-9784-7cf386c8d429)
 
-Rename or move files in the titlebar by pressing `F2` or right clicking it.
+Rename or move files in the title bar by pressing `F2` or right-clicking it.
 Changing the file extension will convert the image to the respective format.
 
 <br>
@@ -182,7 +182,7 @@ Alternatively, they are also listed at [PicView.org](https://picview.org/#Shortc
 
 # Technical overview
 PicView is built in C# .NET using Avalonia cross-platform XAML UI framework.
-All builds are compiled using NativeAOT _(with trimming)_. Fully self‑contained native executable.
+All builds are compiled using NativeAOT _(with trimming)_, resulting in a fully self-contained native executable.
 
 Using Cysharp’s ZLinq and ZString for zero allocation and high performance, and R3 for high-performance ViewModel binding and event streams.
 
@@ -195,7 +195,7 @@ Magick.NET is used for its rich file support and image editing and information c
 
 **Building:** <br>
 Open and run the solution in Visual Studio or Rider. 
-If you're not using x64 hardware, make sure to change the platform target to your CPU architecture in the project properties, as well as changing the the Magick.NET Nuget packages to match.
+If you're not using x64 hardware, make sure to change the platform target to your CPU architecture in the project properties, as well as changing the Magick.NET NuGet packages to match.
 
 Pull requests are welcome. Check current issues and assign yourself or create your own issue. 
 
@@ -236,7 +236,7 @@ Free code signing is provided by [SignPath.io](https://about.signpath.io/), cert
 
 ## Privacy Policy
 
-PicView does not collect data. No data is sent/recieved and/or collected by PicView.
+PicView does not collect, send, or receive any user data.
 
 
 # Donate
