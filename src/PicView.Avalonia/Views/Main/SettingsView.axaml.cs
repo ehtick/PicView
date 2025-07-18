@@ -93,7 +93,7 @@ public partial class SettingsView : UserControl
     {
         Task.Run(() =>
         {
-            if (string.IsNullOrWhiteSpace(SettingsConfiguration.CurrentUserSettingsPath))
+            if (string.IsNullOrWhiteSpace(CurrentSettingsPath))
             {
                 _ = SaveSettingsAsync();
             }

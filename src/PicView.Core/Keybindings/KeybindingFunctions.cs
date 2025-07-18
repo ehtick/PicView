@@ -4,29 +4,31 @@ namespace PicView.Core.Keybindings;
 
 public static class KeybindingFunctions
 {
-    public static string? CurrentKeybindingsPath { get; private set; }
+    public static KeyBindingsConfiguration? KeyBindingsConfiguration { get; private set; }
+    public static string CurrentKeybindingsPath => KeyBindingsConfiguration?.CorrectPath ?? string.Empty;
     
     public static async Task SaveKeyBindingsFile(string json)
     {
         try
         {
-            if (string.IsNullOrEmpty(CurrentKeybindingsPath))
+            KeyBindingsConfiguration ??= new KeyBindingsConfiguration();
+            if (string.IsNullOrEmpty(KeyBindingsConfiguration.CorrectPath))
             {
-                CurrentKeybindingsPath = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.KeyBindings);
+                KeyBindingsConfiguration.CorrectPath = ConfigFileManager.ResolveDefaultConfigPath(KeyBindingsConfiguration);
             }
             await using var writer = new StreamWriter(CurrentKeybindingsPath);
             await writer.WriteAsync(json).ConfigureAwait(false);
         }
         catch (UnauthorizedAccessException)
         {
-            await using var writer = new StreamWriter(KeyBindingsConfiguration.RoamingKeybindingsPath);
+            await using var writer = new StreamWriter(KeyBindingsConfiguration.RoamingConfigPath);
             await writer.WriteAsync(json).ConfigureAwait(false);
         }
     }
 
     public static async Task<string?> LoadKeyBindingsFile()
     {
-        var path = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.KeyBindings);
+        var path = ConfigFileManager.ResolveDefaultConfigPath(KeyBindingsConfiguration ??= new KeyBindingsConfiguration());
         if (!File.Exists(path))
         {
             return null;
@@ -34,7 +36,7 @@ public static class KeybindingFunctions
 
         var text = await File.ReadAllTextAsync(path).ConfigureAwait(false);
         
-        CurrentKeybindingsPath = path;
+        KeyBindingsConfiguration.CorrectPath = path;
         return text;
     }
 }

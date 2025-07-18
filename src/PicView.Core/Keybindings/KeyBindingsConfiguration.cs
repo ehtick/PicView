@@ -1,19 +1,8 @@
 ﻿using PicView.Core.Config;
+using PicView.Core.Config.ConfigFileManagement;
 
 namespace PicView.Core.Keybindings;
 
-internal static class KeyBindingsConfiguration
+public class KeyBindingsConfiguration() : ConfigFile("keybindings.json")
 {
-    internal const string KeybindingsFileName = "keybindings.json";
-    internal static string KeybindingsFilePath => Path.Combine(SettingsConfiguration.ConfigFolder, KeybindingsFileName);
-    internal static string RoamingKeybindingsPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            KeybindingsFilePath);
-    
-    internal static string LocalKeybindingsPath =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", KeybindingsFileName);
-    
-    internal static string CurrentUserKeybindingsPath =>
-        File.Exists(RoamingKeybindingsPath) ? RoamingKeybindingsPath :
-        File.Exists(LocalKeybindingsPath) ? LocalKeybindingsPath : string.Empty;
 }

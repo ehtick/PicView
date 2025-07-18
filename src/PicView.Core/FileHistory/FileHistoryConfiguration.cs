@@ -1,8 +1,8 @@
-﻿using PicView.Core.Config;
+﻿using PicView.Core.Config.ConfigFileManagement;
 
 namespace PicView.Core.FileHistory;
 
-internal static class FileHistoryConfiguration
+internal class FileHistoryConfiguration() : ConfigFile("FileHistory.json")
 {
     /// <summary>
     /// Represents the maximum number of unpinned entries allowed in the file history.
@@ -16,16 +16,4 @@ internal static class FileHistoryConfiguration
     /// with unpinned entries in the file history configuration.
     /// </summary>
     internal const int MaxPinnedEntries = 5;
-    
-    internal const string HistoryFileName = "FileHistory.json";
-    internal static string HistoryFilePath => Path.Combine(SettingsConfiguration.ConfigFolder, HistoryFileName);
-    internal static string RoamingFileHistoryPath =>
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            HistoryFilePath);
-    
-    internal static string LocalFileHistoryPath =>
-        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config", HistoryFileName);
-    internal static string CurrentUserFileHistoryPath =>
-        File.Exists(RoamingFileHistoryPath) ? RoamingFileHistoryPath :
-        File.Exists(LocalFileHistoryPath) ? LocalFileHistoryPath : string.Empty;
 }

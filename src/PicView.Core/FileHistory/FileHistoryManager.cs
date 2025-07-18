@@ -21,7 +21,7 @@ internal partial class FileHistoryGenerationContext : JsonSerializerContext;
 public static class FileHistoryManager
 {
     private static readonly List<Entry> Entries = [];
-    private static string? _fileLocation;
+    private static FileHistoryConfiguration? _fileHistoryConfiguration;
 
     /// <summary>
     ///     Gets the number of entries in the file history.
@@ -68,14 +68,15 @@ public static class FileHistoryManager
     /// <summary>
     ///     Gets the file history file path with normalized slashes.
     /// </summary>
-    public static string CurrentFileHistoryFile => _fileLocation?.Replace("/", "\\") ?? string.Empty;
+    public static string CurrentFileHistoryFile => _fileHistoryConfiguration?.TryGetCurrentUserConfigPath.Replace("/", "\\") ?? string.Empty;
 
     /// <summary>
     ///     Initializes the file history by loading entries from the history file.
     /// </summary>
     public static async Task InitializeAsync()
     {
-        _fileLocation = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.FileHistory);
+        _fileHistoryConfiguration = new FileHistoryConfiguration();
+        _fileHistoryConfiguration.CorrectPath = ConfigFileManager.ResolveDefaultConfigPath(_fileHistoryConfiguration);
         await LoadFromFileAsync().ConfigureAwait(false);
 
         // Set the current index to the most recent entry.
@@ -314,14 +315,9 @@ public static class FileHistoryManager
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(_fileLocation))
+            if (string.IsNullOrWhiteSpace(_fileHistoryConfiguration.CorrectPath))
             {
-                _fileLocation = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.FileHistory);
-            }
-            
-            if (!FileHelper.IsPathWritable(_fileLocation))
-            {
-                _fileLocation = FileHistoryConfiguration.RoamingFileHistoryPath;
+                _fileHistoryConfiguration.CorrectPath = ConfigFileManager.ResolveDefaultConfigPath(_fileHistoryConfiguration);
             }
 
             // Create a new sorted list with pinned entries first (max 5), then unpinned entries (max MaxHistoryEntries)
@@ -338,8 +334,8 @@ public static class FileHistoryManager
                 Entries = sortedEntries,
                 IsSortingDescending = IsSortingDescending
             };
-            _fileLocation = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.FileHistory,
-                _fileLocation, historyEntries, typeof(FileHistoryEntries), FileHistoryGenerationContext.Default);
+            _fileHistoryConfiguration.CorrectPath = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(_fileHistoryConfiguration,
+                _fileHistoryConfiguration.CorrectPath, historyEntries, typeof(FileHistoryEntries), FileHistoryGenerationContext.Default);
         }
         catch (Exception ex)
         {
@@ -354,7 +350,7 @@ public static class FileHistoryManager
     {
         try
         {
-            var jsonString = await File.ReadAllTextAsync(_fileLocation).ConfigureAwait(false);
+            var jsonString = await File.ReadAllTextAsync(_fileHistoryConfiguration.TryGetCurrentUserConfigPath).ConfigureAwait(false);
 
             if (JsonSerializer.Deserialize(jsonString, typeof(FileHistoryEntries),
                     FileHistoryGenerationContext.Default)

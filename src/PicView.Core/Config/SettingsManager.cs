@@ -27,7 +27,7 @@ public static class SettingsManager
     /// the value will be null. This path can be used to reference the specific configuration file
     /// being utilized or modified.
     /// </remarks>
-    public static string? CurrentSettingsPath { get; private set; }
+    public static string? CurrentSettingsPath => Configuration.CorrectPath;
 
     /// <summary>
     /// Gets or sets the current application settings instance, which stores all configurable
@@ -41,6 +41,8 @@ public static class SettingsManager
     /// <see cref="SettingsManager.SaveSettingsAsync"/>.
     /// </remarks>
     public static AppSettings? Settings { get; private set; }
+    
+    public static SettingsConfiguration? Configuration { get; private set; }
 
     /// <summary>
     /// Loads application settings asynchronously from a file or initializes them to default if loading fails.
@@ -53,10 +55,11 @@ public static class SettingsManager
     {
         try
         {
-            var path = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.UserSettings);
+            Configuration ??= new SettingsConfiguration();
+            var path = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
             if (!string.IsNullOrEmpty(path))
             {
-                CurrentSettingsPath = path;
+                Configuration.CorrectPath = path;
                 var jsonString = await File.ReadAllTextAsync(path).ConfigureAwait(false);
 
                 if (JsonSerializer.Deserialize(
@@ -94,17 +97,17 @@ public static class SettingsManager
             return false;
         }
 
-        if (string.IsNullOrEmpty(CurrentSettingsPath))
+        if (string.IsNullOrEmpty(Configuration.CorrectPath))
         {
-            CurrentSettingsPath = ConfigFileManager.ResolveDefaultConfigPath(ConfigFileType.UserSettings);
+            Configuration.CorrectPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
         }
 
         if (!FileHelper.IsPathWritable(CurrentSettingsPath))
         {
-            CurrentSettingsPath = SettingsConfiguration.RoamingSettingsPath;
+            Configuration.CorrectPath = Configuration.RoamingConfigPath;
         }
 
-        var saveLocation = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(ConfigFileType.UserSettings,
+        var saveLocation = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(Configuration,
             CurrentSettingsPath,
             Settings, typeof(AppSettings), SettingsGenerationContext.Default).ConfigureAwait(false);
         if (string.IsNullOrWhiteSpace(saveLocation))
@@ -113,7 +116,7 @@ public static class SettingsManager
             return false;
         }
 
-        CurrentSettingsPath = saveLocation;
+        Configuration.CorrectPath = saveLocation;
         return true;
     }
 
@@ -219,7 +222,7 @@ public static class SettingsManager
     {
         try
         {
-            DeleteFileIfExists(SettingsConfiguration.CurrentUserSettingsPath);
+            DeleteFileIfExists(Configuration.TryGetCurrentUserConfigPath);
         }
         catch (Exception ex)
         {
