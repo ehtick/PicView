@@ -63,21 +63,22 @@ public class ImageIterator : IAsyncDisposable
                 }
                 else
                 {
-                    initialDirectory = fileInfo;
+                    initialDirectory = new FileInfo(fileInfo.DirectoryName);
                 }
             }
             else
             {
-                initialDirectory = fileInfo;
+                initialDirectory = new FileInfo(fileInfo.DirectoryName);
             }
         }
         else
         {
-            initialDirectory = fileInfo;
+            initialDirectory = new FileInfo(fileInfo.DirectoryName);
         }
         ImagePaths = vm.PlatformService.GetFiles(initialDirectory);
         CurrentIndex = ImagePaths.FindIndex(x => x.FullName.Equals(fileInfo.FullName));
         InitiateFileSystemWatcher(fileInfo);
+        Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
     }
 
     public ImageIterator(FileInfo fileInfo, List<FileInfo> imagePaths, int currentIndex, MainViewModel vm)
