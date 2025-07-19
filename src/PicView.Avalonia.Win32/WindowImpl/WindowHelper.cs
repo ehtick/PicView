@@ -18,7 +18,7 @@ public class WindowManager : IPlatformSpecificUpdate
     private AboutWindow? _aboutWindow;
     private BatchResizeWindow? _batchResizeWindow;
     private EffectsWindow? _effectsWindow;
-    private ExifWindow? _exifWindow;
+    private ImageInfoWindow? _imageInfoWindow;
     private KeybindingsWindow? _keybindingsWindow;
     private SettingsWindow? _settingsWindow;
     private SingleImageResizeWindow? _singleImageResizeWindow;
@@ -94,19 +94,19 @@ public class WindowManager : IPlatformSpecificUpdate
                 return;
             }
 
-            if (_exifWindow is null)
+            if (_imageInfoWindow is null)
             {
                 vm.Exif ??= new ExifViewModel();
                 vm.InfoWindow = new ImageInfoWindowViewModel();
-                _exifWindow = new ExifWindow
+                _imageInfoWindow = new ImageInfoWindow
                 {
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _exifWindow.Show(desktop.MainWindow);
-                _exifWindow.Closing += (_, _) =>
+                _imageInfoWindow.Show(desktop.MainWindow);
+                _imageInfoWindow.Closing += (_, _) =>
                 {
-                    _exifWindow = null;
+                    _imageInfoWindow = null;
                     vm.Exif.Dispose();
                     vm.Exif = null;
                     vm.InfoWindow.Dispose();
@@ -115,13 +115,13 @@ public class WindowManager : IPlatformSpecificUpdate
             }
             else
             {
-                if (_exifWindow.WindowState == WindowState.Minimized)
+                if (_imageInfoWindow.WindowState == WindowState.Minimized)
                 {
-                    WindowFunctions.ShowMinimizedWindow(_exifWindow);
+                    WindowFunctions.ShowMinimizedWindow(_imageInfoWindow);
                 }
                 else
                 {
-                    _exifWindow.Show();
+                    _imageInfoWindow.Show();
                 }
             }
 

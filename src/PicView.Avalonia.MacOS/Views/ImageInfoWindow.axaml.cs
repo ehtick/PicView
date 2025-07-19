@@ -6,9 +6,9 @@ using PicView.Core.Localization;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class ExifWindow : Window
+public partial class ImageInfoWindow : Window
 {
-    public ExifWindow()
+    public ImageInfoWindow()
     {
         InitializeComponent();
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)

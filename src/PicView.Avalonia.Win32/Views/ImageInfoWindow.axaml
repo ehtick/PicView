@@ -9,7 +9,7 @@
     Title="Loading..."
     Width="400"
     WindowStartupLocation="CenterOwner"
-    x:Class="PicView.Avalonia.Win32.Views.ExifWindow"
+    x:Class="PicView.Avalonia.Win32.Views.ImageInfoWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons;assembly=PicView.Avalonia"

@@ -11,11 +11,11 @@ using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class ExifWindow : Window, IDisposable
+public partial class ImageInfoWindow : Window, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     public readonly ImageInfoWindowConfig Config = new();
-    public ExifWindow()
+    public ImageInfoWindow()
     {
         InitializeComponent();
         Task.Run(async () =>

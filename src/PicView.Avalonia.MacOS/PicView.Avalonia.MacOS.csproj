@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Update="Views\ExifWindow.axaml">
+    <AvaloniaXaml Update="Views\ImageInfoWindow.axaml">
       <SubType>Designer</SubType>
     </AvaloniaXaml>
   </ItemGroup>
@@ -78,7 +78,7 @@
     <Compile Update="App.axaml.cs">
       <DependentUpon>App.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ExifWindow.axaml.cs">
+    <Compile Update="Views\ImageInfoWindow.axaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
