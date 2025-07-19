@@ -23,6 +23,23 @@ public partial class ImageInfoView : UserControl
         InitializeComponent();
         Loaded += (_, _) =>
         {
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+            
+            if (!Application.Current.TryGetResource("ScrollBarThickness", Application.Current.ActualThemeVariant, out var value))
+            {
+                return;
+            }
+
+            if (value is not double scrollBarThickness)
+            {
+                return;
+            }
+            
+            vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Bounds.Width, scrollBarThickness, ConvertToPanel.Bounds.Width + ConvertToPanel.Margin.Left + ConvertToPanel.Margin.Right);
+            
             KeyDown += (_, e) =>
             {
                 switch (e.Key)
@@ -63,13 +80,12 @@ public partial class ImageInfoView : UserControl
             PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
             PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
 
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
-
             Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider)
                 .Subscribe(UpdateValues).AddTo(_disposables);
+
+            SizeChanged += (_, _) =>      
+                vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Bounds.Width, scrollBarThickness, ConvertToPanel.Bounds.Width + ConvertToPanel.Margin.Left + ConvertToPanel.Margin.Right);
+            
 
             vm.Exif.RemoveImageDataCommand.Delay(TimeSpan.FromSeconds(2)).Subscribe(UpdateValues);
 
@@ -151,6 +167,8 @@ public partial class ImageInfoView : UserControl
 
                 await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
             };
+            
+            vm.InfoWindow.IsLoading.Value = false;
         };
     }
 

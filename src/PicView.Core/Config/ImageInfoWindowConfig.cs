@@ -5,11 +5,11 @@ using PicView.Core.Config.ConfigFileManagement;
 namespace PicView.Core.Config;
 
 [JsonSourceGenerationOptions(AllowTrailingCommas = true, WriteIndented = true)]
-[JsonSerializable(typeof(SettingsWindowConfig.SettingsWindowProperties))]
-internal partial class SettingsWindowGenerationContext : JsonSerializerContext;
-public class SettingsWindowConfig() : ConfigFile("SettingsWindow.json")
+[JsonSerializable(typeof(ImageInfoWindowConfig.ImageInfoWindowProperties))]
+internal partial class ImageInfoWindowGenerationContext : JsonSerializerContext;
+public class ImageInfoWindowConfig() : ConfigFile("ImageInfoWindow.json")
 {
-    public SettingsWindowProperties? WindowProperties { get; private set;  }
+    public ImageInfoWindowProperties? WindowProperties { get; private set;  }
 
     public async Task LoadAsync()
     {
@@ -20,33 +20,33 @@ public class SettingsWindowConfig() : ConfigFile("SettingsWindow.json")
             {
                 var jsonString = await File.ReadAllTextAsync(CorrectPath).ConfigureAwait(false);
                 if (JsonSerializer.Deserialize(
-                        jsonString, typeof(SettingsWindowProperties), SettingsWindowGenerationContext.Default) is SettingsWindowProperties settings)
+                        jsonString, typeof(ImageInfoWindowProperties), ImageInfoWindowGenerationContext.Default) is ImageInfoWindowProperties settings)
                 {
                     WindowProperties = settings;
                 }
                 else
                 {
-                    WindowProperties = new SettingsWindowProperties();
+                    WindowProperties = new ImageInfoWindowProperties();
                 } 
             }
             else
             {
-                WindowProperties = new SettingsWindowProperties();
+                WindowProperties = new ImageInfoWindowProperties();
             }
         }
         catch
         {
-            WindowProperties = new SettingsWindowProperties();
+            WindowProperties = new ImageInfoWindowProperties();
         }
     }
     
     public async Task SaveAsync()
     {
         CorrectPath = await ConfigFileManager.SaveConfigFileAndReturnPathAsync(this,
-            CorrectPath, WindowProperties, typeof(SettingsWindowProperties), SettingsWindowGenerationContext.Default);
+            CorrectPath, WindowProperties, typeof(ImageInfoWindowProperties), ImageInfoWindowGenerationContext.Default);
     }
     
-    public class SettingsWindowProperties
+    public class ImageInfoWindowProperties
     {
         public int? Top { get; set; }
         public int? Left { get; set; }

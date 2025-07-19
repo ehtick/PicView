@@ -3,8 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.Localization;
 using R3;
 
@@ -13,9 +14,34 @@ namespace PicView.Avalonia.Win32.Views;
 public partial class ExifWindow : Window, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
+    public ImageInfoWindowConfig Config = new();
     public ExifWindow()
     {
         InitializeComponent();
+        Task.Run(async () =>
+        {
+            await Config.LoadAsync();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (Config.WindowProperties.Maximized)
+                {
+                    WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    var left = Config.WindowProperties.Left;
+                    var top = Config.WindowProperties.Top;
+                    if (left.HasValue && top.HasValue)
+                    {
+                        Position = new PixelPoint(left.Value, top.Value);
+                    }
+                    var width = Config.WindowProperties.Width ?? Bounds.Width;
+                    var height = Config.WindowProperties.Height ?? Bounds.Height;
+                    Width = width < MinWidth ? width : MinWidth;
+                    Height = height < MinHeight ? height : MinHeight;
+                }
+            }, DispatcherPriority.Send);
+        });
         
         if (Settings.Theme.GlassTheme)
         {
@@ -90,8 +116,19 @@ public partial class ExifWindow : Window, IDisposable
         {
             ClientSizeProperty.Changed.ToObservable()
                 .ObserveOn(UIHelper.GetFrameProvider)
-                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); })
+                .Debounce(TimeSpan.FromMilliseconds(100))
+                .Subscribe(size =>
+                {
+                    Config.WindowProperties.Width = size.NewValue.Value.Width;
+                    Config.WindowProperties.Height = size.NewValue.Value.Height;
+                })
                 .AddTo(_disposables);
+        };
+        
+        Closing += async delegate
+        {
+            Hide();
+            await Config.SaveAsync();
         };
     }
 
@@ -102,6 +139,20 @@ public partial class ExifWindow : Window, IDisposable
         var hostWindow = (Window)VisualRoot;
         hostWindow?.BeginMoveDrag(e);
     }
+    
+    private void UpdateWindowPosition(object? sender, PointerReleasedEventArgs e)
+    {
+        if (VisualRoot is null)
+        {
+            return;
+        }
+
+        var hostWindow = (Window)VisualRoot;
+        Config.WindowProperties.Left = hostWindow.Position.X;
+        Config.WindowProperties.Top = hostWindow.Position.Y;
+    }
+    
+    
 
     private void Close(object? sender, RoutedEventArgs e) => Close();
 

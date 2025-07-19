@@ -21,7 +21,8 @@ public class MainViewModel
     public PicViewerModel PicViewer { get; } = new();
     public GalleryViewModel Gallery { get; } = new();
     public ToolsViewModel Tools { get; } = new();
-    public ExifViewModel? Exif { get; set;  }
+    public ExifViewModel? Exif { get; set; }
+    public ImageInfoWindowViewModel? InfoWindow { get; set; }
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)

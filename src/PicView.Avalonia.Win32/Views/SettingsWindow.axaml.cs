@@ -139,8 +139,8 @@ public partial class SettingsWindow : Window
         Closing += async delegate
         {
             Hide();
-            await SaveSettingsAsync();
             await Config.SaveAsync();
+            await SaveSettingsAsync();
         };
 
         InitializeFileAssociationManager();

@@ -1,12 +1,13 @@
 <Window
     BorderBrush="{StaticResource MainBorderColor}"
     BorderThickness="1"
-    CanResize="False"
     ExtendClientAreaChromeHints="NoChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
-    Height="430"
+    Height="320"
+    MinHeight="320"
+    MinWidth="737"
     Title="Loading..."
-    Width="901"
+    Width="350"
     WindowStartupLocation="CenterOwner"
     x:Class="PicView.Avalonia.Win32.Views.ExifWindow"
     x:DataType="viewModels:MainViewModel"
@@ -15,13 +16,13 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
-    xmlns:views="clr-namespace:PicView.Avalonia.Views;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Border
         BorderBrush="{DynamicResource WindowBorderColor}"
         BorderThickness="1"
         PointerPressed="MoveWindow"
+        PointerReleased="UpdateWindowPosition"
         x:Name="ParentBorder">
         <DockPanel Background="Transparent">
             <DockPanel
@@ -249,7 +250,7 @@
                 DockPanel.Dock="Top"
                 Fill="{DynamicResource MainBorderColor}"
                 Height="1"
-                Width="899"
+                Width="{Binding Path=Bounds.Width, ElementName=ParentBorder}"
                 x:Name="BorderRectangle" />
             <main:ImageInfoView Background="{StaticResource NoisyTexture}" x:Name="ExifView" />
         </DockPanel>

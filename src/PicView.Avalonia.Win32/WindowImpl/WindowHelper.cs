@@ -96,7 +96,8 @@ public class WindowManager : IPlatformSpecificUpdate
 
             if (_exifWindow is null)
             {
-                vm.Exif = new ExifViewModel();
+                vm.Exif ??= new ExifViewModel();
+                vm.InfoWindow = new ImageInfoWindowViewModel();
                 _exifWindow = new ExifWindow
                 {
                     DataContext = vm,
@@ -107,6 +108,9 @@ public class WindowManager : IPlatformSpecificUpdate
                 {
                     _exifWindow = null;
                     vm.Exif.Dispose();
+                    vm.Exif = null;
+                    vm.InfoWindow.Dispose();
+                    vm.InfoWindow = null;
                 };
             }
             else
