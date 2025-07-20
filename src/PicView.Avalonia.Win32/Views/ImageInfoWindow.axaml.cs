@@ -170,4 +170,9 @@ public partial class ImageInfoWindow : Window, IDisposable
         Disposable.Dispose(_disposables);
         GC.SuppressFinalize(this);
     }
+
+    ~ImageInfoWindow()
+    {
+        Disposable.Dispose(_disposables);
+    }
 }

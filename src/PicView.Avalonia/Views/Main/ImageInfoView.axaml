@@ -928,7 +928,7 @@
                     <StackPanel
                         HorizontalAlignment="Right"
                         IsVisible="{CompiledBinding InfoWindow.IsConvertBoxEnabled.Value}"
-                        Margin="25,10,35,0"
+                        Margin="45,15,10,0"
                         Width="140"
                         x:Name="ConvertToPanel">
                         <TextBlock

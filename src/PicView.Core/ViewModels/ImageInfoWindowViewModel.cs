@@ -31,7 +31,7 @@ public class ImageInfoWindowViewModel : IDisposable
     {
         const int firstBreakPoint = 500;
         const int secondBreakPoint = 800;
-        const int thirdBreakPoint = 1450;
+        const int thirdBreakPoint = 1100;
 
         var textWidth = TextWidth;
         var copyBtnWidth = CopyButtonWidth;

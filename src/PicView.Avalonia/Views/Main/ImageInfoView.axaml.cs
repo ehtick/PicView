@@ -227,8 +227,8 @@ public partial class ImageInfoView : UserControl
         AspectRatioHelper.SetAspectRatioForTextBox(PixelWidthTextBox, PixelHeightTextBox, sender == PixelWidthTextBox,
             aspectRatio, DataContext as MainViewModel);
 
-        if (!int.TryParse((string?)PixelWidthTextBox.Text, out var width) ||
-            !int.TryParse((string?)PixelHeightTextBox.Text, out var height))
+        if (!int.TryParse(PixelWidthTextBox.Text, out var width) ||
+            !int.TryParse(PixelHeightTextBox.Text, out var height))
         {
             return;
         }

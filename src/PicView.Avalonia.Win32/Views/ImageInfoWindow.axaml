@@ -114,6 +114,26 @@
                 <customControls:IconButton
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
+                    Classes="errorHover"
+                    ClickMode="Release"
+                    Command="{CompiledBinding Exif.RemoveImageDataCommand}"
+                    CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                       FallbackValue=''}"
+                    DockPanel.Dock="Right"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Height="28"
+                    Icon="{StaticResource OffImage}"
+                    IconHeight="17"
+                    IconWidth="17"
+                    IsVisible="{CompiledBinding InfoWindow.IsExtraButtonsEnabled.Value}"
+                    ToolTip.Tip="{CompiledBinding Translation.RemoveImageData.Value,
+                                                  Mode=OneWay}"
+                    Width="45"
+                    x:Name="RemoveImageDataButton" />
+
+                <customControls:IconButton
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{Binding Tools.OptimizeImageCommand}"
                     CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
