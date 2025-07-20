@@ -50,8 +50,8 @@ public class ImageInfoWindowConfig() : ConfigFile("ImageInfoWindow.json")
     {
         public int? Top { get; set; }
         public int? Left { get; set; }
-        public double? Width { get; set; }
-        public double? Height { get; set; }
+        public double? Width { get; set; } = 850;
+        public double? Height { get; set; } = 495;
         public bool Maximized { get; set; }
     }
 }

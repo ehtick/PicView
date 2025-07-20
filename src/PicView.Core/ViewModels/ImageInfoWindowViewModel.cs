@@ -31,7 +31,7 @@ public class ImageInfoWindowViewModel : IDisposable
     {
         const int firstBreakPoint = 500;
         const int secondBreakPoint = 800;
-        const int thirdBreakPoint = 1535;
+        const int thirdBreakPoint = 1450;
 
         var textWidth = TextWidth;
         var copyBtnWidth = CopyButtonWidth;
@@ -63,7 +63,7 @@ public class ImageInfoWindowViewModel : IDisposable
                 TextBoxXxlWidth.Value = newWidthBreakL - 10;
                 break;
             case >= thirdBreakPoint:
-                var aboveThirdWidth = width / 2 - panelWidth - (textWidth * 2 + scrollBarThickness + largePadding) +
+                var aboveThirdWidth = width / 2 - panelWidth - (textWidth * 2 + scrollBarThickness) +
                                       copyBtnWidth;
                 TextBoxWidth.Value = aboveThirdWidth;
                 var aboveThirdWidthL = aboveThirdWidth * 2 + textWidth * 2 - smallPadding * 2;

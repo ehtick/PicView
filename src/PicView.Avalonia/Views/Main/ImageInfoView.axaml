@@ -450,89 +450,11 @@
 
             <uc:SpinWaiter IsVisible="{CompiledBinding InfoWindow.IsLoading.Value}" x:Name="SpinWaiter" />
 
-            <!--  Convert To  -->
-            <StackPanel
-                HorizontalAlignment="Right"
-                IsVisible="{CompiledBinding InfoWindow.IsConvertBoxEnabled.Value}"
-                Margin="25,10,35,0"
-                Width="140"
-                x:Name="ConvertToPanel">
-                <TextBlock
-                    Classes="txt"
-                    FontSize="16"
-                    Margin="0,25,0,10"
-                    Text="{CompiledBinding Translation.ConvertTo.Value,
-                                           Mode=OneWay}"
-                    TextAlignment="Center" />
-                <ComboBox
-                    Background="{DynamicResource SecondaryBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1"
-                    CornerRadius="2"
-                    FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
-                    Padding="5,7,0,7"
-                    SelectedIndex="0"
-                    Width="140"
-                    x:Name="ConversionComboBox">
-                    <ComboBoxItem Content="{CompiledBinding Translation.NoConversion.Value, Mode=OneWay}" x:Name="NoConversion" />
-                    <ComboBoxItem Content=".png" x:Name="PngItem" />
-                    <ComboBoxItem Content=".jpg" x:Name="JpgItem" />
-                    <ComboBoxItem Content=".webp" x:Name="WebpItem" />
-                    <ComboBoxItem Content=".avif" x:Name="AvifItem" />
-                    <ComboBoxItem Content=".heic" x:Name="HeicItem" />
-                    <ComboBoxItem Content=".jxl" x:Name="JxlItem" />
-                </ComboBox>
-
-                <!--  Save, save as  -->
-                <SplitButton
-                    Background="{DynamicResource AccentColor}"
-                    Classes="BorderStyle accentHover mainBtn"
-                    CornerRadius="2"
-                    Margin="0,40,0,0"
-                    Width="140"
-                    x:Name="SaveButton">
-                    <TextBlock
-                        Classes="txt"
-                        Text="{CompiledBinding Translation.Save.Value,
-                                               Mode=OneWay}"
-                        TextAlignment="Center" />
-                    <SplitButton.Flyout>
-                        <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
-                            <Button
-                                Background="Transparent"
-                                Width="80"
-                                x:Name="SaveAsButton">
-                                <TextBlock
-                                    Classes="txt"
-                                    Foreground="{DynamicResource MainTextColor}"
-                                    Text="{CompiledBinding Translation.SaveAs.Value,
-                                                           Mode=OneWay}"
-                                    TextAlignment="Center" />
-                            </Button>
-                        </MenuFlyout>
-                    </SplitButton.Flyout>
-                </SplitButton>
-
-                <!--  Reset  -->
-                <Button
-                    Classes="BorderStyle altHover mainBtn"
-                    CornerRadius="2"
-                    Margin="0,20,0,0"
-                    Width="140"
-                    x:Name="ResetButton">
-                    <TextBlock
-                        Classes="txt"
-                        Text="{CompiledBinding Translation.Reset.Value,
-                                               Mode=OneWay}"
-                        TextAlignment="Center" />
-                </Button>
-            </StackPanel>
-
             <StackPanel>
 
-                <StackPanel>
+                <StackPanel Orientation="Horizontal">
 
-                    <WrapPanel HorizontalAlignment="Center">
+                    <WrapPanel HorizontalAlignment="Center" MaxWidth="{Binding Path=Bounds.Width, ElementName=ParentPanel}">
 
                         <!--  File name  -->
                         <StackPanel Margin="15,10" Orientation="Horizontal">
@@ -1001,6 +923,85 @@
                         </StackPanel>
 
                     </WrapPanel>
+
+                    <!--  Convert To  -->
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        IsVisible="{CompiledBinding InfoWindow.IsConvertBoxEnabled.Value}"
+                        Margin="25,10,35,0"
+                        Width="140"
+                        x:Name="ConvertToPanel">
+                        <TextBlock
+                            Classes="txt"
+                            FontSize="16"
+                            Margin="0,25,0,10"
+                            Text="{CompiledBinding Translation.ConvertTo.Value,
+                                                   Mode=OneWay}"
+                            TextAlignment="Center" />
+                        <ComboBox
+                            Background="{DynamicResource SecondaryBackgroundColor}"
+                            BorderBrush="{DynamicResource MainBorderColor}"
+                            BorderThickness="1"
+                            CornerRadius="2"
+                            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+                            Padding="5,7,0,7"
+                            SelectedIndex="0"
+                            Width="140"
+                            x:Name="ConversionComboBox">
+                            <ComboBoxItem Content="{CompiledBinding Translation.NoConversion.Value, Mode=OneWay}" x:Name="NoConversion" />
+                            <ComboBoxItem Content=".png" x:Name="PngItem" />
+                            <ComboBoxItem Content=".jpg" x:Name="JpgItem" />
+                            <ComboBoxItem Content=".webp" x:Name="WebpItem" />
+                            <ComboBoxItem Content=".avif" x:Name="AvifItem" />
+                            <ComboBoxItem Content=".heic" x:Name="HeicItem" />
+                            <ComboBoxItem Content=".jxl" x:Name="JxlItem" />
+                        </ComboBox>
+
+                        <!--  Save, save as  -->
+                        <SplitButton
+                            Background="{DynamicResource AccentColor}"
+                            Classes="BorderStyle accentHover mainBtn"
+                            CornerRadius="2"
+                            Margin="0,40,0,0"
+                            Width="140"
+                            x:Name="SaveButton">
+                            <TextBlock
+                                Classes="txt"
+                                Text="{CompiledBinding Translation.Save.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center" />
+                            <SplitButton.Flyout>
+                                <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
+                                    <Button
+                                        Background="Transparent"
+                                        Width="80"
+                                        x:Name="SaveAsButton">
+                                        <TextBlock
+                                            Classes="txt"
+                                            Foreground="{DynamicResource MainTextColor}"
+                                            Text="{CompiledBinding Translation.SaveAs.Value,
+                                                                   Mode=OneWay}"
+                                            TextAlignment="Center" />
+                                    </Button>
+                                </MenuFlyout>
+                            </SplitButton.Flyout>
+                        </SplitButton>
+
+                        <!--  Reset  -->
+                        <Button
+                            Classes="BorderStyle altHover mainBtn"
+                            CornerRadius="2"
+                            Margin="0,20,0,0"
+                            Width="140"
+                            x:Name="ResetButton">
+                            <TextBlock
+                                Classes="txt"
+                                Text="{CompiledBinding Translation.Reset.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center" />
+                        </Button>
+                    </StackPanel>
+
                 </StackPanel>
 
                 <!--  Copyright, comment, etc.  -->

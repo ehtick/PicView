@@ -38,7 +38,7 @@ public partial class ImageInfoView : UserControl
                 return;
             }
             
-            vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Width, scrollBarThickness, ConvertToPanel.Width + ConvertToPanel.Margin.Left + ConvertToPanel.Margin.Right);
+            vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Width, scrollBarThickness, ConvertToPanel.Width);
             
             KeyDown += (_, e) =>
             {
@@ -84,7 +84,7 @@ public partial class ImageInfoView : UserControl
                 .Subscribe(UpdateValues).AddTo(_disposables);
 
             SizeChanged += (_, _) =>      
-                vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Bounds.Width, scrollBarThickness, ConvertToPanel.Width + ConvertToPanel.Margin.Left + ConvertToPanel.Margin.Right);
+                vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Bounds.Width, scrollBarThickness, ConvertToPanel.Width);
             
 
             vm.Exif.RemoveImageDataCommand.Delay(TimeSpan.FromSeconds(2)).Subscribe(UpdateValues);

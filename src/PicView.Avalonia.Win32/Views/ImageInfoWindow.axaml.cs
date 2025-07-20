@@ -35,8 +35,8 @@ public partial class ImageInfoWindow : Window, IDisposable
                     {
                         Position = new PixelPoint(left.Value, top.Value);
                     }
-                    var width = Config.WindowProperties.Width ?? Bounds.Width;
-                    var height = Config.WindowProperties.Height ?? Bounds.Height;
+                    var width = Config.WindowProperties.Width ?? 850;
+                    var height = Config.WindowProperties.Height ?? 495;
                     Width = width < MinWidth ? MinWidth : width;
                     Height = height < MinHeight ? MinHeight : height;
                 }
@@ -128,6 +128,13 @@ public partial class ImageInfoWindow : Window, IDisposable
         Closing += async delegate
         {
             Hide();
+            if (VisualRoot is null)
+            {
+                return;
+            }
+
+            var hostWindow = (Window)VisualRoot;
+            hostWindow?.Focus();
             await Config.SaveAsync();
         };
     }
