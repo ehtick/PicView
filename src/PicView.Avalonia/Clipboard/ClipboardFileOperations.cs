@@ -66,18 +66,40 @@ public static class ClipboardFileOperations
             return;
         }
 
-        var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
-        var duplicatedPath = await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.PicViewer.FileInfo.CurrentValue);
-
-        if (string.IsNullOrWhiteSpace(duplicatedPath) || !File.Exists(duplicatedPath))
+        if (Settings.Navigation.IsFileWatcherEnabled)
         {
-            return;
+            NavigationManager.ImageIterator.IsWatcherEnabled = false;
         }
 
-        await Task.WhenAll(
-            AnimationsHelper.CopyAnimation(), 
-            NavigationManager.LoadPicFromFile(duplicatedPath, vm)
-        );
+        try
+        {
+            var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
+            var duplicatedPath =
+                await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.PicViewer.FileInfo.CurrentValue);
+
+            if (string.IsNullOrWhiteSpace(duplicatedPath) || !File.Exists(duplicatedPath))
+            {
+                return;
+            }
+
+            await NavigationManager.AddFile(duplicatedPath);
+            await Task.WhenAll(
+                AnimationsHelper.CopyAnimation(), 
+                NavigationManager.LoadPicFromFile(duplicatedPath, vm)
+            );
+        }
+        finally
+        {
+            if (Settings.Navigation.IsFileWatcherEnabled)
+            {
+                NavigationManager.EnableWatcher();
+            }
+            else
+            {
+                NavigationManager.DisableWatcher();
+            }
+        }
+
     }
     
     /// <summary>

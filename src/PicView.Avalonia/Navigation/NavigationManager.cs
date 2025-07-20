@@ -589,12 +589,17 @@ public static class NavigationManager
         ImageIterator.ImagePaths.Clear();
         await ImageIterator.DisposeAsync();
     }
+    
+    public static void DisableWatcher() => ImageIterator.IsWatcherEnabled = false;
+    public static void EnableWatcher() => ImageIterator.IsWatcherEnabled = true;
 
     public static bool IsCollectionEmpty => ImageIterator?.ImagePaths is null || ImageIterator?.ImagePaths?.Count < 0;
     public static List<FileInfo>? GetCollection => ImageIterator?.ImagePaths;
 
     public static void UpdateFileListAndIndex(List<FileInfo> fileList, int index) =>
         ImageIterator?.UpdateFileListAndIndex(fileList, index);
+        
+    public static async Task AddFile(string fileName) => await ImageIterator.AddFile(fileName);
 
     /// <summary>
     ///     Returns the file name at a given index in the image collection.

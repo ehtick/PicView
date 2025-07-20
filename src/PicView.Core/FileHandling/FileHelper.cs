@@ -133,9 +133,10 @@ public static partial class FileHelper
         try
         {
             fileInfo ??= new FileInfo(currentFile);
-            await using var fileStream = GetOptimizedFileStream(fileInfo, true);
             var newFile = GenerateUniqueFileName(currentFile);
-            await fileStream.CopyToAsync(new FileStream(newFile, FileMode.CreateNew)).ConfigureAwait(false);
+            await using var fs = new FileStream(newFile, FileMode.OpenOrCreate, FileAccess.Write);
+            var bytes = await File.ReadAllBytesAsync(fileInfo.FullName);
+            await fs.WriteAsync(bytes).ConfigureAwait(false);
             return newFile;
         }
         catch (Exception e)

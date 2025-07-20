@@ -25,6 +25,8 @@ public class ImageIterator : IAsyncDisposable
 
     public List<FileInfo> ImagePaths { get; private set; }
     public int CurrentIndex { get; private set; }
+    
+    public bool IsWatcherEnabled { get; set; } = Settings.Navigation.IsFileWatcherEnabled;
 
     public int GetNonZeroIndex => CurrentIndex + 1 > GetCount ? 1 : CurrentIndex + 1;
 
@@ -114,10 +116,6 @@ public class ImageIterator : IAsyncDisposable
 
         _watcher?.Dispose();
         
-        if (!Settings.Navigation.IsFileWatcherEnabled)
-        {
-            return;
-        }
         _watcher = new FileSystemWatcher(fileInfo.DirectoryName!)
         {
             EnableRaisingEvents = true,
@@ -128,7 +126,7 @@ public class ImageIterator : IAsyncDisposable
 
         _watcher.Created += (_, e) =>
         {
-            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
+            if (!e.FullPath.IsSupported() || !IsWatcherEnabled)
             {
                 return; // Early exit
             }
@@ -151,7 +149,7 @@ public class ImageIterator : IAsyncDisposable
         };
         _watcher.Deleted += (_, e) =>
         {
-            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
+            if (!e.FullPath.IsSupported() || !IsWatcherEnabled)
             {
                 return; // Early exit
             }
@@ -174,7 +172,7 @@ public class ImageIterator : IAsyncDisposable
         };
         _watcher.Renamed += (_, e) =>
         {
-            if (!e.FullPath.IsSupported() || !Settings.Navigation.IsFileWatcherEnabled)
+            if (!e.FullPath.IsSupported() || !IsWatcherEnabled)
             {
                 return; // Early exit
             }
@@ -201,50 +199,8 @@ public class ImageIterator : IAsyncDisposable
     {
         try
         {
-            var fileInfo = new FileInfo(e.FullPath);
-            if (fileInfo.Exists == false)
-            {
-                return;
-            }
-
-            var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
-                ? new FileInfo(_watcher.Path)
-                : fileInfo;
-
-            var newList = await Task.FromResult(_vm.PlatformService.GetFiles(sourceFileInfo));
-            if (newList.Count == 0)
-            {
-                return;
-            }
-
-            ImagePaths = newList;
             _isRunning = true;
-
-            TitleManager.SetTitle(_vm);
-
-            var index = ImagePaths.FindIndex(x => x.FullName.Equals(e.FullPath));
-            if (index < 0)
-            {
-                PreLoader.Resynchronize(ImagePaths);
-                _isRunning = false;
-                return;
-            }
-
-            var isGalleryItemAdded = await GalleryFunctions.AddGalleryItem(index, fileInfo, _vm);
-            if (isGalleryItemAdded)
-            {
-                if (Settings.Gallery.IsBottomGalleryShown && ImagePaths.Count > 1)
-                {
-                    if (_vm.Gallery.GalleryMode.CurrentValue is GalleryMode.BottomToClosed or GalleryMode.FullToClosed)
-                    {
-                        _vm.Gallery.GalleryMode.Value = GalleryMode.ClosedToBottom;
-                    }
-                }
-
-                GalleryNavigation.CenterScrollToSelectedItem(_vm);
-            }
-
-            PreLoader.Resynchronize(ImagePaths);
+            await AddFile(e.FullPath);
         }
         catch (Exception exception)
         {
@@ -254,6 +210,52 @@ public class ImageIterator : IAsyncDisposable
         {
             _isRunning = false;
         }
+    }
+
+    public async Task AddFile(string fileName)
+    {
+        var fileInfo = new FileInfo(fileName);
+        if (fileInfo.Exists == false)
+        {
+            return;
+        }
+        var sourceFileInfo = Settings.Sorting.IncludeSubDirectories
+            ? new FileInfo(_watcher.Path)
+            : fileInfo;
+
+        var newList = await Task.FromResult(_vm.PlatformService.GetFiles(sourceFileInfo));
+        if (newList.Count == 0)
+        {
+            return;
+        }
+
+        ImagePaths = newList;
+        
+        TitleManager.SetTitle(_vm);
+
+        var index = ImagePaths.FindIndex(x => x.FullName.Equals(fileName));
+        if (index < 0)
+        {
+            PreLoader.Resynchronize(ImagePaths);
+            _isRunning = false;
+            return;
+        }
+
+        var isGalleryItemAdded = await GalleryFunctions.AddGalleryItem(index, fileInfo, _vm);
+        if (isGalleryItemAdded)
+        {
+            if (Settings.Gallery.IsBottomGalleryShown && ImagePaths.Count > 1)
+            {
+                if (_vm.Gallery.GalleryMode.CurrentValue is GalleryMode.BottomToClosed or GalleryMode.FullToClosed)
+                {
+                    _vm.Gallery.GalleryMode.Value = GalleryMode.ClosedToBottom;
+                }
+            }
+
+            GalleryNavigation.CenterScrollToSelectedItem(_vm);
+        }
+
+        PreLoader.Resynchronize(ImagePaths);
     }
 
     private async Task OnFileDeleted(FileSystemEventArgs e)
