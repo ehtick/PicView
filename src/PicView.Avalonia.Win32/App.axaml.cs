@@ -29,7 +29,7 @@ namespace PicView.Avalonia.Win32;
 public class App : Application, IPlatformSpecificService, IPlatformWindowService
 {
     private static WinMainWindow? _mainWindow;
-    private static WindowManager? _windowManager;
+    private static WindowInitializer? _windowInitializer;
     private TaskbarProgress? _taskbarProgress;
     private MainViewModel? _vm;
      
@@ -79,7 +79,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             {
                 _mainWindow.DataContext = _vm;
                 StartUpHelper.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
-                _windowManager = new WindowManager();
+                _windowInitializer = new WindowInitializer();
             }, DispatcherPriority.Send);
         }
         catch (Exception e)
@@ -238,25 +238,25 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     #region Window interface implementations
     
     public void ShowAboutWindow() =>
-        _windowManager?.ShowAboutWindow(_vm);
+        _windowInitializer?.ShowAboutWindow(_vm);
 
     public async Task ShowImageInfoWindow() =>
-        await _windowManager?.ShowImageInfoWindow(_vm);
+        await _windowInitializer?.ShowImageInfoWindow(_vm);
 
     public void ShowKeybindingsWindow() =>
-        _windowManager?.ShowKeybindingsWindow(_vm);
+        _windowInitializer?.ShowKeybindingsWindow(_vm);
 
     public void ShowSettingsWindow() =>
-        _windowManager?.ShowSettingsWindow(_vm);
+        _windowInitializer?.ShowSettingsWindow(_vm);
 
     public void ShowSingleImageResizeWindow() =>
-        _windowManager?.ShowSingleImageResizeWindow(_vm);
+        _windowInitializer?.ShowSingleImageResizeWindow(_vm);
 
     public void ShowBatchResizeWindow() =>
-        _windowManager?.ShowBatchResizeWindow(_vm);
+        _windowInitializer?.ShowBatchResizeWindow(_vm);
 
     public void ShowEffectsWindow() =>
-        _windowManager?.ShowEffectsWindow(_vm);
+        _windowInitializer?.ShowEffectsWindow(_vm);
 
     /// <inheritdoc />
     public async Task Maximize(bool saveSetting = true) =>

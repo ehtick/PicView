@@ -4,17 +4,17 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Interfaces;
+using PicView.Avalonia.MacOS.PlatformUpdate;
+using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Win32.PlatformUpdate;
-using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.ViewModels;
 
-namespace PicView.Avalonia.Win32.WindowImpl;
+namespace PicView.Avalonia.MacOS.WindowImpl;
 
-public class WindowManager : IPlatformSpecificUpdate
+public class WindowInitializer : IPlatformSpecificUpdate
 {
     private AboutWindow? _aboutWindow;
     private BatchResizeWindow? _batchResizeWindow;
@@ -29,9 +29,9 @@ public class WindowManager : IPlatformSpecificUpdate
 
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
     {
-        await WinUpdateHelper.HandleWindowsUpdate(updateInfo, tempPath);
+        await MacUpdateHelper.HandleMacOSUpdate(updateInfo, tempPath);
     }
-    
+
     public void ShowAboutWindow(MainViewModel vm)
     {
         if (Dispatcher.UIThread.CheckAccess())
