@@ -41,7 +41,7 @@ public static class FileSaverHelper
 
     public static async Task SaveFileAsync(string? filename, string destination, MainViewModel vm)
     {
-        if (vm.PicViewer.EffectConfig is not null)
+        if (vm.PicViewer.EffectConfig.Value is not null)
         {
             await SaveImageFromBitmap();
         }
@@ -65,7 +65,12 @@ public static class FileSaverHelper
                 null,
                 null,
                 Path.GetExtension(destination),
-                vm.GlobalSettings.RotationAngle.CurrentValue);
+                vm.GlobalSettings.RotationAngle.CurrentValue,
+                null,
+                false,
+                false,
+                true,
+                vm.PicViewer.ScaleX.Value == -1);
         }
         
         async Task SaveImageFromBitmap()

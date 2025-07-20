@@ -31,7 +31,7 @@ public static class SaveImageFileHelper
     public static async Task<bool> SaveImageAsync(Stream? stream, string? path, string? destination = null,
         uint? width = null, uint? height = null, uint? quality = null, string? ext = null, double? rotationAngle = null,
         Percentage? percentage = null, bool losslessCompress = false, bool lossyCompress = false,
-        bool respectAspectRatio = true)
+        bool respectAspectRatio = true, bool flipImage = false)
     {
         string? tempDestination = null;
         try
@@ -55,6 +55,11 @@ public static class SaveImageFileHelper
             if (quality is not null)
             {
                 magickImage.Quality = quality.Value;
+            }
+
+            if (flipImage)
+            {
+                magickImage.Flop();
             }
 
             if (percentage.HasValue)
