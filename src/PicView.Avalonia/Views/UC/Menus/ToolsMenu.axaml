@@ -112,7 +112,7 @@
                     Canvas.Left="7"
                     Canvas.Top="53"
                     Classes="ButtonBorder altHover"
-                    Command="{CompiledBinding Window.ShowExifWindow}"
+                    Command="{CompiledBinding Window.ShowImageInfoWindow}"
                     Data="{StaticResource ImageInfoGeometry}"
                     Foreground="{StaticResource ImageInfoBrush}"
                     Height="46"

@@ -28,17 +28,7 @@ public partial class ImageInfoView : UserControl
                 return;
             }
             
-            if (!Application.Current.TryGetResource("ScrollBarThickness", Application.Current.ActualThemeVariant, out var value))
-            {
-                return;
-            }
-
-            if (value is not double scrollBarThickness)
-            {
-                return;
-            }
-            
-            vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Width, scrollBarThickness, ConvertToPanel.Width);
+            ResponsiveResizeUpdate(vm);
             
             KeyDown += (_, e) =>
             {
@@ -83,8 +73,7 @@ public partial class ImageInfoView : UserControl
             Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.Value, UIHelper.GetFrameProvider)
                 .Subscribe(UpdateValues).AddTo(_disposables);
 
-            SizeChanged += (_, _) =>      
-                vm.InfoWindow.ResponsiveResizeUpdate(ParentPanel.Bounds.Width, scrollBarThickness, ConvertToPanel.Width);
+            SizeChanged += (_, _) => ResponsiveResizeUpdate(vm);
             
 
             vm.Exif.RemoveImageDataCommand.Delay(TimeSpan.FromSeconds(2)).Subscribe(UpdateValues);
@@ -170,6 +159,27 @@ public partial class ImageInfoView : UserControl
             
             vm.InfoWindow.IsLoading.Value = false;
         };
+    }
+
+    private void ResponsiveResizeUpdate(MainViewModel vm)
+    {
+        if (!Application.Current.TryGetResource("ScrollBarThickness", Application.Current.ActualThemeVariant, out var value))
+        {
+            return;
+        }
+
+        if (value is not double scrollBarThickness)
+        {
+            return;
+        }
+
+        var panelWidth = double.IsNaN(ParentPanel.Width) ? ParentPanel.Bounds.Width : ParentPanel.Width;
+        panelWidth = panelWidth is 0 ? MinWidth : panelWidth;
+
+        var convertWidth = double.IsNaN(ConvertToPanel.Width) ? ConvertToPanel.Bounds.Width : ConvertToPanel.Width;
+        convertWidth = convertWidth is 0 ? MinWidth : convertWidth;
+        
+        vm.InfoWindow.ResponsiveResizeUpdate(panelWidth, scrollBarThickness, convertWidth);
     }
 
     private void UpdateValues(FileInfo? fileInfo)

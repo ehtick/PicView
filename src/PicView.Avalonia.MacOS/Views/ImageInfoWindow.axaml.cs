@@ -13,34 +13,11 @@ namespace PicView.Avalonia.MacOS.Views;
 public partial class ImageInfoWindow : Window, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
-    public readonly ImageInfoWindowConfig Config = new();
-    public ImageInfoWindow() 
+    private readonly ImageInfoWindowConfig _config;
+    public ImageInfoWindow(ImageInfoWindowConfig config)
     {
+        _config = config;
         InitializeComponent();
-        Task.Run(async () =>
-        {
-            await Config.LoadAsync();
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (Config.WindowProperties.Maximized)
-                {
-                    WindowState = WindowState.Maximized;
-                }
-                else
-                {
-                    var left = Config.WindowProperties.Left;
-                    var top = Config.WindowProperties.Top;
-                    if (left.HasValue && top.HasValue)
-                    {
-                        Position = new PixelPoint(left.Value, top.Value);
-                    }
-                    var width = Config.WindowProperties.Width ?? 850;
-                    var height = Config.WindowProperties.Height ?? 495;
-                    Width = width < MinWidth ? MinWidth : width;
-                    Height = height < MinHeight ? MinHeight : height;
-                }
-            });
-        });
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {
             WindowBorder.Background = Brushes.Transparent;
@@ -54,8 +31,8 @@ public partial class ImageInfoWindow : Window, IDisposable
                 .Debounce(TimeSpan.FromMilliseconds(100))
                 .Subscribe(size =>
                 {
-                    Config.WindowProperties.Width = size.NewValue.Value.Width;
-                    Config.WindowProperties.Height = size.NewValue.Value.Height;
+                    _config.WindowProperties.Width = size.NewValue.Value.Width;
+                    _config.WindowProperties.Height = size.NewValue.Value.Height;
                 })
                 .AddTo(_disposables);
         };
@@ -70,7 +47,7 @@ public partial class ImageInfoWindow : Window, IDisposable
 
             var hostWindow = (Window)VisualRoot;
             hostWindow?.Focus();
-            await Config.SaveAsync();
+            await _config.SaveAsync();
         };
     }
 
@@ -90,8 +67,8 @@ public partial class ImageInfoWindow : Window, IDisposable
         }
 
         var hostWindow = (Window)VisualRoot;
-        Config.WindowProperties.Left = hostWindow.Position.X;
-        Config.WindowProperties.Top = hostWindow.Position.Y;
+        _config.WindowProperties.Left = hostWindow.Position.X;
+        _config.WindowProperties.Top = hostWindow.Position.Y;
     }
     
     public void Dispose()

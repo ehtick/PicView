@@ -11,6 +11,7 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.Win32.WindowImpl;
+using PicView.Core.Config;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
@@ -31,7 +32,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     private static WindowManager? _windowManager;
     private TaskbarProgress? _taskbarProgress;
     private MainViewModel? _vm;
-
+     
     public override void Initialize()
     {
 #if DEBUG
@@ -239,8 +240,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public void ShowAboutWindow() =>
         _windowManager?.ShowAboutWindow(_vm);
 
-    public void ShowExifWindow() =>
-        _windowManager?.ShowExifWindow(_vm);
+    public async Task ShowImageInfoWindow() =>
+        await _windowManager?.ShowImageInfoWindow(_vm);
 
     public void ShowKeybindingsWindow() =>
         _windowManager?.ShowKeybindingsWindow(_vm);

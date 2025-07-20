@@ -9,6 +9,7 @@ using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.MacOS.WindowImpl;
@@ -18,7 +19,10 @@ public class WindowManager : IPlatformSpecificUpdate
     private AboutWindow? _aboutWindow;
     private BatchResizeWindow? _batchResizeWindow;
     private EffectsWindow? _effectsWindow;
+    
     private ImageInfoWindow? _imageInfoWindow;
+    private ImageInfoWindowConfig? _imageInfoWindowConfig;
+    
     private KeybindingsWindow? _keybindingsWindow;
     private SettingsWindow? _settingsWindow;
     private SingleImageResizeWindow? _singleImageResizeWindow;
@@ -74,36 +78,30 @@ public class WindowManager : IPlatformSpecificUpdate
         }
     }
 
-    public void ShowExifWindow(MainViewModel vm)
+    public async Task ShowImageInfoWindow(MainViewModel vm)
     {
-        if (Dispatcher.UIThread.CheckAccess())
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            Set();
-        }
-        else
-        {
-            Dispatcher.UIThread.InvokeAsync(Set);
+            return;
         }
 
-        return;
-
-        void Set()
+        if (_imageInfoWindow is null)
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            if (_imageInfoWindowConfig?.WindowProperties is null )
             {
-                return;
+                _imageInfoWindowConfig = new ImageInfoWindowConfig();
+                await _imageInfoWindowConfig.LoadAsync();
             }
 
-            if (_imageInfoWindow is null)
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.Exif ??= new ExifViewModel();
                 vm.InfoWindow = new ImageInfoWindowViewModel();
-                _imageInfoWindow = new ImageInfoWindow
+                _imageInfoWindow = new ImageInfoWindow(_imageInfoWindowConfig)
                 {
                     DataContext = vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _imageInfoWindow.Show(desktop.MainWindow);
+                Show();
                 _imageInfoWindow.Closing += (_, _) =>
                 {
                     _imageInfoWindow = null;
@@ -112,8 +110,11 @@ public class WindowManager : IPlatformSpecificUpdate
                     vm.InfoWindow.Dispose();
                     vm.InfoWindow = null;
                 };
-            }
-            else
+            });
+        }
+        else
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (_imageInfoWindow.WindowState == WindowState.Minimized)
                 {
@@ -121,11 +122,39 @@ public class WindowManager : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _imageInfoWindow.Show();
+                    Show();
                 }
-            }
+            });
+        }
+        await FunctionsMapper.CloseMenus();
+        
+        return;
 
-            _ = FunctionsMapper.CloseMenus();
+        void Show()
+        {
+            if (_imageInfoWindowConfig.WindowProperties.Maximized)
+            {
+                _imageInfoWindow.WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                var left = _imageInfoWindowConfig.WindowProperties.Left;
+                var top = _imageInfoWindowConfig.WindowProperties.Top;
+                if (left.HasValue && top.HasValue)
+                {
+                    _imageInfoWindow.WindowStartupLocation  = WindowStartupLocation.Manual;
+                    _imageInfoWindow.Position = new PixelPoint(left.Value, top.Value);
+                }
+                else
+                {
+                    _imageInfoWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                }
+                var width = _imageInfoWindowConfig.WindowProperties.Width ?? 850;
+                var height = _imageInfoWindowConfig.WindowProperties.Height ?? 495;
+                _imageInfoWindow.Width = width < _imageInfoWindow.MinWidth ? _imageInfoWindow.MinWidth : width;
+                _imageInfoWindow.Height = height < _imageInfoWindow.MinHeight ? _imageInfoWindow.MinHeight : height;
+            }
+            _imageInfoWindow.Show(desktop.MainWindow);
         }
     }
 

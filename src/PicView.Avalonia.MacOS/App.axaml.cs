@@ -247,8 +247,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public void ShowAboutWindow() =>
         _windowManager?.ShowAboutWindow(_vm);
 
-    public void ShowExifWindow() =>
-        _windowManager?.ShowExifWindow(_vm);
+    public async Task ShowImageInfoWindow() =>
+        await _windowManager?.ShowImageInfoWindow(_vm);
 
     public void ShowKeybindingsWindow() =>
         _windowManager?.ShowKeybindingsWindow(_vm);

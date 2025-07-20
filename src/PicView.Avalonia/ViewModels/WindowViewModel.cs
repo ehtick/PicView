@@ -7,11 +7,11 @@ public class WindowViewModel
 {
     public void NewWindow() => ProcessHelper.StartNewProcess();
     
-    public void ShowExifWindow()
+    public async Task ShowImageInfoWindow()
     {
         if (UIHelper.TryGetMainViewModel(out var vm))
         {
-            vm.PlatformWindowService.ShowExifWindow();
+            await vm.PlatformWindowService.ShowImageInfoWindow();
         }
     }
 

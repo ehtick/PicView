@@ -450,11 +450,7 @@ public static class FunctionsMapper
         return Task.CompletedTask;
     }
 
-    public static Task ImageInfoWindow()
-    {
-        Dispatcher.UIThread.Invoke(() => Vm?.PlatformWindowService?.ShowExifWindow());
-        return Task.CompletedTask;
-    }
+    public static async Task ImageInfoWindow() => await Vm?.PlatformWindowService?.ShowImageInfoWindow();
 
     public static Task ResizeWindow()
     {

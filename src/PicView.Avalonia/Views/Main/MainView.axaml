@@ -708,7 +708,7 @@
                 </MenuItem.Icon>
 
                 <!--  Exif window  -->
-                <MenuItem Command="{CompiledBinding Window.ShowExifWindow}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding Window.ShowImageInfoWindow}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource ImageInfoGeometry}"

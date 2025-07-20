@@ -156,7 +156,7 @@
                         IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull}}" />
                     <NativeMenuItemSeparator />
-                    <NativeMenuItem Command="{CompiledBinding Window.ShowExifWindow}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}" />
+                    <NativeMenuItem Command="{CompiledBinding Window.ShowImageInfoWindow}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{CompiledBinding Tools.FilePropertiesCommand}"
                         CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
