@@ -1,10 +1,12 @@
 <Window
-    CanResize="False"
     ExtendClientAreaChromeHints="SystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     Height="385"
-    Title="ExifWindow"
+    MinHeight="320"
+    MinWidth="400"
+    Title="Loading..."
     Width="900"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.ImageInfoWindow"
     x:DataType="viewModels:MainViewModel"
@@ -20,7 +22,7 @@
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
-    <DockPanel PointerPressed="MoveWindow">
+    <DockPanel PointerPressed="MoveWindow" PointerReleased="UpdateWindowPosition">
         <DockPanel
             Background="{DynamicResource SecondaryBackgroundColor}"
             DockPanel.Dock="Top"
@@ -47,6 +49,27 @@
                                               Mode=OneWay}"
                 Width="45"
                 x:Name="RecycleButton" />
+
+            <customControls:IconButton
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="errorHover"
+                ClickMode="Release"
+                Command="{CompiledBinding Exif.RemoveImageDataCommand}"
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
+                                                   FallbackValue=''}"
+                DockPanel.Dock="Right"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Height="28"
+                Icon="{StaticResource OffImage}"
+                IconHeight="17"
+                IconWidth="17"
+                ToolTip.Tip="{CompiledBinding Translation.RemoveImageData.Value,
+                                              Mode=OneWay}"
+                Width="45"
+                x:Name="RemoveButton" />
+
+
 
             <customControls:IconButton
                 BorderBrush="{DynamicResource MainBorderColor}"
