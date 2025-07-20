@@ -120,22 +120,16 @@ public static partial class FileHelper
     ///     to avoid name conflicts, and returns the path of the new file. If any exception occurs, returns an empty string.
     /// </summary>
     /// <param name="currentFile">The path of the file to be duplicated.</param>
-    /// <param name="fileInfo">
-    ///     Optional: The <see cref="FileInfo" /> object representing the file to be duplicated. Defaults to
-    ///     null.
-    /// </param>
     /// <returns>
-    ///     A task representing the asynchronous operation, with the path of the new file as the result, or an empty
-    ///     string if any exception occurs.
+    ///     The path of the new file as the result, or an empty string if any exception occurs.
     /// </returns>
-    public static async Task<string> DuplicateAndReturnFileNameAsync(string currentFile, FileInfo? fileInfo = null)
+    public static async Task<string> DuplicateAndReturnFileNameAsync(string currentFile)
     {
         try
         {
-            fileInfo ??= new FileInfo(currentFile);
             var newFile = GenerateUniqueFileName(currentFile);
             await using var fs = new FileStream(newFile, FileMode.OpenOrCreate, FileAccess.Write);
-            var bytes = await File.ReadAllBytesAsync(fileInfo.FullName);
+            var bytes = await File.ReadAllBytesAsync(currentFile).ConfigureAwait(false);
             await fs.WriteAsync(bytes).ConfigureAwait(false);
             return newFile;
         }

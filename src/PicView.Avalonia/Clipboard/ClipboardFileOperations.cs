@@ -73,9 +73,8 @@ public static class ClipboardFileOperations
 
         try
         {
-            var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
             var duplicatedPath =
-                await FileHelper.DuplicateAndReturnFileNameAsync(oldPath, vm.PicViewer.FileInfo.CurrentValue);
+                await FileHelper.DuplicateAndReturnFileNameAsync(vm.PicViewer.FileInfo.CurrentValue.FullName);
 
             if (string.IsNullOrWhiteSpace(duplicatedPath) || !File.Exists(duplicatedPath))
             {
@@ -99,7 +98,6 @@ public static class ClipboardFileOperations
                 NavigationManager.DisableWatcher();
             }
         }
-
     }
     
     /// <summary>
