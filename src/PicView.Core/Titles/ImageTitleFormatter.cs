@@ -90,6 +90,7 @@ public static class ImageTitleFormatter
         sb.Append(" x ");
         sb.Append(height);
         sb.Append(FormatAspectRatio(width, height));
+        sb.Append(") "); 
         sb.Append(fileInfo.Length.GetReadableFileSize());
 
         var zoomString = FormatZoomPercentage(zoomValue);
@@ -206,6 +207,7 @@ public static class ImageTitleFormatter
         sb.Append(" x ");
         sb.Append(height);
         sb.Append(FormatAspectRatio(width, height));
+        sb.Append(") "); 
 
         // Add zoom information if applicable
         var zoomString = FormatZoomPercentage(zoomValue);
@@ -237,24 +239,19 @@ public static class ImageTitleFormatter
     /// <returns>A string representing the aspect ratio in the format "x:y", or an empty string if the ratio is too large.</returns>
     public static string FormatAspectRatio(int width, int height)
     {
-        if (width <= 0 || height <= 0)
-        {
-            return ") ";
-        }
+        if (width <= 0 || height <= 0) { return string.Empty; }
 
         var gcd = GCD(width, height);
         var aspectX = width / gcd;
         var aspectY = height / gcd;
 
         return IsAspectRatioWithinLimits(aspectX, aspectY) 
-            ? $", {aspectX}:{aspectY}) " 
-            : ") ";
+            ? $", {aspectX}:{aspectY}" 
+            : string.Empty;
     }
     
     private static bool IsAspectRatioWithinLimits(int x, int y)
-    {
-        return x <= MaxAspectRatioX && y <= MaxAspectRatioY;
-    }
+        => x <= MaxAspectRatioX && y <= MaxAspectRatioY;
 
     /// <summary>
     /// Calculates the Greatest Common Divisor (GCD) of two integers.

@@ -80,9 +80,7 @@ public static class TitleManager
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(pWidth, pHeight,
             NavigationManager.GetCurrentIndex,
             fileInfo, vm.GlobalSettings.RotationAngle.CurrentValue, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle.Value = windowTitles.TitleWithAppName;
-        vm.PicViewer.Title.Value = windowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip.Value = windowTitles.FilePathTitle;
+        ApplyTitles(vm, windowTitles);
     }
 
     /// <summary>
@@ -122,9 +120,7 @@ public static class TitleManager
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,
             NavigationManager.GetCurrentIndex,
             imageModel.FileInfo, vm.GlobalSettings.RotationAngle.CurrentValue, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle.Value = windowTitles.TitleWithAppName;
-        vm.PicViewer.Title.Value = windowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip.Value = windowTitles.FilePathTitle;
+        ApplyTitles(vm, windowTitles);
     }
 
     /// <summary>
@@ -146,9 +142,7 @@ public static class TitleManager
     {
         var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo,
             tiffNavigationInfo, 1, NavigationManager.GetCollection);
-        vm.PicViewer.WindowTitle.Value = singeImageWindowTitles.TitleWithAppName;
-        vm.PicViewer.Title.Value = singeImageWindowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip.Value = singeImageWindowTitles.BaseTitle;
+        ApplyTitles(vm, singeImageWindowTitles);
     }
 
     /// <summary>
@@ -281,5 +275,12 @@ public static class TitleManager
 
         ReturnError(vm);
         return false;
+    }
+    
+    private static void ApplyTitles(MainViewModel vm, WindowTitles titles)
+    {
+        vm.PicViewer.WindowTitle.Value = titles.TitleWithAppName;
+        vm.PicViewer.Title.Value = titles.BaseTitle;
+        vm.PicViewer.TitleTooltip.Value = titles.FilePathTitle;
     }
 }
