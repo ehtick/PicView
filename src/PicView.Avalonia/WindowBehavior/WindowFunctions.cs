@@ -69,6 +69,17 @@ public static class WindowFunctions
         TempFileHelper.DeleteTempFiles();
         await FileHistoryManager.SaveToFileAsync();
         ArchiveExtraction.Cleanup();
+
+        if (vm.Window.SettingsWindowConfig is not null)
+        {
+            await vm.Window.SettingsWindowConfig.SaveAsync();
+        }
+
+        if (vm.Window.ImageInfoWindowConfig is not null)
+        {
+            await vm.Window.ImageInfoWindowConfig.SaveAsync();
+        }
+        
         Environment.Exit(0);
     }
 

@@ -19,15 +19,9 @@ public class WindowInitializer : IPlatformSpecificUpdate
     private AboutWindow? _aboutWindow;
     private BatchResizeWindow? _batchResizeWindow;
     private EffectsWindow? _effectsWindow;
-    
     private ImageInfoWindow? _imageInfoWindow;
-    private ImageInfoWindowConfig? _imageInfoWindowConfig;
-    
     private KeybindingsWindow? _keybindingsWindow;
-    
     private SettingsWindow? _settingsWindow;
-    private SettingsWindowConfig? _settingsWindowConfig;
-    
     private SingleImageResizeWindow? _singleImageResizeWindow;
 
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
@@ -90,17 +84,17 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         if (_imageInfoWindow is null)
         {
-            if (_imageInfoWindowConfig?.WindowProperties is null )
+            if (vm.Window.ImageInfoWindowConfig?.WindowProperties is null )
             {
-                _imageInfoWindowConfig = new ImageInfoWindowConfig();
-                await _imageInfoWindowConfig.LoadAsync();
+                vm.Window.ImageInfoWindowConfig = new ImageInfoWindowConfig();
+                await vm.Window.ImageInfoWindowConfig.LoadAsync();
             }
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.Exif ??= new ExifViewModel();
                 vm.InfoWindow = new ImageInfoWindowViewModel();
-                _imageInfoWindow = new ImageInfoWindow(_imageInfoWindowConfig)
+                _imageInfoWindow = new ImageInfoWindow(vm.Window.ImageInfoWindowConfig)
                 {
                     DataContext = vm,
                 };
@@ -135,7 +129,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         void Show()
         {
-            WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow, _imageInfoWindowConfig.WindowProperties);
+            WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow, vm.Window.ImageInfoWindowConfig.WindowProperties);
             _imageInfoWindow.Show(desktop.MainWindow);
         }
     }
@@ -193,10 +187,10 @@ public class WindowInitializer : IPlatformSpecificUpdate
             return;
         }
         
-        if (_settingsWindowConfig?.WindowProperties is null )
+        if (vm.Window.SettingsWindowConfig?.WindowProperties is null )
         {
-            _settingsWindowConfig = new SettingsWindowConfig();
-            await _settingsWindowConfig.LoadAsync();
+            vm.Window.SettingsWindowConfig = new SettingsWindowConfig();
+            await vm.Window.SettingsWindowConfig.LoadAsync();
         }
         if (_settingsWindow is null)
         {
@@ -234,7 +228,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         
         void Show()
         {
-            WindowFunctions.InitializeWindowSizeAndPosition(_settingsWindow, _settingsWindowConfig.WindowProperties);
+            WindowFunctions.InitializeWindowSizeAndPosition(_settingsWindow, vm.Window.SettingsWindowConfig.WindowProperties);
             _settingsWindow.Show(desktop.MainWindow);
         }
     }
