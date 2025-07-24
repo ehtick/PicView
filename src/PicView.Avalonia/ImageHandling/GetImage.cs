@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using ImageMagick;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 
 namespace PicView.Avalonia.ImageHandling;
@@ -15,9 +16,7 @@ public static class GetImage
     {
         if (fileInfo is null)
         {
-#if DEBUG
-            Console.WriteLine($"Error: {nameof(GetImage)}:{nameof(GetStandardBitmapAsync)}: {nameof(fileInfo)} is null");
-#endif
+            DebugHelper.LogDebug(nameof(GetImage), nameof(GetStandardBitmapAsync), $"{nameof(fileInfo)} is null");
             return null;
         }
         await using var fileStream = FileHelper.GetOptimizedFileStream(fileInfo);

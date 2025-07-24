@@ -727,14 +727,13 @@ public class ImageIterator : IAsyncDisposable
             if (Settings.ImageScaling.ShowImageSideBySide)
             {
                 var nextIndex = GetIteration(index, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
-                var nextPreloadValue = await GetOrLoadPreLoadValueAsync(nextIndex).ConfigureAwait(false);
                 if (CurrentIndex != index)
                 {
                     // Skip loading if user went to next value
                     await cts.CancelAsync();
                     return;
                 }
-
+                var nextPreloadValue = await GetOrLoadPreLoadValueAsync(nextIndex).ConfigureAwait(false);
                 if (!cts.IsCancellationRequested && index == CurrentIndex)
                 {
                     await UpdateImage.UpdateSource(_vm, index, ImagePaths, preloadValue,

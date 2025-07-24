@@ -327,8 +327,13 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
             return _preLoadList[key];
         }
 
-        await AddAsync(key, list);
-        return _preLoadList[key];
+        var isAdded = await AddAsync(key, list);
+        if (!isAdded)
+        {
+            return null;
+        }
+
+        return key >= list.Count ? null : _preLoadList[key];
     }
 
     /// <summary>
