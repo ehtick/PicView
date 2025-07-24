@@ -68,15 +68,6 @@ public partial class ImageInfoWindow : Window, IDisposable
             DuplicateButton.Classes.Remove("noBorderHover");
             DuplicateButton.Classes.Add("hover");
             
-            CopyButton.Classes.Remove("noBorderHover");
-            CopyButton.Classes.Add("hover");
-            
-            CopyFileButton.Classes.Remove("noBorderHover");
-            CopyFileButton.Classes.Add("hover");
-            
-            PrintButton.Classes.Remove("noBorderHover");
-            PrintButton.Classes.Add("hover");
-            
             OptimizeButton.Classes.Remove("noBorderHover");
             OptimizeButton.Classes.Add("hover");
             
