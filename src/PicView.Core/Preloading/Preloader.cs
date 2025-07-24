@@ -400,6 +400,11 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
             if (_preLoadList.TryGetValue(key, out var item))
             {
                 var removed = _preLoadList.TryRemove(key, out _);
+                if (item.ImageModel.Image is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
+                item.ImageModel.Image = null;
 #if DEBUG
                 if (!removed || !_showAddRemove)
                 {
