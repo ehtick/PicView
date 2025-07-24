@@ -48,7 +48,7 @@ public class TextIconButton : Button
     /// This property restricts the width that the text within the button can occupy, potentially affecting text wrapping or truncation.
     /// </summary>
     public static readonly AvaloniaProperty<double> TextMaxWidthProperty =
-        AvaloniaProperty.Register<TextIconButton, double>(nameof(TextMaxWidth));
+        AvaloniaProperty.Register<TextIconButton, double>(nameof(TextMaxWidth), double.PositiveInfinity);
 
     /// <summary>
     /// Defines the <see cref="Text"/> property.
@@ -94,9 +94,9 @@ public class TextIconButton : Button
     /// Defines the <see cref="TextMaxWidth"/> property.
     /// Specifies the maximum width of the text content within the button.
     /// </summary>
-    public double? TextMaxWidth
+    public double TextMaxWidth
     {
-        get => (double?)GetValue(TextMaxWidthProperty);
+        get => (double)GetValue(TextMaxWidthProperty);
         set => SetValue(TextMaxWidthProperty, value);
     }
 
@@ -193,7 +193,7 @@ public class TextIconButton : Button
             VerticalAlignment = VerticalAlignment.Center,
             FontSize = FontSize,
             Foreground = Foreground,
-            MaxWidth = TextMaxWidth ?? double.PositiveInfinity,
+            MaxWidth = TextMaxWidth,
         };
         PointerEntered += (_, _) =>
         {
