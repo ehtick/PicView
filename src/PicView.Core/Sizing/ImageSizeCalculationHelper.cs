@@ -47,8 +47,8 @@ public static class ImageSizeCalculationHelper
         var screenMargin = isFullscreen ? 0 : screenSize.Margin;
 
         var (maxAvailableWidth, maxAvailableHeight, adjustedContainerWidth, adjustedContainerHeight) =
-            CalculateMaxImageSize(scrollEnabled, stretchImage,
-                autoFit,
+            CalculateMaxImageSize(scrollEnabled, stretchImage, autoFit,
+                rotationAngle,
                 workArea.width, workArea.height, screenMargin, imageWidth, imageHeight, dpiScaling, galleryHeight,
                 containerWidth, containerHeight);
 
@@ -103,11 +103,18 @@ public static class ImageSizeCalculationHelper
 
     private static (double maxWidth, double maxHeight, double containerWidth, double containerHeight)
         CalculateMaxImageSize(
-            bool scrollEnabled, bool stretchImage, bool autoFit,
+            bool scrollEnabled, bool stretchImage, bool autoFit, double rotationAngle,
             double workAreaWidth, double workAreaHeight, double margin,
             double width, double height, double dpiScaling, double galleryHeight, double containerWidth,
             double containerHeight)
     {
+        // Swap width and height for 90/270 degree rotations to correctly cap the size
+        // against the image's effective native resolution after rotation.
+        if (rotationAngle is 90 or 270)
+        {
+            (width, height) = (height, width);
+        }
+        
         if (scrollEnabled)
         {
             workAreaWidth -= SizeDefaults.ScrollbarSize * dpiScaling;
