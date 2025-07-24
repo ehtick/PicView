@@ -185,12 +185,6 @@ public static class QuickLoad
         FileInfo fileInfo)
     {
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
-        
-        // Add recent files, except when browsing archive
-        if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
-        {
-            FileHistoryManager.Add(fileInfo.FullName);
-        }
 
         NavigationManager.AddToPreloader(NavigationManager.GetCurrentIndex, imageModel);
 
@@ -227,6 +221,12 @@ public static class QuickLoad
                 vm.Gallery.GalleryMode.Value = GalleryMode.BottomNoAnimation;
                 tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
             }
+        }
+        
+        // Add recent files, except when browsing archive
+        if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
+        {
+            FileHistoryManager.Add(fileInfo.FullName);
         }
 
         await Task.WhenAll(tasks).ConfigureAwait(false);
