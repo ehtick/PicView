@@ -20,7 +20,7 @@ public static class GetImage
             DebugHelper.LogDebug(nameof(GetImage), nameof(GetStandardBitmapAsync), $"{nameof(fileInfo)} is null");
             return null;
         }
-        await using var memoryStream = await FileManager.ReadFileToRecyclableStreamAsync(fileInfo);
+        await using var memoryStream = await FileStreamUtils.ReadFileToRecyclableStreamAsync(fileInfo);
         var bitmap = new Bitmap(memoryStream);
         return bitmap;
     }
@@ -28,7 +28,7 @@ public static class GetImage
     public static async Task<Bitmap?> GetDefaultBitmapAsync(FileInfo fileInfo)
     {
         using var magickImage = new MagickImage();
-        await using var memoryStream = await FileManager.ReadFileToRecyclableStreamAsync(fileInfo);
+        await using var memoryStream = await FileStreamUtils.ReadFileToRecyclableStreamAsync(fileInfo);
         if (fileInfo.Length >= 2147483648)
         {
             // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."

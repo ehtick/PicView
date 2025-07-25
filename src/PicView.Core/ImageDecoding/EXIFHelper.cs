@@ -44,7 +44,7 @@ public static class EXIFHelper
             }
 
             magickImage.RemoveProfile(profile);
-            await using var fileStream = FileManager.GetOptimizedFileStream(fileInfo, true);
+            await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo, true);
             await magickImage.WriteAsync(fileStream);
             return true;
         }

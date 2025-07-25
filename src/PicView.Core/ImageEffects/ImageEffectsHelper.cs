@@ -50,7 +50,7 @@ public static class ImageEffectsHelper
 
     private static async Task<MagickImage> LoadImage(FileInfo fileInfo, CancellationToken cancellationToken)
     {
-        await using var filestream = FileManager.GetOptimizedFileStream(fileInfo);
+        await using var filestream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
         var magick = new MagickImage();
         if (fileInfo.Length >= 2147483648)
         {

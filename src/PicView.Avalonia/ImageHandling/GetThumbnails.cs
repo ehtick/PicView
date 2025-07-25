@@ -73,7 +73,7 @@ public static class GetThumbnails
         // https://github.com/AvaloniaUI/Avalonia/discussions/16703
         // https://stackoverflow.com/a/42178963/2923736 convert to DLLImport to LibraryImport, source generation & AOT support
         
-        await using var fileStream = FileManager.GetOptimizedFileStream(fileInfo);
+        await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
 
         if (fileInfo.Length >= 2147483648)
         {

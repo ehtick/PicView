@@ -10,11 +10,11 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
+using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Titles;
 using R3;
-using FileManager = PicView.Core.FileHandling.FileManager;
 
 namespace PicView.Avalonia.Views.Main;
 
@@ -387,7 +387,7 @@ public partial class BatchResizeView : UserControl
                     }
                 }
 
-                await using var stream = FileManager.GetOptimizedFileStream(file, true);
+                await using var stream = FileStreamUtils.GetOptimizedFileStream(file, true);
 
                 var success = await SaveImageFileHelper.SaveImageAsync(
                     stream,
@@ -516,7 +516,7 @@ public partial class BatchResizeView : UserControl
                 
                     var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
 
-                    await using var stream = FileManager.GetOptimizedFileStream(fileInfo, true);
+                    await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo, true);
 
                     _cancellationTokenSource.Token.ThrowIfCancellationRequested();
                     

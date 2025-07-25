@@ -3,11 +3,11 @@ using PicView.Core.DebugTools;
 
 namespace PicView.Core.FileHandling;
 
-public static class FileManager
+public static class FileStreamUtils
 {
     /// <summary>
     /// Represents a private static instance of <see cref="Microsoft.IO.RecyclableMemoryStreamManager"/>,
-    /// used to manage memory-efficient stream allocation and recycling within the FileManager class.
+    /// used to manage memory-efficient stream allocation and recycling within the FileStreamUtils class.
     /// This ensures optimal memory usage and reduces pressure on the garbage collector,
     /// especially when handling large or frequent streams.
     /// </summary>
@@ -103,7 +103,7 @@ public static class FileManager
         }
         catch (Exception exception)
         {
-            DebugHelper.LogDebug(nameof(FileManager), nameof(ReadFileToRecyclableStreamAsync), exception);
+            DebugHelper.LogDebug(nameof(FileStreamUtils), nameof(ReadFileToRecyclableStreamAsync), exception);
             
             // If an exception occurs, we must dispose of the stream to return its buffers to the pool.
             await recyclableMemoryStream.DisposeAsync();
