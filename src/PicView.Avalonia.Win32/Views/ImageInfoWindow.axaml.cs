@@ -126,14 +126,8 @@ public partial class ImageInfoWindow : Window, IDisposable
     
     private void UpdateWindowPosition()
     {
-        if (VisualRoot is null)
-        {
-            return;
-        }
-
-        var hostWindow = (Window)VisualRoot;
-        _config.WindowProperties.Left = hostWindow.Position.X;
-        _config.WindowProperties.Top = hostWindow.Position.Y;
+        _config.WindowProperties.Left = Position.X;
+        _config.WindowProperties.Top = Position.Y;
     }
 
     private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)

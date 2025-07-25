@@ -80,7 +80,7 @@ public static class WindowFunctions
         {
             await vm.Window.ImageInfoWindowConfig.SaveAsync();
         }
-        
+
         Environment.Exit(0);
     }
 
@@ -288,6 +288,7 @@ public static class WindowFunctions
             Settings.ImageScaling.StretchImage = true;
             vm.GlobalSettings.IsStretched.Value = true;
         }
+
         //vm.ImageViewer.MainImage.InvalidateVisual();
         await WindowResizing.SetSizeAsync(vm);
         await SaveSettingsAsync().ConfigureAwait(false);
@@ -374,7 +375,7 @@ public static class WindowFunctions
             });
         }
     }
-    
+
     public static void InitializeWindowSizeAndPosition(Window window, IWindowProperties properties)
     {
         if (Dispatcher.UIThread.CheckAccess())
@@ -385,7 +386,7 @@ public static class WindowFunctions
         {
             Dispatcher.UIThread.InvokeAsync(Set);
         }
-        
+
         return;
 
         void Set()
@@ -398,7 +399,7 @@ public static class WindowFunctions
             {
                 window.WindowStartupLocation = WindowStartupLocation.Manual;
                 window.Position = new PixelPoint(properties.Left.GetValueOrDefault(),
-                    properties.Top.Value);
+                    properties.Top.GetValueOrDefault());
             }
             else
             {
@@ -411,25 +412,27 @@ public static class WindowFunctions
             }
 
             if (properties.Width > window.MinWidth && properties.Width < window.MaxWidth &&
-                    properties.Height > window.MinHeight  && properties.Height < window.MaxHeight)
+                properties.Height > window.MinHeight && properties.Height < window.MaxHeight)
             {
                 window.Width = properties.Width.Value;
                 window.Height = properties.Height.Value;
             }
             else
             {
-                DebugHelper.LogDebug(nameof(WindowFunctions), nameof(InitializeWindowSizeAndPosition), "Invalid width and height values");
+                DebugHelper.LogDebug(nameof(WindowFunctions), nameof(InitializeWindowSizeAndPosition),
+                    "Invalid width and height values");
             }
         }
     }
 
-    public static void SetWindowSize(Window window, AvaloniaPropertyChangedEventArgs<Size> size, IWindowProperties properties)
+    public static void SetWindowSize(Window window, AvaloniaPropertyChangedEventArgs<Size> size,
+        IWindowProperties properties)
     {
         if (!size.NewValue.HasValue)
         {
             return;
         }
-                    
+
         if (size.NewValue.Value == size.OldValue.Value)
         {
             return;
@@ -440,10 +443,11 @@ public static class WindowFunctions
             return;
         }
 
-        if (size.NewValue.Value.Height <window.MinHeight)
+        if (size.NewValue.Value.Height < window.MinHeight)
         {
             return;
         }
+
         properties.Width = window.Bounds.Width;
         properties.Height = window.Bounds.Height;
     }
