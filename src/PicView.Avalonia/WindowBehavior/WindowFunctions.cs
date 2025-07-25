@@ -11,6 +11,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Config;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Sizing;
@@ -415,7 +416,10 @@ public static class WindowFunctions
                 window.Width = properties.Width.Value;
                 window.Height = properties.Height.Value;
             }
-
+            else
+            {
+                DebugHelper.LogDebug(nameof(WindowFunctions), nameof(InitializeWindowSizeAndPosition), "Invalid width and height values");
+            }
         }
     }
 
@@ -440,8 +444,8 @@ public static class WindowFunctions
         {
             return;
         }
-        properties.Width = size.NewValue.Value.Width;
-        properties.Height = size.NewValue.Value.Height;
+        properties.Width = window.Bounds.Width;
+        properties.Height = window.Bounds.Height;
     }
 
     #endregion

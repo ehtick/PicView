@@ -29,7 +29,7 @@ public partial class ImageInfoWindow : Window, IDisposable
         {
             ClientSizeProperty.Changed.ToObservable()
                 .ObserveOn(UIHelper.GetFrameProvider)
-                .Debounce(TimeSpan.FromMilliseconds(100))
+                .Debounce(TimeSpan.FromMilliseconds(10))
                 .Subscribe(UpdateWindowSize)
                 .AddTo(_disposables);
             PositionChanged += (_, __) => UpdateWindowPosition();
