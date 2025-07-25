@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Localization;
 using R3;
@@ -29,11 +30,7 @@ public partial class ImageInfoWindow : Window, IDisposable
             ClientSizeProperty.Changed.ToObservable()
                 .ObserveOn(UIHelper.GetFrameProvider)
                 .Debounce(TimeSpan.FromMilliseconds(100))
-                .Subscribe(size =>
-                {
-                    _config.WindowProperties.Width = size.NewValue.Value.Width;
-                    _config.WindowProperties.Height = size.NewValue.Value.Height;
-                })
+                .Subscribe(UpdateWindowSize)
                 .AddTo(_disposables);
             PositionChanged += (_, __) => UpdateWindowPosition();
         };
@@ -71,6 +68,9 @@ public partial class ImageInfoWindow : Window, IDisposable
         _config.WindowProperties.Left = hostWindow.Position.X;
         _config.WindowProperties.Top = hostWindow.Position.Y;
     }
+    
+    private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)
+        => WindowFunctions.SetWindowSize(this, size, _config.WindowProperties);
     
     public void Dispose()
     {

@@ -409,9 +409,39 @@ public static class WindowFunctions
                 return;
             }
 
-            window.Width = properties.Width.Value;
-            window.Height = properties.Height.Value;
+            if (properties.Width > window.MinWidth && properties.Width < window.MaxWidth &&
+                    properties.Height > window.MinHeight  && properties.Height < window.MaxHeight)
+            {
+                window.Width = properties.Width.Value;
+                window.Height = properties.Height.Value;
+            }
+
         }
+    }
+
+    public static void SetWindowSize(Window window, AvaloniaPropertyChangedEventArgs<Size> size, IWindowProperties properties)
+    {
+        if (!size.NewValue.HasValue)
+        {
+            return;
+        }
+                    
+        if (size.NewValue.Value == size.OldValue.Value)
+        {
+            return;
+        }
+
+        if (size.NewValue.Value.Width < window.MinWidth)
+        {
+            return;
+        }
+
+        if (size.NewValue.Value.Height <window.MinHeight)
+        {
+            return;
+        }
+        properties.Width = size.NewValue.Value.Width;
+        properties.Height = size.NewValue.Value.Height;
     }
 
     #endregion
