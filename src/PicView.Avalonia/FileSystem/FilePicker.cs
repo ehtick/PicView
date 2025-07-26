@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.FileSystem;
@@ -25,6 +26,7 @@ public static class FilePicker
             return;
         }
 
+        MenuManager.CloseMenus(vm);
         await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
     }
 
@@ -66,10 +68,7 @@ public static class FilePicker
         }
         catch (Exception e)
         {
-            #if DEBUG
-            Console.WriteLine(e);
-            #endif
-            await TooltipHelper.ShowTooltipMessageAsync(e).ConfigureAwait(false);
+            DebugHelper.LogDebug(nameof(FilePicker), nameof(SelectIStorageFile), e);
         }
 
         return null;

@@ -3,6 +3,9 @@ using PicView.Core.DebugTools;
 
 namespace PicView.Core.FileHandling;
 
+/// <summary>
+/// Provides utility methods for working with file streams in an optimized manner.
+/// </summary>
 public static class FileStreamUtils
 {
     /// <summary>
