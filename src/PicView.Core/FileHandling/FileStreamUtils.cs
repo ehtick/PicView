@@ -83,10 +83,9 @@ public static class FileStreamUtils
     /// </remarks>
     public static async Task<MemoryStream> ReadFileToRecyclableStreamAsync(FileInfo fileInfo)
     {
-        // Get a stream from the pool.
-        // We do NOT wrap this in a 'using' statement here because we are returning it
-        // to the caller. The caller is responsible for its disposal.
-        var recyclableMemoryStream = Manager.GetStream();
+        // Get a stream from the pool, providing the file name as a tag for diagnostics 
+        // and the initial capacity for performance.
+        var recyclableMemoryStream = Manager.GetStream(fileInfo.Name, fileInfo.Length);
         
         try
         {

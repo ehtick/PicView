@@ -62,7 +62,7 @@ public static class GetThumbnails
         return thumbnail?.ToWriteableBitmap();
     }
 
-    public static async Task<Bitmap?> CreateThumbAsync(MagickImage magick, FileInfo fileInfo, uint height)
+    private static async Task<Bitmap?> CreateThumbAsync(MagickImage magick, FileInfo fileInfo, uint height)
     {
         // TODO: extract thumbnails from PlatformService and convert to Avalonia image,
         // I.E. https://boldena.com/article/64006
