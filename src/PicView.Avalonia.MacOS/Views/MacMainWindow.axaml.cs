@@ -23,7 +23,14 @@ public partial class MacMainWindow : Window
         {
             // Keep window position when resizing
             ClientSizeProperty.Changed.ToObservable()
-                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); });
+                .Subscribe(size =>
+                {
+                    if (MacOSWindow.IsChangingWindowState || WindowState != WindowState.Normal)
+                    {
+                        return;
+                    }
+                    WindowResizing.HandleWindowResize(this, size);
+                });
             if (DataContext is not MainViewModel vm)
             {
                 return;

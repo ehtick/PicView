@@ -8,6 +8,8 @@ namespace PicView.Avalonia.MacOS.WindowImpl;
 
 public static class MacOSWindow
 {
+    public static bool IsChangingWindowState { get; private set; }
+    
     public static async Task ToggleFullscreen(MacMainWindow? window, MainViewModel? vm, bool saveSettings)
     {
         if (Settings.WindowProperties.Fullscreen)
@@ -34,6 +36,8 @@ public static class MacOSWindow
 
     public static async Task Restore(MacMainWindow? window, MainViewModel? vm, bool saveSettings = true)
     {
+        IsChangingWindowState = true;
+        
         // Update settings
         Settings.WindowProperties.Maximized = false;
         Settings.WindowProperties.Fullscreen = false;
@@ -74,6 +78,8 @@ public static class MacOSWindow
         {
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
+        
+        Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.SystemIdle);
 
         if (saveSettings)
         {
@@ -83,6 +89,9 @@ public static class MacOSWindow
 
     public static async Task Fullscreen(MacMainWindow? window, MainViewModel? vm, bool saveSettings = true)
     {
+        // Need to set changing state to true, to prevent image resize subscription from firing
+        IsChangingWindowState = true;
+        
         // Save window size, so that restoring it will return to the same size and position
         WindowResizing.SaveSize(window);
         
@@ -100,6 +109,9 @@ public static class MacOSWindow
         
         await WindowResizing.SetSizeAsync(vm);
         
+        // Reset changing state flag so subscription can fire again. Need to be delayed by dispatcher to not be misfired. 
+        Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.SystemIdle);
+        
         if (saveSettings)
         {
             await SaveSettingsAsync().ConfigureAwait(false);
@@ -108,6 +120,8 @@ public static class MacOSWindow
 
     public static async Task Maximize(MacMainWindow? window, MainViewModel? vm, bool saveSettings = true)
     {
+        IsChangingWindowState = true;
+        
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Save window size, so that restoring it will return to the same size and position
@@ -127,6 +141,8 @@ public static class MacOSWindow
         vm.MainWindow.IsMaximized.Value = true;
         vm.MainWindow.IsFullscreen.Value = false;
         vm.MainWindow.CanResize.Value = false;
+        
+        Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.SystemIdle);
 
         if (saveSettings)
         {
