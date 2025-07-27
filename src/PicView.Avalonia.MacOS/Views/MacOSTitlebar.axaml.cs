@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using R3;
@@ -12,6 +13,8 @@ namespace PicView.Avalonia.MacOS.Views;
 
 public partial class MacOSTitlebar : UserControl
 {
+    private RotationContextMenu? _rotationContextMenu;
+    
     public MacOSTitlebar()
     {
         InitializeComponent();
@@ -61,8 +64,13 @@ public partial class MacOSTitlebar : UserControl
 #endif
             }
 
-            Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
-                .Subscribe(_ => { UpdateRotation(); });
+            _rotationContextMenu = new RotationContextMenu();
+            _rotationContextMenu.UpdateSubscription();
+            FlipButton.ContextMenu = _rotationContextMenu;
+            RotateRightButton.ContextMenu = _rotationContextMenu;
+            
+            FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
+            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
 
             RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
             RotateRightButton.Click += (_, e) =>
@@ -88,35 +96,7 @@ public partial class MacOSTitlebar : UserControl
         }
 
         // Context menu doesn't want to be opened normally
-        RotationContextMenu.Open();
-    }
-
-    private void UpdateRotation()
-    {
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        Rotation0Item.IsChecked = false;
-        Rotation90Item.IsChecked = false;
-        Rotation180Item.IsChecked = false;
-        Rotation270Item.IsChecked = false;
-        switch (vm.GlobalSettings.RotationAngle.CurrentValue)
-        {
-            case 0:
-                Rotation0Item.IsChecked = true;
-                break;
-            case 90:
-                Rotation90Item.IsChecked = true;
-                break;
-            case 180:
-                Rotation180Item.IsChecked = true;
-                break;
-            case 270:
-                Rotation270Item.IsChecked = true;
-                break;
-        }
+        _rotationContextMenu.Open();
     }
 
     private void MoveWindow(PointerPressedEventArgs e)

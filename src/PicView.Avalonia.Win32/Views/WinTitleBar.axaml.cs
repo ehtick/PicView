@@ -5,7 +5,9 @@ using Avalonia.Media;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.DebugTools;
 using R3;
 using Observable = R3.Observable;
 
@@ -13,6 +15,7 @@ namespace PicView.Avalonia.Win32.Views;
 
 public partial class WinTitleBar : UserControl
 {
+    private RotationContextMenu? _rotationContextMenu;
     public WinTitleBar()
     {
         InitializeComponent();
@@ -52,37 +55,16 @@ public partial class WinTitleBar : UserControl
 
                 RotateRightButton.Background = Brushes.Transparent;
                 RotateRightButton.BorderThickness = new Thickness(0);
+                
+                var brush = UIHelper.GetBrush("SecondaryTextColor");
 
-                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant,
-                        out var color))
-                {
-                    return;
-                }
-
-                if (color is not Color secondaryTextColor)
-                {
-                    return;
-                }
-
-                try
-                {
-                    EditableTitlebar.Foreground = new SolidColorBrush(secondaryTextColor);
-                    CloseButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    MinimizeButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    RestoreButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    FlipButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    GalleryButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    RotateRightButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                }
-#if DEBUG
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
-#else
-                catch (Exception) { }
-#endif
+                EditableTitlebar.Foreground = brush;
+                CloseButton.Foreground = brush;
+                MinimizeButton.Foreground = brush;
+                RestoreButton.Foreground = brush;
+                FlipButton.Foreground = brush;
+                GalleryButton.Foreground = brush;
+                RotateRightButton.Foreground = brush;
             }
 
             PointerPressed += (_, e) => MoveWindow(e);
@@ -92,57 +74,30 @@ public partial class WinTitleBar : UserControl
             {
                 return;
             }
-
-            Observable.EveryValueChanged(this, x => x.RotationContextMenu.IsOpen, UIHelper.GetFrameProvider)
-                .Subscribe(_ => { UpdateRotation(); });
-
-            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
             RotateRightButton.Click += (_, e) =>
             {
                 vm.MainWindow.IsTopToolbarRotationClicked = Settings.WindowProperties.AutoFit;
             };
+
+            _rotationContextMenu = new RotationContextMenu();
+            _rotationContextMenu.UpdateSubscription();
+            FlipButton.ContextMenu = _rotationContextMenu;
+            RotateRightButton.ContextMenu = _rotationContextMenu;
+            
             FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
+            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
         };
     }
-
-    private bool OpenContextMenu(PointerPressedEventArgs e)
+    
+    private void OpenContextMenu(PointerPressedEventArgs e)
     {
         if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-        {
-            return false;
-        }
-
-        // Context menu doesn't want to be opened normally
-        RotationContextMenu.Open();
-        return true;
-    }
-
-    private void UpdateRotation()
-    {
-        if (DataContext is not MainViewModel vm)
         {
             return;
         }
 
-        Rotation0Item.IsChecked = false;
-        Rotation90Item.IsChecked = false;
-        Rotation180Item.IsChecked = false;
-        Rotation270Item.IsChecked = false;
-        switch (vm.GlobalSettings.RotationAngle.CurrentValue)
-        {
-            case 0:
-                Rotation0Item.IsChecked = true;
-                break;
-            case 90:
-                Rotation90Item.IsChecked = true;
-                break;
-            case 180:
-                Rotation180Item.IsChecked = true;
-                break;
-            case 270:
-                Rotation270Item.IsChecked = true;
-                break;
-        }
+        // Context menu doesn't want to be opened normally
+        _rotationContextMenu?.Open();
     }
 
     private void MoveWindow(PointerPressedEventArgs e)

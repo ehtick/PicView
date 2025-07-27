@@ -12,53 +12,6 @@
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
     xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <UserControl.ContextMenu>
-        <ContextMenu x:Name="RotationContextMenu">
-            <MenuItem
-                Command="{CompiledBinding Tools.RotateTask}"
-                CommandParameter="0"
-                GroupName="RotationGroup"
-                Header="0°"
-                ToggleType="Radio"
-                x:Name="Rotation0Item" />
-            <MenuItem
-                Command="{CompiledBinding Tools.RotateTask}"
-                CommandParameter="90"
-                GroupName="RotationGroup"
-                Header="90°"
-                ToggleType="Radio"
-                x:Name="Rotation90Item" />
-            <MenuItem
-                Command="{CompiledBinding Tools.RotateTask}"
-                CommandParameter="180"
-                GroupName="RotationGroup"
-                Header="180°"
-                ToggleType="Radio"
-                x:Name="Rotation180Item" />
-            <MenuItem
-                Command="{CompiledBinding Tools.RotateTask}"
-                CommandParameter="270"
-                GroupName="RotationGroup"
-                Header="270°"
-                ToggleType="Radio"
-                x:Name="Rotation270Item" />
-            <Separator />
-            <MenuItem Command="{CompiledBinding Tools.FlipCommand}" Header="{CompiledBinding Translation.IsFlipped.Value}">
-                <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource FlipGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12">
-                        <Path.RenderTransform>
-                            <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
-                        </Path.RenderTransform>
-                    </Path>
-                </MenuItem.Icon>
-            </MenuItem>
-        </ContextMenu>
-    </UserControl.ContextMenu>
 
     <Border
         Background="{DynamicResource WindowBackgroundColor}"
