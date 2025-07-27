@@ -198,7 +198,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
             vm.SettingsViewModel ??= new SettingsViewModel();
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                _settingsWindow = new SettingsWindow
+                _settingsWindow = new SettingsWindow(vm.Window.SettingsWindowConfig)
                 {
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

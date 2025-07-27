@@ -1,9 +1,12 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Config;
 using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.MacOS.FileAssociation;
@@ -13,9 +16,31 @@ namespace PicView.Avalonia.MacOS.Views;
 
 public partial class SettingsWindow : Window
 {
-    public SettingsWindow()
+    private readonly SettingsWindowConfig _config;
+    public SettingsWindow(SettingsWindowConfig config)
     {
+        _config = config;
         InitializeComponent();
+        Task.Run(async () =>
+        {
+            await _config.LoadAsync();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_config.WindowProperties.Maximized)
+                {
+                    WindowState = WindowState.Maximized;
+                }
+                else
+                {
+                    var left = _config.WindowProperties.Left;
+                    var top = _config.WindowProperties.Top;
+                    if (left.HasValue && top.HasValue)
+                    {
+                        Position = new PixelPoint(left.Value, top.Value);
+                    }
+                }
+            });
+        });
         MinHeight = ScreenHelper.ScreenSize.WorkingAreaHeight switch
         {
             < 650 => 600,
@@ -63,10 +88,13 @@ public partial class SettingsWindow : Window
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)
     {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
+        BeginMoveDrag(e);
+    }
+    
+    private void UpdateWindowPosition(object? sender, PointerReleasedEventArgs e)
+    {
+        _config.WindowProperties.Left = Position.X;
+        _config.WindowProperties.Top = Position.Y;
     }
     
     private static void InitializeFileAssociationManager()

@@ -16,24 +16,24 @@ namespace PicView.Avalonia.Win32.Views;
 
 public partial class SettingsWindow : Window
 {
-    public SettingsWindowConfig Config = new();
-
-    public SettingsWindow()
+    private readonly SettingsWindowConfig _config;
+    public SettingsWindow(SettingsWindowConfig config)
     {
+        _config = config;
         InitializeComponent();
         Task.Run(async () =>
         {
-            await Config.LoadAsync();
+            await _config.LoadAsync();
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (Config.WindowProperties.Maximized)
+                if (_config.WindowProperties.Maximized)
                 {
                     WindowState = WindowState.Maximized;
                 }
                 else
                 {
-                    var left = Config.WindowProperties.Left;
-                    var top = Config.WindowProperties.Top;
+                    var left = _config.WindowProperties.Left;
+                    var top = _config.WindowProperties.Top;
                     if (left.HasValue && top.HasValue)
                     {
                         Position = new PixelPoint(left.Value, top.Value);
@@ -138,7 +138,7 @@ public partial class SettingsWindow : Window
         Closing += async delegate
         {
             Hide();
-            await Config.SaveAsync();
+            await _config.SaveAsync();
             await SaveSettingsAsync();
         };
 
@@ -169,14 +169,8 @@ public partial class SettingsWindow : Window
     
     private void UpdateWindowPosition(object? sender, PointerReleasedEventArgs e)
     {
-        if (VisualRoot is null)
-        {
-            return;
-        }
-
-        var hostWindow = (Window)VisualRoot;
-        Config.WindowProperties.Left = hostWindow.Position.X;
-        Config.WindowProperties.Top = hostWindow.Position.Y;
+        _config.WindowProperties.Left = Position.X;
+        _config.WindowProperties.Top = Position.Y;
     }
 
     private void Close(object? sender, RoutedEventArgs e) => Close();

@@ -25,7 +25,8 @@
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1"
         CornerRadius="8"
-        PointerPressed="MoveWindow">
+        PointerPressed="MoveWindow"
+        PointerReleased="UpdateWindowPosition">
         <StackPanel>
             <Panel>
                 <customControls:IconButton
