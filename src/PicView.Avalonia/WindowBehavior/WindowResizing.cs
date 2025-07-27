@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
@@ -250,7 +249,7 @@ public static class WindowResizing
 
         var secondaryPreloadValue = NavigationManager.GetNextPreLoadValue();
         double secondWidth, secondHeight;
-        if (secondaryPreloadValue is { ImageModel: not null })
+        if (secondaryPreloadValue is not null)
         {
             secondWidth = secondaryPreloadValue.ImageModel.PixelWidth;
             secondHeight = secondaryPreloadValue.ImageModel.PixelHeight;
@@ -279,25 +278,11 @@ public static class WindowResizing
     {
         width = width == 0 ? vm.PicViewer.ImageWidth.CurrentValue : width;
         height = height == 0 ? vm.PicViewer.ImageHeight.CurrentValue : height;
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return null;
-        }
-
-        var mainView = UIHelper.GetMainView;
-        if (mainView is null)
-        {
-            return null;
-        }
 
         var screenSize = ScreenHelper.ScreenSize;
-        var desktopMinWidth = desktop.MainWindow.MinWidth;
-        var desktopMinHeight = desktop.MainWindow.MinHeight;
-        var containerWidth = mainView.Bounds.Width;
-        var containerHeight = mainView.Bounds.Height;
+        var (containerWidth, containerHeight) = GetContainerSize();
 
-        if (double.IsNaN(containerWidth) || double.IsNaN(containerHeight) || double.IsNaN(width) ||
-            double.IsNaN(height))
+        if (double.IsNaN(width) || double.IsNaN(height))
         {
             return null;
         }
@@ -311,8 +296,8 @@ public static class WindowResizing
                 secondWidth,
                 secondHeight,
                 screenSize,
-                desktopMinWidth,
-                desktopMinHeight,
+                SizeDefaults.WindowMinSize,
+                SizeDefaults.WindowMinSize,
                 vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,
@@ -328,8 +313,8 @@ public static class WindowResizing
                 width,
                 height,
                 screenSize,
-                desktopMinWidth,
-                desktopMinHeight,
+                SizeDefaults.WindowMinSize,
+                SizeDefaults.WindowMinSize,
                 vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,
@@ -341,6 +326,31 @@ public static class WindowResizing
         }
 
         return size;
+
+        (double containerWidth, double containerHeight) GetContainerSize()
+        {
+            return Dispatcher.UIThread.CheckAccess() ? Get() : Dispatcher.UIThread.Invoke(Get, DispatcherPriority.Send);
+
+            (double containerWidth, double containerHeight) Get()
+            {
+                var mainView = UIHelper.GetMainView;
+
+                containerWidth = mainView.Bounds.Width;
+                containerHeight = mainView.Bounds.Height;
+
+                if (double.IsNaN(containerWidth))
+                {
+                    containerWidth = mainView.Bounds.Width;
+                }
+
+                if (double.IsNaN(containerHeight))
+                {
+                    containerHeight = mainView.Bounds.Height;
+                }
+
+                return (containerWidth, containerHeight);
+            }
+        }
     }
 
     public static void SaveSize(Window window)

@@ -49,11 +49,19 @@ public static class NavigationManager
         vm.PicViewer.ImageType.Value = imageModel.ImageType;
         if (!Settings.ImageScaling.ShowImageSideBySide)
         {
+            var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm );
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.ImageViewer.SetTransform(imageModel.EXIFOrientation, imageModel.Format);
-                WindowResizing.SetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, vm.GlobalSettings.RotationAngle.CurrentValue,
-                    vm);
+                if (size.HasValue)
+                {
+                    WindowResizing.SetSize(size.Value,
+                        vm);
+                }
+                else
+                {
+                    WindowResizing.GetSize(vm);
+                }
             });
         }
 
@@ -88,7 +96,6 @@ public static class NavigationManager
         }
         else
         {
-            vm.PicViewer.IsSingleImage.Value = false;
             var isTiffUpdated = await CheckIfTiffAndUpdate(vm, fileInfo, index);
             if (!isTiffUpdated)
             {

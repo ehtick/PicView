@@ -42,7 +42,10 @@ public static class DragAndDropHelper
         }
         
         // Handle opening additional files in new windows if needed
-        _ = Task.Run(() => HandleAdditionalFiles(storageItems.Skip(1)));
+        if (storageItems.Length > 1)
+        {
+            _ = Task.Run(() => HandleAdditionalFiles(storageItems.Skip(1)));
+        }
 
         var path = firstFile.Path.LocalPath;
 
@@ -344,12 +347,10 @@ public static class DragAndDropHelper
 
     private static async Task LoadSupportedFile(string path, MainViewModel vm)
     {
-        if (_preLoadValue is not null)
+        if (_preLoadValue is not null && NavigationManager.CanNavigate(vm))
         {
-            var currentDirectory = Path.GetDirectoryName(path);
-            var preloadDirectory = _preLoadValue.ImageModel.FileInfo.DirectoryName;
-
-            if (currentDirectory == preloadDirectory)
+            if (Path.GetDirectoryName(path) is { } currentDirectory && NavigationManager.GetInitialFileInfo?.DirectoryName is {} preloadDirectory
+                && currentDirectory == preloadDirectory)
             {
                 // Check for edge case error
                 var isAddedToPreloader = NavigationManager.AddToPreloader(new FileInfo(path), _preLoadValue.ImageModel);
