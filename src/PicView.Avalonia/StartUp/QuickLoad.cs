@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.Controls;
+using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
@@ -20,13 +21,14 @@ namespace PicView.Avalonia.StartUp;
 public static class QuickLoad
 {
     /// <summary>
-    /// Asynchronously handles the quick loading of an image, archive, URL, base64 string, or directory into the application view,
+    /// Asynchronously loads an image, archive, URL, base64 string, or directory into the application view,
     /// updating the UI state and loading indicative properties as necessary.
     /// </summary>
     /// <param name="vm">The main view model.</param>
     /// <param name="file">The file, URL, or directory path to be loaded.</param>
+    /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async Task QuickLoadAsync(MainViewModel vm, string file, bool continueFromLeftOff)
+    public static async Task QuickLoadAsync(MainViewModel vm, string file, Window window, bool continueFromLeftOff)
     {
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
@@ -55,31 +57,33 @@ public static class QuickLoad
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            await SideBySideLoadingAsync(vm, fileInfo, magickImage, continueFromLeftOff).ConfigureAwait(false);
+            await SideBySideLoadingAsync(vm, fileInfo, magickImage, window, continueFromLeftOff).ConfigureAwait(false);
         }
         else
         {
-            await SingeImageLoadingAsync(vm, fileInfo, magickImage, continueFromLeftOff).ConfigureAwait(false);
+            await SingeImageLoadingAsync(vm, fileInfo, magickImage, window, continueFromLeftOff).ConfigureAwait(false);
         }
         
         vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
     }
 
     /// <summary>
-    /// Asynchronously handles the loading of a single image into the application state and updates the relevant UI
-    /// properties accordingly.
+    /// Asynchronously handles the loading of a single image into the application state and updates the relevant UI properties accordingly.
     /// </summary>
     /// <param name="vm">The main view model.</param>
     /// <param name="fileInfo">The file information object representing the image to be loaded.</param>
-    /// <param name="magickImage">The MagickImage to not consecutively ping it.</param>
-    /// <param name="continueFromLeftOff">Continue from last session's directory structure</param>
-    private static async Task SingeImageLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage, bool continueFromLeftOff)
+    /// <param name="magickImage">The MagickImage instance for efficient processing without consecutive pings.</param>
+    /// <param name="window">The main window used for UI updates and optimizations.</param>
+    /// <param name="continueFromLeftOff">Indicates whether to continue loading from the last session's directory structure.</param>
+    private static async Task SingeImageLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage,
+        Window window, bool continueFromLeftOff)
     {
         var cancellationTokenSource = new CancellationTokenSource();
         ImageModel? imageModel = null;
         await Task.WhenAll(
-                Task.Run(() => { NavigationManager.InitializeImageIterator(vm, continueFromLeftOff); }, cancellationTokenSource.Token),
-                Task.Run(async () => imageModel = await SetSingleImageAsync(vm, fileInfo, magickImage),
+                Task.Run(() => { NavigationManager.InitializeImageIterator(vm, continueFromLeftOff); },
+                    cancellationTokenSource.Token),
+                Task.Run(async () => imageModel = await SetSingleImageAsync(vm, fileInfo, magickImage, window),
                     cancellationTokenSource.Token))
             .ConfigureAwait(false);
         if (TiffManager.IsTiff(imageModel.FileInfo.FullName))
@@ -101,9 +105,10 @@ public static class QuickLoad
     /// <param name="vm">The main view model.</param>
     /// <param name="fileInfo">The file information of the image to be loaded.</param>
     /// <param name="magickImage">The MagickImage to not consecutively ping it.</param>
+    /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <returns>The <see cref="ImageModel" /> instance representing the loaded image and its associated properties.</returns>
     private static async Task<ImageModel> SetSingleImageAsync(MainViewModel vm, FileInfo fileInfo,
-        MagickImage magickImage)
+        MagickImage magickImage, Window window)
     {
         if (Settings.WindowProperties.AutoFit)
         {
@@ -111,8 +116,12 @@ public static class QuickLoad
             {
                 vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
-                WindowFunctions.CenterWindowOnScreen();
+                window.Show();
             }, DispatcherPriority.Send);
+        }
+        else
+        {
+            await Dispatcher.UIThread.InvokeAsync(window.Show, DispatcherPriority.Send);
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
@@ -133,9 +142,11 @@ public static class QuickLoad
     /// <param name="vm">The main view model managing the application's state and UI properties.</param>
     /// <param name="fileInfo">Information about the file to be loaded.</param>
     /// <param name="magickImage">The MagickImage to not consecutively ping it.</param>
+    /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">Continue from last session's directory structure</param>
-    private static async Task SideBySideLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage, bool continueFromLeftOff)
+    private static async Task SideBySideLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage, Window window, bool continueFromLeftOff)
     {
+        Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
         NavigationManager.InitializeImageIterator(vm, continueFromLeftOff);
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage);
         var secondaryPreloadValue = await NavigationManager.GetNextPreLoadValueAsync();

@@ -65,8 +65,7 @@ public static class StartUpHelper
 
         HandleWindowScalingMode(vm, window);
 
-        HandleStartUpMenuOrImage(vm, args);
-        window.Show();
+        HandleStartUpMenuOrImage(vm, window, args);
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
@@ -79,7 +78,7 @@ public static class StartUpHelper
 
         HandleWindowScalingMode(vm, window);
 
-        HandleStartUpMenuOrImage(vm, arg);
+        HandleStartUpMenuOrImage(vm, window, arg);
         window.Show();
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
@@ -146,29 +145,24 @@ public static class StartUpHelper
         if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
         {
             Dispatcher.UIThread
-                .InvokeAsync(() => { vm.PlatformWindowService.Maximize(false); }, DispatcherPriority.Background).Wait();
+                .InvokeAsync(() => { vm.PlatformWindowService.Maximize(false); }, DispatcherPriority.Background);
         }
         else if (Settings.WindowProperties.Fullscreen)
         {
             Dispatcher.UIThread.InvokeAsync(() => { vm.PlatformWindowService.Fullscreen(false); },
-                DispatcherPriority.Background).Wait();
+                DispatcherPriority.Background);
         }
-        else if (Settings.WindowProperties.AutoFit && Settings.ImageScaling.ShowImageSideBySide)
-        {
-            Dispatcher.UIThread
-                .InvokeAsync(() => { WindowFunctions.CenterWindowOnScreen(); }, DispatcherPriority.Background).Wait();
-        }
-
-        Application.Current.Name = "PicView";
-
+        
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
+            // Windows needs a named pipe server to open files in the same window
             if (Settings.UIProperties.OpenInSameWindow && !ProcessHelper.CheckIfAnotherInstanceIsRunning())
             {
-                // No other instance is running, create named pipe server
                 _ = IPC.StartListeningForArguments(vm);
             }
         }
+        
+        Application.Current.Name = "PicView";
     }
 
     private static void HandleThemeUpdates(MainViewModel vm)
@@ -200,37 +194,37 @@ public static class StartUpHelper
         }
     }
 
-    private static void HandleStartUpMenuOrImage(MainViewModel vm, string[] args)
+    private static void HandleStartUpMenuOrImage(MainViewModel vm, Window window, string[] args)
     {
         vm.ImageViewer = new ImageViewer();
 
         if (args.Length > 1)
         {
             vm.MainWindow.CurrentView.Value = vm.ImageViewer;
-            Task.Run(() => QuickLoad.QuickLoadAsync(vm, args[1], false));
+            Task.Run(() => QuickLoad.QuickLoadAsync(vm, args[1], window, false));
         }
         else
         {
-            StartUpMenuOrLastFile(vm);
+            StartUpMenuOrLastFile(vm, window);
         }
     }
 
-    private static void HandleStartUpMenuOrImage(MainViewModel vm, string? arg = null)
+    private static void HandleStartUpMenuOrImage(MainViewModel vm, Window window, string? arg = null)
     {
         vm.ImageViewer = new ImageViewer();
 
         if (arg is not null)
         {
             vm.MainWindow.CurrentView.Value = vm.ImageViewer;
-            Task.Run(() => QuickLoad.QuickLoadAsync(vm, arg, false));
+            Task.Run(() => QuickLoad.QuickLoadAsync(vm, arg,  window,false));
         }
         else
         {
-            StartUpMenuOrLastFile(vm);
+            StartUpMenuOrLastFile(vm, window);
         }
     }
 
-    private static void StartUpMenuOrLastFile(MainViewModel vm)
+    private static void StartUpMenuOrLastFile(MainViewModel vm, Window window)
     {
         if (Settings.StartUp.OpenLastFile)
         {
@@ -241,7 +235,7 @@ public static class StartUpHelper
             else
             {
                 vm.MainWindow.CurrentView.Value = vm.ImageViewer;
-                Task.Run(() => QuickLoad.QuickLoadAsync(vm, Settings.StartUp.LastFile, true));
+                Task.Run(() => QuickLoad.QuickLoadAsync(vm, Settings.StartUp.LastFile, window, true));
             }
         }
         else
@@ -253,6 +247,9 @@ public static class StartUpHelper
 
         void ShowStartUpMenu()
         {
+            
+            window.Show();
+            
             // Starting it in Dispatcher with post fixes occurrences where the text is not centered or the text is missing
             Dispatcher.UIThread.Post(() => { ErrorHandling.ShowStartUpMenu(vm); });
             Dispatcher.UIThread.Post(() =>
@@ -289,7 +286,15 @@ public static class StartUpHelper
             vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
 
-        window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
+        {
+            window.WindowStartupLocation = WindowStartupLocation.Manual;
+        }
+        else
+        {
+            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        }
+        
     }
 
     private static void SetWindowEventHandlers(Window w)
