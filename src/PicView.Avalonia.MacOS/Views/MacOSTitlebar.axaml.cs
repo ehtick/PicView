@@ -6,8 +6,6 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.DebugTools;
-using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -35,33 +33,12 @@ public partial class MacOSTitlebar : UserControl
 
                 RotateRightButton.Background = Brushes.Transparent;
                 RotateRightButton.BorderThickness = new Thickness(0);
-
-                if (!Application.Current.TryGetResource("SecondaryTextColor", Application.Current.RequestedThemeVariant,
-                        out var color))
-                {
-                    return;
-                }
-
-                if (color is not Color secondaryTextColor)
-                {
-                    return;
-                }
-
-                try
-                {
-                    EditableTitlebar.Foreground = new SolidColorBrush(secondaryTextColor);
-                    FlipButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    GalleryButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                    RotateRightButton.Foreground = new SolidColorBrush(secondaryTextColor);
-                }
-#if DEBUG
-                catch (Exception e)
-                {
-                    DebugHelper.LogDebug(nameof(MacOSTitlebar), nameof(LoadedEvent), e);
-                }
-#else
-                catch (Exception) { }
-#endif
+                
+                var brush = UIHelper.GetBrush("SecondaryTextColor");
+                EditableTitlebar.Foreground = brush;
+                FlipButton.Foreground = brush;
+                GalleryButton.Foreground = brush;
+                RotateRightButton.Foreground = brush;
             }
 
             _rotationContextMenu = new RotationContextMenu();
@@ -73,7 +50,7 @@ public partial class MacOSTitlebar : UserControl
             RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
 
             RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
-            RotateRightButton.Click += (_, e) =>
+            RotateRightButton.Click += (_, _) =>
             {
                 if (DataContext is not MainViewModel vm)
                 {
