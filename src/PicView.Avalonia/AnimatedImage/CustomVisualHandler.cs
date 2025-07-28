@@ -1,7 +1,7 @@
 ﻿using Avalonia;
-using Avalonia.Logging;
 using Avalonia.Media;
 using Avalonia.Rendering.Composition;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.AnimatedImage;
 
@@ -69,9 +69,7 @@ public class CustomVisualHandler : CompositionCustomVisualHandler
         }
         catch (Exception e)
         {
-            #if DEBUG
-            Logger.Sink?.Log(LogEventLevel.Error, "GifImage Renderer ", this, e.ToString());
-            #endif
+            DebugHelper.LogDebug(nameof(CustomVisualHandler), nameof(OnRender), e);
         }
     }
 }

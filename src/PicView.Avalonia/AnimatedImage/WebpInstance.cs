@@ -2,6 +2,7 @@
 using Avalonia.Animation;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using PicView.Core.DebugTools;
 using SkiaSharp;
 
 namespace PicView.Avalonia.AnimatedImage;
@@ -152,14 +153,10 @@ public class WebpInstance : IGifInstance
                 throw new InvalidDataException($"Could not decode frame {index} of {codec.FrameCount}.");
             }
         }
-#if DEBUG
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            DebugHelper.LogDebug(nameof(WebpInstance), nameof(RenderFrame), e);
         }
-#else
-        catch{}
-#endif
     }
 
     internal WriteableBitmap ProcessFrameIndex(int frameIndex)

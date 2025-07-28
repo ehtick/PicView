@@ -25,6 +25,11 @@ public static class ProcessHelper
         return getAppPath;
     }
 
+    /// <summary>
+    /// Starts a new process with elevated permissions using the specified command-line arguments.
+    /// </summary>
+    /// <param name="arguments">The command-line arguments to pass to the process.</param>
+    /// <returns>A task that represents the asynchronous operation. The result is true if the process was started successfully, otherwise false.</returns>
     public static async Task<bool> StartProcessWithElevatedPermissionAsync(string arguments)
     {
         try
@@ -45,7 +50,7 @@ public static class ProcessHelper
         catch (Exception ex)
         {
             // User declined the UAC prompt or other error
-            Debug.WriteLine($"Failed to start elevated process: {ex.Message}");
+            DebugHelper.LogDebug(nameof(ProcessHelper), nameof(StartProcessWithElevatedPermissionAsync), ex);
             return false;
         }
     }

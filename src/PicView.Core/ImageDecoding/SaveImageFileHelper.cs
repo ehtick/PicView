@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using ImageMagick;
+﻿using ImageMagick;
 using PicView.Core.DebugTools;
 
 namespace PicView.Core.ImageDecoding;
@@ -250,9 +249,7 @@ public static class SaveImageFileHelper
         }
         catch (MagickException e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(ResizeImageAsync)} magic read exception caught \n {e.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(SaveImageFileHelper), nameof(ResizeImageAsync), e);
             return false;
         }
 
@@ -310,9 +307,7 @@ public static class SaveImageFileHelper
         }
         catch (MagickException e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(ResizeImageAsync)} exception caught \n {e.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(SaveImageFileHelper), nameof(ResizeImageAsync), e);
             return false;
         }
 
