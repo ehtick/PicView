@@ -335,6 +335,11 @@ public static class WindowResizing
             {
                 var mainView = UIHelper.GetMainView;
 
+                if (mainView is null)
+                {
+                    return default;
+                }
+
                 containerWidth = mainView.Bounds.Width;
                 containerHeight = mainView.Bounds.Height;
 

@@ -4,7 +4,7 @@
     ExtendClientAreaTitleBarHeightHint="-1"
     SizeToContent="WidthAndHeight"
     Title="SettingsWindow"
-    WindowStartupLocation="CenterOwner"
+    WindowStartupLocation="Manual"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -25,8 +25,7 @@
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1"
         CornerRadius="8"
-        PointerPressed="MoveWindow"
-        PointerReleased="UpdateWindowPosition">
+        PointerPressed="MoveWindow">
         <StackPanel>
             <Panel>
                 <customControls:IconButton

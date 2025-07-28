@@ -77,11 +77,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
     public async Task ShowImageInfoWindow(MainViewModel vm)
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
         if (_imageInfoWindow is null)
         {
             if (vm.Window.ImageInfoWindowConfig?.WindowProperties is null )
@@ -130,7 +125,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         void Show()
         {
             WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow, vm.Window.ImageInfoWindowConfig.WindowProperties);
-            _imageInfoWindow.Show(desktop.MainWindow);
+            _imageInfoWindow.Show();
         }
     }
 
@@ -200,12 +195,12 @@ public class WindowInitializer : IPlatformSpecificUpdate
             {
                 _settingsWindow = new SettingsWindow(vm.Window.SettingsWindowConfig)
                 {
-                    DataContext = vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    DataContext = vm
                 };
 
                 Show();
-                _settingsWindow.Closing += (_, _) => _settingsWindow = null;
+                _settingsWindow.Closing += (_, _) =>
+                    _settingsWindow = null;;
             });
         }
         else
@@ -228,8 +223,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
         
         void Show()
         {
-            WindowFunctions.InitializeWindowSizeAndPosition(_settingsWindow, vm.Window.SettingsWindowConfig.WindowProperties);
-            _settingsWindow.Show(desktop.MainWindow);
+            WindowFunctions.InitializeWindowPosition(_settingsWindow, vm.Window.SettingsWindowConfig.WindowProperties);
+            _settingsWindow.Show();
         }
     }
 
@@ -248,11 +243,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         void Set()
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-
             if (_singleImageResizeWindow is null)
             {
                 _singleImageResizeWindow = new SingleImageResizeWindow
@@ -260,7 +250,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _singleImageResizeWindow.Show(desktop.MainWindow);
+                _singleImageResizeWindow.Show();
                 _singleImageResizeWindow.Closing += (s, e) => _singleImageResizeWindow = null;
             }
             else

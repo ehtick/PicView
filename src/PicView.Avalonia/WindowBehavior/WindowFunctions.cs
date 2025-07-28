@@ -376,6 +376,34 @@ public static class WindowFunctions
         }
     }
 
+    public static void InitializeWindowPosition(Window window, IWindowProperties properties)
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            Set();
+        }
+        else
+        {
+            Dispatcher.UIThread.InvokeAsync(Set);
+        }
+
+        return;
+
+        void Set()
+        {
+            if (properties is { Left: not null, Top: not null })
+            {
+                window.WindowStartupLocation = WindowStartupLocation.Manual;
+                window.Position = new PixelPoint(properties.Left.GetValueOrDefault(),
+                    properties.Top.GetValueOrDefault());
+            }
+            else
+            {
+                window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            }
+        }
+    }
+
     public static void InitializeWindowSizeAndPosition(Window window, IWindowProperties properties)
     {
         if (Dispatcher.UIThread.CheckAccess())

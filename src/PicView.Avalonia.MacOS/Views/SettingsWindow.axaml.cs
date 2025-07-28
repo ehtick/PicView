@@ -6,17 +6,20 @@ using Avalonia.Threading;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.MacOS.FileAssociation;
 using PicView.Core.Sizing;
+using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
 
 public partial class SettingsWindow : Window
 {
     private readonly SettingsWindowConfig _config;
+    
     public SettingsWindow(SettingsWindowConfig config)
     {
         _config = config;
@@ -63,6 +66,8 @@ public partial class SettingsWindow : Window
             {
                 return;
             }
+
+            PositionChanged += (_, _) => UpdateWindowPosition();
             
             GoForwardButton.Command = vm.SettingsViewModel.GoForwardCommand;
             GoBackButton.Command = vm.SettingsViewModel.GoBackCommand;
@@ -80,6 +85,14 @@ public partial class SettingsWindow : Window
         Closing += async delegate
         {
             Hide();
+            if (VisualRoot is null)
+            {
+                return;
+            }
+
+            var hostWindow = (Window)VisualRoot;
+            hostWindow?.Focus();
+            await _config.SaveAsync();
             await SaveSettingsAsync();
         };
         
@@ -91,7 +104,7 @@ public partial class SettingsWindow : Window
         BeginMoveDrag(e);
     }
     
-    private void UpdateWindowPosition(object? sender, PointerReleasedEventArgs e)
+    private void UpdateWindowPosition()
     {
         _config.WindowProperties.Left = Position.X;
         _config.WindowProperties.Top = Position.Y;

@@ -6,7 +6,7 @@
     MinWidth="400"
     Title="Loading..."
     Width="900"
-    WindowStartupLocation="CenterOwner"
+    WindowStartupLocation="Manual"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.ImageInfoWindow"
     x:DataType="viewModels:MainViewModel"
