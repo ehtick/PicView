@@ -512,7 +512,7 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public static async Task OpenLastFile() =>
-        await NavigationManager.LoadPicFromStringAsync(FileHistoryManager.GetLastEntry(), Vm).ConfigureAwait(false);
+        await NavigationManager.LoadLastFileAsync(Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public static async Task OpenPreviousFileHistoryEntry() =>

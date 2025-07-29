@@ -336,6 +336,23 @@ public static class NavigationManager
         await ImageLoader.CheckCancellationAndStartIterateToIndex(index, ImageIterator).ConfigureAwait(false);
     }
 
+    public static async Task LoadLastFileAsync(MainViewModel vm)
+    {
+        var lastFile = Settings.StartUp.LastFile;
+        if (!string.IsNullOrEmpty(lastFile))
+        {
+            await LoadPicFromStringAsync(lastFile, vm).ConfigureAwait(false);
+        }
+        else
+        {
+            var lastEntry = FileHistoryManager.GetLastEntry();
+            if (lastEntry != null)
+            {
+                await LoadPicFromStringAsync(lastEntry, vm).ConfigureAwait(false);
+            }
+        }
+    }
+
     public static Task Next10(MainViewModel vm) => NavigateIncrements(vm, true, true, false);
     public static Task Next100(MainViewModel vm) => NavigateIncrements(vm, true, false, true);
     public static Task Prev10(MainViewModel vm) => NavigateIncrements(vm, false, true, false);
