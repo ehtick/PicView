@@ -784,6 +784,7 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
+                                Background="{DynamicResource DisabledBackgroundColor}"
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
                                 Text="{CompiledBinding PicViewer.FileInfo.Value.CreationTime,
@@ -809,6 +810,7 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
+                                Background="{DynamicResource DisabledBackgroundColor}"
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
                                 Text="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
@@ -834,6 +836,7 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
+                                Background="{DynamicResource DisabledBackgroundColor}"
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
                                 Text="{CompiledBinding PicViewer.FileInfo.Value.LastAccessTime,
@@ -964,6 +967,7 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
+                                Background="{DynamicResource DisabledBackgroundColor}"
                                 Classes=" TStyle x"
                                 IsReadOnly="True"
                                 Text="{CompiledBinding Exif.DateTaken.Value,
@@ -990,7 +994,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 Text="{CompiledBinding Exif.Authors.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
@@ -1015,7 +1018,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 Text="{CompiledBinding Exif.Copyright.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
@@ -1040,7 +1042,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 Text="{CompiledBinding Exif.Software.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
@@ -1065,7 +1066,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 Text="{CompiledBinding Exif.Subject.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxXxlWidth.Value}" />
@@ -1090,7 +1090,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 Text="{CompiledBinding Exif.Title.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxXxlWidth.Value}" />
@@ -1114,7 +1113,6 @@
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
-                                IsReadOnly="True"
                                 MaxHeight="600"
                                 Text="{CompiledBinding Exif.Comment.Value,
                                                        Mode=OneWay}"
@@ -1423,6 +1421,7 @@
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
                                 <customControls:FuncTextBox
+                                    Background="{DynamicResource DisabledBackgroundColor}"
                                     Classes=" TStyle x"
                                     IsReadOnly="True"
                                     Text="{CompiledBinding Exif.CameraMaker.Value,

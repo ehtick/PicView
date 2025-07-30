@@ -4,8 +4,10 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Views.UC;
@@ -117,18 +119,40 @@ public partial class EditableTitlebar : UserControl
                     await ShowFileExistsErrorAsync(vm);
                     return;
                 }
-                var isFileRenamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm);
-                MainKeyboardShortcuts.IsKeysEnabled = true;
-                if (isFileRenamed)
+
+                try
+                {
+                    vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+                    NavigationManager.DisableWatcher();
+                    
+                    var renamed = await FileRenamer.AttemptRenameAsync(
+                            oldPath, 
+                            newPath, 
+                            ErrorHandling.ReloadAsync(vm),
+                            vm.PlatformService.DeleteFile(oldPath, true))
+                        .ConfigureAwait(false);
+
+                
+                    MainKeyboardShortcuts.IsKeysEnabled = true;
+                    if (renamed)
+                    {
+                        vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+                        vm.MainWindow.IsEditableTitlebarOpen.Value = false;
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            TextBox.ClearSelection();
+                            Cursor = new Cursor(StandardCursorType.Arrow);
+                            UIHelper.GetMainView.Focus();
+                        });
+                    }
+                }
+                finally
                 {
                     vm.MainWindow.IsLoadingIndicatorShown.Value = false;
-                    vm.MainWindow.IsEditableTitlebarOpen.Value = false;
-                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    if (Settings.Navigation.IsFileWatcherEnabled)
                     {
-                        TextBox.ClearSelection();
-                        Cursor = new Cursor(StandardCursorType.Arrow);
-                        UIHelper.GetMainView.Focus();
-                    });
+                        NavigationManager.EnableWatcher();
+                    }
                 }
             });
         }

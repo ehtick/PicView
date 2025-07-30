@@ -9,6 +9,7 @@ using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
+using PicView.Core.FileHandling;
 using PicView.Core.Titles;
 using R3;
 
@@ -112,54 +113,70 @@ public partial class ImageInfoView : UserControl
                     PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
             FileNameTextBox.KeyDown += async (_, e) =>
-            {
-                if (e.Key is not Key.Enter)
-                {
-                    return;
-                }
+                await HandleRenameOnEnterAsync(e, () => 
+                    Path.Combine(vm.PicViewer.FileInfo.CurrentValue.DirectoryName!, FileNameTextBox.Text));
 
-                var newPath = Path.Combine(vm.PicViewer.FileInfo.CurrentValue.DirectoryName, FileNameTextBox.Text);
-                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
-                var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
-                if (renamed)
-                {
-                    await NavigationManager.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
-                }
-            };
-            FullPathTextBox.KeyDown += async (_, e) =>
-            {
-                if (e.Key is not Key.Enter)
-                {
-                    return;
-                }
+            FullPathTextBox.KeyDown += async (_, e) => 
+                await HandleRenameOnEnterAsync(e, () => FullPathTextBox.Text ?? string.Empty);
 
-                var newPath = FullPathTextBox.Text;
-                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
-                var renamed = await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
-                if (renamed)
-                {
-                    await NavigationManager.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
-                }
-            };
             DirectoryNameTextBox.KeyDown += async (_, e) =>
-            {
-                if (e.Key is not Key.Enter)
-                {
-                    return;
-                }
+                await HandleRenameOnEnterAsync(e, () => 
+                    Path.Combine(DirectoryNameTextBox.Text, vm.PicViewer.FileInfo.CurrentValue.Name));
 
-                var oldDirectory = vm.PicViewer.FileInfo.CurrentValue.DirectoryName;
-                var newDirectory = DirectoryNameTextBox.Text;
-
-                var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
-                var newPath = oldPath.Replace(oldDirectory, newDirectory);
-
-                await FileRenamer.AttemptRenameAsync(oldPath, newPath, vm).ConfigureAwait(false);
-            };
             
             vm.InfoWindow.IsLoading.Value = false;
         };
     }
+    
+    private async Task HandleRenameOnEnterAsync(KeyEventArgs e, Func<string> getNewPath)
+    {
+        if (e.Key is not Key.Enter || DataContext  is not MainViewModel vm)
+        {
+            return;
+        }
+            
+        try
+        {    
+            var newPath = getNewPath();
+            if (string.IsNullOrWhiteSpace(newPath))
+            {
+                return;
+            }
+            
+            vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+            NavigationManager.DisableWatcher();
+            
+            var fileInfo = vm.PicViewer.FileInfo.CurrentValue;
+            var oldPath = fileInfo.FullName;
+            
+            // Avoid renaming if the path hasn't changed
+            if (oldPath.Equals(newPath, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var renamed = await FileRenamer.AttemptRenameAsync(
+                    oldPath, 
+                    newPath, 
+                    ErrorHandling.ReloadAsync(vm),
+                    vm.PlatformService.DeleteFile(oldPath, true))
+                .ConfigureAwait(false);
+            
+            if (renamed)
+            {
+                await NavigationManager.LoadPicFromFile(newPath, vm).ConfigureAwait(false);
+            }
+        }
+        finally
+        {
+            vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+            if (Settings.Navigation.IsFileWatcherEnabled)
+            {
+                NavigationManager.EnableWatcher();
+            }
+        }
+    }
+
 
     private void ResponsiveResizeUpdate(MainViewModel vm)
     {

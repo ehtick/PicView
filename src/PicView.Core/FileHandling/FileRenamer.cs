@@ -1,28 +1,23 @@
-﻿using PicView.Avalonia.Navigation;
-using PicView.Avalonia.ViewModels;
-using PicView.Core.FileHandling;
-using PicView.Core.ImageDecoding;
+﻿using PicView.Core.ImageDecoding;
 
-namespace PicView.Avalonia.FileSystem;
+namespace PicView.Core.FileHandling;
 
 public static class FileRenamer
 {
     private const int FileInUseRetryCount = 100;
     private const int FileInUseRetryDelayMs = 50;
 
-    public static async Task<bool> AttemptRenameAsync(string oldPath, string newPath, MainViewModel vm, uint? width = null, uint? height = null, uint? quality = null)
+    public static async Task<bool> AttemptRenameAsync(string oldPath, string newPath, Task reload, Task<bool> deleteFile, uint? width = null, uint? height = null, uint? quality = null)
     {
-        vm.MainWindow.IsLoadingIndicatorShown.Value = true;
-
         if (Path.GetExtension(newPath) != Path.GetExtension(oldPath))
         {
-            return await HandleExtensionAsync(vm, oldPath, newPath, width, height, quality);
+            return await HandleExtensionAsync(oldPath, newPath, reload, deleteFile, width, height, quality);
         }
 
-        return await HandleSimpleRenameAsync(vm, oldPath, newPath);
+        return await HandleSimpleRenameAsync(oldPath, newPath, reload);
     }
 
-    private static async Task<bool> HandleExtensionAsync(MainViewModel vm, string oldPath, string newPath, uint? width = null, uint? height = null, uint? quality = null)
+    private static async Task<bool> HandleExtensionAsync(string oldPath, string newPath, Task reload, Task<bool> deleteFile, uint? width = null, uint? height = null, uint? quality = null)
     {
         var saved = await SaveImageFileHelper
             .SaveImageAsync(null, oldPath, newPath, width, height, quality, Path.GetExtension(newPath)).ConfigureAwait(false);
@@ -36,19 +31,23 @@ public static class FileRenamer
         // ReSharper disable once InvertIf
         if (saved)
         {
-            var success = await vm.PlatformService.DeleteFile(oldPath, true);
+            if (!File.Exists(newPath))
+            {
+                return true;
+            }
+            var success = await deleteFile;
             if (success || File.Exists(newPath))
             {
                 return true;
             }
 
-            await ErrorHandling.ReloadAsync(vm);
+            await reload;
         }
         
         return false;
     }
 
-    private static async Task<bool> HandleSimpleRenameAsync(MainViewModel vm, string oldPath, string newPath)
+    private static async Task<bool> HandleSimpleRenameAsync(string oldPath, string newPath, Task reload)
     {
         var renamed = FileHelper.RenameFile(oldPath, newPath);
         if (renamed || File.Exists(newPath))
@@ -56,7 +55,7 @@ public static class FileRenamer
             return true;
         }
 
-        await ErrorHandling.ReloadAsync(vm);
+        await reload;
         return false;
     }
 }
