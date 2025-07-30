@@ -178,13 +178,7 @@ public static class FilePicker
     
     private static async Task<T> ExecuteOnUIThread<T>(Func<Task<T>> action)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            // Use Dispatcher to ensure we're on the UI thread for macOS
-            return await Dispatcher.UIThread.InvokeAsync(action).ConfigureAwait(false);
-        }
-        
-        // For other platforms, just execute directly
-        return await action().ConfigureAwait(false);
+        // Try to use file picker in Dispatcher #228
+        return await Dispatcher.UIThread.InvokeAsync(action).ConfigureAwait(false);
     }
 }
