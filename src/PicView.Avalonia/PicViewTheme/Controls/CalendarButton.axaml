@@ -1,0 +1,72 @@
+﻿<ResourceDictionary
+    x:ClassModifier="internal"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="CalendarButton" x:Key="{x:Type CalendarButton}">
+        <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
+        <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Medium.ttf#Roboto" />
+        <Setter Property="MinWidth" Value="37" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+
+                    <Rectangle
+                        Fill="{TemplateBinding Background}"
+                        IsVisible="False"
+                        Name="SelectedBackground"
+                        Opacity="0.75" />
+
+                    <Rectangle
+                        Fill="{TemplateBinding Background}"
+                        IsVisible="False"
+                        Name="Background"
+                        Opacity="0.5" />
+
+                    <!--  Focusable="False"  -->
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        FontSize="{TemplateBinding FontSize}"
+                        Foreground="{TemplateBinding Foreground}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        Padding="15"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        x:Name="PART_ContentPresenter" />
+
+                    <Rectangle
+                        IsHitTestVisible="False"
+                        IsVisible="False"
+                        Name="FocusVisual"
+                        Stroke="{DynamicResource HighlightBrush}"
+                        StrokeThickness="1" />
+
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Rectangle#Background">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pressed /template/ Rectangle#Background">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:selected /template/ Rectangle#SelectedBackground">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:inactive /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource MainTextColorFaded}" />
+        </Style>
+
+        <Style Selector="^:btnfocused /template/ Rectangle#FocusVisual">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,63 @@
+﻿<ResourceDictionary
+    x:ClassModifier="internal"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:sys="using:System"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="CalendarDatePicker" x:Key="{x:Type CalendarDatePicker}">
+        <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="4" />
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Width="{TemplateBinding Width}">
+                    <customControls:FuncTextBox
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        DataValidationErrors.Errors="{TemplateBinding (DataValidationErrors.Errors)}"
+                        FontFamily=""
+                        FontSize="{TemplateBinding FontSize}"
+                        Foreground="{TemplateBinding Foreground}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        MaxHeight="{TemplateBinding MaxHeight}"
+                        Name="PART_TextBox"
+                        Padding="{TemplateBinding Padding}"
+                        TextWrapping="Wrap"
+                        UseFloatingWatermark="{TemplateBinding UseFloatingWatermark}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Watermark="{TemplateBinding Watermark}" />
+                    <customControls:IconButton
+                        Classes="altHover CalendarDropDown"
+                        Foreground="{TemplateBinding Foreground}"
+                        Height="{TemplateBinding Height}"
+                        HorizontalAlignment="Right"
+                        Icon="{StaticResource CalendarImage}"
+                        IconHeight="16"
+                        IconWidth="16"
+                        Name="PART_Button"
+                        Width="{TemplateBinding Height}"
+                        ZIndex="1" />
+
+                    <Popup Name="PART_Popup" PlacementTarget="{TemplateBinding}">
+                        <Calendar
+                            DisplayDate="{TemplateBinding DisplayDate}"
+                            DisplayDateEnd="{TemplateBinding DisplayDateEnd}"
+                            DisplayDateStart="{TemplateBinding DisplayDateStart}"
+                            FirstDayOfWeek="{TemplateBinding FirstDayOfWeek}"
+                            IsTodayHighlighted="{TemplateBinding IsTodayHighlighted}"
+                            Name="PART_Calendar"
+                            SelectedDate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedDate, Mode=TwoWay}" />
+                    </Popup>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:focus /template/ TextBox#PART_TextBox">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

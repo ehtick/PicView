@@ -65,7 +65,7 @@
         <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
     </Style>
 
-    <Style Selector="TextBox.TStyle">
+    <Style Selector="TextBox.TStyle, CalendarDatePicker.TStyle">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
         <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Medium.ttf#Roboto" />
@@ -76,10 +76,14 @@
         <Setter Property="Margin" Value="5,0,0,0" />
         <Setter Property="Padding" Value="5,7,1,7" />
         <Setter Property="MinWidth" Value="180" />
+    </Style>
+
+    <Style Selector="TextBox.TStyle">
         <Setter Property="CaretBrush" Value="{DynamicResource MainTextColor}" />
         <Setter Property="SelectionForegroundBrush" Value="{StaticResource SecondaryTextColor}" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
+
 
     <Style Selector="Button.GlassBorder, ToggleButton.GlassBorder, RepeatButton.GlassBorder">
         <Setter Property="BorderBrush" Value="#48000000" />

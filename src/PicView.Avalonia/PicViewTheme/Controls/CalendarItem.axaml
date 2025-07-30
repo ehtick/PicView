@@ -1,0 +1,131 @@
+﻿<ResourceDictionary
+    x:ClassModifier="internal"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="CalendarItem" x:Key="{x:Type CalendarItem}">
+        <Setter Property="CornerRadius" Value="1" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Margin="0,2,0,2">
+
+
+                        <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*">
+
+                            <Grid.Styles>
+                                <Style Selector="Button.CalendarHeader:pressed  /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+
+                                <Style Selector="Button.CalendarNavigation">
+                                    <Setter Property="Height" Value="20" />
+                                    <Setter Property="Width" Value="28" />
+                                </Style>
+                                <Style Selector="Button.CalendarNavigation &gt; Path">
+                                    <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />
+                                </Style>
+                                <Style Selector="Button.CalendarNavigation:pointerover &gt; Path">
+                                    <Setter Property="Fill" Value="{DynamicResource AccentColor}" />
+                                </Style>
+
+                                <Style Selector="Button#HeaderButton:pointerover">
+                                    <Setter Property="Foreground" Value="{DynamicResource AccentColor}" />
+                                </Style>
+                            </Grid.Styles>
+
+                            <Rectangle
+                                Fill="{TemplateBinding HeaderBackground}"
+                                Grid.ColumnSpan="3"
+                                Height="35"
+                                Stretch="Fill"
+                                VerticalAlignment="Top" />
+
+                            <customControls:IconButton
+                                Classes="CalendarHeader CalendarNavigation altHover"
+                                Data="{StaticResource FilledArrowLeftGeometry}"
+                                HorizontalAlignment="Left"
+                                IconHeight="12"
+                                IconWidth="12"
+                                IsVisible="False"
+                                Name="PART_PreviousButton"
+                                Width="30" />
+
+                            <Button
+                                Classes="CalendarHeader foregroundHoverAlt"
+                                FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+                                FontSize="14"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Grid.Column="1"
+                                HorizontalAlignment="Center"
+                                Name="PART_HeaderButton"
+                                VerticalAlignment="Center" />
+
+                            <customControls:IconButton
+                                Classes="CalendarHeader CalendarNavigation altHover"
+                                Data="{StaticResource FilledArrowRightGeometry}"
+                                Grid.Column="2"
+                                Grid.Row="0"
+                                HorizontalAlignment="Right"
+                                IconHeight="12"
+                                IconWidth="12"
+                                IsVisible="False"
+                                Name="PART_NextButton"
+                                Width="30" />
+
+                            <Grid
+                                ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Grid.Row="1"
+                                IsVisible="False"
+                                Margin="10"
+                                Name="PART_MonthView"
+                                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" />
+
+                            <Grid
+                                ColumnDefinitions="Auto,Auto,Auto,Auto"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                Grid.Row="1"
+                                IsVisible="False"
+                                Margin="10"
+                                Name="PART_YearView"
+                                RowDefinitions="Auto,Auto,Auto" />
+                        </Grid>
+                    </Border>
+
+                    <Rectangle
+                        Fill="{DynamicResource MainTextColor}"
+                        IsVisible="False"
+                        Margin="0,2,0,2"
+                        Name="DisabledVisual"
+                        Opacity="{DynamicResource ThemeDisabledOpacity}"
+                        Stretch="Fill" />
+
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="DayTitleTemplate">
+            <Template x:DataType="x:String">
+                <TextBlock
+                    Classes="txt"
+                    HorizontalAlignment="Center"
+                    Margin="0,4,0,4"
+                    Padding="6"
+                    Text="{Binding}"
+                    VerticalAlignment="Center" />
+            </Template>
+        </Setter>
+
+        <Style Selector="^:calendardisabled /template/ Rectangle#DisabledVisual">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

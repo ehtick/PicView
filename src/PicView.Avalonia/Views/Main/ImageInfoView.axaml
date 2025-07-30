@@ -808,12 +808,29 @@
                                 Text="{CompiledBinding Translation.Modified.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
-                            <customControls:FuncTextBox
-                                Classes=" TStyle x"
-                                IsReadOnly="True"
-                                Text="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
-                                                       FallbackValue=''}"
-                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                            <Panel Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}">
+                                <customControls:FuncTextBox
+                                    Classes=" TStyle x"
+                                    IsReadOnly="True"
+                                    Text="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
+                                                           FallbackValue=''}" />
+                                <customControls:IconButton
+                                    Classes="altHover"
+                                    Foreground="{DynamicResource MainTextColor}"
+                                    Height="35"
+                                    HorizontalAlignment="Right"
+                                    Icon="{StaticResource CalendarImage}"
+                                    IconHeight="16"
+                                    IconWidth="16"
+                                    Width="35"
+                                    ZIndex="1">
+                                    <customControls:IconButton.Flyout>
+                                        <Flyout Placement="Top" ShowMode="Standard">
+                                            <Calendar SelectedDate="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime}" SelectionMode="SingleDate" />
+                                        </Flyout>
+                                    </customControls:IconButton.Flyout>
+                                </customControls:IconButton>
+                            </Panel>
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
                                 CopyText="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,

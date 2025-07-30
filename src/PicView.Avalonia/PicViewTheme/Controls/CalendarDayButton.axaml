@@ -1,0 +1,105 @@
+﻿<ResourceDictionary
+    x:ClassModifier="internal"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="CalendarDayButton" x:Key="{x:Type CalendarDayButton}">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource MainTextColorFaded}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="5" />
+        <Setter Property="MinHeight" Value="5" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="Transparent">
+
+                    <Border
+                        BorderBrush="{StaticResource SecondaryBorderColor}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IsVisible="False"
+                        Name="Background" />
+
+                    <Border
+                        Background="{DynamicResource SecondaryAccentColor}"
+                        BorderBrush="{StaticResource SecondaryTextColor}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IsVisible="False"
+                        Name="TodayBackground"
+                        Opacity="0.9" />
+
+                    <Border
+                        Background="{DynamicResource AccentColor}"
+                        BorderBrush="{StaticResource SecondaryTextColor}"
+                        BorderThickness="1"
+                        CornerRadius="3"
+                        IsVisible="False"
+                        Name="SelectedBackground" />
+
+                    <ContentPresenter
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
+                        FontSize="{TemplateBinding FontSize}"
+                        Foreground="{TemplateBinding Foreground}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        Margin="5,1,5,1"
+                        Name="PART_ContentPresenter"
+                        Opacity="1"
+                        Padding="6,8"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+                    <Rectangle
+                        IsHitTestVisible="False"
+                        IsVisible="False"
+                        Name="FocusVisual"
+                        Stroke="{DynamicResource AccentColor}"
+                        StrokeThickness="1" />
+
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#Background">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+        </Style>
+
+        <Style Selector="^:pressed /template/ Border#Background">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:selected /template/ Border#SelectedBackground">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
+        </Style>
+
+        <Style Selector="^:disabled /template/ Border#Background">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.3" />
+        </Style>
+
+        <Style Selector="^:dayfocused /template/ Rectangle#FocusVisual">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:today /template/ Border#TodayBackground">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:today^:pointerover  /template/ Border#TodayBackground">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+
+        <Style Selector="^:inactive /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Opacity" Value="0.8" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

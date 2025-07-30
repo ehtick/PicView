@@ -13,6 +13,11 @@
                 <ResourceInclude Source="Controls/Border.axaml" />
                 <ResourceInclude Source="Controls/Button.axaml" />
                 <ResourceInclude Source="Controls/ButtonSpinner.axaml" />
+                <ResourceInclude Source="Controls/Calendar.axaml" />
+                <ResourceInclude Source="Controls/CalendarButton.axaml" />
+                <ResourceInclude Source="Controls/CalendarDatePicker.axaml" />
+                <ResourceInclude Source="Controls/CalendarDayButton.axaml" />
+                <ResourceInclude Source="Controls/CalendarItem.axaml" />
                 <ResourceInclude Source="Controls/CheckBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBoxItem.axaml" />
