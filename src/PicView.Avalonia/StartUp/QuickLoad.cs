@@ -34,6 +34,7 @@ public static class QuickLoad
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
         {
             vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+            Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
             await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
             return;
         }
@@ -41,6 +42,7 @@ public static class QuickLoad
         if (file.IsArchive()) // Handle if file exist and is an archive
         {
             vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+            Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
             await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
             return;
         }
