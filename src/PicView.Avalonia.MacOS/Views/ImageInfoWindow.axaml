@@ -63,6 +63,8 @@
                 IconHeight="17"
                 IconMargin="10,0,5,0"
                 IconWidth="17"
+                IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                            FallbackValue=False}"
                 IsVisible="{CompiledBinding InfoWindow.IsExtraButtonsEnabled.Value}"
                 Text="{CompiledBinding Translation.RemoveImageData.Value,
                                        Mode=OneWay}"
@@ -156,7 +158,11 @@
                 Width="45"
                 x:Name="LocateOnDiskButton" />
 
-            <buttons:StarOutlineButtons DockPanel.Dock="Right" x:Name="StarOutlineButtons" />
+            <buttons:StarOutlineButtons
+                DockPanel.Dock="Right"
+                IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                            FallbackValue=False}"
+                x:Name="StarOutlineButtons" />
 
             <customControls:IconButton
                 BorderBrush="{DynamicResource MainBorderColor}"
@@ -170,6 +176,8 @@
                 Icon="{StaticResource StarOffImage}"
                 IconHeight="17"
                 IconWidth="17"
+                IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                            FallbackValue=False}"
                 ToolTip.Tip="{CompiledBinding Translation.RemoveStarRating.Value,
                                               Mode=OneWay}"
                 Width="35"
