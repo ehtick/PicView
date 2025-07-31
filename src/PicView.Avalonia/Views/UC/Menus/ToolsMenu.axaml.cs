@@ -117,9 +117,9 @@ public partial class ToolsMenu : AnimatedMenu
                     }
                 }
             }
-
-            Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
-                .Skip(1)
+            
+            this.GetObservable(IsOpenProperty).ToObservable()
+                .Where(x => x)
                 .Subscribe(_ => { DetermineIfOptimizeImageShouldBeEnabled(); });
         };
     }
