@@ -96,7 +96,13 @@ public static class EXIFHelper
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddAuthors));
-    
+
+    /// <summary>
+    /// Adds or updates the copyright information in the EXIF metadata of the specified image file.
+    /// </summary>
+    /// <param name="fileInfo">The file information of the image to update.</param>
+    /// <param name="value">The copyright text to be added or updated in the EXIF metadata.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddCopyright(FileInfo fileInfo, string value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
@@ -105,6 +111,15 @@ public static class EXIFHelper
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddCopyright));
+    
+    public static Task<bool> AddSoftware(FileInfo fileInfo, string value) =>
+        TryUpdateImageProfileAsync(fileInfo, magickImage =>
+        {
+            var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+            profile.SetValue(ExifTag.Software, value);
+            magickImage.SetProfile(profile);
+            return true;
+        }, nameof(AddSoftware));
     
 
     private static async Task<bool> TryUpdateImageProfileAsync(FileInfo fileInfo, Func<MagickImage, bool> updateAction, string callingMethodName)

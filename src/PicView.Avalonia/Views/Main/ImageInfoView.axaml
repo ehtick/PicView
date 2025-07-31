@@ -1041,10 +1041,11 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:FuncTextBox
-                                Classes=" TStyle x"
+                                Classes="TStyle x"
                                 Text="{CompiledBinding Exif.Software.Value,
-                                                       Mode=OneWay}"
-                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                                                       Mode=TwoWay}"
+                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
+                                x:Name="SoftwareBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
                                 CopyText="{CompiledBinding Exif.Software.Value,

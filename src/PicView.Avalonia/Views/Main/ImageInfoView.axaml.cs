@@ -146,6 +146,16 @@ public partial class ImageInfoView : UserControl
                 await AddCopyrightAsync();
             };
             
+            SoftwareBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
+
+                await AddSoftwareAsync();
+            };
+            
             vm.InfoWindow.IsLoading.Value = false;
         };
     }
@@ -172,7 +182,7 @@ public partial class ImageInfoView : UserControl
         var isAdded = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.CurrentValue);
         if (isAdded)
         {
-            UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
+            ExifHandling.UpdateExifValues(vm);
         }
     }
     
@@ -183,6 +193,19 @@ public partial class ImageInfoView : UserControl
             return;
         }
         var isAdded = await EXIFHelper.AddCopyright(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Copyright.CurrentValue);
+        if (isAdded)
+        {
+            ExifHandling.UpdateExifValues(vm);
+        }
+    }
+    
+    public async Task AddSoftwareAsync()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        var isAdded = await EXIFHelper.AddSoftware(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Software.CurrentValue);
         if (isAdded)
         {
             UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
