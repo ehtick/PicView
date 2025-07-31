@@ -32,9 +32,13 @@ public static class EXIFHelper
         Rotated270Cw = 8
     }
 
-    public static Task<bool> RemoveExifProfile(FileInfo fileInfo)
-    {
-        return TryUpdateImageProfileAsync(fileInfo, magickImage =>
+    /// <summary>
+    /// Removes the EXIF profile metadata from the specified image file.
+    /// </summary>
+    /// <param name="fileInfo">The file information of the image from which the EXIF profile will be removed.</param>
+    /// <returns>A task representing the asynchronous operation, containing a boolean value that indicates whether the EXIF profile was successfully removed.</returns>
+    public static Task<bool> RemoveExifProfile(FileInfo fileInfo) =>
+        TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             var profile = magickImage.GetExifProfile();
             if (profile is null)
@@ -45,26 +49,32 @@ public static class EXIFHelper
             magickImage.RemoveProfile(profile);
             return true; 
         }, nameof(RemoveExifProfile));
-    }
 
     /// <summary>
     /// Adds authors metadata to the EXIF profile of the specified image file.
     /// </summary>
     /// <param name="fileInfo">The file information of the image to update.</param>
-    /// <param name="authors">The list of authors to add to the EXIF profile.</param>
+    /// <param name="value">The author(s) to add to the EXIF profile.</param>
     /// <returns>A task representing the asynchronous operation, containing a boolean indicator of success or failure.</returns>
-    public static Task<bool> AddAuthors(FileInfo fileInfo, string authors)
-    {
-        return TryUpdateImageProfileAsync(fileInfo, magickImage =>
+    public static Task<bool> AddAuthors(FileInfo fileInfo, string value) =>
+        TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
-            profile.SetValue(ExifTag.Artist, authors);
+            profile.SetValue(ExifTag.Artist, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddAuthors));
-    }
-
     
+    public static Task<bool> AddCopyright(FileInfo fileInfo, string value) =>
+        TryUpdateImageProfileAsync(fileInfo, magickImage =>
+        {
+            var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+            profile.SetValue(ExifTag.Copyright, value);
+            magickImage.SetProfile(profile);
+            return true;
+        }, nameof(AddCopyright));
+    
+
     private static async Task<bool> TryUpdateImageProfileAsync(FileInfo fileInfo, Func<MagickImage, bool> updateAction, string callingMethodName)
     {
         try

@@ -1018,8 +1018,9 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 Text="{CompiledBinding Exif.Copyright.Value,
-                                                       Mode=OneWay}"
-                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                                                       Mode=TwoWay}"
+                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
+                                x:Name="CopyRightBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
                                 CopyText="{CompiledBinding Exif.Copyright.Value,

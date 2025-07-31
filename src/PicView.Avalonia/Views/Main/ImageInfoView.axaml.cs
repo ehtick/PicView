@@ -135,7 +135,16 @@ public partial class ImageInfoView : UserControl
 
                 await AddAuthorsAsync();
             };
+            
+            CopyRightBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
 
+                await AddCopyrightAsync();
+            };
             
             vm.InfoWindow.IsLoading.Value = false;
         };
@@ -160,8 +169,21 @@ public partial class ImageInfoView : UserControl
         {
             return;
         }
-        var addAuthors = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.Value);
-        if (addAuthors)
+        var isAdded = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.Value);
+        if (isAdded)
+        {
+            UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
+        }
+    }
+    
+    public async Task AddCopyrightAsync()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        var isAdded = await EXIFHelper.AddCopyright(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Copyright.Value);
+        if (isAdded)
         {
             UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
         }
