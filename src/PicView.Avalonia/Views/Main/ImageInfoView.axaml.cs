@@ -169,7 +169,7 @@ public partial class ImageInfoView : UserControl
         {
             return;
         }
-        var isAdded = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.Value);
+        var isAdded = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.CurrentValue);
         if (isAdded)
         {
             UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
@@ -182,7 +182,7 @@ public partial class ImageInfoView : UserControl
         {
             return;
         }
-        var isAdded = await EXIFHelper.AddCopyright(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Copyright.Value);
+        var isAdded = await EXIFHelper.AddCopyright(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Copyright.CurrentValue);
         if (isAdded)
         {
             UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
@@ -277,6 +277,8 @@ public partial class ImageInfoView : UserControl
         vm.PicViewer.ShouldOptimizeImageBeEnabled.Value = ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
         GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
         BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
+
+        vm.Exif.IsExifAvailable.Value = fileInfo.IsExifImage();
     }
 
     private async Task SendToImageSaver(string? location, string destination, string? width, string? height,

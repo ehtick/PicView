@@ -931,7 +931,7 @@
                 </StackPanel>
 
                 <!--  Copyright, comment, etc.  -->
-                <StackPanel>
+                <StackPanel IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value}">
 
                     <StackPanel
                         Height="20"
@@ -1132,7 +1132,7 @@
                 </StackPanel>
 
                 <!--  Gps  -->
-                <StackPanel>
+                <StackPanel IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value}">
                     <StackPanel
                         Height="20"
                         HorizontalAlignment="Center"
@@ -1263,7 +1263,7 @@
                 </StackPanel>
 
                 <!--  Color  -->
-                <StackPanel>
+                <StackPanel IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value}">
                     <StackPanel
                         Height="20"
                         HorizontalAlignment="Center"
@@ -1387,7 +1387,7 @@
                 </StackPanel>
 
                 <!--  Camera info  -->
-                <StackPanel>
+                <StackPanel IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value}">
                     <StackPanel
                         Height="20"
                         HorizontalAlignment="Center"

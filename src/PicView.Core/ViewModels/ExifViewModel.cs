@@ -128,6 +128,8 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> LensModel { get; } = new();
 
     public BindableReactiveProperty<string?> LensMaker { get; } = new();
+    
+    public BindableReactiveProperty<bool> IsExifAvailable { get; } = new();
 
     public void Dispose()
     {
