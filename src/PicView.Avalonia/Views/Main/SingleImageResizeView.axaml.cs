@@ -204,8 +204,8 @@ public partial class SingleImageResizeView : UserControl
 
     private async Task DoSaveImage(MainViewModel vm, string destination)
     {
-        if (!uint.TryParse((string?)PixelWidthTextBox.Text, out var width) ||
-            !uint.TryParse((string?)PixelHeightTextBox.Text, out var height))
+        if (!uint.TryParse(PixelWidthTextBox.Text, out var width) ||
+            !uint.TryParse(PixelHeightTextBox.Text, out var height))
         {
             return;
         }

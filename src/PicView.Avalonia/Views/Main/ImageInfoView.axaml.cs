@@ -12,6 +12,7 @@ using PicView.Core.Conversion;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Sizing;
 using PicView.Core.Titles;
 using R3;
 
@@ -293,7 +294,7 @@ public partial class ImageInfoView : UserControl
         }
 
         var printSizes =
-            AspectRatioHelper.GetPrintSizes(width, height, vm.Exif.DpiX.CurrentValue, vm.Exif.DpiY.CurrentValue);
+            PrintSizing.GetPrintSizes(width, height, vm.Exif.DpiX.CurrentValue, vm.Exif.DpiY.CurrentValue);
         PrintSizeInchTextBox.Text = printSizes.PrintSizeInch;
         PrintSizeCmTextBox.Text = printSizes.PrintSizeCm;
         SizeMpTextBox.Text = printSizes.SizeMp;

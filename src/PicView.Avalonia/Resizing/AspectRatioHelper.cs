@@ -84,26 +84,14 @@ public static class AspectRatioHelper
         }
     }
 
-    public static PrintSizes GetPrintSizes(int pixelWidth, int pixelHeight, double dpiX, double dpiY)
-    {
-        var cm = TranslationManager.Translation.Centimeters;
-        var mp = TranslationManager.Translation.MegaPixels;
-        var inches = TranslationManager.Translation.Inches;
-        var inchesWidth = pixelWidth / dpiX;
-        var inchesHeight = pixelHeight / dpiY;
-        var printSizeInch =
-            $"{inchesWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {inchesHeight.ToString("0.##", CultureInfo.CurrentCulture)} {inches}";
-
-        var cmWidth = pixelWidth / dpiX * 2.54;
-        var cmHeight = pixelHeight / dpiY * 2.54;
-        var printSizeCm =
-            $"{cmWidth.ToString("0.##", CultureInfo.CurrentCulture)} x {cmHeight.ToString("0.##", CultureInfo.CurrentCulture)} {cm}";
-        var sizeMp =
-            $"{((float)pixelHeight * pixelWidth / 1000000).ToString("0.##", CultureInfo.CurrentCulture)} {mp}";
-
-        return new PrintSizes(printSizeCm, printSizeInch, sizeMp);
-    }
-
+    /// <summary>
+    /// Generates a formatted aspect ratio string based on the given width, height, and their greatest common divisor (GCD).
+    /// The result includes the aspect ratio and a description of the orientation (landscape, portrait, or square).
+    /// </summary>
+    /// <param name="gcd">The greatest common divisor of the width and height.</param>
+    /// <param name="width">The width dimension of the image or element.</param>
+    /// <param name="height">The height dimension of the image or element.</param>
+    /// <returns>A formatted string representing the aspect ratio and orientation.</returns>
     public static string GetFormattedAspectRatio(int gcd, int width, int height)
     {
         var square = TranslationManager.Translation.Square;
@@ -121,12 +109,5 @@ public static class AspectRatioHelper
         return firstRatio > secondRatio
             ? $"{firstRatio}:{secondRatio} ({landscape})"
             : $"{firstRatio}:{secondRatio} ({portrait})";
-    }
-
-    public readonly struct PrintSizes(string printSizeCm, string printSizeInch, string sizeMp)
-    {
-        public string PrintSizeCm { get; } = printSizeCm;
-        public string PrintSizeInch { get; } = printSizeInch;
-        public string SizeMp { get; } = sizeMp;
     }
 }

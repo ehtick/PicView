@@ -5,6 +5,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
+using PicView.Core.Sizing;
 using PicView.Core.Titles;
 
 namespace PicView.Avalonia.Navigation;
@@ -85,7 +86,7 @@ public static class ExifHandling
             }
             else 
             {
-                var printSizes = AspectRatioHelper.GetPrintSizes(vm.PicViewer.PixelWidth.CurrentValue,
+                var printSizes = PrintSizing.GetPrintSizes(vm.PicViewer.PixelWidth.CurrentValue,
                     vm.PicViewer.PixelHeight.CurrentValue,
                     vm.Exif.DpiX.CurrentValue,
                     vm.Exif.DpiY.CurrentValue);
