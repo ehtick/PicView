@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Threading;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
@@ -97,7 +98,7 @@ public partial class ImageInfoView : UserControl
                 var ext = GetExtension();
                 var location = FullPathTextBox.Text; // TODO check if this is a valid path
                 // and sync with file name/directory text boxes
-                await SendToImageSaver(vm.PicViewer.FileInfo?.CurrentValue.FullName, location, PixelWidthTextBox.Text,
+                await SendToImageSaver(vm, vm.PicViewer.FileInfo?.CurrentValue.FullName, location, PixelWidthTextBox.Text,
                     PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
 
@@ -112,7 +113,7 @@ public partial class ImageInfoView : UserControl
                     return;
                 }
 
-                await SendToImageSaver(vm.PicViewer.FileInfo?.CurrentValue.FullName, file, PixelWidthTextBox.Text,
+                await SendToImageSaver(vm, vm.PicViewer.FileInfo?.CurrentValue.FullName, file, PixelWidthTextBox.Text,
                     PixelHeightTextBox.Text, ext).ConfigureAwait(false);
             };
             FileNameTextBox.KeyDown += async (_, e) =>
@@ -227,6 +228,7 @@ public partial class ImageInfoView : UserControl
                 return;
             }
             
+            await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(true));
             vm.MainWindow.IsLoadingIndicatorShown.Value = true;
             NavigationManager.DisableWatcher();
             
@@ -253,6 +255,7 @@ public partial class ImageInfoView : UserControl
         }
         finally
         {
+            await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(false));
             vm.MainWindow.IsLoadingIndicatorShown.Value = false;
             if (Settings.Navigation.IsFileWatcherEnabled)
             {
@@ -304,7 +307,7 @@ public partial class ImageInfoView : UserControl
         vm.Exif.IsExifAvailable.Value = fileInfo.IsExifImage();
     }
 
-    private async Task SendToImageSaver(string? location, string destination, string? width, string? height,
+    private async Task SendToImageSaver(MainViewModel vm, string? location, string destination, string? width, string? height,
         string ext)
     {
         if (!uint.TryParse(width, out var widthValue) || !uint.TryParse(height, out var heightValue))
@@ -312,10 +315,26 @@ public partial class ImageInfoView : UserControl
             return;
         }
 
-        var sameFile = destination.Equals(location, StringComparison.OrdinalIgnoreCase);
-        await SaveImageHandler.SaveImageWithPossibleNavigation(DataContext as MainViewModel, location, destination,
-            sameFile, ext, widthValue, heightValue,
-            null, null, true);
+        try
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(true));
+            
+            var sameFile = destination.Equals(location, StringComparison.OrdinalIgnoreCase);
+            await SaveImageHandler.SaveImageWithPossibleNavigation(DataContext as MainViewModel, location, destination,
+                sameFile, ext, widthValue, heightValue,
+                null, null, true);
+        }
+        finally
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(false));
+        }
+    }
+    
+    private void SetLoadingState(bool isLoading)
+    {
+        ParentPanel.Opacity = isLoading ? 0.1 : 1;
+        ParentPanel.IsHitTestVisible = !isLoading;
+        SpinWaiter.IsVisible = isLoading;
     }
 
     private string GetExtension() => ConversionComboBox.SelectedIndex switch
@@ -410,8 +429,16 @@ public partial class ImageInfoView : UserControl
                 return;
             }
 
-            await DoResize(vm, Equals(sender, PixelWidthTextBox), PixelWidthTextBox.Text, PixelHeightTextBox.Text)
-                .ConfigureAwait(false);
+            await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(true));
+            try
+            {
+                await DoResize(vm, Equals(sender, PixelWidthTextBox), PixelWidthTextBox.Text, PixelHeightTextBox.Text)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => SetLoadingState(false));
+            }
         }
     }
 
