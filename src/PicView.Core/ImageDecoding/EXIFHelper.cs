@@ -32,11 +32,10 @@ public static class EXIFHelper
         Rotated270Cw = 8
     }
 
-    public static async Task<bool> RemoveExifProfile(FileInfo fileInfo)
+    public static Task<bool> RemoveExifProfile(FileInfo fileInfo)
     {
-        try
+        return TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
-            using var magickImage = new MagickImage(fileInfo);
             var profile = magickImage.GetExifProfile();
             if (profile is null)
             {
@@ -44,16 +43,51 @@ public static class EXIFHelper
             }
 
             magickImage.RemoveProfile(profile);
+            return true; 
+        }, nameof(RemoveExifProfile));
+    }
+
+    /// <summary>
+    /// Adds authors metadata to the EXIF profile of the specified image file.
+    /// </summary>
+    /// <param name="fileInfo">The file information of the image to update.</param>
+    /// <param name="authors">The list of authors to add to the EXIF profile.</param>
+    /// <returns>A task representing the asynchronous operation, containing a boolean indicator of success or failure.</returns>
+    public static Task<bool> AddAuthors(FileInfo fileInfo, string authors)
+    {
+        return TryUpdateImageProfileAsync(fileInfo, magickImage =>
+        {
+            var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+            profile.SetValue(ExifTag.Artist, authors);
+            magickImage.SetProfile(profile);
+            return true;
+        }, nameof(AddAuthors));
+    }
+
+    
+    private static async Task<bool> TryUpdateImageProfileAsync(FileInfo fileInfo, Func<MagickImage, bool> updateAction, string callingMethodName)
+    {
+        try
+        {
+            using var magickImage = new MagickImage(fileInfo);
+        
+            // If the update action returns false, it means no changes were made that require saving.
+            if (!updateAction(magickImage))
+            {
+                return false;
+            }
+
             await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo, true);
             await magickImage.WriteAsync(fileStream);
             return true;
         }
         catch (Exception e)
         {
-            DebugHelper.LogDebug(nameof(EXIFHelper), nameof(RemoveExifProfile), e);
+            DebugHelper.LogDebug(nameof(EXIFHelper), callingMethodName, e);
             return false;
         }
     }
+
 
     public static EXIFOrientation GetImageOrientation(MagickImage magickImage)
     {

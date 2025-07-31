@@ -126,6 +126,16 @@ public partial class ImageInfoView : UserControl
                 await HandleRenameOnEnterAsync(e, () => 
                     Path.Combine(DirectoryNameTextBox.Text, vm.PicViewer.FileInfo.CurrentValue.Name));
 
+            AuthorsBox.KeyDown += async (_, e) =>
+            {
+                if (e.Key is not Key.Enter)
+                {
+                    return;
+                }
+
+                await AddAuthorsAsync();
+            };
+
             
             vm.InfoWindow.IsLoading.Value = false;
         };
@@ -139,6 +149,19 @@ public partial class ImageInfoView : UserControl
         }
         var isRemoved = await EXIFHelper.RemoveExifProfile(vm.PicViewer.FileInfo?.CurrentValue);
         if (isRemoved)
+        {
+            UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
+        }
+    }
+    
+    public async Task AddAuthorsAsync()
+    {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        var addAuthors = await EXIFHelper.AddAuthors(vm.PicViewer.FileInfo?.CurrentValue, vm.Exif.Authors.Value);
+        if (addAuthors)
         {
             UpdateValues(vm.PicViewer.FileInfo?.CurrentValue);
         }

@@ -993,8 +993,9 @@
                             <customControls:FuncTextBox
                                 Classes=" TStyle x"
                                 Text="{CompiledBinding Exif.Authors.Value,
-                                                       Mode=OneWay}"
-                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                                                       Mode=TwoWay}"
+                                Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
+                                x:Name="AuthorsBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
                                 CopyText="{CompiledBinding Exif.Authors.Value,
