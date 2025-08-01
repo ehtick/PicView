@@ -1364,12 +1364,26 @@
                                     Text="{CompiledBinding Translation.Compression.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Classes=" TStyle x"
-                                    Text="{CompiledBinding Exif.Compression.Value,
-                                                           Mode=TwoWay}"
+                                <ComboBox
+                                    Classes="CStyle x"
+                                    CornerRadius="2"
+                                    ItemsSource="{CompiledBinding Exif.Compressions.Value}"
+                                    Margin="5,0,0,0"
+                                    MinWidth="180"
+                                    Padding="5,7,1,7"
+                                    SelectedIndex="{CompiledBinding Exif.Compression.Value,
+                                                                    Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
-                                    x:Name="CompressionBox" />
+                                    x:Name="CompressionBox">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock
+                                                Classes="txt"
+                                                MaxWidth="200"
+                                                Text="{Binding}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding Exif.Compression.Value,

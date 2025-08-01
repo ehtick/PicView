@@ -20,17 +20,74 @@ public class ExifViewModel : IDisposable
         SetExifRating5Command = new ReactiveCommand<string>(Set5Star);
 
         ResolutionUnits = new BindableReactiveProperty<string[]>([
-            string.Empty, 
+            string.Empty,
             TranslationManager.Translation.None ?? string.Empty,
             TranslationManager.Translation.Inches ?? string.Empty,
             TranslationManager.Translation.Centimeters ?? string.Empty
         ]);
-        
+
         ColorRepresentations = new BindableReactiveProperty<string[]>([
-            string.Empty, 
+            string.Empty,
             "sRGB",
             "Adobe RGB",
             TranslationManager.Translation.Uncalibrated ?? "Uncalibrated"
+        ]);
+
+        Compressions = new BindableReactiveProperty<string[]>([
+            string.Empty,
+            TranslationManager.GetTranslation("Uncompressed"),
+            TranslationManager.GetTranslation("CCITT 1D"),
+            TranslationManager.GetTranslation("T4/Group 3 Fax"),
+            TranslationManager.GetTranslation("T6/Group 4 Fax"),
+            TranslationManager.GetTranslation("LZW"),
+            TranslationManager.GetTranslation("JPEG (old-style)"),
+            TranslationManager.GetTranslation("JPEG"),
+            TranslationManager.GetTranslation("Adobe Deflate"),
+            TranslationManager.GetTranslation("JBIG B&W"),
+            TranslationManager.GetTranslation("JBIG Color"),
+            TranslationManager.GetTranslation("JPEG"),
+            TranslationManager.GetTranslation("Kodak 262"),
+            TranslationManager.GetTranslation("Next"),
+            TranslationManager.GetTranslation("Sony ARW Compressed"),
+            TranslationManager.GetTranslation("Packed RAW"),
+            TranslationManager.GetTranslation("Samsung SRW Compressed"),
+            TranslationManager.GetTranslation("CCIRLEW"),
+            TranslationManager.GetTranslation("Samsung SRW Compressed 2"),
+            TranslationManager.GetTranslation("PackBits"),
+            TranslationManager.GetTranslation("Thunderscan"),
+            TranslationManager.GetTranslation("Kodak KDC Compressed"),
+            TranslationManager.GetTranslation("IT8CTPAD"),
+            TranslationManager.GetTranslation("IT8LW"),
+            TranslationManager.GetTranslation("IT8MP"),
+            TranslationManager.GetTranslation("IT8BL"),
+            TranslationManager.GetTranslation("PixarFilm"),
+            TranslationManager.GetTranslation("PixarLog"),
+            TranslationManager.GetTranslation("Deflate"),
+            TranslationManager.GetTranslation("DCS"),
+            TranslationManager.GetTranslation("Aperio JPEG 2000 YCbCr"),
+            TranslationManager.GetTranslation("Aperio JPEG 2000 RGB"),
+            TranslationManager.GetTranslation("JBIG"),
+            TranslationManager.GetTranslation("SGILog"),
+            TranslationManager.GetTranslation("SGILog24"),
+            TranslationManager.GetTranslation("JPEG 2000"),
+            TranslationManager.GetTranslation("Nikon NEF Compressed"),
+            TranslationManager.GetTranslation("JBIG2 TIFF FX"),
+            TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Binary Level Codec"),
+            TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Progressive Transform Codec"),
+            TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Vector"),
+            TranslationManager.GetTranslation("ESRI Lerc"),
+            TranslationManager.GetTranslation("Lossy JPEG"),
+            TranslationManager.GetTranslation("LZMA2"),
+            TranslationManager.GetTranslation("Zstd (old)"),
+            TranslationManager.GetTranslation("WebP (old)"),
+            TranslationManager.GetTranslation("PNG"),
+            TranslationManager.GetTranslation("JPEG XR"),
+            TranslationManager.GetTranslation("Zstd"),
+            TranslationManager.GetTranslation("WebP"),
+            TranslationManager.GetTranslation("JPEG XL (old)"),
+            TranslationManager.GetTranslation("JPEG XL"),
+            TranslationManager.GetTranslation("Kodak DCR Compressed"),
+            TranslationManager.GetTranslation("Pentax PEF Compressed")
         ]);
     }
 
@@ -82,17 +139,18 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> Subject { get; } = new();
 
     public BindableReactiveProperty<string?> Software { get; } = new();
-    
+
 
     public BindableReactiveProperty<ushort> ResolutionUnit { get; } = new();
 
     public BindableReactiveProperty<string[]> ResolutionUnits { get; }
-    
 
-    public BindableReactiveProperty<string[]> ColorRepresentations { get; } = new();
+
+    public BindableReactiveProperty<string[]> ColorRepresentations { get; }
     public BindableReactiveProperty<ushort?> ColorRepresentation { get; } = new();
 
-    public BindableReactiveProperty<string?> Compression { get; } = new();
+    public BindableReactiveProperty<ushort?> Compression { get; } = new();
+    public BindableReactiveProperty<string[]> Compressions { get; }
 
     public BindableReactiveProperty<string?> Comment { get; } = new();
 
@@ -148,7 +206,7 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> LensModel { get; } = new();
 
     public BindableReactiveProperty<string?> LensMaker { get; } = new();
-    
+
     public BindableReactiveProperty<bool> IsExifAvailable { get; } = new();
 
     public void Dispose()

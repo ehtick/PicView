@@ -207,12 +207,15 @@ public static class EXIFHelper
             return true;
         }, nameof(AddResolutionUnit));
 
-    public static Task<bool> AddCompression(FileInfo? fileInfo, string? value) =>
+    public static Task<bool> AddCompression(FileInfo? fileInfo, ushort? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
-            if (!ushort.TryParse(value, out var compression)) return false;
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
-            profile.SetValue(ExifTag.Compression, compression);
+            profile.SetValue(ExifTag.Compression, value.Value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddCompression));
@@ -725,23 +728,6 @@ public static class EXIFHelper
         }
     }
 
-    public static string GetColorSpace(IExifProfile profile)
-    {
-        var colorSpace = profile?.GetValue(ExifTag.ColorSpace)?.Value;
-        if (colorSpace == null)
-        {
-            return string.Empty;
-        }
-
-        return colorSpace switch
-        {
-            1 => "sRGB",
-            2 => "Adobe RGB",
-            65535 => TranslationManager.Translation.Uncalibrated ?? "Uncalibrated",
-            _ => string.Empty
-        };
-    }
-
     public static string GetExposureProgram(IExifProfile? profile)
     {
         var exposureProgram = profile?.GetValue(ExifTag.ExposureProgram)?.Value;
@@ -966,6 +952,134 @@ public static class EXIFHelper
             default: return string.Empty;
         }
     }
+    
+    public static string GetCompression(IExifProfile profile)
+    {
+        var compression = profile?.GetValue(ExifTag.Compression)?.Value;
+        if (compression is null)
+        {
+            return string.Empty;
+        }
+
+        return compression switch
+        {
+            1 => TranslationManager.GetTranslation("Uncompressed"),
+            2 => TranslationManager.GetTranslation("CCITT 1D"),
+            3 => TranslationManager.GetTranslation("T4/Group 3 Fax"),
+            4 => TranslationManager.GetTranslation("T6/Group 4 Fax"),
+            5 => TranslationManager.GetTranslation("LZW"),
+            6 => TranslationManager.GetTranslation("JPEG (old-style)"),
+            7 => TranslationManager.GetTranslation("JPEG"),
+            8 => TranslationManager.GetTranslation("Adobe Deflate"),
+            9 => TranslationManager.GetTranslation("JBIG B&W"),
+            10 => TranslationManager.GetTranslation("JBIG Color"),
+            99 => TranslationManager.GetTranslation("JPEG"),
+            262 => TranslationManager.GetTranslation("Kodak 262"),
+            32766 => TranslationManager.GetTranslation("Next"),
+            32767 => TranslationManager.GetTranslation("Sony ARW Compressed"),
+            32769 => TranslationManager.GetTranslation("Packed RAW"),
+            32770 => TranslationManager.GetTranslation("Samsung SRW Compressed"),
+            32771 => TranslationManager.GetTranslation("CCIRLEW"),
+            32772 => TranslationManager.GetTranslation("Samsung SRW Compressed 2"),
+            32773 => TranslationManager.GetTranslation("PackBits"),
+            32809 => TranslationManager.GetTranslation("Thunderscan"),
+            32867 => TranslationManager.GetTranslation("Kodak KDC Compressed"),
+            32895 => TranslationManager.GetTranslation("IT8CTPAD"),
+            32896 => TranslationManager.GetTranslation("IT8LW"),
+            32897 => TranslationManager.GetTranslation("IT8MP"),
+            32898 => TranslationManager.GetTranslation("IT8BL"),
+            32908 => TranslationManager.GetTranslation("PixarFilm"),
+            32909 => TranslationManager.GetTranslation("PixarLog"),
+            32946 => TranslationManager.GetTranslation("Deflate"),
+            32947 => TranslationManager.GetTranslation("DCS"),
+            33003 => TranslationManager.GetTranslation("Aperio JPEG 2000 YCbCr"),
+            33005 => TranslationManager.GetTranslation("Aperio JPEG 2000 RGB"),
+            34661 => TranslationManager.GetTranslation("JBIG"),
+            34676 => TranslationManager.GetTranslation("SGILog"),
+            34677 => TranslationManager.GetTranslation("SGILog24"),
+            34712 => TranslationManager.GetTranslation("JPEG 2000"),
+            34713 => TranslationManager.GetTranslation("Nikon NEF Compressed"),
+            34715 => TranslationManager.GetTranslation("JBIG2 TIFF FX"),
+            34718 => TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Binary Level Codec"),
+            34719 => TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Progressive Transform Codec"),
+            34720 => TranslationManager.GetTranslation("Microsoft Document Imaging (MDI) Vector"),
+            34887 => TranslationManager.GetTranslation("ESRI Lerc"),
+            34892 => TranslationManager.GetTranslation("Lossy JPEG"),
+            34925 => TranslationManager.GetTranslation("LZMA2"),
+            34926 => TranslationManager.GetTranslation("Zstd (old)"),
+            34927 => TranslationManager.GetTranslation("WebP (old)"),
+            34933 => TranslationManager.GetTranslation("PNG"),
+            34934 => TranslationManager.GetTranslation("JPEG XR"),
+            50000 => TranslationManager.GetTranslation("Zstd"),
+            50001 => TranslationManager.GetTranslation("WebP"),
+            50002 => TranslationManager.GetTranslation("JPEG XL (old)"),
+            52546 => TranslationManager.GetTranslation("JPEG XL"),
+            65000 => TranslationManager.GetTranslation("Kodak DCR Compressed"),
+            65535 => TranslationManager.GetTranslation("Pentax PEF Compressed"),
+            _ => string.Empty
+        };
+    }
+    
+    public enum ExifCompression : ushort
+    {
+        Uncompressed = 1,
+        CCITT_1D = 2,
+        T4_Group3_Fax = 3,
+        T6_Group4_Fax = 4,
+        LZW = 5,
+        JPEG_Old = 6,
+        JPEG = 7,
+        AdobeDeflate = 8,
+        JBIG_BW = 9,
+        JBIG_Color = 10,
+        JPEG_New = 99,
+        Kodak_262 = 262,
+        Next = 32766,
+        Sony_ARW_Compressed = 32767,
+        Packed_RAW = 32769,
+        Samsung_SRW_Compressed = 32770,
+        CCIRLEW = 32771,
+        Samsung_SRW_Compressed_2 = 32772,
+        PackBits = 32773,
+        Thunderscan = 32809,
+        Kodak_KDC_Compressed = 32867,
+        IT8CTPAD = 32895,
+        IT8LW = 32896,
+        IT8MP = 32897,
+        IT8BL = 32898,
+        PixarFilm = 32908,
+        PixarLog = 32909,
+        Deflate = 32946,
+        DCS = 32947,
+        Aperio_JPEG_2000_YCbCr = 33003,
+        Aperio_JPEG_2000_RGB = 33005,
+        JBIG = 34661,
+        SGILog = 34676,
+        SGILog24 = 34677,
+        JPEG_2000 = 34712,
+        Nikon_NEF_Compressed = 34713,
+        JBIG2_TIFF_FX = 34715,
+        MDI_Binary_Level_Codec = 34718,
+        MDI_Progressive_Transform_Codec = 34719,
+        MDI_Vector = 34720,
+        ESRI_Lerc = 34887,
+        Lossy_JPEG = 34892,
+        LZMA2 = 34925,
+        Zstd_Old = 34926,
+        WebP_Old = 34927,
+        PNG = 34933,
+        JPEG_XR = 34934,
+        Zstd = 50000,
+        WebP = 50001,
+        JPEG_XL_Old = 50002,
+        JPEG_XL = 52546,
+        Kodak_DCR_Compressed = 65000,
+        Pentax_PEF_Compressed = 65535
+    }
+
+    
+
+
 
     public static string GetLightSource(IExifProfile? profile)
     {

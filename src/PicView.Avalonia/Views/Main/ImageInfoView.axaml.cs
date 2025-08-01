@@ -138,6 +138,11 @@ public partial class ImageInfoView : UserControl
             {
                 await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
             };
+            
+            CompressionBox.DropDownClosed  += async (_, _) =>
+            {
+                await AddExifPropertyAsync(EXIFHelper.AddCompression, vm.Exif.Compression.CurrentValue);
+            };
 
             vm.InfoWindow.IsLoading.Value = false;
         };
@@ -448,7 +453,6 @@ public partial class ImageInfoView : UserControl
         RegisterExifUpdateOnEnter(LatitudeBox, AddLatitudeAsync);
         RegisterExifUpdateOnEnter(LongitudeBox, AddLongitudeAsync);
         RegisterExifUpdateOnEnter(AltitudeBox, AddAltitudeAsync);
-        RegisterExifUpdateOnEnter(CompressionBox, AddCompressionAsync);
         RegisterExifUpdateOnEnter(CompressedBitsPerPixelBox, AddCompressedBitsPerPixelAsync);
         RegisterExifUpdateOnEnter(CameraMakerBox, AddCameraMakerAsync);
         RegisterExifUpdateOnEnter(CameraModelBox, AddCameraModelAsync);
