@@ -88,9 +88,13 @@ public static class EXIFHelper
     /// <param name="fileInfo">The file information of the image to update.</param>
     /// <param name="value">The author(s) to add to the EXIF profile.</param>
     /// <returns>A task representing the asynchronous operation, containing a boolean indicator of success or failure.</returns>
-    public static Task<bool> AddAuthors(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddAuthors(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.Artist, value);
             magickImage.SetProfile(profile);
@@ -103,18 +107,26 @@ public static class EXIFHelper
     /// <param name="fileInfo">The file information of the image to update.</param>
     /// <param name="value">The copyright text to be added or updated in the EXIF metadata.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
-    public static Task<bool> AddCopyright(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddCopyright(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.Copyright, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddCopyright));
 
-    public static Task<bool> AddSoftware(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddSoftware(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.Software, value);
             magickImage.SetProfile(profile);
@@ -126,80 +138,90 @@ public static class EXIFHelper
     // Note: Most 'Add' methods take a string and attempt to parse it.
     // This is to easily integrate with UI text boxes.
 
-    public static Task<bool> AddSubject(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddSubject(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.XPSubject, Encoding.Unicode.GetBytes(value));
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddSubject));
 
-    public static Task<bool> AddTitle(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddTitle(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.XPTitle, Encoding.Unicode.GetBytes(value));
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddTitle));
 
-    public static Task<bool> AddComment(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddComment(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             // UserComment requires a specific encoding prefix
             var bytes = Encoding.Unicode.GetBytes(value);
             var allBytes = new byte[bytes.Length + 8];
-            Encoding.ASCII.GetBytes("UNICODE\0").CopyTo(allBytes, 0);
+            "UNICODE\0"u8.ToArray().CopyTo(allBytes, 0);
             bytes.CopyTo(allBytes, 8);
             profile.SetValue(ExifTag.UserComment, allBytes);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddComment));
 
-    public static Task<bool> AddLatitude(FileInfo fileInfo, string value)
+    public static Task<bool> AddLatitude(FileInfo? fileInfo, string? value)
     {
         // TODO: Implement robust parsing for GPS coordinates.
         // The value needs to be parsed into Rational[3] for Deg/Min/Sec and a GPSLatitudeRef.
         return Task.FromResult(false);
     }
 
-    public static Task<bool> AddLongitude(FileInfo fileInfo, string value)
+    public static Task<bool> AddLongitude(FileInfo? fileInfo, string? value)
     {
         // TODO: Implement robust parsing for GPS coordinates.
         // The value needs to be parsed into Rational[3] for Deg/Min/Sec and a GPSLongitudeRef.
         return Task.FromResult(false);
     }
 
-    public static Task<bool> AddAltitude(FileInfo fileInfo, string value)
+    public static Task<bool> AddAltitude(FileInfo? fileInfo, string? value)
     {
         // TODO: Implement robust parsing for GPS Altitude.
         // The value needs to be parsed into a Rational and a GPSAltitudeRef.
         return Task.FromResult(false);
     }
 
-    public static Task<bool> AddColorRepresentation(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddColorRepresentation(FileInfo? fileInfo, ushort value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
-            if (!ushort.TryParse(value, out var colorSpace)) return false;
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
-            profile.SetValue(ExifTag.ColorSpace, colorSpace);
+            profile.SetValue(ExifTag.ColorSpace, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddColorRepresentation));
 
-    public static Task<bool> AddResolutionUnit(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddResolutionUnit(FileInfo? fileInfo, ushort value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
-            if (!ushort.TryParse(value, out var unit)) return false;
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
-            profile.SetValue(ExifTag.ResolutionUnit, unit);
+            profile.SetValue<ushort>(ExifTag.ResolutionUnit, 2);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddResolutionUnit));
 
-    public static Task<bool> AddCompression(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddCompression(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var compression)) return false;
@@ -209,7 +231,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddCompression));
 
-    public static Task<bool> AddCompressedBitsPerPixel(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddCompressedBitsPerPixel(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -219,25 +241,33 @@ public static class EXIFHelper
             return true;
         }, nameof(AddCompressedBitsPerPixel));
 
-    public static Task<bool> AddCameraMaker(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddCameraMaker(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.Make, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddCameraMaker));
 
-    public static Task<bool> AddCameraModel(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddCameraModel(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.Model, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddCameraModel));
 
-    public static Task<bool> AddFNumber(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddFNumber(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -247,7 +277,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddFNumber));
 
-    public static Task<bool> AddMaxAperture(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddMaxAperture(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -257,7 +287,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddMaxAperture));
 
-    public static Task<bool> AddExposureBias(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddExposureBias(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -267,7 +297,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddExposureBias));
 
-    public static Task<bool> AddExposureTime(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddExposureTime(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -277,7 +307,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddExposureTime));
 
-    public static Task<bool> AddExposureProgram(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddExposureProgram(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var program)) return false;
@@ -287,7 +317,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddExposureProgram));
 
-    public static Task<bool> AddDigitalZoom(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddDigitalZoom(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -297,7 +327,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddDigitalZoom));
 
-    public static Task<bool> AddFocalLength(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddFocalLength(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -307,7 +337,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddFocalLength));
 
-    public static Task<bool> AddFocalLength35mm(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddFocalLength35mm(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var length)) return false;
@@ -317,7 +347,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddFocalLength35mm));
 
-    public static Task<bool> AddIsoSpeed(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddIsoSpeed(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var speed)) return false;
@@ -327,7 +357,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddIsoSpeed));
 
-    public static Task<bool> AddMeteringMode(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddMeteringMode(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var mode)) return false;
@@ -337,7 +367,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddMeteringMode));
 
-    public static Task<bool> AddContrast(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddContrast(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var contrast)) return false;
@@ -347,7 +377,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddContrast));
 
-    public static Task<bool> AddSaturation(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddSaturation(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var saturation)) return false;
@@ -357,7 +387,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddSaturation));
 
-    public static Task<bool> AddSharpness(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddSharpness(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var sharpness)) return false;
@@ -367,7 +397,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddSharpness));
 
-    public static Task<bool> AddWhiteBalance(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddWhiteBalance(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var whiteBalance)) return false;
@@ -377,7 +407,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddWhiteBalance));
 
-    public static Task<bool> AddFlashEnergy(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddFlashEnergy(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!TryParseRational(value, out var rational)) return false;
@@ -387,7 +417,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddFlashEnergy));
 
-    public static Task<bool> AddFlashMode(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddFlashMode(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var flash)) return false;
@@ -397,7 +427,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddFlashMode));
 
-    public static Task<bool> AddLightSource(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddLightSource(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var source)) return false;
@@ -407,7 +437,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddLightSource));
 
-    public static Task<bool> AddBrightness(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddBrightness(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             // It would be better to parse directly to SignedRational.
@@ -421,7 +451,7 @@ public static class EXIFHelper
             return true;
         }, nameof(AddBrightness));
 
-    public static Task<bool> AddPhotometricInterpretation(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddPhotometricInterpretation(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             if (!ushort.TryParse(value, out var interpretation)) return false;
@@ -431,25 +461,33 @@ public static class EXIFHelper
             return true;
         }, nameof(AddPhotometricInterpretation));
 
-    public static Task<bool> AddLensMaker(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddLensMaker(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.LensMake, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddLensMaker));
 
-    public static Task<bool> AddLensModel(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddLensModel(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
+            if (value is null)
+            {
+                return false;
+            }
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
             profile.SetValue(ExifTag.LensModel, value);
             magickImage.SetProfile(profile);
             return true;
         }, nameof(AddLensModel));
 
-    public static Task<bool> AddExifVersion(FileInfo fileInfo, string value) =>
+    public static Task<bool> AddExifVersion(FileInfo? fileInfo, string? value) =>
         TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
             var profile = magickImage.GetExifProfile() ?? new ExifProfile();
@@ -830,20 +868,20 @@ public static class EXIFHelper
         };
     }
 
-public static string GetResolutionUnit(IExifProfile? profile)
+    public static ushort GetResolutionUnit(IExifProfile? profile)
     {
         var resolutionUnit = profile?.GetValue(ExifTag.ResolutionUnit)?.Value;
         if (resolutionUnit is null)
         {
-            return string.Empty;
+            return 0;
         }
 
         return resolutionUnit switch
         {
-            1 => TranslationManager.GetTranslation("None"),
-            2 => TranslationManager.GetTranslation("Inches"),
-            3 => TranslationManager.GetTranslation("Centimeters"),
-            _ => string.Empty
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            _ => 0
         };
     }
 

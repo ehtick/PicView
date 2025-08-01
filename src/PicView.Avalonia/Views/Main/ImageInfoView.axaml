@@ -16,10 +16,12 @@
     </Design.DataContext>
     <UserControl.Styles>
         <Styles>
-            <Style Selector="TextBox.x">
+            <Style Selector="TextBox.x, ComboBox.x">
                 <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
-                <Setter Property="TextWrapping" Value="Wrap" />
                 <Setter Property="MaxHeight" Value="80" />
+            </Style>
+            <Style Selector="TextBox.x">
+                <Setter Property="TextWrapping" Value="Wrap" />
             </Style>
             <Style Selector="Path.CopyPath">
                 <Setter Property="Data" Value="{StaticResource CopyGeometry}" />
@@ -1302,10 +1304,15 @@
                                     Text="{CompiledBinding Translation.ColorRepresentation.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Classes=" TStyle x"
-                                    Text="{CompiledBinding Exif.ColorRepresentation.Value,
-                                                           Mode=TwoWay}"
+                                <ComboBox
+                                    Classes="CStyle x"
+                                    CornerRadius="2"
+                                    ItemsSource="{CompiledBinding Exif.ColorRepresentations.Value}"
+                                    Margin="5,0,0,0"
+                                    MinWidth="180"
+                                    Padding="5,7,1,7"
+                                    SelectedIndex="{CompiledBinding Exif.ResolutionUnit.Value,
+                                                                    Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
                                     x:Name="ColorRepresentationBox" />
                                 <customControls:CopyButton
@@ -1327,21 +1334,26 @@
                                     Text="{CompiledBinding Translation.ResolutionUnit.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Classes=" TStyle x"
-                                    Text="{CompiledBinding Exif.ResolutionUnit.Value,
-                                                           Mode=TwoWay}"
+                                <ComboBox
+                                    Classes="CStyle x"
+                                    CornerRadius="2"
+                                    ItemsSource="{CompiledBinding Exif.ResolutionUnits.Value}"
+                                    Margin="5,0,0,0"
+                                    MinWidth="180"
+                                    Padding="5,7,1,7"
+                                    SelectedIndex="{CompiledBinding Exif.ResolutionUnit.Value,
+                                                                    Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
                                     x:Name="ResolutionUnitBox" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
-                                    CopyText="{CompiledBinding Exif.ResolutionUnit.Value,
-                                                               Mode=OneWay}"
+                                    CopyText="{Binding #ResolutionUnitBox.SelectedItem}"
                                     IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                     ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                                   Mode=OneWay}">
                                     <Path Classes="CopyPath" />
                                 </customControls:CopyButton>
+
                             </StackPanel>
 
                             <!--  Compression  -->

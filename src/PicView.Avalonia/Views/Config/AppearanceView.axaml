@@ -24,10 +24,7 @@
                                    Mode=OneWay}" />
 
         <ComboBox
-            Background="{DynamicResource SecondaryBackgroundColor}"
-            BorderBrush="{DynamicResource MainBorderColor}"
-            BorderThickness="1"
-            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+            Classes="CStyle"
             Foreground="{StaticResource SecondaryTextColor}"
             Margin="0,0,0,10"
             Padding="5,7,0,7"

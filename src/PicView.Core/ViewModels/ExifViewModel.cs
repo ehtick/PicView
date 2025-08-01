@@ -1,4 +1,5 @@
 ﻿using PicView.Core.ImageDecoding;
+using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using R3;
 
@@ -17,6 +18,20 @@ public class ExifViewModel : IDisposable
         SetExifRating3Command = new ReactiveCommand<string>(Set3Star);
         SetExifRating4Command = new ReactiveCommand<string>(Set4Star);
         SetExifRating5Command = new ReactiveCommand<string>(Set5Star);
+
+        ResolutionUnits = new BindableReactiveProperty<string[]>([
+            string.Empty, 
+            TranslationManager.Translation.None ?? string.Empty,
+            TranslationManager.Translation.Inches ?? string.Empty,
+            TranslationManager.Translation.Centimeters ?? string.Empty
+        ]);
+        
+        ColorRepresentations = new BindableReactiveProperty<string[]>([
+            string.Empty, 
+            "sRGB",
+            "Adobe RGB",
+            TranslationManager.Translation.Uncalibrated ?? "Uncalibrated"
+        ]);
     }
 
     public ReactiveCommand? OpenGoogleLinkCommand { get; }
@@ -67,10 +82,15 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> Subject { get; } = new();
 
     public BindableReactiveProperty<string?> Software { get; } = new();
+    
 
-    public BindableReactiveProperty<string?> ResolutionUnit { get; } = new();
+    public BindableReactiveProperty<ushort> ResolutionUnit { get; } = new();
 
-    public BindableReactiveProperty<string?> ColorRepresentation { get; } = new();
+    public BindableReactiveProperty<string[]> ResolutionUnits { get; }
+    
+
+    public BindableReactiveProperty<string[]> ColorRepresentations { get; } = new();
+    public BindableReactiveProperty<ushort?> ColorRepresentation { get; } = new();
 
     public BindableReactiveProperty<string?> Compression { get; } = new();
 

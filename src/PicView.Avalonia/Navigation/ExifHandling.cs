@@ -140,7 +140,7 @@ public static class ExifHandling
             vm.Exif.Subject.Value = EXIFHelper.GetSubject(profile);
             vm.Exif.Software.Value = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
             vm.Exif.ResolutionUnit.Value = EXIFHelper.GetResolutionUnit(profile);
-            vm.Exif.ColorRepresentation.Value = EXIFHelper.GetColorSpace(profile);
+            vm.Exif.ColorRepresentation.Value = profile.GetValue(ExifTag.ColorSpace).Value;
             vm.Exif.Compression.Value = profile?.GetValue(ExifTag.Compression)?.Value.ToString() ?? string.Empty;
             vm.Exif.CompressedBitsPixel.Value = profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ?? string.Empty;
             vm.Exif.CameraMaker.Value = profile?.GetValue(ExifTag.Make)?.Value ?? string.Empty;

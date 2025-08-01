@@ -129,6 +129,16 @@ public partial class ImageInfoView : UserControl
             // Register EXIF property updates on 'Enter' key press
             RegisterExifUpdateHandlers();
 
+            ResolutionUnitBox.DropDownClosed += async (_, _) =>
+            {
+                await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
+            };
+            
+            ResolutionUnitBox.DropDownClosed += async (_, _) =>
+            {
+                await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
+            };
+
             vm.InfoWindow.IsLoading.Value = false;
         };
     }
@@ -438,8 +448,6 @@ public partial class ImageInfoView : UserControl
         RegisterExifUpdateOnEnter(LatitudeBox, AddLatitudeAsync);
         RegisterExifUpdateOnEnter(LongitudeBox, AddLongitudeAsync);
         RegisterExifUpdateOnEnter(AltitudeBox, AddAltitudeAsync);
-        RegisterExifUpdateOnEnter(ColorRepresentationBox, AddColorRepresentationAsync);
-        RegisterExifUpdateOnEnter(ResolutionUnitBox, AddResolutionUnitAsync);
         RegisterExifUpdateOnEnter(CompressionBox, AddCompressionAsync);
         RegisterExifUpdateOnEnter(CompressedBitsPerPixelBox, AddCompressedBitsPerPixelAsync);
         RegisterExifUpdateOnEnter(CameraMakerBox, AddCameraMakerAsync);
@@ -503,7 +511,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddAuthorsAsync()
+    private async Task AddAuthorsAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -511,7 +519,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddCopyrightAsync()
+    private async Task AddCopyrightAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -519,7 +527,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddSoftwareAsync()
+    private async Task AddSoftwareAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -527,7 +535,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddSubjectAsync()
+    private async Task AddSubjectAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -535,7 +543,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddTitleAsync()
+    private async Task AddTitleAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -543,7 +551,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddCommentAsync()
+    private async Task AddCommentAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -551,7 +559,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddLatitudeAsync()
+    private async Task AddLatitudeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -559,7 +567,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddLongitudeAsync()
+    private async Task AddLongitudeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -567,7 +575,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddAltitudeAsync()
+    private async Task AddAltitudeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -575,23 +583,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddColorRepresentationAsync()
-    {
-        if (DataContext is MainViewModel vm)
-        {
-            await AddExifPropertyAsync(EXIFHelper.AddColorRepresentation, vm.Exif.ColorRepresentation.CurrentValue);
-        }
-    }
-
-    public async Task AddResolutionUnitAsync()
-    {
-        if (DataContext is MainViewModel vm)
-        {
-            await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
-        }
-    }
-
-    public async Task AddCompressionAsync()
+    private async Task AddCompressionAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -599,7 +591,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddCompressedBitsPerPixelAsync()
+    private async Task AddCompressedBitsPerPixelAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -607,7 +599,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddCameraMakerAsync()
+    private async Task AddCameraMakerAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -615,7 +607,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddCameraModelAsync()
+    private async Task AddCameraModelAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -623,7 +615,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddFNumberAsync()
+    private async Task AddFNumberAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -631,7 +623,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddMaxApertureAsync()
+    private async Task AddMaxApertureAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -639,7 +631,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddExposureBiasAsync()
+    private async Task AddExposureBiasAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -647,7 +639,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddExposureTimeAsync()
+    private async Task AddExposureTimeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -655,7 +647,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddExposureProgramAsync()
+    private async Task AddExposureProgramAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -663,7 +655,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddDigitalZoomAsync()
+    private async Task AddDigitalZoomAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -671,7 +663,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddFocalLengthAsync()
+    private async Task AddFocalLengthAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -679,7 +671,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddFocalLength35mmAsync()
+    private async Task AddFocalLength35mmAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -687,7 +679,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddIsoSpeedAsync()
+    private async Task AddIsoSpeedAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -695,7 +687,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddMeteringModeAsync()
+    private async Task AddMeteringModeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -703,7 +695,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddContrastAsync()
+    private async Task AddContrastAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -711,7 +703,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddSaturationAsync()
+    private async Task AddSaturationAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -719,7 +711,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddSharpnessAsync()
+    private async Task AddSharpnessAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -727,7 +719,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddWhiteBalanceAsync()
+    private async Task AddWhiteBalanceAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -735,7 +727,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddFlashEnergyAsync()
+    private async Task AddFlashEnergyAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -743,7 +735,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddFlashModeAsync()
+    private async Task AddFlashModeAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -751,7 +743,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddLightSourceAsync()
+    private async Task AddLightSourceAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -759,7 +751,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddBrightnessAsync()
+    private async Task AddBrightnessAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -767,7 +759,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddPhotometricInterpretationAsync()
+    private async Task AddPhotometricInterpretationAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -776,7 +768,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddLensMakerAsync()
+    private async Task AddLensMakerAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -784,7 +776,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddLensModelAsync()
+    private async Task AddLensModelAsync()
     {
         if (DataContext is MainViewModel vm)
         {
@@ -792,7 +784,7 @@ public partial class ImageInfoView : UserControl
         }
     }
 
-    public async Task AddExifVersionAsync()
+    private async Task AddExifVersionAsync()
     {
         if (DataContext is MainViewModel vm)
         {
