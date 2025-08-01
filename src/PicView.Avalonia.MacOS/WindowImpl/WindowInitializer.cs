@@ -44,10 +44,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         void Set()
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
 
             if (_aboutWindow is null)
             {
@@ -56,8 +52,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _aboutWindow.Show(desktop.MainWindow);
-                _aboutWindow.Closing += (s, e) => _aboutWindow = null;
+                _aboutWindow.Show();
+                _aboutWindow.Closing += (_, _) => _aboutWindow = null;
             }
             else
             {
@@ -144,11 +140,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         void Set()
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-
             if (_keybindingsWindow is null)
             {
                 _keybindingsWindow = new KeybindingsWindow
@@ -156,8 +147,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _keybindingsWindow.Show(desktop.MainWindow);
-                _keybindingsWindow.Closing += (s, e) => _keybindingsWindow = null;
+                _keybindingsWindow.Show();
+                _keybindingsWindow.Closing += (_, _) => _keybindingsWindow = null;
             }
             else
             {
@@ -177,11 +168,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
     public async Task ShowSettingsWindow(MainViewModel vm)
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-        
         if (vm.Window.SettingsWindowConfig?.WindowProperties is null )
         {
             vm.Window.SettingsWindowConfig = new SettingsWindowConfig();
@@ -251,7 +237,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
                 _singleImageResizeWindow.Show();
-                _singleImageResizeWindow.Closing += (s, e) => _singleImageResizeWindow = null;
+                _singleImageResizeWindow.Closing += (_, _) => _singleImageResizeWindow = null;
             }
             else
             {
@@ -284,11 +270,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
         void Set()
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-
             if (_batchResizeWindow is null)
             {
                 _batchResizeWindow = new BatchResizeWindow
@@ -296,8 +277,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _batchResizeWindow.Show(desktop.MainWindow);
-                _batchResizeWindow.Closing += (s, e) => _batchResizeWindow = null;
+                _batchResizeWindow.Show();
+                _batchResizeWindow.Closing += (_, _) => _batchResizeWindow = null;
             }
             else
             {
@@ -342,8 +323,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                _effectsWindow.Show(desktop.MainWindow);
-                _effectsWindow.Closing += (s, e) => _effectsWindow = null;
+                _effectsWindow.Show();
+                _effectsWindow.Closing += (_, _) => _effectsWindow = null;
             }
             else
             {
