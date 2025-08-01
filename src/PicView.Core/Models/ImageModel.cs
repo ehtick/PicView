@@ -1,4 +1,5 @@
 ﻿using ImageMagick;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Core.Models;
@@ -9,7 +10,7 @@ public class ImageModel
     public FileInfo? FileInfo { get; set; }
     public int PixelWidth { get; set; }
     public int PixelHeight { get; set; }
-    public EXIFHelper.EXIFOrientation? EXIFOrientation { get; set; }
+    public ExifOrientation? Orientation { get; set; }
     public ImageType ImageType { get; set; }
     
     public MagickFormat? Format { get; set; }
@@ -18,19 +19,18 @@ public class ImageModel
     {
         get
         {
-            if (!EXIFOrientation.HasValue)
+            if (!Orientation.HasValue)
             {
                 return 0;
             }
 
-            return EXIFOrientation switch
+            return Orientation switch
             {
-                EXIFHelper.EXIFOrientation.None or EXIFHelper.EXIFOrientation.Horizontal
-                    or EXIFHelper.EXIFOrientation.MirrorHorizontal => 0,
-                EXIFHelper.EXIFOrientation.Rotate180 or EXIFHelper.EXIFOrientation.MirrorVertical => 180,
-                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw or EXIFHelper.EXIFOrientation.Rotated270Cw => 90,
-                EXIFHelper.EXIFOrientation.Rotate90Cw => 90,
-                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw => 270,
+                ExifOrientation.None or ExifOrientation.Horizontal or ExifOrientation.MirrorHorizontal => 0,
+                ExifOrientation.Rotate180 or ExifOrientation.MirrorVertical => 180,
+                ExifOrientation.MirrorHorizontalRotate270Cw or ExifOrientation.Rotated270Cw => 90,
+                ExifOrientation.Rotate90Cw => 90,
+                ExifOrientation.MirrorHorizontalRotate90Cw => 270,
                 _ => 0
             };
         }

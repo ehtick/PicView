@@ -3,6 +3,7 @@ using ImageMagick;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
@@ -56,17 +57,17 @@ public static class ExifHandling
 
             vm.Exif.Orientation.Value = vm.PicViewer.ExifOrientation.CurrentValue switch
             {
-                EXIFHelper.EXIFOrientation.Horizontal => TranslationManager.Translation.Normal,
-                EXIFHelper.EXIFOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
-                EXIFHelper.EXIFOrientation.Rotate180 => $"{TranslationManager.Translation.Rotated} 180\u00b0",
-                EXIFHelper.EXIFOrientation.MirrorVertical =>
+                ExifOrientation.Horizontal => TranslationManager.Translation.Normal,
+                ExifOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
+                ExifOrientation.Rotate180 => $"{TranslationManager.Translation.Rotated} 180\u00b0",
+                ExifOrientation.MirrorVertical =>
                     $"{TranslationManager.Translation.Rotated} 180\u00b0, {TranslationManager.Translation.Flipped}",
-                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw =>
+                ExifOrientation.MirrorHorizontalRotate270Cw =>
                     $"{TranslationManager.Translation.Rotated} 270\u00b0, {TranslationManager.Translation.Flipped}",
-                EXIFHelper.EXIFOrientation.Rotate90Cw => $"{TranslationManager.Translation.Rotated} 90\u00b0",
-                EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw =>
+                ExifOrientation.Rotate90Cw => $"{TranslationManager.Translation.Rotated} 90\u00b0",
+                ExifOrientation.MirrorHorizontalRotate90Cw =>
                     $"{TranslationManager.Translation.Rotated} 90\u00b0, {TranslationManager.Translation.Flipped}",
-                EXIFHelper.EXIFOrientation.Rotated270Cw => $"{TranslationManager.Translation.Rotated} 270\u00b0",
+                ExifOrientation.Rotated270Cw => $"{TranslationManager.Translation.Rotated} 270\u00b0",
                 _ => string.Empty
             };
 
@@ -110,7 +111,7 @@ public static class ExifHandling
 
             vm.Exif.ExifRating.Value = profile?.GetValue(ExifTag.Rating)?.Value ?? 0;
 
-            var gpsValues = EXIFHelper.GetGPSValues(profile);
+            var gpsValues = ExifReader.GetGPSValues(profile);
 
             if (gpsValues is not null)
             {
@@ -134,18 +135,18 @@ public static class ExifHandling
                 : string.Empty;
             var getAuthors = profile?.GetValue(ExifTag.Artist)?.Value;
             vm.Exif.Authors.Value = getAuthors ?? string.Empty;
-            vm.Exif.DateTaken.Value = EXIFHelper.GetDateTaken(profile);
+            vm.Exif.DateTaken.Value = ExifReader.GetDateTaken(profile);
             vm.Exif.Copyright.Value = profile?.GetValue(ExifTag.Copyright)?.Value ?? string.Empty;
-            vm.Exif.Title.Value = EXIFHelper.GetTitle(profile);
-            vm.Exif.Subject.Value = EXIFHelper.GetSubject(profile);
+            vm.Exif.Title.Value = ExifReader.GetTitle(profile);
+            vm.Exif.Subject.Value = ExifReader.GetSubject(profile);
             vm.Exif.Software.Value = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
-            vm.Exif.ResolutionUnit.Value = EXIFHelper.GetResolutionUnit(profile);
+            vm.Exif.ResolutionUnit.Value = ExifReader.GetResolutionUnit(profile);
             vm.Exif.ColorRepresentation.Value = profile?.GetValue(ExifTag.ColorSpace)?.Value ?? null;
             vm.Exif.Compression.Value = profile?.GetValue(ExifTag.Compression)?.Value ?? null;
             vm.Exif.CompressedBitsPixel.Value = profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ?? string.Empty;
             vm.Exif.CameraMaker.Value = profile?.GetValue(ExifTag.Make)?.Value ?? string.Empty;
             vm.Exif.CameraModel.Value = profile?.GetValue(ExifTag.Model)?.Value ?? string.Empty;
-            vm.Exif.ExposureProgram.Value = EXIFHelper.GetExposureProgram(profile);
+            vm.Exif.ExposureProgram.Value = ExifReader.GetExposureProgram(profile);
             vm.Exif.ExposureTime.Value = profile?.GetValue(ExifTag.ExposureTime)?.Value.ToString() ?? string.Empty;
             vm.Exif.FNumber.Value = profile?.GetValue(ExifTag.FNumber)?.Value.ToString() ?? string.Empty;
             vm.Exif.MaxAperture.Value = profile?.GetValue(ExifTag.MaxApertureValue)?.Value.ToString() ?? string.Empty;
@@ -153,21 +154,21 @@ public static class ExifHandling
             vm.Exif.DigitalZoom.Value = profile?.GetValue(ExifTag.DigitalZoomRatio)?.Value.ToString() ?? string.Empty;
             vm.Exif.FocalLength35Mm.Value = profile?.GetValue(ExifTag.FocalLengthIn35mmFilm)?.Value.ToString() ?? string.Empty;
             vm.Exif.FocalLength.Value = profile?.GetValue(ExifTag.FocalLength)?.Value.ToString() ?? string.Empty;
-            vm.Exif.ISOSpeed.Value = EXIFHelper.GetISOSpeed(profile);
+            vm.Exif.ISOSpeed.Value = ExifReader.GetISOSpeed(profile);
             vm.Exif.MeteringMode.Value = profile?.GetValue(ExifTag.MeteringMode)?.Value.ToString() ?? string.Empty;
-            vm.Exif.Contrast.Value = EXIFHelper.GetContrast(profile);
-            vm.Exif.Saturation.Value = EXIFHelper.GetSaturation(profile);
-            vm.Exif.Sharpness.Value = EXIFHelper.GetSharpness(profile);
-            vm.Exif.WhiteBalance.Value = EXIFHelper.GetWhiteBalance(profile);
-            vm.Exif.FlashMode.Value = EXIFHelper.GetFlashMode(profile);
+            vm.Exif.Contrast.Value = ExifReader.GetContrast(profile);
+            vm.Exif.Saturation.Value = ExifReader.GetSaturation(profile);
+            vm.Exif.Sharpness.Value = ExifReader.GetSharpness(profile);
+            vm.Exif.WhiteBalance.Value = ExifReader.GetWhiteBalance(profile);
+            vm.Exif.FlashMode.Value = ExifReader.GetFlashMode(profile);
             vm.Exif.FlashEnergy.Value = profile?.GetValue(ExifTag.FlashEnergy)?.Value.ToString() ?? string.Empty;
-            vm.Exif.LightSource.Value = EXIFHelper.GetLightSource(profile);
-            vm.Exif.Brightness.Value = profile?.GetValue(ExifTag.BrightnessValue)?.Value.ToString() ?? string.Empty;
-            vm.Exif.PhotometricInterpretation.Value = EXIFHelper.GetPhotometricInterpretation(profile);
-            vm.Exif.ExifVersion.Value = EXIFHelper.GetExifVersion(profile);
+            vm.Exif.LightSource.Value = ExifReader.GetLightSource(profile);
+            vm.Exif.Brightness.Value = profile?.GetValue(ExifTag.BrightnessValue)?.Value ?? null;
+            vm.Exif.PhotometricInterpretation.Value = ExifReader.GetPhotometricInterpretation(profile);
+            vm.Exif.ExifVersion.Value = ExifReader.GetExifVersion(profile);
             vm.Exif.LensModel.Value = profile?.GetValue(ExifTag.LensModel)?.Value ?? string.Empty;
             vm.Exif.LensMaker.Value = profile?.GetValue(ExifTag.LensMake)?.Value ?? string.Empty;
-            vm.Exif.Comment.Value = EXIFHelper.GetUserComment(profile);
+            vm.Exif.Comment.Value = ExifReader.GetUserComment(profile);
         }
         catch (Exception e)
         {

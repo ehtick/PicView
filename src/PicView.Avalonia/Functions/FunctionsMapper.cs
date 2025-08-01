@@ -13,6 +13,7 @@ using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Exif;
 using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
 using PicView.Core.ImageDecoding;
@@ -693,7 +694,7 @@ public static class FunctionsMapper
             return;
         }
 
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 0); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 0); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 0;
@@ -708,7 +709,7 @@ public static class FunctionsMapper
             return;
         }
 
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 1); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 1); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 1;
@@ -722,7 +723,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 2); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 2); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 2;
@@ -736,7 +737,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 3); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 3); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 3;
@@ -750,7 +751,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 4); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 4); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 4;
@@ -764,7 +765,7 @@ public static class FunctionsMapper
         {
             return;
         }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 5); });
+        await Task.Run(() => { ExifWriter.SetExifRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 5); });
         if (Vm.Exif is not null)
         {
             Vm.Exif.ExifRating.Value = 5;

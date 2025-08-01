@@ -8,6 +8,7 @@ using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 
 namespace PicView.Avalonia.Views;
@@ -98,7 +99,7 @@ public partial class ImageViewer : UserControl
 
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
 
-    public void SetTransform(EXIFHelper.EXIFOrientation? orientation, MagickFormat? format, bool reset = true) =>
+    public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true) =>
         _imageTransformer?.SetTransform(orientation, format, reset);
 
     #endregion

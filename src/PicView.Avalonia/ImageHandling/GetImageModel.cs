@@ -1,6 +1,7 @@
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Core.DebugTools;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 
@@ -35,7 +36,7 @@ public static class GetImageModel
             magickImage ??= CreateAndPingMagickImage(fileInfo);
 
             // Extract metadata
-            imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
+            imageModel.Orientation = ExifOrientationHelper.GetImageOrientation(magickImage);
             imageModel.Format = magickImage.Format;
             
             if (fileInfo.Extension.Equals(".b64", StringComparison.InvariantCultureIgnoreCase))
@@ -141,7 +142,7 @@ public static class GetImageModel
             Image = null, // TODO replace with error image
             PixelHeight = 0,
             PixelWidth = 0,
-            EXIFOrientation = EXIFHelper.EXIFOrientation.None
+            Orientation = ExifOrientation.None
         };
     }
 

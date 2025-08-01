@@ -9,6 +9,7 @@ using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Conversion;
+using PicView.Core.Exif;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
@@ -131,17 +132,17 @@ public partial class ImageInfoView : UserControl
 
             ResolutionUnitBox.DropDownClosed += async (_, _) =>
             {
-                await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
+                await AddExifPropertyAsync(ExifWriter.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
             };
             
             ResolutionUnitBox.DropDownClosed += async (_, _) =>
             {
-                await AddExifPropertyAsync(EXIFHelper.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
+                await AddExifPropertyAsync(ExifWriter.AddResolutionUnit, vm.Exif.ResolutionUnit.CurrentValue);
             };
             
             CompressionBox.DropDownClosed  += async (_, _) =>
             {
-                await AddExifPropertyAsync(EXIFHelper.AddCompression, vm.Exif.Compression.CurrentValue);
+                await AddExifPropertyAsync(ExifWriter.AddCompression, vm.Exif.Compression.CurrentValue);
             };
 
             vm.InfoWindow.IsLoading.Value = false;
@@ -508,7 +509,7 @@ public partial class ImageInfoView : UserControl
             return;
         }
 
-        var isRemoved = await EXIFHelper.RemoveExifProfile(vm.PicViewer.FileInfo?.CurrentValue);
+        var isRemoved = await ExifWriter.RemoveExifProfile(vm.PicViewer.FileInfo?.CurrentValue);
         if (isRemoved)
         {
             await UpdateValuesAsync(vm.PicViewer.FileInfo?.CurrentValue, CancellationToken.None);
@@ -519,7 +520,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddAuthors, vm.Exif.Authors.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddAuthors, vm.Exif.Authors.CurrentValue);
         }
     }
 
@@ -527,7 +528,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddCopyright, vm.Exif.Copyright.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddCopyright, vm.Exif.Copyright.CurrentValue);
         }
     }
 
@@ -535,7 +536,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddSoftware, vm.Exif.Software.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddSoftware, vm.Exif.Software.CurrentValue);
         }
     }
 
@@ -543,7 +544,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddSubject, vm.Exif.Subject.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddSubject, vm.Exif.Subject.CurrentValue);
         }
     }
 
@@ -551,7 +552,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddTitle, vm.Exif.Title.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddTitle, vm.Exif.Title.CurrentValue);
         }
     }
 
@@ -559,7 +560,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddComment, vm.Exif.Comment.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddComment, vm.Exif.Comment.CurrentValue);
         }
     }
 
@@ -567,7 +568,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddLatitude, vm.Exif.Latitude.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddLatitude, vm.Exif.Latitude.CurrentValue);
         }
     }
 
@@ -575,7 +576,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddLongitude, vm.Exif.Longitude.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddLongitude, vm.Exif.Longitude.CurrentValue);
         }
     }
 
@@ -583,7 +584,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddAltitude, vm.Exif.Altitude.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddAltitude, vm.Exif.Altitude.CurrentValue);
         }
     }
 
@@ -591,7 +592,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddCompression, vm.Exif.Compression.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddCompression, vm.Exif.Compression.CurrentValue);
         }
     }
 
@@ -599,7 +600,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddCompressedBitsPerPixel, vm.Exif.CompressedBitsPixel.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddCompressedBitsPerPixel, vm.Exif.CompressedBitsPixel.CurrentValue);
         }
     }
 
@@ -607,7 +608,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddCameraMaker, vm.Exif.CameraMaker.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddCameraMaker, vm.Exif.CameraMaker.CurrentValue);
         }
     }
 
@@ -615,7 +616,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddCameraModel, vm.Exif.CameraModel.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddCameraModel, vm.Exif.CameraModel.CurrentValue);
         }
     }
 
@@ -623,7 +624,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddFNumber, vm.Exif.FNumber.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddFNumber, vm.Exif.FNumber.CurrentValue);
         }
     }
 
@@ -631,7 +632,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddMaxAperture, vm.Exif.MaxAperture.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddMaxAperture, vm.Exif.MaxAperture.CurrentValue);
         }
     }
 
@@ -639,7 +640,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddExposureBias, vm.Exif.ExposureBias.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddExposureBias, vm.Exif.ExposureBias.CurrentValue);
         }
     }
 
@@ -647,7 +648,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddExposureTime, vm.Exif.ExposureTime.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddExposureTime, vm.Exif.ExposureTime.CurrentValue);
         }
     }
 
@@ -655,7 +656,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddExposureProgram, vm.Exif.ExposureProgram.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddExposureProgram, vm.Exif.ExposureProgram.CurrentValue);
         }
     }
 
@@ -663,7 +664,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddDigitalZoom, vm.Exif.DigitalZoom.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddDigitalZoom, vm.Exif.DigitalZoom.CurrentValue);
         }
     }
 
@@ -671,7 +672,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddFocalLength, vm.Exif.FocalLength.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddFocalLength, vm.Exif.FocalLength.CurrentValue);
         }
     }
 
@@ -679,7 +680,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddFocalLength35mm, vm.Exif.FocalLength35Mm.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddFocalLength35mm, vm.Exif.FocalLength35Mm.CurrentValue);
         }
     }
 
@@ -687,7 +688,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddIsoSpeed, vm.Exif.ISOSpeed.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddIsoSpeed, vm.Exif.ISOSpeed.CurrentValue);
         }
     }
 
@@ -695,7 +696,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddMeteringMode, vm.Exif.MeteringMode.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddMeteringMode, vm.Exif.MeteringMode.CurrentValue);
         }
     }
 
@@ -703,7 +704,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddContrast, vm.Exif.Contrast.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddContrast, vm.Exif.Contrast.CurrentValue);
         }
     }
 
@@ -711,7 +712,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddSaturation, vm.Exif.Saturation.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddSaturation, vm.Exif.Saturation.CurrentValue);
         }
     }
 
@@ -719,7 +720,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddSharpness, vm.Exif.Sharpness.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddSharpness, vm.Exif.Sharpness.CurrentValue);
         }
     }
 
@@ -727,7 +728,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddWhiteBalance, vm.Exif.WhiteBalance.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddWhiteBalance, vm.Exif.WhiteBalance.CurrentValue);
         }
     }
 
@@ -735,7 +736,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddFlashEnergy, vm.Exif.FlashEnergy.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddFlashEnergy, vm.Exif.FlashEnergy.CurrentValue);
         }
     }
 
@@ -743,7 +744,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddFlashMode, vm.Exif.FlashMode.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddFlashMode, vm.Exif.FlashMode.CurrentValue);
         }
     }
 
@@ -751,7 +752,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddLightSource, vm.Exif.LightSource.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddLightSource, vm.Exif.LightSource.CurrentValue);
         }
     }
 
@@ -759,7 +760,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddBrightness, vm.Exif.Brightness.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddBrightness, vm.Exif.Brightness.CurrentValue);
         }
     }
 
@@ -767,7 +768,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddPhotometricInterpretation,
+            await AddExifPropertyAsync(ExifWriter.AddPhotometricInterpretation,
                 vm.Exif.PhotometricInterpretation.CurrentValue);
         }
     }
@@ -776,7 +777,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddLensMaker, vm.Exif.LensMaker.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddLensMaker, vm.Exif.LensMaker.CurrentValue);
         }
     }
 
@@ -784,7 +785,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddLensModel, vm.Exif.LensModel.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddLensModel, vm.Exif.LensModel.CurrentValue);
         }
     }
 
@@ -792,7 +793,7 @@ public partial class ImageInfoView : UserControl
     {
         if (DataContext is MainViewModel vm)
         {
-            await AddExifPropertyAsync(EXIFHelper.AddExifVersion, vm.Exif.ExifVersion.CurrentValue);
+            await AddExifPropertyAsync(ExifWriter.AddExifVersion, vm.Exif.ExifVersion.CurrentValue);
         }
     }
 

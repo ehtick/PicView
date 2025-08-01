@@ -1,4 +1,6 @@
-﻿using PicView.Core.ImageDecoding;
+﻿using ImageMagick;
+using PicView.Core.Exif;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using R3;
@@ -195,7 +197,7 @@ public class ExifViewModel : IDisposable
 
     public BindableReactiveProperty<string?> LightSource { get; } = new();
 
-    public BindableReactiveProperty<string?> Brightness { get; } = new();
+    public BindableReactiveProperty<SignedRational?> Brightness { get; } = new();
 
     public BindableReactiveProperty<string?> PhotometricInterpretation { get; } = new();
 
@@ -265,37 +267,37 @@ public class ExifViewModel : IDisposable
 
     private void Set0Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 0);
+        ExifWriter.SetExifRating(value, 0);
         ExifRating.Value = 0;
     }
 
     private void Set1Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 1);
+        ExifWriter.SetExifRating(value, 1);
         ExifRating.Value = 1;
     }
 
     private void Set2Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 2);
+        ExifWriter.SetExifRating(value, 2);
         ExifRating.Value = 2;
     }
 
     private void Set3Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 3);
+        ExifWriter.SetExifRating(value, 3);
         ExifRating.Value = 3;
     }
 
     private void Set4Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 4);
+        ExifWriter.SetExifRating(value, 4);
         ExifRating.Value = 4;
     }
 
     private void Set5Star(string value)
     {
-        EXIFHelper.SetEXIFRating(value, 5);
+        ExifWriter.SetExifRating(value, 5);
         ExifRating.Value = 5;
     }
 

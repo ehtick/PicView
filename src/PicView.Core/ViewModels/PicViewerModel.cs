@@ -1,4 +1,5 @@
-﻿using PicView.Core.ImageDecoding;
+﻿using PicView.Core.Exif;
+using PicView.Core.ImageDecoding;
 using PicView.Core.ImageEffects;
 using R3;
 
@@ -56,7 +57,7 @@ public class PicViewerModel : IDisposable
 
     public BindableReactiveProperty<ImageEffectConfig?> EffectConfig { get; } = new();
 
-    public BindableReactiveProperty<EXIFHelper.EXIFOrientation?> ExifOrientation { get; } = new();
+    public BindableReactiveProperty<ExifOrientation?> ExifOrientation { get; } = new();
 
     // Used to flip the flip button
     public BindableReactiveProperty<int> ScaleX { get; } = new(1);

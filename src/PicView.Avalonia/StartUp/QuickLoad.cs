@@ -7,6 +7,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Exif;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -116,7 +117,7 @@ public static class QuickLoad
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
+                vm.ImageViewer.SetTransform(ExifOrientationHelper.GetImageOrientation(magickImage), magickImage.Format);
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
             }, DispatcherPriority.Send);
@@ -156,7 +157,7 @@ public static class QuickLoad
         vm.PicViewer.SecondaryImageSource.Value = secondaryPreloadValue?.ImageModel?.Image;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
+            vm.ImageViewer.SetTransform(ExifOrientationHelper.GetImageOrientation(magickImage), magickImage.Format);
             WindowResizing.SetSize(magickImage.Width, magickImage.Height, secondaryPreloadValue.ImageModel.PixelWidth, secondaryPreloadValue.ImageModel.PixelHeight, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
         }, DispatcherPriority.Send);
         SetPicViewerValues(vm, imageModel, fileInfo);
@@ -185,7 +186,7 @@ public static class QuickLoad
         vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
         vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
 
-        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
+        vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
     }
 
     /// <summary>

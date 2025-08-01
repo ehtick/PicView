@@ -354,7 +354,7 @@ public static class SettingsUpdater
                 PixelHeight = (int)vm.PicViewer.ImageHeight.CurrentValue,
                 ImageType = vm.PicViewer.ImageType.CurrentValue,
                 Image = vm.PicViewer.ImageSource,
-                EXIFOrientation = vm.PicViewer.ExifOrientation.CurrentValue
+                Orientation = vm.PicViewer.ExifOrientation.CurrentValue
             };
             var imageModel2 = new ImageModel
             {
@@ -363,7 +363,7 @@ public static class SettingsUpdater
                 PixelHeight = preloadValue.ImageModel.PixelHeight,
                 ImageType = preloadValue.ImageModel.ImageType,
                 Image = preloadValue.ImageModel.Image,
-                EXIFOrientation = preloadValue.ImageModel.EXIFOrientation
+                Orientation = preloadValue.ImageModel.Orientation
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
