@@ -64,7 +64,8 @@
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.Print.Value,
-                                             Mode=OneWay}">
+                                             Mode=OneWay}"
+                    x:Name="PrintItem">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource PrintGeometry}"
