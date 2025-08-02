@@ -73,7 +73,7 @@ public partial class GalleryView : UserControl
             BottomGallerySlider.ValueChanged += (_, e) =>
             {
                 Settings.Gallery.BottomGalleryItemSize = e.NewValue;
-                if (!Settings.Gallery.IsBottomGalleryShown)
+                if (!Settings.Gallery.IsBottomGalleryShown || GalleryFunctions.IsFullGalleryOpen)
                 {
                     return;
                 }
