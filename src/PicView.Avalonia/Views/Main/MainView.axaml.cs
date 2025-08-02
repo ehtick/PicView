@@ -112,7 +112,7 @@ public partial class MainView : UserControl
             _ = new HoverFadeButtonHandler(ClickArrowLeft, vm, ClickArrowLeft.PolyButton);
             _ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
             
-            PointerWheelChanged += async (_, e) => await ImageViewer.PreviewOnPointerWheelChanged(this, e);
+            PointerWheelChanged += async (_, e) => await UC.ImageViewer.PreviewOnPointerWheelChanged(this, e);
         };
     }
 

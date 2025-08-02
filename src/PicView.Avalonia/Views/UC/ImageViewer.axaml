@@ -3,7 +3,7 @@
                                  Mode=OneWay}"
     PointerPressed="InputElement_OnPointerPressed"
     mc:Ignorable="d"
-    x:Class="PicView.Avalonia.Views.ImageViewer"
+    x:Class="PicView.Avalonia.Views.UC.ImageViewer"
     x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"

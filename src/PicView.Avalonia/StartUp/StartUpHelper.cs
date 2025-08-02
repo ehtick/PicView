@@ -12,11 +12,11 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
 using PicView.Core.ProcessHandling;
+using ImageViewer = PicView.Avalonia.Views.UC.ImageViewer;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -198,6 +198,7 @@ public static class StartUpHelper
     private static void HandleStartUpMenuOrImage(MainViewModel vm, Window window, string[] args)
     {
         vm.ImageViewer = new ImageViewer();
+        vm.ImageViewer.InitializeImageTransformer();
 
         if (args.Length > 1)
         {

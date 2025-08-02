@@ -1,10 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using R3;
 
 namespace PicView.Avalonia.Views.Config;
 

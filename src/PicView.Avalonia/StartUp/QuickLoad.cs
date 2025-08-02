@@ -113,11 +113,12 @@ public static class QuickLoad
     private static async Task<ImageModel> SetSingleImageAsync(MainViewModel vm, FileInfo fileInfo,
         MagickImage magickImage, Window window)
     {
+        vm.PicViewer.ExifOrientation.Value = ExifOrientationHelper.GetImageOrientation(magickImage);
         if (Settings.WindowProperties.AutoFit)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                vm.ImageViewer.SetTransform(ExifOrientationHelper.GetImageOrientation(magickImage), magickImage.Format);
+                vm.ImageViewer.SetTransform(vm.PicViewer.ExifOrientation.CurrentValue, magickImage.Format);
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
             }, DispatcherPriority.Send);

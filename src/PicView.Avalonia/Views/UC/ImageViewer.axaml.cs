@@ -9,9 +9,8 @@ using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Exif;
-using PicView.Core.ImageDecoding;
 
-namespace PicView.Avalonia.Views;
+namespace PicView.Avalonia.Views.UC;
 
 public partial class ImageViewer : UserControl
 {
@@ -31,7 +30,6 @@ public partial class ImageViewer : UserControl
     {
         base.OnAttachedToVisualTree(e);
         InitializeZoom();
-        InitializeImageTransformer();
         InitializeMouseInputHelper();
         LostFocus += OnLostFocus;
     }
@@ -49,7 +47,7 @@ public partial class ImageViewer : UserControl
 
     private void InitializeZoom() => _zoom = new Zoom(MainBorder);
 
-    private void InitializeImageTransformer()
+    public void InitializeImageTransformer()
     {
         _imageTransformer = new RotationTransformer(
             ImageLayoutTransformControl,

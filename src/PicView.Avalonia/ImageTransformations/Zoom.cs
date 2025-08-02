@@ -6,7 +6,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views;
+using ImageViewer = PicView.Avalonia.Views.UC.ImageViewer;
 using Point = Avalonia.Point;
 
 namespace PicView.Avalonia.ImageTransformations;
