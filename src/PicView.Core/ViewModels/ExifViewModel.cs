@@ -215,7 +215,7 @@ public class ExifViewModel : IDisposable
             Subject.Value = ExifReader.GetSubject(profile);
             Software.Value = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
             ResolutionUnit.Value = ExifReader.GetResolutionUnit(profile);
-            ColorRepresentation.Value = profile?.GetValue(ExifTag.ColorSpace).Value ?? null;
+            ColorRepresentation.Value = profile?.GetValue(ExifTag.ColorSpace)?.Value ?? null;
             Compression.Value = profile?.GetValue(ExifTag.Compression)?.Value ?? null;
             CompressedBitsPixel.Value =
                 profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ?? string.Empty;

@@ -23,7 +23,7 @@ public static class ExifReader
         return string.Empty;
     }
 
-    
+
     public static string GetExposureProgram(IExifProfile? profile)
     {
         var exposureProgram = profile?.GetValue(ExifTag.ExposureProgram)?.Value;
@@ -153,8 +153,13 @@ public static class ExifReader
         };
     }
 
-    // https://exiftool.org/TagNames/EXIF.html
-    public static string GetFlashMode(IExifProfile profile)
+
+    /// <summary>
+    /// Retrieves the flash mode information from the specified Exif profile.
+    /// </summary>
+    /// <param name="profile">The Exif profile from which to extract the flash mode. Can be null.</param>
+    /// <returns>A string indicating the flash mode. Returns an empty string if the flash mode is not found or in case of an error.</returns>
+    public static string GetFlashMode(IExifProfile? profile)
     {
         var flash = profile?.GetValue(ExifTag.Flash)?.Value;
         if (flash is null)
@@ -162,6 +167,8 @@ public static class ExifReader
             return string.Empty;
         }
 
+        // https://exiftool.org/TagNames/EXIF.html
+        // ReSharper disable once ConvertSwitchStatementToSwitchExpression
         switch (flash)
         {
             case 0:
@@ -346,15 +353,33 @@ public static class ExifReader
         return subjectTag?.GetValue(0)?.ToString() ?? string.Empty;
     }
 
+    /// <summary>
+    /// Retrieves the user comment from the specified Exif profile, if available.
+    /// </summary>
+    /// <param name="profile">The Exif profile from which to extract the user comment. Can be null.</param>
+    /// <returns>A string containing the user comment. Returns an empty string if no comment is found or in case of an error.</returns>
     public static string GetUserComment(IExifProfile? profile)
     {
         var commentBytes = profile?.GetValue(ExifTag.UserComment)?.Value;
-        var decodedComment = commentBytes is null ? string.Empty : Encoding.ASCII.GetString(commentBytes);
-        if (string.IsNullOrEmpty(decodedComment))
+        if (commentBytes is null || commentBytes.Length <= 8)
         {
             return string.Empty;
         }
 
-        return decodedComment.StartsWith("UNICODE") ? decodedComment.Replace("UNICODE", "") : decodedComment;
+        try
+        {
+            var decodedComment = Encoding.ASCII.GetString(commentBytes);
+            if (string.IsNullOrEmpty(decodedComment))
+            {
+                return string.Empty;
+            }
+
+            var result = decodedComment.StartsWith("UNICODE") ? decodedComment.Replace("UNICODE", "") : decodedComment;
+            return result == "ASCII" ? string.Empty : result;
+        }
+        catch (Exception)
+        {
+            return string.Empty;
+        }
     }
 }

@@ -23,13 +23,6 @@
             <Style Selector="TextBox.x">
                 <Setter Property="TextWrapping" Value="Wrap" />
             </Style>
-            <Style Selector="Path.CopyPath">
-                <Setter Property="Data" Value="{StaticResource CopyGeometry}" />
-                <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
-                <Setter Property="Stretch" Value="Fill" />
-            </Style>
         </Styles>
     </UserControl.Styles>
     <UserControl.ContextMenu>
@@ -43,12 +36,7 @@
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource SaveGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="SavePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -60,12 +48,7 @@
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource SaveGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="SavePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -81,12 +64,7 @@
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 x:Name="PrintMenuItem">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource PrintGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="PrintPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -101,12 +79,7 @@
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 x:Name="OpenWithMenuItem">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource OpenWithGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="OpenWithPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -120,12 +93,7 @@
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource ShowInFolderGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="ShowInFolderPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -460,8 +428,6 @@
 
             <Panel Margin="5" x:Name="ParentPanel">
 
-
-
                 <StackPanel x:Name="MainContainer">
 
                     <StackPanel Orientation="Horizontal">
@@ -475,17 +441,20 @@
                                     Margin="0,8,0,0"
                                     Text="{CompiledBinding Translation.FileName.Value,
                                                            Mode=OneWay}"
-                                    Width="{CompiledBinding InfoWindow.TextWidth}" />
+                                    Width="{CompiledBinding InfoWindow.TextWidth,
+                                                            FallbackValue=0}" />
                                 <customControls:FuncTextBox
                                     Classes="hover TStyle x"
                                     Text="{Binding PicViewer.FileInfo.Value.Name, FallbackValue=''}"
-                                    Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value,
+                                                            FallbackValue=''}"
                                     x:Name="FileNameTextBox" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.Name,
                                                                FallbackValue=''}"
-                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value,
+                                                                FallbackValue=''}"
                                     ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                                   Mode=OneWay}">
                                     <Path Classes="CopyPath" />
@@ -499,18 +468,21 @@
                                     Margin="0,8,0,0"
                                     Text="{CompiledBinding Translation.Folder.Value,
                                                            Mode=OneWay}"
-                                    Width="{CompiledBinding InfoWindow.TextWidth}" />
+                                    Width="{CompiledBinding InfoWindow.TextWidth,
+                                                            FallbackValue=0}" />
                                 <customControls:FuncTextBox
                                     Classes="hover TStyle x"
                                     Text="{CompiledBinding PicViewer.FileInfo.Value.DirectoryName,
                                                            FallbackValue=''}"
-                                    Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value,
+                                                            FallbackValue=''}"
                                     x:Name="DirectoryNameTextBox" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.DirectoryName,
                                                                FallbackValue=''}"
-                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value,
+                                                                FallbackValue=False}"
                                     ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                                   Mode=OneWay}">
                                     <Path Classes="CopyPath" />

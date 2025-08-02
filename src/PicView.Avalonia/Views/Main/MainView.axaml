@@ -51,12 +51,7 @@
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource SaveGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="SavePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -68,12 +63,7 @@
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource SaveGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="SavePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -88,12 +78,7 @@
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 x:Name="PrintMenuItem">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource PrintGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="PrintPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -108,12 +93,7 @@
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 x:Name="OpenWithMenuItem">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource OpenWithGeometry}"
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="OpenWithPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -127,12 +107,7 @@
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource ShowInFolderGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="ShowInFolderPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -141,12 +116,7 @@
             <!--  Sort files by  -->
             <MenuItem Header="{CompiledBinding Translation.SortFilesBy.Value, Mode=OneWay}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource SortFilesGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="SortFilesPath" />
                 </MenuItem.Icon>
 
                 <!--  Sort files by name  -->
