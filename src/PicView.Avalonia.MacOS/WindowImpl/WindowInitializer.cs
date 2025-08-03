@@ -63,7 +63,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _aboutWindow.Show();
+                    _aboutWindow.Activate();
                 }
             }
 
@@ -89,7 +89,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 {
                     DataContext = vm,
                 };
-                Show();
+                WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow, vm.Window.ImageInfoWindowConfig.WindowProperties);
+                _imageInfoWindow.Show();
                 _imageInfoWindow.Closing += (_, _) =>
                 {
                     _imageInfoWindow = null;
@@ -110,19 +111,11 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    Show();
+                   _imageInfoWindow.Activate();
                 }
             });
         }
         await FunctionsMapper.CloseMenus();
-        
-        return;
-
-        void Show()
-        {
-            WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow, vm.Window.ImageInfoWindowConfig.WindowProperties);
-            _imageInfoWindow.Show();
-        }
     }
 
     public void ShowKeybindingsWindow(MainViewModel vm)
@@ -158,7 +151,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _keybindingsWindow.Show();
+                    _keybindingsWindow.Activate();
                 }
             }
 
@@ -184,7 +177,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = vm
                 };
 
-                Show();
+                WindowFunctions.InitializeWindowPosition(_settingsWindow, vm.Window.SettingsWindowConfig.WindowProperties);
+                _settingsWindow.Show();
                 _settingsWindow.Closing += (_, _) =>
                     _settingsWindow = null;;
             });
@@ -199,19 +193,11 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    Show();
+                    _settingsWindow.Activate();
                 }
             });
         }
         await FunctionsMapper.CloseMenus();
-        
-        return;
-        
-        void Show()
-        {
-            WindowFunctions.InitializeWindowPosition(_settingsWindow, vm.Window.SettingsWindowConfig.WindowProperties);
-            _settingsWindow.Show();
-        }
     }
 
     public void ShowSingleImageResizeWindow(MainViewModel vm)
@@ -247,7 +233,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _singleImageResizeWindow.Show();
+                    _singleImageResizeWindow.Activate();
                 }
             }
 
@@ -288,7 +274,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _batchResizeWindow.Show();
+                    _batchResizeWindow.Activate();
                 }
             }
 
@@ -334,7 +320,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _effectsWindow.Show();
+                    _effectsWindow.Activate();
                 }
             }
 
