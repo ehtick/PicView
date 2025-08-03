@@ -286,8 +286,14 @@ public class ToolsViewModel : IDisposable
             SetAsWallpaperFittedCommand);
     }
 
-    public async void StartSlideShowTask(Unit unit) =>
-        await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel);
+    
+    public ReactiveCommand<string> StartSlideShowTask { get; } = new(async (value, _) =>
+    {
+        if (int.TryParse(value, out var milliseconds))
+        {
+            await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
+        }
+    });
 
     public async Task RotateTask(int angle) =>
         await RotationNavigation.RotateTo(UIHelper.GetMainView.DataContext as MainViewModel, angle);
