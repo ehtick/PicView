@@ -12,8 +12,9 @@ public class ImageModel
     public int PixelHeight { get; set; }
     public ExifOrientation? Orientation { get; set; }
     public ImageType ImageType { get; set; }
-    
     public MagickFormat? Format { get; set; }
+    public ushort DpiX { get; set; }
+    public ushort DpiY { get; set; }
 
     public int Rotation
     {

@@ -198,7 +198,6 @@ public static class StartUpHelper
     private static void HandleStartUpMenuOrImage(MainViewModel vm, Window window, string[] args)
     {
         vm.ImageViewer = new ImageViewer();
-        vm.ImageViewer.InitializeImageTransformer();
 
         if (args.Length > 1)
         {

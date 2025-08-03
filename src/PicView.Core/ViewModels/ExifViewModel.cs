@@ -3,6 +3,7 @@ using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.Exif;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.ProcessHandling;
 using PicView.Core.Sizing;
 using PicView.Core.Titles;
@@ -96,10 +97,14 @@ public class ExifViewModel : IDisposable
         ]);
     }
     
-    public void UpdateExifValues(FileInfo fileInfo, ExifOrientation orientation, int pixelWidth, int pixelHeight, MagickImage? magick = null)
+    public void UpdateExifValues(ImageModel model, MagickImage? magick = null)
     {
         var shouldDispose = magick != null;
 
+        var fileInfo = model.FileInfo;
+        var orientation = model.Orientation;
+        var pixelWidth = model.PixelWidth;
+        var pixelHeight = model.PixelHeight;
         try
         {
             if (fileInfo is null || !fileInfo.Exists)
@@ -117,9 +122,9 @@ public class ExifViewModel : IDisposable
 
             if (profile != null)
             {
-                DpiY.Value = profile?.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? 0;
-                DpiX.Value = profile?.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? 0;
-                var depth = profile?.GetValue(ExifTag.BitsPerSample)?.Value;
+                DpiY.Value = profile.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? model.DpiX;
+                DpiX.Value = profile.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? model.DpiY;
+                var depth = profile.GetValue(ExifTag.BitsPerSample)?.Value;
                 if (depth is not null)
                 {
                     var x = depth.Aggregate(0, (current, value) => current + value);
@@ -129,6 +134,12 @@ public class ExifViewModel : IDisposable
                 {
                     BitDepth.Value = (magick.Depth * 3).ToString();
                 }
+            }
+            else
+            {
+                DpiY.Value = model.DpiX;
+                DpiX.Value = model.DpiY;
+                BitDepth.Value = (magick.Depth * 3).ToString();
             }
 
             Orientation.Value = orientation switch
@@ -215,8 +226,8 @@ public class ExifViewModel : IDisposable
             Subject.Value = ExifReader.GetSubject(profile);
             Software.Value = profile?.GetValue(ExifTag.Software)?.Value ?? string.Empty;
             ResolutionUnit.Value = ExifReader.GetResolutionUnit(profile);
-            ColorRepresentation.Value = profile?.GetValue(ExifTag.ColorSpace)?.Value ?? null;
-            Compression.Value = profile?.GetValue(ExifTag.Compression)?.Value ?? null;
+            ColorRepresentation.Value = profile?.GetValue(ExifTag.ColorSpace)?.Value ?? 0;
+            Compression.Value = profile?.GetValue(ExifTag.Compression)?.Value ?? 0;
             CompressedBitsPixel.Value =
                 profile?.GetValue(ExifTag.CompressedBitsPerPixel)?.Value.ToString() ?? string.Empty;
             CameraMaker.Value = profile?.GetValue(ExifTag.Make)?.Value ?? string.Empty;

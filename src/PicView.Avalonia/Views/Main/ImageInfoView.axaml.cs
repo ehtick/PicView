@@ -13,6 +13,7 @@ using PicView.Core.Conversion;
 using PicView.Core.Exif;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
+using PicView.Core.Models;
 using PicView.Core.Sizing;
 using PicView.Core.Titles;
 using R3;
@@ -231,13 +232,10 @@ public partial class ImageInfoView : UserControl
             return;
         }
         
+        var preLoadValue = await NavigationManager.GetPreLoadValueAsync(fileInfo);
         await Task.Run(() =>
         {
-            Debug.Assert(vm.PicViewer.ExifOrientation.CurrentValue != null);
-            var orientation = vm.PicViewer.ExifOrientation.CurrentValue.Value;
-            var width = vm.PicViewer.PixelWidth.CurrentValue;
-            var height = vm.PicViewer.PixelHeight.CurrentValue;
-            vm.Exif.UpdateExifValues(fileInfo, orientation, width, height);
+            vm.Exif.UpdateExifValues(preLoadValue.ImageModel);
         }, cancellationToken);
         if (DirectoryNameTextBox.Text != fileInfo.DirectoryName)
         {

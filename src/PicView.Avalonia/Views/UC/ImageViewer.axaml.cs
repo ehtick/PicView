@@ -20,7 +20,7 @@ public partial class ImageViewer : UserControl
     public ImageViewer()
     {
         InitializeComponent();
-        ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
+        InitializeImageTransformer();
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
         AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
@@ -29,6 +29,7 @@ public partial class ImageViewer : UserControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
         InitializeZoom();
         InitializeMouseInputHelper();
         LostFocus += OnLostFocus;

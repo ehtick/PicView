@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Microsoft.Win32;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 
 namespace PicView.Core.WindowsNT.FileHandling;
@@ -111,9 +112,7 @@ public static class ArchiveExtractionHelper
         }
         catch (Exception e)
         {
-#if DEBUG
-            Trace.WriteLine($"{nameof(GetExtractAppPath)} exception, \n {e.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(ArchiveExtractionHelper), nameof(GetExtractAppPath), e);
             return appNames.Select(GetPathForExe).Where(registryPath => registryPath != null)
                 .FirstOrDefault(File.Exists);
         }

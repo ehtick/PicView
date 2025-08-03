@@ -128,9 +128,20 @@ public static class GetImageModel
     private static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, ImageType imageType = ImageType.Bitmap)
     {
         imageModel.Image = bitmap;
-        imageModel.PixelWidth = bitmap?.PixelSize.Width ?? 0;
-        imageModel.PixelHeight = bitmap?.PixelSize.Height ?? 0;
+        if (bitmap is null)
+        {
+            imageModel.PixelWidth = 0;
+            imageModel.PixelHeight = 0;
+            imageModel.ImageType = ImageType.Invalid;
+            imageModel.DpiX = 0;
+            imageModel.DpiY = 0;
+            return;
+        }
+        imageModel.PixelWidth = bitmap.PixelSize.Width;
+        imageModel.PixelHeight = bitmap.PixelSize.Height;
         imageModel.ImageType = imageType;
+        imageModel.DpiX = (ushort)bitmap.Dpi.X;
+        imageModel.DpiY = (ushort)bitmap.Dpi.Y;
     }
 
     private static ImageModel CreateErrorImageModel(FileInfo? fileInfo)
@@ -142,6 +153,8 @@ public static class GetImageModel
             Image = null, // TODO replace with error image
             PixelHeight = 0,
             PixelWidth = 0,
+            DpiX = 0,
+            DpiY = 0,
             Orientation = ExifOrientation.None
         };
     }
@@ -160,6 +173,8 @@ public static class GetImageModel
         imageModel.PixelHeight = (int)magickImage.Height;
         imageModel.ImageType = ImageType.Svg;
         imageModel.Image = fileInfo.FullName;
+        imageModel.DpiX = (ushort)magickImage.Density.X;
+        imageModel.DpiY = (ushort)magickImage.Density.Y;;
     }
 
     private static async Task ProcessBase64Async(FileInfo fileInfo, ImageModel imageModel)
