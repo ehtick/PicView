@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Gallery;
@@ -122,6 +123,10 @@ public static class QuickLoad
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
             }, DispatcherPriority.Send);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Render);
+            }
         }
         else
         {
@@ -161,6 +166,10 @@ public static class QuickLoad
             vm.ImageViewer.SetTransform(ExifOrientationHelper.GetImageOrientation(magickImage), magickImage.Format);
             WindowResizing.SetSize(magickImage.Width, magickImage.Height, secondaryPreloadValue.ImageModel.PixelWidth, secondaryPreloadValue.ImageModel.PixelHeight, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
         }, DispatcherPriority.Send);
+        if (Settings.WindowProperties.AutoFit && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Render);
+        }
         SetPicViewerValues(vm, imageModel, fileInfo);
         
         TitleManager.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
