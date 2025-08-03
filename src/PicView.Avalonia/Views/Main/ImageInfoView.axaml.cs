@@ -131,6 +131,12 @@ public partial class ImageInfoView : UserControl
             // Register EXIF property updates on 'Enter' key press
             RegisterExifUpdateHandlers();
             
+            // Orientation is for display only atm
+            OrientationBox.DropDownClosed += (_, _) =>
+            {
+                OrientationBox.SelectedIndex = vm.Exif.Orientation.Value!;
+            };
+            
             // Resolution Units are for display only atm
             ResolutionUnitBox.DropDownClosed += (_, _) =>
             {
@@ -248,7 +254,7 @@ public partial class ImageInfoView : UserControl
         GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
         BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
 
-        vm.Exif.IsExifAvailable.Value = fileInfo.IsExifImage();
+        vm.Exif.IsExifAvailable.Value = vm.PicViewer.Format.CurrentValue.IsExifImage();
     }
 
     private async Task SendToImageSaver(string? location, string destination, string? width,

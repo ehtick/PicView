@@ -89,6 +89,7 @@ public static class UpdateImage
                 {
                     vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
                     vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
+                    vm.PicViewer.Format.Value = preLoadValue.ImageModel.Format;
                 }
             }
             else if (preLoadValue is { ImageModel: not null})
@@ -101,6 +102,7 @@ public static class UpdateImage
                 vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
                 vm.PicViewer.SecondaryImageSource.Value = null;
                 vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
+                vm.PicViewer.Format.Value = preLoadValue.ImageModel.Format;
             }
             else
             {

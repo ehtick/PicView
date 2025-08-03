@@ -8,34 +8,36 @@ namespace PicView.Core.Exif;
 public static class ExifFunctions
 {
     /// <summary>
-    /// Determines whether the specified file is an EXIF-supported image type.
+    /// Determines whether the specified format is an EXIF-supported image type.
     /// </summary>
-    /// <param name="fileInfo">The file information of the image to check.</param>
-    /// <returns>True if the file is an EXIF-supported image type; otherwise, false.</returns>
-    public static bool IsExifImage(this FileInfo fileInfo)
+    /// <param name="format">The MagickFormat of the image to check.</param>
+    /// <returns>True if the format supports EXIF metadata; otherwise, false.</returns>
+    public static bool IsExifImage(this MagickFormat? format)
     {
-        if (fileInfo is null)
+        if (format is null)
         {
             return false;
         }
 
-        return fileInfo.Extension.ToLowerInvariant() switch
+        return format.Value switch
         {
-            ".jpg" or ".jpeg" or
-                ".tif" or ".tiff" or
-                ".dng" or // Adobe Digital Negative
-                ".cr2" or ".cr3" or // Canon RAW
-                ".nef" or // Nikon RAW
-                ".arw" or // Sony RAW
-                ".orf" or // Olympus RAW
-                ".rw2" or // Panasonic RAW
-                ".pef" or // Pentax RAW
-                ".raf" or // Fujifilm RAW
-                ".srw" or // Samsung RAW
-                ".heif" or ".heic" // High Efficiency Image Format
+            MagickFormat.Jpeg or
+                MagickFormat.Tiff or
+                MagickFormat.Dng or       // Adobe Digital Negative
+                MagickFormat.Cr2 or       // Canon RAW
+                MagickFormat.Cr3 or
+                MagickFormat.Nef or       // Nikon RAW
+                MagickFormat.Arw or       // Sony RAW
+                MagickFormat.Orf or       // Olympus RAW
+                MagickFormat.Rw2 or       // Panasonic RAW
+                MagickFormat.Pef or       // Pentax RAW
+                MagickFormat.Raf or       // Fujifilm RAW
+                MagickFormat.Srw or       // Samsung RAW
+                MagickFormat.Heif or
+                MagickFormat.Heic         // High Efficiency Image Format
                 => true,
 
-            _ => false
+            _ => false,
         };
     }
 

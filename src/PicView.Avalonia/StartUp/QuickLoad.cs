@@ -186,7 +186,7 @@ public static class QuickLoad
         vm.GlobalSettings.RotationAngle.Value = 0;
         vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
         vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
-
+        vm.PicViewer.Format.Value = imageModel.Format;
         vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
     }
 

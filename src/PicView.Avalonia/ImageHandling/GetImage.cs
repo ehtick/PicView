@@ -19,8 +19,8 @@ public static class GetImage
             DebugHelper.LogDebug(nameof(GetImage), nameof(GetStandardBitmapAsync), $"{nameof(fileInfo)} is null");
             return null;
         }
-        await using var memoryStream = await FileStreamUtils.ReadFileToRecyclableStreamAsync(fileInfo);
-        var bitmap = new Bitmap(memoryStream);
+        await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
+        var bitmap = new Bitmap(stream);
         return bitmap;
     }
     
@@ -31,16 +31,16 @@ public static class GetImage
         {
             magickImage = new MagickImage();
         }
-        await using var memoryStream = await FileStreamUtils.ReadFileToRecyclableStreamAsync(fileInfo);
+        await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
         if (fileInfo.Length >= 2147483648)
         {
             // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
             // ReSharper disable once MethodHasAsyncOverload
-            magickImage.Read(memoryStream);
+            magickImage.Read(stream);
         }
         else
         {
-            await magickImage.ReadAsync(memoryStream).ConfigureAwait(false); 
+            await magickImage.ReadAsync(stream).ConfigureAwait(false); 
         }
 
         var bitmap = magickImage.ToWriteableBitmap();

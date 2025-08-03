@@ -119,7 +119,7 @@ public static class TitleManager
 
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,
             NavigationManager.GetCurrentIndex,
-            imageModel.FileInfo, vm.GlobalSettings.RotationAngle.CurrentValue, NavigationManager.GetCollection);
+            imageModel.FileInfo, vm.GlobalSettings.ZoomValue.CurrentValue, NavigationManager.GetCollection);
         ApplyTitles(vm, windowTitles);
     }
 

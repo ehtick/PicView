@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.Exif;
@@ -95,6 +96,20 @@ public class ExifViewModel : IDisposable
             "Kodak DCR Compressed",
             "Pentax PEF Compressed"
         ]);
+
+        Debug.Assert(TranslationManager.Translation.Flipped != null);
+        Debug.Assert(TranslationManager.Translation.Normal != null);
+        Orientations = new BindableReactiveProperty<string[]>([
+            string.Empty,
+            TranslationManager.Translation.Normal,
+            TranslationManager.Translation.Flipped,
+            $"{TranslationManager.Translation.Rotated} 180\u00b0",
+            $"{TranslationManager.Translation.Rotated} 180\u00b0, {TranslationManager.Translation.Flipped}",
+            $"{TranslationManager.Translation.Rotated} 270\u00b0, {TranslationManager.Translation.Flipped}",
+            $"{TranslationManager.Translation.Rotated} 90\u00b0",
+            $"{TranslationManager.Translation.Rotated} 90\u00b0, {TranslationManager.Translation.Flipped}",
+            $"{TranslationManager.Translation.Rotated} 270\u00b0"
+        ]);
     }
     
     public void UpdateExifValues(ImageModel model, MagickImage? magick = null)
@@ -144,18 +159,15 @@ public class ExifViewModel : IDisposable
 
             Orientation.Value = orientation switch
             {
-                ExifOrientation.Horizontal => TranslationManager.Translation.Normal,
-                ExifOrientation.MirrorHorizontal => TranslationManager.Translation.Flipped,
-                ExifOrientation.Rotate180 => $"{TranslationManager.Translation.Rotated} 180\u00b0",
-                ExifOrientation.MirrorVertical =>
-                    $"{TranslationManager.Translation.Rotated} 180\u00b0, {TranslationManager.Translation.Flipped}",
-                ExifOrientation.MirrorHorizontalRotate270Cw =>
-                    $"{TranslationManager.Translation.Rotated} 270\u00b0, {TranslationManager.Translation.Flipped}",
-                ExifOrientation.Rotate90Cw => $"{TranslationManager.Translation.Rotated} 90\u00b0",
-                ExifOrientation.MirrorHorizontalRotate90Cw =>
-                    $"{TranslationManager.Translation.Rotated} 90\u00b0, {TranslationManager.Translation.Flipped}",
-                ExifOrientation.Rotated270Cw => $"{TranslationManager.Translation.Rotated} 270\u00b0",
-                _ => string.Empty
+                ExifOrientation.Horizontal => 1,
+                ExifOrientation.MirrorHorizontal => 2,
+                ExifOrientation.Rotate180 => 3,
+                ExifOrientation.MirrorVertical => 4,
+                ExifOrientation.MirrorHorizontalRotate270Cw => 5,
+                ExifOrientation.Rotate90Cw => 6,
+                ExifOrientation.MirrorHorizontalRotate90Cw => 7,
+                ExifOrientation.Rotated270Cw => 8,
+                _ => 0
             };
 
             var meter = TranslationManager.Translation.Meter;
@@ -318,7 +330,8 @@ public class ExifViewModel : IDisposable
 
     public BindableReactiveProperty<string?> Software { get; } = new();
 
-
+    public BindableReactiveProperty<string[]> Orientations { get; }
+    public BindableReactiveProperty<int> Orientation { get; } = new();
     public BindableReactiveProperty<ushort?> ResolutionUnit { get; } = new();
 
     public BindableReactiveProperty<string[]> ResolutionUnits { get; }
@@ -377,8 +390,6 @@ public class ExifViewModel : IDisposable
 
     public BindableReactiveProperty<string?> PhotometricInterpretation { get; } = new();
 
-    public BindableReactiveProperty<string?> Orientation { get; } = new();
-
     public BindableReactiveProperty<string?> ExifVersion { get; } = new();
 
     public BindableReactiveProperty<string?> LensModel { get; } = new();
@@ -390,55 +401,61 @@ public class ExifViewModel : IDisposable
     public void Dispose()
     {
         Disposable.Dispose(
-            DpiX,
-            DpiY,
-            PrintSizeCm,
-            PrintSizeCm,
-            SizeMp,
-            ResolutionUnit,
-            BitDepth,
-            AspectRatio,
-            Latitude,
-            Longitude,
             Altitude,
-            GoogleLink,
-            BingLink,
+            AspectRatio,
             Authors,
-            DateTaken,
-            Copyright,
-            Title,
-            Subject,
-            Software,
-            ResolutionUnit,
-            ColorRepresentation,
-            Compression,
-            Comment,
-            CompressedBitsPixel,
+            BingLink,
+            BitDepth,
+            Brightness,
             CameraMaker,
             CameraModel,
+            ColorRepresentation,
+            ColorRepresentations,
+            Comment,
+            CompressedBitsPixel,
+            Compression,
+            Compressions,
+            Contrast,
+            Copyright,
+            DateTaken,
+            DigitalZoom,
+            DpiX,
+            DpiY,
+            ExifRating,
+            ExifVersion,
+            ExposureBias,
             ExposureProgram,
             ExposureTime,
-            ExposureBias,
-            FNumber,
-            MaxAperture,
-            DigitalZoom,
-            FocalLength35Mm,
-            FocalLength,
-            ISOSpeed,
-            MeteringMode,
-            Contrast,
-            Saturation,
-            Brightness,
-            Sharpness,
-            WhiteBalance,
-            FlashMode,
             FlashEnergy,
-            LightSource,
-            PhotometricInterpretation,
-            Orientation,
-            ExifVersion,
+            FlashMode,
+            FNumber,
+            FocalLength,
+            FocalLength35Mm,
+            GoogleLink,
+            ISOSpeed,
+            IsExifAvailable,
+            Latitude,
             LensMaker,
-            LensModel);
+            LensModel,
+            LightSource,
+            Longitude,
+            MaxAperture,
+            MeteringMode,
+            Orientation,
+            Orientations,
+            PhotometricInterpretation,
+            PrintSizeCm,
+            PrintSizeInch,
+            Resolution,
+            ResolutionUnit,
+            ResolutionUnits,
+            Saturation,
+            Sharpness,
+            SizeMp,
+            Software,
+            Subject,
+            Title,
+            WhiteBalance);
     }
 
     public void OpenGoogleMaps(Unit unit) => ProcessHelper.OpenLink(GoogleLink.CurrentValue);

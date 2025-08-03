@@ -732,6 +732,61 @@
                                 </customControls:CopyButton>
                             </StackPanel>
 
+                            <!--  Orientation  -->
+                            <StackPanel Margin="15,10" Orientation="Horizontal">
+                                <TextBlock
+                                    Classes="txt"
+                                    Margin="0,8,0,0"
+                                    Text="{CompiledBinding Translation.Orientation.Value,
+                                                           Mode=OneWay}"
+                                    Width="{CompiledBinding InfoWindow.TextWidth}" />
+                                <ComboBox
+                                    Background="{DynamicResource DisabledBackgroundColor}"
+                                    Classes="CStyle x"
+                                    ItemsSource="{CompiledBinding Exif.Orientations.Value,
+                                                                  Mode=OneWay}"
+                                    Margin="5,0,0,0"
+                                    MinWidth="180"
+                                    SelectedIndex="{CompiledBinding Exif.Orientation.Value,
+                                                                    Mode=OneWay}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
+                                    x:Name="OrientationBox" />
+                                <customControls:CopyButton
+                                    Classes="altHover BorderStyle"
+                                    CopyText="{CompiledBinding Exif.Orientation.Value,
+                                                               Mode=OneWay}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
+                                    ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
+                                                                  Mode=OneWay}">
+                                    <Path Classes="CopyPath" />
+                                </customControls:CopyButton>
+                            </StackPanel>
+
+                            <!--  Image Format  -->
+                            <StackPanel Margin="15,10" Orientation="Horizontal">
+                                <TextBlock
+                                    Classes="txt"
+                                    Margin="0,8,0,0"
+                                    Text="{CompiledBinding Translation.ImageFormat.Value}"
+                                    Width="{CompiledBinding InfoWindow.TextWidth}" />
+                                <customControls:FuncTextBox
+                                    Background="{DynamicResource DisabledBackgroundColor}"
+                                    Classes="TStyle x"
+                                    IsReadOnly="True"
+                                    Text="{CompiledBinding PicViewer.Format.Value,
+                                                           Mode=OneWay}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                                <customControls:CopyButton
+                                    Classes="altHover BorderStyle"
+                                    CopyText="{CompiledBinding PicViewer.Format.Value,
+                                                               Mode=OneWay}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
+                                    ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
+                                                                  Mode=OneWay}">
+                                    <Path Classes="CopyPath" />
+                                </customControls:CopyButton>
+                            </StackPanel>
+
                             <!--  File Size  -->
                             <StackPanel Margin="15,10" Orientation="Horizontal">
                                 <TextBlock
@@ -1985,31 +2040,9 @@
                                         </customControls:CopyButton>
                                     </StackPanel>
 
-                                    <!--  Orientation  -->
-                                    <StackPanel Margin="10" Orientation="Horizontal">
-                                        <TextBlock
-                                            Classes="txt"
-                                            Margin="0,8,2,0"
-                                            Text="{CompiledBinding Translation.Orientation.Value,
-                                                                   Mode=OneWay}"
-                                            Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                        <customControls:FuncTextBox
-                                            Classes=" TStyle x"
-                                            IsReadOnly="True"
-                                            Text="{CompiledBinding Exif.Orientation.Value,
-                                                                   Mode=OneWay}"
-                                            Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
-                                        <customControls:CopyButton
-                                            Classes="altHover BorderStyle"
-                                            CopyText="{CompiledBinding Exif.Orientation.Value,
-                                                                       Mode=OneWay}"
-                                            ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
-                                                                          Mode=OneWay}">
-                                            <Path Classes="CopyPath" />
-                                        </customControls:CopyButton>
-                                    </StackPanel>
                                 </StackPanel>
                             </StackPanel>
+
 
                             <!--  Lens maker  -->
                             <StackPanel Orientation="Horizontal">
@@ -2037,32 +2070,32 @@
                                             <Path Classes="CopyPath" />
                                         </customControls:CopyButton>
                                     </StackPanel>
-
-                                    <!--  Lens model  -->
-                                    <StackPanel Margin="10" Orientation="Horizontal">
-                                        <TextBlock
-                                            Classes="txt"
-                                            Margin="0,8,2,0"
-                                            Text="{CompiledBinding Translation.LensModel.Value,
-                                                                   Mode=OneWay}"
-                                            Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                        <customControls:FuncTextBox
-                                            Classes=" TStyle x"
-                                            Text="{CompiledBinding Exif.LensModel.Value,
-                                                                   Mode=TwoWay}"
-                                            Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
-                                            x:Name="LensModelBox" />
-                                        <customControls:CopyButton
-                                            Classes="altHover BorderStyle"
-                                            CopyText="{CompiledBinding Exif.LensModel.Value,
-                                                                       Mode=OneWay}"
-                                            IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
-                                            ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
-                                                                          Mode=OneWay}">
-                                            <Path Classes="CopyPath" />
-                                        </customControls:CopyButton>
-                                    </StackPanel>
                                 </StackPanel>
+                            </StackPanel>
+
+                            <!--  Lens model  -->
+                            <StackPanel Margin="10" Orientation="Horizontal">
+                                <TextBlock
+                                    Classes="txt"
+                                    Margin="0,8,2,0"
+                                    Text="{CompiledBinding Translation.LensModel.Value,
+                                                           Mode=OneWay}"
+                                    Width="{CompiledBinding InfoWindow.TextWidth}" />
+                                <customControls:FuncTextBox
+                                    Classes=" TStyle x"
+                                    Text="{CompiledBinding Exif.LensModel.Value,
+                                                           Mode=TwoWay}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
+                                    x:Name="LensModelBox" />
+                                <customControls:CopyButton
+                                    Classes="altHover BorderStyle"
+                                    CopyText="{CompiledBinding Exif.LensModel.Value,
+                                                               Mode=OneWay}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
+                                    ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
+                                                                  Mode=OneWay}">
+                                    <Path Classes="CopyPath" />
+                                </customControls:CopyButton>
                             </StackPanel>
 
                             <!--  Exif version  -->
@@ -2091,6 +2124,7 @@
                                     </customControls:CopyButton>
                                 </StackPanel>
                             </StackPanel>
+
                         </WrapPanel>
                     </StackPanel>
                 </StackPanel>

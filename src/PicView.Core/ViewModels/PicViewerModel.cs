@@ -1,4 +1,5 @@
-﻿using PicView.Core.Exif;
+﻿using ImageMagick;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.ImageEffects;
 using R3;
@@ -32,6 +33,8 @@ public class PicViewerModel : IDisposable
     public BindableReactiveProperty<object?> SecondaryImageSource { get; } = new();
 
     public BindableReactiveProperty<ImageType> ImageType { get; } = new();
+    
+    public BindableReactiveProperty<MagickFormat?> Format { get; } = new();
 
     /// <summary>
     /// The width to scale the image to

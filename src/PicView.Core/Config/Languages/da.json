@@ -172,6 +172,7 @@
   "Image": "Billede",
   "ImageAliasing": "Billedantialiasering",
   "ImageControl": "Billedstyring",
+  "ImageFormat": "Billedformat",
   "ImageInfo": "Billedoplysninger",
   "Inches": "tommer",
   "InfoWindow": "Informationsvindue",

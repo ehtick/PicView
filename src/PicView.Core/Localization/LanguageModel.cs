@@ -184,6 +184,8 @@ public class LanguageModel
     public string? Image { get; set; }
     public string? ImageAliasing { get; set; }
     public string? ImageControl { get; set; }
+    public string? ImageFormat { get; set; }
+
     public string? ImageInfo { get; set; }
     public string? Inches { get; set; }
     public string? InfoWindow { get; set; }
