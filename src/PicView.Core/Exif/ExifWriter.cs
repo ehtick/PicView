@@ -170,7 +170,23 @@ public static class ExifWriter
     /// <param name="value">The compressed bits per pixel value to add.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddCompressedBitsPerPixel(FileInfo? fileInfo, string? value) =>
-        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage => { throw new NotImplementedException(); },
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+            {
+                if (value is null)
+                {
+                    return false;
+                }
+
+                if (!ExifFunctions.TryParseRational(value, out var rational))
+                {
+                    return false;
+                }
+
+                var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+                profile.SetValue(ExifTag.CompressedBitsPerPixel, rational);
+                magickImage.SetProfile(profile);
+                return true;
+            },
             nameof(ExifWriter), nameof(AddCompressedBitsPerPixel));
 
     /// <summary>
@@ -278,7 +294,23 @@ public static class ExifWriter
     /// <param name="value">The exposure bias value to add.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddExposureBias(FileInfo? fileInfo, string? value) =>
-        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage => { throw new NotImplementedException(); },
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+            {
+                if (value is null)
+                {
+                    return false;
+                }
+
+                if (!ExifFunctions.TryParseSignedRational(value, out var rational))
+                {
+                    return false;
+                }
+
+                var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+                profile.SetValue(ExifTag.ExposureBiasValue, rational);
+                magickImage.SetProfile(profile);
+                return true;
+            },
             nameof(ExifWriter), nameof(AddExposureBias));
 
     /// <summary>
@@ -288,7 +320,23 @@ public static class ExifWriter
     /// <param name="value">The exposure time value to add.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddExposureTime(FileInfo? fileInfo, string? value) =>
-        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage => { throw new NotImplementedException(); },
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+            {
+                if (value is null)
+                {
+                    return false;
+                }
+
+                if (!ExifFunctions.TryParseRational(value, out var rational))
+                {
+                    return false;
+                }
+
+                var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+                profile.SetValue(ExifTag.ExposureTime, rational);
+                magickImage.SetProfile(profile);
+                return true;
+            },
             nameof(ExifWriter), nameof(AddExposureTime));
 
     /// <summary>
@@ -320,8 +368,20 @@ public static class ExifWriter
     public static Task<bool> AddDigitalZoom(FileInfo? fileInfo, string? value) =>
         ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
         {
-            throw new NotImplementedException()
-                ;
+            if (value is null)
+            {
+                return false;
+            }
+
+            if (!ExifFunctions.TryParseRational(value, out var rational))
+            {
+                return false;
+            }
+
+            var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+            profile.SetValue(ExifTag.DigitalZoomRatio, rational);
+            magickImage.SetProfile(profile);
+            return true;
         }, nameof(ExifWriter), nameof(AddDigitalZoom));
 
     /// <summary>
@@ -331,7 +391,23 @@ public static class ExifWriter
     /// <param name="value">The focal length to add.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddFocalLength(FileInfo? fileInfo, string? value) =>
-        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage => { throw new NotImplementedException(); },
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+            {
+                if (value is null)
+                {
+                    return false;
+                }
+
+                if (!ExifFunctions.TryParseRational(value, out var rational))
+                {
+                    return false;
+                }
+
+                var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+                profile.SetValue(ExifTag.FocalLength, rational);
+                magickImage.SetProfile(profile);
+                return true;
+            },
             nameof(ExifWriter), nameof(AddFocalLength));
 
     /// <summary>
@@ -482,7 +558,23 @@ public static class ExifWriter
     /// <param name="value">The flash energy value to add.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
     public static Task<bool> AddFlashEnergy(FileInfo? fileInfo, string? value) =>
-        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage => { throw new NotImplementedException(); },
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+            {
+                if (value is null)
+                {
+                    return false;
+                }
+
+                if (!ExifFunctions.TryParseRational(value, out var rational))
+                {
+                    return false;
+                }
+
+                var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+                profile.SetValue(ExifTag.FlashEnergy, rational);
+                magickImage.SetProfile(profile);
+                return true;
+            },
             nameof(ExifWriter), nameof(AddFlashEnergy));
 
     /// <summary>
