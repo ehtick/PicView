@@ -14,7 +14,8 @@ public static class DirectoryNavigator
     /// <param name="loadWithoutImageIterator">The action to load an image without the iterator.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task NavigateBetweenDirectories(bool next, ImageIterator iterator, Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    public static async Task NavigateBetweenDirectories(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
     {
         if (!NavigationManager.CanNavigate(vm))
         {
@@ -26,7 +27,8 @@ public static class DirectoryNavigator
 
         if (Settings.Sorting.IncludeSubDirectories)
         {
-            await NavigateDirectoryWithinSubdirectories(next, iterator, loadWithoutImageIterator, vm).ConfigureAwait(false);
+            await NavigateDirectoryWithinSubdirectories(next, iterator, loadWithoutImageIterator, vm)
+                .ConfigureAwait(false);
         }
         else
         {
@@ -37,7 +39,8 @@ public static class DirectoryNavigator
     /// <summary>
     /// Navigates to the next or previous directory using the file system structure.
     /// </summary>
-    private static async Task NavigateToNextDirectory(bool next, ImageIterator iterator, Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    private static async Task NavigateToNextDirectory(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
     {
         var fileList = await GetNextFolderFileList(next, iterator, vm).ConfigureAwait(false);
 
@@ -59,10 +62,14 @@ public static class DirectoryNavigator
     /// <summary>
     /// Navigates to the next or previous directory from the list of directories of all loaded images.
     /// </summary>
-    private static async Task NavigateDirectoryWithinSubdirectories(bool next, ImageIterator iterator, Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    private static async Task NavigateDirectoryWithinSubdirectories(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
     {
         var imagePaths = iterator?.ImagePaths;
-        if (imagePaths is null || imagePaths.Count == 0) return;
+        if (imagePaths is null || imagePaths.Count == 0)
+        {
+            return;
+        }
 
         var directories = imagePaths.Select(path => path.DirectoryName).Distinct().ToList();
 
@@ -84,7 +91,7 @@ public static class DirectoryNavigator
         var nextIndex = next
             ? (index + 1) % directories.Count
             : (index - 1 + directories.Count) % directories.Count;
-        
+
         var nextDir = directories[nextIndex];
         var firstFileInNextDirIndex = imagePaths.FindIndex(path => path.DirectoryName == nextDir);
 
@@ -93,7 +100,7 @@ public static class DirectoryNavigator
             await ImageLoader.IterateToIndexAsync(firstFileInNextDirIndex, iterator).ConfigureAwait(false);
         }
     }
-        
+
     /// <summary>
     ///     Gets the list of files in the next or previous folder.
     /// </summary>
@@ -101,36 +108,80 @@ public static class DirectoryNavigator
     /// <param name="iterator">The image iterator.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation that returns a list of file paths.</returns>
-    private static async Task<List<FileInfo>?> GetNextFolderFileList(bool next, ImageIterator iterator, MainViewModel vm)
+    private static async Task<List<FileInfo>?> GetNextFolderFileList(bool next, ImageIterator iterator,
+        MainViewModel vm)
     {
         return await Task.Run(() =>
         {
             var currentFolder = iterator?.ImagePaths[iterator.CurrentIndex].DirectoryName;
-            if (string.IsNullOrEmpty(currentFolder)) return null;
-            
-            var parentFolder = Path.GetDirectoryName(currentFolder);
-            if (string.IsNullOrEmpty(parentFolder)) return null;
-
-            var directories = Directory.GetDirectories(parentFolder, "*", SearchOption.TopDirectoryOnly);
-            var dirCount = directories.Length;
-            if (dirCount <= 1) return null;
-
-            var directoryIndex = Array.IndexOf(directories, currentFolder);
-            if (directoryIndex == -1) return null;
-
-            var indexChange = next ? 1 : -1;
-
-            for (var i = 1; i < dirCount; i++)
+            if (string.IsNullOrEmpty(currentFolder))
             {
-                var nextIndex = (directoryIndex + i * indexChange + dirCount) % dirCount;
-                var fileList = vm.PlatformService.GetFiles(new FileInfo(directories[nextIndex]));
-                if (fileList is { Count: > 0 })
-                {
-                    return fileList;
-                }
+                return null;
+            }
+
+            var currentDirectories = Directory.GetDirectories(currentFolder, "*", SearchOption.AllDirectories);
+            if (currentDirectories.Length > 1)
+            {
+                return NextDirectoryInCurrentDirectories(currentDirectories, currentFolder, true, next, vm);
+            }
+
+            
+            string? parentFolder;
+            var initialDirectory = Settings.StartUp.StartUpDirectory;
+            if (!string.IsNullOrWhiteSpace(initialDirectory) && currentFolder.StartsWith(initialDirectory) && currentFolder != initialDirectory)
+            {
+                parentFolder = initialDirectory;
+            }
+            else
+            {
+                parentFolder= Path.GetDirectoryName(currentFolder);
+            }
+                
+            if (string.IsNullOrEmpty(parentFolder))
+            {
+                return null;
+            }
+
+            var parentDirectories = Directory.GetDirectories(parentFolder, "*", SearchOption.AllDirectories);
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (parentDirectories.Length > 1)
+            {
+                return NextDirectoryInCurrentDirectories(parentDirectories, currentFolder,  false, next, vm);
             }
 
             return null;
         }).ConfigureAwait(false);
+    }
+
+    private static List<FileInfo>? NextDirectoryInCurrentDirectories(string[] directories, string currentFolder,
+        bool isCurrentDirectory, bool next, MainViewModel vm)
+    {
+        var dirCount = directories.Length;
+        int directoryIndex;
+        if (isCurrentDirectory)
+        {
+            directoryIndex = next ? -1 : 0;
+        }
+        else
+        {
+            directoryIndex = Array.IndexOf(directories, currentFolder);
+            if (directoryIndex == -1)
+            {
+                return null;
+            }
+        }
+        
+        var indexChange = next ? 1 : -1;
+
+        for (var i = 1; i <= dirCount; i++)
+        {
+            var nextIndex = (directoryIndex + i * indexChange + dirCount) % dirCount;
+            var fileList = vm.PlatformService.GetFiles(new FileInfo(directories[nextIndex]));
+            if (fileList is { Count: > 0 })
+            {
+                return fileList;
+            }
+        }
+        return null;
     }
 }
