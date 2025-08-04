@@ -16,7 +16,7 @@
         </Styles>
     </UserControl.Styles>
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ContextMenu">
+        <ContextMenu x:Name="EffectsContextMenu">
             <MenuItem Command="{CompiledBinding Tools.SaveFileCommand}" Header="{CompiledBinding Translation.Save.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path

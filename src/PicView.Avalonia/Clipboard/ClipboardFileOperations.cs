@@ -44,9 +44,7 @@ public static class ClipboardFileOperations
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"{nameof(ClipboardFileOperations)} {nameof(Duplicate)} {ex.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardFileOperations), nameof(Duplicate), ex);
             await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
         }
         finally

@@ -96,7 +96,7 @@ public class TextIconButton : Button
     /// </summary>
     public double TextMaxWidth
     {
-        get => (double)GetValue(TextMaxWidthProperty);
+        get => (double)(GetValue(TextMaxWidthProperty) ?? 0);
         set => SetValue(TextMaxWidthProperty, value);
     }
 
@@ -170,7 +170,7 @@ public class TextIconButton : Button
         }
     }
 
-    private Control BuildControl()
+    private StackPanel BuildControl()
     {
         var stackPanel = new StackPanel
         {
