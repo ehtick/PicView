@@ -390,8 +390,7 @@ public class ImageIterator : IAsyncDisposable
 
             await Dispatcher.UIThread.InvokeAsync(() =>
                 GalleryFunctions.RenameGalleryItem(oldIndex, newIndex, Path.GetFileNameWithoutExtension(e.Name),
-                    e.FullPath,
-                    _vm));
+                    e.FullPath));
             if (sameFile)
             {
                 _vm.PicViewer.Index.Value = newIndex;

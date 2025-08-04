@@ -275,9 +275,7 @@ public static class GalleryLoad
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine($"GalleryLoad exception on clear:\n{e.Message}");
-#endif
+                DebugHelper.LogDebug(nameof(GalleryLoad), nameof(ReloadGalleryAsync), e);
             }
         });
         await LoadGallery(vm, currentDirectory).ConfigureAwait(false);
@@ -303,6 +301,10 @@ public static class GalleryLoad
             }
 
             await ReloadGalleryAsync(vm, fileInfo.DirectoryName);
+        }
+        else if (!GalleryFunctions.IsGalleryEmpty())
+        {
+            GalleryFunctions.Clear();
         }
     }
 }

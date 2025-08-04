@@ -42,8 +42,18 @@ public static class GalleryFunctions
         return gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue + (SizeDefaults.ScrollbarSize - 1);
     }
 
-    public static bool RenameGalleryItem(int oldIndex, int newIndex, string newFileLocation, string newName,
-        MainViewModel? vm)
+    public static bool IsGalleryEmpty()
+    {
+        var mainView = UIHelper.GetMainView;
+        var galleryListBox = mainView?.GalleryView?.GalleryListBox;
+        if (galleryListBox == null)
+        {
+            return true;
+        }
+        return galleryListBox.Items.Count == 0;
+    }
+
+    public static bool RenameGalleryItem(int oldIndex, int newIndex, string newFileLocation, string newName)
     {
         var mainView = UIHelper.GetMainView;
 
