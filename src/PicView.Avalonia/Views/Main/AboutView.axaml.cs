@@ -20,10 +20,6 @@ public partial class AboutView : UserControl
         Loaded += (_, _) =>
         {
             AppVersion.Text = VersionHelper.GetCurrentVersion();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                AppVersion.Text +=" macOS beta";
-            }
 
             if (!Settings.Theme.Dark && !Settings.Theme.GlassTheme)
             {
