@@ -72,7 +72,7 @@ public class GalleryAnimationControl : UserControl
     {
         AddHandler(PointerPressedEvent, PreviewPointerPressedEvent, RoutingStrategies.Tunnel);
 
-        Observable.EveryValueChanged(this, x => x.GalleryMode, UIHelper.GetFrameProvider)
+        this.GetObservable(GalleryModeProperty).ToObservable()
             .SubscribeAwait( async (galleryMode, _) =>
             {
                 try

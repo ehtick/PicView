@@ -116,7 +116,7 @@ public class PicBox : Control, IDisposable
     }
 
     public PicBox() =>
-        Observable.EveryValueChanged(this, x => x.ImageType, UIHelper.GetFrameProvider)
+        this.GetObservable(ImageTypeProperty).ToObservable()
             .Subscribe(UpdateSource).AddTo(_imageTypeSubscription);
 
     #endregion
