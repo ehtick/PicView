@@ -286,6 +286,10 @@ public class ToolsViewModel : IDisposable
             SetAsWallpaperFittedCommand);
     }
 
+    public ReactiveCommand ToggleFileHistoryTask { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ToggleFileHistory();
+    });
     
     public ReactiveCommand<string> StartSlideShowTask { get; } = new(async (value, _) =>
     {

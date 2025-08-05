@@ -418,6 +418,11 @@ public class Navigation
     public bool IsNavigatingFileHistory { get; set; } = true;
     
     /// <summary>
+    /// Determines if the file history should be saved.
+    /// </summary>
+    public bool IsFileHistoryEnabled { get; set; } = true;
+    
+    /// <summary>
     /// Determines whether navigation between directories is enabled, with the mouse side buttons.
     /// When set to true, navigation will cycle through the directories, next to the current file order.
     /// </summary>

@@ -207,7 +207,7 @@
             </MenuItem>
 
             <!--  Recent files  -->
-            <MenuItem Header="{Binding Translation.RecentFiles, Mode=OneWay}">
+            <MenuItem Header="{Binding Translation.RecentFiles, Mode=OneWay}" IsVisible="{CompiledBinding GlobalSettings.IsFileHistoryEnabled.Value}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource RecentFilesGeometry}"

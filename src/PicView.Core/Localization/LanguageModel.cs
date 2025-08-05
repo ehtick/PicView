@@ -107,6 +107,7 @@ public class LanguageModel
     public string? Descending { get; set; }
     public string? DigitalZoom { get; set; }
     public string? DisableFadeInButtonsOnHover { get; set; }
+    public string? DisableFileHistory  { get; set; }
     public string? DiskSize { get; set; }
     public string? DoubleClick { get; set; }
     public string? Down { get; set; }
@@ -118,6 +119,7 @@ public class LanguageModel
     public string? DuplicateFile { get; set; }
     public string? Effects { get; set; }
     public string? EffectsTooltip { get; set; }
+    public string? EnableFileHistory { get; set; }
     public string? Enter { get; set; }
     public string? Esc { get; set; }
     public string? EscCloseTooltip { get; set; }

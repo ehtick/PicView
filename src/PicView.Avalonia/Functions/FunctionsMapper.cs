@@ -826,6 +826,9 @@ public static class FunctionsMapper
     
     public static async Task ToggleOpeningInSameWindow() =>
         await SettingsUpdater.ToggleOpeningInSameWindow(Vm).ConfigureAwait(false);
+    
+    public static async Task ToggleFileHistory() =>
+        await SettingsUpdater.ToggleFileHistory(Vm).ConfigureAwait(false);
 
     #endregion
     

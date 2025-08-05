@@ -5,6 +5,7 @@
     x:Class="PicView.Avalonia.Views.Config.GeneralSettingsView"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
@@ -99,6 +100,22 @@
                     Text="{CompiledBinding Translation.SearchSubdirectory.Value,
                                            Mode=OneWay}" />
             </ToggleButton>
+
+            <customControls:TextIconButton
+                Background="Transparent"
+                BorderThickness="0"
+                Classes="altHover changeColor"
+                Command="{CompiledBinding Tools.ToggleFileHistoryTask}"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Icon="{StaticResource HistoryImage}"
+                IconHeight="16"
+                IconWidth="16"
+                Margin="0,0,0,10"
+                Padding="10"
+                Text="{CompiledBinding Translation.ToggleFileHistory.Value}"
+                TextMargin="14,1,5,0"
+                TextMaxWidth="240"
+                Width="300" />
 
         </StackPanel>
     </Panel>

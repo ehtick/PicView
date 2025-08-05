@@ -41,6 +41,11 @@ public class FileHistoryMenuController
     /// </summary>
     public void UpdateFileHistoryMenu()
     {
+        if (!Settings.Navigation.IsFileHistoryEnabled)
+        {
+            return;
+        }
+        
         if (FileHistoryManager.Count <= 0)
         {
             _menuContainer.Children.Clear();

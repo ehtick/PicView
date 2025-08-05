@@ -436,8 +436,6 @@ public class TranslationViewModel : IDisposable
 
     public BindableReactiveProperty<string?> DigitalZoom { get; } = new();
 
-    public BindableReactiveProperty<string?> DirectionalBlur { get; } = new();
-
     public BindableReactiveProperty<string?> DisableFadeInButtonsOnHover { get; } = new();
 
     public BindableReactiveProperty<string?> DoubleClick { get; } = new();
@@ -819,6 +817,7 @@ public class TranslationViewModel : IDisposable
 
     public BindableReactiveProperty<string?> Title { get; } = new();
 
+    public BindableReactiveProperty<string?> ToggleFileHistory { get; } = new();
     public BindableReactiveProperty<string?> ToggleFullscreen { get; } = new();
 
     public BindableReactiveProperty<string?> ToggleLooping { get; } = new();

@@ -307,6 +307,26 @@ public static class SettingsUpdater
 
         await SaveSettingsAsync();
     }
+
+    public static async Task ToggleFileHistory(MainViewModel vm)
+    {
+        if (Settings.Navigation.IsFileHistoryEnabled)
+        {
+            vm.GlobalSettings.IsFileHistoryEnabled.Value = false;
+            Settings.Navigation.IsFileHistoryEnabled = false;
+            
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.EnableFileHistory;
+        }
+        else
+        {
+            vm.GlobalSettings.IsFileHistoryEnabled.Value = true;
+            Settings.Navigation.IsFileHistoryEnabled = true;
+            
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.DisableFileHistory;
+        }
+        
+        await SaveSettingsAsync();
+    }
     
     #region Image settings
 
