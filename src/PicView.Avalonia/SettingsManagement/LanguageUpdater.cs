@@ -50,7 +50,7 @@ public static class LanguageUpdater
             : TranslationManager.Translation.UsingMouse;
         
         translationViewModel.ToggleFileHistory.Value = Settings.Navigation.IsFileHistoryEnabled
-            ? TranslationManager.Translation.DisableFileHistory
-            : TranslationManager.Translation.EnableFileHistory;
+            ? TranslationManager.Translation.FileHistoryEnabled
+            : TranslationManager.Translation.FileHistoryDisabled;
     }
 }

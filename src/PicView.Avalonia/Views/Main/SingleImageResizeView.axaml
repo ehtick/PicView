@@ -145,7 +145,7 @@
             </Border>
 
             <StackPanel
-                Background="#277A7A7A"
+                Background="#46252525"
                 Height="80"
                 Orientation="Horizontal"
                 x:Name="BottomBorder">

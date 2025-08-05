@@ -101,21 +101,23 @@
                                            Mode=OneWay}" />
             </ToggleButton>
 
-            <customControls:TextIconButton
+            <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
                 Classes="altHover changeColor"
                 Command="{CompiledBinding Tools.ToggleFileHistoryTask}"
-                Foreground="{StaticResource SecondaryTextColor}"
-                Icon="{StaticResource HistoryImage}"
-                IconHeight="16"
-                IconWidth="16"
+                IsChecked="{CompiledBinding GlobalSettings.IsFileHistoryEnabled.Value}"
                 Margin="0,0,0,10"
-                Padding="10"
-                Text="{CompiledBinding Translation.ToggleFileHistory.Value}"
-                TextMargin="14,1,5,0"
-                TextMaxWidth="240"
-                Width="300" />
+                Width="300">
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{StaticResource SecondaryTextColor}"
+                    Margin="0"
+                    MaxWidth="240"
+                    Padding="0,1,5,0"
+                    Text="{CompiledBinding Translation.ToggleFileHistory.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
 
         </StackPanel>
     </Panel>

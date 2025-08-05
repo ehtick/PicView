@@ -25,7 +25,6 @@
                                 <Image
                                     Height="18"
                                     IsVisible="False"
-                                    Margin="2,3.9,5,0"
                                     Source="{StaticResource SquareCheckImage}"
                                     Width="18"
                                     x:Name="TickMark" />

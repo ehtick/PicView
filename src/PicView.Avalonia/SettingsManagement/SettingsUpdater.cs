@@ -315,14 +315,14 @@ public static class SettingsUpdater
             vm.GlobalSettings.IsFileHistoryEnabled.Value = false;
             Settings.Navigation.IsFileHistoryEnabled = false;
             
-            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.EnableFileHistory;
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.FileHistoryDisabled;
         }
         else
         {
             vm.GlobalSettings.IsFileHistoryEnabled.Value = true;
             Settings.Navigation.IsFileHistoryEnabled = true;
             
-            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.DisableFileHistory;
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.FileHistoryEnabled;
         }
         
         await SaveSettingsAsync();

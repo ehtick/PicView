@@ -107,7 +107,6 @@ public class LanguageModel
     public string? Descending { get; set; }
     public string? DigitalZoom { get; set; }
     public string? DisableFadeInButtonsOnHover { get; set; }
-    public string? DisableFileHistory  { get; set; }
     public string? DiskSize { get; set; }
     public string? DoubleClick { get; set; }
     public string? Down { get; set; }
@@ -119,7 +118,6 @@ public class LanguageModel
     public string? DuplicateFile { get; set; }
     public string? Effects { get; set; }
     public string? EffectsTooltip { get; set; }
-    public string? EnableFileHistory { get; set; }
     public string? Enter { get; set; }
     public string? Esc { get; set; }
     public string? EscCloseTooltip { get; set; }
@@ -135,6 +133,8 @@ public class LanguageModel
     public string? FileCopyPathMessage { get; set; }
     public string? FileCutMessage { get; set; }
     public string? FileExtension { get; set; }
+    public string? FileHistoryDisabled { get; set; }
+    public string? FileHistoryEnabled { get; set; }
     public string? FileManagement { get; set; }
     public string? FileName { get; set; }
     public string? FilePaste { get; set; }
@@ -187,7 +187,6 @@ public class LanguageModel
     public string? ImageAliasing { get; set; }
     public string? ImageControl { get; set; }
     public string? ImageFormat { get; set; }
-
     public string? ImageInfo { get; set; }
     public string? Inches { get; set; }
     public string? InfoWindow { get; set; }
