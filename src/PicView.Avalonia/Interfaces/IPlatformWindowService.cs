@@ -44,5 +44,5 @@ public interface IPlatformWindowService
     
     void ShowSingleImageResizeWindow();
     
-    void ShowBatchResizeWindow();
+    Task ShowBatchResizeWindow();
 }

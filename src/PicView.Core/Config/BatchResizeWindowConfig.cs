@@ -54,6 +54,9 @@ public class BatchResizeWindowConfig() : ConfigFile("BatchResizeWindow.json")
         public double? Height { get; set; }
         public bool Maximized { get; set; }
         
+        
+        public bool IsQualityEnabled { get; set; }
+        
         public int ConvertToIndex { get; set; }
         public int CompressionIndex { get; set; }
         public int ResizeIndex { get; set; }

@@ -250,8 +250,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public void ShowSingleImageResizeWindow() =>
         _windowInitializer?.ShowSingleImageResizeWindow(_vm);
 
-    public void ShowBatchResizeWindow() =>
-        _windowInitializer?.ShowBatchResizeWindow(_vm);
+    public async Task ShowBatchResizeWindow() =>
+       await _windowInitializer?.ShowBatchResizeWindow(_vm);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow(_vm);
