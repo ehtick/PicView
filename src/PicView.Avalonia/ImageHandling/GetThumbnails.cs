@@ -18,6 +18,7 @@ public static class GetThumbnails
                 var thumb = Bitmap.DecodeToHeight(stream, (int)height);
                 return thumb;
             }
+
             using var magick = new MagickImage();
             magick.Ping(fileInfo);
             var profile = magick.GetExifProfile();
@@ -68,26 +69,61 @@ public static class GetThumbnails
         // https://github.com/AvaloniaUI/Avalonia/discussions/16703
         // https://stackoverflow.com/a/42178963/2923736 convert to DLLImport to LibraryImport, source generation & AOT support
 
-        await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
-        
-        if (fileInfo.Length >= 2147483648)
+        switch (magick.Format)
         {
-            await Task.Run(() =>
+            case MagickFormat.WebP:
+            case MagickFormat.WebM:
+            case MagickFormat.Gif:
+            case MagickFormat.Gif87:
+            case MagickFormat.Png:
+            case MagickFormat.Png00:
+            case MagickFormat.Png8:
+            case MagickFormat.Png24:
+            case MagickFormat.Png32:
+            case MagickFormat.Png48:
+            case MagickFormat.Png64:
+            case MagickFormat.APng:
+            case MagickFormat.Jpe:
+            case MagickFormat.Jpeg:
+            case MagickFormat.Pjpeg:
+            case MagickFormat.Bmp:
+            case MagickFormat.Tif:
+            case MagickFormat.Tiff:
+            case MagickFormat.Ico:
+            case MagickFormat.Icon:
+            case MagickFormat.Wbmp:
             {
-                // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
-                // ReSharper disable once MethodHasAsyncOverload
-                magick.Read(fileStream);
-            });
-        }
-        else
-        {
-            await magick.ReadAsync(fileStream).ConfigureAwait(false);
-        }
+                await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
+                var thumb = Bitmap.DecodeToHeight(stream, (int)height);
+                return thumb;
+            }
 
-        var geometry = new MagickGeometry(0, height);
-        magick.AutoOrient();
-        magick.Thumbnail(geometry);
-        return magick.ToWriteableBitmap();
+            case MagickFormat.Svg:
+            case MagickFormat.Svgz:
+                return null;
+            default:
+            {
+                await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
+
+                if (fileInfo.Length >= 2147483648)
+                {
+                    await Task.Run(() =>
+                    {
+                        // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
+                        // ReSharper disable once MethodHasAsyncOverload
+                        magick.Read(fileStream);
+                    });
+                }
+                else
+                {
+                    await magick.ReadAsync(fileStream).ConfigureAwait(false);
+                }
+
+                var geometry = new MagickGeometry(0, height);
+                magick.AutoOrient();
+                magick.Thumbnail(geometry);
+                return magick.ToWriteableBitmap();
+            }
+        }
     }
 }
-
