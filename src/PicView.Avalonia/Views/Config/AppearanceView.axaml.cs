@@ -325,7 +325,7 @@ public partial class AppearanceView : UserControl
         {
             TransparentBgButton, NoiseTextureButton, CheckerboardButton, CheckerboardAltButton,
             WhiteBgButton, GrayBgButton, DarkGrayBgButton, DarkGraySemiTransparentBgButton,
-            DarkGraySemiTransparentAltBgButton, BlackBgButton
+            DarkGraySemiTransparentAltBgButton, BlackBgButton, MediumGrayBgButton
         };
 
         foreach (var button in buttons)
