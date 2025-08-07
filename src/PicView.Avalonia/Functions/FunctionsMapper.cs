@@ -37,13 +37,17 @@ public static class FunctionsMapper
             // Navigation values
             "Next" => Next,
             "Prev" => Prev,
+            
             "NextFolder" => NextFolder,
             "PrevFolder" => PrevFolder,
+            
             "Up" => Up,
             "Down" => Down,
+            
             "Last" => Last,
             "First" => First,
             "Next10" => Next10,
+            
             "Prev10" => Prev10,
             "Next100" => Next100,
             "Prev100" => Prev100,
@@ -120,7 +124,19 @@ public static class FunctionsMapper
             "ShowFileProperties" => ShowFileProperties,
             "ShowSettingsFile" => ShowSettingsFile,
             "ShowKeybindingsFile" => ShowKeybindingsFile,
-
+            
+            // Sorting functions
+            "SortFilesByName" => SortFilesByName,
+            "SortFilesByCreationTime" => SortFilesByCreationTime,
+            "SortFilesByLastAccessTime" => SortFilesByLastAccessTime,
+            "SortFilesByLastWriteTime" => SortFilesByLastWriteTime,
+            "SortFilesBySize" => SortFilesBySize,
+            "SortFilesByExtension" => SortFilesByExtension,
+            "SortFilesRandomly" => SortFilesRandomly,
+            
+            "SortFilesAscending" => SortFilesAscending,
+            "SortFilesDescending" => SortFilesDescending,
+            
             // Image functions
             "ResizeImage" => ResizeImage,
             "Crop" => Crop,
