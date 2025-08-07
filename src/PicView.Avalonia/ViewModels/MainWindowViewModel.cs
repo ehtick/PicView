@@ -36,7 +36,8 @@ public class MainWindowViewModel : IDisposable
 
     public BindableReactiveProperty<int> BackgroundChoice { get; } = new();
 
-    public BindableReactiveProperty<double> WindowMinSize { get; } = new(SizeDefaults.WindowMinSize);
+    public BindableReactiveProperty<double> WindowMinWidth { get; } = new(SizeDefaults.WindowMinSize);
+    public BindableReactiveProperty<double> WindowMinHeight { get; } = new(SizeDefaults.WindowMinSize);
 
     public BindableReactiveProperty<double> TitlebarHeight { get; } = new();
 
@@ -101,7 +102,8 @@ public class MainWindowViewModel : IDisposable
             BottomScreenMargin,
             BottomCornerRadius,
             BackgroundChoice,
-            WindowMinSize,
+            WindowMinWidth,
+            WindowMinHeight,
             TitlebarHeight,
             BottombarHeight,
             SizeToContent,
