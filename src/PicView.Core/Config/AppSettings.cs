@@ -192,7 +192,7 @@ public class UIProperties
     /// <summary>
     /// Indicates whether the application limits the background color to just behind the picture.
     /// </summary>
-    public bool IsConstrainBackgroundColorEnabled { get; set; } = true;
+    public bool IsConstrainBackgroundColorEnabled { get; set; } = false;
 }
 
 public class Theme
