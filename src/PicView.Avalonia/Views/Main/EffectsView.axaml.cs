@@ -65,7 +65,7 @@ public partial class EffectsView : UserControl
     private void InitializeViewModel(MainViewModel vm)
     {
         // Reset on file change
-        Observable.EveryValueChanged(vm, v => v.PicViewer.FileInfo.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(_ => Reset())
             .AddTo(_disposables);
 
