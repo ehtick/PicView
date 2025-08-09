@@ -125,7 +125,7 @@ public static class QuickLoad
             }, DispatcherPriority.Send);
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Render);
+                Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Send);
             }
         }
         else

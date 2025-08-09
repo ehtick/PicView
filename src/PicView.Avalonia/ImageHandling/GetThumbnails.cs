@@ -14,6 +14,10 @@ public static class GetThumbnails
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
+                if (fileInfo is null || !fileInfo.Exists)
+                {
+                    return null;
+                }
                 await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
                 var thumb = Bitmap.DecodeToHeight(stream, (int)height);
                 return thumb;
