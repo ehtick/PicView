@@ -273,7 +273,12 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem>
+                <MenuItem
+                    Command="{CompiledBinding Tools.CopyBase64Command}"
+                    CommandParameter="{CompiledBinding Path=Text,
+                                                       ElementName=FileLocation}"
+                    IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Header>
                         <TextBlock>
                             <Run Text="{CompiledBinding Translation.Copy.Value, Mode=OneWay}" />
