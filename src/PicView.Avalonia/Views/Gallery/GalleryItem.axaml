@@ -248,12 +248,14 @@
                     </MenuItem>
                 </MenuItem>
                 <Separator />
+
                 <MenuItem
                     Command="{CompiledBinding Tools.CopyFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,
                                                        ElementName=FileLocation}"
                     Header="{CompiledBinding Translation.CopyFile.Value,
-                                             Mode=OneWay}">
+                                             Mode=OneWay}"
+                    x:Name="CopyFileMenuItem">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CopyGeometry}"
@@ -263,6 +265,7 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
+
                 <MenuItem Header="{CompiledBinding Translation.CopyImage.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
@@ -273,6 +276,7 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
+
                 <MenuItem
                     Command="{CompiledBinding Tools.CopyBase64Command}"
                     CommandParameter="{CompiledBinding Path=Text,
@@ -294,6 +298,7 @@
                             Width="12" />
                     </MenuItem.Icon>
                 </MenuItem>
+
                 <MenuItem
                     Command="{CompiledBinding Tools.DuplicateFileCommand}"
                     CommandParameter="{CompiledBinding Path=Text,

@@ -896,7 +896,8 @@
                 CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.Copy.Value,
-                                         Mode=OneWay}">
+                                         Mode=OneWay}"
+                x:Name="CopyFileMenuItem">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CopyGeometry}"

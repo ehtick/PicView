@@ -15,6 +15,7 @@ public partial class GalleryItem : UserControl
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             PrintItem.IsVisible = false;
+            CopyFileMenuItem.IsVisible = false;
         }
         GalleryContextMenu.Opened += delegate
         {

@@ -30,6 +30,7 @@ public partial class MainView : UserControl
         {
             // TODO: Add macOS support
             PrintMenuItem.IsVisible = false;
+            CopyFileMenuItem.IsVisible = false;
             
             // Move alt hover to left side on macOS and switch button order
             AltButtonsPanel.HorizontalAlignment = HorizontalAlignment.Left; 
