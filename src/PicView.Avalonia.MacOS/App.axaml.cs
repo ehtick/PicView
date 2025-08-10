@@ -87,7 +87,15 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             {
                 if (Settings.UIProperties.OpenInSameWindow)
                 {
-                    await NavigationManager.LoadPicFromStringAsync(e.Urls[0], _vm).ConfigureAwait(false);
+                    var tasks = new[]
+                    {
+                        NavigationManager.LoadPicFromStringAsync(e.Urls[0], _vm),
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            _mainWindow.Activate();
+                        }).GetTask()
+                    };
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
                 else
                 {
