@@ -2,7 +2,7 @@
 <img src="https://d33wubrfki0l68.cloudfront.net/327934f4ff80060e07c17935683ecad27cda8080/ee2bc/assets/images/photoshop_1.png" alt="PicView Logo" height="90">
 </h1>
 
-PicView is a fast, free and fully customizable picture viewer for Windows 10 and 11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
+PicView is a fast, free and fully customizable picture viewer for macOS and Windows 10/11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
 
 Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 
@@ -15,14 +15,26 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
         <img alt="GPL v3 License" src="https://img.shields.io/badge/license-GPLv3-green.svg?maxAge=3600&style=flat-square">
     </a>
     <img alt="Windows OS" src="https://img.shields.io/badge/OS-Windows%2010/11%2064%20bit-00adef.svg?maxAge=3600&style=flat-square">
+    <img alt="macOS" src="https://img.shields.io/badge/OS-macOS-8A2BE2.svg?maxAge=3600&style=flat-square">
 </p>
+
+___
+
+PicView is portable by default. Settings and keybindings are stored in its directory (unless it lacks write permissions), meaning no system files are modified and no installation is necessary. Perfect for storing on a portable USB drive.
+
+Using the installer will also set file associations for you.
+
+<br>
+
+If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
+
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/Setup-PicView-v3.2-win-arm64.exe)
 
-[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5-macos-beta/PicView-3.1.5-macOS-arm64.dmg)
-[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5-macos-beta/PicView-3.1.5-macOS-x64.dmg) _(beta)_
+[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/PicView-3.2-macOS-arm64.dmg)
+[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/PicView-3.2-macOS-x64.dmg)
 
 [Latest releases at PicView.org](https://picview.org/download)
 
@@ -44,16 +56,6 @@ Winget:
 ```cmd
 winget install picview
 ```
-
-___
-
-PicView is portable by default. Settings and keybindings are stored in its directory (unless it lacks write permissions), meaning no system files are modified and no installation is necessary. Perfect for storing on a portable USB drive. 
-
-Using the installer will also set file associations for you.
-
-<br>
-
-If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
 
 
 # Features and screenshots
@@ -219,6 +221,7 @@ Dutch by <a href="https://github.com/Lien5">Lien5</a> <br>
 Japanese by <a href="https://github.com/coolvitto">coolvitto</a> <br>
 Hebrew by <a href="https://github.com/Y-PLONI">Y-PLONI</a> <br>
 Hungarian by <a href="https://github.com/JohnFowler58">JohnFowler58</a> <br>
+Turkish by <a href="https://github.com/odest">Dest</a><br>
 English and Danish by <a href="https://github.com/Ruben2776">Ruben2776</a><br>
 
 **Looking for translators!**
