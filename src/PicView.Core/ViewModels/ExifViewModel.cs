@@ -196,10 +196,10 @@ public class ExifViewModel : IDisposable
                 Resolution.Value = $"{DpiX} x {DpiY} {TranslationManager.Translation.Dpi}";
             }
 
-            var gcd = ImageTitleFormatter.GCD(pixelWidth, pixelHeight);
+            var gcd = AspectRatioFormatter.GCD(pixelWidth, pixelHeight);
             if (gcd != 0) // Check for zero before division
             {
-                AspectRatio.Value = ImageTitleFormatter.GetFormattedAspectRatio(gcd, pixelWidth, pixelHeight);
+                AspectRatio.Value = AspectRatioFormatter.GetFormattedAspectRatio(gcd, pixelWidth, pixelHeight);
             }
             else
             {

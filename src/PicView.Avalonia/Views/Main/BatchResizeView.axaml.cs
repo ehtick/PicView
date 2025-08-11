@@ -354,7 +354,7 @@ public partial class BatchResizeView : UserControl
                 using var magick = new MagickImage();
                 magick.Ping(file);
                 
-                var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{file.Length.GetReadableFileSize()}";
+                var oldSize = $" ({magick.Width} x {magick.Height}{AspectRatioFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{file.Length.GetReadableFileSize()}";
 
                 if (toConvert)
                 {
@@ -408,7 +408,7 @@ public partial class BatchResizeView : UserControl
                     newMagick.Ping(destination);
                     var newFileInfo = new FileInfo(destination);
                     
-                    var newSize = $" ({newMagick.Width} x {newMagick.Height}{ImageTitleFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
+                    var newSize = $" ({newMagick.Width} x {newMagick.Height}{AspectRatioFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
 
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
@@ -513,7 +513,7 @@ public partial class BatchResizeView : UserControl
                     using var magick = new MagickImage();
                     magick.Ping(file);
                 
-                    var oldSize = $" ({magick.Width} x {magick.Height}{ImageTitleFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
+                    var oldSize = $" ({magick.Width} x {magick.Height}{AspectRatioFormatter.FormatAspectRatio((int)magick.Width, (int)magick.Height)}{fileInfo.Length.GetReadableFileSize()}";
 
                     await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo, true);
 
@@ -538,7 +538,7 @@ public partial class BatchResizeView : UserControl
                         newMagick.Ping(destination);
                         var newFileInfo = new FileInfo(destination);
                     
-                        var newSize = $" ({newMagick.Width} x {newMagick.Height}{ImageTitleFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
+                        var newSize = $" ({newMagick.Width} x {newMagick.Height}{AspectRatioFormatter.FormatAspectRatio((int)newMagick.Width, (int)newMagick.Height)}{newFileInfo.Length.GetReadableFileSize()}";
 
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {

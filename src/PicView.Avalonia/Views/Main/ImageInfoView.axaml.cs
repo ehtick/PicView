@@ -327,9 +327,9 @@ public partial class ImageInfoView : UserControl
         PrintSizeCmTextBox.Text = printSizes.PrintSizeCm;
         SizeMpTextBox.Text = printSizes.SizeMp;
 
-        var gcd = ImageTitleFormatter.GCD(width, height);
+        var gcd = AspectRatioFormatter.GCD(width, height);
         AspectRatioTextBox.Text =
-            ImageTitleFormatter.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue,
+            AspectRatioFormatter.GetFormattedAspectRatio(gcd, vm.PicViewer.PixelWidth.CurrentValue,
                 vm.PicViewer.PixelHeight.CurrentValue);
     }
 
