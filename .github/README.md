@@ -57,6 +57,11 @@ Winget:
 winget install picview
 ```
 
+Homebrew:
+```cmd
+brew install picview
+```
+
 
 # Features and screenshots
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
