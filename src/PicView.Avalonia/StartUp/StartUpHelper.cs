@@ -79,7 +79,6 @@ public static class StartUpHelper
         HandleWindowScalingMode(vm, window);
 
         HandleStartUpMenuOrImage(vm, window, arg);
-        window.Show();
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
