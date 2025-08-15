@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -105,7 +106,7 @@ public static class StartUpHelper
     private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
-        ResourceLimits.LimitMemory(new Percentage(90));
+        SetMemorySettings();
 
         Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
         if (settingsExists)
@@ -163,6 +164,12 @@ public static class StartUpHelper
         }
         
         Application.Current.Name = "PicView";
+    }
+
+    private static void SetMemorySettings()
+    {
+        ResourceLimits.LimitMemory(new Percentage(80));
+        GCSettings.LatencyMode = GCLatencyMode.LowLatency;
     }
 
     private static void HandleThemeUpdates(MainViewModel vm)
