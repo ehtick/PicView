@@ -19,7 +19,7 @@ public static class GetImageModel
     /// <param name="fileInfo">The file information of the image to process.</param>
     /// <param name="magickImage">An optional <see cref="MagickImage"/> instance. If null, a new instance will be created internally.</param>
     /// <returns>A task that represents the asynchronous operation. The task result contains the constructed <see cref="ImageModel"/>.</returns>
-    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo, MagickImage? magickImage)
+    public static async ValueTask<ImageModel> GetImageModelAsync(FileInfo fileInfo, MagickImage? magickImage)
     {
         if (fileInfo is null)
         {
@@ -163,7 +163,7 @@ public static class GetImageModel
 
     #region Image Processing Methods
 
-    private static async Task ProcessStandardBitmapAsync(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
+    private static async ValueTask ProcessStandardBitmapAsync(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetStandardBitmapAsync(fileInfo).ConfigureAwait(false);
         SetBitmapProperties(bitmap, imageModel, format);
@@ -179,19 +179,19 @@ public static class GetImageModel
         imageModel.DpiY = (ushort)magickImage.Density.Y;;
     }
 
-    private static async Task ProcessBase64Async(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
+    private static async ValueTask ProcessBase64Async(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetBase64ImageAsync(fileInfo).ConfigureAwait(false);
         SetBitmapProperties(bitmap, imageModel, format);
     }
     
-    private static async Task ProcessRawImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
+    private static async ValueTask ProcessRawImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
         var bitmap = await GetImage.GetRawBitmapAsync(fileInfo, magickImage).ConfigureAwait(false);
         SetBitmapProperties(bitmap, imageModel, magickImage.Format);
     }
 
-    private static async Task ProcessNonStandardImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
+    private static async ValueTask ProcessNonStandardImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
         var bitmap = await GetImage.GetNonStandardBitmapAsync(fileInfo, magickImage).ConfigureAwait(false);
         SetBitmapProperties(bitmap, imageModel, magickImage.Format);
