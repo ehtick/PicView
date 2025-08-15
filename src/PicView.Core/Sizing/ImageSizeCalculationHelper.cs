@@ -57,10 +57,10 @@ public static class ImageSizeCalculationHelper
 
         // Calculate the possible surrounding area and borders between the picture and window
         var borderSpaceHeight = CalculateBorderSpaceHeight(isFullscreen, uiTopSize, uiBottomSize, galleryHeight);
-        var borderSpaceWidth = isFullscreen ? 0 : screenSize.Margin;
+        var borderSpaceWidth = isFullscreen  ? 0 : screenSize.Margin;
 
-        var workArea = CalculateWorkArea(screenSize, isFullscreen, borderSpaceWidth, borderSpaceHeight, isMaximized);
-        var screenMargin = isFullscreen ? 0 : screenSize.Margin;
+        var workArea = CalculateWorkArea(screenSize, isFullscreen, borderSpaceWidth, borderSpaceHeight);
+        var screenMargin = isFullscreen || isMaximized ? 0 : screenSize.Margin;
 
         var (maxAvailableWidth, maxAvailableHeight, adjustedContainerWidth, adjustedContainerHeight) =
             CalculateMaxImageSize(scrollEnabled, stretchImage, autoFit,
@@ -97,16 +97,11 @@ public static class ImageSizeCalculationHelper
     }
 
     private static (double width, double height) CalculateWorkArea(ScreenSize screenSize, bool fullscreen,
-        double borderSpaceWidth, double borderSpaceHeight, bool maximized)
+        double borderSpaceWidth, double borderSpaceHeight)
     {
         if (fullscreen)
         {
             return (screenSize.Width, screenSize.Height);
-        }
-
-        if (maximized)
-        {
-            return (screenSize.WorkingAreaWidth, screenSize.WorkingAreaHeight);
         }
 
         return (screenSize.WorkingAreaWidth - borderSpaceWidth,
