@@ -8,12 +8,12 @@ namespace PicView.Avalonia.ImageHandling;
 
 public static class GetImage
 {
-    public static async Task<Bitmap?> GetStandardBitmapAsync(string file)
+    public static async ValueTask<Bitmap?> GetStandardBitmapAsync(string file)
     {
         return await GetStandardBitmapAsync(new FileInfo(file)).ConfigureAwait(false);
     }
     
-    public static async Task<Bitmap?> GetStandardBitmapAsync(FileInfo fileInfo)
+    public static async ValueTask<Bitmap?> GetStandardBitmapAsync(FileInfo fileInfo)
     {
         if (fileInfo is null)
         {
@@ -25,7 +25,7 @@ public static class GetImage
         return bitmap;
     }
     
-    public static async Task<Bitmap?> GetNonStandardBitmapAsync(FileInfo fileInfo, MagickImage? magickImage)
+    public static async ValueTask<Bitmap?> GetNonStandardBitmapAsync(FileInfo fileInfo, MagickImage? magickImage)
     {
         var shouldDisposeMagickImage = magickImage is null;
         if (shouldDisposeMagickImage)
@@ -52,7 +52,7 @@ public static class GetImage
         return bitmap;
     }
     
-    public static async Task<Bitmap?> GetRawBitmapAsync(FileInfo fileInfo, MagickImage? magickImage)
+    public static async ValueTask<Bitmap?> GetRawBitmapAsync(FileInfo fileInfo, MagickImage? magickImage)
     {
         var shouldDisposeMagickImage = magickImage is null;
         if (shouldDisposeMagickImage)
@@ -70,7 +70,7 @@ public static class GetImage
         return bitmap;
     }
     
-    public static async Task<Bitmap?> GetBase64ImageAsync(FileInfo fileInfo)
+    public static async ValueTask<Bitmap?> GetBase64ImageAsync(FileInfo fileInfo)
     {
         var base64String = await File.ReadAllTextAsync(fileInfo.FullName).ConfigureAwait(false);
         var base64Data = Convert.FromBase64String(base64String);
