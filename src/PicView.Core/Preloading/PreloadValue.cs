@@ -59,7 +59,8 @@ public class PreLoadValue
                 // If we're starting to load, create a new completion source
                 else if (value && !wasLoading)
                 {
-                    _loadingCompletionSource = new TaskCompletionSource<bool>();
+                    _loadingCompletionSource = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+
                 }
             }
         }

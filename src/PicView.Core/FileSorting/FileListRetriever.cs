@@ -30,13 +30,13 @@ public static class FileListRetriever
                 var recurseList = new DirectoryInfo(directoryPath)
                     .DescendantsAndSelf()
                     .OfType<FileInfo>()
-                    .Where(x => x.Extension.IsSupported());
+                    .Where(x => x.IsSupported());
                 return FileSortOrder.SortIEnumerable(recurseList, platformService);
             }
             var list = new DirectoryInfo(directoryPath)
                 .ChildrenAndSelf()
                 .OfType<FileInfo>()
-                .Where(x => x.Extension.IsSupported());
+                .Where(x => x.IsSupported());
             return FileSortOrder.SortIEnumerable(list, platformService);
         }
         catch (Exception exception)

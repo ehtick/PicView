@@ -41,7 +41,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     ///     A task representing the asynchronous operation. 
     ///     Returns <c>true</c> if the image was added and loaded successfully; otherwise, <c>false</c>.
     /// </returns>
-    public async Task<bool> AddAsync(int index, List<FileInfo> list)
+    public async Task<bool> AddAsync(int index, List<FileInfo> list, CancellationToken ct = default)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -49,16 +49,17 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
             return false;
         }
 
-        if (_preLoadList.TryGetValue(index, out var value))
+        if (_preLoadList.TryGetValue(index, out var existing))
         {
-            if (value.ImageModel?.Image is not null)
+            if (existing.ImageModel?.Image is not null)
             {
                 return false;
             }
         }
 
-        var imageModel = new ImageModel();
-        var preLoadValue = new PreLoadValue(imageModel, true); // Set isLoading to true
+        // Pre-insert a placeholder marked as loading to avoid duplicate concurrent loads for same index
+        var fileInfo = list[index];
+        var preLoadValue = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
 
         if (!_preLoadList.TryAdd(index, preLoadValue))
         {
@@ -67,8 +68,12 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
         try
         {
-            var fileInfo = imageModel.FileInfo = list[index];
-            imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
+            ct.ThrowIfCancellationRequested();
+
+            var imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
+            
+            ct.ThrowIfCancellationRequested();
+
             preLoadValue.ImageModel = imageModel;
 #if DEBUG
             if (_showAddRemove)
@@ -117,9 +122,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         }
 
         var preLoadValue = new PreLoadValue(imageModel);
-
-        _preLoadList.TryAdd(index, preLoadValue);
-        return _preLoadList.ContainsKey(index);
+        return _preLoadList.TryAdd(index, preLoadValue);
     }
 
     #endregion
@@ -273,14 +276,16 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// </returns>
     public PreLoadValue? Get(int key, List<FileInfo> list)
     {
-        if (list != null && key >= 0 && key < list.Count)
+        if (list != null && key >= 0 && key < list.Count
+            && _preLoadList.TryGetValue(key, out var value))
         {
-            return Contains(key, list) ? _preLoadList[key] : null;
+            return value;
         }
 
         DebugHelper.LogDebug(nameof(PreLoader), nameof(Get), "invalid parameters:" + key);
         return null;
     }
+
 
     /// <summary>
     ///     Gets the preloaded value for a specific file. Should only be used when resynchronizing.
@@ -367,6 +372,24 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
 
         return null;
     }
+    
+    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list, CancellationToken ct)
+    {
+        if (list == null || key < 0 || key >= list.Count)
+        {
+            DebugHelper.LogDebug(nameof(PreLoader), nameof(GetOrLoadAsync), "invalid parameters: " + key);
+            return null;
+        }
+
+        if (_preLoadList.TryGetValue(key, out var existing))
+        {
+            return existing;
+        }
+
+        var isAdded = await AddAsync(key, list, ct).ConfigureAwait(false);
+        return !isAdded ? null : _preLoadList.GetValueOrDefault(key);
+    }
+
 
     #endregion
 
@@ -616,7 +639,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         async Task AddAddition(int index)
         {
             token.ThrowIfCancellationRequested();
-            if (await AddAsync(index, list))
+            if (await AddAsync(index, list, token))
             {
                 additions.Add(index);
             }

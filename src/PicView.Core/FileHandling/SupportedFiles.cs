@@ -1,4 +1,6 @@
-﻿namespace PicView.Core.FileHandling;
+﻿using System.Collections.Frozen;
+
+namespace PicView.Core.FileHandling;
 
 /// <summary>
 /// Class that contains information about supported file extensions.
@@ -76,85 +78,64 @@ public static class SupportedFiles
         ".xpm"
     ];
 
-    public static List<string> ConvertFilesToGlobFormat()
-    {
-        return FileExtensions.Select(ext => $"*{ext}").ToList();
-    }
-
     /// <summary>
     /// List of supported archive file extensions.
     /// </summary>
     public static readonly string[] FileExtensionsArchives =
     [
-        ".zip",
-        ".7zip",
-        ".7z",
-        ".rar",
-        ".cbr",
-        ".cb7",
-        ".cbt",
-        ".cbz",
-        ".xz",
-        ".bzip2",
-        ".gzip",
-        ".tar",
-        ".wim",
-        ".iso",
-        ".cab"
+        ".zip", ".7zip", ".7z", ".rar", ".cbr", ".cb7", ".cbt", ".cbz",
+        ".xz", ".bzip2", ".gzip", ".tar", ".wim", ".iso", ".cab"
     ];
+    
+    private static readonly FrozenSet<string> SupportedExtensionsSet =
+        FileExtensions.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
-    public static bool IsCommon(this string file)
-    {
-        return Path.GetExtension(file).ToLower() switch
+    private static readonly FrozenSet<string> ArchiveExtensionsSet =
+        FileExtensionsArchives.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+
+
+    public static List<string> ConvertFilesToGlobFormat() =>
+        FileExtensions.Select(ext => $"*{ext}").ToList();
+
+    public static List<string> ConvertArchivesToGlobFormat() => 
+        FileExtensionsArchives.Select(ext => $"*{ext}").ToList();
+
+    public static bool IsCommon(this string file) 
+        => Path.GetExtension(file).ToLower() switch
         {
             ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".jfif" => true,
             _ => false
         };
-    }
-
-    public static List<string> ConvertArchivesToGlobFormat()
-    {
-        return FileExtensionsArchives.Select(ext => $"*{ext}").ToList();
-    }
 
     /// <summary>
     /// Extension method to check if a file is supported.
     /// </summary>
     /// <param name="file">File to check</param>
     /// <returns>True if file is supported, False otherwise</returns>
-    public static bool IsSupported(this string file)
-    {
-        return FileExtensions.Any(ext => file.EndsWith(ext, StringComparison.OrdinalIgnoreCase));
-    }
+    public static bool IsSupported(this string file) =>
+        SupportedExtensionsSet.Contains(Path.GetExtension(file));
 
     /// <summary>
     /// Extension method to check if a `FileInfo` is supported.
     /// </summary>
     /// <param name="fileInfo">FileInfo to check</param>
     /// <returns>True if `FileInfo` is supported, False otherwise</returns>
-    public static bool IsSupported(this FileInfo fileInfo)
-    {
-        return FileExtensions.Any(ext => fileInfo.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase));
-    }
+    public static bool IsSupported(this FileInfo fileInfo) =>
+        SupportedExtensionsSet.Contains(fileInfo.Extension);
 
     /// <summary>
     /// Extension method to check if a file is a supported archive.
     /// </summary>
     /// <param name="file">File to check</param>
     /// <returns>True if file is a supported archive, False otherwise</returns>
-    public static bool IsArchive(this string file)
-    {
-        return FileExtensionsArchives.Any(ext => file.EndsWith(ext, StringComparison.OrdinalIgnoreCase));
-    }
+    public static bool IsArchive(this string file) =>
+        ArchiveExtensionsSet.Contains(Path.GetExtension(file));
 
     /// <summary>
-    /// Extension method to check if a FileInfo is a supported archive.
+    /// Extension method to check if a `FileInfo` is a supported archive.
     /// </summary>
     /// <param name="fileInfo">FileInfo to check</param>
-    /// <returns>True if file is a supported archive, False otherwise</returns>
-    public static bool IsArchive(this FileInfo fileInfo)
-    {
-        return FileExtensionsArchives.Any(ext =>
-            fileInfo.Extension.Equals(ext, StringComparison.OrdinalIgnoreCase));
-    }
+    /// <returns>True if `FileInfo` is a supported archive, False otherwise</returns>
+    public static bool IsArchive(this FileInfo fileInfo) =>
+        ArchiveExtensionsSet.Contains(fileInfo.Extension);
 }
