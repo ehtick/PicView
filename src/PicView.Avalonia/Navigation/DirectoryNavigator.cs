@@ -14,8 +14,8 @@ public static class DirectoryNavigator
     /// <param name="loadWithoutImageIterator">The action to load an image without the iterator.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task NavigateBetweenDirectories(bool next, ImageIterator iterator,
-        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    public static async ValueTask NavigateBetweenDirectories(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, ValueTask> loadWithoutImageIterator, MainViewModel vm)
     {
         if (!NavigationManager.CanNavigate(vm))
         {
@@ -39,8 +39,8 @@ public static class DirectoryNavigator
     /// <summary>
     /// Navigates to the next or previous directory using the file system structure.
     /// </summary>
-    private static async Task NavigateToNextDirectory(bool next, ImageIterator iterator,
-        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    private static async ValueTask NavigateToNextDirectory(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, ValueTask> loadWithoutImageIterator, MainViewModel vm)
     {
         var fileList = await GetNextFolderFileList(next, iterator, vm).ConfigureAwait(false);
 
@@ -62,8 +62,8 @@ public static class DirectoryNavigator
     /// <summary>
     /// Navigates to the next or previous directory from the list of directories of all loaded images.
     /// </summary>
-    private static async Task NavigateDirectoryWithinSubdirectories(bool next, ImageIterator iterator,
-        Func<FileInfo, MainViewModel, List<FileInfo>?, int, Task> loadWithoutImageIterator, MainViewModel vm)
+    private static async ValueTask NavigateDirectoryWithinSubdirectories(bool next, ImageIterator iterator,
+        Func<FileInfo, MainViewModel, List<FileInfo>?, int, ValueTask> loadWithoutImageIterator, MainViewModel vm)
     {
         var imagePaths = iterator?.ImagePaths;
         if (imagePaths is null || imagePaths.Count == 0)
@@ -108,7 +108,7 @@ public static class DirectoryNavigator
     /// <param name="iterator">The image iterator.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation that returns a list of file paths.</returns>
-    private static async Task<List<FileInfo>?> GetNextFolderFileList(bool next, ImageIterator iterator,
+    private static async ValueTask<List<FileInfo>?> GetNextFolderFileList(bool next, ImageIterator iterator,
         MainViewModel vm)
     {
         return await Task.Run(() =>

@@ -19,7 +19,7 @@ public static class GalleryLoad
     private static CancellationTokenSource? _cancellationTokenSource;
     public static bool IsLoading { get; private set; }
 
-    public static async Task LoadGallery(MainViewModel vm, string currentDirectory)
+    public static async ValueTask LoadGallery(MainViewModel vm, string currentDirectory)
     {
         // TODO: When list larger than 500, lazy load this when scrolling instead.
         // Figure out how to support virtualization.
@@ -61,7 +61,7 @@ public static class GalleryLoad
         }
     }
 
-    private static async Task<(bool shouldProceed, GalleryListBox? galleryListBox)> CanLoadGalleryAsync(
+    private static async ValueTask<(bool shouldProceed, GalleryListBox? galleryListBox)> CanLoadGalleryAsync(
         MainViewModel vm, string currentDirectory)
     {
         if (IsLoading || !NavigationManager.CanNavigate(vm) || string.IsNullOrEmpty(currentDirectory) ||
@@ -82,7 +82,7 @@ public static class GalleryLoad
         );
     }
 
-    private static async Task PrepareGalleryUiAsync(MainViewModel vm)
+    private static async ValueTask PrepareGalleryUiAsync(MainViewModel vm)
     {
         await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetGalleryView.IsVisible = true);
 
@@ -94,7 +94,7 @@ public static class GalleryLoad
         GalleryStretchMode.DetermineStretchMode(vm);
     }
 
-    private static async Task<FileInfo[]> CreateAndAddGalleryItemsAsync(MainViewModel vm, ListBox galleryListBox,
+    private static async ValueTask<FileInfo[]> CreateAndAddGalleryItemsAsync(MainViewModel vm, ListBox galleryListBox,
         CancellationToken token)
     {
         var fileCount = NavigationManager.GetCount;
@@ -153,7 +153,7 @@ public static class GalleryLoad
         return galleryItem;
     }
 
-    private static async Task LoadAllThumbnailsAsync(MainViewModel vm, GalleryListBox galleryListBox,
+    private static async ValueTask LoadAllThumbnailsAsync(MainViewModel vm, GalleryListBox galleryListBox,
         IReadOnlyList<FileInfo> fileInfos, CancellationToken token)
     {
         var currentIndex = await Dispatcher.UIThread.InvokeAsync(() =>
@@ -252,7 +252,7 @@ public static class GalleryLoad
         _currentDirectory = null;
     }
 
-    public static async Task ReloadGalleryAsync(MainViewModel vm, string currentDirectory)
+    public static async ValueTask ReloadGalleryAsync(MainViewModel vm, string currentDirectory)
     {
         if (_cancellationTokenSource is not null)
         {
@@ -287,7 +287,7 @@ public static class GalleryLoad
     /// <param name="fileInfo">The file info to check.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task CheckAndReloadGallery(FileInfo fileInfo, MainViewModel vm)
+    public static async ValueTask CheckAndReloadGallery(FileInfo fileInfo, MainViewModel vm)
     {
         if (Settings.Gallery.IsBottomGalleryShown || GalleryFunctions.IsFullGalleryOpen)
         {
@@ -308,7 +308,7 @@ public static class GalleryLoad
         }
     }
 
-    public static async Task CancelGalleryLoadAsync()
+    public static async ValueTask CancelGalleryLoadAsync()
     {
         if (_cancellationTokenSource is not null)
         {

@@ -30,7 +30,7 @@ public static class QuickLoad
     /// <param name="file">The file, URL, or directory path to be loaded.</param>
     /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async Task QuickLoadAsync(MainViewModel vm, string file, Window window, bool continueFromLeftOff)
+    public static async ValueTask QuickLoadAsync(MainViewModel vm, string file, Window window, bool continueFromLeftOff)
     {
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
@@ -79,7 +79,7 @@ public static class QuickLoad
     /// <param name="magickImage">The MagickImage instance for efficient processing without consecutive pings.</param>
     /// <param name="window">The main window used for UI updates and optimizations.</param>
     /// <param name="continueFromLeftOff">Indicates whether to continue loading from the last session's directory structure.</param>
-    private static async Task SingeImageLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage,
+    private static async ValueTask SingeImageLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage,
         Window window, bool continueFromLeftOff)
     {
         var cancellationTokenSource = new CancellationTokenSource();
@@ -153,7 +153,7 @@ public static class QuickLoad
     /// <param name="magickImage">The MagickImage to not consecutively ping it.</param>
     /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">Continue from last session's directory structure</param>
-    private static async Task SideBySideLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage, Window window, bool continueFromLeftOff)
+    private static async ValueTask SideBySideLoadingAsync(MainViewModel vm, FileInfo fileInfo, MagickImage magickImage, Window window, bool continueFromLeftOff)
     {
         Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
         NavigationManager.InitializeImageIterator(vm, continueFromLeftOff);
@@ -209,10 +209,14 @@ public static class QuickLoad
         FileInfo fileInfo)
     {
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+        
+        // Add recent files, except when browsing archive
+        if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
+        {
+            FileHistoryManager.Add(fileInfo.FullName);
+        }
 
         NavigationManager.AddToPreloader(NavigationManager.GetCurrentIndex, imageModel);
-
-        var tasks = new List<Task>();
 
         if (NavigationManager.GetCount > 1)
         {
@@ -225,7 +229,7 @@ public static class QuickLoad
                 });
             }
 
-            tasks.Add(NavigationManager.PreloadAsync());
+            await NavigationManager.PreloadAsync();
         }
 
         if (Settings.Gallery.IsBottomGalleryShown)
@@ -243,16 +247,9 @@ public static class QuickLoad
             if (loadGallery)
             {
                 vm.Gallery.GalleryMode.Value = GalleryMode.BottomNoAnimation;
-                tasks.Add(GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName));
+                
+                await GalleryLoad.LoadGallery(vm, fileInfo.DirectoryName);
             }
         }
-        
-        // Add recent files, except when browsing archive
-        if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath))
-        {
-            FileHistoryManager.Add(fileInfo.FullName);
-        }
-
-        await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 }

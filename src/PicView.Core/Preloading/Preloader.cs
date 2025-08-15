@@ -12,7 +12,7 @@ namespace PicView.Core.Preloading;
 /// and caching them for efficient retrieval. It provides methods to add, remove, refresh,
 /// and resynchronize preloaded images, manage cache size, and handle asynchronous disposal.
 /// </summary>
-public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsyncDisposable
+public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) : IAsyncDisposable
 {
 #if DEBUG
     // ReSharper disable once ConvertToConstant.Local
@@ -41,7 +41,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     ///     A task representing the asynchronous operation. 
     ///     Returns <c>true</c> if the image was added and loaded successfully; otherwise, <c>false</c>.
     /// </returns>
-    public async Task<bool> AddAsync(int index, List<FileInfo> list, CancellationToken ct = default)
+    public async ValueTask<bool> AddAsync(int index, List<FileInfo> list, CancellationToken ct = default)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -266,34 +266,33 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     public bool Contains(int key, List<FileInfo> list) =>
         list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
+
     /// <summary>
-    ///     Gets the preloaded value for a specific key (index).
+    /// Retrieves a preloaded image value associated with the specified key from the preload list.
+    /// If the key is invalid or the list is null, an error is logged, and <c>null</c> is returned.
     /// </summary>
-    /// <param name="key">The key (index) of the preloaded value.</param>
-    /// <param name="list">The list of image file paths.</param>
+    /// <param name="key">The unique key corresponding to the image in the preload list.</param>
+    /// <param name="list">The list of file information objects representing the preloaded images.</param>
     /// <returns>
-    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// The preloaded image value associated with the specified key, if it exists; otherwise, <c>null</c>.
     /// </returns>
     public PreLoadValue? Get(int key, List<FileInfo> list)
     {
-        if (list != null && key >= 0 && key < list.Count
-            && _preLoadList.TryGetValue(key, out var value))
+        if (list is null || key < 0 || key > list.Count)
         {
-            return value;
+            DebugHelper.LogDebug(nameof(PreLoader), nameof(Get), "invalid parameters:" + key);
         }
-
-        DebugHelper.LogDebug(nameof(PreLoader), nameof(Get), "invalid parameters:" + key);
-        return null;
+        return _preLoadList.GetValueOrDefault(key);
     }
 
 
     /// <summary>
-    ///     Gets the preloaded value for a specific file. Should only be used when resynchronizing.
+    /// Gets the preloaded value for a specific file. Should only be used when resynchronizing.
     /// </summary>
     /// <param name="file">The <see cref="FileInfo"/> of the image file to retrieve the preloaded value for.</param>
     /// <param name="list">The list of image file paths.</param>
     /// <returns>
-    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
     /// </returns>
     public PreLoadValue? Get(FileInfo file, List<FileInfo> list)
     {
@@ -317,9 +316,9 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="key">The index of the image in the list.</param>
     /// <param name="list">The list of image file paths.</param>
     /// <returns>
-    ///     The <see cref="PreLoadValue"/> if found or successfully loaded; otherwise, <c>null</c>.
+    /// The <see cref="PreLoadValue"/> if found or successfully loaded; otherwise, <c>null</c>.
     /// </returns>
-    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list)
+    public async ValueTask<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
@@ -349,7 +348,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <returns>
     ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
     /// </returns>
-    public async Task<PreLoadValue?> GetOrLoadAsync(FileInfo fileInfo, List<FileInfo> list)
+    public async ValueTask<PreLoadValue?> GetOrLoadAsync(FileInfo fileInfo, List<FileInfo> list)
     {
         if (list == null || fileInfo == null) return null;
 
@@ -373,7 +372,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
         return null;
     }
     
-    public async Task<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list, CancellationToken ct)
+    public async ValueTask<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list, CancellationToken ct)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
@@ -531,7 +530,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="currentIndex">The current index of the image.</param>
     /// <param name="reverse">Indicates whether to preload in reverse order.</param>
     /// <param name="list">The list of image paths.</param>
-    public async Task PreLoadAsync(int currentIndex, bool reverse, List<FileInfo> list)
+    public async ValueTask PreLoadAsync(int currentIndex, bool reverse, List<FileInfo> list)
     {
         if (list == null)
         {
@@ -589,7 +588,7 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
     /// <param name="reverse">Whether to preload in reverse order.</param>
     /// <param name="list">The list of image file paths.</param>
     /// <param name="token">A <see cref="CancellationToken"/> to observe while waiting for tasks to complete.</param>
-    private async Task PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
+    private async ValueTask  PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
         CancellationToken token)
     {
         var count = list.Count;

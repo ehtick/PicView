@@ -10,7 +10,7 @@ namespace PicView.Avalonia.ImageHandling;
 public static class GetImageModel
 {
     /// <inheritdoc cref="GetImageModelAsync(System.IO.FileInfo, MagickImage)"/>
-    public static async Task<ImageModel> GetImageModelAsync(FileInfo fileInfo) =>
+    public static async ValueTask<ImageModel> GetImageModelAsync(FileInfo fileInfo) =>
         await GetImageModelAsync(fileInfo, null).ConfigureAwait(false);
 
     /// <summary>

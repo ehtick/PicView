@@ -40,7 +40,7 @@ public static class NavigationManager
     /// directory.
     /// </param>
     /// <param name="index">Optional: The index at which to start the navigation. Defaults to 0.</param>
-    public static async Task LoadWithoutImageIterator(FileInfo fileInfo, MainViewModel vm, List<FileInfo>? files = null,
+    public static async ValueTask LoadWithoutImageIterator(FileInfo fileInfo, MainViewModel vm, List<FileInfo>? files = null,
         int index = 0)
     {
         _ = Task.Run(GalleryLoad.CancelGalleryLoadAsync);
@@ -147,7 +147,7 @@ public static class NavigationManager
     /// <param name="next">True to navigate to the next image, false for the previous image.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task Navigate(bool next, MainViewModel vm)
+    public static async ValueTask Navigate(bool next, MainViewModel vm)
     {
         if (!CanNavigate(vm))
         {
@@ -208,7 +208,7 @@ public static class NavigationManager
         }
     }
 
-    private static async Task TiffNavigation(MainViewModel vm, string currentFileName, int nextIteration)
+    private static async ValueTask TiffNavigation(MainViewModel vm, string currentFileName, int nextIteration)
     {
         if (TiffNavigationInfo is null && !ImageIterator.IsReversed)
         {
@@ -263,7 +263,7 @@ public static class NavigationManager
 
         return;
 
-        async Task ExitTiffNavigationAndNavigate()
+        async ValueTask ExitTiffNavigationAndNavigate()
         {
             await ImageLoader.CheckCancellationAndStartIterateToIndex(nextIteration, ImageIterator)
                 .ConfigureAwait(false);
@@ -272,7 +272,7 @@ public static class NavigationManager
         }
     }
 
-    public static async Task<bool> CheckIfTiffAndUpdate(MainViewModel vm, FileInfo fileInfo, int index)
+    public static async ValueTask<bool> CheckIfTiffAndUpdate(MainViewModel vm, FileInfo fileInfo, int index)
     {
         if (!TiffManager.IsTiff(fileInfo))
         {
@@ -295,7 +295,7 @@ public static class NavigationManager
         return true;
     }
 
-    public static async Task Navigate(int index, MainViewModel vm)
+    public static async ValueTask Navigate(int index, MainViewModel vm)
     {
         if (!CanNavigate(vm))
         {
@@ -305,7 +305,7 @@ public static class NavigationManager
         await ImageLoader.CheckCancellationAndStartIterateToIndex(index, ImageIterator).ConfigureAwait(false);
     }
 
-    public static async Task Navigate(FileInfo fileInfo, MainViewModel vm)
+    public static async ValueTask Navigate(FileInfo fileInfo, MainViewModel vm)
     {
         if (!CanNavigate(vm))
         {
@@ -321,10 +321,10 @@ public static class NavigationManager
         await ImageLoader.CheckCancellationAndStartIterateToIndex(index, ImageIterator).ConfigureAwait(false);
     }
     
-    public static async Task NavigateIncrements(bool next, bool is10, bool is100) =>
+    public static async ValueTask NavigateIncrements(bool next, bool is10, bool is100) =>
         await NavigateIncrements(UIHelper.GetMainView.DataContext as MainViewModel, next, is10, is100).ConfigureAwait(false);
 
-    public static async Task NavigateIncrements(MainViewModel vm, bool next, bool is10, bool is100)
+    public static async ValueTask NavigateIncrements(MainViewModel vm, bool next, bool is10, bool is100)
     {
         if (!CanNavigate(vm))
         {
@@ -338,7 +338,7 @@ public static class NavigationManager
         await ImageLoader.CheckCancellationAndStartIterateToIndex(index, ImageIterator).ConfigureAwait(false);
     }
 
-    public static async Task LoadLastFileAsync(MainViewModel vm)
+    public static async ValueTask LoadLastFileAsync(MainViewModel vm)
     {
         var lastFile = Settings.StartUp.LastFile;
         if (!string.IsNullOrEmpty(lastFile))
@@ -355,10 +355,10 @@ public static class NavigationManager
         }
     }
 
-    public static Task Next10(MainViewModel vm) => NavigateIncrements(vm, true, true, false);
-    public static Task Next100(MainViewModel vm) => NavigateIncrements(vm, true, false, true);
-    public static Task Prev10(MainViewModel vm) => NavigateIncrements(vm, false, true, false);
-    public static Task Prev100(MainViewModel vm) => NavigateIncrements(vm, false, false, true);
+    public static ValueTask Next10(MainViewModel vm) => NavigateIncrements(vm, true, true, false);
+    public static ValueTask Next100(MainViewModel vm) => NavigateIncrements(vm, true, false, true);
+    public static ValueTask Prev10(MainViewModel vm) => NavigateIncrements(vm, false, true, false);
+    public static ValueTask Prev100(MainViewModel vm) => NavigateIncrements(vm, false, false, true);
 
     /// <summary>
     ///     Navigates to the first or last image in the collection.
@@ -366,7 +366,7 @@ public static class NavigationManager
     /// <param name="last">True to navigate to the last image, false to navigate to the first image.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task NavigateFirstOrLast(bool last, MainViewModel vm)
+    public static async ValueTask NavigateFirstOrLast(bool last, MainViewModel vm)
     {
         if (!CanNavigate(vm))
         {
@@ -393,7 +393,7 @@ public static class NavigationManager
     }
     
     /// <inheritdoc cref="NavigateFirstOrLast(bool last, MainViewModel vm)"/>
-    public static async Task NavigateFirstOrLast(bool last) =>
+    public static async ValueTask NavigateFirstOrLast(bool last) =>
         await NavigateFirstOrLast(last, UIHelper.GetMainView.DataContext as MainViewModel);
 
     /// <summary>
@@ -402,7 +402,7 @@ public static class NavigationManager
     /// <param name="next">True to iterate to the next image, false for the previous image.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task Iterate(bool next, MainViewModel vm)
+    public static async ValueTask Iterate(bool next, MainViewModel vm)
     {
         if (GalleryFunctions.IsFullGalleryOpen)
         {
@@ -413,24 +413,7 @@ public static class NavigationManager
             await Navigate(next, vm);
         }
     }
-    public static async Task Iterate(bool next) => await Iterate(next, UIHelper.GetMainView.DataContext as MainViewModel).ConfigureAwait(false);
-    
-    public static async Task NavigateOrScrollGallery(bool next, MainViewModel vm)
-    {
-        if (!CanNavigate(vm))
-        {
-            return;
-        }
-
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            await GalleryNavigation.ScrollGallery(next);
-        }
-        else
-        {
-            await Navigate(next, vm);
-        }
-    }
+    public static async ValueTask Iterate(bool next) => await Iterate(next, UIHelper.GetMainView.DataContext as MainViewModel).ConfigureAwait(false);
 
     /// <summary>
     ///     Navigates to the next or previous folder and loads the first image in that folder.
@@ -439,7 +422,7 @@ public static class NavigationManager
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
 
-    public static async Task NavigateBetweenDirectories(bool next, MainViewModel vm)
+    public static async ValueTask NavigateBetweenDirectories(bool next, MainViewModel vm)
         => await DirectoryNavigator.NavigateBetweenDirectories(next, ImageIterator, LoadWithoutImageIterator, vm);
     
     /// <inheritdoc cref="NavigateBetweenDirectories(bool next, MainViewModel vm)"/>
@@ -483,7 +466,7 @@ public static class NavigationManager
         ImageIterator ??= new ImageIterator(vm.PicViewer.FileInfo.CurrentValue, vm,  setInitial);
     }
 
-    public static async Task DisposeImageIteratorAsync()
+    public static async ValueTask DisposeImageIteratorAsync()
     {
         if (ImageIterator is null)
         {
@@ -552,26 +535,26 @@ public static class NavigationManager
     public static PreLoadValue? TryGetPreLoadValue(FileInfo fileInfo) =>
         ImageIterator?.GetPreLoadValue(fileInfo) ?? null;
 
-    public static async Task<PreLoadValue?> GetPreLoadValueAsync(int index) =>
-        await ImageIterator?.GetOrLoadPreLoadValueAsync(index) ?? null;
+    public static async ValueTask<PreLoadValue?> GetPreLoadValueAsync(int index) =>
+        await ImageIterator.GetOrLoadPreLoadValueAsync(index) ?? null;
 
-    public static async Task<PreLoadValue?> GetPreLoadValueAsync(FileInfo fileInfo) =>
-        await ImageIterator?.GetOrLoadPreLoadValueAsync(fileInfo) ?? null;
+    public static async ValueTask<PreLoadValue?> GetPreLoadValueAsync(FileInfo fileInfo) =>
+        await ImageIterator.GetOrLoadPreLoadValueAsync(fileInfo) ?? null;
 
     public static PreLoadValue? GetCurrentPreLoadValue() =>
         ImageIterator?.GetCurrentPreLoadValue() ?? null;
 
-    public static async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
+    public static async ValueTask<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
         await ImageIterator?.GetCurrentPreLoadValueAsync() ?? null;
 
     public static PreLoadValue? GetNextPreLoadValue() =>
         ImageIterator?.GetNextPreLoadValue() ?? null;
 
-    public static async Task<PreLoadValue?> GetNextPreLoadValueAsync() =>
+    public static async ValueTask<PreLoadValue?> GetNextPreLoadValueAsync() =>
         await ImageIterator?.GetNextPreLoadValueAsync() ?? null;
 
-    public static async Task ReloadFileListAsync() =>
-        await ImageIterator?.ReloadFileListAsync();
+    public static async ValueTask ReloadFileListAsync() =>
+        await ImageIterator.ReloadFileListAsync();
 
     public static void AddToPreloader(int index, ImageModel imageModel) =>
         ImageIterator?.Add(index, imageModel);
@@ -579,11 +562,11 @@ public static class NavigationManager
     public static bool AddToPreloader(FileInfo file, ImageModel imageModel) =>
         ImageIterator?.Add(file, imageModel) ?? false;
 
-    public static async Task PreloadAsync() =>
-        await ImageIterator?.PreloadAsync();
+    public static async ValueTask PreloadAsync() =>
+        await ImageIterator.PreloadAsync();
 
-    public static async Task QuickReload() =>
-        await ImageIterator?.QuickReload();
+    public static async ValueTask QuickReload() =>
+        await ImageIterator.QuickReload();
 
     #endregion
 }

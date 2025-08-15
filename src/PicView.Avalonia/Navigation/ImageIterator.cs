@@ -195,7 +195,7 @@ public class ImageIterator : IAsyncDisposable
         };
     }
 
-    private async Task OnFileAdded(FileSystemEventArgs e)
+    private async ValueTask OnFileAdded(FileSystemEventArgs e)
     {
         try
         {
@@ -212,10 +212,10 @@ public class ImageIterator : IAsyncDisposable
         }
     }
 
-    public async Task AddFile(string fileName)
+    public async ValueTask AddFile(string fileName)
     {
         var fileInfo = new FileInfo(fileName);
-        if (fileInfo.Exists == false)
+        if (!fileInfo.Exists)
         {
             return;
         }
@@ -262,11 +262,10 @@ public class ImageIterator : IAsyncDisposable
         PreLoader.Resynchronize(ImagePaths);
     }
 
-    private async Task OnFileDeleted(FileSystemEventArgs e)
+    private async ValueTask OnFileDeleted(FileSystemEventArgs e)
     {
         try
         {
-
             _isRunning = true;
 
             var index = ImagePaths.FindIndex(x => x.FullName.Equals(e.FullPath));
@@ -338,11 +337,11 @@ public class ImageIterator : IAsyncDisposable
         }
     }
 
-    private async Task OnFileRenamed(RenamedEventArgs e)
+    private async ValueTask OnFileRenamed(RenamedEventArgs e)
     {
         try
         {
-            if (e.FullPath.IsSupported() == false)
+            if (!e.FullPath.IsSupported())
             {
                 return;
             }
@@ -368,7 +367,7 @@ public class ImageIterator : IAsyncDisposable
                 return;
             }
 
-            if (newFileInfo.Exists == false)
+            if (!newFileInfo.Exists)
             {
                 return;
             }
@@ -403,10 +402,7 @@ public class ImageIterator : IAsyncDisposable
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Console.WriteLine(
-                $"{nameof(ImageIterator)}.{nameof(OnFileRenamed)} {exception.Message} \n{exception.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(OnFileRenamed), exception);
         }
         finally
         {
@@ -418,14 +414,11 @@ public class ImageIterator : IAsyncDisposable
 
     #region Preloader
 
-    public async Task ClearAsync() =>
+    public async ValueTask ClearAsync() =>
         await PreLoader.ClearAsync().ConfigureAwait(false);
 
-    public async Task PreloadAsync() =>
+    public async ValueTask PreloadAsync() =>
         await PreLoader.PreLoadAsync(CurrentIndex, IsReversed, ImagePaths).ConfigureAwait(false);
-
-    public async Task AddAsync(int index) =>
-        await PreLoader.AddAsync(index, ImagePaths).ConfigureAwait(false);
 
     public void Add(int index, ImageModel imageModel) =>
         PreLoader.Add(index, ImagePaths, imageModel);
@@ -449,10 +442,10 @@ public class ImageIterator : IAsyncDisposable
         PreLoader.Get(file, ImagePaths);
 
 
-    public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(int index) =>
+    public async ValueTask<PreLoadValue?> GetOrLoadPreLoadValueAsync(int index) =>
         await PreLoader.GetOrLoadAsync(index, ImagePaths);
     
-    public async Task<PreLoadValue?> GetOrLoadPreLoadValueAsync(FileInfo file) =>
+    public async ValueTask<PreLoadValue?> GetOrLoadPreLoadValueAsync(FileInfo file) =>
         await PreLoader.GetOrLoadAsync(file, ImagePaths);
 
     public PreLoadValue? GetCurrentPreLoadValue() =>
@@ -490,7 +483,7 @@ public class ImageIterator : IAsyncDisposable
 
     #region Navigation
 
-    public async Task ReloadFileListAsync()
+    public async ValueTask ReloadFileListAsync()
     {
         try
         {
@@ -533,7 +526,7 @@ public class ImageIterator : IAsyncDisposable
         }
     }
 
-    public async Task QuickReload()
+    public async ValueTask QuickReload()
     {
         RemoveCurrentItemFromPreLoader();
         var newFileInfo = new FileInfo(_vm.PicViewer.FileInfo.CurrentValue.FullName);
@@ -609,7 +602,7 @@ public class ImageIterator : IAsyncDisposable
         return next;
     }
 
-    public async Task NextIteration(NavigateTo navigateTo, CancellationTokenSource? cts)
+    public async ValueTask NextIteration(NavigateTo navigateTo, CancellationTokenSource? cts)
     {
         var index = GetIteration(CurrentIndex, navigateTo,
             Settings.ImageScaling.ShowImageSideBySide);
@@ -621,7 +614,7 @@ public class ImageIterator : IAsyncDisposable
         await NextIteration(index, cts).ConfigureAwait(false);
     }
 
-    public async Task NextIteration(int iteration, CancellationTokenSource? cts)
+    public async ValueTask NextIteration(int iteration, CancellationTokenSource? cts)
     {
         // Handle side-by-side navigation
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -661,7 +654,7 @@ public class ImageIterator : IAsyncDisposable
     /// </summary>
     /// <param name="index">The index to iterate to.</param>
     /// <param name="cts">The cancellation token source.</param>
-    public async Task IterateToIndex(int index, CancellationTokenSource? cts)
+    public async ValueTask IterateToIndex(int index, CancellationTokenSource? cts)
     {
         if (index < 0 || index >= ImagePaths.Count)
         {
@@ -854,7 +847,7 @@ public class ImageIterator : IAsyncDisposable
     private static Timer? _timer;
 
 
-    private async Task TimerIteration(int index, CancellationTokenSource? cts)
+    private async ValueTask TimerIteration(int index, CancellationTokenSource? cts)
     {
         if (_timer is null)
         {

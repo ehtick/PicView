@@ -2,6 +2,7 @@
 using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using SkiaSharp;
 
 namespace PicView.Avalonia.ImageHandling;
 
