@@ -2,22 +2,22 @@
 using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
-using SkiaSharp;
+using PicView.Core.ImageReading;
 
 namespace PicView.Avalonia.ImageHandling;
 
 public static class GetImage
 {
-    public static async ValueTask<Bitmap?> GetStandardBitmapAsync(string file)
+    public static async ValueTask<Bitmap?> GetSkBitmapAsync(string file)
     {
-        return await GetStandardBitmapAsync(new FileInfo(file)).ConfigureAwait(false);
+        return await GetSkBitmapAsync(new FileInfo(file)).ConfigureAwait(false);
     }
     
-    public static async ValueTask<Bitmap?> GetStandardBitmapAsync(FileInfo fileInfo)
+    public static async ValueTask<Bitmap?> GetSkBitmapAsync(FileInfo fileInfo)
     {
         if (fileInfo is null)
         {
-            DebugHelper.LogDebug(nameof(GetImage), nameof(GetStandardBitmapAsync), $"{nameof(fileInfo)} is null");
+            DebugHelper.LogDebug(nameof(GetImage), nameof(GetSkBitmapAsync), $"{nameof(fileInfo)} is null");
             return null;
         }
         await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
@@ -41,7 +41,7 @@ public static class GetImage
         }
         else
         {
-            await magickImage.ReadAsync(stream).ConfigureAwait(false); 
+            magickImage = await MagickPerformanceReader.ReadMagickImageWithSpanAsync(fileInfo, magickImage);
         }
 
         var bitmap = magickImage.ToWriteableBitmap();

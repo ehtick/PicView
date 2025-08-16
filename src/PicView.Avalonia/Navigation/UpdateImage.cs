@@ -31,7 +31,7 @@ public static class UpdateImage
     /// <param name="preLoadValue">The preloaded value of the current image.</param>
     /// <param name="nextPreloadValue">Optional: The preloaded value of the next image, used for side-by-side display.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task UpdateSource(MainViewModel vm, int index, List<FileInfo> imagePaths,
+    public static async ValueTask UpdateSource(MainViewModel vm, int index, List<FileInfo> imagePaths,
         PreLoadValue? preLoadValue,
         PreLoadValue? nextPreloadValue = null)
     {
@@ -238,7 +238,7 @@ public static class UpdateImage
     /// <param name="imageType">The type of the image (e.g., Bitmap, Svg, etc.) being handled.</param>
     /// <param name="name">The name or file name of the image used for display purposes.</param>
     /// <param name="vm">The main view model instance to update with the image information.</param>
-    public static async Task SetSingleImageAsync(
+    public static async ValueTask SetSingleImageAsync(
         object source,
         ImageType imageType,
         string name,

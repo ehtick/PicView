@@ -51,7 +51,7 @@ public static class GetImageModel
             {
                 case MagickFormat.WebP: 
                 case MagickFormat.WebM:
-                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
+                    await ProcessSkBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedWebp;
@@ -59,7 +59,7 @@ public static class GetImageModel
                     break;
                 case MagickFormat.Gif:
                 case MagickFormat.Gif87:
-                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
+                    await ProcessSkBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedGif;
@@ -82,7 +82,7 @@ public static class GetImageModel
                 case MagickFormat.Ico:
                 case MagickFormat.Icon:
                 case MagickFormat.Wbmp:
-                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
+                    await ProcessSkBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     break;
 
                 case MagickFormat.Svg:
@@ -163,9 +163,9 @@ public static class GetImageModel
 
     #region Image Processing Methods
 
-    private static async ValueTask ProcessStandardBitmapAsync(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
+    private static async ValueTask ProcessSkBitmapAsync(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
     {
-        var bitmap = await GetImage.GetStandardBitmapAsync(fileInfo).ConfigureAwait(false);
+        var bitmap = await GetImage.GetSkBitmapAsync(fileInfo).ConfigureAwait(false);
         SetBitmapProperties(bitmap, imageModel, format);
     }
 
