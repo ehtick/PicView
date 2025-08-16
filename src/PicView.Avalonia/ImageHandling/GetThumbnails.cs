@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using PicView.Core.ImageReading;
 
 namespace PicView.Avalonia.ImageHandling;
 
@@ -14,13 +15,7 @@ public static class GetThumbnails
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                if (fileInfo is null || !fileInfo.Exists)
-                {
-                    return null;
-                }
-                await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
-                var thumb = Bitmap.DecodeToHeight(stream, (int)height);
-                return thumb;
+                return await GetSkBitmapThumbAsync(fileInfo, height);
             }
 
             using var magick = new MagickImage();
@@ -97,37 +92,32 @@ public static class GetThumbnails
             case MagickFormat.Icon:
             case MagickFormat.Wbmp:
             {
-                await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
-                var thumb = Bitmap.DecodeToHeight(stream, (int)height);
-                return thumb;
+                return await GetSkBitmapThumbAsync(fileInfo, height);
             }
-
+        
             case MagickFormat.Svg:
             case MagickFormat.Svgz:
                 return null;
             default:
             {
-                await using var fileStream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
-
-                if (fileInfo.Length >= 2147483648)
-                {
-                    await Task.Run(() =>
-                    {
-                        // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
-                        // ReSharper disable once MethodHasAsyncOverload
-                        magick.Read(fileStream);
-                    });
-                }
-                else
-                {
-                    await magick.ReadAsync(fileStream).ConfigureAwait(false);
-                }
-
+                magick = await MagickPerformanceReader.ReadMagickImageWithSpanAsync(fileInfo, magick);
+        
                 var geometry = new MagickGeometry(0, height);
                 magick.AutoOrient();
                 magick.Thumbnail(geometry);
                 return magick.ToWriteableBitmap();
             }
         }
+    }
+
+    private static async ValueTask<Bitmap?> GetSkBitmapThumbAsync(FileInfo fileInfo, uint height)
+    {
+        if (fileInfo is null || !fileInfo.Exists)
+        {
+            return null;
+        }
+        await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
+        var thumb = Bitmap.DecodeToHeight(stream, (int)height);
+        return thumb;
     }
 }

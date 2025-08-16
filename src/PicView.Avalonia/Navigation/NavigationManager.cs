@@ -426,7 +426,7 @@ public static class NavigationManager
         => await DirectoryNavigator.NavigateBetweenDirectories(next, ImageIterator, LoadWithoutImageIterator, vm);
     
     /// <inheritdoc cref="NavigateBetweenDirectories(bool next, MainViewModel vm)"/>
-    public static async Task NavigateBetweenDirectories(bool next) =>
+    public static async ValueTask NavigateBetweenDirectories(bool next) =>
         await NavigateBetweenDirectories(next, UIHelper.GetMainView.DataContext as MainViewModel);
     
     #endregion

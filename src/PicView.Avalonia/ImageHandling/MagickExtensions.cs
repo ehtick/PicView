@@ -17,12 +17,11 @@ public static class MagickExtensions
 
         using var framebuffer = bitmap.Lock();
         using var pixels = self.GetPixelsUnsafe();
-        const string mapping = "RGBA";
 
         var destination = framebuffer.Address;
         for (var y = 0; y < self.Height; y++)
         {
-            var bytes = pixels.ToByteArray(0, y, self.Width, 1, mapping);
+            var bytes = pixels.ToByteArray(0, y, self.Width, 1, PixelMapping.RGBA);
             if (bytes != null)
                 Marshal.Copy(bytes, 0, destination, bytes.Length);
 
