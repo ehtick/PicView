@@ -421,10 +421,10 @@ public class ImageIterator : IAsyncDisposable
         await PreLoader.PreLoadAsync(CurrentIndex, IsReversed, ImagePaths).ConfigureAwait(false);
 
     public void Add(int index, ImageModel imageModel) =>
-        PreLoader.Add(index, ImagePaths, imageModel);
+        PreLoader.Add(index, ImagePaths, imageModel, IsReversed);
 
     public bool Add(FileInfo file, ImageModel imageModel) =>
-        PreLoader.Add(ImagePaths.FindIndex(x => x.FullName.Equals(file.FullName)), ImagePaths, imageModel);
+        PreLoader.Add(ImagePaths.FindIndex(x => x.FullName.Equals(file.FullName)), ImagePaths, imageModel, IsReversed);
 
     public PreLoadValue? GetPreLoadValue(int index)
     {
@@ -765,7 +765,7 @@ public class ImageIterator : IAsyncDisposable
                     .ConfigureAwait(false));
             }
 
-            PreLoader.Add(index, ImagePaths, preloadValue?.ImageModel);
+            PreLoader.Add(index, ImagePaths, preloadValue?.ImageModel, IsReversed);
 
             // Add recent files
             if (!Settings.Navigation.IsFileHistoryEnabled)
