@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
@@ -9,6 +8,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
+using PicView.Core.Localization;
 using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
 namespace PicView.Avalonia.Gallery;
@@ -37,15 +37,7 @@ public static class GalleryLoad
         try
         {
             await PrepareGalleryUiAsync(vm);
-            var fileInfos = await CreateAndAddGalleryItemsAsync(vm, galleryListBox, token);
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            await LoadAllThumbnailsAsync(vm, galleryListBox, fileInfos, token);
-            GalleryStretchMode.DetermineStretchMode(vm);
-            GalleryNavigation.CenterScrollToSelectedItem(vm);
+            await CreateAndAddGalleryItemsAsync(vm, galleryListBox, token);
         }
         catch (OperationCanceledException)
         {
@@ -94,12 +86,14 @@ public static class GalleryLoad
         GalleryStretchMode.DetermineStretchMode(vm);
     }
 
-    private static async ValueTask<FileInfo[]> CreateAndAddGalleryItemsAsync(MainViewModel vm, ListBox galleryListBox,
+    private static async ValueTask CreateAndAddGalleryItemsAsync(MainViewModel vm, GalleryListBox galleryListBox,
         CancellationToken token)
     {
         var fileCount = NavigationManager.GetCount;
-        var fileInfos = new FileInfo[fileCount];
         var priority = GetDispatcherPriority(fileCount);
+
+        var galleryItemSize = (uint)Math.Max(vm.Gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue,
+            vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue);
 
         for (var i = 0; i < fileCount; i++)
         {
@@ -111,35 +105,43 @@ public static class GalleryLoad
                 token.ThrowIfCancellationRequested();
             }
 
-            fileInfos[i] = new FileInfo(NavigationManager.GetFileNameAt(i));
-            var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfos[i]);
-            var i1 = i;
+            var x = i;
 
+            GalleryItem? galleryItem = null;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var galleryItem = CreateGalleryItem(vm, fileInfos[i1], thumbData);
+                galleryItem = CreateGalleryItem(vm);
                 galleryListBox.Items.Add(galleryItem);
-                if (i1 == NavigationManager.GetCurrentIndex)
+                if (x == NavigationManager.GetCurrentIndex)
                 {
                     galleryListBox.SelectedItem = galleryItem;
                 }
             }, priority, token);
+            _ = Task.Run(() => LoadThumbnailAsync(vm, galleryItemSize, galleryItem, galleryListBox, x), token);
         }
-
-        return fileInfos;
     }
 
-    private static GalleryItem CreateGalleryItem(MainViewModel vm, FileInfo fileInfo,
-        GalleryThumbInfo.GalleryThumbHolder thumbData)
+    private static GalleryItem CreateGalleryItem(MainViewModel vm)
     {
         var galleryItem = new GalleryItem
         {
             DataContext = vm,
-            FileName = { Text = thumbData.FileName },
-            FileSize = { Text = thumbData.FileSize },
-            FileDate = { Text = thumbData.FileDate },
-            FileLocation = { Text = fileInfo.FullName }
+            FileName = { Text = TranslationManager.Translation.Loading },
+            FileSize = { Text = TranslationManager.Translation.Loading },
+            FileDate = { Text = TranslationManager.Translation.Loading },
+            FileLocation = { Text = TranslationManager.Translation.Loading }
         };
+        return galleryItem;
+    }
+
+    private static void UpdateGalleryItem(MainViewModel vm, FileInfo fileInfo,
+        GalleryThumbInfo.GalleryThumbHolder thumbData, GalleryItem galleryItem)
+    {
+        galleryItem.FileName.Text = thumbData.FileName;
+        galleryItem.FileName.Text = thumbData.FileName;
+        galleryItem.FileSize.Text = thumbData.FileSize;
+        galleryItem.FileDate.Text = thumbData.FileDate;
+        galleryItem.FileLocation.Text = thumbData.FileLocation;
 
         galleryItem.PointerPressed += async (_, _) =>
         {
@@ -150,91 +152,45 @@ public static class GalleryLoad
 
             await NavigationManager.Navigate(fileInfo, vm).ConfigureAwait(false);
         };
-        return galleryItem;
     }
 
-    private static async ValueTask LoadAllThumbnailsAsync(MainViewModel vm, GalleryListBox galleryListBox,
-        IReadOnlyList<FileInfo> fileInfos, CancellationToken token)
+    private static async ValueTask LoadThumbnailAsync(MainViewModel vm, uint galleryItemSize, GalleryItem galleryItem,
+        GalleryListBox galleryListBox, int x)
     {
-        var currentIndex = await Dispatcher.UIThread.InvokeAsync(() =>
+        var fileInfo = new FileInfo(NavigationManager.GetFileNameAt(x));
+
+        var isSvg = fileInfo.Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
+                    fileInfo.Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);
+        Bitmap? thumb;
+        if (isSvg)
         {
-            if (galleryListBox.Items.Count == 0 || galleryListBox.Items[0] is not GalleryItem galleryItem)
-            {
-                return NavigationManager.GetCurrentIndex;
-            }
-
-            var horizontalItems = (int)Math.Floor(galleryListBox.Bounds.Width / galleryItem.ImageBorder.MinWidth);
-            var index = NavigationManager.GetCurrentIndex - horizontalItems;
-            return index < 0 ? 0 : index;
-        });
-
-        var totalCount = NavigationManager.GetCount;
-        var galleryItemSize = (uint)Math.Max(vm.Gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue,
-            vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue);
-        var priority = GetDispatcherPriority(totalCount);
-
-        var highPriorityParallelism = Environment.ProcessorCount > 4 ? Environment.ProcessorCount - 2 : 2;
-        var highPriorityOptions = new ParallelOptions
-            { MaxDegreeOfParallelism = highPriorityParallelism, CancellationToken = token };
-        var lowPriorityOptions = new ParallelOptions { MaxDegreeOfParallelism = 2, CancellationToken = token };
-
-        var forwardLoadTask = LoadThumbnailsInRangeAsync(currentIndex, totalCount, fileInfos, galleryItemSize, priority,
-            galleryListBox, highPriorityOptions);
-        var backwardLoadTask = LoadThumbnailsInRangeAsync(0, currentIndex, fileInfos, galleryItemSize, priority,
-            galleryListBox, lowPriorityOptions);
-
-        await Task.WhenAll(forwardLoadTask, backwardLoadTask).ConfigureAwait(false);
-    }
-
-    private static async Task LoadThumbnailsInRangeAsync(long from, long to, IReadOnlyList<FileInfo> fileInfos,
-        uint galleryItemSize, DispatcherPriority priority, GalleryListBox galleryListBox, ParallelOptions options)
-    {
-        await Parallel.ForAsync(from, to, options, async (i, ct) =>
+            thumb = null;
+        }
+        else
         {
-            if (NavigationManager.GetInitialFileInfo?.DirectoryName != _currentDirectory &&
-                _cancellationTokenSource is not null)
-            {
-                await _cancellationTokenSource.CancelAsync();
-                ct.ThrowIfCancellationRequested();
-            }
+            thumb = await GetThumbnails.GetThumbAsync(fileInfo, galleryItemSize);
+        }
 
-            var fileInfo = fileInfos[(int)i];
-            var isSvg = fileInfo.Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
-                        fileInfo.Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);
-            Bitmap? thumb;
+        var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfo);
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            UpdateGalleryItem(vm, fileInfo, thumbData, galleryItem);
             if (isSvg)
             {
-                thumb = null;
+                galleryItem.GalleryImage.Source = new SvgImage { Source = SvgSource.Load(fileInfo.FullName) };
             }
             else
             {
-                
-                thumb = await GetThumbnails.GetThumbAsync(fileInfo, galleryItemSize);
+                galleryItem.GalleryImage.Source = thumb;
             }
+        }, DispatcherPriority.Render);
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (i < 0 || i >= galleryListBox.Items.Count ||
-                    galleryListBox.Items[(int)i] is not GalleryItem galleryItem)
-                {
-                    return;
-                }
-
-                if (isSvg)
-                {
-                    galleryItem.GalleryImage.Source = new SvgImage { Source = SvgSource.Load(fileInfo.FullName) };
-                }
-                else
-                {
-                    galleryItem.GalleryImage.Source = thumb;
-                }
-
-                if (i == NavigationManager.GetCurrentIndex)
-                {
-                    galleryListBox.ScrollToCenterOfItem(galleryItem);
-                }
-            }, priority, ct);
-        });
+        if (x == NavigationManager.GetCurrentIndex)
+        {
+            Dispatcher.UIThread.Post(() => { galleryListBox.ScrollToCenterOfItem(galleryItem); },
+                DispatcherPriority.SystemIdle);
+        }
     }
 
     private static DispatcherPriority GetDispatcherPriority(int count) => count switch
@@ -314,6 +270,7 @@ public static class GalleryLoad
         {
             await _cancellationTokenSource.CancelAsync();
         }
+
         CleanupAfterLoading();
     }
 }
