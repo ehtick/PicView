@@ -32,17 +32,7 @@ public static class GetImage
         {
             magickImage = new MagickImage();
         }
-        await using var stream = FileStreamUtils.GetOptimizedFileStream(fileInfo);
-        if (fileInfo.Length >= 2147483648)
-        {
-            // Fixes "The file is too long. This operation is currently limited to supporting files less than 2 gigabytes in size."
-            // ReSharper disable once MethodHasAsyncOverload
-            magickImage.Read(stream);
-        }
-        else
-        {
-            magickImage = await MagickPerformanceReader.ReadMagickImageWithSpanAsync(fileInfo, magickImage);
-        }
+        magickImage = await MagickPerformanceReader.ReadMagickImageWithSpanAsync(fileInfo, magickImage);
 
         var bitmap = magickImage.ToWriteableBitmap();
         if (shouldDisposeMagickImage)
