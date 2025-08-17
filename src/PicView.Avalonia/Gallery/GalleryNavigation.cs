@@ -3,7 +3,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
@@ -75,9 +75,7 @@ public static class GalleryNavigation
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine(e);
-#endif
+                DebugHelper.LogDebug(nameof(GalleryNavigation), nameof(CenterScrollToSelectedItem), e);
             }
         }
     }
