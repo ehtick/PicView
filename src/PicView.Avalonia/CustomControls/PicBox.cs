@@ -420,11 +420,6 @@ public class PicBox : Control, IDisposable
     /// <returns>The desired size of the control.</returns>
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (Source is null)
-        {
-            return new Size();
-        }
-
         if (Source is not IImage source)
         {
             return new Size();

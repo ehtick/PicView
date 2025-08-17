@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using ZLinq;
@@ -8,9 +7,9 @@ using static System.GC;
 namespace PicView.Core.Preloading;
 
 /// <summary>
-/// The <see cref="PreLoader"/> class is responsible for asynchronously preloading images
-/// and caching them for efficient retrieval. It provides methods to add, remove, refresh,
-/// and resynchronize preloaded images, manage cache size, and handle asynchronous disposal.
+/// Manages asynchronous preloading and caching of images for efficient retrieval.
+/// It uses a fixed-size cache with a directional eviction strategy: when the cache is full,
+/// it removes the item with the lowest index (when navigating forward) or the highest index (when navigating backward).
 /// </summary>
 public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) : IAsyncDisposable
 {
@@ -22,7 +21,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
 
     private readonly Lock _disposeLock = new();
 
-    private readonly ConcurrentDictionary<int, PreLoadValue> _preLoadList = new();
+    private readonly EvictingDictionary<PreLoadValue> _preLoadList = new(PreLoaderConfig.MaxCount);
 
     private CancellationTokenSource? _cancellationTokenSource;
 
@@ -31,17 +30,18 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     #region Add
 
     /// <summary>
-    ///     Adds an image to the preload list asynchronously.
-    ///     If the image already exists and is loaded, the operation is skipped.
-    ///     On success, the image is loaded and cached for future retrieval.
+    /// Asynchronously adds and loads an image to the preload cache. If the cache is full,
+    /// an existing item is evicted based on the navigation direction.
     /// </summary>
     /// <param name="index">The index of the image in the list.</param>
-    /// <param name="list">The list of image file paths.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <param name="isReverse">The direction of navigation, which controls eviction strategy.
+    /// <c>false</c> (forward) evicts the lowest-indexed item; <c>true</c> (backward) evicts the highest-indexed item.</param>
+    /// <param name="ct">A cancellation token to observe.</param>
     /// <returns>
-    ///     A task representing the asynchronous operation. 
-    ///     Returns <c>true</c> if the image was added and loaded successfully; otherwise, <c>false</c>.
+    /// A <see cref="ValueTask{TResult}"/> that returns <c>true</c> if the image was added and loaded successfully; otherwise, <c>false</c>.
     /// </returns>
-    public async ValueTask<bool> AddAsync(int index, List<FileInfo> list, CancellationToken ct = default)
+    public async ValueTask<bool> AddAsync(int index, List<FileInfo> list, bool isReverse = false, CancellationToken ct = default)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -49,25 +49,24 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             return false;
         }
 
-        if (_preLoadList.TryGetValue(index, out var existing))
+        // Don't re-add at same index
+        if (_preLoadList.ContainsKey(index))
         {
-            if (existing.ImageModel?.Image is not null)
-            {
-                return false;
-            }
+            return true;
         }
 
         // Pre-insert a placeholder marked as loading to avoid duplicate concurrent loads for same index
         var fileInfo = list[index];
         var preLoadValue = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
 
-        if (!_preLoadList.TryAdd(index, preLoadValue))
-        {
-            return false;
-        }
+        _preLoadList.TryAdd(index, preLoadValue, isReverse, out var evictedValue);
 
         try
         {
+            if (evictedValue?.ImageModel?.Image is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
             ct.ThrowIfCancellationRequested();
 
             var imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
@@ -85,7 +84,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         }
         catch (Exception ex)
         {
-            _preLoadList.TryRemove(index, out _); // Remove failed entry
+            _preLoadList.Remove(index); // Remove failed entry
             DebugHelper.LogDebug(nameof(PreLoader), nameof(AddAsync), ex);
             return false;
         }
@@ -96,16 +95,16 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     }
 
     /// <summary>
-    /// Adds a preloaded image model to the preload list at the specified index.
-    /// Does not perform loading, only inserts an existing model.
+    /// Adds a pre-loaded image model to the cache at the specified index. This method does not perform any loading.
     /// </summary>
     /// <param name="index">The index at which to add the image model.</param>
-    /// <param name="list">The list of image file paths corresponding to the preload list.</param>
-    /// <param name="imageModel">The image model to preload.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <param name="imageModel">The already-loaded image model to add to the cache.</param>
+    /// <param name="isReverse">The direction of navigation, which controls eviction strategy if the cache is full.</param>
     /// <returns>
-    ///     <c>true</c> if the image model was successfully added to the preload list; otherwise, <c>false</c>.
+    /// <c>true</c> if the image model was successfully added; otherwise, <c>false</c>.
     /// </returns>
-    public bool Add(int index, List<FileInfo> list, ImageModel imageModel)
+    public bool Add(int index, List<FileInfo> list, ImageModel imageModel, bool isReverse)
     {
         if (list == null || index < 0 || index >= list.Count)
         {
@@ -122,7 +121,15 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         }
 
         var preLoadValue = new PreLoadValue(imageModel);
-        return _preLoadList.TryAdd(index, preLoadValue);
+        if (!_preLoadList.TryAdd(index, preLoadValue, isReverse, out var evictedValue))
+        {
+            return false;
+        }
+        if (evictedValue?.ImageModel?.Image is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+        return true;
     }
 
     #endregion
@@ -130,43 +137,32 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     #region Refresh and resynchronize
 
     /// <summary>
-    /// Updates the <see cref="FileInfo"/> associated with a specific index in the preload list.
-    /// Useful if the file information has changed due to file operations.
+    /// Updates the <see cref="FileInfo"/> for a cached item at a specific index.
+    /// This is useful if file metadata has changed.
     /// </summary>
     /// <param name="index">The index of the item to update.</param>
     /// <param name="fileInfo">The new file information to assign.</param>
-    /// <param name="list">The list of file paths.</param>
+    /// <param name="list">The complete list of image file paths.</param>
     public void RefreshFileInfo(int index, FileInfo fileInfo, List<FileInfo> list)
     {
-        if (list == null)
-        {
-            DebugHelper.LogDebug(nameof(PreLoader), nameof(RefreshFileInfo), "list null, index: " + index);
-            return;
-        }
-
-        if (index < 0 || index >= list.Count)
-        {
-            DebugHelper.LogDebug(nameof(PreLoader), nameof(RefreshFileInfo), "invalid index: " + index);
-            return;
-        }
-
-        var isExisting = _preLoadList.TryGetValue(index, out var value);
-        if (!isExisting)
+        if (!Contains(index, list))
         {
             DebugHelper.LogDebug(nameof(PreLoader), nameof(RefreshFileInfo), "index not found: " + index);
             return;
         }
 
-        value.ImageModel.FileInfo = fileInfo;
+        _preLoadList[index].ImageModel.FileInfo = fileInfo;
     }
 
     /// <summary>
-    ///     Resynchronizes the preload list with the given list of image file paths.
-    ///     Moves or removes entries as needed to match the new ordering or contents.
+    /// Resynchronizes the cache with an updated list of files. This method adjusts, moves,
+    /// or removes cached entries to match the new file order and content.
     /// </summary>
     /// <remarks>
-    ///     Call this method after the file watcher detects changes, or the list is resorted.
+    /// This should be called after file operations (like sorting, adding, or deleting)
+    /// have modified the master list of files.
     /// </remarks>
+    /// <param name="list">The new, authoritative list of image files.</param>
     public void Resynchronize(List<FileInfo> list)
     {
         if (list == null)
@@ -175,7 +171,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             return;
         }
 
-        if (list.Count == 0 || _preLoadList.IsEmpty)
+        if (list.Count == 0 || _preLoadList.Count == 0)
         {
             return;
         }
@@ -228,13 +224,18 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             }
 
             // Attempt to move the entry to the new index
-            if (!_preLoadList.TryRemove(oldIndex, out var removedValue))
+            if (!_preLoadList.Remove(oldIndex, out var removedValue))
             {
                 continue;
             }
 
-            if (!_preLoadList.TryAdd(newIndex, removedValue))
+            if (_preLoadList.TryAdd(newIndex, removedValue, out var evictedValue))
             {
+                // An item was evicted during the move, so dispose of it
+                if (evictedValue?.ImageModel?.Image is IDisposable disposable)
+                {
+                    disposable.Dispose();
+                }
 #if DEBUG
                 if (_showAddRemove)
                 {
@@ -256,33 +257,30 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     #region Get and Contains
 
     /// <summary>
-    ///     Checks if a specific key exists in the preload list.
+    /// Checks if an item exists in the cache at the specified index.
     /// </summary>
-    /// <param name="key">The key (index) to check.</param>
-    /// <param name="list">The list of image file paths.</param>
+    /// <param name="key">The index to check.</param>
+    /// <param name="list">The complete list of image file paths to validate the index against.</param>
     /// <returns>
-    ///     <c>true</c> if the key exists in the preload list and is a valid index in <paramref name="list"/>; otherwise, <c>false</c>.
+    /// <c>true</c> if the index is valid and the item is in the cache; otherwise, <c>false</c>.
     /// </returns>
     public bool Contains(int key, List<FileInfo> list) =>
         list != null && key >= 0 && key < list.Count && _preLoadList.ContainsKey(key);
 
 
     /// <summary>
-    /// Retrieves a preloaded image value associated with the specified key from the preload list.
-    /// If the key is invalid or the list is null, an error is logged, and <c>null</c> is returned.
+    /// Retrieves a cached item by its index without triggering a load if it's missing.
     /// </summary>
-    /// <param name="key">The unique key corresponding to the image in the preload list.</param>
-    /// <param name="list">The list of file information objects representing the preloaded images.</param>
-    /// <returns>
-    /// The preloaded image value associated with the specified key, if it exists; otherwise, <c>null</c>.
-    /// </returns>
+    /// <param name="key">The index of the item to retrieve.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <returns>The <see cref="PreLoadValue"/> if found in the cache; otherwise, <c>null</c>.</returns>
     public PreLoadValue? Get(int key, List<FileInfo> list)
     {
         if (list is null || key < 0 || key > list.Count)
         {
             DebugHelper.LogDebug(nameof(PreLoader), nameof(Get), "invalid parameters:" + key);
         }
-        return _preLoadList.GetValueOrDefault(key);
+        return _preLoadList.TryGetValue(key, out var value) ? value : null;
     }
 
 
@@ -304,19 +302,20 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         var index = list.FindIndex(x => x.FullName == file.FullName);
         if (index > -1 && index < list.Count)
         {
-            return _preLoadList.GetValueOrDefault(index);
+            return _preLoadList.TryGetValue(index, out var value) ? value : null;
         }
         return null;
     }
 
 
     /// <summary>
-    /// Retrieves a preloaded image value for the specified index, or loads it asynchronously if not already loaded.
+    /// Retrieves a cached item by index, or asynchronously loads it if it is not in the cache.
+    /// Assumes forward navigation for eviction if a new item needs to be loaded.
     /// </summary>
-    /// <param name="key">The index of the image in the list.</param>
-    /// <param name="list">The list of image file paths.</param>
+    /// <param name="key">The index of the item to retrieve or load.</param>
+    /// <param name="list">The complete list of image file paths.</param>
     /// <returns>
-    /// The <see cref="PreLoadValue"/> if found or successfully loaded; otherwise, <c>null</c>.
+    /// A <see cref="ValueTask{TResult}"/> that returns the <see cref="PreLoadValue"/> if found or loaded; otherwise, <c>null</c>.
     /// </returns>
     public async ValueTask<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list)
     {
@@ -341,12 +340,12 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     }
 
     /// <summary>
-    ///     Gets the preloaded value for a specific file asynchronously. Should only be used when resynchronizing.
+    /// Retrieves a cached item by <see cref="FileInfo"/>, or asynchronously loads it if it is not in the cache.
     /// </summary>
-    /// <param name="fileInfo">The <see cref="FileInfo"/> of the image file to retrieve the preloaded value for.</param>
-    /// <param name="list">The list of image file paths.</param>
+    /// <param name="fileInfo">The file information of the item to retrieve or load.</param>
+    /// <param name="list">The complete list of image file paths.</param>
     /// <returns>
-    ///     The <see cref="PreLoadValue"/> if it exists; otherwise, <c>null</c>.
+    /// A <see cref="ValueTask{TResult}"/> that returns the <see cref="PreLoadValue"/> if found or loaded; otherwise, <c>null</c>.
     /// </returns>
     public async ValueTask<PreLoadValue?> GetOrLoadAsync(FileInfo fileInfo, List<FileInfo> list)
     {
@@ -372,7 +371,18 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         return null;
     }
     
-    public async ValueTask<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list, CancellationToken ct)
+    /// <summary>
+    /// Retrieves a cached item by index, or asynchronously loads it if it is not in the cache,
+    /// specifying the navigation direction for potential evictions.
+    /// </summary>
+    /// <param name="key">The index of the item to retrieve or load.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <param name="isReverse">The direction of navigation to determine eviction strategy.</param>
+    /// <param name="ct">A cancellation token to observe.</param>
+    /// <returns>
+    /// A <see cref="ValueTask{TResult}"/> that returns the <see cref="PreLoadValue"/> if found or loaded; otherwise, <c>null</c>.
+    /// </returns>
+    public async ValueTask<PreLoadValue?> GetOrLoadAsync(int key, List<FileInfo> list, bool isReverse, CancellationToken ct)
     {
         if (list == null || key < 0 || key >= list.Count)
         {
@@ -385,8 +395,8 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             return existing;
         }
 
-        var isAdded = await AddAsync(key, list, ct).ConfigureAwait(false);
-        return !isAdded ? null : _preLoadList.GetValueOrDefault(key);
+        var isAdded = await AddAsync(key, list, isReverse, ct).ConfigureAwait(false);
+        return !isAdded ? null : _preLoadList.TryGetValue(key, out var value) ? value : null;
     }
 
 
@@ -395,14 +405,11 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     #region Remove and clear
 
     /// <summary>
-    ///     Removes a specific key (index) from the preload list.
-    ///     Disposes the associated image if necessary.
+    /// Removes an item from the cache by its index and disposes its associated resources.
     /// </summary>
-    /// <param name="key">The key (index) to remove.</param>
-    /// <param name="list">The list of image file paths.</param>
-    /// <returns>
-    ///     <c>true</c> if the key was removed; otherwise, <c>false</c>.
-    /// </returns>
+    /// <param name="key">The index of the item to remove.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <returns><c>true</c> if the item was successfully removed; otherwise, <c>false</c>.</returns>
     public bool Remove(int key, List<FileInfo> list)
     {
         if (list == null || key < 0 || key >= list.Count)
@@ -421,7 +428,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         {
             if (_preLoadList.TryGetValue(key, out var item))
             {
-                var removed = _preLoadList.TryRemove(key, out _);
+                var removed = _preLoadList.Remove(key);
                 if (item.ImageModel.Image is IDisposable disposable)
                 {
                     disposable.Dispose();
@@ -449,13 +456,11 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
 
 
     /// <summary>
-    /// Removes an image from the preload list by file name.
+    /// Removes an item from the cache by its full file name and disposes its associated resources.
     /// </summary>
-    /// <param name="fileName">The full file name of the image to remove.</param>
-    /// <param name="list">The list of image file paths.</param>
-    /// <returns>
-    ///     <c>true</c> if the image was successfully removed; otherwise, <c>false</c>.
-    /// </returns>
+    /// <param name="fileName">The full path of the file to remove from the cache.</param>
+    /// <param name="list">The complete list of image file paths.</param>
+    /// <returns><c>true</c> if the item was found and removed; otherwise, <c>false</c>.</returns>
     public bool Remove(string fileName, List<FileInfo> list)
     {
         if (string.IsNullOrEmpty(fileName))
@@ -471,9 +476,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     }
 
     /// <summary>
-    /// Clears all preloaded images and associated resources.
-    /// Cancels any ongoing operations, disposes resources such as image bitmaps,
-    /// and clears the internal preload list. It logs a debug message when running in DEBUG mode.
+    /// Synchronously clears the entire cache, disposing all cached images and canceling any ongoing preload operations.
     /// </summary>
     public void Clear()
     {
@@ -499,8 +502,8 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     }
 
     /// <summary>
-    /// Clears all preloaded images asynchronously, canceling and disposing any active operations.
-    /// </summary>      
+    /// Asynchronously clears the entire cache, disposing all cached images and canceling any ongoing preload operations.
+    /// </summary>
     public async Task ClearAsync()
     {
         try
@@ -525,11 +528,12 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     #region Preload
     
     /// <summary>
-    ///     Preloads images asynchronously.
+    /// Initiates the asynchronous preloading process around a given index.
+    /// It intelligently loads images ahead of and behind the current position based on the navigation direction.
     /// </summary>
-    /// <param name="currentIndex">The current index of the image.</param>
-    /// <param name="reverse">Indicates whether to preload in reverse order.</param>
-    /// <param name="list">The list of image paths.</param>
+    /// <param name="currentIndex">The index of the currently viewed image, which serves as the center point for preloading.</param>
+    /// <param name="reverse">The direction of preloading. <c>false</c> prioritizes loading subsequent images; <c>true</c> prioritizes previous images.</param>
+    /// <param name="list">The complete list of image file paths.</param>
     public async ValueTask PreLoadAsync(int currentIndex, bool reverse, List<FileInfo> list)
     {
         if (list == null)
@@ -581,8 +585,6 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     
     /// <summary>
     /// Performs the internal logic for preloading images asynchronously.
-    /// Loads images ahead and/or behind the current index, manages the cache size,
-    /// and removes excess entries outside the configured range.
     /// </summary>
     /// <param name="currentIndex">The current index for preloading.</param>
     /// <param name="reverse">Whether to preload in reverse order.</param>
@@ -594,14 +596,11 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         var count = list.Count;
         var nextStartingIndex = (currentIndex + 1) % count;
         var prevStartingIndex = (currentIndex - 1 + count) % count;
-        var isPreloadListUnderMax = _preLoadList.Count < PreLoaderConfig.MaxCount;
         var options = new ParallelOptions
         {
             MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
             CancellationToken = token
         };
-
-        var additions = new List<int>();
 
         if (reverse)
         {
@@ -612,11 +611,6 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         {
             await LoopAsync(options, true);
             await LoopAsync(options, false);
-        }
-
-        if (!isPreloadListUnderMax)
-        {
-            RemoveLoop();
         }
 
         return;
@@ -638,30 +632,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         async Task AddAddition(int index)
         {
             token.ThrowIfCancellationRequested();
-            if (await AddAsync(index, list, token))
-            {
-                additions.Add(index);
-            }
-        }
-
-        void RemoveLoop()
-        {
-            if (_preLoadList.Count < PreLoaderConfig.MaxCount)
-            {
-                return;
-            }
-
-            // Remove keys that are too far from the current index
-            var keysToRemove = 
-                (from key in _preLoadList.Keys let distance = Math.Min(Math.Abs(key - currentIndex), list.Count - Math.Abs(key - currentIndex)) 
-                    where distance > PreLoaderConfig.PositiveIterations && distance > PreLoaderConfig.NegativeIterations
-                    where !additions.Contains(key) select key)
-                .AsValueEnumerable();
-
-            foreach (var key in keysToRemove)
-            {
-                Remove(key, list);
-            }
+            await AddAsync(index, list, reverse, token);
         }
     }
 
@@ -671,6 +642,9 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
 
     private bool _disposed;
 
+    /// <summary>
+    /// Disposes the preloader and its resources.
+    /// </summary>
     public void Dispose()
     {
         Dispose(true);
@@ -698,6 +672,10 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
 #endif
     }
 
+
+    /// <summary>
+    /// Asynchronously disposes the preloader, clearing the cache and canceling any ongoing operations.
+    /// </summary>
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
