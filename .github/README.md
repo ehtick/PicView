@@ -118,7 +118,9 @@ You can toggle the interface to show images `Side by side` and you can also turn
     Crop Image
 </h3>
 
-![Cropping3 0](https://github.com/user-attachments/assets/e70990d9-b607-4118-8be4-587a3f02c4d7)
+<h1 align="center">
+    <img src="https://picview.org/assets/screenshots/PicView-Crop/Cropping3.0.webp" />
+</h1>
 
 Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 
@@ -128,9 +130,9 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
     Image Info Window
 </h3>
 
-<h1 align="center">
+<h4 align="center">
     <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.webp" />
-</h1>
+</h4>
 
 Perform operations such as _renaming_, _file conversion_, _copying_, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
 
