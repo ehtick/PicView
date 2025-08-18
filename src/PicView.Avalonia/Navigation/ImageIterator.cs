@@ -782,12 +782,7 @@ public class ImageIterator : IAsyncDisposable
                 }
             }
         }
-        catch (OperationCanceledException)
-        {
-#if DEBUG
-            Trace.WriteLine($"\n{nameof(IterateToIndex)} canceled\n");
-#endif
-        }
+        catch (OperationCanceledException){}
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(ImageIterator), nameof(IterateToIndex), e);

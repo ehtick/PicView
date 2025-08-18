@@ -349,6 +349,11 @@ public class PicBox : Control, IDisposable
 
     private void RenderImage(DrawingContext context, IImage source, Rect viewPort, Size sourceSize)
     {
+        if (source is null)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(RenderImage), "source is null");
+            return;
+        }
         var scale = CalculateScaling(viewPort.Size, sourceSize);
         var scaledSize = sourceSize * scale;
         var destRect = viewPort.CenterRect(new Rect(scaledSize)).Intersect(viewPort);

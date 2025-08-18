@@ -58,16 +58,12 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         // Pre-insert a placeholder marked as loading to avoid duplicate concurrent loads for same index
         var fileInfo = list[index];
         var preLoadValue = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
-
+        ct.ThrowIfCancellationRequested();
         _preLoadList.TryAdd(index, preLoadValue, isReverse, out var evictedValue);
 
         try
         {
-            if (evictedValue?.ImageModel?.Image is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-            ct.ThrowIfCancellationRequested();
+            ImageDisposalHelper(evictedValue);
 
             var imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
             
@@ -90,7 +86,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         }
         finally
         {
-            preLoadValue.IsLoading = false; // This will trigger the TaskCompletionSource
+            preLoadValue?.IsLoading = false; // This will trigger the TaskCompletionSource
         }
     }
 
@@ -232,10 +228,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             if (_preLoadList.TryAdd(newIndex, removedValue, out var evictedValue))
             {
                 // An item was evicted during the move, so dispose of it
-                if (evictedValue?.ImageModel?.Image is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                ImageDisposalHelper(evictedValue);
 #if DEBUG
                 if (_showAddRemove)
                 {
@@ -429,10 +422,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
             if (_preLoadList.TryGetValue(key, out var item))
             {
                 var removed = _preLoadList.Remove(key);
-                if (item.ImageModel.Image is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
+                ImageDisposalHelper(item);
                 item.ImageModel.Image = null;
 #if DEBUG
                 if (!removed || !_showAddRemove)
@@ -485,13 +475,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         _cancellationTokenSource = null;
         foreach (var item in _preLoadList.Values)
         {
-            lock (_disposeLock)
-            {
-                if (item.ImageModel?.Image is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-            }
+            ImageDisposalHelper(item);
         }
 
         _preLoadList.Clear();
@@ -521,6 +505,26 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         }
 
         Clear();
+    }
+
+    private void ImageDisposalHelper(PreLoadValue item)
+    {
+        if (item is null)
+        {
+            return;
+        }
+        _disposeLock.Enter();
+        try
+        {
+            if (item.ImageModel?.Image is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+        }
+        finally
+        {
+            _disposeLock.Exit();
+        }
     }
 
     #endregion
@@ -632,7 +636,14 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         async Task AddAddition(int index)
         {
             token.ThrowIfCancellationRequested();
-            await AddAsync(index, list, reverse, token);
+            try
+            {
+                await AddAsync(index, list, reverse, token);
+            }
+            catch (Exception e)
+            {
+                DebugHelper.LogDebug(nameof(PreLoader), nameof(PreLoadInternalAsync), e);
+            }
         }
     }
 
