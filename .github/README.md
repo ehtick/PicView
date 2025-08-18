@@ -18,30 +18,6 @@ Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero trac
     <img alt="macOS" src="https://img.shields.io/badge/OS-macOS-8A2BE2.svg?maxAge=3600&style=flat-square">
 </p>
 
-
-## ✨ Highlights
-- 🖼️ Supports almost every image format (JPEG, PNG, WEBP, GIF, HEIC, PSD, RAW, etc.)
-- 🎞️ Animated image support (GIF, WEBP)
-- 📂 Portable by default (no registry / system changes)
-- 📊 EXIF info window with editing tools
-- ✂️ Crop, resize, convert, compress, batch process
-- 📑 Rename or convert directly from the title bar
-- 🎮 Image gallery with keyboard navigation
-- ⚡ Built with .NET NativeAOT for speed and small size
-
-
-## 📖 Table of Contents
-- [Downloads](#downloads)
-- [Donate](#donate)
-- [Features & Screenshots](#features-and-screenshots)
-- [File Support](#file-support)
-- [Shortcuts](#shortcuts)
-- [Technical Overview](#technical-overview)
-- [Contributions](#contributions)
-- [Translators](#translatorslanguages)
-- [Code Signing Policy](#code-signing-policy)
-- [Privacy Policy](#privacy-policy)
-
 # Downloads
 
 [![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/Setup-PicView-v3.2-win-arm64.exe)
@@ -77,8 +53,9 @@ brew install picview
 
 If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
 
+<br>
 
-## Donate
+## 💙 Donate
 Developing PicView has ongoing costs (website hosting, Apple Developer license, AI subscription, etc.).  
 If you enjoy PicView, please consider supporting its development:
 
@@ -87,13 +64,19 @@ If you enjoy PicView, please consider supporting its development:
 ![Static Badge](https://img.shields.io/badge/PayPal-grey?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FRuben2776) 
 ![GitHub Sponsors](https://img.shields.io/github/sponsors/Ruben2776?link=https%3A%2F%2Fgithub.com%2Fsponsors%2FRuben2776)
 
-
+<br>
 
 # Features and screenshots
 
-![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
-
-Switch between a dark and a light theme and toggle between hiding the UI.
+- 🖼️ Supports almost every image format (JPEG, PNG, WEBP, GIF, HEIC, PSD, RAW, etc.)  
+- 🎞️ Animated image support (GIF, WEBP)  
+- 🌗 Light, dark, and glass themes  
+- 📂 Portable by default (no registry / system changes)  
+- 📊 EXIF info window with editing tools  
+- ✂️ Crop, resize, convert, compress, batch process  
+- 📑 Rename or convert directly from title bar  
+- 🎮 Image gallery with keyboard navigation  
+- ⚡ Built with .NET NativeAOT for speed & small size
 
 <br>
 
@@ -103,26 +86,9 @@ _UI overview with bottom gallery._
 
 <br>
 
-<h3 align="center">
-    Scroll Image
-</h3>
+![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
-![SideBySideScroll3 0 0](https://github.com/user-attachments/assets/59ab9368-eb6c-4964-8134-44cf134ea753)
-
-
-You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
-
-<br>
-
-<h3 align="center">
-    Crop Image
-</h3>
-
-<h1 align="center">
-    <img src="https://picview.org/assets/screenshots/PicView-Crop/Cropping3.0.webp" />
-</h1>
-
-Quickly crop image by pressing `C`. Hold `Shift` for square selection.
+Switch between a dark and a light theme and toggle between hiding the UI.
 
 <br>
 
@@ -164,13 +130,31 @@ The bottom gallery can be turned on or off
 <br>
 
 <h3 align="center">
-    Batch Resizing
+    Scroll Image
+</h3>
+
+![SideBySideScroll3 0 0](https://github.com/user-attachments/assets/59ab9368-eb6c-4964-8134-44cf134ea753)
+
+
+You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
+
+<br>
+
+<h3 align="center">
+    Crop Image
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/batch%20resize/batch-resize-3.0v2.webp" />
+    <img src="https://picview.org/assets/screenshots/PicView-Crop/Cropping3.0.webp" />
 </h1>
 
+Quickly crop image by pressing `C`. Hold `Shift` for square selection.
+
+<br>
+
+<h3 align="center">
+    Batch Resizing
+</h3>
 
 ### Convert/Optimize all your pictures
 All files from the `Source folder` will be selected for processing and will be sent to `Output folder`. The default name for the output folder will be **Processed Pictures**.
@@ -185,7 +169,11 @@ The `Quality` dropdown option allows you to change quality of supported file typ
 
 The `Resize` dropdown option allows you to resize the picture by **height**, **width** and **percentage** while keeping the aspect ratio of the image.
 
-___
+<h1 align="center">
+    <img src="https://picview.org/assets/screenshots/batch%20resize/batch-resize-3.0v2.webp" height="600" />
+</h1>
+
+
 
 <br>
 
