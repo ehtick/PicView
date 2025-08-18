@@ -4,7 +4,7 @@
 
 PicView is a fast, free and fully customizable picture viewer for macOS and Windows 10/11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
 
-Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
+Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero tracking. It works out of the box — or you can customize it to your needs.
 
 
 <p align=center>
@@ -19,13 +19,31 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
 </p>
 
 
-PicView is portable by default. Settings and keybindings are stored in its directory (unless it lacks write permissions), meaning no system files are modified and no installation is necessary. Perfect for storing on a portable USB drive.
+---
 
-Using the installer will also set file associations for you.
+## ✨ Highlights
+- 🖼️ Supports almost every image format (JPEG, PNG, WEBP, GIF, HEIC, PSD, RAW, etc.)
+- 🎞️ Animated image support (GIF, WEBP)
+- 📂 Portable by default (no registry / system changes)
+- 📊 EXIF info window with editing tools
+- ✂️ Crop, resize, convert, compress, batch process
+- 📑 Rename or convert directly from the title bar
+- 🎮 Image gallery with keyboard navigation
+- ⚡ Built with .NET NativeAOT for speed and small size
 
-If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
+---
 
-
+## 📖 Table of Contents
+- [Downloads](#downloads)
+- [Donate](#donate)
+- [Features & Screenshots](#features-and-screenshots)
+- [File Support](#file-support)
+- [Shortcuts](#shortcuts)
+- [Technical Overview](#technical-overview)
+- [Contributions](#contributions)
+- [Translators](#translatorslanguages)
+- [Code Signing Policy](#code-signing-policy)
+- [Privacy Policy](#privacy-policy)
 
 # Downloads
 
@@ -59,8 +77,25 @@ brew install picview
 [SourceForge](https://sourceforge.net/projects/picview/) <br>
 [Major Geeks](https://www.majorgeeks.com/files/details/picview.html)
 
+___
+
+
+If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
+
+
+## 💙 Donate
+Developing PicView has ongoing costs (website hosting, Apple Developer license, AI subscription, etc.).  
+If you enjoy PicView, please consider supporting its development:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV) 
+
+![Static Badge](https://img.shields.io/badge/PayPal-grey?logo=paypal&link=https%3A%2F%2Fpaypal.me%2FRuben2776) 
+![GitHub Sponsors](https://img.shields.io/github/sponsors/Ruben2776?link=https%3A%2F%2Fgithub.com%2Fsponsors%2FRuben2776)
+
+
 
 # Features and screenshots
+
 ![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
 Switch between a dark and a light theme and toggle between hiding the UI.
@@ -147,7 +182,7 @@ If the *Output folder* is the same as the *Source folder*, or left blank, the or
 
 The `Convert to` dropdown option allows you to convert all the files to a popular format.
 
-The `Compression` dropdown option allows you to compress the files, either without losing quality or sacrifing some quality for greater reduced file size.
+The `Compression` dropdown option allows you to compress the files, either without losing quality or sacrificing some quality for greater reduced file size.
 
 The `Quality` dropdown option allows you to change quality of supported file types. The higher the Quality setting, the more detail is preserved in the image, but the larger the file size.
 
@@ -246,14 +281,5 @@ Free code signing is provided by [SignPath.io](https://about.signpath.io/), cert
 ## Privacy Policy
 
 PicView does not collect, send, or receive any user data.
-
-
-# Donate
-Developing PicView is not free. There are ongoing costs, such as website maintenance, Apple Developer License fee, AI subscription, etc.
-If you wish to thank me for my work, please
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV)
-
-![GitHub Sponsors](https://img.shields.io/github/sponsors/Ruben2776)
 
 
