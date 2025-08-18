@@ -19,8 +19,6 @@ Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero trac
 </p>
 
 
----
-
 ## ✨ Highlights
 - 🖼️ Supports almost every image format (JPEG, PNG, WEBP, GIF, HEIC, PSD, RAW, etc.)
 - 🎞️ Animated image support (GIF, WEBP)
@@ -31,7 +29,6 @@ Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero trac
 - 🎮 Image gallery with keyboard navigation
 - ⚡ Built with .NET NativeAOT for speed and small size
 
----
 
 ## 📖 Table of Contents
 - [Downloads](#downloads)
@@ -77,13 +74,11 @@ brew install picview
 [SourceForge](https://sourceforge.net/projects/picview/) <br>
 [Major Geeks](https://www.majorgeeks.com/files/details/picview.html)
 
-___
-
 
 If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
 
 
-## 💙 Donate
+## Donate
 Developing PicView has ongoing costs (website hosting, Apple Developer license, AI subscription, etc.).  
 If you enjoy PicView, please consider supporting its development:
 
@@ -214,10 +209,6 @@ Changing the file extension will convert the image to the respective format.
 ## Shortcuts
 You can view and change keyboard shortcuts by opening the `Keybindings` window by pressing `K`.
 Alternatively, they are also listed at [PicView.org](https://picview.org/#Shortcuts).
-
-<h1 align="center">
-    <img src="https://picview.org/assets/screenshots/Keybindings/KeybindingsWindow3.0.webp" />
-</h1>
 
 # Technical overview
 PicView is built in C# .NET using Avalonia cross-platform XAML UI framework.
