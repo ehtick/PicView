@@ -172,7 +172,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         catch (Exception e)
         {
             Debug.WriteLine(e);
-           _ = TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+            TooltipHelper.ShowTooltipMessage(e.Message, true);
         }
     }
 

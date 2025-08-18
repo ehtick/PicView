@@ -12,6 +12,7 @@ public class MainViewModel
     
     public TranslationViewModel Translation { get; } = new();
     public MainWindowViewModel MainWindow { get; } = new();
+    public ToolTipViewModel? ToolTip { get; set; }
     public WindowViewModel Window { get; } = new();
     public GlobalSettingsViewModel GlobalSettings { get; } = new();
     public SettingsViewModel? SettingsViewModel { get; set; }

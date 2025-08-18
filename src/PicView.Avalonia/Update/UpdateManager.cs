@@ -129,13 +129,13 @@ public static class UpdateManager
                 return updateInfo;
             }
 
-            await TooltipHelper.ShowTooltipMessageAsync("Update information is missing or corrupted.");
+            TooltipHelper.ShowTooltipMessage("Update information is missing or corrupted.");
             return null;
         }
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(UpdateManager), nameof(ParseUpdateJson), e);
-            await TooltipHelper.ShowTooltipMessageAsync("Failed to parse update information: \n" + e.Message);
+            TooltipHelper.ShowTooltipMessage("Failed to parse update information: \n" + e.Message);
             return null;
         }
     }
@@ -156,7 +156,7 @@ public static class UpdateManager
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message);
+            TooltipHelper.ShowTooltipMessage(e.Message);
         }
         finally
         {

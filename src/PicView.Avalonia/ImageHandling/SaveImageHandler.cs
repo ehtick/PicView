@@ -26,7 +26,7 @@ public static class SaveImageHandler
 
         if (!success)
         {
-            await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.SavingFileFailed);
+            TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.SavingFileFailed);
             return;
         }
         

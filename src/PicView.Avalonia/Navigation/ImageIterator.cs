@@ -786,9 +786,6 @@ public class ImageIterator : IAsyncDisposable
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(ImageIterator), nameof(IterateToIndex), e);
-#if DEBUG
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message);
-#endif
         }
         finally
         {

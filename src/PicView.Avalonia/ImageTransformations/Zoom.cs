@@ -217,7 +217,7 @@ public class Zoom
         }
 
         TitleManager.SetTitle(vm);
-        _ = TooltipHelper.ShowTooltipMessageAsync($"{Math.Floor(zoomValue * 100)}%", true, TimeSpan.FromSeconds(1));
+        _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(zoomValue * 100)}%", true, TimeSpan.FromSeconds(1));
     }
 
     /// <summary>
@@ -271,7 +271,6 @@ public class Zoom
         }
 
         vm.GlobalSettings.ZoomValue.Value = 1;
-        TooltipHelper.StopTooltipMessage();
         TitleManager.SetTitle(vm);
     }
 

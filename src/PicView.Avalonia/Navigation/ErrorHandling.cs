@@ -6,6 +6,7 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -127,9 +128,7 @@ public static class ErrorHandling
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
+            DebugHelper.LogDebug(nameof(ErrorHandling), nameof(ReloadAsync), e);
             await Dispatcher.UIThread.InvokeAsync(() => { ShowStartUpMenu(vm); });
         }
         finally

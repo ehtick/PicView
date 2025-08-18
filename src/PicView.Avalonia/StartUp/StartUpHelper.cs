@@ -154,6 +154,8 @@ public static class StartUpHelper
                 DispatcherPriority.Background);
         }
         
+        TooltipHelper.StartTooltipSubscription(vm);
+        
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             // Windows needs a named pipe server to open files in the same window

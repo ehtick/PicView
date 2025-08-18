@@ -354,7 +354,6 @@ public static class ImageLoader
         {
             DebugHelper.LogDebug(nameof(ImageLoader), nameof(LoadPicFromUrlAsync), e);
             await ErrorHandling.ReloadAsync(vm);
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
             return;
         }
 

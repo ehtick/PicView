@@ -495,7 +495,7 @@ public static class SettingsUpdater
         var msg = value
             ? TranslationManager.Translation.LoopingEnabled
             : TranslationManager.Translation.LoopingDisabled;
-        await TooltipHelper.ShowTooltipMessageAsync(msg);
+        TooltipHelper.ShowTooltipMessage(msg);
 
         await SaveSettingsAsync();
     }

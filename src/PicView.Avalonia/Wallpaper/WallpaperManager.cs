@@ -24,7 +24,7 @@ public static class WallpaperManager
         }
         catch (Exception e)
         {
-            await TooltipHelper.ShowTooltipMessageAsync(e.Message, true);
+            TooltipHelper.ShowTooltipMessage(e.Message, true);
 #if DEBUG
             Console.WriteLine(e);   
 #endif

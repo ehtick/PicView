@@ -36,7 +36,7 @@ public partial class DeleteDialog : AnimatedPopUp
                 await Task.WhenAll(tasks);
                 if (!success.Result && File.Exists(file))
                 {
-                    await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
+                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
                 }
             };
 

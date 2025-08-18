@@ -61,8 +61,7 @@ public static class MacUpdateHelper
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(MacUpdateHelper), nameof(DownloadAndOpenDmg), ex);
-            await UI.TooltipHelper.ShowTooltipMessageAsync(
-                $"Failed to download or open update: {ex.Message}");
+            UI.TooltipHelper.ShowTooltipMessage($"Failed to download or open update: {ex.Message}");
         }
     }
 }

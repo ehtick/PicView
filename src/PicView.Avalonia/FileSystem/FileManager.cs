@@ -37,17 +37,17 @@ public static class FileManager
                     var msg = recycle
                         ? TranslationManager.Translation.SentFileToRecycleBin
                         : TranslationManager.Translation.DeletedFile;
-                    await TooltipHelper.ShowTooltipMessageAsync(msg + Environment.NewLine + Path.GetFileName(path));
+                    TooltipHelper.ShowTooltipMessage(msg + Environment.NewLine + Path.GetFileName(path));
                 }
                 else if (File.Exists(path))
                 {
-                    await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError, true);
+                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError, true);
                 }
             }
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(DeleteFileWithOptionalDialog));
+            LogAndShowError(ex, nameof(DeleteFileWithOptionalDialog));
         }
 
         return;
@@ -79,7 +79,7 @@ public static class FileManager
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(ShowFileProperties));
+            LogAndShowError(ex, nameof(ShowFileProperties));
         }
     }
 
@@ -101,7 +101,7 @@ public static class FileManager
 
             if (string.IsNullOrWhiteSpace(file))
             {
-                await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
+                TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
                 return;
             }
 
@@ -109,7 +109,7 @@ public static class FileManager
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(Print));
+            LogAndShowError(ex, nameof(Print));
         }
         finally
         {
@@ -133,7 +133,7 @@ public static class FileManager
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(LocateOnDisk));
+            LogAndShowError(ex, nameof(LocateOnDisk));
         }
     }
 
@@ -153,7 +153,7 @@ public static class FileManager
         }
         catch (Exception ex)
         {
-            await LogAndShowError(ex, nameof(LocateOnDisk));
+            LogAndShowError(ex, nameof(LocateOnDisk));
         }
     }
 
@@ -170,10 +170,10 @@ public static class FileManager
     /// <summary>
     ///     Logs errors and shows appropriate error messages
     /// </summary>
-    private static async Task LogAndShowError(Exception ex, string methodName)
+    private static void LogAndShowError(Exception ex, string methodName)
     {
         DebugHelper.LogDebug(nameof(FileManager), methodName, ex);
-        await TooltipHelper.ShowTooltipMessageAsync(ex.Message);
+        TooltipHelper.ShowTooltipMessage(ex.Message);
     }
 
     #endregion

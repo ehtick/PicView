@@ -100,10 +100,13 @@ public class GalleryListBox : ListBox
 
         // ReSharper disable once PossibleLossOfFraction
         var x = selectedScrollTo.Value.X - (visibleItemsCount + 1) / 2 * averageItemWidth + averageItemWidth / 2;
-        
+
         _autoScrollViewer.Offset = new Vector(x, _autoScrollViewer.Offset.Y);
     }
     
+    public void ScrollToOffSet(Vector offSet) =>
+        _autoScrollViewer.Offset = offSet;
+
     #endregion
 
     private void PreviewPointerPressedEvent(object? sender, PointerPressedEventArgs e)

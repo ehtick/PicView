@@ -115,7 +115,7 @@ public partial class EditableTitlebar : UserControl
             {
                 if (newPath == oldPath)
                 {
-                    await ShowFileExistsErrorAsync(vm);
+                    ShowFileExistsError(vm);
                     return;
                 }
 
@@ -162,11 +162,11 @@ public partial class EditableTitlebar : UserControl
         }
     }
     
-    private async Task ShowFileExistsErrorAsync(MainViewModel vm)
+    private void ShowFileExistsError(MainViewModel vm)
     {
         CloseTitlebar();
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
-        await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.GetTranslation("FileAlreadyExistsError"), true);
+        TooltipHelper.ShowTooltipMessage(TranslationManager.GetTranslation("FileAlreadyExistsError"), true);
     }
 
     public void SelectFileName()
