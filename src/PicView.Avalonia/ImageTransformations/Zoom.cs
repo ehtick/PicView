@@ -308,7 +308,7 @@ public class Zoom
     /// <param name="imageViewer">The image viewer instance on which the panning operation is performed.</param>
     public void Pan(PointerEventArgs e, ImageViewer imageViewer)
     {
-        if (!_captured || _scaleTransform == null || !IsZoomed)
+        if (!_captured || _scaleTransform == null || !IsZoomed || e.KeyModifiers == KeyModifiers.Shift)
         {
             return;
         }
