@@ -133,6 +133,8 @@ public class LanguageModel
     public string? FileCopyPathMessage { get; set; }
     public string? FileCutMessage { get; set; }
     public string? FileExtension { get; set; }
+    public string? FileHistoryDisabled { get; set; }
+    public string? FileHistoryEnabled { get; set; }
     public string? FileManagement { get; set; }
     public string? FileName { get; set; }
     public string? FilePaste { get; set; }
@@ -184,6 +186,7 @@ public class LanguageModel
     public string? Image { get; set; }
     public string? ImageAliasing { get; set; }
     public string? ImageControl { get; set; }
+    public string? ImageFormat { get; set; }
     public string? ImageInfo { get; set; }
     public string? Inches { get; set; }
     public string? InfoWindow { get; set; }

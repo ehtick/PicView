@@ -1,9 +1,9 @@
 using Avalonia;
 using Avalonia.Media;
-using PicView.Avalonia.Converters;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Conversion;
 using R3;
 
 namespace PicView.Avalonia.Views.UC.Menus;
@@ -117,9 +117,9 @@ public partial class ToolsMenu : AnimatedMenu
                     }
                 }
             }
-
-            Observable.EveryValueChanged(this, x => x.IsOpen, UIHelper.GetFrameProvider)
-                .Skip(1)
+            
+            this.GetObservable(IsOpenProperty).ToObservable()
+                .Where(x => x)
                 .Subscribe(_ => { DetermineIfOptimizeImageShouldBeEnabled(); });
         };
     }
@@ -131,6 +131,6 @@ public partial class ToolsMenu : AnimatedMenu
             return;
         }
 
-        ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm);
+        vm.PicViewer.ShouldOptimizeImageBeEnabled.Value = ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
     }
 }

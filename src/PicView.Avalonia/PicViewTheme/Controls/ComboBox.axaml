@@ -14,7 +14,7 @@
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Continue" />
         <Setter Property="Template">
             <ControlTemplate>
-                <DockPanel LastChildFill="true">
+                <DockPanel LastChildFill="true" Name="Container">
                     <Border
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="1,0,0,0"
@@ -90,10 +90,7 @@
                                     IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
                                     Theme="{StaticResource Main}"
                                     VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
-                                    <ItemsPresenter
-                                        ItemsPanel="{TemplateBinding ItemsPanel}"
-                                        Margin="4"
-                                        Name="PART_ItemsPresenter" />
+                                    <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" Name="PART_ItemsPresenter" />
                                 </customControls:AutoScrollViewer>
                             </Border>
                         </Popup>
@@ -105,26 +102,14 @@
         <Style Selector="^:pointerover /template/ Border#LeftBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
-        <Style Selector="^:disabled /template/ Border#LeftBorder">
-            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
-        </Style>
         <Style Selector="^:pointerover /template/ Border#TopBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
-        </Style>
-        <Style Selector="^:disabled /template/ Border#TopBorder">
-            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
         </Style>
         <Style Selector="^:pointerover /template/ Border#RightBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
         </Style>
-        <Style Selector="^:disabled /template/ Border#RightBorder">
-            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
-        </Style>
         <Style Selector="^:pointerover /template/ Border#BottomBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
-        </Style>
-        <Style Selector="^:disabled /template/ Border#BottomBorder">
-            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
         </Style>
 
         <Style Selector="^:focus /template/ ContentPresenter#PART_ContentPresenter">
@@ -149,6 +134,10 @@
         <Style Selector="^:dropdownopen /template/ Border#BottomBorder">
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
             <Setter Property="Opacity" Value=".4" />
+        </Style>
+
+        <Style Selector="^:disabled /template/ DockPanel#Container">
+            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

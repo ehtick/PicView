@@ -87,7 +87,15 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             {
                 if (Settings.UIProperties.OpenInSameWindow)
                 {
-                    await NavigationManager.LoadPicFromStringAsync(e.Urls[0], _vm).ConfigureAwait(false);
+                    var tasks = new[]
+                    {
+                        NavigationManager.LoadPicFromStringAsync(e.Urls[0], _vm),
+                        Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            _mainWindow.Activate();
+                        }).GetTask()
+                    };
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
                 else
                 {
@@ -259,8 +267,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public void ShowSingleImageResizeWindow() =>
         _windowInitializer?.ShowSingleImageResizeWindow(_vm);
 
-    public void ShowBatchResizeWindow() =>
-        _windowInitializer?.ShowBatchResizeWindow(_vm);
+    public async Task ShowBatchResizeWindow() =>
+        await _windowInitializer?.ShowBatchResizeWindow(_vm);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow(_vm);

@@ -1,6 +1,7 @@
 using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Core.DebugTools;
+using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 
@@ -35,12 +36,12 @@ public static class GetImageModel
             magickImage ??= CreateAndPingMagickImage(fileInfo);
 
             // Extract metadata
-            imageModel.EXIFOrientation = EXIFHelper.GetImageOrientation(magickImage);
+            imageModel.Orientation = ExifOrientationHelper.GetImageOrientation(magickImage);
             imageModel.Format = magickImage.Format;
             
             if (fileInfo.Extension.Equals(".b64", StringComparison.InvariantCultureIgnoreCase))
             {
-                await ProcessBase64Async(fileInfo, imageModel).ConfigureAwait(false);
+                await ProcessBase64Async(fileInfo, MagickFormat.Data, imageModel).ConfigureAwait(false);
                 return imageModel;
             }
 
@@ -49,7 +50,7 @@ public static class GetImageModel
             {
                 case MagickFormat.WebP: 
                 case MagickFormat.WebM:
-                    await ProcessStandardBitmapAsync(fileInfo, imageModel).ConfigureAwait(false);
+                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedWebp;
@@ -57,7 +58,7 @@ public static class GetImageModel
                     break;
                 case MagickFormat.Gif:
                 case MagickFormat.Gif87:
-                    await ProcessStandardBitmapAsync(fileInfo, imageModel).ConfigureAwait(false);
+                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     if (ImageAnalyzer.IsAnimated(fileInfo))
                     {
                         imageModel.ImageType = ImageType.AnimatedGif;
@@ -80,7 +81,7 @@ public static class GetImageModel
                 case MagickFormat.Ico:
                 case MagickFormat.Icon:
                 case MagickFormat.Wbmp:
-                    await ProcessStandardBitmapAsync(fileInfo, imageModel).ConfigureAwait(false);
+                    await ProcessStandardBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     break;
 
                 case MagickFormat.Svg:
@@ -124,12 +125,24 @@ public static class GetImageModel
         return magickImage;
     }
 
-    private static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, ImageType imageType = ImageType.Bitmap)
+    private static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, MagickFormat format, ImageType imageType = ImageType.Bitmap)
     {
         imageModel.Image = bitmap;
-        imageModel.PixelWidth = bitmap?.PixelSize.Width ?? 0;
-        imageModel.PixelHeight = bitmap?.PixelSize.Height ?? 0;
+        if (bitmap is null)
+        {
+            imageModel.PixelWidth = 0;
+            imageModel.PixelHeight = 0;
+            imageModel.ImageType = ImageType.Invalid;
+            imageModel.DpiX = 0;
+            imageModel.DpiY = 0;
+            return;
+        }
+        imageModel.PixelWidth = bitmap.PixelSize.Width;
+        imageModel.PixelHeight = bitmap.PixelSize.Height;
         imageModel.ImageType = imageType;
+        imageModel.DpiX = (ushort)bitmap.Dpi.X;
+        imageModel.DpiY = (ushort)bitmap.Dpi.Y;
+        imageModel.Format = format;
     }
 
     private static ImageModel CreateErrorImageModel(FileInfo? fileInfo)
@@ -141,16 +154,18 @@ public static class GetImageModel
             Image = null, // TODO replace with error image
             PixelHeight = 0,
             PixelWidth = 0,
-            EXIFOrientation = EXIFHelper.EXIFOrientation.None
+            DpiX = 0,
+            DpiY = 0,
+            Orientation = ExifOrientation.None
         };
     }
 
     #region Image Processing Methods
 
-    private static async Task ProcessStandardBitmapAsync(FileInfo fileInfo, ImageModel imageModel)
+    private static async Task ProcessStandardBitmapAsync(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetStandardBitmapAsync(fileInfo).ConfigureAwait(false);
-        SetBitmapProperties(bitmap, imageModel);
+        SetBitmapProperties(bitmap, imageModel, format);
     }
 
     private static void ProcessSvg(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
@@ -159,24 +174,26 @@ public static class GetImageModel
         imageModel.PixelHeight = (int)magickImage.Height;
         imageModel.ImageType = ImageType.Svg;
         imageModel.Image = fileInfo.FullName;
+        imageModel.DpiX = (ushort)magickImage.Density.X;
+        imageModel.DpiY = (ushort)magickImage.Density.Y;;
     }
 
-    private static async Task ProcessBase64Async(FileInfo fileInfo, ImageModel imageModel)
+    private static async Task ProcessBase64Async(FileInfo fileInfo, MagickFormat format, ImageModel imageModel)
     {
         var bitmap = await GetImage.GetBase64ImageAsync(fileInfo).ConfigureAwait(false);
-        SetBitmapProperties(bitmap, imageModel);
+        SetBitmapProperties(bitmap, imageModel, format);
     }
     
-    private static async Task ProcessRawImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage? magickImage)
+    private static async Task ProcessRawImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
         var bitmap = await GetImage.GetRawBitmapAsync(fileInfo, magickImage).ConfigureAwait(false);
-        SetBitmapProperties(bitmap, imageModel);
+        SetBitmapProperties(bitmap, imageModel, magickImage.Format);
     }
 
-    private static async Task ProcessNonStandardImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage? magickImage)
+    private static async Task ProcessNonStandardImageAsync(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
         var bitmap = await GetImage.GetNonStandardBitmapAsync(fileInfo, magickImage).ConfigureAwait(false);
-        SetBitmapProperties(bitmap, imageModel);
+        SetBitmapProperties(bitmap, imageModel, magickImage.Format);
     }
     
 

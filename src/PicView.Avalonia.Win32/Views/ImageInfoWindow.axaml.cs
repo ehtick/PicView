@@ -100,6 +100,10 @@ public partial class ImageInfoWindow : Window, IDisposable
                 .Subscribe(UpdateWindowSize)
                 .AddTo(_disposables);
             PositionChanged += (_, _) => UpdateWindowPosition();
+            RemoveImageDataButton.Click += async (_, _) =>
+            {
+                await ExifView.RemoveImageDataAsync();
+            };
         };
         
         Closing += async delegate

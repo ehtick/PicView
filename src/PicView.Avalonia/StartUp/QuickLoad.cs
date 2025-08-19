@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Runtime.InteropServices;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Gallery;
@@ -7,6 +8,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Exif;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -112,14 +114,19 @@ public static class QuickLoad
     private static async Task<ImageModel> SetSingleImageAsync(MainViewModel vm, FileInfo fileInfo,
         MagickImage magickImage, Window window)
     {
+        vm.PicViewer.ExifOrientation.Value = ExifOrientationHelper.GetImageOrientation(magickImage);
         if (Settings.WindowProperties.AutoFit)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
+                vm.ImageViewer.SetTransform(vm.PicViewer.ExifOrientation.CurrentValue, magickImage.Format);
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
             }, DispatcherPriority.Send);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Send);
+            }
         }
         else
         {
@@ -156,9 +163,13 @@ public static class QuickLoad
         vm.PicViewer.SecondaryImageSource.Value = secondaryPreloadValue?.ImageModel?.Image;
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            vm.ImageViewer.SetTransform(EXIFHelper.GetImageOrientation(magickImage), magickImage.Format);
+            vm.ImageViewer.SetTransform(ExifOrientationHelper.GetImageOrientation(magickImage), magickImage.Format);
             WindowResizing.SetSize(magickImage.Width, magickImage.Height, secondaryPreloadValue.ImageModel.PixelWidth, secondaryPreloadValue.ImageModel.PixelHeight, vm.GlobalSettings.RotationAngle.CurrentValue, vm);
         }, DispatcherPriority.Send);
+        if (Settings.WindowProperties.AutoFit && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Render);
+        }
         SetPicViewerValues(vm, imageModel, fileInfo);
         
         TitleManager.SetSideBySideTitle(vm, imageModel, secondaryPreloadValue?.ImageModel);
@@ -184,8 +195,8 @@ public static class QuickLoad
         vm.GlobalSettings.RotationAngle.Value = 0;
         vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
         vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
-
-        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
+        vm.PicViewer.Format.Value = imageModel.Format;
+        vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
     }
 
     /// <summary>

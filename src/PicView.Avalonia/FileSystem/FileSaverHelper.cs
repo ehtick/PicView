@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 
@@ -118,9 +119,7 @@ public static class FileSaverHelper
             }
             catch (Exception e)
             {
-#if DEBUG
-         Console.WriteLine($"{nameof(SaveFileAsync)}.{nameof(SaveImageFromBitmap)} exception: \n{e.StackTrace}");       
-#endif
+                DebugHelper.LogDebug(nameof(FileSaverHelper), nameof(SaveFileAsync), e);
             }
         }
     }

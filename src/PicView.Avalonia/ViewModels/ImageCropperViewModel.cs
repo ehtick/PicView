@@ -100,7 +100,7 @@ public class ImageCropperViewModel : IDisposable
 
     private async ValueTask CopyCroppedImageAsync(Unit unit, CancellationToken cancellationToken)
     {
-        if (UIHelper.TryGetMainViewModel(out var vm) ||
+        if (UIHelper.GetMainView.DataContext is not MainViewModel vm ||
             vm.PicViewer.ImageSource.CurrentValue is not Bitmap sourceBitmap)
         {
             return;

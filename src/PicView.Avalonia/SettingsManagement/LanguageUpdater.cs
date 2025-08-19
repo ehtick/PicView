@@ -48,5 +48,9 @@ public static class LanguageUpdater
         translationViewModel.IsUsingTouchpad.Value = Settings.Zoom.IsUsingTouchPad
             ? TranslationManager.Translation.UsingTouchpad
             : TranslationManager.Translation.UsingMouse;
+        
+        translationViewModel.ToggleFileHistory.Value = Settings.Navigation.IsFileHistoryEnabled
+            ? TranslationManager.Translation.FileHistoryEnabled
+            : TranslationManager.Translation.FileHistoryDisabled;
     }
 }

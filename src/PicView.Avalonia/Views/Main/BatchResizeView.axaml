@@ -92,8 +92,7 @@
                         Height="30"
                         Margin="11,0,10,0"
                         Padding="5,7,0,7"
-                        SelectedIndex="0"
-                        SelectedItem="NoConversion"
+                        SelectedIndex="{CompiledBinding Window.BatchResizeWindowConfig.WindowProperties.ConvertToIndex}"
                         Width="195"
                         x:Name="ConversionComboBox">
                         <ComboBoxItem
@@ -146,8 +145,7 @@
                         Height="30"
                         Margin="11,0,10,0"
                         Padding="5,7,0,7"
-                        SelectedIndex="0"
-                        SelectedItem="Lossless"
+                        SelectedIndex="{CompiledBinding Window.BatchResizeWindowConfig.WindowProperties.CompressionIndex}"
                         Width="195"
                         x:Name="CompressionComboBox">
                         <ComboBoxItem
@@ -179,7 +177,7 @@
                         Width="130" />
 
                     <CheckBox
-                        IsChecked="False"
+                        IsChecked="{CompiledBinding Window.BatchResizeWindowConfig.WindowProperties.IsQualityEnabled}"
                         Margin="11,0,10,0"
                         x:Name="IsQualityEnabledBox" />
                     <customControls:CustomSlider

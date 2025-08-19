@@ -1,4 +1,6 @@
-﻿using PicView.Core.ImageDecoding;
+﻿using ImageMagick;
+using PicView.Core.Exif;
+using PicView.Core.ImageDecoding;
 using PicView.Core.ImageEffects;
 using R3;
 
@@ -31,6 +33,8 @@ public class PicViewerModel : IDisposable
     public BindableReactiveProperty<object?> SecondaryImageSource { get; } = new();
 
     public BindableReactiveProperty<ImageType> ImageType { get; } = new();
+    
+    public BindableReactiveProperty<MagickFormat?> Format { get; } = new();
 
     /// <summary>
     /// The width to scale the image to
@@ -56,7 +60,7 @@ public class PicViewerModel : IDisposable
 
     public BindableReactiveProperty<ImageEffectConfig?> EffectConfig { get; } = new();
 
-    public BindableReactiveProperty<EXIFHelper.EXIFOrientation?> ExifOrientation { get; } = new();
+    public BindableReactiveProperty<ExifOrientation?> ExifOrientation { get; } = new();
 
     // Used to flip the flip button
     public BindableReactiveProperty<int> ScaleX { get; } = new(1);

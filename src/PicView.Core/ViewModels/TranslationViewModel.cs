@@ -184,6 +184,7 @@ public class TranslationViewModel : IDisposable
         Pan.Value = t.Pan;
         ResetZoom.Value = t.ResetZoom;
         ImageControl.Value = t.ImageControl;
+        ImageFormat.Value = t.ImageFormat;
         ChangeBackground.Value = t.ChangeBackground;
         InterfaceConfiguration.Value = t.InterfaceConfiguration;
         FileManagement.Value = t.FileManagement;
@@ -435,8 +436,6 @@ public class TranslationViewModel : IDisposable
 
     public BindableReactiveProperty<string?> DigitalZoom { get; } = new();
 
-    public BindableReactiveProperty<string?> DirectionalBlur { get; } = new();
-
     public BindableReactiveProperty<string?> DisableFadeInButtonsOnHover { get; } = new();
 
     public BindableReactiveProperty<string?> DoubleClick { get; } = new();
@@ -544,7 +543,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ImageAliasing { get; } = new();
 
     public BindableReactiveProperty<string?> ImageControl { get; } = new();
-
+    public BindableReactiveProperty<string?> ImageFormat { get; } = new();
     public BindableReactiveProperty<string?> ImageInfo { get; } = new();
 
     public BindableReactiveProperty<string?> Inches { get; } = new();
@@ -818,6 +817,7 @@ public class TranslationViewModel : IDisposable
 
     public BindableReactiveProperty<string?> Title { get; } = new();
 
+    public BindableReactiveProperty<string?> ToggleFileHistory { get; } = new();
     public BindableReactiveProperty<string?> ToggleFullscreen { get; } = new();
 
     public BindableReactiveProperty<string?> ToggleLooping { get; } = new();

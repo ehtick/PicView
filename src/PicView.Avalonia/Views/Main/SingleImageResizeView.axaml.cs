@@ -9,6 +9,7 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Resizing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
 using R3;
 
@@ -155,9 +156,7 @@ public partial class SingleImageResizeView : UserControl
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
+            DebugHelper.LogDebug(nameof(SingleImageResizeView), nameof(UpdateQualitySliderState), e);
         }
     }
 
@@ -204,8 +203,8 @@ public partial class SingleImageResizeView : UserControl
 
     private async Task DoSaveImage(MainViewModel vm, string destination)
     {
-        if (!uint.TryParse((string?)PixelWidthTextBox.Text, out var width) ||
-            !uint.TryParse((string?)PixelHeightTextBox.Text, out var height))
+        if (!uint.TryParse(PixelWidthTextBox.Text, out var width) ||
+            !uint.TryParse(PixelHeightTextBox.Text, out var height))
         {
             return;
         }

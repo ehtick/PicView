@@ -43,6 +43,8 @@ public static class NavigationManager
     public static async Task LoadWithoutImageIterator(FileInfo fileInfo, MainViewModel vm, List<FileInfo>? files = null,
         int index = 0)
     {
+        _ = Task.Run(GalleryLoad.CancelGalleryLoadAsync);
+        
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo).ConfigureAwait(false);
         ImageModel? nextImageModel = null;
         vm.PicViewer.ImageSource.Value = imageModel.Image;
@@ -52,7 +54,7 @@ public static class NavigationManager
             var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm );
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                vm.ImageViewer.SetTransform(imageModel.EXIFOrientation, imageModel.Format);
+                vm.ImageViewer.SetTransform(imageModel.Orientation, imageModel.Format);
                 if (size.HasValue)
                 {
                     WindowResizing.SetSize(size.Value,
@@ -390,9 +392,9 @@ public static class NavigationManager
         }
     }
     
-    /// <inheritdoc cref="NavigateBetweenDirectories(bool last, MainViewModel vm)"/>
+    /// <inheritdoc cref="NavigateFirstOrLast(bool last, MainViewModel vm)"/>
     public static async Task NavigateFirstOrLast(bool last) =>
-        await NavigateBetweenDirectories(last, UIHelper.GetMainView.DataContext as MainViewModel);
+        await NavigateFirstOrLast(last, UIHelper.GetMainView.DataContext as MainViewModel);
 
     /// <summary>
     ///     Iterates to the next or previous image based on the <paramref name="next" /> parameter.
@@ -436,135 +438,14 @@ public static class NavigationManager
     /// <param name="next">True to navigate to the next folder, false for the previous folder.</param>
     /// <param name="vm">The main view model instance.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
+
     public static async Task NavigateBetweenDirectories(bool next, MainViewModel vm)
-    {
-        if (!CanNavigate(vm))
-        {
-            return;
-        }
-
-        TitleManager.SetLoadingTitle(vm);
-        await ImageLoader.CancelAsync().ConfigureAwait(false);
-
-        if (Settings.Sorting.IncludeSubDirectories)
-        {
-            await NextDirectoryWithin().ConfigureAwait(false);
-        }
-        else
-        {
-            await NextDirectory().ConfigureAwait(false);
-        }
-
-        return;
-
-        async Task NextDirectory()
-        {
-            // Get the file list for the next or previous folder (no subdirectory logic)
-            var fileList = await GetNextFolderFileList(next, vm).ConfigureAwait(false);
-
-            if (fileList is null)
-            {
-                TitleManager.SetTitle(vm);
-            }
-            else
-            {
-                vm.PlatformService.StopTaskbarProgress();
-                await LoadWithoutImageIterator(fileList[0], vm, fileList);
-                if (vm.PicViewer.Title.CurrentValue == TranslationManager.Translation.Loading)
-                {
-                    TitleManager.SetTitle(vm);
-                }
-            }
-        }
-
-        async Task NextDirectoryWithin()
-        {
-            await Task.Run(async () =>
-            {
-                var imageIterator = ImageIterator;
-                var imagePaths = imageIterator?.ImagePaths;
-                var currentDir = imagePaths[imageIterator.CurrentIndex].DirectoryName;
-
-                var directories = new List<string>();
-                foreach (var path in imagePaths.Where(path => !directories.Contains(path.DirectoryName))
-                             .AsValueEnumerable())
-                {
-                    directories.Add(path.DirectoryName);
-                }
-                if (directories.Count <= 1)
-                {
-                    await NextDirectory().ConfigureAwait(false);
-                    return;
-                }
-
-                var index = directories.IndexOf(currentDir);
-                var nextIndex = next
-                    ? (index + 1) % directories.Count
-                    : (index - 1 + directories.Count) % directories.Count;
-                var nextDir = directories[nextIndex];
-                var firstFileInNextDir =
-                    imagePaths.IndexOf(imagePaths.FirstOrDefault(path => path.DirectoryName == nextDir));
-                await ImageLoader.IterateToIndexAsync(firstFileInNextDir, imageIterator).ConfigureAwait(false);
-            });
-        }
-    }
+        => await DirectoryNavigator.NavigateBetweenDirectories(next, ImageIterator, LoadWithoutImageIterator, vm);
     
     /// <inheritdoc cref="NavigateBetweenDirectories(bool next, MainViewModel vm)"/>
     public static async Task NavigateBetweenDirectories(bool next) =>
         await NavigateBetweenDirectories(next, UIHelper.GetMainView.DataContext as MainViewModel);
-        
-
-    /// <summary>
-    ///     Gets the list of files in the next or previous folder.
-    /// </summary>
-    /// <param name="next">True to get the next folder, false for the previous folder.</param>
-    /// <param name="vm">The main view model instance.</param>
-    /// <returns>A task representing the asynchronous operation that returns a list of file paths.</returns>
-    private static async Task<List<FileInfo>?> GetNextFolderFileList(bool next, MainViewModel vm)
-    {
-        return await Task.Run(() =>
-        {
-            var indexChange = next ? 1 : -1;
-            var currentFolder = ImageIterator?.ImagePaths[ImageIterator.CurrentIndex].DirectoryName;
-            var parentFolder = Path.GetDirectoryName(currentFolder);
-            var directories = Directory.GetDirectories(parentFolder, "*", SearchOption.TopDirectoryOnly);
-
-            if (directories.Length == 0 || string.IsNullOrEmpty(currentFolder))
-            {
-                return null;
-            }
-
-            var directoryIndex = Array.IndexOf(directories, currentFolder);
-
-            if (directoryIndex == -1)
-            {
-                return null; // Current folder not found
-            }
-
-            var dirCount = directories.Length;
-            var currentIndex = directoryIndex;
-
-            // Loop until we've come back to the starting directory
-            do
-            {
-                // Move to next/previous directory
-                currentIndex = (currentIndex + indexChange + dirCount) % dirCount;
-
-                // If we've come full circle without finding anything, return null
-                if (currentIndex == directoryIndex)
-                {
-                    return null;
-                }
-
-                var fileList = vm.PlatformService.GetFiles(new FileInfo(directories[currentIndex]));
-                if (fileList is { Count: > 0 })
-                {
-                    return fileList;
-                }
-            } while (true);
-        }).ConfigureAwait(false);
-    }
-
+    
     #endregion
 
     #region Load pictures from string, file or url

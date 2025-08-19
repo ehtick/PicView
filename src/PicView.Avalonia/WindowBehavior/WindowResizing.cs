@@ -108,8 +108,7 @@ public static class WindowResizing
     }
 
     #endregion
-
-
+    
     #region Set Window Size
 
     public static void SetSize(MainViewModel vm)
@@ -287,6 +286,8 @@ public static class WindowResizing
             return null;
         }
 
+        var (minWidth, minHeight) = MainWindowViewModel.GetAndSetWindowMinSize(vm);
+        
         ImageSize size;
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
@@ -296,8 +297,8 @@ public static class WindowResizing
                 secondWidth,
                 secondHeight,
                 screenSize,
-                SizeDefaults.WindowMinSize,
-                SizeDefaults.WindowMinSize,
+                minWidth,
+                minHeight,
                 vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,
@@ -313,8 +314,8 @@ public static class WindowResizing
                 width,
                 height,
                 screenSize,
-                SizeDefaults.WindowMinSize,
-                SizeDefaults.WindowMinSize,
+                minWidth,
+                minHeight,
                 vm.PlatformWindowService.CombinedTitleButtonsWidth,
                 rotation,
                 screenSize.Scaling,

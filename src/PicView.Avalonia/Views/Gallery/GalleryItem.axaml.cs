@@ -1,9 +1,9 @@
-﻿using Avalonia;
+﻿using System.Runtime.InteropServices;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
-using Exception = System.Exception;
+using PicView.Avalonia.UI;
 
 namespace PicView.Avalonia.Views.Gallery;
 
@@ -12,26 +12,14 @@ public partial class GalleryItem : UserControl
     public GalleryItem()
     {
         InitializeComponent();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            PrintItem.IsVisible = false;
+            CopyFileMenuItem.IsVisible = false;
+        }
         GalleryContextMenu.Opened += delegate
         {
-            if (!Application.Current.TryGetResource("SecondaryAccentColor", Application.Current.RequestedThemeVariant, out var color))
-            {
-                return;
-            }
-
-            try
-            {
-                var secondaryAccentBrush = (SolidColorBrush)color;
-                ImageBorder.BorderBrush = secondaryAccentBrush;
-            }
-#if DEBUG
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-#else
-        catch (Exception){}
-#endif
+            ImageBorder.BorderBrush = UIHelper.GetBrush("SecondaryAccentColor");
         };
         GalleryContextMenu.Closed += delegate
         {
@@ -47,6 +35,5 @@ public partial class GalleryItem : UserControl
         }
 
         FlyoutBase.ShowAttachedFlyout(ctl);
-        GalleryItemSizeSlider.SetMaxAndMin();
     }
 }

@@ -3,6 +3,8 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.UI;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using R3;
 
@@ -78,6 +80,60 @@ public class GalleryViewModel : IDisposable
     private static void GalleryItemStretch(string value) => GalleryHelper.SetGalleryItemStretch(value);
     
     #endregion
+
+    public void GalleryItemSizeUpdateSubscription(MainViewModel vm)
+    {
+        Observable.EveryValueChanged(GalleryItem.ItemHeight, x => x.Value, UIHelper.GetFrameProvider)
+            .Skip(1)
+            .SubscribeAwait(async (x,_) =>
+            {
+                await GalleryItemSizeChangedAsync(vm, x);
+            });
+    }
+    
+    private static async Task GalleryItemSizeChangedAsync(MainViewModel vm, double newValue)
+    {
+        if (GalleryFunctions.IsFullGalleryOpen)
+        {
+            await ExpandedGalleryItemSizeChangedAsync(vm,  newValue);
+        }
+        else
+        {
+            await BottomGalleryItemSizeChangedAsync(vm, newValue);
+        }
+    }
+
+    private static async Task ExpandedGalleryItemSizeChangedAsync(MainViewModel vm, double newValue)
+    {
+        if (vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue.Equals(newValue))
+        {
+            return;
+        }
+        vm.Gallery.GalleryItem.ExpandedGalleryItemHeight.Value = newValue;
+        Settings.Gallery.ExpandedGalleryItemSize = newValue;
+        if (GalleryFunctions.IsFullGalleryOpen)
+        {
+            vm.Gallery.GalleryItem.ItemHeight.Value = Settings.Gallery.ExpandedGalleryItemSize;
+        }
+        await WindowResizing.SetSizeAsync(vm);
+        await SaveSettingsAsync();
+    }
+    
+    private static async Task BottomGalleryItemSizeChangedAsync(MainViewModel vm, double newValue)
+    {
+        if (vm.Gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue.Equals(newValue))
+        {
+            return;
+        }
+        vm.Gallery.GalleryItem.BottomGalleryItemHeight.Value = newValue;
+        Settings.Gallery.BottomGalleryItemSize = newValue;
+        if (Settings.Gallery.IsBottomGalleryShown)
+        {
+            vm.Gallery.GalleryItem.ItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
+        }
+        await WindowResizing.SetSizeAsync(vm);
+        await SaveSettingsAsync();
+    }
 
     public void Dispose()
     {

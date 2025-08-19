@@ -6,6 +6,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
@@ -42,8 +43,18 @@ public static class GalleryFunctions
         return gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue + (SizeDefaults.ScrollbarSize - 1);
     }
 
-    public static bool RenameGalleryItem(int oldIndex, int newIndex, string newFileLocation, string newName,
-        MainViewModel? vm)
+    public static bool IsGalleryEmpty()
+    {
+        var mainView = UIHelper.GetMainView;
+        var galleryListBox = mainView?.GalleryView?.GalleryListBox;
+        if (galleryListBox == null)
+        {
+            return true;
+        }
+        return galleryListBox.Items.Count == 0;
+    }
+
+    public static bool RenameGalleryItem(int oldIndex, int newIndex, string newFileLocation, string newName)
     {
         var mainView = UIHelper.GetMainView;
 
@@ -216,9 +227,7 @@ public static class GalleryFunctions
         }
         catch (Exception exception)
         {
-#if DEBUG
-            Console.WriteLine(exception);
-#endif
+            DebugHelper.LogDebug(nameof(GalleryFunctions), nameof(AddGalleryItem), exception);
         }
 
         return false;
@@ -271,9 +280,7 @@ public static class GalleryFunctions
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine(e);
-#endif
+                DebugHelper.LogDebug(nameof(GalleryFunctions), nameof(ClearItems), e);
             }
         }
     }

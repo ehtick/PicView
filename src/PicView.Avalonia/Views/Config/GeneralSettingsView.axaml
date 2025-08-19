@@ -5,6 +5,7 @@
     x:Class="PicView.Avalonia.Views.Config.GeneralSettingsView"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
@@ -50,7 +51,8 @@
                 Background="Transparent"
                 BorderThickness="0"
                 Classes="altHover changeColor"
-                IsChecked="{CompiledBinding SettingsViewModel.IsShowingPermanentDeletionDialog.Value}"
+                IsChecked="{CompiledBinding SettingsViewModel.IsShowingPermanentDeletionDialog.Value,
+                                            Mode=TwoWay}"
                 Margin="0,0,0,10"
                 Width="300">
                 <TextBlock
@@ -67,7 +69,8 @@
                 Background="Transparent"
                 BorderThickness="0"
                 Classes="altHover changeColor"
-                IsChecked="{CompiledBinding SettingsViewModel.IsShowingRecycleDialog.Value}"
+                IsChecked="{CompiledBinding SettingsViewModel.IsShowingRecycleDialog.Value,
+                                            Mode=TwoWay}"
                 Margin="0,0,0,10"
                 Width="300">
                 <TextBlock
@@ -95,6 +98,24 @@
                     MaxWidth="240"
                     Padding="0,1,5,0"
                     Text="{CompiledBinding Translation.SearchSubdirectory.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <ToggleButton
+                Background="Transparent"
+                BorderThickness="0"
+                Classes="altHover changeColor"
+                Command="{CompiledBinding Tools.ToggleFileHistoryTask}"
+                IsChecked="{CompiledBinding GlobalSettings.IsFileHistoryEnabled.Value}"
+                Margin="0,0,0,10"
+                Width="300">
+                <TextBlock
+                    Classes="txt"
+                    Foreground="{StaticResource SecondaryTextColor}"
+                    Margin="0"
+                    MaxWidth="240"
+                    Padding="0,1,5,0"
+                    Text="{CompiledBinding Translation.ToggleFileHistory.Value,
                                            Mode=OneWay}" />
             </ToggleButton>
 

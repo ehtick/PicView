@@ -192,7 +192,7 @@ public class UIProperties
     /// <summary>
     /// Indicates whether the application limits the background color to just behind the picture.
     /// </summary>
-    public bool IsConstrainBackgroundColorEnabled { get; set; } = true;
+    public bool IsConstrainBackgroundColorEnabled { get; set; } = false;
 }
 
 public class Theme
@@ -416,6 +416,11 @@ public class Navigation
     /// When set to true, navigation will cycle through the historical entries of accessed files.
     /// </summary>
     public bool IsNavigatingFileHistory { get; set; } = true;
+    
+    /// <summary>
+    /// Determines if the file history should be saved.
+    /// </summary>
+    public bool IsFileHistoryEnabled { get; set; } = true;
     
     /// <summary>
     /// Determines whether navigation between directories is enabled, with the mouse side buttons.

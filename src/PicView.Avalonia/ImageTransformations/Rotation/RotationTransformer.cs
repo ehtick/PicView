@@ -6,7 +6,7 @@ using ImageMagick;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.ImageDecoding;
+using PicView.Core.Exif;
 using PicView.Core.ImageTransformations;
 
 namespace PicView.Avalonia.ImageTransformations.Rotation;
@@ -111,7 +111,7 @@ public class RotationTransformer(
         resetZoom?.Invoke();
     }
 
-    public void SetTransform(EXIFHelper.EXIFOrientation? orientation, MagickFormat? format, bool reset = true)
+    public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true)
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -124,7 +124,7 @@ public class RotationTransformer(
         }
     }
 
-    private void ApplyOrientationTransform(EXIFHelper.EXIFOrientation? orientation, MagickFormat? format, bool reset)
+    private void ApplyOrientationTransform(ExifOrientation? orientation, MagickFormat? format, bool reset)
     {
         if (Settings.Zoom.ScrollEnabled && imageLayoutTransformControl.Parent is ScrollViewer scrollViewer)
         {
@@ -144,33 +144,33 @@ public class RotationTransformer(
         switch (orientation)
         {
             case null:
-            case EXIFHelper.EXIFOrientation.None:
-            case EXIFHelper.EXIFOrientation.Horizontal:
+            case ExifOrientation.None:
+            case ExifOrientation.Horizontal:
                 if (reset)
                 {
                     SetTransform(1, 0);
                 }
 
                 break;
-            case EXIFHelper.EXIFOrientation.MirrorHorizontal:
+            case ExifOrientation.MirrorHorizontal:
                 SetTransform(-1, 0);
                 break;
-            case EXIFHelper.EXIFOrientation.Rotate180:
+            case ExifOrientation.Rotate180:
                 SetTransform(1, 180);
                 break;
-            case EXIFHelper.EXIFOrientation.MirrorVertical:
+            case ExifOrientation.MirrorVertical:
                 SetTransform(-1, 180);
                 break;
-            case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate270Cw:
+            case ExifOrientation.MirrorHorizontalRotate270Cw:
                 SetTransform(-1, 90);
                 break;
-            case EXIFHelper.EXIFOrientation.Rotate90Cw:
+            case ExifOrientation.Rotate90Cw:
                 SetTransform(1, 90);
                 break;
-            case EXIFHelper.EXIFOrientation.MirrorHorizontalRotate90Cw:
+            case ExifOrientation.MirrorHorizontalRotate90Cw:
                 SetTransform(-1, 270);
                 break;
-            case EXIFHelper.EXIFOrientation.Rotated270Cw:
+            case ExifOrientation.Rotated270Cw:
                 SetTransform(1, 270);
                 break;
         }

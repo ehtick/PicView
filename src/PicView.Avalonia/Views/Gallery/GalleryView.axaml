@@ -7,18 +7,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gallery="clr-namespace:PicView.Avalonia.Views.Gallery"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.DataContext>
         <viewModels:MainViewModel />
     </Design.DataContext>
     <Panel>
-
-        <customControls:BlurMask
-            BlurEnabled="False"
-            BlurRadius="7"
-            x:Name="BlurMask" />
 
         <Panel.ContextMenu>
             <ContextMenu Opened="MenuBase_OnOpened">

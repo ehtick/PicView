@@ -81,6 +81,11 @@ public static class WindowFunctions
             await vm.Window.ImageInfoWindowConfig.SaveAsync();
         }
 
+        if (vm.Window.BatchResizeWindowConfig is not null)
+        {
+            await vm.Window.BatchResizeWindowConfig.SaveAsync();
+        }
+
         Environment.Exit(0);
     }
 

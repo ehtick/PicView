@@ -103,7 +103,7 @@ public static class MacOSWindow
         
         vm.MainWindow.IsFullscreen.Value = true;
         vm.MainWindow.IsMaximized.Value = false;
-        vm.MainWindow.CanResize.Value = false;
+        vm.MainWindow.CanResize.Value = true;
         
         window.WindowState = WindowState.FullScreen;
         

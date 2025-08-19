@@ -34,7 +34,7 @@
                                     Fill="{TemplateBinding Foreground}"
                                     Height="11"
                                     IsVisible="True"
-                                    Margin="2,3.9,3,0"
+                                    Margin="2,3.9,5,0"
                                     Stretch="Fill"
                                     Width="11"
                                     x:Name="CrossMark" />
@@ -44,7 +44,7 @@
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            Margin="0,0,5,0"
+                            Margin="7,0,5,0"
                             Name="PART_ContentPresenter"
                             RecognizesAccessKey="True"
                             TextElement.Foreground="{TemplateBinding Foreground}"

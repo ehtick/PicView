@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.ColorHandling;
 
 // ReSharper disable PossibleLossOfFraction
 
@@ -14,28 +15,6 @@ namespace PicView.Avalonia.ColorManagement;
 /// </summary>
 public static class BackgroundManager
 {
-    /// <summary>
-    /// Defines the available background choices for the image viewer
-    /// </summary>
-    private enum BackgroundType
-    {
-        Transparent = 0,
-        NoiseTexture = 1,
-        Checkerboard = 2,
-        CheckerboardAlternative = 3,
-        White = 4,
-        LightGray = 5,
-        MediumGray = 6,
-        SemiTransparentDarkGray = 7,
-        SemiTransparentDarkerGray = 8,
-        NearBlack = 9,
-        DarkGray = 10,
-        
-        // For cycling purpose
-        [SuppressMessage("Design", "CA1069:Enums values should not be duplicated")] 
-        MaxValue = 9
-    }
-    
     /// <summary>
     /// Default checkerboard size in pixels
     /// </summary>

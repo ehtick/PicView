@@ -22,12 +22,16 @@ public static class SettingsUpdater
         {
             return;
         }
-        gallery.GalleryItem.ExpandedGalleryItemHeight.Value  = Settings.Gallery.ExpandedGalleryItemSize;
-        gallery.GalleryItem.BottomGalleryItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
+
         if (!settingsExists)
         {
             gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
             gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
+        }
+        else
+        {
+            gallery.GalleryItem.ExpandedGalleryItemHeight.Value  = Settings.Gallery.ExpandedGalleryItemSize;
+            gallery.GalleryItem.BottomGalleryItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
         }
 
         // Set default gallery sizes if they are out of range or upgrading from an old version
@@ -57,8 +61,12 @@ public static class SettingsUpdater
         }
     }
 
+
+
     public static void InitializeSettings(MainViewModel vm)
     {
+        MainWindowViewModel.GetAndSetWindowMinSize(vm);
+        
         // Set corner radius on macOS
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
@@ -301,6 +309,26 @@ public static class SettingsUpdater
 
         await SaveSettingsAsync();
     }
+
+    public static async Task ToggleFileHistory(MainViewModel vm)
+    {
+        if (Settings.Navigation.IsFileHistoryEnabled)
+        {
+            vm.GlobalSettings.IsFileHistoryEnabled.Value = false;
+            Settings.Navigation.IsFileHistoryEnabled = false;
+            
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.FileHistoryDisabled;
+        }
+        else
+        {
+            vm.GlobalSettings.IsFileHistoryEnabled.Value = true;
+            Settings.Navigation.IsFileHistoryEnabled = true;
+            
+            vm.Translation.ToggleFileHistory.Value = TranslationManager.Translation.FileHistoryEnabled;
+        }
+        
+        await SaveSettingsAsync();
+    }
     
     #region Image settings
 
@@ -354,7 +382,7 @@ public static class SettingsUpdater
                 PixelHeight = (int)vm.PicViewer.ImageHeight.CurrentValue,
                 ImageType = vm.PicViewer.ImageType.CurrentValue,
                 Image = vm.PicViewer.ImageSource,
-                EXIFOrientation = vm.PicViewer.ExifOrientation.CurrentValue
+                Orientation = vm.PicViewer.ExifOrientation.CurrentValue
             };
             var imageModel2 = new ImageModel
             {
@@ -363,7 +391,7 @@ public static class SettingsUpdater
                 PixelHeight = preloadValue.ImageModel.PixelHeight,
                 ImageType = preloadValue.ImageModel.ImageType,
                 Image = preloadValue.ImageModel.Image,
-                EXIFOrientation = preloadValue.ImageModel.EXIFOrientation
+                Orientation = preloadValue.ImageModel.Orientation
             };
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

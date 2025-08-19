@@ -8,9 +8,9 @@ using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.ImageDecoding;
+using PicView.Core.Exif;
 
-namespace PicView.Avalonia.Views;
+namespace PicView.Avalonia.Views.UC;
 
 public partial class ImageViewer : UserControl
 {
@@ -20,7 +20,7 @@ public partial class ImageViewer : UserControl
     public ImageViewer()
     {
         InitializeComponent();
-        ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
+        InitializeImageTransformer();
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
         AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
@@ -29,8 +29,8 @@ public partial class ImageViewer : UserControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
         InitializeZoom();
-        InitializeImageTransformer();
         InitializeMouseInputHelper();
         LostFocus += OnLostFocus;
     }
@@ -48,7 +48,7 @@ public partial class ImageViewer : UserControl
 
     private void InitializeZoom() => _zoom = new Zoom(MainBorder);
 
-    private void InitializeImageTransformer()
+    public void InitializeImageTransformer()
     {
         _imageTransformer = new RotationTransformer(
             ImageLayoutTransformControl,
@@ -98,7 +98,7 @@ public partial class ImageViewer : UserControl
 
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
 
-    public void SetTransform(EXIFHelper.EXIFOrientation? orientation, MagickFormat? format, bool reset = true) =>
+    public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true) =>
         _imageTransformer?.SetTransform(orientation, format, reset);
 
     #endregion

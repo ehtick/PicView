@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using PicView.Core.DebugTools;
 using PicView.Core.Titles;
 #if DEBUG
 using System.Diagnostics;
@@ -52,9 +53,7 @@ public static class WindowsFileAssociation
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"Error registering file association: {ex.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(WindowsFileAssociation), nameof(RegisterFileAssociation), ex);
             return false;
         }
     }
@@ -82,9 +81,7 @@ public static class WindowsFileAssociation
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"Error unregistering file association: {ex.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(WindowsFileAssociation), nameof(UnregisterFileAssociation), ex);
             return false;
         }
     }

@@ -1,8 +1,8 @@
 <Window
     CanResize="{CompiledBinding MainWindow.CanResize.Value}"
     Icon="/icon.ico"
-    MinHeight="{CompiledBinding MainWindow.WindowMinSize.Value}"
-    MinWidth="{CompiledBinding MainWindow.WindowMinSize.Value}"
+    MinHeight="{CompiledBinding MainWindow.WindowMinHeight.Value}"
+    MinWidth="{CompiledBinding MainWindow.WindowMinWidth.Value}"
     SizeChanged="Control_OnSizeChanged"
     SizeToContent="{CompiledBinding MainWindow.SizeToContent.Value}"
     Title="{CompiledBinding PicViewer.WindowTitle.Value,

@@ -52,12 +52,6 @@ public static class UIHelper
 
     #region Helper functions
 
-    public static bool TryGetMainViewModel([NotNullWhen(true)] out MainViewModel? vm)
-    {
-        vm = GetMainView.DataContext as MainViewModel;
-        return vm is not null;
-    }
-
     /// <summary>
     /// Centers the window or gallery based on current state
     /// </summary>

@@ -6,7 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
 namespace PicView.Avalonia.CustomControls;
@@ -67,9 +67,7 @@ public class GalleryListBox : ListBox
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine($"IsControlVisible exception:\n{e.Message}");
-#endif
+            DebugHelper.LogDebug(nameof(GalleryListBox), nameof(IsControlVisible), e);
             return false;
         }
     }

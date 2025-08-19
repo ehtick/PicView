@@ -274,4 +274,33 @@ public static class ImageTitleFormatter
             y = x1 % y;
         }
     }
+    
+    
+
+    /// <summary>
+    /// Generates a formatted aspect ratio string based on the given width, height, and their greatest common divisor (GCD).
+    /// The result includes the aspect ratio and a description of the orientation (landscape, portrait, or square).
+    /// </summary>
+    /// <param name="gcd">The greatest common divisor of the width and height.</param>
+    /// <param name="width">The width dimension of the image or element.</param>
+    /// <param name="height">The height dimension of the image or element.</param>
+    /// <returns>A formatted string representing the aspect ratio and orientation.</returns>
+    public static string GetFormattedAspectRatio(int gcd, int width, int height)
+    {
+        var square = TranslationManager.Translation.Square;
+        var landscape = TranslationManager.Translation.Landscape;
+        var portrait = TranslationManager.Translation.Portrait;
+
+        var firstRatio = width / gcd;
+        var secondRatio = height / gcd;
+
+        if (firstRatio == secondRatio)
+        {
+            return $"{firstRatio}:{secondRatio} ({square})";
+        }
+
+        return firstRatio > secondRatio
+            ? $"{firstRatio}:{secondRatio} ({landscape})"
+            : $"{firstRatio}:{secondRatio} ({portrait})";
+    }
 }

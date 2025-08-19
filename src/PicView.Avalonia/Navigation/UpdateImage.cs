@@ -7,6 +7,7 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Exif;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
@@ -79,7 +80,7 @@ public static class UpdateImage
                 return;
             }
 
-            vm.ImageViewer.SetTransform(preLoadValue.ImageModel.EXIFOrientation, preLoadValue.ImageModel.Format);
+            vm.ImageViewer.SetTransform(preLoadValue.ImageModel.Orientation, preLoadValue.ImageModel.Format);
 
             if (Settings.ImageScaling.ShowImageSideBySide && nextPreloadValue is { ImageModel: not null })
             {
@@ -88,6 +89,7 @@ public static class UpdateImage
                 {
                     vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
                     vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
+                    vm.PicViewer.Format.Value = preLoadValue.ImageModel.Format;
                 }
             }
             else if (preLoadValue is { ImageModel: not null})
@@ -100,6 +102,7 @@ public static class UpdateImage
                 vm.PicViewer.ImageSource.Value = preLoadValue.ImageModel.Image;
                 vm.PicViewer.SecondaryImageSource.Value = null;
                 vm.PicViewer.ImageType.Value = preLoadValue.ImageModel.ImageType;
+                vm.PicViewer.Format.Value = preLoadValue.ImageModel.Format;
             }
             else
             {
@@ -213,7 +216,7 @@ public static class UpdateImage
 
         var imageModel = new ImageModel
         {
-            EXIFOrientation = EXIFHelper.GetImageOrientation(fileInfo),
+            Orientation = ExifOrientationHelper.GetImageOrientation(fileInfo),
             ImageType = ImageType.Bitmap,
             FileInfo = fileInfo,
             Image = source,
@@ -304,7 +307,7 @@ public static class UpdateImage
         vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
         vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
         vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
-        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
+        vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
         vm.PicViewer.FileInfo.Value = imageModel.FileInfo;
         vm.GlobalSettings.ZoomValue.Value = 1;
 

@@ -7,9 +7,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Http;
-#if RELEASE
-using PicView.Core.Config;
-#endif
 
 namespace PicView.Avalonia.Update;
 

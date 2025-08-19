@@ -640,9 +640,6 @@ public class PreLoader(Func<FileInfo, Task<ImageModel>> imageModelLoader) : IAsy
             {
                 Remove(key, list);
             }
-            
-            // Heavy memory usage if not asking GC to collect
-            Collect(MaxGeneration, GCCollectionMode.Optimized, false);
         }
     }
 

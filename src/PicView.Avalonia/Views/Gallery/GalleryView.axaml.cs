@@ -23,7 +23,6 @@ public partial class GalleryAnimationControlView : GalleryAnimationControl
         }
 
         FlyoutBase.ShowAttachedFlyout(ctl);
-        GalleryItemSizeSlider.SetMaxAndMin();
     }
 
     private void MenuBase_OnOpened(object? sender, RoutedEventArgs e)

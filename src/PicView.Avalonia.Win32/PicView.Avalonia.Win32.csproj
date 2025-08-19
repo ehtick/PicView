@@ -93,4 +93,10 @@
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Views\KeybindingsWindow.axaml" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="PicView.exe.manifest">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
 </Project>

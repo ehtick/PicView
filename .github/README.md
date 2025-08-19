@@ -2,9 +2,9 @@
 <img src="https://d33wubrfki0l68.cloudfront.net/327934f4ff80060e07c17935683ecad27cda8080/ee2bc/assets/images/photoshop_1.png" alt="PicView Logo" height="90">
 </h1>
 
-PicView is a fast, free and fully customizable picture viewer for Windows 10 and 11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
+PicView is a fast, free and fully customizable picture viewer for macOS and Windows 10/11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
 
-Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
+Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero tracking. It works out of the box — or you can customize it to your needs.
 
 
 <p align=center>
@@ -15,24 +15,17 @@ Enjoy a clean, free, and fast experience with no bloated UI or annoying pop-ups.
         <img alt="GPL v3 License" src="https://img.shields.io/badge/license-GPLv3-green.svg?maxAge=3600&style=flat-square">
     </a>
     <img alt="Windows OS" src="https://img.shields.io/badge/OS-Windows%2010/11%2064%20bit-00adef.svg?maxAge=3600&style=flat-square">
+    <img alt="macOS" src="https://img.shields.io/badge/OS-macOS-8A2BE2.svg?maxAge=3600&style=flat-square">
 </p>
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5.1/Setup-PicView-v3.1.5.1-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/Setup-PicView-v3.2-win-arm64.exe)
 
-[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5-macos-beta/PicView-3.1.5-macOS-arm64.dmg)
-[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.1.5-macos-beta/PicView-3.1.5-macOS-x64.dmg) _(beta)_
+[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/PicView-3.2-macOS-arm64.dmg)
+[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/3.2/PicView-3.2-macOS-x64.dmg)
 
 [Latest releases at PicView.org](https://picview.org/download)
-
-**Mirrors**
-
-[uptodown](https://picview.en.uptodown.com/windows) <br>
-[FossHub](https://www.fosshub.com/PicView.html) <br>
-[SourceForge](https://sourceforge.net/projects/picview/)
-
-<br>
 
 Scoop:
 ```cmd
@@ -45,21 +38,45 @@ Winget:
 winget install picview
 ```
 
-___
+Homebrew:
+```cmd
+brew install picview
+```
 
-PicView is portable by default. Settings and keybindings are stored in its directory (unless it lacks write permissions), meaning no system files are modified and no installation is necessary. Perfect for storing on a portable USB drive. 
+**Mirrors**
 
-Using the installer will also set file associations for you.
+[uptodown](https://picview.en.uptodown.com/windows) <br>
+[FossHub](https://www.fosshub.com/PicView.html) <br>
+[SourceForge](https://sourceforge.net/projects/picview/) <br>
+[Major Geeks](https://www.majorgeeks.com/files/details/picview.html)
 
-<br>
 
 If you like PicView, consider giving it a star or a like on [AlternativeTo](https://alternativeto.net/software/picview/about/)!
 
+<br>
+
+## 💙 Donate
+Developing PicView has ongoing costs (website hosting, Apple Developer license, AI subscription, etc.).  
+If you enjoy PicView, please consider supporting its development:
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV) 
+
+<a href="https://www.paypal.com/paypalme/Ruben2776"><img src="https://img.shields.io/badge/PayPal-grey?logo=paypal"><a/>
+<a href="https://github.com/sponsors/Ruben2776"><img src="https://img.shields.io/github/sponsors/Ruben2776"><a/>
+
+<br>
 
 # Features and screenshots
-![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
-Switch between a dark and a light theme and toggle between hiding the UI.
+- 🖼️ Supports almost every image format (JPEG, PNG, WEBP, GIF, HEIC, PSD, RAW, etc.)  
+- 🎞️ Animated image support (GIF, WEBP)  
+- 🌗 Light, dark, and glass themes  
+- 📂 Portable by default (no registry / system changes)  
+- 📊 EXIF info window with editing tools  
+- ✂️ Crop, resize, convert, compress, batch process  
+- 📑 Rename or convert directly from title bar  
+- 🎮 Image gallery with keyboard navigation  
+- ⚡ Built with .NET NativeAOT for speed & small size
 
 <br>
 
@@ -69,24 +86,9 @@ _UI overview with bottom gallery._
 
 <br>
 
-<h3 align="center">
-    Scroll Image
-</h3>
+![3x3 0 0](https://github.com/user-attachments/assets/1839c2bb-aff3-4d31-8093-ba3814952ce7)
 
-![SideBySideScroll3 0 0](https://github.com/user-attachments/assets/59ab9368-eb6c-4964-8134-44cf134ea753)
-
-
-You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
-
-<br>
-
-<h3 align="center">
-    Crop Image
-</h3>
-
-![Cropping3 0](https://github.com/user-attachments/assets/e70990d9-b607-4118-8be4-587a3f02c4d7)
-
-Quickly crop image by pressing `C`. Hold `Shift` for square selection.
+Switch between a dark and a light theme and toggle between hiding the UI.
 
 <br>
 
@@ -94,9 +96,9 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
     Image Info Window
 </h3>
 
-<h1 align="center">
+<h4 align="center">
     <img src="https://picview.org/assets/screenshots/exifwindow/Image%20Info%20Window%203.0.0%20.webp" />
-</h1>
+</h4>
 
 Perform operations such as _renaming_, _file conversion_, _copying_, _compressing_, _resizing_, adding it to the _recycle bin_ and editing the _EXIF image rating_.
 
@@ -128,13 +130,31 @@ The bottom gallery can be turned on or off
 <br>
 
 <h3 align="center">
-    Batch Resizing
+    Scroll Image
+</h3>
+
+![SideBySideScroll3 0 0](https://github.com/user-attachments/assets/59ab9368-eb6c-4964-8134-44cf134ea753)
+
+
+You can toggle the interface to show images `Side by side` and you can also turn scrolling on/off. Click the mousewheel for auto scroll.
+
+<br>
+
+<h3 align="center">
+    Crop Image
 </h3>
 
 <h1 align="center">
-    <img src="https://picview.org/assets/screenshots/batch%20resize/batch-resize-3.0v2.webp" />
+    <img src="https://picview.org/assets/screenshots/PicView-Crop/Cropping3.0.webp" />
 </h1>
 
+Quickly crop image by pressing `C`. Hold `Shift` for square selection.
+
+<br>
+
+<h3 align="center">
+    Batch Resizing
+</h3>
 
 ### Convert/Optimize all your pictures
 All files from the `Source folder` will be selected for processing and will be sent to `Output folder`. The default name for the output folder will be **Processed Pictures**.
@@ -143,13 +163,17 @@ If the *Output folder* is the same as the *Source folder*, or left blank, the or
 
 The `Convert to` dropdown option allows you to convert all the files to a popular format.
 
-The `Compression` dropdown option allows you to compress the files, either without losing quality or sacrifing some quality for greater reduced file size.
+The `Compression` dropdown option allows you to compress the files, either without losing quality or sacrificing some quality for greater reduced file size.
 
 The `Quality` dropdown option allows you to change quality of supported file types. The higher the Quality setting, the more detail is preserved in the image, but the larger the file size.
 
 The `Resize` dropdown option allows you to resize the picture by **height**, **width** and **percentage** while keeping the aspect ratio of the image.
 
-___
+<h1 align="center">
+    <img src="https://picview.org/assets/screenshots/batch%20resize/batch-resize-3.0v2.webp" height="600" />
+</h1>
+
+
 
 <br>
 
@@ -176,17 +200,13 @@ Changing the file extension will convert the image to the respective format.
 You can view and change keyboard shortcuts by opening the `Keybindings` window by pressing `K`.
 Alternatively, they are also listed at [PicView.org](https://picview.org/#Shortcuts).
 
-<h1 align="center">
-    <img src="https://picview.org/assets/screenshots/Keybindings/KeybindingsWindow3.0.webp" />
-</h1>
-
 # Technical overview
 PicView is built in C# .NET using Avalonia cross-platform XAML UI framework.
 All builds are compiled using NativeAOT _(with trimming)_, resulting in a fully self-contained native executable.
 
 Using Cysharp’s ZLinq and ZString for zero allocation and high performance, and R3 for high-performance ViewModel binding and event streams.
 
-Magick.NET is used for its rich file support and image editing and information capabilities. 
+Magick.NET is used for its rich file support, image editing, and information capabilities. 
 
 # Contributions
 ![Visual Studio 2022](https://img.shields.io/badge/IDE-Visual%20Studio%202022-964ad4.svg?maxAge=3600)
@@ -219,11 +239,16 @@ Dutch by <a href="https://github.com/Lien5">Lien5</a> <br>
 Japanese by <a href="https://github.com/coolvitto">coolvitto</a> <br>
 Hebrew by <a href="https://github.com/Y-PLONI">Y-PLONI</a> <br>
 Hungarian by <a href="https://github.com/JohnFowler58">JohnFowler58</a> <br>
+Turkish by <a href="https://github.com/odest">Dest</a><br>
 English and Danish by <a href="https://github.com/Ruben2776">Ruben2776</a><br>
 
 **Looking for translators!**
+
+
 If you want to help translate another language or update/improve a current one and be listed here, please take a look at
-https://github.com/Ruben2776/PicView/issues/13
+https://github.com/Ruben2776/PicView/issues/13.
+
+[![Help Translate](https://img.shields.io/badge/Help-Translate-blue)](https://github.com/Ruben2776/PicView/issues/13)
 
 
 
@@ -239,7 +264,3 @@ Free code signing is provided by [SignPath.io](https://about.signpath.io/), cert
 PicView does not collect, send, or receive any user data.
 
 
-# Donate
-If you wish to thank me for my work, please
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV)

@@ -5,7 +5,6 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
-using PicView.Avalonia.Converters;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.Functions;
@@ -14,6 +13,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.UI.FileHistory;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Conversion;
 using PicView.Core.FileHistory;
 
 namespace PicView.Avalonia.Views.Main;
@@ -30,6 +30,7 @@ public partial class MainView : UserControl
         {
             // TODO: Add macOS support
             PrintMenuItem.IsVisible = false;
+            CopyFileMenuItem.IsVisible = false;
             
             // Move alt hover to left side on macOS and switch button order
             AltButtonsPanel.HorizontalAlignment = HorizontalAlignment.Left; 
@@ -112,7 +113,7 @@ public partial class MainView : UserControl
             _ = new HoverFadeButtonHandler(ClickArrowLeft, vm, ClickArrowLeft.PolyButton);
             _ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
             
-            PointerWheelChanged += async (_, e) => await ImageViewer.PreviewOnPointerWheelChanged(this, e);
+            PointerWheelChanged += async (_, e) => await UC.ImageViewer.PreviewOnPointerWheelChanged(this, e);
         };
     }
 
@@ -160,7 +161,7 @@ public partial class MainView : UserControl
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             CropMenuItem.IsEnabled = CropFunctions.DetermineIfShouldBeEnabled(vm);
-            ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm);
+            vm.PicViewer.ShouldOptimizeImageBeEnabled.Value = ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
 
             // Set source for ChangeCtrlZoomImage
             if (!Application.Current.TryGetResource("ScanEyeImage", Application.Current.RequestedThemeVariant, out var scanEyeImage))

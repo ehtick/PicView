@@ -5,6 +5,7 @@
     x:Class="PicView.Avalonia.Views.Config.GalleryView"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
@@ -69,7 +70,19 @@
             MaxWidth="300"
             Text="{CompiledBinding Translation.ExpandedGalleryItemSize.Value,
                                    Mode=OneWay}" />
-        <uc:FullGalleryItemSizeSlider />
+        <customControls:CustomSlider
+            Height="30"
+            HorizontalAlignment="Center"
+            IsSnapToTickEnabled="True"
+            Margin="0,1,0,1"
+            Maximum="{CompiledBinding Gallery.GalleryItem.MaxExpandedGalleryItemHeight}"
+            Minimum="{CompiledBinding Gallery.GalleryItem.MinExpandedGalleryItemHeight}"
+            TickFrequency="1"
+            TickPlacement="BottomRight"
+            Value="{CompiledBinding Gallery.GalleryItem.ExpandedGalleryItemHeight.Value,
+                                    Mode=TwoWay}"
+            Width="300"
+            x:Name="ExpandedGallerySlider" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -87,7 +100,19 @@
             MaxWidth="300"
             Text="{CompiledBinding Translation.BottomGalleryItemSize.Value,
                                    Mode=OneWay}" />
-        <uc:BottomGalleryItemSizeSlider />
+        <customControls:CustomSlider
+            Height="30"
+            HorizontalAlignment="Center"
+            IsSnapToTickEnabled="True"
+            Margin="0,1,0,1"
+            Maximum="{CompiledBinding Gallery.GalleryItem.MaxGalleryItemHeight}"
+            Minimum="{CompiledBinding Gallery.GalleryItem.MinGalleryItemHeight}"
+            TickFrequency="1"
+            TickPlacement="BottomRight"
+            Value="{CompiledBinding Gallery.GalleryItem.BottomGalleryItemHeight.Value,
+                                    Mode=TwoWay}"
+            Width="300"
+            x:Name="BottomGallerySlider" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"

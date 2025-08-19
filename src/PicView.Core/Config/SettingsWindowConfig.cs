@@ -53,6 +53,8 @@ public class SettingsWindowConfig() : ConfigFile("SettingsWindow.json")
         public double? Width { get; set; }
         public double? Height { get; set; }
         public bool Maximized { get; set; }
+        
+        public int LastTab { get; set; }
     }
 }
 

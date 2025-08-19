@@ -65,7 +65,7 @@ public partial class EffectsView : UserControl
     private void InitializeViewModel(MainViewModel vm)
     {
         // Reset on file change
-        Observable.EveryValueChanged(vm, v => v.PicViewer.FileInfo.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(_ => Reset())
             .AddTo(_disposables);
 
@@ -103,6 +103,7 @@ public partial class EffectsView : UserControl
             }
             UIHelper.SwitchAccentHoverClass(ResetButton);
             UIHelper.SwitchAccentHoverClass(CancelButton);
+            LowerPanel.Background = new SolidColorBrush(Color.Parse("#5DA2A2A2"));
         }
         
         CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();

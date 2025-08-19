@@ -51,12 +51,13 @@ public partial class SettingsView : UserControl
         {
             return;
         }
-
+        
         InitializeViewModel();
         SetupUI();
         AttachEventHandlers();
         LoadInitialSettings();
     }
+    
 
     private void InitializeViewModel()
     {
@@ -65,6 +66,7 @@ public partial class SettingsView : UserControl
             return;
         }
 
+        SelectInitialTab(vm);
         var settingsVm = vm.SettingsViewModel;
         Task.Run(() =>
         {
@@ -72,6 +74,16 @@ public partial class SettingsView : UserControl
             settingsVm.SubscriptionSettingsUpdate();
         });
         SubscribeToChanges(vm, settingsVm);
+    }
+
+    private void SelectInitialTab(MainViewModel vm)
+    {
+        MainTabControl.SelectedIndex = vm.Window.SettingsWindowConfig.WindowProperties.LastTab;
+    }
+    
+    private void SetLastTab(MainViewModel vm)
+    {
+        vm.Window.SettingsWindowConfig.WindowProperties.LastTab = MainTabControl.SelectedIndex;
     }
 
     private static void SubscribeToChanges(MainViewModel vm, SettingsViewModel settingsVm)
@@ -176,6 +188,7 @@ public partial class SettingsView : UserControl
         _currentTab = selectedTab;
         SelectTab(_currentTab);
         UpdateNavigationButtons();
+        SetLastTab(ViewModel);
     }
 
     public void GoBack()

@@ -91,13 +91,6 @@
                         <Setter Property="Width" Value="14" />
                         <Setter Property="Height" Value="14" />
                     </Style>
-                    <!-- <Style Selector="Path.pathStyle"> -->
-                    <!--     <Setter Property="Margin" Value="2,0,8,0" /> -->
-                    <!--     <Setter Property="Width" Value="14" /> -->
-                    <!--     <Setter Property="Height" Value="14" /> -->
-                    <!--     <Setter Property="Stretch" Value="Fill" /> -->
-                    <!--     <Setter Property="Fill" Value="{DynamicResource MainTextColor}" /> -->
-                    <!-- </Style> -->
                 </Styles>
             </TabControl.Styles>
 

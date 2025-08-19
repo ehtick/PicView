@@ -11,6 +11,7 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.Win32.WindowImpl;
+using PicView.Core.DebugTools;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
@@ -83,9 +84,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
+            DebugHelper.LogDebug(nameof(App), nameof(OnFrameworkInitializationCompleted), e);
         }
     }
 
@@ -251,8 +250,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public void ShowSingleImageResizeWindow() =>
         _windowInitializer?.ShowSingleImageResizeWindow(_vm);
 
-    public void ShowBatchResizeWindow() =>
-        _windowInitializer?.ShowBatchResizeWindow(_vm);
+    public async Task ShowBatchResizeWindow() =>
+       await _windowInitializer?.ShowBatchResizeWindow(_vm);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow(_vm);

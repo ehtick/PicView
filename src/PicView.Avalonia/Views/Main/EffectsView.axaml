@@ -16,7 +16,7 @@
         </Styles>
     </UserControl.Styles>
     <UserControl.ContextMenu>
-        <ContextMenu x:Name="ContextMenu">
+        <ContextMenu x:Name="EffectsContextMenu">
             <MenuItem Command="{CompiledBinding Tools.SaveFileCommand}" Header="{CompiledBinding Translation.Save.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
@@ -474,10 +474,11 @@
             </StackPanel>
 
             <StackPanel
-                Background="#5DA2A2A2"
+                Background="#277A7A7A"
                 Height="80"
                 Margin="0,15,0,0"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                x:Name="LowerPanel">
                 <Button
                     Classes="BorderStyle altHover mainBtn"
                     CornerRadius="4"

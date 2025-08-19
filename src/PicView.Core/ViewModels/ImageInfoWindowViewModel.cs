@@ -28,7 +28,10 @@ public class ImageInfoWindowViewModel : IDisposable
             TextBoxWidth,
             TextBoxXlWidth,
             TextBoxXxlWidth,
-            IsCopyButtonEnabled);
+            IsCopyButtonEnabled,
+            IsExtraButtonsEnabled,
+            IsConvertBoxEnabled,
+            IsLoading);
     }
 
     public void ResponsiveResizeUpdate(double width, double scrollBarThickness, double panelWidth)

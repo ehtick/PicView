@@ -73,6 +73,8 @@
                 <buttons:StarOutlineButtons
                     Background="{DynamicResource SecondaryButtonBackgroundColor}"
                     DockPanel.Dock="Right"
+                    IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                                FallbackValue=False}"
                     x:Name="StarOutlineButtons" />
 
                 <customControls:IconButton
@@ -87,6 +89,10 @@
                     Icon="{StaticResource StarOffImage}"
                     IconHeight="17"
                     IconWidth="17"
+                    IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                                FallbackValue=False}"
+                    ToolTip.Tip="{CompiledBinding Translation.RemoveStarRating.Value,
+                                                  Mode=OneWay}"
                     Width="35"
                     x:Name="RemoveRatingButton" />
 
@@ -115,9 +121,6 @@
                     BorderThickness="0,0,1,0"
                     Classes="errorHover"
                     ClickMode="Release"
-                    Command="{CompiledBinding Exif.RemoveImageDataCommand}"
-                    CommandParameter="{CompiledBinding PicViewer.FileInfo.Value.FullName,
-                                                       FallbackValue=''}"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="28"
@@ -125,6 +128,8 @@
                     IconHeight="17"
                     IconMargin="10,0,5,0"
                     IconWidth="17"
+                    IsEnabled="{CompiledBinding Exif.IsExifAvailable.Value,
+                                                FallbackValue=False}"
                     IsVisible="{CompiledBinding InfoWindow.IsExtraButtonsEnabled.Value}"
                     Text="{CompiledBinding Translation.RemoveImageData.Value,
                                            Mode=OneWay}"

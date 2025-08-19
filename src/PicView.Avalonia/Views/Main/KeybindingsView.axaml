@@ -261,9 +261,6 @@
                 Width="140" />
         </StackPanel>
 
-
-
-
         <StackPanel Margin="15,0,10,10" Orientation="Horizontal">
             <TextBlock
                 Classes="txt"
@@ -668,6 +665,8 @@
                 Width="140" />
         </StackPanel>
 
+
+        <!--  Image control  -->
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -1113,6 +1112,201 @@
                 Width="140" />
         </StackPanel>
 
+        <!--  Sort files  -->
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Margin="10,10,10,15"
+            Text="{CompiledBinding Translation.SortFilesBy.Value,
+                                   Mode=OneWay}"
+            TextAlignment="Center" />
+
+        <!--  File name  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.FileName.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesByName"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesByName"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  File size  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.FileSize.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesBySize"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesBySize"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  File extension  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.FileExtension.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesByExtension"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesByExtension"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Created  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.Created.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesByCreationTime"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesByCreationTime"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Last access time  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.LastAccessTime.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesByLastAccessTime"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesByLastAccessTime"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Random  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.Random.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesRandomly"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesRandomly"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Ascending  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.Ascending.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesAscending"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesAscending"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Descending  -->
+        <StackPanel Margin="15,5,10,10" Orientation="Horizontal">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Text="{CompiledBinding Translation.Descending.Value,
+                                       Mode=OneWay}"
+                Width="170" />
+            <customControls:KeybindTextBox
+                Classes="hover TStyle"
+                MethodName="SortFilesDescending"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+            <customControls:KeybindTextBox
+                Alt="True"
+                Classes="hover TStyle"
+                MethodName="SortFilesDescending"
+                ToolTip.Tip="{CompiledBinding Translation.ChangeKeybindingTooltip.Value,
+                                              Mode=OneWay}"
+                Width="140" />
+        </StackPanel>
+
+        <!--  Copy  -->
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"

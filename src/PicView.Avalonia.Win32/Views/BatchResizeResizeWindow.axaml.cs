@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.Localization;
 using R3;
 
@@ -13,8 +14,10 @@ namespace PicView.Avalonia.Win32.Views;
 public partial class BatchResizeWindow : Window, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
-    public BatchResizeWindow()
+    private readonly BatchResizeWindowConfig _config;
+    public BatchResizeWindow(BatchResizeWindowConfig config)
     {
+        _config = config;
         InitializeComponent();
         StartUp();
     }
@@ -67,8 +70,26 @@ public partial class BatchResizeWindow : Window, IDisposable
         {
             ClientSizeProperty.Changed.ToObservable()
                 .ObserveOn(UIHelper.GetFrameProvider)
-                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); })
+                .Subscribe(size =>
+                {
+                    WindowResizing.HandleWindowResize(this, size);
+                    UpdateWindowSize(size);
+                })
                 .AddTo(_disposables);
+            PositionChanged += (_, _) => UpdateWindowPosition();
+        };
+        
+        Closing += async delegate
+        {
+            Hide();
+            if (VisualRoot is null)
+            {
+                return;
+            }
+
+            var hostWindow = (Window)VisualRoot;
+            hostWindow?.BringIntoView();
+            await _config.SaveAsync();
         };
     }
 
@@ -86,6 +107,15 @@ public partial class BatchResizeWindow : Window, IDisposable
     private void Close(object? sender, RoutedEventArgs e) => Close();
 
     private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    
+    private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)
+        => WindowFunctions.SetWindowSize(this, size, _config.WindowProperties);
+    
+    private void UpdateWindowPosition()
+    {
+        _config.WindowProperties.Left = Position.X;
+        _config.WindowProperties.Top = Position.Y;
+    }
 
     public void Dispose()
     {

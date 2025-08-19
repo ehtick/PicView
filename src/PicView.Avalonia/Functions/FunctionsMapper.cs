@@ -13,6 +13,7 @@ using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Exif;
 using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
 using PicView.Core.ImageDecoding;
@@ -36,14 +37,19 @@ public static class FunctionsMapper
             // Navigation values
             "Next" => Next,
             "Prev" => Prev,
+            
             "NextFolder" => NextFolder,
             "PrevFolder" => PrevFolder,
+            
             "Up" => Up,
             "Down" => Down,
+            
             "Last" => Last,
             "First" => First,
+            
             "Next10" => Next10,
             "Prev10" => Prev10,
+            
             "Next100" => Next100,
             "Prev100" => Prev100,
             
@@ -119,7 +125,19 @@ public static class FunctionsMapper
             "ShowFileProperties" => ShowFileProperties,
             "ShowSettingsFile" => ShowSettingsFile,
             "ShowKeybindingsFile" => ShowKeybindingsFile,
-
+            
+            // Sorting functions
+            "SortFilesByName" => SortFilesByName,
+            "SortFilesByCreationTime" => SortFilesByCreationTime,
+            "SortFilesByLastAccessTime" => SortFilesByLastAccessTime,
+            "SortFilesByLastWriteTime" => SortFilesByLastWriteTime,
+            "SortFilesBySize" => SortFilesBySize,
+            "SortFilesByExtension" => SortFilesByExtension,
+            "SortFilesRandomly" => SortFilesRandomly,
+            
+            "SortFilesAscending" => SortFilesAscending,
+            "SortFilesDescending" => SortFilesDescending,
+            
             // Image functions
             "ResizeImage" => ResizeImage,
             "Crop" => Crop,
@@ -686,90 +704,22 @@ public static class FunctionsMapper
     #region Rating
 
     public static async Task Set0Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 0); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 0;
-        }
-    }
+        => await SetExifRatingHelper.Set0Star(Vm);
 
     public static async Task Set1Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 1); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 1;
-        }
-    }
+        => await SetExifRatingHelper.Set1Star(Vm);
 
     public static async Task Set2Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 2); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 2;
-        }
-    }
+        => await SetExifRatingHelper.Set2Star(Vm);
 
     public static async Task Set3Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 3); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 3;
-        }
-    }
+        => await SetExifRatingHelper.Set3Star(Vm);
 
     public static async Task Set4Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 4); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 4;
-        }
-    }
+        => await SetExifRatingHelper.Set4Star(Vm);
 
     public static async Task Set5Star()
-    {
-        // TODO: Needs refactoring into EXIFHelper
-        if (Vm is null)
-        {
-            return;
-        }
-        await Task.Run(() => { EXIFHelper.SetEXIFRating(Vm.PicViewer.FileInfo.CurrentValue.FullName, 5); });
-        if (Vm.Exif is not null)
-        {
-            Vm.Exif.ExifRating.Value = 5;
-        }
-    }
+        => await SetExifRatingHelper.Set5Star(Vm);
 
     #endregion
 
@@ -893,6 +843,9 @@ public static class FunctionsMapper
     
     public static async Task ToggleOpeningInSameWindow() =>
         await SettingsUpdater.ToggleOpeningInSameWindow(Vm).ConfigureAwait(false);
+    
+    public static async Task ToggleFileHistory() =>
+        await SettingsUpdater.ToggleFileHistory(Vm).ConfigureAwait(false);
 
     #endregion
     

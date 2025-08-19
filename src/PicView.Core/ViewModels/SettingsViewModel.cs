@@ -92,6 +92,20 @@ public class SettingsViewModel : IDisposable
                 Settings.UIProperties.SlideShowTimer = roundedValue;
                 GetSlideshowSpeed.Value = roundedValue;
             }).AddTo(_disposables);
+        
+        Observable.EveryValueChanged(this, x => x.IsShowingPermanentDeletionDialog.CurrentValue)
+            .SubscribeAwait(async (x, _) =>
+            {
+                Settings.UIProperties.ShowPermanentDeletionConfirmation = x;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+        
+        Observable.EveryValueChanged(this, x => x.IsShowingRecycleDialog.CurrentValue)
+            .SubscribeAwait(async (x, _) =>
+            {
+                Settings.UIProperties.ShowRecycleConfirmation = x;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
 
 
         Observable.EveryValueChanged(this, x => x.IsAvoidingZoomingOut.CurrentValue)

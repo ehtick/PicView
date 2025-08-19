@@ -1,7 +1,7 @@
 ﻿using PicView.Avalonia.Functions;
 using PicView.Avalonia.Interfaces;
 using PicView.Core.ViewModels;
-using ImageViewer = PicView.Avalonia.Views.ImageViewer;
+using ImageViewer = PicView.Avalonia.Views.UC.ImageViewer;
 
 namespace PicView.Avalonia.ViewModels;
 

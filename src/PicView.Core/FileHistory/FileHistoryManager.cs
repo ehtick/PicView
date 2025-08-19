@@ -122,6 +122,11 @@ public static class FileHistoryManager
     /// </summary>
     public static void Add(string path)
     {
+        if (!Settings.Navigation.IsFileHistoryEnabled)
+        {
+            return;
+        }
+        
         if (string.IsNullOrWhiteSpace(path))
         {
             return;
@@ -313,6 +318,11 @@ public static class FileHistoryManager
     /// </summary>
     public static async Task SaveToFileAsync()
     {
+        if (!Settings.Navigation.IsFileHistoryEnabled)
+        {
+            return;
+        }
+        
         try
         {
             if (string.IsNullOrWhiteSpace(_fileHistoryConfiguration.CorrectPath))
@@ -348,6 +358,11 @@ public static class FileHistoryManager
     /// </summary>
     private static async Task LoadFromFileAsync()
     {
+        if (!Settings.Navigation.IsFileHistoryEnabled)
+        {
+            return;
+        }
+        
         try
         {
             var jsonString = await File.ReadAllTextAsync(_fileHistoryConfiguration.TryGetCurrentUserConfigPath).ConfigureAwait(false);

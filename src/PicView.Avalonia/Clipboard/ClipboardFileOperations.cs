@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Avalonia.Platform.Storage;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Navigation;
@@ -44,9 +44,7 @@ public static class ClipboardFileOperations
         }
         catch (Exception ex)
         {
-#if DEBUG
-            Debug.WriteLine($"{nameof(ClipboardFileOperations)} {nameof(Duplicate)} {ex.StackTrace}");
-#endif
+            DebugHelper.LogDebug(nameof(ClipboardFileOperations), nameof(Duplicate), ex);
             await TooltipHelper.ShowTooltipMessageAsync(TranslationManager.Translation.UnexpectedError);
         }
         finally
@@ -119,16 +117,25 @@ public static class ClipboardFileOperations
     /// <param name="filePath">Path to the file</param>
     /// <param name="vm">The main view model</param>
     /// <returns>A task representing the asynchronous operation</returns>
-    public static Task<bool> CopyFileToClipboard(string? filePath, MainViewModel vm)
+    public static async Task CopyFileToClipboard(string? filePath, MainViewModel vm)
     {
         if (string.IsNullOrWhiteSpace(filePath))
         {
-            return Task.FromResult(false);
+            return;
         }
 
-        return ClipboardService.ExecuteClipboardOperation(
-            () => Task.Run(() => vm.PlatformService.CopyFile(filePath))
-        );
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            // TODO add clipboard file copy on macOS 
+            return;
+        }
+
+        var tasks = new[]
+        {
+            AnimationsHelper.CopyAnimation(),
+            Task.Run(() => vm.PlatformService.CopyFile(filePath))
+        };
+        await Task.WhenAll(tasks);
     }
 
     /// <summary>

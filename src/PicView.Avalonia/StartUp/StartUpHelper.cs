@@ -12,11 +12,11 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
 using PicView.Core.ProcessHandling;
+using ImageViewer = PicView.Avalonia.Views.UC.ImageViewer;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -75,7 +75,7 @@ public static class StartUpHelper
         Window window, string? arg = null)
     {
         SettingsUpdater.InitializeSettings(vm);
-
+        
         HandleWindowScalingMode(vm, window);
 
         HandleStartUpMenuOrImage(vm, window, arg);
@@ -118,18 +118,19 @@ public static class StartUpHelper
             Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
         }
 
-        Task.Run(FileHistoryManager.InitializeAsync);
-
         HandleThemeUpdates(vm);
 
         UIHelper.SetControls(desktop);
         Task.Run(() =>
         {
+            _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
-            SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+
         });
 
+        SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
         vm.MainWindow.LayoutButtonSubscription();
+        vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
 
         SetWindowEventHandlers(window);
         MenuManager.AddMenus();

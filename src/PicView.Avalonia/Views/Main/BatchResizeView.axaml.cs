@@ -9,6 +9,7 @@ using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
@@ -93,9 +94,7 @@ public partial class BatchResizeView : UserControl
                 }
                 catch (Exception e)
                 {
-#if DEBUG
-                    Console.WriteLine(e);
-#endif
+                    DebugHelper.LogDebug(nameof(BatchResizeView), nameof(StartButton.Click), e);
                 }
             };
 
@@ -553,9 +552,7 @@ public partial class BatchResizeView : UserControl
         }
         catch (Exception e)
         {
-#if DEBUG
-            Console.WriteLine(e);
-#endif
+            DebugHelper.LogDebug(nameof(BatchResizeView), nameof(StartBatchResize), e);
         }
         finally
         {

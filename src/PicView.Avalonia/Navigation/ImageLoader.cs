@@ -369,7 +369,7 @@ public static class ImageLoader
 
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
         vm.PicViewer.FileInfo.Value = fileInfo;
-        vm.PicViewer.ExifOrientation.Value = imageModel.EXIFOrientation;
+        vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
         FileHistoryManager.Add(url);
 
         await NavigationManager.DisposeImageIteratorAsync();

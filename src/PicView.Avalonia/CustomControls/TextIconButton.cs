@@ -15,6 +15,8 @@ namespace PicView.Avalonia.CustomControls;
 /// </summary>
 public class TextIconButton : Button
 {
+    private TextBlock? _textBlock;
+    
     /// <summary>
     /// Defines the <see cref="Icon"/> property.
     /// The icon is displayed as a <see cref="DrawingImage"/> with support for dynamic brush changes.
@@ -96,7 +98,7 @@ public class TextIconButton : Button
     /// </summary>
     public double TextMaxWidth
     {
-        get => (double)GetValue(TextMaxWidthProperty);
+        get => (double)(GetValue(TextMaxWidthProperty) ?? 0);
         set => SetValue(TextMaxWidthProperty, value);
     }
 
@@ -168,9 +170,17 @@ public class TextIconButton : Button
         {
             StopTimer();
         }
+
+        if (change.Property == TextProperty)
+        {
+            if (_textBlock is not null)
+            {
+                _textBlock.Text = change.NewValue.ToString();
+            }
+        }
     }
 
-    private Control BuildControl()
+    private StackPanel BuildControl()
     {
         var stackPanel = new StackPanel
         {
@@ -181,6 +191,7 @@ public class TextIconButton : Button
         var textBlock = BuildText();
         stackPanel.Children.Add(icon);
         stackPanel.Children.Add(textBlock);
+        _textBlock = textBlock;
         return stackPanel;
     }
 

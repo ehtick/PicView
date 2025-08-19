@@ -202,13 +202,14 @@ public static class GalleryLoad
             var isSvg = fileInfo.Extension.Equals(".svg", StringComparison.OrdinalIgnoreCase) ||
                         fileInfo.Extension.Equals(".svgz", StringComparison.OrdinalIgnoreCase);
             Bitmap? thumb;
-            if (!isSvg)
+            if (isSvg)
             {
-                thumb = await GetThumbnails.GetThumbAsync(fileInfo, galleryItemSize);
+                thumb = null;
             }
             else
             {
-                thumb = null;
+                
+                thumb = await GetThumbnails.GetThumbAsync(fileInfo, galleryItemSize);
             }
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -274,9 +275,7 @@ public static class GalleryLoad
             }
             catch (Exception e)
             {
-#if DEBUG
-                Console.WriteLine($"GalleryLoad exception on clear:\n{e.Message}");
-#endif
+                DebugHelper.LogDebug(nameof(GalleryLoad), nameof(ReloadGalleryAsync), e);
             }
         });
         await LoadGallery(vm, currentDirectory).ConfigureAwait(false);
@@ -303,5 +302,18 @@ public static class GalleryLoad
 
             await ReloadGalleryAsync(vm, fileInfo.DirectoryName);
         }
+        else if (!GalleryFunctions.IsGalleryEmpty())
+        {
+            GalleryFunctions.Clear();
+        }
+    }
+
+    public static async Task CancelGalleryLoadAsync()
+    {
+        if (_cancellationTokenSource is not null)
+        {
+            await _cancellationTokenSource.CancelAsync();
+        }
+        CleanupAfterLoading();
     }
 }
