@@ -59,7 +59,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         var fileInfo = list[index];
         var preLoadValue = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
         ct.ThrowIfCancellationRequested();
-        _preLoadList.TryAdd(index, preLoadValue, isReverse, out var evictedValue);
+        _preLoadList.TryAdd(index, preLoadValue,  list.Count, isReverse, out var evictedValue);
 
         try
         {
@@ -117,7 +117,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         }
 
         var preLoadValue = new PreLoadValue(imageModel);
-        if (!_preLoadList.TryAdd(index, preLoadValue, isReverse, out var evictedValue))
+        if (!_preLoadList.TryAdd(index, preLoadValue,  list.Count, isReverse, out var evictedValue))
         {
             return false;
         }
@@ -225,7 +225,7 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
                 continue;
             }
 
-            if (_preLoadList.TryAdd(newIndex, removedValue, out var evictedValue))
+            if (_preLoadList.TryAdd(newIndex, removedValue, list.Count, false, out var evictedValue))
             {
                 // An item was evicted during the move, so dispose of it
                 ImageDisposalHelper(evictedValue);

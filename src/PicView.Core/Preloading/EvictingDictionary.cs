@@ -69,32 +69,13 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
         }
     }
 
-
-    /// <summary>
-    /// Attempts to add a key/value pair using the forward navigation policy.
-    /// </summary>
-    /// <param name="key">The unique integer key to add.</param>
-    /// <param name="value">The value to associate with <paramref name="key"/>.</param>
-    /// <param name="evictedValue">
-    /// When this method returns, contains the value of the item that was evicted if an eviction occurred;
-    /// otherwise, the default value for <typeparamref name="TValue"/>.
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/> if an item was evicted due to capacity; otherwise, <see langword="false"/>.
-    /// </returns>
-    /// <remarks>
-    /// If <paramref name="key"/> already exists, its value is updated and no eviction occurs
-    /// (this method returns <see langword="false"/> and <paramref name="evictedValue"/> is set to default).
-    /// </remarks>
-    public bool TryAdd(int key, TValue value, [MaybeNullWhen(false)] out TValue evictedValue) =>
-        TryAdd(key, value, false, out evictedValue);
-
     /// <summary>
     /// Attempts to add a key/value pair, evicting an item if capacity is exceeded according to
     /// the supplied navigation direction.
     /// </summary>
     /// <param name="key">The unique integer key to add.</param>
     /// <param name="value">The value to associate with <paramref name="key"/>.</param>
+    /// <param name="totalCount">The total count of the file list</param>
     /// <param name="isReverse">
     /// Indicates navigation direction. If <see langword="true"/>, the highest key is evicted;
     /// if <see langword="false"/>, the lowest key is evicted.
@@ -110,7 +91,7 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
     /// If <paramref name="key"/> already exists, its value is updated and no eviction occurs
     /// (this method returns <see langword="false"/> and <paramref name="evictedValue"/> is set to default).
     /// </remarks>
-    public bool TryAdd(int key, TValue value, bool isReverse, [MaybeNullWhen(false)] out TValue evictedValue)
+    public bool TryAdd(int key, TValue value, int totalCount, bool isReverse, [MaybeNullWhen(false)] out TValue evictedValue)
     {
         _lock.Enter(); // Lock acquired
         try
@@ -122,20 +103,39 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
                 evictedValue = default;
                 return false;
             }
-
             if (_dictionary.Count >= _maxSize)
             {
-                // New Eviction Logic
-                int keyToEvict;
+                // Looping Eviction Logic: Find the key farthest away from the current index.
+                var keyToEvict = -1;
+                var maxDistance = -1;
+
                 if (isReverse)
                 {
-                    // Moving backwards, remove the highest key (e.g., image far ahead)
-                    keyToEvict = _dictionary.Keys.Max();
+                    // Moving backward: Evict the key that is "farthest ahead".
+                    // This is the key with the largest forward distance from the current index.
+                    foreach (var dictionaryKey in _dictionary.Keys)
+                    {
+                        var distance = (dictionaryKey - key + totalCount) % totalCount;
+                        if (distance > maxDistance)
+                        {
+                            maxDistance = distance;
+                            keyToEvict = dictionaryKey;
+                        }
+                    }
                 }
                 else
                 {
-                    // Moving forwards, remove the lowest key (e.g., image far behind)
-                    keyToEvict = _dictionary.Keys.Min();
+                    // Moving forward: Evict the key that is "farthest behind".
+                    // This is the key with the largest backward distance from the current index.
+                    foreach (var dictionaryKey in _dictionary.Keys)
+                    {
+                        var distance = (key - dictionaryKey + totalCount) % totalCount;
+                        if (distance > maxDistance)
+                        {
+                            maxDistance = distance;
+                            keyToEvict = dictionaryKey;
+                        }
+                    }
                 }
 
                 evictedValue = _dictionary[keyToEvict];
