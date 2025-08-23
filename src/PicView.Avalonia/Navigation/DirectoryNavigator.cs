@@ -156,6 +156,7 @@ public static class DirectoryNavigator
     private static List<FileInfo>? NextDirectoryInCurrentDirectories(string[] directories, string currentFolder,
         bool isCurrentDirectory, bool next, MainViewModel vm)
     {
+        directories.Sort((x, y) => vm.PlatformService.CompareStrings(x, y));
         var dirCount = directories.Length;
         int directoryIndex;
         if (isCurrentDirectory)
