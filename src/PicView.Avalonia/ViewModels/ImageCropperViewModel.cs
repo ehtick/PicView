@@ -96,7 +96,7 @@ public class ImageCropperViewModel : IDisposable
         }
     }
 
-    public async Task SaveCroppedImageAsync() => await SaveCroppedImageAsync(Unit.Default, CancellationToken.None);
+    public async ValueTask SaveCroppedImageAsync() => await SaveCroppedImageAsync(Unit.Default, CancellationToken.None);
 
     private async ValueTask CopyCroppedImageAsync(Unit unit, CancellationToken cancellationToken)
     {
@@ -119,7 +119,7 @@ public class ImageCropperViewModel : IDisposable
         }
     }
 
-    public async Task CopyCroppedImageAsync() => await CopyCroppedImageAsync(Unit.Default, CancellationToken.None);
+    public async ValueTask CopyCroppedImageAsync() => await CopyCroppedImageAsync(Unit.Default, CancellationToken.None);
 
     private (string fileName, FileInfo fileInfo, Bitmap? bitmap) PrepareCropData(MainViewModel vm)
         => NavigationManager.IsCollectionEmpty
@@ -138,7 +138,7 @@ public class ImageCropperViewModel : IDisposable
         return (fileName, new FileInfo(fileName), bitmap);
     }
 
-    private async Task SaveImage(string saveFilePath, FileInfo fileInfo, Bitmap? bitmap)
+    private async ValueTask SaveImage(string saveFilePath, FileInfo fileInfo, Bitmap? bitmap)
     {
         if (bitmap != null)
         {
@@ -149,7 +149,7 @@ public class ImageCropperViewModel : IDisposable
         await SaveWithMagickImage(saveFilePath, fileInfo);
     }
 
-    private async Task SaveWithMagickImage(string saveFilePath, FileInfo fileInfo)
+    private async ValueTask SaveWithMagickImage(string saveFilePath, FileInfo fileInfo)
     {
         using var image = new MagickImage(fileInfo.FullName);
         var x = Convert.ToInt32(SelectionX.CurrentValue / AspectRatio.CurrentValue);
