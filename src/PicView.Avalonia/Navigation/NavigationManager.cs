@@ -125,11 +125,14 @@ public static class NavigationManager
         }
 
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
-        FileHistoryManager.Add(ImageIterator.ImagePaths[index].FullName);
-        if (Settings.ImageScaling.ShowImageSideBySide)
+        if (ImageIterator.ImagePaths.Count > 0 && index > ImageIterator.ImagePaths.Count)
         {
-            FileHistoryManager.Add(
-                ImageIterator.ImagePaths[ImageIterator.GetIteration(index, NavigateTo.Next)].FullName);
+            FileHistoryManager.Add(ImageIterator.ImagePaths[index].FullName);
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                FileHistoryManager.Add(
+                    ImageIterator.ImagePaths[ImageIterator.GetIteration(index, NavigateTo.Next)].FullName);
+            }
         }
 
         await GalleryLoad.CheckAndReloadGallery(fileInfo, vm);

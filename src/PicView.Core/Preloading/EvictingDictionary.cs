@@ -138,8 +138,15 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
                     }
                 }
 
-                evictedValue = _dictionary[keyToEvict];
-                _dictionary.Remove(keyToEvict);
+                if (keyToEvict > -1 && keyToEvict > _dictionary.Count)
+                {
+                    evictedValue = _dictionary[keyToEvict];
+                    _dictionary.Remove(keyToEvict);
+                }
+                else
+                {
+                    evictedValue = default;
+                }
             }
             else
             {
@@ -272,6 +279,10 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
         _lock.Enter();
         try
         {
+            if (key < 0 || key > _dictionary.Count)
+            {
+                return false;
+            }
             return _dictionary.ContainsKey(key);
         }
         finally
