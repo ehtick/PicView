@@ -73,6 +73,12 @@ public static class NavigationManager
         {
             ImageIterator = new ImageIterator(fileInfo, vm);
             index = ImageIterator.CurrentIndex;
+            if (index == -1)
+            {
+                await UpdateImage.SetSingleImageAsync(imageModel.Image, imageModel.ImageType,
+                    TranslationManager.Translation.ClipboardImage, vm);
+                return;
+            }
         }
         else
         {
