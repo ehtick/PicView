@@ -43,7 +43,7 @@
                 Command="{CompiledBinding Tools.SaveFileCommand}"
                 Header="{CompiledBinding Translation.Save.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Path Classes="SavePath" />

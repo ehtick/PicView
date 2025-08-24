@@ -35,7 +35,7 @@ public static class FileSaverHelper
         }
         
         // Suggest random filename for saving, if it is not an existing file
-        var fileName = vm.PicViewer.FileInfo is null ? Path.GetRandomFileName() : vm.PicViewer.FileInfo.CurrentValue.Name;
+        var fileName = vm.PicViewer?.FileInfo?.CurrentValue is null ? Path.GetRandomFileName() : vm.PicViewer.FileInfo.CurrentValue.Name;
 
         await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
     }
