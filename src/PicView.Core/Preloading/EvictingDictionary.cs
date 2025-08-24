@@ -113,13 +113,13 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
                 {
                     // Moving backward: Evict the key that is "farthest ahead".
                     // This is the key with the largest forward distance from the current index.
-                    foreach (var dictionaryKey in _dictionary.Keys)
+                    for (var i = 0; i < _dictionary.Keys.Count; i++)
                     {
-                        var distance = (dictionaryKey - key + totalCount) % totalCount;
+                        var distance = (i - key + totalCount) % totalCount;
                         if (distance > maxDistance)
                         {
                             maxDistance = distance;
-                            keyToEvict = dictionaryKey;
+                            keyToEvict = i;
                         }
                     }
                 }
@@ -127,13 +127,13 @@ public class EvictingDictionary<TValue> : IEnumerable<KeyValuePair<int, TValue>>
                 {
                     // Moving forward: Evict the key that is "farthest behind".
                     // This is the key with the largest backward distance from the current index.
-                    foreach (var dictionaryKey in _dictionary.Keys)
+                    for (var i = 0; i < _dictionary.Keys.Count; i++)
                     {
-                        var distance = (key - dictionaryKey + totalCount) % totalCount;
+                        var distance = (key - i + totalCount) % totalCount;
                         if (distance > maxDistance)
                         {
                             maxDistance = distance;
-                            keyToEvict = dictionaryKey;
+                            keyToEvict = i;
                         }
                     }
                 }

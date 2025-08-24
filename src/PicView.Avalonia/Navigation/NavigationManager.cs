@@ -9,6 +9,7 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Preloading;
