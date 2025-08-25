@@ -1,4 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
+using ImageMagick;
+using PicView.Avalonia.ImageHandling;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageReading;
 using ZLinq;
@@ -20,17 +22,26 @@ public class ImageBenchmarks
             .DescendantsAndSelf()
             .OfType<FileInfo>()
             .Where(x => x.IsSupported())
-            .Take(MaxSize * 3)
+            .Take(MaxSize)
             .ToList();
         _images = [];
     }
     
     [Benchmark]
-    public async ValueTask ReadWithMagick()
+    public async ValueTask ReadWithReadMagickImageWithSpanAsyncMagick()
     {
         for (var i = 0; i < MaxSize; i++)
         {
             _images.Add(await MagickPerformanceReader.ReadMagickImageWithSpanAsync(_fileInfos[i]));
+        }
+    }
+    
+    [Benchmark]
+    public async ValueTask ReadMagickWithFileStreamAsync()
+    {
+        for (var i = 0; i < MaxSize; i++)
+        {
+            _images.Add(await MagickPerformanceReader.ReadMagickWithFileStreamAsync(_fileInfos[i], new MagickImage()));
         }
     }
 }
