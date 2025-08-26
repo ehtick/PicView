@@ -1,80 +1,87 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
-using Avalonia.Layout;
-using PicView.Avalonia.UI;
+using Avalonia.Data;
+using Avalonia.Interactivity;
+using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
 public partial class DateTimePickerButtons : UserControl
 {
-    public static readonly StyledProperty<DateTime?> DateProperty =
-        AvaloniaProperty.Register<DateTimePickerButtons, DateTime?>(nameof(Date));
+    /// <summary>
+    /// Defines the SelectedDateTime dependency property.
+    /// This property is two-way bindable and represents the final selected date and time.
+    /// </summary>
+    public static readonly StyledProperty<DateTime> SelectedDateTimeProperty =
+        AvaloniaProperty.Register<DateTimePickerButtons, DateTime>(
+            nameof(SelectedDateTime), 
+            DateTime.Now,
+            defaultBindingMode: BindingMode.TwoWay);
 
-
-    private Calendar? _calendar;
+    private CalendarContainer? _calendarContainer;
+    private Flyout? _calendarFlyout;
     private AnalogClock? _clock;
-    
-    public DateTime? Date
+    private Flyout? _timePickerFlyout;
+
+    /// <summary>
+    /// Gets or sets the selected date and time.
+    /// </summary>
+    public DateTime SelectedDateTime
     {
-        get => GetValue(DateProperty);
-        set => SetValue(DateProperty, value);
+        get => GetValue(SelectedDateTimeProperty);
+        set => SetValue(SelectedDateTimeProperty, value);
     }
 
     public DateTimePickerButtons()
     {
         InitializeComponent();
-        Loaded += delegate
-        {
-            Date ??= DateTime.Now;
-            _calendar = new Calendar
-            {
-                SelectionMode = CalendarSelectionMode.SingleDate,
-                SelectedDate = Date.Value,
-                BorderThickness = new Thickness(1,0,1,1)
-            };
-            _calendar.Measure(Size.Infinity);
-            var calendarContainer = new CalendarContainer();
-            var calendarFlyout = new Flyout
-            {
-                Placement = PlacementMode.Top,
-                ShowMode = FlyoutShowMode.Standard,
-                Content = calendarContainer
-            };
-            FlyoutBase.SetAttachedFlyout(CalendarButton, calendarFlyout);
-            CalendarButton.Click += (_, _) => { ShowPopUpControl(true); };
-            
-            _clock = new AnalogClock
-            {
-                SelectedTime = Date.Value
-            };
-            var timePickerFlyout = new Flyout
-            {
-                Placement = PlacementMode.Top,
-                ShowMode = FlyoutShowMode.Standard,
-                Content = _clock,
-                HorizontalOffset = -TimePickerButton.Width / 2 + 5
-            };
-            FlyoutBase.SetAttachedFlyout(TimePickerButton, timePickerFlyout);
-            TimePickerButton.Click += (_, _) => { ShowPopUpControl(false); };
+        Loaded += OnLoaded;
+    }
 
-            _calendar.SelectedDatesChanged += CalendarOnDisplayDateChanged;
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        SelectedDateTimeProperty.Changed.ToObservable().Subscribe(x =>
+        {
+            DateBox.Text = x.NewValue.Value.ToString("g");
+        });
+        DateBox.Text = SelectedDateTime.ToString("g");
+        _calendarContainer = new CalendarContainer();
+        _calendarFlyout = new Flyout
+        {
+            Placement = PlacementMode.Top,
+            ShowMode = FlyoutShowMode.Standard,
+            Content = _calendarContainer
         };
+        FlyoutBase.SetAttachedFlyout(CalendarButton, _calendarFlyout);
+
+        _clock = new AnalogClock();
+        _timePickerFlyout = new Flyout
+        {
+            Placement = PlacementMode.Top,
+            ShowMode = FlyoutShowMode.Standard,
+            Content = _clock,
+            HorizontalOffset = -TimePickerButton.Width / 2 + 5
+        };
+        FlyoutBase.SetAttachedFlyout(TimePickerButton, _timePickerFlyout);
+
+        CalendarButton.Click += (_, _) => ShowPopUpControl(true);
+        TimePickerButton.Click += (_, _) => ShowPopUpControl(false);
+
+        _calendarContainer.Accepted += OnCalendarAccepted;
+        _calendarContainer.Cancelled += (_, _) => _calendarFlyout.Hide();
+        
+        _clock.Accepted += OnClockAccepted;
+        _clock.Cancelled += (_, _) => _timePickerFlyout.Hide();
     }
 
     private void ShowPopUpControl(bool calendar)
     {
-        if (Date.HasValue)
-        {
-            _calendar.SelectedDate = Date.Value;
-            _clock.SelectedTime = Date.Value;
-        }
-
         if (calendar)
         {
-            _calendar.IsVisible = true;
-            _calendar.Opacity = 1;
+            _calendarContainer.IsVisible = true;
+            _calendarContainer.Opacity = 1;
         }
         else
         {
@@ -84,24 +91,30 @@ public partial class DateTimePickerButtons : UserControl
         FlyoutBase.ShowAttachedFlyout(calendar ? CalendarButton : TimePickerButton);
     }
 
-    private void TimePickerOnSelectedTimeChanged(object? sender, TimePickerSelectedValueChangedEventArgs e)
+    /// <summary>
+    /// Handles the Accepted event from the calendar popup.
+    /// It combines the newly selected date with the existing time.
+    /// </summary>
+    private void OnCalendarAccepted(object? sender, EventArgs e)
     {
-        UpdateTimeAndDate();
-    }
-
-    private void CalendarOnDisplayDateChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        UpdateTimeAndDate();
-    }
-
-    private void UpdateTimeAndDate()
-    {
-        if (_calendar.SelectedDate == null)
+        if (!_calendarContainer.SelectedDate.HasValue)
         {
             return;
         }
-        var date = _calendar.SelectedDate.Value;
-        var time = DateTime.Now.TimeOfDay;
-        Date = new DateTime(new DateOnly(date.Year, date.Month, date.Day), new TimeOnly(time.Hours, time.Minutes));
+
+        var newDate = _calendarContainer.SelectedDate.Value.Date;
+        var oldTime = SelectedDateTime.TimeOfDay;
+        SelectedDateTime = newDate + oldTime;
+    }
+
+    /// <summary>
+    /// Handles the Accepted event from the clock popup.
+    /// It combines the existing date with the newly selected time.
+    /// </summary>
+    private void OnClockAccepted(object? sender, EventArgs e)
+    {
+        var oldDate = SelectedDateTime.Date;
+        var newTime = _clock.SelectedTime.TimeOfDay;
+        SelectedDateTime = oldDate + newTime;
     }
 }

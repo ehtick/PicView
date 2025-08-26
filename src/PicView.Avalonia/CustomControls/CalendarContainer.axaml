@@ -4,7 +4,10 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel>
-        <Calendar BorderThickness="1,1,1,0" CornerRadius="2,2,0,0" />
+        <Calendar
+            BorderThickness="1,1,1,0"
+            CornerRadius="2,2,0,0"
+            x:Name="PartCalendar" />
         <Border
             Background="{DynamicResource MenuBackgroundColor}"
             BorderBrush="{DynamicResource MainBorderColor}"

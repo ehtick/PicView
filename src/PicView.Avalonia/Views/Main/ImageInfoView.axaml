@@ -5,7 +5,6 @@
     x:Class="PicView.Avalonia.Views.Main.ImageInfoView"
     x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -846,18 +845,7 @@
                                     Text="{CompiledBinding Translation.Modified.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <Panel Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}">
-                                    <customControls:FuncTextBox
-                                        Classes=" TStyle x"
-                                        IsReadOnly="True"
-                                        Text="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
-                                                               FallbackValue=''}" />
-                                    <customControls:DateTimePickerButtons
-                                        Date="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
-                                                               Mode=TwoWay}"
-                                        HorizontalAlignment="Right"
-                                        ZIndex="1" />
-                                </Panel>
+                                <customControls:DateTimePickerButtons SelectedDateTime="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime, Mode=TwoWay}" Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,

@@ -6,26 +6,37 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StackPanel Orientation="Horizontal">
-        <customControls:IconButton
-            Classes="altHover"
-            Foreground="{DynamicResource MainTextColor}"
-            Height="35"
-            Icon="{StaticResource CalendarImage}"
-            IconHeight="16"
-            IconWidth="16"
-            Width="35"
-            ZIndex="1"
-            x:Name="CalendarButton" />
-        <customControls:IconButton
-            Classes="altHover"
-            Foreground="{DynamicResource MainTextColor}"
-            Height="35"
-            Icon="{StaticResource ClockImage}"
-            IconHeight="18"
-            IconWidth="18"
-            Width="35"
-            ZIndex="1"
-            x:Name="TimePickerButton" />
-    </StackPanel>
+    <Panel>
+        <customControls:FuncTextBox
+            Classes=" TStyle"
+            IsReadOnly="True"
+            TextWrapping="Wrap"
+            x:Name="DateBox" />
+        <StackPanel
+            HorizontalAlignment="Right"
+            Orientation="Horizontal"
+            ZIndex="1">
+            <customControls:IconButton
+                Classes="altHover"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                Icon="{StaticResource CalendarImage}"
+                IconHeight="16"
+                IconWidth="16"
+                Width="35"
+                ZIndex="1"
+                x:Name="CalendarButton" />
+            <customControls:IconButton
+                Classes="altHover"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                Icon="{StaticResource ClockImage}"
+                IconHeight="18"
+                IconWidth="18"
+                Width="35"
+                ZIndex="1"
+                x:Name="TimePickerButton" />
+        </StackPanel>
+    </Panel>
+
 </UserControl>

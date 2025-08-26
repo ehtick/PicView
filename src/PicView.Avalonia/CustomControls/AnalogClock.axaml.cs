@@ -17,10 +17,10 @@ public partial class AnalogClock : UserControl
             nameof(SelectedTime),
             DateTime.Now,
             coerce: CoerceSelectedTime);
-    
+
     private const double ClockMargin = 25;
     private double ClockRadius => ClockContainer.Width / 2;
-    
+
     // ReSharper disable once InconsistentNaming
     private static bool _isPM;
 
@@ -31,7 +31,7 @@ public partial class AnalogClock : UserControl
 
     // Field to track the previous angle of the minute hand during a drag.
     private double _previousMinuteAngle = -1;
-    
+
     private readonly bool _is24Hour;
 
     private bool _isDraggingHourHand;
@@ -41,6 +41,12 @@ public partial class AnalogClock : UserControl
     private Border? _minuteHand;
     private Arc? _remainingHoursArc;
     private Arc? _remainingMinutesArc;
+    private DateTime _initialTime;
+
+    public event EventHandler? Accepted;
+    public event EventHandler? Cancelled;
+
+    private bool _isGenerated; // Prevent creating extra hands
 
     public AnalogClock()
     {
@@ -48,20 +54,27 @@ public partial class AnalogClock : UserControl
         _initialTime = SelectedTime;
         _isPM = SelectedTime.Hour >= 12;
         _is24Hour = !DateTimeFormatInfo.CurrentInfo.ShortTimePattern.Contains("tt");
-        
+
         Loaded += (_, _) =>
         {
+            if (_isGenerated)
+            {
+                UpdateHands(SelectedTime);
+                return;
+            }
+            _isGenerated = true;
+            
             EnsureProperSize();
 
             CancelButton.Click += async (_, _) => await Cancel();
             AcceptButton.Click += async (_, _) => await Accept();
-            
+
             GenerateClockFace();
+
             UpdateHands(SelectedTime);
         };
     }
 
-    private readonly DateTime _initialTime;
     public DateTime SelectedTime
     {
         get => GetValue(SelectedTimeProperty);
@@ -71,15 +84,18 @@ public partial class AnalogClock : UserControl
     // This callback is triggered whenever the SelectedTime property changes.
     private static DateTime CoerceSelectedTime(AvaloniaObject instance, DateTime value)
     {
-        if (instance is AnalogClock clock)
+        if (instance is not AnalogClock clock)
         {
-            // When the property is set externally, update the clock's visual state.
-            clock.UpdateHands(value);
+            return value;
         }
+
+        // When the property is set externally, update the clock's visual state.
+        clock.UpdateHands(value);
+        clock._initialTime = value; // Update initial time for cancel functionality
 
         return value;
     }
-    
+
     #region Create clock
 
     private void EnsureProperSize()
@@ -130,11 +146,11 @@ public partial class AnalogClock : UserControl
         _elapsedMinutesArc = GetArc(-90, 0, diameter, true, 0.7, "AccentColor");
         _elapsedMinutesArc.Name = "elapsedMinutesArc";
         _elapsedMinutesArc.Cursor = new Cursor(StandardCursorType.Hand);
-        
+
         // Add A border to hours arcs
         var borderArc = GetArc(0, 360, diameter - ClockMargin * 4 + 2, false, 1, "MainBorderColor");
         MainPanel.Children.Add(borderArc);
-        
+
         // Add pointer events
         _elapsedHoursArc.PointerPressed += ElapsedHoursArc_PointerPressed;
         _elapsedHoursArc.PointerReleased += ElapsedArc_PointerReleased;
@@ -170,8 +186,8 @@ public partial class AnalogClock : UserControl
 
         CreateClockHands();
     }
-    
-     private static Arc GetArc(double startAngle, double sweepAngle, double diameter, bool fill, double opacity,
+
+    private static Arc GetArc(double startAngle, double sweepAngle, double diameter, bool fill, double opacity,
         string colorResource)
     {
         var stroke = fill ? UIHelper.GetSolidColorBrush(colorResource) : UIHelper.GetBrush(colorResource);
@@ -238,9 +254,9 @@ public partial class AnalogClock : UserControl
         canvas.Children.Add(_hourHand);
         canvas.Children.Add(_minuteHand);
     }
-    
+
     #endregion
-    
+
     #region Update clock
 
     // This method now contains the logic to advance/rewind the hour.
@@ -250,7 +266,7 @@ public partial class AnalogClock : UserControl
         {
             return;
         }
-            
+
         var angle = Math.Atan2(point.Y - _centerPoint.Y, point.X - _centerPoint.X);
         // Convert to degrees and adjust to start from top (90 degrees)
         var degrees = (angle * 180 / Math.PI + 90) % 360;
@@ -408,46 +424,50 @@ public partial class AnalogClock : UserControl
         var elapsedHoursAngle = hourWithFraction * 30;
         _elapsedHoursArc.StartAngle = -90;
         _elapsedHoursArc.SweepAngle = elapsedHoursAngle;
-    
+
         _remainingHoursArc.StartAngle = -90 + elapsedHoursAngle;
         _remainingHoursArc.SweepAngle = 360 - elapsedHoursAngle;
-    
+
         // Update minute arcs
         double elapsedMinutesAngle = time.Minute * 6;
         _elapsedMinutesArc.StartAngle = -90;
         _elapsedMinutesArc.SweepAngle = elapsedMinutesAngle;
-    
+
         _remainingMinutesArc.StartAngle = -90 + elapsedMinutesAngle;
         _remainingMinutesArc.SweepAngle = 360 - elapsedMinutesAngle;
-    
+
         // Apply rotations to hands
         ((RotateTransform)_hourHand.RenderTransform!).Angle = elapsedHoursAngle;
         ((RotateTransform)_minuteHand.RenderTransform!).Angle = elapsedMinutesAngle;
-        
+
         // Update AM/PM state based on DateTime
         _isPM = time.Hour >= 12;
         UpdateArcOpacity();
     }
-    
+
     #endregion
-    
+
     #region Events
-    
+
     private async Task Accept()
     {
-        var closeAnimation = AnimationsHelper.OpacityAnimation(1, 0, .3);
+        const double speed = .3;
+        var closeAnimation = AnimationsHelper.OpacityAnimation(1, 0, speed);
         await closeAnimation.RunAsync(this);
+        Accepted?.Invoke(this, EventArgs.Empty);
+        await Task.Delay(TimeSpan.FromSeconds(speed * 3));
         IsVisible = false;      // Hide the control
     }
-    
+
     private async Task Cancel()
     {
         SelectedTime = _initialTime; // Reset to the original time
         var closeAnimation = AnimationsHelper.OpacityAnimation(1, 0, .3);
         await closeAnimation.RunAsync(this);
         IsVisible = false;      // Hide the control
+        Cancelled?.Invoke(this, EventArgs.Empty);
     }
-    
+
     private void ElapsedHoursArc_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         _isDraggingHours = true;
@@ -492,7 +512,7 @@ public partial class AnalogClock : UserControl
         var point = e.GetPosition(MainPanel);
         UpdateArcFromPoint(point, false);
     }
-    
+
     private void HourHand_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         _isDraggingHourHand = true;
@@ -541,6 +561,6 @@ public partial class AnalogClock : UserControl
         UpdateArcFromPoint(point, false);
         e.Handled = true;
     }
-    
+
     #endregion
 }
