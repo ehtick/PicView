@@ -819,13 +819,12 @@
                                     Text="{CompiledBinding Translation.Created.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Background="{DynamicResource DisabledBackgroundColor}"
-                                    Classes=" TStyle x"
-                                    IsReadOnly="True"
-                                    Text="{CompiledBinding PicViewer.FileInfo.Value.CreationTime,
-                                                           FallbackValue=''}"
+                                <customControls:DateTimePickerButtons
+                                    Margin="5,0,0,0"
+                                    SelectedDateTime="{CompiledBinding PicViewer.FileInfo.Value.CreationTime,
+                                                                       Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.CreationTime,
@@ -845,7 +844,11 @@
                                     Text="{CompiledBinding Translation.Modified.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:DateTimePickerButtons SelectedDateTime="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime, Mode=TwoWay}" Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+                                <customControls:DateTimePickerButtons
+                                    Margin="5,0,0,0"
+                                    SelectedDateTime="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
+                                                                       Mode=TwoWay}"
+                                    Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.LastWriteTime,
@@ -865,13 +868,12 @@
                                     Text="{CompiledBinding Translation.LastAccessTime.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Background="{DynamicResource DisabledBackgroundColor}"
-                                    Classes=" TStyle x"
-                                    IsReadOnly="True"
-                                    Text="{CompiledBinding PicViewer.FileInfo.Value.LastAccessTime,
-                                                           FallbackValue=''}"
+                                <customControls:DateTimePickerButtons
+                                    Margin="5,0,0,0"
+                                    SelectedDateTime="{CompiledBinding PicViewer.FileInfo.Value.LastAccessTime,
+                                                                       Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
+
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding PicViewer.FileInfo.Value.LastAccessTime,

@@ -1,5 +1,4 @@
-﻿using System;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -8,7 +7,7 @@ using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
-public partial class DateTimePickerButtons : UserControl
+public partial class DateTimePickerButtons : UserControl, IDisposable
 {
     /// <summary>
     /// Defines the SelectedDateTime dependency property.
@@ -24,6 +23,8 @@ public partial class DateTimePickerButtons : UserControl
     private Flyout? _calendarFlyout;
     private AnalogClock? _clock;
     private Flyout? _timePickerFlyout;
+
+    private readonly CompositeDisposable _disposable = new();
 
     /// <summary>
     /// Gets or sets the selected date and time.
@@ -44,8 +45,11 @@ public partial class DateTimePickerButtons : UserControl
     {
         SelectedDateTimeProperty.Changed.ToObservable().Subscribe(x =>
         {
-            DateBox.Text = x.NewValue.Value.ToString("g");
-        });
+            var y = x.NewValue.Value;
+            DateBox.Text = y.ToString("g");
+            _calendarContainer.PartCalendar.SelectedDate = y;
+            _clock.SelectedTime = y;
+        }).AddTo(_disposable);
         DateBox.Text = SelectedDateTime.ToString("g");
         _calendarContainer = new CalendarContainer();
         _calendarFlyout = new Flyout
@@ -82,11 +86,13 @@ public partial class DateTimePickerButtons : UserControl
         {
             _calendarContainer.IsVisible = true;
             _calendarContainer.Opacity = 1;
+            _calendarContainer.PartCalendar.SelectedDate = SelectedDateTime;
         }
         else
         {
             _clock.IsVisible = true;
             _clock.Opacity = 1;
+            _clock.SelectedTime = SelectedDateTime;
         }
         FlyoutBase.ShowAttachedFlyout(calendar ? CalendarButton : TimePickerButton);
     }
@@ -116,5 +122,10 @@ public partial class DateTimePickerButtons : UserControl
         var oldDate = SelectedDateTime.Date;
         var newTime = _clock.SelectedTime.TimeOfDay;
         SelectedDateTime = oldDate + newTime;
+    }
+
+    public void Dispose()
+    {
+        _disposable.Dispose();
     }
 }
