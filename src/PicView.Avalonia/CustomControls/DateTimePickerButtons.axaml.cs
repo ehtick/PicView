@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Windows.Input;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -15,16 +16,40 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
     /// </summary>
     public static readonly StyledProperty<DateTime> SelectedDateTimeProperty =
         AvaloniaProperty.Register<DateTimePickerButtons, DateTime>(
-            nameof(SelectedDateTime), 
+            nameof(SelectedDateTime),
             DateTime.Now,
             defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly StyledProperty<ICommand?> CommandProperty =
+        AvaloniaProperty.Register<IconButton, ICommand?>(nameof(Command));
+
+    public static readonly StyledProperty<object?> CommandParameterProperty =
+        AvaloniaProperty.Register<IconButton, object?>(nameof(CommandParameter));
 
     private CalendarContainer? _calendarContainer;
     private Flyout? _calendarFlyout;
     private AnalogClock? _clock;
     private Flyout? _timePickerFlyout;
-
+    
     private readonly CompositeDisposable _disposable = new();
+
+    public DateTimePickerButtons()
+    {
+        InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    public ICommand? Command
+    {
+        get => GetValue(CommandProperty);
+        set => SetValue(CommandProperty, value);
+    }
+
+    public object? CommandParameter
+    {
+        get => GetValue(CommandParameterProperty);
+        set => SetValue(CommandParameterProperty, value);
+    }
 
     /// <summary>
     /// Gets or sets the selected date and time.
@@ -35,10 +60,9 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         set => SetValue(SelectedDateTimeProperty, value);
     }
 
-    public DateTimePickerButtons()
+    public void Dispose()
     {
-        InitializeComponent();
-        Loaded += OnLoaded;
+        _disposable.Dispose();
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -75,7 +99,7 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
 
         _calendarContainer.Accepted += OnCalendarAccepted;
         _calendarContainer.Cancelled += (_, _) => _calendarFlyout.Hide();
-        
+
         _clock.Accepted += OnClockAccepted;
         _clock.Cancelled += (_, _) => _timePickerFlyout.Hide();
     }
@@ -94,6 +118,7 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
             _clock.Opacity = 1;
             _clock.SelectedTime = SelectedDateTime;
         }
+
         FlyoutBase.ShowAttachedFlyout(calendar ? CalendarButton : TimePickerButton);
     }
 
@@ -111,6 +136,8 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         var newDate = _calendarContainer.SelectedDate.Value.Date;
         var oldTime = SelectedDateTime.TimeOfDay;
         SelectedDateTime = newDate + oldTime;
+
+        Command.Execute(CommandParameter);
     }
 
     /// <summary>
@@ -122,10 +149,7 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         var oldDate = SelectedDateTime.Date;
         var newTime = _clock.SelectedTime.TimeOfDay;
         SelectedDateTime = oldDate + newTime;
-    }
 
-    public void Dispose()
-    {
-        _disposable.Dispose();
+        Command.Execute(CommandParameter);
     }
 }
