@@ -594,42 +594,41 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
     /// <param name="reverse">Whether to preload in reverse order.</param>
     /// <param name="list">The list of image file paths.</param>
     /// <param name="token">A <see cref="CancellationToken"/> to observe while waiting for tasks to complete.</param>
-    private async ValueTask  PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
+    private async ValueTask PreLoadInternalAsync(int currentIndex, bool reverse, List<FileInfo> list,
         CancellationToken token)
     {
         var count = list.Count;
         var nextStartingIndex = (currentIndex + 1) % count;
         var prevStartingIndex = (currentIndex - 1 + count) % count;
-        var options = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
-            CancellationToken = token
-        };
 
         if (reverse)
         {
-            await LoopAsync(options, false);
-            await LoopAsync(options, true);
+            await LoopAsync(false);
+            await LoopAsync(true);
         }
         else
         {
-            await LoopAsync(options, true);
-            await LoopAsync(options, false);
+            await LoopAsync(true);
+            await LoopAsync(false);
         }
 
         return;
 
-        async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
+        async Task LoopAsync(bool positive)
         {
             if (positive)
             {
-                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions,
-                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
+                for (var i = 0; i < PreLoaderConfig.PositiveIterations; i++)
+                {
+                    await AddAddition((nextStartingIndex + i) % count); 
+                }
             }
             else
             {
-                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions,
-                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
+                for (var i = 0; i < PreLoaderConfig.NegativeIterations; i++)
+                {
+                    await AddAddition((prevStartingIndex - i + count) % count);
+                }
             }
         }
 

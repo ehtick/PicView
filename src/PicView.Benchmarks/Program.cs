@@ -2,6 +2,7 @@
 using PicView.Benchmarks;
 using PicView.Benchmarks.ImageBenchmarks;
 
-BenchmarkRunner.Run<EvictingDictionaryBenchmark>();
-BenchmarkRunner.Run<ImageBenchmarks>();
-BenchmarkRunner.Run<TranslationBenchmarks>();
+// BenchmarkRunner.Run<EvictingDictionaryBenchmark>();
+// BenchmarkRunner.Run<ImageBenchmarks>();
+BenchmarkRunner.Run<PreloadingBenchmark>();
+// BenchmarkRunner.Run<TranslationBenchmarks>();
