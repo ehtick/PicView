@@ -53,17 +53,10 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                 return;
             }
 
-            bool settingsExists;
-            try
-            {
-                settingsExists = await LoadSettingsAsync().ConfigureAwait(false);
-            }
-            catch (TaskCanceledException)
-            {
-                return;
-            }
+            var settingsExists= await LoadSettingsAsync().ConfigureAwait(false);
 
             TranslationManager.Init();
+            _vm = new MainViewModel(this, this);
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -71,12 +64,6 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                 
                 _mainWindow = new WinMainWindow();
                 desktop.MainWindow = _mainWindow;
-            }, DispatcherPriority.Send);
-
-            _vm = new MainViewModel(this, this);
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
                 _mainWindow.DataContext = _vm;
                 StartUpHelper.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
                 _windowInitializer = new WindowInitializer();

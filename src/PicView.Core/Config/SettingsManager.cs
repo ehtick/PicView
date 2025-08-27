@@ -51,7 +51,7 @@ public static class SettingsManager
     /// A boolean indicating whether the settings were successfully loaded.
     /// </returns>
     /// <exception cref="JsonException">Thrown if deserialization of the settings file fails.</exception>
-    public static async Task<bool> LoadSettingsAsync()
+    public static async ValueTask<bool> LoadSettingsAsync()
     {
         try
         {
@@ -90,7 +90,7 @@ public static class SettingsManager
     /// <returns>
     /// Whether the settings were successfully saved.
     /// </returns>
-    public static async Task<bool> SaveSettingsAsync()
+    public static async ValueTask<bool> SaveSettingsAsync()
     {
         if (Settings == null)
         {
