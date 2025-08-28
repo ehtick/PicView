@@ -4,11 +4,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
-public partial class DateTimePickerButtons : UserControl, IDisposable
+public partial class DateTimePickerButtons : UserControl
 {
     /// <summary>
     /// Defines the SelectedDateTime dependency property.
@@ -30,8 +29,6 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
     private Flyout? _calendarFlyout;
     private AnalogClock? _clock;
     private Flyout? _timePickerFlyout;
-    
-    private readonly CompositeDisposable _disposable = new();
 
     public DateTimePickerButtons()
     {
@@ -60,20 +57,18 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         set => SetValue(SelectedDateTimeProperty, value);
     }
 
-    public void Dispose()
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        _disposable.Dispose();
+        base.OnPropertyChanged(change);
+
+        if (change.Property == SelectedDateTimeProperty)
+        {
+            DateBox.Text = SelectedDateTime.ToString("g");
+        }
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        SelectedDateTimeProperty.Changed.ToObservable().Subscribe(x =>
-        {
-            var y = x.NewValue.Value;
-            DateBox.Text = y.ToString("g");
-            _calendarContainer.PartCalendar.SelectedDate = y;
-            _clock.SelectedTime = y;
-        }).AddTo(_disposable);
         DateBox.Text = SelectedDateTime.ToString("g");
         _calendarContainer = new CalendarContainer();
         _calendarFlyout = new Flyout
@@ -111,6 +106,7 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
             _calendarContainer.IsVisible = true;
             _calendarContainer.Opacity = 1;
             _calendarContainer.PartCalendar.SelectedDate = SelectedDateTime;
+            _calendarContainer.PartCalendar.DisplayDate = SelectedDateTime;
         }
         else
         {
@@ -137,7 +133,7 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         var oldTime = SelectedDateTime.TimeOfDay;
         SelectedDateTime = newDate + oldTime;
 
-        Command.Execute(CommandParameter);
+        ExecuteCommand();
     }
 
     /// <summary>
@@ -150,6 +146,14 @@ public partial class DateTimePickerButtons : UserControl, IDisposable
         var newTime = _clock.SelectedTime.TimeOfDay;
         SelectedDateTime = oldDate + newTime;
 
-        Command.Execute(CommandParameter);
+        ExecuteCommand();
+    }
+
+    private void ExecuteCommand()
+    {
+        if (Command?.CanExecute(CommandParameter) == true)
+        {
+            Command.Execute(CommandParameter);
+        }
     }
 }
