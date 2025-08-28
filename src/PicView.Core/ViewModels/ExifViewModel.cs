@@ -25,6 +25,8 @@ public class ExifViewModel : IDisposable
         SetExifRating3Command = new ReactiveCommand<string>(async (s, _) => await SetRating(s, 3));
         SetExifRating4Command = new ReactiveCommand<string>(async (s, _) => await SetRating(s, 4));
         SetExifRating5Command = new ReactiveCommand<string>(async (s, _) => await SetRating(s, 5));
+        
+        SetDateTakenCommand = new ReactiveCommand<FileInfo>(async (f, _) => await SetDateTaken(f));
 
         ResolutionUnits = new BindableReactiveProperty<string[]>([
             string.Empty,
@@ -111,7 +113,7 @@ public class ExifViewModel : IDisposable
             $"{TranslationManager.Translation.Rotated} 270\u00b0"
         ]);
     }
-    
+
     public void UpdateExifValues(ImageModel model, MagickImage? magick = null)
     {
         var shouldDispose = magick != null;
@@ -290,6 +292,8 @@ public class ExifViewModel : IDisposable
     public ReactiveCommand<string>? SetExifRating3Command { get; set; }
     public ReactiveCommand<string>? SetExifRating4Command { get; set; }
     public ReactiveCommand<string>? SetExifRating5Command { get; set; }
+    
+    public ReactiveCommand<FileInfo> SetDateTakenCommand { get; set; }
 
     public BindableReactiveProperty<uint> ExifRating { get; } = new();
     public BindableReactiveProperty<double> DpiX { get; } = new();
@@ -320,7 +324,7 @@ public class ExifViewModel : IDisposable
 
     public BindableReactiveProperty<string?> Authors { get; } = new();
 
-    public BindableReactiveProperty<string?> DateTaken { get; } = new();
+    public BindableReactiveProperty<DateTime?> DateTaken { get; } = new();
 
     public BindableReactiveProperty<string?> Copyright { get; } = new();
 
@@ -470,5 +474,10 @@ public class ExifViewModel : IDisposable
         }
         ExifRating.Value = rating;
         return true;
+    }
+    
+    private async Task<bool> SetDateTaken(FileInfo fileInfo)
+    {
+        return await ExifWriter.SetDateTaken(fileInfo, DateTaken.Value.Value);
     }
 }

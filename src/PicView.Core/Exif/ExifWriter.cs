@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using ImageMagick;
 using PicView.Core.DebugTools;
 
@@ -41,6 +42,32 @@ public static class ExifWriter
             magickImage.SetProfile(profile);
             return true;
         }, nameof(ExifWriter), nameof(SetExifRatingAsync));
+
+    /// <summary>
+    /// Sets the "Date Taken" metadata of an image file to the specified value.
+    /// </summary>
+    /// <param name="fileInfo">The image file to update.</param>
+    /// <param name="value">The date and time to set as the "Date Taken" value.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains true if the operation succeeded; otherwise, false.</returns>
+    public static Task<bool> SetDateTaken(FileInfo? fileInfo, DateTime value) =>
+        ExifFunctions.TryUpdateImageProfileAsync(fileInfo, magickImage =>
+        {
+            if (fileInfo is null)
+            {
+                return false;
+            }
+
+            if (!fileInfo.Exists)
+            {
+                return false;
+            }
+
+            var profile = magickImage.GetExifProfile() ?? new ExifProfile();
+            profile.SetValue(ExifTag.DateTime, value.ToString(CultureInfo.InvariantCulture));
+            profile.SetValue(ExifTag.DateTimeOriginal, value.ToString(CultureInfo.InvariantCulture));
+            magickImage.SetProfile(profile);
+            return true;
+        }, nameof(ExifWriter), nameof(SetDateTaken));
 
 
     /// <summary>

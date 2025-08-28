@@ -7,20 +7,13 @@ namespace PicView.Core.Exif;
 
 public static class ExifReader
 {
-    public static string GetDateTaken(IExifProfile profile)
+    public static DateTime? GetDateTaken(IExifProfile profile)
     {
         var getDateTaken =
             profile?.GetValue(ExifTag.DateTime)?.Value ??
             profile?.GetValue(ExifTag.DateTimeOriginal)?.Value ??
-            profile?.GetValue(ExifTag.DateTimeDigitized)?.Value ?? string.Empty;
-        if (!string.IsNullOrEmpty(getDateTaken) &&
-            DateTime.TryParseExact(getDateTaken, "yyyy:MM:dd HH:mm:ss", CultureInfo.InvariantCulture,
-                DateTimeStyles.None, out var formattedDateTime))
-        {
-            return formattedDateTime.ToString(CultureInfo.CurrentCulture);
-        }
-
-        return string.Empty;
+            profile?.GetValue(ExifTag.DateTimeDigitized)?.Value ?? null;
+        return getDateTaken is null ? null : DateTime.Parse(getDateTaken);
     }
 
 

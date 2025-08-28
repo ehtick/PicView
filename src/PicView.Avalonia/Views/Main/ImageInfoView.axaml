@@ -998,12 +998,12 @@
                                     Text="{CompiledBinding Translation.DateTaken.Value,
                                                            Mode=OneWay}"
                                     Width="{CompiledBinding InfoWindow.TextWidth}" />
-                                <customControls:FuncTextBox
-                                    Background="{DynamicResource DisabledBackgroundColor}"
-                                    Classes=" TStyle x"
-                                    IsReadOnly="True"
-                                    Text="{CompiledBinding Exif.DateTaken.Value,
-                                                           Mode=TwoWay}"
+                                <customControls:DateTimePickerButtons
+                                    Command="{CompiledBinding Exif.SetDateTakenCommand}"
+                                    CommandParameter="{CompiledBinding PicViewer.FileInfo.Value}"
+                                    Margin="5,0,0,0"
+                                    SelectedDateTime="{CompiledBinding Exif.DateTaken.Value,
+                                                                       Mode=TwoWay}"
                                     Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
                                 <customControls:CopyButton
                                     Classes="altHover BorderStyle"
