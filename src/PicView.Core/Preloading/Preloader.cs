@@ -601,34 +601,37 @@ public class PreLoader(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader) :
         var nextStartingIndex = (currentIndex + 1) % count;
         var prevStartingIndex = (currentIndex - 1 + count) % count;
 
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
+            CancellationToken = token
+        };
+
         if (reverse)
         {
-            await LoopAsync(false);
-            await LoopAsync(true);
+            await LoopAsync(options, false);
+            await LoopAsync(options, true);
         }
         else
         {
-            await LoopAsync(true);
-            await LoopAsync(false);
+            await LoopAsync(options, true);
+            await LoopAsync(options, false);
         }
 
         return;
 
-        async Task LoopAsync(bool positive)
+
+        async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
         {
             if (positive)
             {
-                for (var i = 0; i < PreLoaderConfig.PositiveIterations; i++)
-                {
-                    await AddAddition((nextStartingIndex + i) % count); 
-                }
+                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
             }
             else
             {
-                for (var i = 0; i < PreLoaderConfig.NegativeIterations; i++)
-                {
-                    await AddAddition((prevStartingIndex - i + count) % count);
-                }
+                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
             }
         }
 

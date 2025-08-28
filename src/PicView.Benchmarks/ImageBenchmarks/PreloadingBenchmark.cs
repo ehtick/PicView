@@ -37,8 +37,36 @@ public class PreloadingBenchmark
     {
         for (var i = 0; i < MaxSize; i++)
         {
-            await _preLoader.PreLoadAsync(0, false, _fileInfos)
+            await _preLoader.PreLoadAsync(i, false, _fileInfos)
                 .ConfigureAwait(false);
         }
     }
 }
+
+/*
+ 
+ BenchmarkDotNet v0.15.2, Windows 10 (10.0.19045.6216/22H2/2022Update)
+AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 10.0.100-preview.6.25358.103
+  [Host]     : .NET 10.0.0 (10.0.25.35903), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  DefaultJob : .NET 10.0.0 (10.0.25.35903), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
+  
+
+| Method        | Mean     | Error   | StdDev  | Allocated |
+|-------------- |---------:|--------:|--------:|----------:|
+| PreloadImages | 127.1 ms | 2.44 ms | 2.39 ms | 488.67 KB |
+with Parallel.ForAsync
+
+
+| Method        | Mean     | Error   | StdDev  | Allocated |
+|-------------- |---------:|--------:|--------:|----------:|
+| PreloadImages | 133.8 ms | 2.00 ms | 1.67 ms | 475.34 KB |
+with regular for loop
+
+
+| Method        | Mean     | Error   | StdDev  | Allocated |
+|-------------- |---------:|--------:|--------:|----------:|
+| PreloadImages | 133.4 ms | 2.23 ms | 2.08 ms | 474.69 KB |
+using void non-async for loop
+
+*/
