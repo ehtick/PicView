@@ -157,7 +157,7 @@ Quickly crop image by pressing `C`. Hold `Shift` for square selection.
 </h3>
 
 ### Convert/Optimize all your pictures
-All files from the `Source folder` will be selected for processing and will be sent to `Output folder`. The default name for the output folder will be **Processed Pictures**.
+All files from the `Source folder` will be selected for processing and will be sent to the `Output folder`. The default name for the output folder will be **Processed Pictures**.
 
 If the *Output folder* is the same as the *Source folder*, or left blank, the original files will be overwritten. 
 
@@ -188,9 +188,10 @@ Changing the file extension will convert the image to the respective format.
 <br>
 
 ## File support
- > .jpg  .jpeg  .jpe  .png  .bmp  .tif  .tiff  .gif  .ico  .jfif  .webp .svg .svgz <br>
-   .psd  .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds<br>.3fr  .arw  .cr2 .cr3  .crw  .dcr  .dng  .erf  .kdc  .mdc  .mef  .mos  .mrw  .nef  .nrw  .orf  .pef .raf  .raw  .rw2  .srf  .x3f<br>
-   .pgm  .hdr  .cut  .exr  .dib  .emf  .wmf  .wpg  .pcx  .xbm  .xpm .wbmp
+> *   **Common:** .jpg .jpeg .jpe .png .bmp .tif .tiff .gif .ico .jfif .webp .svg .svgz
+> *   **Advanced:** .psd .psb .xcf .jxl .heic .heif .jp2 .hdr .tga .dds
+> *   **RAW:** .3fr .arw .cr2 .cr3 .crw .dcr .dng .erf .kdc .mdc .mef .mos .mrw .nef .nrw .orf .pef .raf .raw .rw2 .srf .x3f
+> *   **Other:** .pgm .hdr .cut .exr .dib .emf .wmf .wpg .pcx .xbm .xpm .wbmp
 
 
 <br>
@@ -215,9 +216,9 @@ Magick.NET is used for its rich file support, image editing, and information cap
 
 **Building:** <br>
 Open and run the solution in Visual Studio or Rider. 
-If you're not using x64 hardware, make sure to change the platform target to your CPU architecture in the project properties, as well as changing the Magick.NET NuGet packages to match.
+If you're using arm64 hardware, make sure to change the platform target to your CPU architecture in the project properties, as well as changing the Magick.NET NuGet packages to match.
 
-Pull requests are welcome. Check current issues and assign yourself or create your own issue. 
+Contributions are welcome! Check out the [Help wanted](https://github.com/Ruben2776/PicView/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) label to get started.
 
 Improvements to the current code or bug fixes are also welcome!
 
@@ -225,7 +226,7 @@ Improvements to the current code or bug fixes are also welcome!
 ## Translators/Languages
 Simplified Chinese by <a href="https://github.com/Crystal-RainSlide">Crystal-RainSlide</a>, <a href="https://github.com/jasoneri">jasoneri</a><br>
 Traditional Chinese by <a href="https://github.com/wcxu21">wcxu21</a>, <a href="https://github.com/jasoneri">jasoneri</a><br>
-Spanish by <a href="https://github.com/lk-KEVIN">lk.KEVIN</a> <i>(needs updates)</i><br>
+Spanish by <a href="https://github.com/lk-KEVIN">lk.KEVIN</a> <i>(help wanted to update translation)</i><br>
 Korean by <a href="https://github.com/VenusGirl">VenusGirl</a><br>
 German by <a href="https://github.com/Brotbox">Brotbox</a>, [uDEV2019](https://github.com/uDEV2019)<br>
 Polish by <a href="https://github.com/YourSenseiCreeper">YourSenseiCreeper</a><br>
