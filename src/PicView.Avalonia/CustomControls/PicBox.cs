@@ -288,7 +288,7 @@ public class PicBox : Control, IDisposable
             return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
         }
 
-        if (vm.PicViewer.FileInfo?.CurrentValue.Exists != true)
+        if (vm.PicViewer.FileInfo?.CurrentValue?.Exists != true)
         {
             return new Size();
         }
