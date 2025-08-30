@@ -72,21 +72,25 @@ public static class FileTypeResolver
             s = s[1..^1];
         }
         
-        if (s.StartsWith("file:///"))
+        var path = s; // Use a separate variable for the potentially decoded path
+
+        // Attempt to parse the string as a URI.
+        // This handles all special characters.
+        if (Uri.TryCreate(s, UriKind.Absolute, out var uri) && uri.IsFile)
         {
-            s = s.Replace("file:///", "");
-            s = s.Replace("%20", " ");
+            path = uri.LocalPath; // Decodes the path correctly (e.g., "%5B%5D" -> "[]")
         }
 
-        if (File.Exists(s))
+        // Use the decoded 'path' variable for file system checks
+        if (File.Exists(path))
         {
-            var type = s.IsArchive() ? LoadAbleFileType.Zip : LoadAbleFileType.File;
-            return new FileTypeStruct(type, s);
+            var type = path.IsArchive() ? LoadAbleFileType.Zip : LoadAbleFileType.File;
+            return new FileTypeStruct(type, path);
         }
 
-        if (Directory.Exists(s))
+        if (Directory.Exists(path))
         {
-            return new FileTypeStruct(LoadAbleFileType.Directory, s);
+            return new FileTypeStruct(LoadAbleFileType.Directory, path);
         }
 
         if (!string.IsNullOrWhiteSpace(s.GetURL()))
