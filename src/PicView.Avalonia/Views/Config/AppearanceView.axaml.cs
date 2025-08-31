@@ -126,18 +126,18 @@ public partial class AppearanceView : UserControl
     // New method to update color buttons with values from ColorManager
     private void UpdateColorButtons()
     {
-        BlueButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Blue));
-        CyanButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Cyan));
-        RaspberryButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Raspberry));
-        TealButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Teal));
-        EmeraldButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Emerald));
-        RubyButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Ruby));
-        GoldButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Golden));
-        OrangeButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Orange));
-        RedButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Red));
-        PinkButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Pink));
-        MagentaButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Magenta));
-        PurpleButton.Background = new SolidColorBrush(ColorManager.GetButtonColor(Purple));
+        BlueButton.Background = new SolidColorBrush(ColorManager.GetColor(Blue));
+        CyanButton.Background = new SolidColorBrush(ColorManager.GetColor(Cyan));
+        RaspberryButton.Background = new SolidColorBrush(ColorManager.GetColor(Raspberry));
+        TealButton.Background = new SolidColorBrush(ColorManager.GetColor(Teal));
+        EmeraldButton.Background = new SolidColorBrush(ColorManager.GetColor(Emerald));
+        RubyButton.Background = new SolidColorBrush(ColorManager.GetColor(Ruby));
+        GoldButton.Background = new SolidColorBrush(ColorManager.GetColor(Golden));
+        OrangeButton.Background = new SolidColorBrush(ColorManager.GetColor(Orange));
+        RedButton.Background = new SolidColorBrush(ColorManager.GetColor(Red));
+        PinkButton.Background = new SolidColorBrush(ColorManager.GetColor(Pink));
+        MagentaButton.Background = new SolidColorBrush(ColorManager.GetColor(Magenta));
+        PurpleButton.Background = new SolidColorBrush(ColorManager.GetColor(Purple));
     }
     
     // Add constants for color theme indices for easier reference

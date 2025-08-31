@@ -16,85 +16,73 @@ public static class ColorManager
             Color.FromRgb(225, 210, 80),
             Color.FromRgb(255, 240, 90),
             Color.FromRgb(26, 140, 240),
-            Color.FromArgb(242, 66, 163, 249),
-            Color.FromRgb(26, 140, 240)
+            Color.FromArgb(242, 66, 163, 249)
         ),
         [(int)ColorOptions.Pink] = new ThemeColors(
             Color.FromRgb(250, 180, 38),
             Color.FromRgb(255, 237, 38),
             Color.FromRgb(255, 53, 197),
-            Color.FromArgb(230, 255, 98, 210),
-            Color.FromRgb(255, 53, 197)
+            Color.FromArgb(230, 255, 98, 210)
         ),
         [(int)ColorOptions.Orange] = new ThemeColors(
             Color.FromRgb(184, 172, 17),
             Color.FromRgb(248, 175, 60),
             Color.FromRgb(219, 91, 61),
-            Color.FromArgb(242, 245, 121, 57),
-            Color.FromRgb(219, 91, 61)
+            Color.FromArgb(242, 245, 121, 57)
         ),
         [(int)ColorOptions.Ruby] = new ThemeColors(
             Color.FromRgb(254, 172, 150),
             Color.FromRgb(209, 237, 93),
             Color.FromRgb(255, 32, 110),
-            Color.FromArgb(242, 255, 80, 140),
-            Color.FromRgb(255, 32, 110)
+            Color.FromArgb(242, 255, 80, 140)
         ),
         [(int)ColorOptions.Red] = new ThemeColors(
             Color.FromRgb(250, 192, 92),
             Color.FromRgb(250, 192, 92),
             Color.FromRgb(249, 17, 16),
-            Color.FromArgb(242, 249, 61, 60),
-            Color.FromRgb(249, 17, 16)
+            Color.FromArgb(242, 249, 61, 60)
         ),
         [(int)ColorOptions.Teal] = new ThemeColors(
             Color.FromRgb(254, 172, 150),
             Color.FromRgb(254, 172, 150),
             Color.FromRgb(68, 161, 160),
-            Color.FromArgb(242, 77, 195, 194),
-            Color.FromRgb(68, 161, 160)
+            Color.FromArgb(242, 77, 195, 194)
         ),
         [(int)ColorOptions.Raspberry] = new ThemeColors(
             Color.FromRgb(228, 209, 17),
             Color.FromRgb(228, 209, 17),
             Color.FromRgb(181, 69, 126),
-            Color.FromArgb(242, 201, 100, 156),
-            Color.FromRgb(181, 69, 126)
+            Color.FromArgb(242, 201, 100, 156)
         ),
         [(int)ColorOptions.Golden] = new ThemeColors(
             Color.FromRgb(226, 180, 224),
             Color.FromRgb(255, 253, 42),
             Color.FromRgb(254, 169, 85),
-            Color.FromArgb(242, 249, 187, 125),
-            Color.FromRgb(254, 169, 85)
+            Color.FromArgb(242, 249, 187, 125)
         ),
         [(int)ColorOptions.Purple] = new ThemeColors(
             Color.FromRgb(226, 141, 223),
             Color.FromRgb(237, 184, 135),
             Color.FromRgb(151, 56, 235),
-            Color.FromArgb(242, 194, 95, 255),
-            Color.FromRgb(151, 56, 235)
+            Color.FromArgb(242, 194, 95, 255)
         ),
         [(int)ColorOptions.Cyan] = new ThemeColors(
             Color.FromRgb(215, 200, 70),
             Color.FromRgb(255, 253, 66),
             Color.FromRgb(27, 161, 226),
-            Color.FromArgb(242, 89, 186, 233),
-            Color.FromRgb(27, 161, 226)
+            Color.FromArgb(242, 89, 186, 233)
         ),
         [(int)ColorOptions.Magenta] = new ThemeColors(
             Color.FromRgb(226, 141, 223),
             Color.FromRgb(255, 237, 38),
             Color.FromRgb(230, 139, 238),
-            Color.FromArgb(242, 255, 108, 212),
-            Color.FromRgb(230, 139, 238)
+            Color.FromArgb(242, 255, 108, 212)
         ),
         [(int)ColorOptions.Emerald] = new ThemeColors(
             Color.FromRgb(255, 253, 42),
             Color.FromRgb(255, 253, 42),
             Color.FromRgb(0, 114, 0),
-            Color.FromArgb(242, 50, 164, 50),
-            Color.FromRgb(0, 114, 0)
+            Color.FromArgb(242, 50, 164, 50)
         )
     };
 
@@ -113,12 +101,6 @@ public static class ColorManager
     /// Gets the primary accent color based on the current color theme.
     /// </summary>
     public static Color PrimaryAccentColor => GetThemeColors().Primary;
-
-    /// <summary>
-    /// Gets the button color for a specific theme
-    /// </summary>
-    public static Color GetButtonColor(int themeIndex) =>
-        ThemeColorMap.TryGetValue(themeIndex, out var colors) ? colors.ButtonColor : ThemeColorMap[0].ButtonColor;
 
     /// <summary>
     /// Gets the color set for the current theme
@@ -182,18 +164,18 @@ public static class ColorManager
         Color logoLight,
         Color logoDark,
         Color primary,
-        Color secondary,
-        Color buttonColor)
+        Color secondary)
     {
         private Color LogoLight { get; } = logoLight;
         private Color LogoDark { get; } = logoDark;
         public Color Primary { get; } = primary;
         public Color Secondary { get; } = secondary;
-        public Color ButtonColor { get; } = buttonColor;
 
         /// <summary>
         /// Gets the appropriate logo color based on dark mode setting
         /// </summary>
         public Color GetLogoColor(bool isDarkMode) => isDarkMode ? LogoDark : LogoLight;
     }
+
+    public static Color GetColor(int color) => ThemeColorMap.TryGetValue(color, out var colors) ? colors.Primary : default;
 }
