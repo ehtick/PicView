@@ -80,15 +80,15 @@ public class Zoom
     /// Zooms into the image using the current starting point and updates the application state.
     /// </summary>
     /// <param name="vm">The view model containing the application state and transformation details.</param>
-    public void ZoomIn(MainViewModel vm) =>
-        ZoomTo(_start, true, vm);
+    public void ZoomIn(Control parent, Control content, MainViewModel vm) =>
+        ZoomTo(GetRelativePosition(parent, content), true, vm);
 
     /// <summary>
     /// Zooms out the image using the current starting point and updates the application state.
     /// </summary>
     /// <param name="vm">The view model containing the application state and transformation details.</param>
-    public void ZoomOut(MainViewModel vm) =>
-        ZoomTo(_start, false, vm);
+    public void ZoomOut(Control parent, Control content, MainViewModel vm) =>
+        ZoomTo(GetRelativePosition(parent, content), false, vm);
 
     private static Point GetRelativePosition(Control parent, Control content)
     {

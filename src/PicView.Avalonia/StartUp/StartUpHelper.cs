@@ -13,6 +13,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
@@ -133,6 +134,7 @@ public static class StartUpHelper
 
         SetWindowEventHandlers(window);
         MenuManager.AddMenus();
+        UIHelper.AddHoverBar(vm);
 
         if (!Settings.WindowProperties.AutoFit)
         {

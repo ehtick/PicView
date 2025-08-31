@@ -210,6 +210,9 @@ public class ToolsViewModel : IDisposable
     public ReactiveCommand RotateLeftCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateLeft(); });
 
     public ReactiveCommand RotateRightCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateRight(); });
+    
+    public ReactiveCommand ZoomInCommand { get; } = new(async (_, _) => { await FunctionsMapper.ZoomIn(); });
+    public ReactiveCommand ZoomOutCommand { get; } = new(async (_, _) => { await FunctionsMapper.ZoomOut(); });
 
     public ReactiveCommand FlipCommand { get; } = new(async (_, _) => { await FunctionsMapper.Flip(); });
 
