@@ -1,0 +1,369 @@
+﻿<UserControl
+    Background="Transparent"
+    Height="160"
+    MinWidth="{Binding MainWindow.WindowMinWidth.Value}"
+    Opacity="0"
+    VerticalAlignment="Bottom"
+    x:Class="PicView.Avalonia.Views.UC.HoverBar"
+    x:DataType="viewModels:MainViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <ContextMenu x:Key="NavContextMenu">
+
+            <!--  Next  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.NextCommand}"
+                Header="{CompiledBinding Translation.NextImage,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource NextImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Prev  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.PreviousCommand}"
+                Header="{CompiledBinding Translation.PrevImage,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource PrevImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator />
+
+
+            <!--  Next 10  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.Skip10Command}"
+                Header="{CompiledBinding Translation.AdvanceBy10Images,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource NextImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Next 100  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.Skip100Command}"
+                Header="{CompiledBinding Translation.AdvanceBy100Images.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource NextImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Prev 10  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.Prev10Command}"
+                Header="{CompiledBinding Translation.GoBackBy10Images.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource PrevImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Prev 100  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.Prev100Command}"
+                Header="{CompiledBinding Translation.GoBackBy100Images.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource PrevImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator />
+
+            <!--  First Image  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.FirstCommand}"
+                Header="{CompiledBinding Translation.FirstImage.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource FirstImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Last Image  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.LastCommand}"
+                Header="{CompiledBinding Translation.LastImage.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource LastImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <Separator />
+
+            <!--  Next folder  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.NextFolderCommand}"
+                Header="{CompiledBinding Translation.NextFolder.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem.Icon>
+                    <Image
+                        Height="14"
+                        Source="{StaticResource NextFolderImage}"
+                        Width="14" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Prev folder  -->
+            <MenuItem
+                Command="{CompiledBinding Navigation.PreviousFolderCommand}"
+                Header="{CompiledBinding Translation.PrevFolder.Value,
+                                         Mode=OneWay}"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem.Icon>
+                    <Image
+                        Height="14"
+                        Source="{StaticResource PrevFolderImage}"
+                        Width="14" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+        </ContextMenu>
+    </UserControl.Resources>
+    <Border
+        Background="{DynamicResource MainBackgroundColor}"
+        BorderBrush="{DynamicResource MainBorderColor}"
+        BorderThickness="1"
+        CornerRadius="6"
+        Height="37"
+        Margin="0,65,0,0"
+        MaxWidth="570">
+        <DockPanel LastChildFill="True">
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.OpenFileCommand}"
+                Data="{StaticResource AltFolderGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="17"
+                IconWidth="20"
+                IsTabStop="False"
+                Width="35"
+                x:Name="FileMenuButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.ZoomOutCommand}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                Icon="{StaticResource ZoomOutImage}"
+                IconHeight="18"
+                IconWidth="21"
+                IsTabStop="False"
+                Width="35"
+                x:Name="ZoomOutMenuButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.ZoomInCommand}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                Icon="{StaticResource ZoomAltImage}"
+                IconHeight="18"
+                IconWidth="21"
+                IsTabStop="False"
+                Width="35"
+                x:Name="ZoomInMenuButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource WindowButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.RotateLeftCommand}"
+                Data="{StaticResource RotateLeftGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
+                                              Mode=OneWay}"
+                Width="35"
+                x:Name="RotateLeftButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource WindowButtonBackgroundColor}"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.RotateRightCommand}"
+                Data="{StaticResource RotateRightGeometry}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
+                                              Mode=OneWay}"
+                Width="35"
+                x:Name="RotateRightButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource WindowButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.FlipCommand}"
+                Data="{StaticResource FlipGeometry}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="17"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
+                                              Mode=OneWay}"
+                Width="35"
+                x:Name="FlipButton">
+                <Button.RenderTransform>
+                    <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
+                </Button.RenderTransform>
+            </customControls:IconButton>
+
+            <customControls:IconButton
+                Background="{DynamicResource MainButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="hover"
+                Command="{CompiledBinding Navigation.PreviousCommand}"
+                ContextMenu="{StaticResource NavContextMenu}"
+                Data="{StaticResource FilledArrowLeftGeometry}"
+                Focusable="False"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="20"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsTabStop="False"
+                Width="80"
+                x:Name="PreviousButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource MainButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="hover"
+                Command="{CompiledBinding Navigation.NextCommand}"
+                ContextMenu="{StaticResource NavContextMenu}"
+                Data="{StaticResource FilledArrowRightGeometry}"
+                Focusable="False"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="20"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsTabStop="False"
+                Width="80"
+                x:Name="NextButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{Binding Window.ShowSettingsWindow}"
+                Data="{StaticResource CogGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="18"
+                IconWidth="18"
+                IsTabStop="False"
+                Width="35"
+                x:Name="SettingsMenuButton" />
+
+            <Border
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                Padding="4"
+                x:Name="NavigationProgress">
+                <Border
+                    Background="#A4646464"
+                    CornerRadius="16"
+                    Margin="8">
+                    <Ellipse
+                        Fill="{DynamicResource SecondaryBorderColor}"
+                        Height="14"
+                        Margin="4"
+                        Width="14" />
+                </Border>
+            </Border>
+        </DockPanel>
+    </Border>
+</UserControl>

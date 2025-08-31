@@ -28,7 +28,10 @@ public static class UIHelper
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar? GetBottomBar { get; private set; }
+    public static HoverBar? GetHoverBar { get; private set; }
+    
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
+
 
     public static AvaloniaRenderingFrameProvider? GetFrameProvider { get; private set; }
 
@@ -46,6 +49,17 @@ public static class UIHelper
         GetGalleryView = GetMainView?.MainGrid.GetControl<GalleryAnimationControlView>("GalleryView");
         GetBottomBar = desktop.MainWindow?.FindControl<BottomBar>("BottomBar");
         GetToolTipMessage = GetMainView?.MainGrid.FindControl<ToolTipMessage>("ToolTipMessage");
+    }
+
+    public static void AddHoverBar(MainViewModel vm)
+    {
+        if (GetHoverBar is not null)
+        {
+            return;
+        }
+        GetHoverBar = new HoverBar();
+        GetMainView.MainGrid.Children.Add(GetHoverBar);
+        _ = new HoverFadeButtonHandler(GetHoverBar, vm);
     }
 
     #endregion

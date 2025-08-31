@@ -80,10 +80,10 @@ public partial class ImageViewer : UserControl
         _zoom?.ZoomOut(e, this, MainImage, DataContext as MainViewModel);
 
     /// <inheritdoc cref="Zoom.ZoomIn(MainViewModel)"/>
-    public void ZoomIn() => _zoom?.ZoomIn(DataContext as MainViewModel);
+    public void ZoomIn() => _zoom?.ZoomIn(this, MainImage,DataContext as MainViewModel);
 
     /// <inheritdoc cref="Zoom.ZoomOut(MainViewModel)"/>
-    public void ZoomOut() => _zoom?.ZoomOut(DataContext as MainViewModel);
+    public void ZoomOut() => _zoom?.ZoomOut(this, MainImage, DataContext as MainViewModel);
     /// <inheritdoc cref="Zoom.ResetZoom(bool, MainViewModel)"/>
     public void ResetZoom(bool enableAnimations = true) =>
         _zoom?.ResetZoom(enableAnimations, DataContext as MainViewModel);

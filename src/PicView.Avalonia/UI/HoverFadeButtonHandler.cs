@@ -35,9 +35,9 @@ public class HoverFadeButtonHandler
     /// <summary>
     ///     Duration of fade-in and fade-out in seconds.
     /// </summary>
-    public double FadeInDuration { get; set; } = 0.3;
+    private static double FadeInDuration => 0.3;
 
-    public double FadeOutDuration { get; set; } = 0.45;
+    private static double FadeOutDuration => 0.45;
 
     private void AttachEvents()
     {
