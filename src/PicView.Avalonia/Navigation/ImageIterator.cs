@@ -83,6 +83,7 @@ public class ImageIterator : IAsyncDisposable
         CurrentIndex = ImagePaths.FindIndex(x => x.FullName.Equals(fileInfo.FullName));
         InitiateFileSystemWatcher(fileInfo);
         Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
+        vm.PicViewer.Maximum.Value = ImagePaths.Count;
     }
 
     public ImageIterator(FileInfo fileInfo, List<FileInfo> imagePaths, int currentIndex, MainViewModel vm)
@@ -91,6 +92,7 @@ public class ImageIterator : IAsyncDisposable
         ArgumentNullException.ThrowIfNull(fileInfo);
 #endif
         _vm = vm;
+        vm.PicViewer.Maximum.Value = imagePaths.Count;
         ImagePaths = imagePaths;
         CurrentIndex = currentIndex;
         InitiateFileSystemWatcher(fileInfo);
