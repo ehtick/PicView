@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using ImageMagick;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Input;
@@ -7,9 +9,11 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.DebugTools;
+using PicView.Core.Exif;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Preloading;
@@ -260,7 +264,6 @@ public class ImageIterator : IAsyncDisposable
             }
         }
 
-
         PreLoader.Resynchronize(ImagePaths);
     }
 
@@ -387,8 +390,6 @@ public class ImageIterator : IAsyncDisposable
 
             PreLoader.RefreshFileInfo(newIndex, newFileInfo, ImagePaths);
             Resynchronize();
-
-
 
             _isRunning = false;
             FileHistoryManager.Rename(e.OldFullPath, e.FullPath);
@@ -651,10 +652,127 @@ public class ImageIterator : IAsyncDisposable
         }
     }
 
+    public async ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token)
+    {
+        CurrentIndex = index;
+        IsReversed = isReverse;
+
+        object? imageSource;
+        int width;
+        int height;
+        var preloadValue = PreLoader.Get(index, ImagePaths);
+        if (preloadValue is not null)
+        {
+            imageSource = preloadValue.ImageModel.Image;
+            if (imageSource is Bitmap bmp)
+            {
+                width = (int)bmp.Size.Width;
+                height = (int)bmp.Size.Height;
+            }
+            else
+            {
+                width = height = 0;
+            }
+        }
+        else
+        {
+            imageSource = await GetImage.GetImageCore(ImagePaths[index]).ConfigureAwait(false);
+            if (imageSource is Bitmap bmp)
+            {
+                width = (int)bmp.Size.Width;
+                height = (int)bmp.Size.Height;
+            }
+            else
+            {
+                width = height = 0;
+            }
+        }
+
+        await UpdateImage.UpdateSourceSlim(_vm, index, imageSource, width, height, ImagePaths, token);
+    }
+
+    public async Task SlimUpdate(int index, object? imageSource)
+    {
+        var magickImage = GetImage.CreateAndPingMagickImage(ImagePaths[index]);
+        var imageModel = new ImageModel
+        {
+            Image = imageSource,
+            Orientation = ExifOrientationHelper.GetImageOrientation(magickImage)
+        };
+        switch (imageSource)
+        {
+            case Bitmap bmp:
+                GetImageModel.SetBitmapProperties(bmp, imageModel, magickImage.Format);
+                imageModel.ImageType = magickImage.Format switch
+                {
+                    MagickFormat.WebP => ImageAnalyzer.IsAnimated(ImagePaths[index])
+                        ? ImageType.AnimatedWebp
+                        : ImageType.Bitmap,
+                    MagickFormat.Gif or MagickFormat.Gif87 => ImageAnalyzer.IsAnimated(ImagePaths[index])
+                        ? ImageType.AnimatedGif
+                        : ImageType.Bitmap,
+                    _ => ImageType.Bitmap
+                };
+                break;
+            case string:
+                imageModel.ImageType = ImageType.Svg;
+                break;
+            default:
+                imageModel.ImageType = ImageType.Invalid;
+                break;
+        }
+
+        PreLoader.Add(index, ImagePaths, imageModel, IsReversed);
+        var preloadValue = new PreLoadValue(imageModel);
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            var nextIndex = GetIteration(index, IsReversed ? NavigateTo.Previous : NavigateTo.Next);
+            var nextPreloadValue = await GetOrLoadPreLoadValueAsync(nextIndex).ConfigureAwait(false);
+            await UpdateImage.UpdateSource(_vm, index, ImagePaths, preloadValue,
+                    nextPreloadValue)
+                .ConfigureAwait(false);
+        }
+        else
+        {
+            await UpdateImage.UpdateSource(_vm, index, ImagePaths, preloadValue)
+                .ConfigureAwait(false);
+        }
+        
+        if (ImagePaths.Count > 1)
+        {
+            if (Settings.UIProperties.IsTaskbarProgressEnabled)
+            {
+                Dispatcher.UIThread.Invoke(
+                    () => { _vm.PlatformService.SetTaskbarProgress((ulong)CurrentIndex, (ulong)ImagePaths.Count); },
+                    DispatcherPriority.Render);
+            }
+
+            // We shouldn't wait for preloading to finish, since this should complete as soon as image changed. 
+            // Awaiting preloader will cause delay, in E.G., moving the cursor after the image has changed.
+            _ = Task.Run(() => PreLoader.PreLoadAsync(index, IsReversed, ImagePaths)
+                .ConfigureAwait(false));
+        }
+
+        // Add recent files
+        if (!Settings.Navigation.IsFileHistoryEnabled)
+        {
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(TempFileHelper.TempFilePath) && ImagePaths.Count > CurrentIndex)
+        {
+            FileHistoryManager.Add(ImagePaths[CurrentIndex].FullName);
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                FileHistoryManager.Add(
+                    ImagePaths[GetIteration(CurrentIndex, IsReversed ? NavigateTo.Previous : NavigateTo.Next)].FullName);
+            }
+        }
+    }
+
     public async ValueTask IterateToIndex(int index, CancellationToken token)
     {
         var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
-        await IterateToIndex(index, cts).ConfigureAwait(false);
+        await IterateToIndex(index, cts);
     }
 
     /// <summary>
@@ -753,7 +871,7 @@ public class ImageIterator : IAsyncDisposable
             {
                 if (cts is null || !cts.IsCancellationRequested && index == CurrentIndex)
                 {
-                    await UpdateImage.UpdateSource(_vm, index, ImagePaths, preloadValue)
+                    await UpdateImage.UpdateSource(_vm, index, ImagePaths, preloadValue, null)
                         .ConfigureAwait(false);
                 }
             }

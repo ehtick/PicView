@@ -132,9 +132,9 @@ public static class StartUpHelper
         vm.MainWindow.LayoutButtonSubscription();
         vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
 
-        SetWindowEventHandlers(window);
         MenuManager.AddMenus();
         UIHelper.AddHoverBar(vm);
+        SetWindowEventHandlers(window);
 
         if (!Settings.WindowProperties.AutoFit)
         {

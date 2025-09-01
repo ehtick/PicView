@@ -122,6 +122,12 @@ public static class TitleManager
             imageModel.FileInfo, vm.GlobalSettings.ZoomValue.CurrentValue, NavigationManager.GetCollection);
         ApplyTitles(vm, windowTitles);
     }
+    
+    public static void SetTitleSlim(MainViewModel vm, int width, int height, int index, IReadOnlyList<FileInfo> collection)
+    {
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(width, height, index, collection[index], 0, collection);
+        ApplyTitles(vm, windowTitles);
+    }
 
     /// <summary>
     ///     Sets the title of the window and the title displayed in the UI

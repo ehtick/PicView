@@ -552,7 +552,7 @@ public static class NavigationManager
     public static PreLoadValue? GetCurrentPreLoadValue() =>
         ImageIterator?.GetCurrentPreLoadValue() ?? null;
 
-    public static async ValueTask<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
+    public static async Task<PreLoadValue?> GetCurrentPreLoadValueAsync() =>
         await ImageIterator?.GetCurrentPreLoadValueAsync() ?? null;
 
     public static PreLoadValue? GetNextPreLoadValue() =>

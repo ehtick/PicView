@@ -34,7 +34,7 @@ public static class ImageTitleFormatter
     /// <param name="zoomValue">The current zoom level of the image.</param>
     /// <param name="filesList">The list of image file paths.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, List<FileInfo> filesList)
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList)
     {
         if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
         {
@@ -72,7 +72,7 @@ public static class ImageTitleFormatter
         return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
     }
 
-    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, List<FileInfo> filesList, int index, string namePart)
+    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList, int index, string namePart)
     {
         using var sb = ZString.CreateStringBuilder(true);
 
@@ -111,7 +111,7 @@ public static class ImageTitleFormatter
         };
     }
 
-    private static bool TryValidateAndGetFileInfo(int index, List<FileInfo> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
+    private static bool TryValidateAndGetFileInfo(int index, IReadOnlyList<FileInfo> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
     {
         validatedFileInfo = null;
         errorTitle = default;

@@ -365,6 +365,25 @@ public class PicBox : Control, IDisposable
         {
             context.DrawImage(source, sourceRect, destRect);
         }
+        catch (ObjectDisposedException e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(RenderImage), e);
+            
+            var preloadValue = NavigationManager.GetCurrentPreLoadValue();
+            if (preloadValue?.ImageModel != null)
+            {
+                context.DrawImage(preloadValue.ImageModel.Image as IImage, sourceRect, destRect);
+            }
+            else
+            {
+                // Last resort bug fix
+                var asyncPreloadValue = NavigationManager.GetCurrentPreLoadValueAsync().GetAwaiter().GetResult();
+                if (asyncPreloadValue?.ImageModel?.Image is IImage image)
+                {
+                    context.DrawImage(image, sourceRect, destRect);
+                }
+            }
+        }
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(PicBox), nameof(RenderImage), e);

@@ -33,7 +33,7 @@ public static class GetImageModel
         try
         {
             // Initialize MagickImage if not provided
-            magickImage ??= CreateAndPingMagickImage(fileInfo);
+            magickImage ??= GetImage.CreateAndPingMagickImage(fileInfo);
 
             // Extract metadata
             imageModel.Orientation = ExifOrientationHelper.GetImageOrientation(magickImage);
@@ -119,14 +119,7 @@ public static class GetImageModel
         }
     }
 
-    private static MagickImage CreateAndPingMagickImage(FileInfo fileInfo)
-    {
-        var magickImage = new MagickImage();
-        magickImage.Ping(fileInfo);
-        return magickImage;
-    }
-
-    private static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, MagickFormat format, ImageType imageType = ImageType.Bitmap)
+    public static void SetBitmapProperties(Bitmap? bitmap, ImageModel imageModel, MagickFormat format, ImageType imageType = ImageType.Bitmap)
     {
         imageModel.Image = bitmap;
         if (bitmap is null)

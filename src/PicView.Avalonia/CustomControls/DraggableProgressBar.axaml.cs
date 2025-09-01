@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -39,6 +40,8 @@ public class DraggableProgressBar : TemplatedControl
 
     private readonly CompositeDisposable _disposables = new();
 
+    private bool _shouldUpdate;
+
     static DraggableProgressBar()
     {
         // This allows the control to react to property changes
@@ -62,8 +65,7 @@ public class DraggableProgressBar : TemplatedControl
         ToolTip.SetPlacement(this, PlacementMode.Top);
         ToolTip.SetVerticalOffset(this, -3);
         
-        // Initialize the observable in the constructor.
-        // It will observe the CurrentIndexProperty for changes,
+        // Observe the CurrentIndexProperty for changes,
         // wait for a 25ms pause in changes (debounce), and then emit the last value.
         CurrentIndexProperty.Changed.ToObservable()
             .Debounce(TimeSpan.FromMilliseconds(25))
@@ -72,7 +74,18 @@ public class DraggableProgressBar : TemplatedControl
                 // Check if the new value exists and is different from the old one.
                 if (x.NewValue.HasValue && x.OldValue.HasValue && x.NewValue.Value != x.OldValue.Value)
                 {
-                    await NavigationManager.ImageIterator.IterateToIndex(x.NewValue.Value, cancel);
+                    if (IsDragging)
+                    {
+                        var isReverse = x.NewValue.Value < x.OldValue.Value;
+                        // Use lightweight image changing (without changing size) while dragging:
+                        await NavigationManager.ImageIterator.IterateToIndexSlim(x.NewValue.Value, isReverse, cancel);
+                        _shouldUpdate = true;
+                    }
+                    else
+                    {
+                        await NavigationManager.ImageIterator.IterateToIndex(x.NewValue.Value, cancel);
+                        _shouldUpdate = false;
+                    }
                 }
             })
             .AddTo(_disposables);
@@ -173,15 +186,23 @@ public class DraggableProgressBar : TemplatedControl
             thumbBounds = thumbBounds.WithX(transform.X);
         }
 
-        // Check if the click was inside the thumb's bounds
-        if (!thumbBounds.Contains(clickPosition))
+        // Expand bounds horizontally by 2x
+        var expandedBounds = new Rect(
+            thumbBounds.X - thumbBounds.Width / 2, 
+            thumbBounds.Y,
+            thumbBounds.Width * 2,                  
+            thumbBounds.Height                    
+        );
+
+        // Check if the click was inside the expanded thumb area
+        if (!expandedBounds.Contains(clickPosition))
         {
-            // Click was on the track (outside the thumb), so jump to position
+            // Click was on the track (outside expanded thumb), so jump to position
             UpdateIndexFromPosition(clickPosition.X);
             return;
         }
-        
-        // Click was on the thumb, so start dragging
+
+        // Click was on (or near) the thumb, so start dragging
         IsDragging = true;
         _dragStartPoint = e.GetPosition(this);
         _dragStartIndex = CurrentIndex;
@@ -206,6 +227,8 @@ public class DraggableProgressBar : TemplatedControl
 
         if (!IsDragging)
         {
+            // Show index position on hover
+            
             var pos = e.GetPosition(_track);
             if (GetThumbBounds().Contains(pos))
             {
@@ -239,6 +262,16 @@ public class DraggableProgressBar : TemplatedControl
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
+        if (_shouldUpdate)
+        {
+            var vm = DataContext as MainViewModel;
+            // Update from lightweight image loading to properly instantiate everything and update size
+            _ = NavigationManager.ImageIterator.SlimUpdate(CurrentIndex, vm.PicViewer.ImageSource.CurrentValue);
+
+            IsDragging = false;
+            e.Pointer.Capture(null);
+            return;
+        }
         if (!IsDragging)
         {
             return;

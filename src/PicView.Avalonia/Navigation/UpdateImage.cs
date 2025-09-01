@@ -31,7 +31,7 @@ public static class UpdateImage
     /// <param name="preLoadValue">The preloaded value of the current image.</param>
     /// <param name="nextPreloadValue">Optional: The preloaded value of the next image, used for side-by-side display.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
-    public static async ValueTask UpdateSource(MainViewModel vm, int index, List<FileInfo> imagePaths,
+    public static async ValueTask UpdateSource(MainViewModel vm, int index, IReadOnlyList<FileInfo> imagePaths,
         PreLoadValue? preLoadValue,
         PreLoadValue? nextPreloadValue = null)
     {
@@ -170,10 +170,32 @@ public static class UpdateImage
         void SetSize()
         {
             WindowResizing.SetSize(preLoadValue.ImageModel.PixelWidth, preLoadValue.ImageModel.PixelHeight,
-                nextPreloadValue?.ImageModel?.PixelWidth ?? 0, nextPreloadValue?.ImageModel?.PixelHeight ?? 0,
-                vm.GlobalSettings.RotationAngle.CurrentValue, vm);
+                    nextPreloadValue?.ImageModel?.PixelWidth ?? 0, nextPreloadValue?.ImageModel?.PixelHeight ?? 0,
+                    vm.GlobalSettings.RotationAngle.CurrentValue, vm);
         }
 
+    }
+
+    public static async ValueTask UpdateSourceSlim(MainViewModel vm,
+        int index,
+        object? imageSource,
+        int width,
+        int height,
+        IReadOnlyList<FileInfo> imagePaths,
+        CancellationToken token)
+    {
+        if (index != NavigationManager.GetCurrentIndex)
+        {
+            return;
+        }
+        
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            vm.PicViewer.ImageSource.Value = imageSource;
+            vm.PicViewer.SecondaryImageSource.Value = null;
+        }, DispatcherPriority.Send, token);
+        
+        TitleManager.SetTitleSlim(vm, width, height, index, imagePaths);
     }
 
     #endregion
