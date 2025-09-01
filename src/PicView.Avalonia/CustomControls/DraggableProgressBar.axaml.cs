@@ -8,7 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -38,7 +37,7 @@ public class DraggableProgressBar : TemplatedControl
     private Ellipse? _thumb;
     private Border? _track;
 
-    private CompositeDisposable _disposables = new();
+    private readonly CompositeDisposable _disposables = new();
 
     static DraggableProgressBar()
     {

@@ -11,7 +11,7 @@
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
-        <ContextMenu x:Key="NavContextMenu">
+        <ContextMenu Placement="Top" x:Key="NavContextMenu">
 
             <!--  Next  -->
             <MenuItem
@@ -355,7 +355,7 @@
                 DragSensitivity="1.5"
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
-                Maximum="2656"
+                Maximum="{CompiledBinding PicViewer.Maximum.Value}"
                 x:Name="ProgressBar" />
         </DockPanel>
     </Border>
