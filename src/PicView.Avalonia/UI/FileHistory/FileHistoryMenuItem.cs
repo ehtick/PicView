@@ -212,7 +212,13 @@ namespace PicView.Avalonia.UI.FileHistory
 
             item.Click += async delegate
             {
-                UIHelper.GetMainView.MainContextMenu.Close();
+                if (UIHelper.GetMainView.Resources.TryGetResource("MainContextMenu", Application.Current.ActualThemeVariant, out var value))
+                {
+                    if (value is ContextMenu mainContextMenu)
+                    {
+                        mainContextMenu.Close();
+                    }
+                }
                 await NavigationManager.LoadPicFromStringAsync(fileLocation, viewModel).ConfigureAwait(false);
             };
 

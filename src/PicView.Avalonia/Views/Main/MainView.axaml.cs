@@ -85,7 +85,13 @@ public partial class MainView : UserControl
             LostFocus += HandleLostFocus;
             PointerPressed += PointerPressedBehavior;
 
-            MainContextMenu.Opened += async (sender, args) =>  await OnMainContextMenuOpened(sender, args);
+            if (Resources.TryGetResource("MainContextMenu", Application.Current.ActualThemeVariant, out var value))
+            {
+                if (value is ContextMenu mainContextMenu)
+                {
+                    mainContextMenu.Opened += async (sender, args) =>  await OnMainContextMenuOpened(sender, args);
+                }
+            }
             
             if (!FileHistoryManager.IsSortingDescending)
             {

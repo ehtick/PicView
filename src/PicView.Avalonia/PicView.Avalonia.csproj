@@ -111,6 +111,10 @@
       <DependentUpon>WindowSettingsView.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UC\PopUps\NavigationDialog.axaml.cs">
+      <DependentUpon>NavigationDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 

@@ -10,174 +10,6 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <UserControl.Resources>
-        <ContextMenu Placement="Top" x:Key="NavContextMenu">
-
-            <!--  Next  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.NextCommand}"
-                Header="{CompiledBinding Translation.NextImage,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource NextImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Prev  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.PreviousCommand}"
-                Header="{CompiledBinding Translation.PrevImage,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource PrevImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <Separator />
-
-
-            <!--  Next 10  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.Skip10Command}"
-                Header="{CompiledBinding Translation.AdvanceBy10Images,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource NextImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Next 100  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.Skip100Command}"
-                Header="{CompiledBinding Translation.AdvanceBy100Images.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource NextImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Prev 10  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.Prev10Command}"
-                Header="{CompiledBinding Translation.GoBackBy10Images.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource PrevImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Prev 100  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.Prev100Command}"
-                Header="{CompiledBinding Translation.GoBackBy100Images.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource PrevImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <Separator />
-
-            <!--  First Image  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.FirstCommand}"
-                Header="{CompiledBinding Translation.FirstImage.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource FirstImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Last Image  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.LastCommand}"
-                Header="{CompiledBinding Translation.LastImage.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource LastImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <Separator />
-
-            <!--  Next folder  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.NextFolderCommand}"
-                Header="{CompiledBinding Translation.NextFolder.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
-                <MenuItem.Icon>
-                    <Image
-                        Height="14"
-                        Source="{StaticResource NextFolderImage}"
-                        Width="14" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Prev folder  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.PreviousFolderCommand}"
-                Header="{CompiledBinding Translation.PrevFolder.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
-                <MenuItem.Icon>
-                    <Image
-                        Height="14"
-                        Source="{StaticResource PrevFolderImage}"
-                        Width="14" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-        </ContextMenu>
-    </UserControl.Resources>
     <Border
         Background="{DynamicResource MainBackgroundColor}"
         BorderBrush="{DynamicResource MainBorderColor}"
@@ -302,8 +134,6 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="hover"
-                Command="{CompiledBinding Navigation.PreviousCommand}"
-                ContextMenu="{StaticResource NavContextMenu}"
                 Data="{StaticResource FilledArrowLeftGeometry}"
                 Focusable="False"
                 Foreground="{DynamicResource MainTextColor}"
@@ -321,8 +151,6 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="hover"
-                Command="{CompiledBinding Navigation.NextCommand}"
-                ContextMenu="{StaticResource NavContextMenu}"
                 Data="{StaticResource FilledArrowRightGeometry}"
                 Focusable="False"
                 Foreground="{DynamicResource MainTextColor}"
@@ -352,7 +180,7 @@
 
             <customControls:DraggableProgressBar
                 CurrentIndex="{CompiledBinding PicViewer.Index}"
-                DragSensitivity="1.5"
+                DragSensitivity="1"
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Maximum="{CompiledBinding PicViewer.Maximum.Value}"

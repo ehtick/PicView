@@ -1,0 +1,163 @@
+﻿<customControls:AnimatedPopUp
+    ClickingOutsideCloses="True"
+    Padding="20"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="PicView.Avalonia.Views.UC.PopUps.NavigationDialog"
+    x:DataType="viewModels:MainViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Background="Transparent">
+        <!--  Next  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource NextImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.NextImage,
+                                   Mode=OneWay}"
+            x:Name="NextButton" />
+
+        <!--  Prev  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource PrevImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.PrevImage,
+                                   Mode=OneWay}"
+            x:Name="PrevButton" />
+
+        <Separator />
+
+
+        <!--  Next 10  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource NextImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.AdvanceBy10Images,
+                                   Mode=OneWay}"
+            x:Name="Next10Button" />
+
+        <!--  Next 100  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource NextImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.AdvanceBy100Images,
+                                   Mode=OneWay}"
+            x:Name="Next100Button" />
+
+        <!--  Prev 10  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource PrevImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.GoBackBy10Images,
+                                   Mode=OneWay}"
+            x:Name="Prev10Button" />
+
+        <!--  Prev 100  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource PrevImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.GoBackBy100Images,
+                                   Mode=OneWay}"
+            x:Name="Prev100Button" />
+
+        <Separator />
+
+        <!--  First Image  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource FirstImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.FirstImage,
+                                   Mode=OneWay}"
+            x:Name="FirstImageButton" />
+
+        <!--  Last Image  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource LastImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.LastImage,
+                                   Mode=OneWay}"
+            x:Name="LastImageButton" />
+
+        <Separator />
+
+        <!--  Next folder  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource NextFolderImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.NextFolder,
+                                   Mode=OneWay}"
+            x:Name="NextFolderButton" />
+
+        <!--  Prev folder  -->
+        <customControls:TextIconButton
+            Classes="altHover"
+            Icon="{StaticResource PrevFolderImage}"
+            IconHeight="12"
+            IconMargin="5,0,10,0"
+            IconWidth="12"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Padding="6"
+            Text="{CompiledBinding Translation.PrevFolder,
+                                   Mode=OneWay}"
+            x:Name="PrevFolderButton" />
+    </StackPanel>
+</customControls:AnimatedPopUp>

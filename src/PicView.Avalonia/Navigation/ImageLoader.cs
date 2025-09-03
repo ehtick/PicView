@@ -450,13 +450,13 @@ public static class ImageLoader
     #region Image Iterator Loading
 
     /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
-    public static async Task LastIterationAsync(ImageIterator imageIterator) =>
+    public static async ValueTask LastIterationAsync(ImageIterator imageIterator) =>
         await imageIterator
             .NextIteration(NavigateTo.Last, _cancellationTokenSource)
             .ConfigureAwait(false);
 
     /// <inheritdoc cref="ImageIterator.NextIteration(NavigateTo, CancellationTokenSource)" />
-    public static async Task FirstIterationAsync(ImageIterator imageIterator) =>
+    public static async ValueTask FirstIterationAsync(ImageIterator imageIterator) =>
         await imageIterator
             .NextIteration(NavigateTo.First, _cancellationTokenSource)
             .ConfigureAwait(false);
@@ -466,22 +466,18 @@ public static class ImageLoader
     /// </summary>
     /// <param name="index">The index to iterate to.</param>
     /// <param name="imageIterator">The ImageIterator instance.</param>
-    public static async Task CheckCancellationAndStartIterateToIndex(int index, ImageIterator imageIterator)
+    public static async ValueTask CheckCancellationAndStartIterateToIndex(int index, ImageIterator imageIterator)
     {
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync().ConfigureAwait(false);
         }
 
-        // Need to start in a new task. This makes it more responsive, since it can get laggy when loading large images
-        await Task.Run(async () =>
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            await imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
-        }).ConfigureAwait(false);
+        _cancellationTokenSource = new CancellationTokenSource();
+        await imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
     }
 
-    public static async Task IterateToIndexAsync(int index, ImageIterator imageIterator) =>
+    public static async ValueTask IterateToIndexAsync(int index, ImageIterator imageIterator) =>
         await imageIterator.NextIteration(index, _cancellationTokenSource).ConfigureAwait(false);
 
     #endregion
