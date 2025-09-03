@@ -101,6 +101,11 @@ public class KeybindTextBox : TextBox
         }
     }
 
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        // Disable keyboard behavior #248
+    }
+
     private void OnGotFocus(object? sender, GotFocusEventArgs e)
     {
         if (IsReadOnly)
