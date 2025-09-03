@@ -20,6 +20,35 @@ public partial class HoverBar : UserControl
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
+        SizeChanged += OnSizeChanged;
+        ResponsiveResize(Bounds.Width);
+    }
+
+    private void OnSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        ResponsiveResize(e.NewSize.Width);
+    }
+
+    private void ResponsiveResize(double width)
+    {
+        const int firstBreakPoint = 450;
+        const int secondBreakPoint = 550;
+
+        switch (width)
+        {
+            case <= firstBreakPoint:
+                RotateLeftButton.IsVisible = false;
+                NextButton.Width = PreviousButton.Width = 65;
+                break;
+            case <= secondBreakPoint:
+                RotateLeftButton.IsVisible = false;
+                NextButton.Width = PreviousButton.Width = 70;
+                break;
+            default:
+                RotateLeftButton.IsVisible = true;
+                NextButton.Width = PreviousButton.Width = 80;
+                break;
+        }
     }
 
     private async Task ManagePointerPressed(object? sender, PointerPressedEventArgs e)
@@ -30,7 +59,7 @@ public partial class HoverBar : UserControl
         {
             if (props.IsRightButtonPressed)
             {
-                OpenDialog();
+                ShowNavigationDialog();
             }
             else if (props.IsLeftButtonPressed)
             {
@@ -41,7 +70,7 @@ public partial class HoverBar : UserControl
         {
             if (props.IsRightButtonPressed)
             {
-                OpenDialog();
+                ShowNavigationDialog();
             }
             else if (props.IsLeftButtonPressed)
             {
@@ -63,7 +92,7 @@ public partial class HoverBar : UserControl
         }
     }
 
-    private void OpenDialog()
+    private void ShowNavigationDialog()
     {
         UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
     }
@@ -72,6 +101,7 @@ public partial class HoverBar : UserControl
     {
         base.OnDetachedFromLogicalTree(e);
         Loaded -= OnLoaded;
+        SizeChanged -= OnSizeChanged;
         RemoveHandler(PointerPressedEvent, ManagePointerPressed);
     }
 }

@@ -16,8 +16,8 @@
         BorderThickness="1"
         CornerRadius="6"
         Height="37"
-        Margin="0,65,0,0"
-        MaxWidth="590"
+        Margin="5,65,5,0"
+        MaxWidth="700"
         x:Name="TopBorder">
         <DockPanel LastChildFill="True">
             <customControls:IconButton
@@ -38,7 +38,7 @@
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="1,0,1,0"
+                BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding Tools.ZoomOutCommand}"
                 Foreground="{DynamicResource MainTextColor}"
@@ -53,7 +53,7 @@
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="1,0,1,0"
+                BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding Tools.ZoomInCommand}"
                 Foreground="{DynamicResource MainTextColor}"

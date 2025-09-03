@@ -136,9 +136,9 @@
         <customControls:TextIconButton
             Classes="altHover"
             Icon="{StaticResource NextFolderImage}"
-            IconHeight="12"
+            IconHeight="14"
             IconMargin="5,0,10,0"
-            IconWidth="12"
+            IconWidth="14"
             IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             Padding="6"
@@ -150,9 +150,9 @@
         <customControls:TextIconButton
             Classes="altHover"
             Icon="{StaticResource PrevFolderImage}"
-            IconHeight="12"
+            IconHeight="14"
             IconMargin="5,0,10,0"
-            IconWidth="12"
+            IconWidth="14"
             IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             Padding="6"
