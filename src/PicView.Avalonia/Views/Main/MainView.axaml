@@ -23,9 +23,8 @@
     <UserControl.Resources>
         <converters:SortFilesByToBoolConverter x:Key="EnumToBoolConverter" />
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="Brush0" />
-    </UserControl.Resources>
-    <UserControl.ContextMenu>
-        <ContextMenu x:Name="MainContextMenu">
+
+        <ContextMenu x:Key="MainContextMenu">
 
             <!--  Open  -->
             <MenuItem
@@ -1072,7 +1071,7 @@
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
-    </UserControl.ContextMenu>
+    </UserControl.Resources>
 
 
     <Panel x:Name="MainGrid">
@@ -1086,6 +1085,7 @@
             ClipToBounds="True"
             Content="{CompiledBinding MainWindow.CurrentView.Value,
                                       Mode=OneWay}"
+            ContextMenu="{StaticResource MainContextMenu}"
             Margin="{CompiledBinding Gallery.GalleryMargin.Value}" />
         <buttons:ClickArrowRight
             HorizontalAlignment="Right"

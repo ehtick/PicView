@@ -39,15 +39,8 @@ public class AnimatedPopUp : ContentControl
         _partOverlay = e.NameScope.Find<Panel>("PART_Overlay");
         _partBorder = e.NameScope.Find<Border>("PART_Border");
 
-        if (_partOverlay != null)
-        {
-            _partOverlay.Opacity = 0;
-        }
-
-        if (_partBorder != null)
-        {
-            _partBorder.Opacity = 0;
-        }
+        _partOverlay?.Opacity = 0;
+        _partBorder?.Opacity = 0;
 
         ApplyGlassThemeBackground();
 
@@ -85,9 +78,11 @@ public class AnimatedPopUp : ContentControl
         }
     }
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    protected async Task AnimatedOpening()
+    public async Task AnimatedOpening()
     {
+        IsHitTestVisible = true;
+        IsVisible = true;
+        
         const int fromX = 50;
         const int fromY = 100;
         const int toX = 0;
@@ -102,7 +97,7 @@ public class AnimatedPopUp : ContentControl
         );
     }
 
-    protected async Task AnimatedClosing()
+    public async Task AnimatedClosing(bool remove = true)
     {
         const int fromX = 0;
         const int fromY = 0;
@@ -116,7 +111,15 @@ public class AnimatedPopUp : ContentControl
             fadeIn.RunAsync(_partBorder),
             centering.RunAsync(_partBorder)
         );
-        UIHelper.GetMainView.MainGrid.Children.Remove(this);
+        if (remove)
+        {
+            UIHelper.GetMainView.MainGrid.Children.Remove(this);
+        }
+        else
+        {
+            IsHitTestVisible = false;
+            IsVisible = false;
+        }
     }
 
     // ReSharper disable once UnusedParameter.Global
