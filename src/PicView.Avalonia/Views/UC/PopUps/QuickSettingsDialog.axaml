@@ -1,0 +1,185 @@
+﻿<customControls:AnimatedPopUp
+    ClickingOutsideCloses="True"
+    Padding="20"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="PicView.Avalonia.Views.UC.PopUps.QuickSettingsDialog"
+    x:DataType="viewModels:MainViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Background="Transparent">
+
+        <Border
+            Background="{DynamicResource MainBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            CornerRadius="4">
+            <StackPanel Orientation="Horizontal">
+                <!--  All settings  -->
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    CornerRadius="4,0,0,4"
+                    Icon="{StaticResource GeneralSettingsAltImage}"
+                    IconHeight="14"
+                    IconMargin="5,0,10,0"
+                    IconWidth="14"
+                    Padding="15,10"
+                    Text="{CompiledBinding Translation.Settings.Value,
+                                           Mode=OneWay}"
+                    TextMargin="0,0,5,0"
+                    TextMaxWidth="170"
+                    ToolTip.Tip="{CompiledBinding Translation.ShowAllSettingsWindow.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="AllSettingsButton" />
+
+                <!--  About  -->
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    CornerRadius="0,4,4,0"
+                    Icon="{StaticResource AboutImage}"
+                    IconHeight="14"
+                    IconMargin="5,0,10,0"
+                    IconWidth="14"
+                    Padding="15,10"
+                    Text="{CompiledBinding Translation.About.Value,
+                                           Mode=OneWay}"
+                    TextMargin="0,0,8,0"
+                    TextMaxWidth="170"
+                    ToolTip.Tip="{CompiledBinding Translation.AboutWindow.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="AboutButton" />
+            </StackPanel>
+
+
+        </Border>
+        <WrapPanel
+            Margin="0,15,0,0"
+            MaxWidth="375"
+            Orientation="Horizontal">
+
+            <!--  Toggle scroll  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ToggleScrollCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsScrollingEnabled.Value}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.ToggleScroll.Value,
+                                              Mode=OneWay}"
+                Width="175"
+                x:Name="ScrollButton">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="155"
+                    Text="{CompiledBinding Translation.IsScrolling.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <!--  Toggle stretch  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.StretchedCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsStretched.Value,
+                                            Mode=TwoWay}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.Stretch.Value,
+                                              Mode=OneWay}"
+                Width="175"
+                x:Name="StretchButton">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="145"
+                    Text="{CompiledBinding Translation.Stretch.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <!--  Toggle looping  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ToggleLoopingCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsLooping.Value}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.ToggleScroll.Value,
+                                              Mode=OneWay}"
+                Width="175">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="155"
+                    Text="{CompiledBinding Translation.IsLooping.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <!--  Toggle auto fit  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ChangeAutoFitCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsAutoFit.Value,
+                                            Mode=TwoWay}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.AutoFitWindow.Value,
+                                              Mode=OneWay}"
+                Width="175">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="145"
+                    Text="{CompiledBinding Translation.AutoFitWindow.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <!--  Toggle topmost  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ChangeTopMostCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsTopMost.Value}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.StayTopMost.Value,
+                                              Mode=OneWay}"
+                Width="175">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="155"
+                    Text="{CompiledBinding Translation.StayTopMost.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+            <!--  Toggle subdirectories  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ToggleSubdirectoriesCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value,
+                                            Mode=TwoWay}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.SearchSubdirectory.Value,
+                                              Mode=OneWay}"
+                Width="175">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="145"
+                    Text="{CompiledBinding Translation.SearchSubdirectory.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+        </WrapPanel>
+    </StackPanel>
+</customControls:AnimatedPopUp>

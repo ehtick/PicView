@@ -17,7 +17,7 @@
         CornerRadius="6"
         Height="37"
         Margin="5,65,5,0"
-        MaxWidth="700"
+        MaxWidth="850"
         x:Name="TopBorder">
         <DockPanel LastChildFill="True">
             <customControls:IconButton
@@ -26,12 +26,15 @@
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding Tools.OpenFileCommand}"
+                CornerRadius="6,0,0,6"
                 Data="{StaticResource AltFolderGeometry}"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 IconHeight="17"
                 IconWidth="20"
                 IsTabStop="False"
+                ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value,
+                                              Mode=OneWay}"
                 Width="35"
                 x:Name="FileMenuButton" />
 
@@ -66,7 +69,7 @@
                 x:Name="ZoomInMenuButton" />
 
             <customControls:IconButton
-                Background="{DynamicResource WindowButtonBackgroundColor}"
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
@@ -86,7 +89,7 @@
                 x:Name="RotateLeftButton" />
 
             <customControls:IconButton
-                Background="{DynamicResource WindowButtonBackgroundColor}"
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 Classes="noBorderHover"
                 Command="{CompiledBinding Tools.RotateRightCommand}"
                 Data="{StaticResource RotateRightGeometry}"
@@ -105,7 +108,7 @@
                 x:Name="RotateRightButton" />
 
             <customControls:IconButton
-                Background="{DynamicResource WindowButtonBackgroundColor}"
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
@@ -128,6 +131,20 @@
                     <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
                 </Button.RenderTransform>
             </customControls:IconButton>
+
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Data="{StaticResource CogGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="35"
+                IconHeight="18"
+                IconWidth="18"
+                IsTabStop="False"
+                Width="35"
+                x:Name="SettingsMenuButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource MainButtonBackgroundColor}"
@@ -163,23 +180,9 @@
                 Width="80"
                 x:Name="NextButton" />
 
-            <customControls:IconButton
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,1,0"
-                Classes="noBorderHover"
-                Command="{Binding Window.ShowSettingsWindow}"
-                Data="{StaticResource CogGeometry}"
-                Foreground="{DynamicResource MainTextColor}"
-                Height="35"
-                IconHeight="18"
-                IconWidth="18"
-                IsTabStop="False"
-                Width="35"
-                x:Name="SettingsMenuButton" />
-
             <customControls:DraggableProgressBar
-                CurrentIndex="{CompiledBinding PicViewer.Index}"
+                CornerRadius="0,6,6,0"
+                CurrentIndex="{CompiledBinding PicViewer.Index.Value}"
                 DragSensitivity="1"
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"

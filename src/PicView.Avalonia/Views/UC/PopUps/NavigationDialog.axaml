@@ -47,7 +47,7 @@
         <!--  Next 10  -->
         <customControls:TextIconButton
             Classes="altHover"
-            Icon="{StaticResource NextImage}"
+            Icon="{StaticResource ChevronsRightImage}"
             IconHeight="12"
             IconMargin="5,0,10,0"
             IconWidth="12"
@@ -61,7 +61,7 @@
         <!--  Next 100  -->
         <customControls:TextIconButton
             Classes="altHover"
-            Icon="{StaticResource NextImage}"
+            Icon="{StaticResource ChevronsRightImage}"
             IconHeight="12"
             IconMargin="5,0,10,0"
             IconWidth="12"
@@ -75,7 +75,7 @@
         <!--  Prev 10  -->
         <customControls:TextIconButton
             Classes="altHover"
-            Icon="{StaticResource PrevImage}"
+            Icon="{StaticResource ChevronsLeftImage}"
             IconHeight="12"
             IconMargin="5,0,10,0"
             IconWidth="12"
@@ -89,7 +89,7 @@
         <!--  Prev 100  -->
         <customControls:TextIconButton
             Classes="altHover"
-            Icon="{StaticResource PrevImage}"
+            Icon="{StaticResource ChevronsLeftImage}"
             IconHeight="12"
             IconMargin="5,0,10,0"
             IconWidth="12"

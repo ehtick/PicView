@@ -89,6 +89,7 @@ public class DraggableProgressBar : TemplatedControl
                 }
             })
             .AddTo(_disposables);
+        UpdateThumbPosition();
     }
 
     public bool IsDragging { get; private set; }
@@ -122,11 +123,6 @@ public class DraggableProgressBar : TemplatedControl
         base.OnApplyTemplate(e);
         _track = e.NameScope.Find<Border>("PART_Track");
         _thumb = e.NameScope.Find<Ellipse>("PART_Thumb");
-
-        if (_track is not null && _thumb is not null)
-        {
-            UpdateThumbPosition();
-        }
     }
 
     // Recalculate thumb position when CurrentIndex or Maximum changes
@@ -144,7 +140,7 @@ public class DraggableProgressBar : TemplatedControl
         }
     }
 
-    private void UpdateThumbPosition()
+    public void UpdateThumbPosition()
     {
         if (_thumb == null)
         {

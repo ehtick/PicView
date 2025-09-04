@@ -8,6 +8,7 @@
             <ControlTemplate>
                 <Border
                     Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
                     Name="NavigationProgress"
                     Padding="4">
                     <Border

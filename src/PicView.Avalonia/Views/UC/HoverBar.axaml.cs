@@ -77,6 +77,24 @@ public partial class HoverBar : UserControl
                 await FunctionsMapper.Prev();
             }
         }
+        else if (SettingsMenuButton.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                ShowQuickSettingsDialog();
+            }
+            else if (props.IsLeftButtonPressed)
+            {
+                await FunctionsMapper.SettingsWindow();
+            }
+        }
+        else if (ProgressBar.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                //TODO: Create popup window to navigate to index
+            }
+        }
         else
         {
             if (props.IsRightButtonPressed)
@@ -95,6 +113,11 @@ public partial class HoverBar : UserControl
     private void ShowNavigationDialog()
     {
         UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
+    }
+    
+    private void ShowQuickSettingsDialog()
+    {
+        UIHelper.GetMainView.MainGrid.Children.Add(new QuickSettingsDialog());
     }
     
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

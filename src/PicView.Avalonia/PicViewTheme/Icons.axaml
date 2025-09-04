@@ -1201,6 +1201,56 @@
         </DrawingGroup>
     </DrawingImage>
 
+    <DrawingImage x:Key="ChevronsLeftImage">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="F1 M11 17L6 12L11 7">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="{DynamicResource MainTextColor}"
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M18 17L13 12L18 7">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="{DynamicResource MainTextColor}"
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingImage>
+
+    <DrawingImage x:Key="ChevronsRightImage">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="F1 M6 17L11 12L6 7">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="{DynamicResource MainTextColor}"
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M13 17L18 12L13 7">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        Brush="{DynamicResource MainTextColor}"
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingImage>
+
     <DrawingImage x:Key="LastImage">
         <DrawingGroup>
             <GeometryDrawing Geometry="F1 M7 18L13 12L7 6">
