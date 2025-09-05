@@ -119,6 +119,10 @@
       <DependentUpon>QuickSettingsDialog.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\UC\PopUps\QuickEditingDialog.axaml.cs">
+      <DependentUpon>QuickEditingDialog.axaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
 

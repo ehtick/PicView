@@ -28,9 +28,9 @@
                     Classes="noBorderHover"
                     CornerRadius="4,0,0,4"
                     Icon="{StaticResource GeneralSettingsAltImage}"
-                    IconHeight="14"
+                    IconHeight="18"
                     IconMargin="5,0,10,0"
-                    IconWidth="14"
+                    IconWidth="18"
                     Padding="15,10"
                     Text="{CompiledBinding Translation.Settings.Value,
                                            Mode=OneWay}"
@@ -47,9 +47,9 @@
                     Classes="altHover"
                     CornerRadius="0,4,4,0"
                     Icon="{StaticResource AboutImage}"
-                    IconHeight="14"
+                    IconHeight="18"
                     IconMargin="5,0,10,0"
-                    IconWidth="14"
+                    IconWidth="18"
                     Padding="15,10"
                     Text="{CompiledBinding Translation.About.Value,
                                            Mode=OneWay}"

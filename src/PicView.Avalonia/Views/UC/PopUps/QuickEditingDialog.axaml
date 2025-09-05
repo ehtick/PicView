@@ -1,0 +1,232 @@
+﻿<customControls:AnimatedPopUp
+    ClickingOutsideCloses="True"
+    Padding="20"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="PicView.Avalonia.Views.UC.PopUps.QuickEditingDialog"
+    x:DataType="viewModels:MainViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Background="Transparent">
+
+        <Border
+            Background="{DynamicResource MainBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            CornerRadius="4">
+            <StackPanel Orientation="Horizontal">
+                <!--  Single Resize  -->
+                <Button
+                    Background="Transparent"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    CornerRadius="4,0,0,4"
+                    Height="35"
+                    Padding="15,0"
+                    ToolTip.Tip="{CompiledBinding Translation.ShowAllSettingsWindow.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="SingleResizeButton">
+                    <StackPanel Orientation="Horizontal">
+                        <Canvas Height="54" Width="45">
+                            <Image
+                                Canvas.Left="5"
+                                Canvas.Top="16"
+                                Height="19">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                                                <GeometryDrawing Brush="{DynamicResource MainTextColor}" Geometry="F1 M512,512z M0,0z M464,448L48,448C21.49,448,0,426.51,0,400L0,112C0,85.49,21.49,64,48,64L464,64C490.51,64,512,85.49,512,112L512,400C512,426.51,490.51,448,464,448z M112,120C81.072,120 56,145.072 56,176 56,206.928 81.072,232 112,232 142.928,232 168,206.928 168,176 168,145.072 142.928,120 112,120z M64,384L448,384 448,272 360.485,184.485C355.799,179.799,348.201,179.799,343.514,184.485L208,320 152.485,264.485C147.799,259.799,140.201,259.799,135.514,264.485L64,336 64,384z" />
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                            <Image
+                                Canvas.Left="20"
+                                Canvas.Top="20.5"
+                                Height="14"
+                                Opacity=".8">
+                                <Image.Source>
+                                    <DrawingImage>
+                                        <DrawingImage.Drawing>
+                                            <DrawingGroup ClipGeometry="M0,0 V512 H512 V0 H0 Z">
+                                                <GeometryDrawing Brush="{DynamicResource MainTextColor}" Geometry="F1 M512,512z M0,0z M464,448L48,448C21.49,448,0,426.51,0,400L0,112C0,85.49,21.49,64,48,64L464,64C490.51,64,512,85.49,512,112L512,400C512,426.51,490.51,448,464,448z M112,120C81.072,120 56,145.072 56,176 56,206.928 81.072,232 112,232 142.928,232 168,206.928 168,176 168,145.072 142.928,120 112,120z M64,384L448,384 448,272 360.485,184.485C355.799,179.799,348.201,179.799,343.514,184.485L208,320 152.485,264.485C147.799,259.799,140.201,259.799,135.514,264.485L64,336 64,384z" />
+                                            </DrawingGroup>
+                                        </DrawingImage.Drawing>
+                                    </DrawingImage>
+                                </Image.Source>
+                            </Image>
+                        </Canvas>
+
+                        <TextBlock
+                            Classes="txt"
+                            Margin="0,0,5,0"
+                            MaxWidth="170"
+                            Text="{CompiledBinding Translation.ResizeImage.Value,
+                                                   Mode=OneWay}" />
+                    </StackPanel>
+                </Button>
+
+                <!--  Batch Resize  -->
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    CornerRadius="0,4,4,0"
+                    Height="35"
+                    Icon="{StaticResource BatchResizeImage}"
+                    IconHeight="22"
+                    IconMargin="5,0,10,0"
+                    IconWidth="22"
+                    Padding="15,0"
+                    Text="{CompiledBinding Translation.BatchResize.Value,
+                                           Mode=OneWay}"
+                    TextMargin="0,0,8,0"
+                    TextMaxWidth="170"
+                    ToolTip.Tip="{CompiledBinding Translation.BatchResize.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="BatchResizeButton" />
+            </StackPanel>
+
+        </Border>
+
+        <Border
+            Background="{DynamicResource MainBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Margin="0,5,0,0">
+            <StackPanel Orientation="Horizontal">
+                <!--  Image info window  -->
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="noBorderHover"
+                    CornerRadius="4,0,0,4"
+                    Data="{StaticResource ImageInfoGeometry}"
+                    IconHeight="18"
+                    IconMargin="5,0,10,0"
+                    IconWidth="18"
+                    Padding="15,10"
+                    Text="{CompiledBinding Translation.ImageInfo.Value,
+                                           Mode=OneWay}"
+                    TextMargin="0,0,5,0"
+                    TextMaxWidth="170"
+                    ToolTip.Tip="{CompiledBinding Translation.ImageInfo.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="ImageInfoButton" />
+
+                <!--  Image effects window  -->
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    Classes="altHover"
+                    CornerRadius="0,4,4,0"
+                    Icon="{StaticResource FlaskImage}"
+                    IconHeight="18"
+                    IconMargin="5,0,10,0"
+                    IconWidth="18"
+                    Padding="15,10"
+                    Text="{CompiledBinding Translation.Effects.Value,
+                                           Mode=OneWay}"
+                    TextMargin="0,0,8,0"
+                    TextMaxWidth="170"
+                    ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip.Value,
+                                                  Mode=OneWay}"
+                    Width="185"
+                    x:Name="ImageEffectsButton" />
+            </StackPanel>
+
+
+        </Border>
+        <WrapPanel
+            Margin="0,15,0,0"
+            MaxWidth="375"
+            Orientation="Horizontal">
+
+            <!--  Crop  -->
+            <customControls:TextIconButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Data="{StaticResource CropGeometry}"
+                Height="42"
+                IconHeight="15"
+                IconMargin="15,0,10,0"
+                IconWidth="15"
+                Margin="6,0,4,8"
+                Text="{CompiledBinding Translation.Crop.Value,
+                                       Mode=OneWay}"
+                TextMaxWidth="145"
+                ToolTip.Tip="{CompiledBinding Translation.Crop.Value,
+                                              Mode=OneWay}"
+                Width="175"
+                x:Name="CropButton" />
+
+            <!--  Slideshow  -->
+            <customControls:TextIconButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Height="42"
+                Icon="{StaticResource SlideshowImage}"
+                IconHeight="15"
+                IconMargin="15,0,10,0"
+                IconWidth="15"
+                Margin="6,0,4,8"
+                Text="{CompiledBinding Translation.Slideshow.Value,
+                                       Mode=OneWay}"
+                TextMaxWidth="145"
+                ToolTip.Tip="{CompiledBinding Translation.Slideshow.Value,
+                                              Mode=OneWay}"
+                Width="175"
+                x:Name="SlideshowButton" />
+
+            <!--  Show bottom gallery  -->
+            <customControls:TextIconButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Data="{StaticResource GalleryGeometry}"
+                Height="42"
+                IconHeight="15"
+                IconMargin="15,0,10,0"
+                IconWidth="15"
+                Margin="6,0,4,8"
+                Text="{CompiledBinding Translation.IsShowingBottomGallery.Value,
+                                       Mode=OneWay}"
+                TextMaxWidth="145"
+                ToolTip.Tip="{CompiledBinding Translation.IsShowingBottomGallery.Value,
+                                              Mode=OneWay}"
+                Width="175"
+                x:Name="ShowBottomGalleryButton" />
+
+            <!--  Side by side  -->
+            <ToggleButton
+                Background="{DynamicResource MenuButtonColor}"
+                Classes="ButtonBorder altHover"
+                Command="{CompiledBinding Tools.ShowSideBySideCommand}"
+                Height="42"
+                IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
+                IsEnabled="{CompiledBinding !PicViewer.IsSingleImage.Value}"
+                Margin="6,0,4,8"
+                ToolTip.Tip="{CompiledBinding Translation.SideBySide.Value,
+                                              Mode=OneWay}"
+                Width="175">
+                <TextBlock
+                    Classes="txt"
+                    MaxWidth="145"
+                    Text="{CompiledBinding Translation.SideBySide.Value,
+                                           Mode=OneWay}" />
+            </ToggleButton>
+
+
+        </WrapPanel>
+    </StackPanel>
+</customControls:AnimatedPopUp>
