@@ -3,6 +3,11 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <Style Selector="Border.borderStyle">
+        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
     <Style Selector="TextBlock.txt">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
@@ -65,7 +70,7 @@
         <Setter Property="Background" Value="{DynamicResource SecondaryBackgroundColor}" />
     </Style>
 
-    <Style Selector="TextBox.TStyle, CalendarDatePicker.TStyle">
+    <Style Selector="TextBox.TStyle, CalendarDatePicker.TStyle, customControls|DateTimeInput">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
         <Setter Property="FontFamily" Value="/Assets/Fonts/Roboto-Medium.ttf#Roboto" />

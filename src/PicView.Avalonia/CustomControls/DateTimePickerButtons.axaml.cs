@@ -68,11 +68,11 @@ public partial class DateTimePickerButtons : UserControl
 
         if (SelectedDateTime.HasValue)
         {
-            DateBox.Text = SelectedDateTime.Value.ToString("g");
+            DateBox.SelectedDateTime = SelectedDateTime.Value;
         }
         else
         {
-            DateBox.Text = string.Empty;
+            DateBox.SelectedDateTime = null;
         }
     }
 
@@ -80,11 +80,11 @@ public partial class DateTimePickerButtons : UserControl
     {
         if (SelectedDateTime.HasValue)
         {
-            DateBox.Text = SelectedDateTime.Value.ToString("g");
+            DateBox.SelectedDateTime = SelectedDateTime.Value;
         }
         else
         {
-            DateBox.Text = string.Empty;
+            DateBox.SelectedDateTime = null;
         }
         
         _calendarContainer = new CalendarContainer();

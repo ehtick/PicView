@@ -48,6 +48,7 @@
     </Styles.Resources>
 
     <StyleInclude Source="Classes.axaml" />
+    <StyleInclude Source="../CustomControls/DateTimeInput.axaml" />
 
 
 </Styles>

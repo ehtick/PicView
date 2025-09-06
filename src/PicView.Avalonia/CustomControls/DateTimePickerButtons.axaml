@@ -7,11 +7,10 @@
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Panel>
-        <customControls:FuncTextBox
-            Classes=" TStyle"
-            IsReadOnly="True"
+        <customControls:DateTimeInput
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            Classes="TStyle"
             Margin="0"
-            TextWrapping="Wrap"
             x:Name="DateBox" />
         <StackPanel
             HorizontalAlignment="Right"

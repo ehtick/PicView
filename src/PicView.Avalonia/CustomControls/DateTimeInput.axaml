@@ -1,0 +1,50 @@
+﻿<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:controls="using:PicView.Avalonia.CustomControls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <controls:DateTimeInput />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|DateTimeInput">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Name="border"
+                    Padding="{TemplateBinding Padding}">
+                    <!--  This is the panel where the text boxes will be dynamically added  -->
+                    <StackPanel
+                        HorizontalAlignment="Left"
+                        Name="PART_Container"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+
+        <!--  Active style  -->
+        <Style Selector="^:pointerover /template/ Border#border">
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryBorderColor}" />
+        </Style>
+        <Style Selector="^:focus-within /template/ Border#border">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <!--  Disabled  -->
+        <Style Selector="^:disabled /template/ Border#border">
+            <Setter Property="BorderBrush" Value="{TemplateBinding BorderBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DisabledBackgroundColor}" />
+        </Style>
+
+        <!--  Error  -->
+        <Style Selector="^:error /template/ Border#border">
+            <Setter Property="BorderBrush" Value="{StaticResource ErrorBrush}" />
+        </Style>
+    </Style>
+</Styles>

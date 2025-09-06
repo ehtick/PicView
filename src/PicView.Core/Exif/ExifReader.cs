@@ -12,8 +12,31 @@ public static class ExifReader
         var getDateTaken =
             profile?.GetValue(ExifTag.DateTime)?.Value ??
             profile?.GetValue(ExifTag.DateTimeOriginal)?.Value ??
-            profile?.GetValue(ExifTag.DateTimeDigitized)?.Value ?? null;
-        return getDateTaken is null ? null : DateTime.Parse(getDateTaken);
+            profile?.GetValue(ExifTag.DateTimeDigitized)?.Value;
+
+        if (string.IsNullOrWhiteSpace(getDateTaken))
+        {
+            return null;
+        }
+
+        // EXIF format: "yyyy:MM:dd HH:mm:ss"
+        if (DateTime.TryParseExact(
+                getDateTaken,
+                "yyyy:MM:dd HH:mm:ss",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var result))
+        {
+            return result;
+        }
+
+        // fallback: try normal parsing
+        if (DateTime.TryParse(getDateTaken, out result))
+        {
+            return result;
+        }
+
+        return null;
     }
 
 
