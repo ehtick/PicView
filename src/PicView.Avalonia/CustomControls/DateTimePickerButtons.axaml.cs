@@ -116,7 +116,7 @@ public partial class DateTimePickerButtons : UserControl
 
         _clock.Accepted += OnClockAccepted;
         _clock.Cancelled += (_, _) => _timePickerFlyout.Hide();
-
+        
         DateBox.KeyUp += DateBoxOnKeyUp;
     }
 
@@ -134,7 +134,7 @@ public partial class DateTimePickerButtons : UserControl
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-
+        
         DateBox.KeyUp -= DateBoxOnKeyUp;
         _clock.Accepted -= OnClockAccepted;
         _calendarContainer.Accepted -= OnCalendarAccepted;

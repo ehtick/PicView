@@ -103,6 +103,10 @@
             <Setter Property="Background" Value="{DynamicResource DisabledBackgroundColor}" />
         </Style>
 
+        <Style Selector="^:disabled /template/ TextBlock#watermark">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
         <Style Selector="^.txtShadow /template/ TextPresenter#PART_TextPresenter">
             <Setter Property="Effect" Value="{StaticResource TextShadow}" />
         </Style>

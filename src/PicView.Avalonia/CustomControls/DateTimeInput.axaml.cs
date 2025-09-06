@@ -6,7 +6,10 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
+using PicView.Avalonia.UI;
+using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -40,6 +43,11 @@ public class DateTimeInput : TemplatedControl
     // Holds the TextBoxes for each part of the DateTime.
     private TextBox? _yearBox, _monthBox, _dayBox, _hourBox, _minuteBox;
 
+    private CompositeDisposable _disposables = new();
+
+    private const string PART_Container = "PART_Container";
+    private const string RobotoFont = "avares://PicView.Avalonia/Assets/Fonts/Roboto-Medium.ttf#Roboto";
+
     /// <summary>
     /// Static constructor to register the default style for this control.
     /// </summary>
@@ -69,7 +77,7 @@ public class DateTimeInput : TemplatedControl
         base.OnApplyTemplate(e);
 
         // Find the container that will hold our dynamic controls.
-        var container = e.NameScope.Find<Panel>("PART_Container");
+        var container = e.NameScope.Find<Panel>(nameof(PART_Container));
         if (container == null)
         {
             throw new InvalidOperationException("Could not find PART_Container in the control template.");
@@ -101,10 +109,13 @@ public class DateTimeInput : TemplatedControl
     /// <param name="container">The panel to add controls to.</param>
     private void BuildInputControls(Panel container)
     {
+        // Detach handlers from previously created controls and clear subscriptions.
+        DetachHandlersAndClearState();
+        
         container.Children.Clear();
         var culture = CultureInfo.CurrentCulture;
         var dateTimeFormat = culture.DateTimeFormat;
-
+        
         _is12HourClock = dateTimeFormat.ShortTimePattern.Contains('h');
 
         // --- Create TextBoxes ---
@@ -169,6 +180,9 @@ public class DateTimeInput : TemplatedControl
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(2, 0, 0, 0)
         };
+        Observable.EveryValueChanged(this, x => x.IsEffectivelyEnabled, UIHelper.GetFrameProvider)
+            .Subscribe(b => _ampmToggle.IsVisible = b)
+            .AddTo(_disposables);
         _ampmToggle.Click += OnAmPmToggleClick;
         container.Children.Add(_ampmToggle);
         _isAm = true; // Default to AM
@@ -197,7 +211,7 @@ public class DateTimeInput : TemplatedControl
             TextAlignment = TextAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center,
             Padding = new Thickness(0),
-            FontFamily = new FontFamily("avares://PicView.Avalonia/Assets/Fonts/Roboto-Medium.ttf#Roboto"),
+            FontFamily = new FontFamily(RobotoFont),
             FontSize = 12
         };
 
@@ -210,19 +224,23 @@ public class DateTimeInput : TemplatedControl
     /// <summary>
     /// Creates a separator control.
     /// </summary>
-    private static TextBlock CreateTimeSeparator()
+    private TextBlock CreateTimeSeparator()
     {
-        return new TextBlock
+        var textBlock = new TextBlock
         {
             Classes = { "txt" },
             Text = ":",
             VerticalAlignment = VerticalAlignment.Center
         };
+        Observable.EveryValueChanged(this, x => x.IsEffectivelyEnabled, UIHelper.GetFrameProvider)
+            .Subscribe(b => textBlock.IsVisible = b)
+            .AddTo(_disposables);
+        return textBlock;
     }
 
-    private static TextBlock CreateLineSeparator(char separatorChar)
+    private TextBlock CreateLineSeparator(char separatorChar)
     {
-        return new TextBlock
+        var textBlock = new TextBlock
         {
             Classes = { "txt" },
             Text = $" {separatorChar} ",
@@ -230,8 +248,12 @@ public class DateTimeInput : TemplatedControl
             FontSize = 18,
             Opacity = .6
         };
+        Observable.EveryValueChanged(this, x => x.IsEffectivelyEnabled, UIHelper.GetFrameProvider)
+            .Subscribe(b => textBlock.IsVisible = b)
+            .AddTo(_disposables);
+        return textBlock;
     }
-
+    
     /// <summary>
     /// Handles the KeyDown event for the numeric text boxes to increment/decrement values.
     /// </summary>
@@ -398,6 +420,48 @@ public class DateTimeInput : TemplatedControl
 
             _isAm = true;
             _ampmToggle.Content = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+        }
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _disposables.Dispose();
+        DetachHandlersAndClearState();
+    }
+
+    private void DetachHandlersAndClearState()
+    {
+        SafeDetach(_yearBox);
+        SafeDetach(_monthBox);
+        SafeDetach(_dayBox);
+        SafeDetach(_hourBox);
+        SafeDetach(_minuteBox);
+
+        if (_ampmToggle != null)
+        {
+            _ampmToggle.Click -= OnAmPmToggleClick;
+            _ampmToggle = null;
+        }
+
+        // Dispose prior subscriptions and create a fresh CompositeDisposable
+        _disposables.Dispose();
+        _disposables = new CompositeDisposable();
+
+        // Null out controls so we don't hold stale references
+        _yearBox = _monthBox = _dayBox = _hourBox = _minuteBox = null;
+        return;
+
+        // Detach event handlers from previous text boxes
+        void SafeDetach(TextBox? tb)
+        {
+            if (tb == null)
+            {
+                return;
+            }
+
+            tb.TextChanged -= OnPartTextChanged;
+            tb.KeyDown -= OnTextBoxKeyDown;
         }
     }
 }
