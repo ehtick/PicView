@@ -79,11 +79,17 @@ public static class MouseShortcuts
 
                 if (reverse)
                 {
-                    await _zoomOut(e);
+                    if (_zoomOut is not null)
+                    {
+                        await _zoomOut(e);
+                    }
                 }
                 else
                 {
-                    await _zoomIn(e);
+                    if (_zoomIn is not null)
+                    {
+                        await _zoomIn(e);
+                    }
                 }
             }
             else
@@ -101,11 +107,17 @@ public static class MouseShortcuts
             {
                 if (reverse)
                 {
-                    await _zoomOut(e);
+                    if (_zoomOut is not null)
+                    {
+                        await _zoomOut(e);
+                    }
                 }
                 else
                 {
-                    await _zoomIn(e);
+                    if (_zoomIn is not null)
+                    {
+                        await _zoomIn(e);
+                    }
                 }
             }
         }
