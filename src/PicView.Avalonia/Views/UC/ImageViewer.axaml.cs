@@ -41,7 +41,7 @@ public partial class ImageViewer : UserControl
         ImageControlHelper.TriggerScalingModeUpdate(MainImage, invalidate);
 
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e) =>
-        _zoom?.ZoomTo(e.GetPosition(this), e.Delta.X > 0, DataContext as MainViewModel);
+        _zoom?.ZoomTo(e.GetPosition(this), e.Delta.X > 0, Settings.Zoom.ZoomSpeed, DataContext as MainViewModel);
 
     public static async Task PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e) =>
         await MouseShortcuts.HandlePointerWheelChanged(e);

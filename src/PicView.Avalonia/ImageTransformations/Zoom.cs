@@ -81,14 +81,14 @@ public class Zoom
     /// </summary>
     /// <param name="vm">The view model containing the application state and transformation details.</param>
     public void ZoomIn(Control parent, Control content, MainViewModel vm) =>
-        ZoomTo(GetRelativePosition(parent, content), true, vm);
+        ZoomTo(GetRelativePosition(parent, content), true, 0.3, vm);
 
     /// <summary>
     /// Zooms out the image using the current starting point and updates the application state.
     /// </summary>
     /// <param name="vm">The view model containing the application state and transformation details.</param>
     public void ZoomOut(Control parent, Control content, MainViewModel vm) =>
-        ZoomTo(GetRelativePosition(parent, content), false, vm);
+        ZoomTo(GetRelativePosition(parent, content), false, 0.3, vm);
 
     private static Point GetRelativePosition(Control parent, Control content)
     {
@@ -105,7 +105,7 @@ public class Zoom
         MainViewModel vm)
     {
         var relativePosition = !content.IsPointerOver ? GetRelativePosition(parent, content) : e.GetPosition(content);
-        ZoomTo(relativePosition, isZoomIn, vm);
+        ZoomTo(relativePosition, isZoomIn, Settings.Zoom.ZoomSpeed, vm);
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class Zoom
     /// <param name="point">The reference point where the zooming action will be centered.</param>
     /// <param name="isZoomIn">Determines whether to zoom in (true) or zoom out (false).</param>
     /// <param name="vm">The main view model containing the application's state and settings.</param>
-    public void ZoomTo(Point point, bool isZoomIn, MainViewModel vm)
+    public void ZoomTo(Point point, bool isZoomIn, double zoomSpeed, MainViewModel vm)
     {
         if (_scaleTransform == null || _translateTransform == null)
         {
@@ -122,7 +122,6 @@ public class Zoom
         }
 
         var currentZoom = _scaleTransform.ScaleX;
-        var zoomSpeed = Settings.Zoom.ZoomSpeed;
 
         switch (currentZoom)
         {
