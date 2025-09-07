@@ -54,7 +54,7 @@ public static class TranslationManager
     /// </summary>
     /// <param name="isoLanguageCode">The ISO language code (e.g., 'en', 'da').</param>
     /// <returns>Returns true if the language file was successfully loaded; false if an error occurred.</returns>
-    public static async Task<bool> LoadLanguage(string isoLanguageCode)
+    public static async ValueTask<bool> LoadLanguage(string isoLanguageCode)
     {
         var jsonLanguageFile = DetermineLanguageFilePath(isoLanguageCode);
 
@@ -78,7 +78,7 @@ public static class TranslationManager
     /// <summary>
     /// Determines the correct language based on the system's current culture and loads the corresponding language file.
     /// </summary>
-    public static async Task DetermineAndLoadLanguage()
+    public static async ValueTask DetermineAndLoadLanguage()
     {
         var isoLanguageCode = DetermineCorrectLanguage();
         Settings.UIProperties.UserLanguage = isoLanguageCode;
@@ -117,7 +117,7 @@ public static class TranslationManager
     /// <param name="filePath">The path to the language JSON file.</param>
     /// <returns>A task that completes once the language is loaded.</returns>
     /// <exception cref="FileNotFoundException">Thrown when the language file is not found.</exception>
-    private static async Task LoadLanguageFromFileAsync(string filePath)
+    private static async ValueTask LoadLanguageFromFileAsync(string filePath)
     {
         var jsonString = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
         var language = JsonSerializer.Deserialize(jsonString, typeof(LanguageModel), LanguageSourceGenerationContext.Default) as LanguageModel;

@@ -5,7 +5,8 @@ namespace PicView.Avalonia.SettingsManagement;
 
 public static class LanguageUpdater
 {
-    public static async Task UpdateLanguageAsync(TranslationViewModel translationViewModel, PicViewerModel picViewerModel, bool settingsExists)
+    public static async ValueTask UpdateLanguageAsync(TranslationViewModel translationViewModel,
+        PicViewerModel picViewerModel, bool settingsExists)
     {
         if (settingsExists)
         {
