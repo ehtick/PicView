@@ -14,6 +14,9 @@ public class MainWindowViewModel : IDisposable
 {
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }
+
+    public bool IsHoverNavigationButtonLeftClicked { get; set; }
+    public bool IsHoverNavigationButtonRightClicked { get; set; }
     public bool IsClickArrowLeftClicked { get; set; }
     public bool IsClickArrowRightClicked { get; set; }
 

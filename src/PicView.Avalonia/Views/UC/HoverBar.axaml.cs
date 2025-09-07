@@ -5,7 +5,9 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.PopUps;
+using R3;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -31,6 +33,26 @@ public partial class HoverBar : UserControl
         AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
         SizeChanged += (_, args) => ApplyResponsiveResize(args.NewSize.Width);
         ApplyResponsiveResize(Bounds.Width);
+
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        Observable.FromEventHandler<RoutedEventArgs>(h => NextButton.Click += h,
+                h => NextButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                vm.MainWindow.IsHoverNavigationButtonRightClicked = true;
+                await FunctionsMapper.Next();
+            });
+        Observable.FromEventHandler<RoutedEventArgs>(h => PreviousButton.Click += h,
+                h => PreviousButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                vm.MainWindow.IsHoverNavigationButtonRightClicked = true;
+                await FunctionsMapper.Next();
+            });
     }
 
     private void ApplyResponsiveResize(double width)
@@ -52,7 +74,7 @@ public partial class HoverBar : UserControl
             }
             else if (props.IsLeftButtonPressed)
             {
-                await FunctionsMapper.Next();
+                UIHelper.SetButtonInterval(NextButton);
             }
         }
         else if (PreviousButton.IsPointerOver)
@@ -63,7 +85,7 @@ public partial class HoverBar : UserControl
             }
             else if (props.IsLeftButtonPressed)
             {
-                await FunctionsMapper.Prev();
+                UIHelper.SetButtonInterval(PreviousButton);
             }
         }
         else if (SettingsMenuButton.IsPointerOver)

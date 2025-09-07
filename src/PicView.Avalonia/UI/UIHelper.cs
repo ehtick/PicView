@@ -120,18 +120,12 @@ public static class UIHelper
 
     public static void SetButtonInterval(RepeatButton? button)
     {
-        if (button != null)
-        {
-            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-        }
+        button?.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
     }
 
     public static void SetButtonInterval(IconButton? button)
     {
-        if (button != null)
-        {
-            button.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
-        }
+        button?.Interval = (int)TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed).TotalMilliseconds;
     }
 
     public static DrawingImage? GetIcon(string resourceName)

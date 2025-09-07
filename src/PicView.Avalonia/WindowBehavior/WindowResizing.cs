@@ -37,16 +37,6 @@ public static class WindowResizing
 
         window.Position = new PixelPoint(window.Position.X + (int)x, window.Position.Y + (int)y);
 
-        if (vm.MainWindow is
-            {
-                IsNavigationButtonLeftClicked: false, IsNavigationButtonRightClicked: false,
-                IsClickArrowLeftClicked: false, IsClickArrowRightClicked: false, IsRotateLeftClicked: false,
-                IsRotateRightClicked: false, IsTopToolbarRotationClicked: false
-            })
-        {
-            return;
-        }
-
         RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonLeftClicked,
             clicked => vm.MainWindow.IsNavigationButtonLeftClicked = clicked,
             () => UIHelper.GetBottomBar.GetControl<Button>("PreviousButton"),
@@ -55,6 +45,16 @@ public static class WindowResizing
         RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonRightClicked,
             clicked => vm.MainWindow.IsNavigationButtonRightClicked = clicked,
             () => UIHelper.GetBottomBar.GetControl<Button>("NextButton"),
+            new Point(50, 10));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverNavigationButtonLeftClicked,
+            clicked => vm.MainWindow.IsHoverNavigationButtonLeftClicked = clicked,
+            () => UIHelper.GetHoverBar.GetControl<Button>("PreviousButton"),
+            new Point(50, 10));
+
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverNavigationButtonRightClicked,
+            clicked => vm.MainWindow.IsHoverNavigationButtonRightClicked = clicked,
+            () => UIHelper.GetHoverBar.GetControl<Button>("NextButton"),
             new Point(50, 10));
 
         RepositionCursorIfTriggered(vm, vm.MainWindow.IsClickArrowLeftClicked,
