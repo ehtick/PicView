@@ -49,6 +49,6 @@
 
     <StyleInclude Source="Classes.axaml" />
     <StyleInclude Source="../CustomControls/DateTimeInput.axaml" />
-
+    <StyleInclude Source="../CustomControls/DraggableProgressBar.axaml" />
 
 </Styles>

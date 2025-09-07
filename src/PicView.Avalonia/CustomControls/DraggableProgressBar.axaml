@@ -1,0 +1,40 @@
+﻿<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style Selector="customControls|DraggableProgressBar">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                    Name="NavigationProgress"
+                    Padding="4">
+                    <Border
+                        Background="#A4646464"
+                        CornerRadius="16"
+                        Margin="4"
+                        Name="PART_Track">
+                        <!--  The Canvas is crucial for positioning the thumb with a transform  -->
+                        <Canvas>
+                            <Ellipse
+                                Canvas.Bottom="-3"
+                                Canvas.Left="0"
+                                Fill="{TemplateBinding ThumbFill}"
+                                Height="16"
+                                Margin="4"
+                                Name="PART_Thumb"
+                                Width="16">
+                                <Ellipse.RenderTransform>
+                                    <TranslateTransform X="0" Y="0" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </Canvas>
+                    </Border>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <!--  Set a default color for the thumb, can be overridden  -->
+        <Setter Property="ThumbFill" Value="{DynamicResource SecondaryBorderColor}" />
+    </Style>
+</Styles>

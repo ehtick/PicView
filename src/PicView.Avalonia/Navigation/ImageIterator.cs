@@ -649,6 +649,12 @@ public class ImageIterator : IAsyncDisposable
         }
     }
 
+    public async ValueTask IterateToIndex(int index, CancellationToken token)
+    {
+        var cts = CancellationTokenSource.CreateLinkedTokenSource(token);
+        await IterateToIndex(index, cts).ConfigureAwait(false);
+    }
+
     /// <summary>
     ///     Iterates to the given index in the image list, shows the corresponding image and preloads the next/previous images.
     /// </summary>

@@ -36,7 +36,6 @@ public class HoverFadeButtonHandler
     ///     Duration of fade-in and fade-out in seconds.
     /// </summary>
     private static double FadeInDuration => 0.3;
-
     private static double FadeOutDuration => 0.45;
 
     private void AttachEvents()
@@ -63,6 +62,11 @@ public class HoverFadeButtonHandler
 
     private void OnPointerExited(object? sender, PointerEventArgs e)
     {
+        if (e.Pointer.Captured != null) // Don't fade out when captured
+        {
+            return;
+        }
+        
         // Delay fade-out to ensure pointer is truly outside both parent and child
         Dispatcher.UIThread.Post(async () =>
         {

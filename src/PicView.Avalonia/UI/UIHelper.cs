@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
@@ -59,7 +58,7 @@ public static class UIHelper
         }
         GetHoverBar = new HoverBar();
         GetMainView.MainGrid.Children.Add(GetHoverBar);
-        _ = new HoverFadeButtonHandler(GetHoverBar, vm);
+        _ = new HoverFadeButtonHandler(GetHoverBar, vm, GetHoverBar.TopBorder);
     }
 
     #endregion

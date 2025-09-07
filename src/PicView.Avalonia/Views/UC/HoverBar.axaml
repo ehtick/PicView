@@ -185,7 +185,8 @@
         CornerRadius="6"
         Height="37"
         Margin="0,65,0,0"
-        MaxWidth="570">
+        MaxWidth="590"
+        x:Name="TopBorder">
         <DockPanel LastChildFill="True">
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
@@ -349,21 +350,13 @@
                 Width="35"
                 x:Name="SettingsMenuButton" />
 
-            <Border
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                Padding="4"
-                x:Name="NavigationProgress">
-                <Border
-                    Background="#A4646464"
-                    CornerRadius="16"
-                    Margin="8">
-                    <Ellipse
-                        Fill="{DynamicResource SecondaryBorderColor}"
-                        Height="14"
-                        Margin="4"
-                        Width="14" />
-                </Border>
-            </Border>
+            <customControls:DraggableProgressBar
+                CurrentIndex="{CompiledBinding PicViewer.Index}"
+                DragSensitivity="1.5"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                Maximum="2656"
+                x:Name="ProgressBar" />
         </DockPanel>
     </Border>
 </UserControl>
