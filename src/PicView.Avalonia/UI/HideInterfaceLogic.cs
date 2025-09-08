@@ -100,6 +100,7 @@ public static class HideInterfaceLogic
             vm.MainWindow.IsBottomToolbarShown.Value = false;
             Settings.UIProperties.ShowBottomNavBar = false;
             vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.ShowBottomToolbar;
+            vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
         }
         else
         {
@@ -107,6 +108,7 @@ public static class HideInterfaceLogic
             Settings.UIProperties.ShowBottomNavBar = true;
             vm.MainWindow.BottombarHeight.Value = SizeDefaults.BottombarHeight;
             vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.HideBottomToolbar;
+            vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {

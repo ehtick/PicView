@@ -1,6 +1,7 @@
 ﻿<UserControl
     Background="Transparent"
     Height="160"
+    IsVisible="{CompiledBinding HoverbarViewModel.IsHoverbarVisible.Value}"
     MinWidth="{Binding MainWindow.WindowMinWidth.Value}"
     Opacity="0"
     VerticalAlignment="Bottom"

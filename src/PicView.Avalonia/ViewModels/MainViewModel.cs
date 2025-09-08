@@ -20,6 +20,7 @@ public class MainViewModel
     public NavigationViewModel Navigation { get; } = new();
     public FileSortingViewModel Sorting { get; } = new();
     public PicViewerModel PicViewer { get; } = new();
+    public HoverbarViewModel HoverbarViewModel { get; } = new();
     public GalleryViewModel Gallery { get; } = new();
     public ToolsViewModel Tools { get; } = new();
     public ExifViewModel? Exif { get; set; }

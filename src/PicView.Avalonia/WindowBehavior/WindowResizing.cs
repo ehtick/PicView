@@ -47,13 +47,13 @@ public static class WindowResizing
             () => UIHelper.GetBottomBar.GetControl<Button>("NextButton"),
             new Point(50, 10));
 
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverNavigationButtonLeftClicked,
-            clicked => vm.MainWindow.IsHoverNavigationButtonLeftClicked = clicked,
+        RepositionCursorIfTriggered(vm, vm.HoverbarViewModel.IsHoverNavigationButtonLeftClicked,
+            clicked => vm.HoverbarViewModel.IsHoverNavigationButtonLeftClicked = clicked,
             () => UIHelper.GetHoverBar.GetControl<Button>("PreviousButton"),
             new Point(50, 10));
 
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverNavigationButtonRightClicked,
-            clicked => vm.MainWindow.IsHoverNavigationButtonRightClicked = clicked,
+        RepositionCursorIfTriggered(vm, vm.HoverbarViewModel.IsHoverNavigationButtonRightClicked,
+            clicked => vm.HoverbarViewModel.IsHoverNavigationButtonRightClicked = clicked,
             () => UIHelper.GetHoverBar.GetControl<Button>("NextButton"),
             new Point(50, 10));
 
@@ -84,13 +84,13 @@ public static class WindowResizing
             () => UIHelper.GetTitlebar.GetControl<IconButton>("RotateRightButton"),
             new Point(11, 7));
 
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverRotateRightClicked,
-            clicked => vm.MainWindow.IsHoverRotateRightClicked = clicked,
+        RepositionCursorIfTriggered(vm, vm.HoverbarViewModel.IsHoverRotateRightClicked,
+            clicked => vm.HoverbarViewModel.IsHoverRotateRightClicked = clicked,
             () => UIHelper.GetHoverBar.GetControl<IconButton>("RotateRightButton"),
             new Point(11, 7));
 
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsHoverRotateLeftClicked,
-            clicked => vm.MainWindow.IsHoverRotateLeftClicked = clicked,
+        RepositionCursorIfTriggered(vm, vm.HoverbarViewModel.IsHoverRotateLeftClicked,
+            clicked => vm.HoverbarViewModel.IsHoverRotateLeftClicked = clicked,
             () => UIHelper.GetHoverBar.GetControl<IconButton>("RotateLeftButton"),
             new Point(11, 7));
     }

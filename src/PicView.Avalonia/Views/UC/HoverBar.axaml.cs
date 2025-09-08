@@ -43,14 +43,14 @@ public partial class HoverBar : UserControl
                 h => NextButton.Click -= h)
             .SubscribeAwait(async (_, _) =>
             {
-                vm.MainWindow.IsHoverNavigationButtonRightClicked = true;
+                vm.HoverbarViewModel.IsHoverNavigationButtonLeftClicked = true;
                 await FunctionsMapper.Next();
             });
         Observable.FromEventHandler<RoutedEventArgs>(h => PreviousButton.Click += h,
                 h => PreviousButton.Click -= h)
             .SubscribeAwait(async (_, _) =>
             {
-                vm.MainWindow.IsHoverNavigationButtonRightClicked = true;
+                vm.HoverbarViewModel.IsHoverNavigationButtonRightClicked = true;
                 await FunctionsMapper.Next();
             });
     }
@@ -115,14 +115,14 @@ public partial class HoverBar : UserControl
         {
             if (props.IsLeftButtonPressed)
             {
-                vm.MainWindow.IsHoverRotateLeftClicked = true;
+                vm.HoverbarViewModel.IsHoverRotateLeftClicked = true;
             }
         }
         else if (RotateRightButton.IsPointerOver)
         {
             if (props.IsLeftButtonPressed)
             {
-                vm.MainWindow.IsHoverRotateRightClicked = true;
+                vm.HoverbarViewModel.IsHoverRotateRightClicked = true;
             }
         }
         else if (ProgressBar.IsPointerOver)
