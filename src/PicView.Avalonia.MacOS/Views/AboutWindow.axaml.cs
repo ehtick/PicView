@@ -5,6 +5,7 @@ using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.PlatformUpdate;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Update;
+using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -12,8 +13,9 @@ public partial class AboutWindow : Window, IPlatformSpecificUpdate
 {
     public AboutWindow()
     {
+        var vm = UIHelper.GetMainView.DataContext as MainViewModel;
+        vm.AboutView ??= new AboutViewModel(this);
         InitializeComponent();
-        XAboutView.PlatformUpdate = this;
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {
             XAboutView.Background = Brushes.Transparent;

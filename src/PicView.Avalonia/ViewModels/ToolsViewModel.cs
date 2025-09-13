@@ -1,4 +1,5 @@
-﻿using PicView.Avalonia.Clipboard;
+﻿using Avalonia.Threading;
+using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.ImageTransformations.Rotation;
@@ -15,6 +16,18 @@ public class ToolsViewModel : IDisposable
     public ReactiveCommand ShowSettingsFileCommand { get; } = new(async (_, _) =>
     {
         await FunctionsMapper.ShowSettingsFile();
+    });
+
+    public ReactiveCommand CheckForUpdatesCommand { get; } = new(async (_, _) =>
+    {
+        var vm = await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
+        if (vm == null)
+        {
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() => vm.Window.ShowAboutWindow());
+        await vm.AboutView.UpdateCurrentVersion();
     });
 
     public ReactiveCommand ShowKeybindingsFileCommand { get; } = new(async (_, _) =>
@@ -37,7 +50,8 @@ public class ToolsViewModel : IDisposable
     });
 
     // Save related
-    public ReactiveCommand<string> SaveFileCommand { get; } = new(async (_, _) => { await FunctionsMapper.Save(); });
+    public ReactiveCommand<string> SaveFileCommand { get; } =
+        new(async (_, _) => { await FunctionsMapper.Save(); });
 
     public ReactiveCommand<string> SaveFileAsCommand { get; } =
         new(async (_, _) => { await FunctionsMapper.SaveAs(); });
@@ -173,7 +187,10 @@ public class ToolsViewModel : IDisposable
     });
 
     // UI
-    public ReactiveCommand ToggleUICommand { get; } = new(async (_, _) => { await FunctionsMapper.ToggleInterface(); });
+    public ReactiveCommand ToggleUICommand { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ToggleInterface();
+    });
 
     public ReactiveCommand ToggleBottomNavBarCommand { get; } = new(async (_, _) =>
     {
@@ -207,10 +224,12 @@ public class ToolsViewModel : IDisposable
     });
 
     // Image related
-    public ReactiveCommand RotateLeftCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateLeft(); });
+    public ReactiveCommand RotateLeftCommand { get; } =
+        new(async (_, _) => { await FunctionsMapper.RotateLeft(); });
 
-    public ReactiveCommand RotateRightCommand { get; } = new(async (_, _) => { await FunctionsMapper.RotateRight(); });
-    
+    public ReactiveCommand RotateRightCommand { get; } =
+        new(async (_, _) => { await FunctionsMapper.RotateRight(); });
+
     public ReactiveCommand ZoomInCommand { get; } = new(async (_, _) => { await FunctionsMapper.ZoomIn(); });
     public ReactiveCommand ZoomOutCommand { get; } = new(async (_, _) => { await FunctionsMapper.ZoomOut(); });
 
@@ -279,6 +298,19 @@ public class ToolsViewModel : IDisposable
             .ConfigureAwait(false);
     });
 
+    public ReactiveCommand ToggleFileHistoryTask { get; } = new(async (_, _) =>
+    {
+        await FunctionsMapper.ToggleFileHistory();
+    });
+
+    public ReactiveCommand<string> StartSlideShowTask { get; } = new(async (value, _) =>
+    {
+        if (int.TryParse(value, out var milliseconds))
+        {
+            await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
+        }
+    });
+
     public void Dispose()
     {
         Disposable.Dispose(SetAsWallpaperCommand,
@@ -289,22 +321,13 @@ public class ToolsViewModel : IDisposable
             SetAsWallpaperFittedCommand);
     }
 
-    public ReactiveCommand ToggleFileHistoryTask { get; } = new(async (_, _) =>
+    public async Task RotateTask(int angle)
     {
-        await FunctionsMapper.ToggleFileHistory();
-    });
-    
-    public ReactiveCommand<string> StartSlideShowTask { get; } = new(async (value, _) =>
-    {
-        if (int.TryParse(value, out var milliseconds))
-        {
-            await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
-        }
-    });
-
-    public async Task RotateTask(int angle) =>
         await RotationNavigation.RotateTo(UIHelper.GetMainView.DataContext as MainViewModel, angle);
+    }
 
-    public async Task StretchedCommand() =>
+    public async Task StretchedCommand()
+    {
         await SettingsUpdater.ToggleStretch(UIHelper.GetMainView.DataContext as MainViewModel);
+    }
 }

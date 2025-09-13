@@ -58,18 +58,18 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             }
 
             var settingsExists = await LoadSettingsAsync().ConfigureAwait(false);
+            _vm = new MainViewModel(this, this);
         
             TranslationManager.Init();
         
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
+                DataContext = _vm;
                 ThemeManager.DetermineTheme(Current, settingsExists);
             
                 _mainWindow = new MacMainWindow();
                 desktop.MainWindow = _mainWindow;
             },DispatcherPriority.Send);
-        
-            _vm = new MainViewModel(this, this);
         
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

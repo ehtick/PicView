@@ -116,7 +116,7 @@
 
         <uc:SpinWaiter
             HorizontalAlignment="Center"
-            IsVisible="False"
+            IsVisible="{CompiledBinding AboutView.IsLoading.Value}"
             VerticalAlignment="Center"
             x:Name="SpinWaiter" />
         <TextBlock
@@ -129,7 +129,10 @@
             Text="{CompiledBinding Translation.Downloading.Value}"
             VerticalAlignment="Center" />
 
-        <StackPanel Margin="0,10,0,10" x:Name="ParentContainer">
+        <StackPanel x:Name="ParentContainer" 
+            Margin="0,10,0,10" 
+            IsHitTestVisible="{CompiledBinding AboutView.IsHitTestVisible.Value}"
+            Opacity="{CompiledBinding AboutView.WindowOpacity.Value}">
 
             <Image
                 Height="75"
@@ -191,13 +194,15 @@
                 Classes="txt"
                 Foreground="{StaticResource SecondaryTextColor}"
                 HorizontalAlignment="Center"
-                Margin="0,25,0,10">
+                Margin="0,25,0,10"
+                x:Name="AppVersion">
                 <Run FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto" Text="{CompiledBinding Translation.Version.Value, Mode=OneWay}" />
-                <Run Text="" x:Name="AppVersion" />
+                <Run Text="{CompiledBinding AboutView.UpdateVersionNumber.Value}"  />
             </TextBlock>
 
             <Button
-                Classes="BorderStyle altHover mainBtn"
+                Classes="BorderStyle altHover mainBtn" 
+                Command="{CompiledBinding AboutView.UpdateCommand}"
                 HorizontalAlignment="Center"
                 Margin="0,10,0,15"
                 x:Name="UpdateButton">
@@ -212,7 +217,8 @@
                 Classes="txt"
                 Foreground="{Binding Path=Foreground, ElementName=UpdateButton}"
                 HorizontalAlignment="Center"
-                IsVisible="False"
+                IsVisible="{CompiledBinding AboutView.IsUpdateAvailable.Value}" 
+                Text="{CompiledBinding AboutView.UpdateStatusText.Value}"
                 Margin="0,10,0,15"
                 x:Name="UpdateStatus" />
 

@@ -1,12 +1,25 @@
 <Application
-    Name="PicView"
+    Name="PicView"     x:DataType="viewModels:MainViewModel"
     RequestedThemeVariant="Default"
     x:Class="PicView.Avalonia.MacOS.App"
     x:CompileBindings="True"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia">
     <NativeMenu.Menu>
-        <NativeMenu />
+        <NativeMenu>
+
+            <!--  Show about window  -->
+            <NativeMenuItem Command="{CompiledBinding Window.ShowAboutWindow}" Header="{CompiledBinding Translation.About.Value, Mode=OneWay}" />
+ 
+            <!--  Check for updates  -->
+            <NativeMenuItem Command="{CompiledBinding Tools.CheckForUpdatesCommand}" Header="{CompiledBinding Translation.CheckForUpdates.Value, Mode=OneWay}" />
+            
+            <!--  Show settings window  -->
+            <NativeMenuItem Command="{CompiledBinding Window.ShowSettingsWindow}" Header="{CompiledBinding Translation.Settings.Value, Mode=OneWay}" ToolTip="{CompiledBinding Translation.ShowAllSettingsWindow.Value, Mode=OneWay}" />
+
+            
+        </NativeMenu>
     </NativeMenu.Menu>
 
     <Application.Styles>

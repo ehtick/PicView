@@ -1,19 +1,13 @@
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
-using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.Update;
 using PicView.Core.Config;
-using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Views.Main;
 
 public partial class AboutView : UserControl
 {
-    public required IPlatformSpecificUpdate PlatformUpdate;
-
     public AboutView()
     {
         InitializeComponent();
@@ -64,30 +58,6 @@ public partial class AboutView : UserControl
                 if (drawing is DrawingImage drawingImage)
                 {
                     KofiImage.Source = drawingImage;
-                }
-            };
-
-            UpdateButton.Click += async (_, _) =>
-            {
-                //Set loading and prevent user from interacting with UI
-                ParentContainer.Opacity = .1;
-                ParentContainer.IsHitTestVisible = false;
-                SpinWaiter.IsVisible = true;
-                try
-                {
-                    var checkIfNewUpdate = await UpdateManager.UpdateCurrentVersion(PlatformUpdate);
-                    UpdateButton.IsVisible = false;
-                    UpdateStatus.IsVisible = true;
-                    if (!checkIfNewUpdate)
-                    {
-                        UpdateStatus.Text = TranslationManager.Translation.NoUpdateFound;
-                    }
-                }
-                finally
-                {
-                    SpinWaiter.IsVisible = false;
-                    ParentContainer.IsHitTestVisible = true;
-                    ParentContainer.Opacity = 1;
                 }
             };
         };
