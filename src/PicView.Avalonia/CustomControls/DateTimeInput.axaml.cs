@@ -222,14 +222,17 @@ public class DateTimeInput : TemplatedControl
     }
 
     /// <summary>
-    /// Creates a separator control.
+    /// Creates a time separator control based on the current culture's time separator format.
     /// </summary>
+    /// <returns>
+    /// A <see cref="TextBlock"/> representing the time separator with appropriate styling and visibility bindings.
+    /// </returns>
     private TextBlock CreateTimeSeparator()
     {
         var textBlock = new TextBlock
         {
             Classes = { "txt" },
-            Text = ":",
+            Text = CultureInfo.CurrentCulture.DateTimeFormat.TimeSeparator,
             VerticalAlignment = VerticalAlignment.Center
         };
         Observable.EveryValueChanged(this, x => x.IsEffectivelyEnabled, UIHelper.GetFrameProvider)
@@ -238,6 +241,11 @@ public class DateTimeInput : TemplatedControl
         return textBlock;
     }
 
+    /// <summary>
+    /// Creates a line separator as a textual visual element.
+    /// </summary>
+    /// <param name="separatorChar">The character to be used as a separator in the line.</param>
+    /// <returns>A <see cref="TextBlock"/> configured with the specified separator character and styling.</returns>
     private TextBlock CreateLineSeparator(char separatorChar)
     {
         var textBlock = new TextBlock
