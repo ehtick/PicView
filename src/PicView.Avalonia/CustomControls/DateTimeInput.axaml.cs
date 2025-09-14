@@ -151,7 +151,7 @@ public class DateTimeInput : TemplatedControl
             container.Children.Add(dateControls[i]);
             if (i < dateControls.Count - 1)
             {
-                container.Children.Add(CreateLineSeparator('/'));
+                container.Children.Add(CreateLineSeparator(CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator[0]));
             }
         }
 
