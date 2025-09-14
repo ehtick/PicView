@@ -219,7 +219,7 @@ public class DateTimeInput : TemplatedControl
 
         // Attach event handlers
         textBox.TextChanged += OnPartTextChanged;
-        textBox.KeyDown += OnTextBoxKeyDown; // Hook up the new keyboard handler
+        textBox.KeyDown += OnTextBoxKeyDown; 
         return textBox;
     }
 
@@ -337,6 +337,10 @@ public class DateTimeInput : TemplatedControl
         {
             return;
         }
+        
+        // Always clear any previous error state when the text changes.
+        // We will re-add it if the new value is invalid.
+        PseudoClasses.Remove(":error");
 
         // Try to parse the values from the text boxes into integers.
         var yearParsed = int.TryParse(_yearBox?.Text, out var year);
@@ -370,8 +374,7 @@ public class DateTimeInput : TemplatedControl
             catch (ArgumentOutOfRangeException)
             {
                 // One of the values is out of range (e.g., month 13).
-                // In a real app, you might add validation feedback here.
-                SetCurrentValue(SelectedDateTimeProperty, null);
+                OnError();
             }
         }
         else
@@ -379,6 +382,22 @@ public class DateTimeInput : TemplatedControl
             // If any part is not a valid number, the overall DateTime is invalid.
             SetCurrentValue(SelectedDateTimeProperty, null);
         }
+        return;
+        
+        void OnError()
+        {
+            PseudoClasses.Add(":error");
+            SetCurrentValue(SelectedDateTimeProperty, null);
+        }
+    }
+
+    public void ClearTextBoxes()
+    {
+        _yearBox?.Text = string.Empty;
+        _monthBox?.Text = string.Empty;
+        _dayBox?.Text = string.Empty;
+        _hourBox?.Text = string.Empty;
+        _minuteBox?.Text = string.Empty;
     }
 
     /// <summary>
