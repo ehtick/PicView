@@ -2,6 +2,7 @@
     Background="Transparent"
     Height="160"
     IsVisible="{CompiledBinding HoverbarViewModel.IsHoverbarVisible.Value}"
+    Margin="{CompiledBinding Gallery.GalleryMargin.Value}"
     MinWidth="{Binding MainWindow.WindowMinWidth.Value}"
     Opacity="0"
     VerticalAlignment="Bottom"

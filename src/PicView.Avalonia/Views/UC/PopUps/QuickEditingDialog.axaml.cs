@@ -58,6 +58,15 @@ public partial class QuickEditingDialog : AnimatedPopUp
                 await FunctionsMapper.EffectsWindow();
             })
             .AddTo(_subscriptions);
+                
+        Observable.FromEventHandler<RoutedEventArgs>(h => ShowBottomGalleryButton.Click += h,
+                h => ShowBottomGalleryButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                _ = AnimatedClosing();
+                await FunctionsMapper.OpenCloseBottomGallery();
+            })
+            .AddTo(_subscriptions);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
