@@ -58,6 +58,24 @@ public partial class QuickEditingDialog : AnimatedPopUp
                 await FunctionsMapper.EffectsWindow();
             })
             .AddTo(_subscriptions);
+        
+        Observable.FromEventHandler<RoutedEventArgs>(h => CropButton.Click += h,
+                h => CropButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                _ = AnimatedClosing();
+                await FunctionsMapper.Crop();
+            })
+            .AddTo(_subscriptions);
+        
+        Observable.FromEventHandler<RoutedEventArgs>(h => SlideshowButton.Click += h,
+                h => SlideshowButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                await AnimatedClosing();
+                await FunctionsMapper.Slideshow();
+            })
+            .AddTo(_subscriptions);
                 
         Observable.FromEventHandler<RoutedEventArgs>(h => ShowBottomGalleryButton.Click += h,
                 h => ShowBottomGalleryButton.Click -= h)
@@ -65,6 +83,15 @@ public partial class QuickEditingDialog : AnimatedPopUp
             {
                 _ = AnimatedClosing();
                 await FunctionsMapper.OpenCloseBottomGallery();
+            })
+            .AddTo(_subscriptions);
+        
+        Observable.FromEventHandler<RoutedEventArgs>(h => SideBySideButton.Click += h,
+                h => SideBySideButton.Click -= h)
+            .SubscribeAwait(async (_, _) =>
+            {
+                _ = AnimatedClosing();
+                await FunctionsMapper.SideBySide();
             })
             .AddTo(_subscriptions);
     }

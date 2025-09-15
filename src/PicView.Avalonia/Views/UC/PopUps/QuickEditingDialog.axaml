@@ -211,14 +211,14 @@
             <ToggleButton
                 Background="{DynamicResource MenuButtonColor}"
                 Classes="ButtonBorder altHover"
-                Command="{CompiledBinding Tools.ShowSideBySideCommand}"
                 Height="42"
                 IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
                 IsEnabled="{CompiledBinding !PicViewer.IsSingleImage.Value}"
                 Margin="6,0,4,8"
                 ToolTip.Tip="{CompiledBinding Translation.SideBySide.Value,
                                               Mode=OneWay}"
-                Width="175">
+                Width="175"
+                x:Name="SideBySideButton">
                 <TextBlock
                     Classes="txt"
                     MaxWidth="145"
