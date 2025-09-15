@@ -1,5 +1,7 @@
 <Window
     BorderThickness="1"
+    CanMaximize="False"
+    CanResize="False"
     ExtendClientAreaChromeHints="SystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     SizeToContent="WidthAndHeight"

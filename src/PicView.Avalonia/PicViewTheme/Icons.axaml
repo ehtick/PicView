@@ -2916,7 +2916,7 @@
                         Brush="{DynamicResource MainTextColor}"
                         LineCap="Square"
                         LineJoin="Miter"
-                        Thickness="44" />
+                        Thickness="66" />
                 </GeometryDrawing.Pen>
             </GeometryDrawing>
         </DrawingGroup>
