@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using PicView.Core.Localization;
 using PicView.Tests.LanguageTests;
+using ZLinq;
 
 namespace PicView.Tests;
 
@@ -20,26 +21,27 @@ public class LanguageAndSettingsUnitTest
     {
         // Load the keys from the en.json file
         var enJsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/Languages/en.json");
-        var enKeys = await GetJsonKeys(enJsonPath);
+        var enKeys = GetJsonKeys(enJsonPath);
     
         var languages = TranslationManager.GetLanguages();
-        Assert.NotNull(languages);
     
         // Check each language file against en.json keys
-        foreach (var languagePath in languages)
+        foreach (var language in languages)
         {
-            if (languagePath.Equals(enJsonPath, StringComparison.OrdinalIgnoreCase))
+            if (language.FullName.Equals(enJsonPath, StringComparison.OrdinalIgnoreCase))
             {
                 continue; // Skip the en.json file itself
             }
-        
-            var languageKeys = await GetJsonKeys(languagePath);
+
+            var languageKeys = GetJsonKeys(language.FullName);
             var missingKeys = enKeys.Except(languageKeys).ToList();
             var extraKeys = languageKeys.Except(enKeys).ToList();
-        
-            Assert.False(missingKeys.Count != 0, $"Missing keys in {Path.GetFileName(languagePath)}: {string.Join(", ", missingKeys)}");
-            Assert.True(extraKeys.Count == 0, $"Extra keys in {Path.GetFileName(languagePath)}: {string.Join(", ", extraKeys)}");
-            Assert.True(enKeys.SetEquals(languageKeys), $"Key mismatch in {Path.GetFileName(languagePath)}");
+
+            Assert.False(missingKeys.Count != 0,
+                $"Missing keys in {Path.GetFileName(language.FullName)}: {string.Join(", ", missingKeys)}");
+            Assert.True(extraKeys.Count == 0,
+                $"Extra keys in {Path.GetFileName(language.FullName)}: {string.Join(", ", extraKeys)}");
+            Assert.True(enKeys.SetEquals(languageKeys), $"Key mismatch in {Path.GetFileName(language.FullName)}");
         }
     
         await CheckDanishLanguage();
@@ -60,9 +62,9 @@ public class LanguageAndSettingsUnitTest
         await CheckChineseTraditionalLanguage();
     }
 
-    private async Task<HashSet<string>> GetJsonKeys(string filePath)
+    private HashSet<string> GetJsonKeys(string filePath)
     {
-        var jsonString = await File.ReadAllTextAsync(filePath);
+        var jsonString = File.ReadAllText(filePath);
         var jsonDocument = JsonDocument.Parse(jsonString);
         var root = jsonDocument.RootElement;
     
