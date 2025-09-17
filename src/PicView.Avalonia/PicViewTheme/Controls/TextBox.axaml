@@ -28,7 +28,7 @@
 
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <ContentPresenter Content="{TemplateBinding InnerLeftContent}" Grid.Column="0" />
-                                <customControls:AutoScrollViewer
+                                <ScrollViewer
                                     AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
                                     BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
                                     Grid.Column="1"
@@ -66,12 +66,12 @@
                                             TextAlignment="{TemplateBinding TextAlignment}"
                                             TextWrapping="{TemplateBinding TextWrapping}" />
                                     </Panel>
-                                    <customControls:AutoScrollViewer.Styles>
+                                    <ScrollViewer.Styles>
                                         <Style Selector="ScrollContentPresenter#PART_ContentPresenter">
                                             <Setter Property="Cursor" Value="IBeam" />
                                         </Style>
-                                    </customControls:AutoScrollViewer.Styles>
-                                </customControls:AutoScrollViewer>
+                                    </ScrollViewer.Styles>
+                                </ScrollViewer>
                                 <ContentPresenter Content="{TemplateBinding InnerRightContent}" Grid.Column="2" />
                             </Grid>
                         </DataValidationErrors>
