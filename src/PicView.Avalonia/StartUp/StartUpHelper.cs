@@ -13,7 +13,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
@@ -132,9 +131,6 @@ public static class StartUpHelper
         vm.MainWindow.LayoutButtonSubscription();
         vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
 
-        MenuManager.AddMenus();
-        UIHelper.AddHoverBar(vm);
-        SetWindowEventHandlers(window);
 
         if (!Settings.WindowProperties.AutoFit)
         {
@@ -154,7 +150,10 @@ public static class StartUpHelper
             Dispatcher.UIThread.InvokeAsync(() => { vm.PlatformWindowService.Fullscreen(false); },
                 DispatcherPriority.Background);
         }
-        
+
+        MenuManager.AddMenus();
+        UIHelper.AddHoverBar(vm);
+        SetWindowEventHandlers(window);
         TooltipHelper.StartTooltipSubscription(vm);
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))

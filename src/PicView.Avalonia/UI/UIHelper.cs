@@ -9,7 +9,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
-using R3;
 using R3.Avalonia;
 using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
 using MainView = PicView.Avalonia.Views.Main.MainView;
@@ -60,25 +59,7 @@ public static class UIHelper
         GetHoverBar = new HoverBar();
         GetMainView.MainGrid.Children.Add(GetHoverBar);
         _ = new HoverFadeButtonHandler(GetHoverBar, vm, GetHoverBar.TopBorder);
-        Observable.EveryValueChanged(vm.MainWindow.CurrentView, control => control.Value)
-            .Subscribe(control =>
-            {
-                if (control is ImageViewer)
-                {
-                    if (!Settings.UIProperties.ShowBottomNavBar && Settings.UIProperties.ShowAltInterfaceButtons)
-                    {
-                        vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
-                    }
-                    else
-                    {
-                        vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
-                    }
-                }
-                else
-                {
-                    vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
-                }
-            });
+        vm.MainWindow.HoverBarSubscription();
     }
 
     #endregion

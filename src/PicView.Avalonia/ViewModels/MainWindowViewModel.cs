@@ -4,6 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Sizing;
 using R3;
@@ -123,7 +124,46 @@ public class MainWindowViewModel : IDisposable
         Observable.EveryValueChanged(this, x => x.IsMaximized.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(_ => SetButtonValues());
         Observable.EveryValueChanged(this, x => x.IsFullscreen.CurrentValue, UIHelper.GetFrameProvider)
-            .Subscribe(_ => SetButtonValues());
+            .Subscribe(isFullscreen =>
+            {
+                SetButtonValues();
+                if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+                {
+                    vm.HoverbarViewModel.IsHoverbarVisible.Value = isFullscreen && Settings.WindowProperties.Fullscreen;
+                }
+            });
+    }
+
+    public void HoverBarSubscription()
+    {
+        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        Observable.EveryValueChanged(vm.MainWindow.CurrentView, control => control.Value)
+            .Subscribe(control =>
+            {
+                if (control is ImageViewer)
+                {
+                    if (Settings.WindowProperties.Fullscreen)
+                    {
+                        vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
+                    }
+                    else if (!Settings.UIProperties.ShowBottomNavBar && Settings.UIProperties.ShowAltInterfaceButtons)
+                    {
+                        vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
+                    }
+                    else
+                    {
+                        vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+                    }
+                }
+                else
+                {
+                    vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+                }
+            });
     }
 
     private static void Close(Unit unit) => DialogManager.Close();
