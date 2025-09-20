@@ -125,9 +125,10 @@ public static class StartUpHelper
         {
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
+            SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
         });
 
-        SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+       
         vm.MainWindow.LayoutButtonSubscription();
         vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
 
