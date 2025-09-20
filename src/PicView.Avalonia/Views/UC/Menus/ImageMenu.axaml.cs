@@ -1,9 +1,7 @@
 using Avalonia;
-using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
@@ -18,7 +16,6 @@ public partial class ImageMenu : AnimatedMenu
         InitializeComponent();
         Loaded += delegate
         {
-            GoToPicBox.KeyDown += async (_, e) => await GoToPicBox_OnKeyDown(e);
             Observable.EveryValueChanged(this, x => x.IsVisible, UIHelper.GetFrameProvider)
                 .Skip(1)
                 .Where(isVisible => !isVisible)
@@ -43,17 +40,8 @@ public partial class ImageMenu : AnimatedMenu
                 return;
             }
 
-            RotateLeftButton.Click += (_, _) => vm.MainWindow.IsRotateLeftClicked = Settings.WindowProperties.AutoFit;
-            RotateRightButton.Click += (_, _) => vm.MainWindow.IsRotateRightClicked = Settings.WindowProperties.AutoFit;
 
-
-            if (Settings.Theme.GlassTheme)
-            {
-                GoToPicButton.Classes.Remove("noBorderHover");
-                GoToPicButton.Classes.Add("hover");
-                GoToPicBox.Background = new SolidColorBrush(Color.FromArgb(90, 197, 197, 197));
-            }
-            else if (!Settings.Theme.Dark)
+            if (!Settings.Theme.Dark)
             {
                 TopBorder.Background = Brushes.White;
 
@@ -114,41 +102,5 @@ public partial class ImageMenu : AnimatedMenu
         }
 
         CropFunctions.DetermineIfShouldBeEnabled(vm);
-    }
-
-    private async Task GoToPicBox_OnKeyDown(KeyEventArgs e)
-    {
-        if (e.Key == Key.Enter)
-        {
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
-
-            if (!NavigationManager.CanNavigate(vm))
-            {
-                return;
-            }
-
-            if (!int.TryParse(GoToPicBox.Text, out var number))
-            {
-                return;
-            }
-
-            if (number < 1)
-            {
-                number = 0;
-            }
-            else if (number > NavigationManager.GetCount)
-            {
-                number = NavigationManager.GetCount - 1;
-            }
-            else
-            {
-                number--;
-            }
-
-            await NavigationManager.Navigate(number, vm).ConfigureAwait(false);
-        }
     }
 }

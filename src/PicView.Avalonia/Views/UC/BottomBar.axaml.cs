@@ -36,6 +36,8 @@ public partial class BottomBar : UserControl
                 UIHelper.SetButtonInterval(NextButton);
             };
 
+            RotateRightButton.Click += (_, _) => { vm.MainWindow.IsBottomToolbarRotationClicked = true; };
+
             if (!Application.Current.TryGetResource("SecondaryTextColor",
                     Application.Current.RequestedThemeVariant, out var textColor))
             {

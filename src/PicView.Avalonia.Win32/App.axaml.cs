@@ -81,7 +81,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             ? _mainWindow?.OffScreenMargin.Left + _mainWindow?.OffScreenMargin.Right + field ?? field
             : field);
         set;
-    } = 215;
+    } = 185;
 
     #region Interface Implementations
     

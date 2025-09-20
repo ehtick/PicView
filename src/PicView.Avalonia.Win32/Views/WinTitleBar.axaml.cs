@@ -47,9 +47,6 @@ public partial class WinTitleBar : UserControl
                 FullscreenButton.Background = Brushes.Transparent;
                 FullscreenButton.BorderThickness = new Thickness(0);
 
-                FlipButton.Background = Brushes.Transparent;
-                FlipButton.BorderThickness = new Thickness(0);
-
                 GalleryButton.Background = Brushes.Transparent;
                 GalleryButton.BorderThickness = new Thickness(0);
 
@@ -62,7 +59,6 @@ public partial class WinTitleBar : UserControl
                 CloseButton.Foreground = brush;
                 MinimizeButton.Foreground = brush;
                 RestoreButton.Foreground = brush;
-                FlipButton.Foreground = brush;
                 GalleryButton.Foreground = brush;
                 RotateRightButton.Foreground = brush;
             }
@@ -74,17 +70,11 @@ public partial class WinTitleBar : UserControl
             {
                 return;
             }
-            RotateRightButton.Click += (_, e) =>
-            {
-                vm.MainWindow.IsTopToolbarRotationClicked = Settings.WindowProperties.AutoFit;
-            };
 
             _rotationContextMenu = new RotationContextMenu();
             _rotationContextMenu.UpdateSubscription();
-            FlipButton.ContextMenu = _rotationContextMenu;
             RotateRightButton.ContextMenu = _rotationContextMenu;
             
-            FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
             RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
         };
     }

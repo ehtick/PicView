@@ -19,9 +19,9 @@ public static class MenuManager
             return;
         }
 
-        mainView.MainGrid.Children.Add(CreateMenu<FileMenu>(new Thickness(0, 0, 120, 0)));
-        mainView.MainGrid.Children.Add(CreateMenu<ImageMenu>(new Thickness(0, 0, 63, 0)));
-        mainView.MainGrid.Children.Add(CreateMenu<SettingsMenu>(new Thickness(0, 0, -75, 0)));
+        mainView.MainGrid.Children.Add(CreateMenu<FileMenu>(new Thickness(0, 0, 145, 0)));
+        mainView.MainGrid.Children.Add(CreateMenu<ImageMenu>(new Thickness(0, 0, 140, 0)));
+        mainView.MainGrid.Children.Add(CreateMenu<SettingsMenu>(new Thickness(0, 0, -99, 0)));
         mainView.MainGrid.Children.Add(CreateMenu<ToolsMenu>(new Thickness(80, 0, 0, 0)));
     }
 

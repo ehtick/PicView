@@ -8,7 +8,6 @@ using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC.Menus;
 using PicView.Core.DebugTools;
 using PicView.Core.Sizing;
 
@@ -67,21 +66,9 @@ public static class WindowResizing
             () => UIHelper.GetMainView.GetControl<UserControl>("ClickArrowRight"),
             new Point(65, 95));
 
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsRotateLeftClicked,
-            clicked => vm.MainWindow.IsRotateLeftClicked = clicked,
-            () => UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault()
-                ?.GetControl<IconButton>("RotateLeftButton"),
-            new Point(20, 15));
-
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsRotateRightClicked,
-            clicked => vm.MainWindow.IsRotateRightClicked = clicked,
-            () => UIHelper.GetMainView.MainGrid.Children.OfType<ImageMenu>().FirstOrDefault()
-                ?.GetControl<IconButton>("RotateRightButton"),
-            new Point(20, 15));
-
-        RepositionCursorIfTriggered(vm, vm.MainWindow.IsTopToolbarRotationClicked,
-            clicked => vm.MainWindow.IsTopToolbarRotationClicked = clicked,
-            () => UIHelper.GetTitlebar.GetControl<IconButton>("RotateRightButton"),
+        RepositionCursorIfTriggered(vm, vm.MainWindow.IsBottomToolbarRotationClicked,
+            clicked => vm.MainWindow.IsBottomToolbarRotationClicked = clicked,
+            () => UIHelper.GetBottomBar.GetControl<IconButton>("RotateRightButton"),
             new Point(11, 7));
 
         RepositionCursorIfTriggered(vm, vm.HoverbarViewModel.IsHoverRotateRightClicked,

@@ -35,28 +35,11 @@
 
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,1,0"
-                Classes="hover"
-                Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
-                Data="{StaticResource GalleryGeometry}"
-                DockPanel.Dock="Left"
-                Foreground="{DynamicResource MainTextColor}"
-                IconHeight="17"
-                IconWidth="17"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                IsRepeatEnabled="False"
-                Width="30"
-                x:Name="GalleryButton" />
-
-            <customControls:IconButton
-                Background="{DynamicResource WindowButtonBackgroundColor}"
                 Classes="hover"
                 Command="{CompiledBinding Tools.RotateRightCommand}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
-                Icon="{StaticResource RefreshCcwDot}"
+                Icon="{StaticResource MenuImage}"
                 IconHeight="16"
                 IconWidth="16"
                 IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
@@ -71,26 +54,19 @@
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="1,0,1,0"
+                BorderThickness="0,0,1,0"
                 Classes="hover"
-                Command="{CompiledBinding Tools.FlipCommand}"
-                Data="{StaticResource FlipGeometry}"
+                Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                Data="{StaticResource GalleryGeometry}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
-                IconHeight="16"
-                IconWidth="16"
-                IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
+                IconHeight="17"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
-                Margin="0"
-                ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
-                                              Mode=OneWay}"
                 Width="30"
-                x:Name="FlipButton">
-                <Button.RenderTransform>
-                    <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
-                </Button.RenderTransform>
-            </customControls:IconButton>
+                x:Name="GalleryButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"

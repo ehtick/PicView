@@ -19,10 +19,7 @@ public class MainWindowViewModel : IDisposable
     public bool IsClickArrowLeftClicked { get; set; }
     public bool IsClickArrowRightClicked { get; set; }
 
-    public bool IsRotateLeftClicked { get; set; }
-    public bool IsRotateRightClicked { get; set; }
-    
-    public bool IsTopToolbarRotationClicked { get; set; }
+    public bool IsBottomToolbarRotationClicked { get; set; }
 
     public BindableReactiveProperty<Brush?> ImageBackground { get; } = new();
 
@@ -134,7 +131,7 @@ public class MainWindowViewModel : IDisposable
             });
     }
 
-    public void HoverBarSubscription()
+    public static void HoverBarSubscription()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
         {
