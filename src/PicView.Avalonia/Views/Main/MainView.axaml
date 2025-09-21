@@ -866,12 +866,7 @@
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource RecycleGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="RecyclePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -913,12 +908,7 @@
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource CopyImageGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="12"
-                            Stretch="Fill"
-                            Width="12" />
+                        <Path Classes="CopyPath" />
                     </MenuItem.Icon>
                 </MenuItem>
 
@@ -931,12 +921,7 @@
                     IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource CopyGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="12"
-                            Stretch="Fill"
-                            Width="12" />
+                        <Path Classes="CopyPath" />
                     </MenuItem.Icon>
                 </MenuItem>
 
@@ -954,12 +939,7 @@
                         </TextBlock>
                     </MenuItem.Header>
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource CopyGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="12"
-                            Stretch="Fill"
-                            Width="12" />
+                        <Path Classes="CopyPath" />
                     </MenuItem.Icon>
                 </MenuItem>
 
@@ -975,12 +955,7 @@
                     IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource DuplicateGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="12"
-                            Stretch="Fill"
-                            Width="12" />
+                        <Path Classes="DuplicatePath" />
                     </MenuItem.Icon>
                 </MenuItem>
 

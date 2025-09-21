@@ -24,6 +24,7 @@
                 <ResourceInclude Source="Controls/CheckBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBoxItem.axaml" />
+                <ResourceInclude Source="Controls/ContextMenu.axaml" />
                 <ResourceInclude Source="Controls/Expander.axaml" />
                 <ResourceInclude Source="Controls/FlyoutPresenter.axaml" />
                 <ResourceInclude Source="Controls/HyperlinkButton.axaml" />

@@ -5,17 +5,12 @@ using Avalonia.Media;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.DebugTools;
-using R3;
-using Observable = R3.Observable;
 
 namespace PicView.Avalonia.Win32.Views;
 
 public partial class WinTitleBar : UserControl
 {
-    private RotationContextMenu? _rotationContextMenu;
     public WinTitleBar()
     {
         InitializeComponent();
@@ -50,8 +45,8 @@ public partial class WinTitleBar : UserControl
                 GalleryButton.Background = Brushes.Transparent;
                 GalleryButton.BorderThickness = new Thickness(0);
 
-                RotateRightButton.Background = Brushes.Transparent;
-                RotateRightButton.BorderThickness = new Thickness(0);
+                MenuButton.Background = Brushes.Transparent;
+                MenuButton.BorderThickness = new Thickness(0);
                 
                 var brush = UIHelper.GetBrush("SecondaryTextColor");
 
@@ -60,35 +55,49 @@ public partial class WinTitleBar : UserControl
                 MinimizeButton.Foreground = brush;
                 RestoreButton.Foreground = brush;
                 GalleryButton.Foreground = brush;
-                RotateRightButton.Foreground = brush;
+                MenuButton.Foreground = brush;
             }
 
             PointerPressed += (_, e) => MoveWindow(e);
             PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
 
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
-
-            _rotationContextMenu = new RotationContextMenu();
-            _rotationContextMenu.UpdateSubscription();
-            RotateRightButton.ContextMenu = _rotationContextMenu;
-            
-            RotateRightButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
+            MenuButton.Click += (_, _) => { ToggleMenu(); };
+            MainMenu.Closed += (_, _) => { CloseMenu(); };
         };
     }
-    
-    private void OpenContextMenu(PointerPressedEventArgs e)
-    {
-        if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-        {
-            return;
-        }
 
-        // Context menu doesn't want to be opened normally
-        _rotationContextMenu?.Open();
+    private void ToggleMenu()
+    {
+        if (MainMenu.IsOpen)
+        {
+            CloseMenu();
+        }
+        else
+        {
+            OpenMenu();
+        }
     }
+
+    private void OpenMenu()
+    {
+        MainMenu.IsVisible = true;
+        MainMenu.Open();
+        EditableTitlebar.IsVisible = false;
+        GalleryButton.IsVisible = false;
+        MenuButton.IsVisible = false;
+
+        FileMenuItem.Open();
+    }
+
+    private void CloseMenu()
+    {
+        MainMenu.Close();
+        MainMenu.IsVisible = false;
+        EditableTitlebar.IsVisible = true;
+        GalleryButton.IsVisible = true;
+        MenuButton.IsVisible = true;
+    }
+    
 
     private void MoveWindow(PointerPressedEventArgs e)
     {
@@ -97,7 +106,7 @@ public partial class WinTitleBar : UserControl
             return;
         }
 
-        if (vm.MainWindow.IsEditableTitlebarOpen.Value)
+        if (vm.MainWindow.IsEditableTitlebarOpen.Value || MainMenu.IsOpen)
         {
             return;
         }

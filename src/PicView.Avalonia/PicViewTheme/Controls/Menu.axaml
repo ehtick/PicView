@@ -4,207 +4,23 @@
     xmlns:sys="using:System"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <ControlTheme TargetType="ContextMenu" x:Key="{x:Type ContextMenu}">
-        <Setter Property="Background" Value="{DynamicResource ContextMenuBackgroundColor}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
+    <ControlTheme TargetType="MenuItem" x:Key="SimpleTopLevelMenuItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="6 0" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="6,4" />
-        <Setter Property="TextBlock.FontFamily" Value="/Assets/Fonts/Roboto-Medium.ttf#Roboto" />
-        <Setter Property="TextBlock.FontWeight" Value="Normal" />
         <Setter Property="Template">
             <ControlTemplate>
+
                 <Border
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="8"
-                    Padding="{TemplateBinding Padding}">
-                    <ItemsPresenter
-                        ItemsPanel="{TemplateBinding ItemsPanel}"
-                        KeyboardNavigation.TabNavigation="Continue"
-                        Name="PART_ItemsPresenter" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </ControlTheme>
-
-    <ControlTheme TargetType="MenuItem" x:Key="{x:Type MenuItem}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="6" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="root">
-                    <Grid Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="5" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition SharedSizeGroup="MenuItemIGT" Width="Auto" />
-                            <ColumnDefinition Width="20" />
-                        </Grid.ColumnDefinitions>
-                        <ContentControl
-                            Content="{TemplateBinding Icon}"
-                            Height="16"
-                            HorizontalAlignment="Center"
-                            Margin="5,0,0,0"
-                            Name="icon"
-                            VerticalAlignment="Center"
-                            Width="16" />
-                        <ContentControl
-                            Grid.Column="0"
-                            Height="16"
-                            IsVisible="True"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Center"
-                            Width="16"
-                            x:Name="PART_ToggleIconPresenter" />
-                        <ContentPresenter
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}"
-                            Foreground="{DynamicResource ContextMenuTextColor}"
-                            Grid.Column="2"
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                            Margin="{TemplateBinding Padding}"
-                            Name="PART_HeaderPresenter"
-                            VerticalAlignment="Center">
-                            <ContentPresenter.DataTemplates>
-                                <DataTemplate DataType="sys:String">
-                                    <AccessText Text="{Binding}" />
-                                </DataTemplate>
-                            </ContentPresenter.DataTemplates>
-                        </ContentPresenter>
-                        <Path
-                            Data="F1M0.002,31.062L0,0 27.01,15.534z"
-                            Fill="{DynamicResource MainTextColor}"
-                            Grid.Column="4"
-                            Height="8"
-                            Margin="6,0,4,0"
-                            Name="rightArrow"
-                            Stretch="Fill"
-                            VerticalAlignment="Center"
-                            Width="8" />
-                        <Popup
-                            Grid.Column="0"
-                            IsLightDismissEnabled="False"
-                            IsOpen="{TemplateBinding IsSubMenuOpen,
-                                                     Mode=TwoWay}"
-                            Name="PART_Popup"
-                            Placement="RightEdgeAlignedTop">
-                            <Border
-                                Background="{DynamicResource ContextMenuBackgroundColor}"
-                                BorderBrush="{DynamicResource MainBorderColor}"
-                                BorderThickness="1"
-                                CornerRadius="8">
-                                <ItemsPresenter
-                                    Grid.IsSharedSizeScope="True"
-                                    ItemsPanel="{TemplateBinding ItemsPanel}"
-                                    Margin="2"
-                                    Name="PART_ItemsPresenter" />
-                            </Border>
-                        </Popup>
-                    </Grid>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-
-        <Style Selector="^:separator">
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Separator />
-                </ControlTemplate>
-            </Setter>
-        </Style>
-        <Style Selector="^:toggle /template/ Viewbox#PART_ToggleIconPresenter, ^:radio /template/ Viewbox#PART_ToggleIconPresenter">
-            <Setter Property="IsVisible" Value="True" />
-        </Style>
-        <Style Selector="^:toggle /template/ ContentPresenter#PART_IconPresenter, ^:radio /template/ ContentPresenter#PART_IconPresenter">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-        <Style Selector="^:checked:toggle /template/ ContentControl#PART_ToggleIconPresenter">
-            <Setter Property="Content">
-                <Template>
-                    <Path
-                        Data="F1M10,1.2L4.7,9.1 4.5,9.1 0,5.2 1.3,3.5 4.3,6.1 8.3,0 10,1.2z"
-                        Fill="{DynamicResource MainTextColor}"
-                        VerticalAlignment="Center" />
-                </Template>
-            </Setter>
-        </Style>
-        <Style Selector="^:checked:radio /template/ ContentControl#PART_ToggleIconPresenter">
-            <Setter Property="Content">
-                <Template>
-                    <Ellipse
-                        Fill="{DynamicResource MainTextColor}"
-                        Height="8"
-                        Margin="4"
-                        Width="8" />
-                </Template>
-            </Setter>
-        </Style>
-
-        <Style Selector="^:not(.noHover):selected /template/ Border#root">
-            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
-        </Style>
-
-        <Style Selector="^:not(.noHover):selected /template/ ContentPresenter#PART_HeaderPresenter">
-            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
-            <Setter Property="Effect" Value="{StaticResource TextShadow}" />
-        </Style>
-
-        <Style Selector="^:nth-child(1) /template/ Border#root">
-            <Setter Property="CornerRadius" Value="6,6,0,0" />
-        </Style>
-
-        <Style Selector="^:nth-last-child(1) /template/ Border#root">
-            <Setter Property="CornerRadius" Value="0,0,6,6" />
-        </Style>
-
-        <Style Selector="^.noCornerRadius:nth-child(1) /template/ Border#root">
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-
-        <Style Selector="^.noCornerRadius:nth-last-child(1) /template/ Border#root">
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-
-        <Style Selector="^:nth-child(1):nth-last-child(1) /template/ Border#root">
-            <Setter Property="CornerRadius" Value="0" />
-        </Style>
-
-        <Style Selector="^:empty /template/ Path#rightArrow">
-            <Setter Property="IsVisible" Value="False" />
-        </Style>
-
-        <Style Selector="^:disabled">
-            <Setter Property="Opacity" Value="{StaticResource ThemeDisabledOpacity}" />
-        </Style>
-
-        <Style Selector="^.active /template/ Border#root">
-            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
-            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
-        </Style>
-
-        <Style Selector="^.active /template/ ContentPresenter#PART_HeaderPresenter">
-            <Setter Property="Foreground" Value="{StaticResource SecondaryTextColor}" />
-            <Setter Property="Effect" Value="{StaticResource TextShadow}" />
-        </Style>
-
-
-    </ControlTheme>
-
-    <ControlTheme TargetType="MenuItem" x:Key="Slim">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="root">
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Name="root">
                     <Panel>
                         <ContentPresenter
                             Content="{TemplateBinding Header}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}"
-                            Foreground="{DynamicResource ContextMenuTextColor}"
                             Margin="{TemplateBinding Padding}"
                             Name="PART_HeaderPresenter"
                             VerticalAlignment="Center">
@@ -215,16 +31,16 @@
                             </ContentPresenter.DataTemplates>
                         </ContentPresenter>
                         <Popup
-                            IsLightDismissEnabled="False"
+                            IsLightDismissEnabled="True"
                             IsOpen="{TemplateBinding IsSubMenuOpen,
                                                      Mode=TwoWay}"
                             Name="PART_Popup"
-                            Placement="RightEdgeAlignedTop">
+                            OverlayInputPassThroughElement="{Binding $parent[Menu]}"
+                            Placement="BottomEdgeAlignedLeft">
                             <Border
-                                Background="{DynamicResource ContextMenuBackgroundColor}"
+                                Background="{DynamicResource MainBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
-                                BorderThickness="1"
-                                CornerRadius="8">
+                                BorderThickness="1">
                                 <ItemsPresenter
                                     Grid.IsSharedSizeScope="True"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"
@@ -237,28 +53,35 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^:separator">
-            <Setter Property="Template">
-                <ControlTemplate>
-                    <Separator />
-                </ControlTemplate>
-            </Setter>
+        <Style Selector="^:selected /template/ Border#root">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <Style Selector="^:empty /template/ Path#rightArrow">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
         </Style>
     </ControlTheme>
 
-    <ControlTheme TargetType="Separator" x:Key="{x:Type Separator}">
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="Background" Value="{DynamicResource MainBorderColor}" />
-        <Setter Property="Opacity" Value=".8" />
-        <Setter Property="Margin" Value="2" />
-        <Setter Property="Height" Value="1" />
+    <ControlTheme TargetType="Menu" x:Key="{x:Type Menu}">
+        <Setter Property="ItemContainerTheme" Value="{StaticResource SimpleTopLevelMenuItem}" />
         <Setter Property="Template">
             <ControlTemplate>
+
                 <Border
                     Background="{TemplateBinding Background}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}" />
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    Padding="{TemplateBinding Padding}">
+                    <ItemsPresenter
+                        ItemsPanel="{TemplateBinding ItemsPanel}"
+                        KeyboardNavigation.TabNavigation="Continue"
+                        Name="PART_ItemsPresenter" />
+                </Border>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

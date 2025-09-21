@@ -44,9 +44,7 @@
 
                 <customControls:TextIconButton
                     Background="Transparent"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
+                    Classes="altHover"
                     Command="{CompiledBinding Window.ShowImageInfoWindow}"
                     CornerRadius="8,0,0,0"
                     Data="{StaticResource ImageInfoGeometry}"
@@ -58,9 +56,25 @@
                     Text="{CompiledBinding Translation.ImageInfo.Value,
                                            Mode=OneWay}"
                     TextMargin="10,0,6,0"
-                    TextMaxWidth="250"
-                    Width="270"
+                    TextMaxWidth="200"
+                    Width="225"
                     x:Name="ImageInfoButton" />
+
+                <customControls:IconButton
+                    Background="Transparent"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1,0,1,0"
+                    Canvas.Left="225"
+                    Canvas.Top="-1"
+                    Classes="hover"
+                    ClickMode="Release"
+                    Data="{StaticResource SearchGeometry}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Height="47"
+                    IconHeight="16"
+                    IconWidth="16"
+                    IsEnabled="False"
+                    Width="45" />
 
                 <customControls:IconButton
                     Background="Transparent"

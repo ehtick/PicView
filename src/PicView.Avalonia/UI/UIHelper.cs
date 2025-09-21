@@ -6,10 +6,10 @@ using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using R3.Avalonia;
+using BottomBar = PicView.Avalonia.Views.UC.BottomBar;
 using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
 using MainView = PicView.Avalonia.Views.Main.MainView;
 

@@ -3,7 +3,7 @@
     IsVisible="{CompiledBinding MainWindow.IsBottomToolbarShown.Value}"
     Margin="{CompiledBinding MainWindow.BottomScreenMargin.Value,
                              Mode=OneWay}"
-    x:Class="PicView.Avalonia.Views.BottomBar"
+    x:Class="PicView.Avalonia.Views.UC.BottomBar"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"

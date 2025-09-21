@@ -123,8 +123,16 @@
     <Style Selector="Path.CopyPath">
         <Setter Property="Data" Value="{StaticResource CopyGeometry}" />
         <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />
-        <Setter Property="Height" Value="16" />
-        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+
+    <Style Selector="Path.DuplicatePath">
+        <Setter Property="Data" Value="{StaticResource DuplicateGeometry}" />
+        <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Width" Value="12" />
         <Setter Property="Stretch" Value="Fill" />
     </Style>
 
@@ -173,4 +181,13 @@
         <Setter Property="Width" Value="12" />
         <Setter Property="Stretch" Value="Fill" />
     </Style>
+
+    <Style Selector="Path.RecyclePath">
+        <Setter Property="Data" Value="{StaticResource RecycleGeometry}" />
+        <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+
 </Styles>

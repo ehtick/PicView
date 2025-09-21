@@ -2,12 +2,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 
-namespace PicView.Avalonia.Views;
+namespace PicView.Avalonia.Views.UC;
 
 public partial class BottomBar : UserControl
 {
@@ -28,12 +29,12 @@ public partial class BottomBar : UserControl
             PreviousButton.Click += (_, _) =>
             {
                 vm.MainWindow.IsNavigationButtonLeftClicked = true;
-                UIHelper.SetButtonInterval(PreviousButton);
+                UIHelper.SetButtonInterval((IconButton?)PreviousButton);
             };
             NextButton.Click += (_, _) =>
             {
                 vm.MainWindow.IsNavigationButtonRightClicked = true;
-                UIHelper.SetButtonInterval(NextButton);
+                UIHelper.SetButtonInterval((IconButton?)NextButton);
             };
 
             RotateRightButton.Click += (_, _) => { vm.MainWindow.IsBottomToolbarRotationClicked = true; };
