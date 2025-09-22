@@ -29,11 +29,45 @@ public static partial class SvgLoader
 
         if (useScreenSize)
         {
-            var width = ScreenHelper.ScreenSize.WorkingAreaWidth.ToString(CultureInfo.InvariantCulture);
-            var height = ScreenHelper.ScreenSize.WorkingAreaHeight.ToString(CultureInfo.InvariantCulture);
+            var maxWidth = ScreenHelper.ScreenSize.WorkingAreaWidth;
+            var maxHeight = ScreenHelper.ScreenSize.WorkingAreaHeight;
+            var viewBoxMatch = ViewBoxRegex().Match(svgMarkup);
 
-            svgMarkup = SetSvgAttribute(svgMarkup, "width", width);
-            svgMarkup = SetSvgAttribute(svgMarkup, "height", height);
+            if (viewBoxMatch.Success &&
+                double.TryParse(viewBoxMatch.Groups[3].Value, CultureInfo.InvariantCulture, out var viewBoxWidth) &&
+                double.TryParse(viewBoxMatch.Groups[4].Value, CultureInfo.InvariantCulture, out var viewBoxHeight) &&
+                viewBoxHeight > 0)
+            {
+                // We have a valid viewBox, so we can calculate the correct aspect ratio
+                var svgAspectRatio = viewBoxWidth / viewBoxHeight;
+                var screenAspectRatio = maxWidth / maxHeight;
+
+                double newWidth;
+                double newHeight;
+
+                if (svgAspectRatio > screenAspectRatio)
+                {
+                    // SVG is wider than the available area; width is the limiting factor
+                    newWidth = maxWidth;
+                    newHeight = maxWidth / svgAspectRatio;
+                }
+                else
+                {
+                    // SVG is taller than or same as the available area; height is the limiting factor
+                    newHeight = maxHeight;
+                    newWidth = maxHeight * svgAspectRatio;
+                }
+
+                svgMarkup = SetSvgAttribute(svgMarkup, "width", newWidth.ToString("F2", CultureInfo.InvariantCulture));
+                svgMarkup = SetSvgAttribute(svgMarkup, "height",
+                    newHeight.ToString("F2", CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                // Fallback for SVGs without a valid viewBox: use the original behavior
+                svgMarkup = SetSvgAttribute(svgMarkup, "width", maxWidth.ToString(CultureInfo.InvariantCulture));
+                svgMarkup = SetSvgAttribute(svgMarkup, "height", maxHeight.ToString(CultureInfo.InvariantCulture));
+            }
         }
         else
         {
@@ -119,4 +153,9 @@ public static partial class SvgLoader
 
     [GeneratedRegex(CurrentColorKeyword, RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex CurrentColorRegex();
+
+    [GeneratedRegex(@"viewBox\s*=\s*""(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+([\d\.]+)\s+([\d\.]+)""", RegexOptions.IgnoreCase,
+        "en-US")]
+    private static partial Regex ViewBoxRegex();
+
 }
