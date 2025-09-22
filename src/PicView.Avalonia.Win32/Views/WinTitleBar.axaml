@@ -285,7 +285,7 @@
                 </MenuItem>
 
                 <!--  Edit  -->
-                <MenuItem Header="Edit">
+                <MenuItem Header="{CompiledBinding Translation.Edit, Mode=OneWay}">
 
                     <!--  Copy image  -->
                     <MenuItem
@@ -386,7 +386,7 @@
                 </MenuItem>
 
                 <!--  View  -->
-                <MenuItem Header="View">
+                <MenuItem Header="{CompiledBinding Translation.View, Mode=OneWay}">
 
                     <!--  Toggle UI  -->
                     <MenuItem
@@ -603,7 +603,7 @@
                 </MenuItem>
 
                 <!--  Navigate  -->
-                <MenuItem Header="Navigate">
+                <MenuItem Header="{CompiledBinding Translation.Navigate, Mode=OneWay}">
                     <!--  Next  -->
                     <MenuItem
                         Command="{CompiledBinding Navigation.NextCommand}"
@@ -865,12 +865,7 @@
                 <!--  Settings  -->
                 <MenuItem Header="{CompiledBinding Translation.Settings.Value, Mode=OneWay}">
                     <MenuItem.Icon>
-                        <Path
-                            Data="{StaticResource WrenchGeometry}"
-                            Fill="{StaticResource Brush0}"
-                            Height="12"
-                            Stretch="Fill"
-                            Width="12" />
+                        <Path Classes="SettingsPath" />
                     </MenuItem.Icon>
 
                     <!--  Toggle Subdirectories  -->
@@ -958,7 +953,7 @@
                 </MenuItem>
 
                 <!--  Help  -->
-                <MenuItem Header="Help">
+                <MenuItem Header="{CompiledBinding Translation.Help, Mode=OneWay}">
 
                     <!--  Show about window  -->
                     <MenuItem Command="{CompiledBinding Window.ShowAboutWindow}"

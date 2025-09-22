@@ -13,7 +13,7 @@ public class TranslationViewModel : IDisposable
     public void UpdateLanguage()
     {
         var t = TranslationManager.Translation;
-
+        
         File.Value = string.Concat(t.File[0].ToString().ToUpper(), t.File.AsSpan(1));
         SelectFile.Value = t.OpenFileDialog;
         OpenLastFile.Value = t.OpenLastFile;
@@ -298,552 +298,291 @@ public class TranslationViewModel : IDisposable
         NavigateFileHistory.Value = t.NavigateFileHistory;
         NavigateBetweenDirectories.Value = t.NavigateBetweenDirectories;
         Comment.Value = t.Comment;
+        Navigate.Value = t.Navigate;
+        Help.Value = t.Help;
+        View.Value = t.View;
+        Edit.Value = t.Edit;
     }
 
     #region Static Translation Strings
 
     public BindableReactiveProperty<string?> _1Star { get; } = new();
-
     public BindableReactiveProperty<string?> _2Star { get; } = new();
-
     public BindableReactiveProperty<string?> _3Star { get; } = new();
-
     public BindableReactiveProperty<string?> _4Star { get; } = new();
-
     public BindableReactiveProperty<string?> _5Star { get; } = new();
-
     public BindableReactiveProperty<string?> About { get; } = new();
-
     public BindableReactiveProperty<string?> AboutWindow { get; } = new();
-
     public BindableReactiveProperty<string?> AdjustNavSpeed { get; } = new();
-
     public BindableReactiveProperty<string?> AdjustTimingForSlideshow { get; } = new();
-
     public BindableReactiveProperty<string?> AdjustTimingForZoom { get; } = new();
-
     public BindableReactiveProperty<string?> AdvanceBy100Images { get; } = new();
-
     public BindableReactiveProperty<string?> AdvanceBy10Images { get; } = new();
-
     public BindableReactiveProperty<string?> AllowZoomOut { get; } = new();
-
     public BindableReactiveProperty<string?> Altitude { get; } = new();
-
     public BindableReactiveProperty<string?> Appearance { get; } = new();
-
     public BindableReactiveProperty<string?> ApplicationShortcuts { get; } = new();
-
     public BindableReactiveProperty<string?> ApplicationStartup { get; } = new();
-
     public BindableReactiveProperty<string?> Apply { get; } = new();
-
     public BindableReactiveProperty<string?> Ascending { get; } = new();
-
     public BindableReactiveProperty<string?> Authors { get; } = new();
-
     public BindableReactiveProperty<string?> AutoFitWindow { get; } = new();
-
     public BindableReactiveProperty<string?> BatchResize { get; } = new();
-
     public BindableReactiveProperty<string?> BitDepth { get; } = new();
-
     public BindableReactiveProperty<string?> BlackAndWhite { get; } = new();
-
     public BindableReactiveProperty<string?> Blur { get; } = new();
-
     public BindableReactiveProperty<string?> BottomGalleryItemSize { get; } = new();
-
     public BindableReactiveProperty<string?> BottomGalleryThumbnailStretch { get; } = new();
-
     public BindableReactiveProperty<string?> Brightness { get; } = new();
-
     public BindableReactiveProperty<string?> CameraMaker { get; } = new();
-
     public BindableReactiveProperty<string?> CameraModel { get; } = new();
-
     public BindableReactiveProperty<string?> Cancel { get; } = new();
-
     public BindableReactiveProperty<string?> Center { get; } = new();
-
     public BindableReactiveProperty<string?> CenterWindow { get; } = new();
-
     public BindableReactiveProperty<string?> Centimeters { get; } = new();
-
     public BindableReactiveProperty<string?> ChangeBackground { get; } = new();
-
     public BindableReactiveProperty<string?> ChangeKeybindingText { get; } = new();
-
     public BindableReactiveProperty<string?> ChangeKeybindingTooltip { get; } = new();
-
     public BindableReactiveProperty<string?> ChangingThemeRequiresRestart { get; } = new();
-
     public BindableReactiveProperty<string?> CheckForUpdates { get; } = new();
-
     public BindableReactiveProperty<string?> Clear { get; } = new();
-
     public BindableReactiveProperty<string?> ClearEffects { get; } = new();
-
     public BindableReactiveProperty<string?> Close { get; } = new();
-
     public BindableReactiveProperty<string?> CloseGallery { get; } = new();
-
     public BindableReactiveProperty<string?> CloseWindowPrompt { get; } = new();
-
     public BindableReactiveProperty<string?> ColorPickerTool { get; } = new();
-
     public BindableReactiveProperty<string?> ColorPickerToolTooltip { get; } = new();
-
     public BindableReactiveProperty<string?> ColorRepresentation { get; } = new();
-
     public BindableReactiveProperty<string?> Comment { get; } = new();
-
     public BindableReactiveProperty<string?> CompressedBitsPixel { get; } = new();
-
     public BindableReactiveProperty<string?> Compression { get; } = new();
-
     public BindableReactiveProperty<string?> ConstrainBackgroundToImage { get; } = new();
-
     public BindableReactiveProperty<string?> Contrast { get; } = new();
-
     public BindableReactiveProperty<string?> ConvertTo { get; } = new();
-
     public BindableReactiveProperty<string?> Copy { get; } = new();
-
     public BindableReactiveProperty<string?> CopyFile { get; } = new();
-
     public BindableReactiveProperty<string?> CopyImage { get; } = new();
-
     public BindableReactiveProperty<string?> Copyright { get; } = new();
-
     public BindableReactiveProperty<string?> Created { get; } = new();
-
     public BindableReactiveProperty<string?> CreationTime { get; } = new();
-
     public BindableReactiveProperty<string?> Credits { get; } = new();
-
     public BindableReactiveProperty<string?> Crop { get; } = new();
-
     public BindableReactiveProperty<string?> CtrlToZoom { get; } = new();
-
     public BindableReactiveProperty<string?> DarkTheme { get; } = new();
-
     public BindableReactiveProperty<string?> DateTaken { get; } = new();
-
     public BindableReactiveProperty<string?> DeleteFile { get; } = new();
-
     public BindableReactiveProperty<string?> Descending { get; } = new();
-
     public BindableReactiveProperty<string?> DigitalZoom { get; } = new();
-
     public BindableReactiveProperty<string?> DisableFadeInButtonsOnHover { get; } = new();
-
     public BindableReactiveProperty<string?> DoubleClick { get; } = new();
-
     public BindableReactiveProperty<string?> Downloading { get; } = new();
-
     public BindableReactiveProperty<string?> DuplicateFile { get; } = new();
-
+    public BindableReactiveProperty<string?> Edit { get; } = new();
     public BindableReactiveProperty<string?> Effects { get; } = new();
-
     public BindableReactiveProperty<string?> EffectsTooltip { get; } = new();
-
     public BindableReactiveProperty<string?> ExifVersion { get; } = new();
-
     public BindableReactiveProperty<string?> ExpandedGalleryItemSize { get; } = new();
-
     public BindableReactiveProperty<string?> ExposureBias { get; } = new();
-
     public BindableReactiveProperty<string?> ExposureProgram { get; } = new();
-
     public BindableReactiveProperty<string?> ExposureTime { get; } = new();
-
     public BindableReactiveProperty<string?> File { get; } = new();
-
     public BindableReactiveProperty<string?> FileAssociations { get; } = new();
-
     public BindableReactiveProperty<string?> FileCopyPath { get; } = new();
-
     public BindableReactiveProperty<string?> FileCut { get; } = new();
-
     public BindableReactiveProperty<string?> FileExtension { get; } = new();
-
     public BindableReactiveProperty<string?> FileManagement { get; } = new();
-
     public BindableReactiveProperty<string?> FileName { get; } = new();
-
     public BindableReactiveProperty<string?> FileProperties { get; } = new();
-
     public BindableReactiveProperty<string?> FileSize { get; } = new();
-
     public BindableReactiveProperty<string?> Fill { get; } = new();
-
     public BindableReactiveProperty<string?> FillSquare { get; } = new();
-
     public BindableReactiveProperty<string?> Filter { get; } = new();
-
     public BindableReactiveProperty<string?> FirstImage { get; } = new();
-
     public BindableReactiveProperty<string?> Fit { get; } = new();
-
     public BindableReactiveProperty<string?> FlashEnergy { get; } = new();
-
     public BindableReactiveProperty<string?> FlashMode { get; } = new();
-
     public BindableReactiveProperty<string?> Flip { get; } = new();
-
     public BindableReactiveProperty<string?> Fnumber { get; } = new();
-
     public BindableReactiveProperty<string?> FocalLength { get; } = new();
-
     public BindableReactiveProperty<string?> FocalLength35mm { get; } = new();
-
     public BindableReactiveProperty<string?> Folder { get; } = new();
-
     public BindableReactiveProperty<string?> Forward { get; } = new();
-
     public BindableReactiveProperty<string?> Fstop { get; } = new();
-
     public BindableReactiveProperty<string?> FullPath { get; } = new();
-
     public BindableReactiveProperty<string?> Fullscreen { get; } = new();
-
     public BindableReactiveProperty<string?> GallerySettings { get; } = new();
-
     public BindableReactiveProperty<string?> GalleryThumbnailStretch { get; } = new();
-
     public BindableReactiveProperty<string?> GeneralSettings { get; } = new();
-
     public BindableReactiveProperty<string?> GenerateThumbnails { get; } = new();
-
     public BindableReactiveProperty<string?> GithubRepo { get; } = new();
-
     public BindableReactiveProperty<string?> GlassTheme { get; } = new();
-
     public BindableReactiveProperty<string?> GoBackBy100Images { get; } = new();
-
     public BindableReactiveProperty<string?> GoBackBy10Images { get; } = new();
-
     public BindableReactiveProperty<string?> GoToImageAtSpecifiedIndex { get; } = new();
-
     public BindableReactiveProperty<string?> Height { get; } = new();
-
+    public BindableReactiveProperty<string?> Help { get; } = new();
     public BindableReactiveProperty<string?> HideBottomGallery { get; } = new();
-
     public BindableReactiveProperty<string?> HideBottomToolbar { get; } = new();
-
     public BindableReactiveProperty<string?> HideUI { get; } = new();
-
     public BindableReactiveProperty<string?> HighlightColor { get; } = new();
-
     public BindableReactiveProperty<string?> HighQuality { get; } = new();
-
     public BindableReactiveProperty<string?> Image { get; } = new();
-
     public BindableReactiveProperty<string?> ImageAliasing { get; } = new();
-
     public BindableReactiveProperty<string?> ImageControl { get; } = new();
     public BindableReactiveProperty<string?> ImageFormat { get; } = new();
     public BindableReactiveProperty<string?> ImageInfo { get; } = new();
-
     public BindableReactiveProperty<string?> Inches { get; } = new();
-
     public BindableReactiveProperty<string?> InterfaceConfiguration { get; } = new();
-
     public BindableReactiveProperty<string?> ISOSpeed { get; } = new();
-
     public BindableReactiveProperty<string?> Language { get; } = new();
-
     public BindableReactiveProperty<string?> LastAccessTime { get; } = new();
-
     public BindableReactiveProperty<string?> LastImage { get; } = new();
-
     public BindableReactiveProperty<string?> Latitude { get; } = new();
-
     public BindableReactiveProperty<string?> LensMaker { get; } = new();
-
     public BindableReactiveProperty<string?> LensModel { get; } = new();
-
     public BindableReactiveProperty<string?> Lighting { get; } = new();
-
     public BindableReactiveProperty<string?> LightSource { get; } = new();
-
     public BindableReactiveProperty<string?> LightTheme { get; } = new();
-
     public BindableReactiveProperty<string?> Longitude { get; } = new();
-
     public BindableReactiveProperty<string?> Lossless { get; } = new();
-
     public BindableReactiveProperty<string?> Lossy { get; } = new();
-
     public BindableReactiveProperty<string?> MaxAperture { get; } = new();
-
     public BindableReactiveProperty<string?> Maximize { get; } = new();
-
     public BindableReactiveProperty<string?> MeteringMode { get; } = new();
-
     public BindableReactiveProperty<string?> MiscSettings { get; } = new();
-
     public BindableReactiveProperty<string?> Modified { get; } = new();
-
     public BindableReactiveProperty<string?> Mouse { get; } = new();
-
     public BindableReactiveProperty<string?> MouseDrag { get; } = new();
-
     public BindableReactiveProperty<string?> MouseSideButtons { get; } = new();
-
     public BindableReactiveProperty<string?> MouseWheel { get; } = new();
-
     public BindableReactiveProperty<string?> MoveToRecycleBin { get; } = new();
-
     public BindableReactiveProperty<string?> MoveWindow { get; } = new();
-
+    public BindableReactiveProperty<string?> Navigate { get; } = new();
     public BindableReactiveProperty<string?> NavigateBetweenDirectories { get; } = new();
-
     public BindableReactiveProperty<string?> NavigateFileHistory { get; } = new();
-
     public BindableReactiveProperty<string?> Navigation { get; } = new();
-
     public BindableReactiveProperty<string?> NegativeColors { get; } = new();
-
     public BindableReactiveProperty<string?> NewWindow { get; } = new();
-
     public BindableReactiveProperty<string?> NextFolder { get; } = new();
-
     public BindableReactiveProperty<string?> NextImage { get; } = new();
-
     public BindableReactiveProperty<string?> NoConversion { get; } = new();
-
     public BindableReactiveProperty<string?> None { get; } = new();
-
     public BindableReactiveProperty<string?> NoResize { get; } = new();
-
     public BindableReactiveProperty<string?> Normal { get; } = new();
-
     public BindableReactiveProperty<string?> NormalWindow { get; } = new();
-
     public BindableReactiveProperty<string?> OldMovie { get; } = new();
-
     public BindableReactiveProperty<string?> Open { get; } = new();
-
     public BindableReactiveProperty<string?> OpenFileDialog { get; } = new();
-
     public BindableReactiveProperty<string?> OpenFileHistory { get; } = new();
-
     public BindableReactiveProperty<string?> OpenInSameWindow { get; } = new();
-
     public BindableReactiveProperty<string?> OpenLastFile { get; } = new();
-
     public BindableReactiveProperty<string?> OpenWith { get; } = new();
-
     public BindableReactiveProperty<string?> OptimizeImage { get; } = new();
-
     public BindableReactiveProperty<string?> Orientation { get; } = new();
-
     public BindableReactiveProperty<string?> OutputFolder { get; } = new();
-
     public BindableReactiveProperty<string?> Pan { get; } = new();
-
     public BindableReactiveProperty<string?> Paste { get; } = new();
-
     public BindableReactiveProperty<string?> PencilSketch { get; } = new();
-
     public BindableReactiveProperty<string?> Percentage { get; } = new();
-
     public BindableReactiveProperty<string?> PermanentlyDelete { get; } = new();
-
     public BindableReactiveProperty<string?> PhotometricInterpretation { get; } = new();
-
     public BindableReactiveProperty<string?> Pin { get; } = new();
-
     public BindableReactiveProperty<string?> Pinned { get; } = new();
-
     public BindableReactiveProperty<string?> Pixels { get; } = new();
-
     public BindableReactiveProperty<string?> Posterize { get; } = new();
-
     public BindableReactiveProperty<string?> PrevFolder { get; } = new();
-
     public BindableReactiveProperty<string?> PrevImage { get; } = new();
-
     public BindableReactiveProperty<string?> Print { get; } = new();
-
     public BindableReactiveProperty<string?> PrintSizeCm { get; } = new();
-
     public BindableReactiveProperty<string?> PrintSizeIn { get; } = new();
-
     public BindableReactiveProperty<string?> Quality { get; } = new();
-
     public BindableReactiveProperty<string?> Random { get; } = new();
-
     public BindableReactiveProperty<string?> ReadAbleAspectRatio { get; } = new();
-
     public BindableReactiveProperty<string?> RecentFiles { get; } = new();
-
     public BindableReactiveProperty<string?> Reload { get; } = new();
-
     public BindableReactiveProperty<string?> RemoveImageData { get; } = new();
     public BindableReactiveProperty<string?> RemoveStarRating { get; } = new();
-
     public BindableReactiveProperty<string?> RenameFile { get; } = new();
-
     public BindableReactiveProperty<string?> Reset { get; } = new();
-
     public BindableReactiveProperty<string?> ResetButtonText { get; } = new();
-
     public BindableReactiveProperty<string?> ResetZoom { get; } = new();
-
     public BindableReactiveProperty<string?> Resize { get; } = new();
-
     public BindableReactiveProperty<string?> ResizeImage { get; } = new();
-
     public BindableReactiveProperty<string?> Resolution { get; } = new();
-
     public BindableReactiveProperty<string?> ResolutionUnit { get; } = new();
-
     public BindableReactiveProperty<string?> RestoreDown { get; } = new();
-
     public BindableReactiveProperty<string?> Reverse { get; } = new();
-
     public BindableReactiveProperty<string?> RotateLeft { get; } = new();
-
     public BindableReactiveProperty<string?> RotateRight { get; } = new();
-
     public BindableReactiveProperty<string?> Saturation { get; } = new();
-
     public BindableReactiveProperty<string?> Save { get; } = new();
-
     public BindableReactiveProperty<string?> SaveAs { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollAndRotate { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollDirection { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollDisabled { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollDown { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollEnabled { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollToBottom { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollToTop { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollToZoom { get; } = new();
-
     public BindableReactiveProperty<string?> ScrollUp { get; } = new();
-
     public BindableReactiveProperty<string?> SearchSubdirectory { get; } = new();
-
     public BindableReactiveProperty<string?> SecAbbreviation { get; } = new();
-
     public BindableReactiveProperty<string?> SelectAll { get; } = new();
-
     public BindableReactiveProperty<string?> SelectFile { get; } = new();
-
     public BindableReactiveProperty<string?> SelectFileTypesToAssociate { get; } = new();
-
     public BindableReactiveProperty<string?> SelectGalleryThumb { get; } = new();
-
     public BindableReactiveProperty<string?> SetAsLockScreenImage { get; } = new();
-
     public BindableReactiveProperty<string?> SetAsWallpaper { get; } = new();
-
     public BindableReactiveProperty<string?> SetStarRating { get; } = new();
-
     public BindableReactiveProperty<string?> Settings { get; } = new();
-
     public BindableReactiveProperty<string?> Sharpness { get; } = new();
-
     public BindableReactiveProperty<string?> ShowAllSettingsWindow { get; } = new();
-
     public BindableReactiveProperty<string?> ShowBottomGallery { get; } = new();
-
     public BindableReactiveProperty<string?> ShowBottomGalleryWhenUiIsHidden { get; } = new();
-
     public BindableReactiveProperty<string?> ShowBottomToolbar { get; } = new();
-
     public BindableReactiveProperty<string?> ShowConfirmationDialogWhenMovingFileToRecycleBin { get; } = new();
-
     public BindableReactiveProperty<string?> ShowConfirmationDialogWhenPermanentlyDeletingFile { get; } = new();
-
     public BindableReactiveProperty<string?> ShowConfirmationOnEsc { get; } = new();
-
     public BindableReactiveProperty<string?> ShowFadeInButtonsOnHover { get; } = new();
-
     public BindableReactiveProperty<string?> ShowFileSavingDialog { get; } = new();
-
     public BindableReactiveProperty<string?> ShowImageGallery { get; } = new();
-
     public BindableReactiveProperty<string?> ShowInFolder { get; } = new();
-
     public BindableReactiveProperty<string?> ShowUI { get; } = new();
-
     public BindableReactiveProperty<string?> SideBySide { get; } = new();
-
     public BindableReactiveProperty<string?> SideBySideTooltip { get; } = new();
-
     public BindableReactiveProperty<string?> SizeMp { get; } = new();
-
     public BindableReactiveProperty<string?> SizeTooltip { get; } = new();
-
     public BindableReactiveProperty<string?> Slideshow { get; } = new();
-
     public BindableReactiveProperty<string?> Software { get; } = new();
-
     public BindableReactiveProperty<string?> Solarize { get; } = new();
-
     public BindableReactiveProperty<string?> SortFilesBy { get; } = new();
-
     public BindableReactiveProperty<string?> SourceFolder { get; } = new();
-
     public BindableReactiveProperty<string?> Square { get; } = new();
-
     public BindableReactiveProperty<string?> Start { get; } = new();
-
     public BindableReactiveProperty<string?> StayCentered { get; } = new();
-
     public BindableReactiveProperty<string?> StayTopMost { get; } = new();
-
     public BindableReactiveProperty<string?> Stretch { get; } = new();
-
     public BindableReactiveProperty<string?> Subject { get; } = new();
-
     public BindableReactiveProperty<string?> Theme { get; } = new();
-
     public BindableReactiveProperty<string?> Thumbnail { get; } = new();
-
     public BindableReactiveProperty<string?> Tile { get; } = new();
-
     public BindableReactiveProperty<string?> Title { get; } = new();
-
     public BindableReactiveProperty<string?> ToggleFileHistory { get; } = new();
     public BindableReactiveProperty<string?> ToggleFullscreen { get; } = new();
-
     public BindableReactiveProperty<string?> ToggleLooping { get; } = new();
-
     public BindableReactiveProperty<string?> ToggleScroll { get; } = new();
-
     public BindableReactiveProperty<string?> ToggleTaskbarProgress { get; } = new();
-
     public BindableReactiveProperty<string?> Unassociate { get; } = new();
-
     public BindableReactiveProperty<string?> UnFlip { get; } = new();
-
     public BindableReactiveProperty<string?> Uniform { get; } = new();
-
     public BindableReactiveProperty<string?> UniformToFill { get; } = new();
-
     public BindableReactiveProperty<string?> Unpin { get; } = new();
-
     public BindableReactiveProperty<string?> UnselectAll { get; } = new();
-
     public BindableReactiveProperty<string?> UsingMouse { get; } = new();
-
     public BindableReactiveProperty<string?> UsingTouchpad { get; } = new();
-
     public BindableReactiveProperty<string?> Version { get; } = new();
-
+    public BindableReactiveProperty<string?> View { get; } = new();
     public BindableReactiveProperty<string?> ViewLicenseFile { get; } = new();
 
     public BindableReactiveProperty<string?> WhiteBalance { get; } = new();

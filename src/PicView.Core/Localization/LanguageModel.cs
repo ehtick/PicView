@@ -1,10 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-// ReSharper disable PropertyCanBeMadeInitOnly.Global
+﻿// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PicView.Core.Localization;
 
-[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class LanguageModel
 {
     public string? _1Star { get; set; }
@@ -116,6 +113,7 @@ public class LanguageModel
     public string? DragImage { get; set; }
     public string? DropToLoad { get; set; }
     public string? DuplicateFile { get; set; }
+    public string? Edit { get; set; }
     public string? Effects { get; set; }
     public string? EffectsTooltip { get; set; }
     public string? Enter { get; set; }
@@ -177,6 +175,7 @@ public class LanguageModel
     public string? Graphics { get; set; }
     public string? Hard { get; set; }
     public string? Height { get; set; }
+    public string? Help { get; set; }
     public string? HideBottomGallery { get; set; }
     public string? HideBottomToolbar { get; set; }
     public string? HideUI { get; set; }
@@ -230,6 +229,7 @@ public class LanguageModel
     public string? MouseWheel { get; set; }
     public string? MoveToRecycleBin { get; set; }
     public string? MoveWindow { get; set; }
+    public string? Navigate { get; set; }
     public string? NavigateBetweenDirectories { get; set; }
     public string? NavigateFileHistory { get; set; }
     public string? Navigation { get; set; }
@@ -395,6 +395,7 @@ public class LanguageModel
     public string? UsingMouse { get; set; }
     public string? UsingTouchpad { get; set; }
     public string? Version { get; set; }
+    public string? View { get; set; }
     public string? ViewLicenseFile { get; set; }
     public string? WhiteBalance { get; set; }
     public string? WhiteFluorescent { get; set; }
