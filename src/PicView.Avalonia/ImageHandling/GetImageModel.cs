@@ -1,5 +1,6 @@
 using Avalonia.Media.Imaging;
 using ImageMagick;
+using PicView.Avalonia.Svg;
 using PicView.Core.DebugTools;
 using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
@@ -87,7 +88,7 @@ public static class GetImageModel
 
                 case MagickFormat.Svg:
                 case MagickFormat.Svgz:
-                    ProcessSvg(fileInfo, imageModel, magickImage);
+                    await ProcessSvg(fileInfo, imageModel, magickImage);
                     break;
                 
                 case MagickFormat.Arw:
@@ -162,12 +163,13 @@ public static class GetImageModel
         SetBitmapProperties(bitmap, imageModel, format);
     }
 
-    private static void ProcessSvg(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
+    private static async Task ProcessSvg(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
+        var svgData = await SvgLoader.GetContentFromSvgFileAsync(fileInfo.FullName, false);
         imageModel.PixelWidth = (int)magickImage.Width;
         imageModel.PixelHeight = (int)magickImage.Height;
         imageModel.ImageType = ImageType.Svg;
-        imageModel.Image = fileInfo.FullName;
+        imageModel.Image = svgData;
         imageModel.DpiX = (ushort)magickImage.Density.X;
         imageModel.DpiY = (ushort)magickImage.Density.Y;;
     }

@@ -156,7 +156,7 @@ public class PicBox : Control, IDisposable
             return;
         }
 
-        var svgSource = SvgSource.Load(svg);
+        var svgSource = SvgSource.LoadFromSvg(svg);
         Source = new SvgImage { Source = svgSource };
     }
 
@@ -214,7 +214,7 @@ public class PicBox : Control, IDisposable
 
     private void RenderSvgSource(DrawingContext context, string svg)
     {
-        var svgSource = SvgSource.Load(svg);
+        var svgSource = SvgSource.LoadFromSvg(svg);
         var svgImage = new SvgImage { Source = svgSource };
         RenderBasedOnSettings(context, svgImage);
     }
