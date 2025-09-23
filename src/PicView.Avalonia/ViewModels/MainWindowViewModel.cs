@@ -13,6 +13,8 @@ namespace PicView.Avalonia.ViewModels;
 
 public class MainWindowViewModel : IDisposable
 {
+    public TopTitlebarViewModel? TopTitlebarViewModel { get; set; }
+    
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }
     

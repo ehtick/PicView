@@ -2,12 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Avalonia.Crop;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Conversion;
+using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -69,65 +68,53 @@ public partial class WinTitleBar : UserControl
 
     private void InitializeEventHandlers()
     {
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+        
         PointerPressed += (_, e) => TryDragWindow(e);
         PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
-        MenuButton.Click += (_, _) => { ToggleMenu(); };
         MainMenu.Closed += (_, _) => { CloseMenu(); };
+
+        Observable.EveryValueChanged(vm.MainWindow.TopTitlebarViewModel.IsMainMenuVisible, x => x.Value,
+                UIHelper.GetFrameProvider)
+            .Subscribe(isVisible =>
+            {
+                if (isVisible)
+                {
+                    MainMenu.Open();
+                    FileMenuItem.Open();
+
+                    // Overflow buttons if the window is too small
+                    if (vm.MainWindow.TitleMaxWidth.CurrentValue <
+                        vm.PlatformWindowService.CombinedTitleButtonsWidth * 2)
+                    {
+                        vm.MainWindow.TopTitlebarViewModel.IsBtnPanelVisible.Value = false;
+                    }
+                    else
+                    {
+                        vm.MainWindow.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
+                    }
+                }
+                else
+                {
+                    MainMenu.Close();
+                    vm.MainWindow.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
+                }
+            });
     }
 
-    private void ToggleMenu()
+    private void CloseMenu()
     {
-        if (MainMenu.IsOpen)
-        {
-            CloseMenu();
-        }
-        else
-        {
-            OpenMenu();
-        }
-    }
-
-    private void OpenMenu()
-    {
-        MainMenu.IsVisible = true;
-        MainMenu.Open();
-        EditableTitlebar.IsVisible = false;
-        GalleryButton.IsVisible = false;
-        MenuButton.IsVisible = false;
+        MainMenu.Close();
 
         if (DataContext is not MainViewModel vm)
         {
             return;
         }
 
-        // Overflow buttons if the window is too small
-        if (vm.MainWindow.TitleMaxWidth.CurrentValue < vm.PlatformWindowService.CombinedTitleButtonsWidth * 2)
-        {
-            WinBtnPanel.IsVisible = false;
-        }
-        else
-        {
-            WinBtnPanel.IsVisible = true;
-        }
-
-        FileMenuItem.Open();
-
-        Task.Run(() =>
-        {
-            CropFunctions.DetermineIfShouldBeEnabled(vm);
-            vm.PicViewer.ShouldOptimizeImageBeEnabled.Value =
-                ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
-        });
-    }
-
-    private void CloseMenu()
-    {
-        MainMenu.Close();
-        MainMenu.IsVisible = false;
-        EditableTitlebar.IsVisible = true;
-        GalleryButton.IsVisible = true;
-        MenuButton.IsVisible = true;
-        WinBtnPanel.IsVisible = true;
+        vm.MainWindow.TopTitlebarViewModel.CloseMenu();
     }
 
     private void TryDragWindow(PointerPressedEventArgs e)

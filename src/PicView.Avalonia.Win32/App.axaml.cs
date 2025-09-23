@@ -56,7 +56,13 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             var settingsExists= await LoadSettingsAsync().ConfigureAwait(false);
 
             TranslationManager.Init();
-            _vm = new MainViewModel(this, this);
+            _vm = new MainViewModel(this, this)
+            {
+                MainWindow =
+                {
+                    TopTitlebarViewModel = new TopTitlebarViewModel()
+                }
+            };
 
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

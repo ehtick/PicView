@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
@@ -101,6 +100,13 @@ public static class MainKeyboardShortcuts
     /// <param name="e">The key event arguments.</param>
     public static void MainWindow_KeysUp(KeyEventArgs e)
     {
+        if (e.Key is Key.LeftAlt or Key.RightAlt)
+        {
+            if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+            {
+                vm.MainWindow.TopTitlebarViewModel?.OpenMenu();
+            }
+        }
         UpdateModifierState(e.Key, false);
         Reset();
     }

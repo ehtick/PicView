@@ -40,12 +40,14 @@
             <customControls:IconButton
                 Background="{DynamicResource WindowButtonBackgroundColor}"
                 Classes="hover"
+                Command="{CompiledBinding MainWindow.TopTitlebarViewModel.OpenMenuCommand}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
                 Icon="{StaticResource MenuImage}"
                 IconHeight="16"
                 IconWidth="16"
                 IsRepeatEnabled="False"
+                IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsMenuButtonVisible.Value}"
                 Margin="0"
                 Width="30"
                 x:Name="MenuButton" />
@@ -64,11 +66,13 @@
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
+                IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsGalleryButtonVisible.Value}"
                 Width="30"
                 x:Name="GalleryButton" />
 
             <StackPanel
                 DockPanel.Dock="Right"
+                IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsBtnPanelVisible.Value}"
                 Orientation="Horizontal"
                 x:Name="WinBtnPanel">
 
@@ -134,7 +138,6 @@
                     Width="30"
                     x:Name="CloseButton" />
 
-
             </StackPanel>
 
             <uc:EditableTitlebar
@@ -142,6 +145,7 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,0,1"
                 Foreground="{DynamicResource MainTextColor}"
+                IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsEditableTitlebarVisible.Value}"
                 x:Name="EditableTitlebar" />
 
             <Menu
@@ -149,7 +153,7 @@
                 Foreground="{DynamicResource MainTextColor}"
                 Height="{CompiledBinding MainWindow.TitlebarHeight.Value,
                                          Mode=OneWay}"
-                IsVisible="False"
+                IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsMainMenuVisible.Value}"
                 ZIndex="9"
                 x:Name="MainMenu">
                 <MenuItem
@@ -444,8 +448,7 @@
                         Command="{CompiledBinding Tools.ToggleBottomNavBarCommand}"
                         Header="{CompiledBinding Translation.ShowBottomToolbar.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding MainWindow.IsBottomToolbarShown.Value}"
-                        ToggleType="CheckBox">
+                        IsVisible="{CompiledBinding !MainWindow.IsBottomToolbarShown.Value}">
                         <MenuItem.Icon>
                             <Image
                                 Height="12"
@@ -457,8 +460,7 @@
                         Command="{CompiledBinding Tools.ToggleBottomNavBarCommand}"
                         Header="{CompiledBinding Translation.HideBottomToolbar.Value,
                                                  Mode=OneWay}"
-                        IsVisible="{CompiledBinding MainWindow.IsBottomToolbarShown.Value}"
-                        ToggleType="CheckBox">
+                        IsVisible="{CompiledBinding MainWindow.IsBottomToolbarShown.Value}">
                         <MenuItem.Icon>
                             <Image
                                 Height="12"
