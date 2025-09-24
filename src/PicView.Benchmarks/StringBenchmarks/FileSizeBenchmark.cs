@@ -89,6 +89,15 @@ public class FileSizeBenchmark
         }
     }
 
+    [Benchmark]
+    public void GetReadableFileSize_Optimized()
+    {
+        for (var i = 0; i < MaxSize; i++)
+        {
+            GetReadableFileSize_Optimized(_fileInfos[i].Length);
+        }
+    }
+
     public static string GetReadableFileSize_BitShift(long fileSize)
     {
         // Handle the zero-byte case explicitly
@@ -133,7 +142,7 @@ public class FileSizeBenchmark
         if (magnitude == 0)
         {
             // Format bytes directly into the buffer.
-            fileSize.TryFormat(buffer, out charsWritten, provider: CultureInfo.InvariantCulture);
+            fileSize.TryFormat(buffer, out charsWritten, provider: CultureInfo.CurrentCulture);
             buffer[charsWritten++] = ' ';
             buffer[charsWritten++] = 'B';
         }
@@ -154,7 +163,7 @@ public class FileSizeBenchmark
             // Get the first two decimal places by scaling the remainder.
             var fraction = fileSize % divisor * 100 / divisor;
 
-            whole.TryFormat(buffer, out charsWritten, provider: CultureInfo.InvariantCulture);
+            whole.TryFormat(buffer, out charsWritten, provider: CultureInfo.CurrentCulture);
 
             // Only add the decimal part if it's not zero.
             if (fraction > 0)
@@ -166,18 +175,86 @@ public class FileSizeBenchmark
                     fraction /= 10;
                 }
 
-                fraction.TryFormat(buffer[charsWritten..], out var fracWritten, provider: CultureInfo.InvariantCulture);
+                fraction.TryFormat(buffer[charsWritten..], out var fracWritten, provider: CultureInfo.CurrentCulture);
                 charsWritten += fracWritten;
             }
 
-            // 3. Manually append the space and the suffix.
+            // Manually append the space and the suffix.
             buffer[charsWritten++] = ' ';
             var suffix = Suffixes[magnitude];
             suffix.AsSpan().CopyTo(buffer[charsWritten..]);
             charsWritten += suffix.Length;
         }
 
-        // 4. Create a single string of the exact required length from our buffer.
+        // Create a single string of the exact required length from our buffer.
+        return new string(buffer[..charsWritten]);
+    }
+
+    private static ReadOnlySpan<char> SpanSuffixes => ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
+
+    public static string GetReadableFileSize_Optimized(long fileSize)
+    {
+        if (fileSize <= 0)
+        {
+            return "0 B";
+        }
+
+        var magnitude = BitOperations.Log2((ulong)fileSize) / 10;
+
+        return magnitude == 0 ? FormatBytes(fileSize) : FormatWithSuffix(fileSize, magnitude);
+    }
+
+    private static string FormatBytes(long bytes)
+    {
+        Span<char> buffer = stackalloc char[16];
+        if (!bytes.TryFormat(buffer, out var charsWritten))
+        {
+            return "0 B";
+        }
+
+        buffer[charsWritten++] = ' ';
+        buffer[charsWritten++] = 'B';
+        return new string(buffer[..charsWritten]);
+    }
+
+    private static string FormatWithSuffix(long fileSize, int magnitude)
+    {
+        Span<char> buffer = stackalloc char[16];
+
+        var divisor = 1L << (magnitude * 10);
+        var whole = fileSize / divisor;
+        var fraction = fileSize % divisor;
+
+        // Format whole part
+        whole.TryFormat(buffer, out var charsWritten, provider: CultureInfo.CurrentCulture);
+
+        // Handle fractional part only if needed
+        if (fraction > 0 && magnitude > 0) // Only show decimals for non-byte sizes
+        {
+            // Calculate two decimal places efficiently
+            var decimalValue = fraction * 100 / divisor;
+            if (decimalValue > 0)
+            {
+                buffer[charsWritten++] = '.';
+
+                // Format first decimal digit
+                var firstDigit = decimalValue / 10;
+                buffer[charsWritten++] = (char)('0' + firstDigit);
+
+                // Format second digit only if non-zero
+                var secondDigit = decimalValue % 10;
+                if (secondDigit > 0)
+                {
+                    buffer[charsWritten++] = (char)('0' + secondDigit);
+                }
+            }
+        }
+
+        // Append suffix
+        buffer[charsWritten++] = ' ';
+        buffer[charsWritten++] = SpanSuffixes[magnitude];
+        buffer[charsWritten++] = 'B';
+
         return new string(buffer[..charsWritten]);
     }
 }
@@ -195,8 +272,9 @@ AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores
 
 | Method                         | Mean       | Error   | StdDev  | Gen0   | Allocated |
 |------------------------------- |-----------:|--------:|--------:|-------:|----------:|
-| GetReadableFileSize            | 1,429.9 ns | 3.36 ns | 2.62 ns | 0.0191 |     960 B |
-| GetReadableFileSize_BitShift   | 1,371.5 ns | 3.66 ns | 3.25 ns | 0.0191 |     960 B |
-| GetReadableFileSize_StackAlloc |   210.1 ns | 0.51 ns | 0.43 ns | 0.0095 |     480 B |
+| GetReadableFileSize            | 1,434.0 ns | 2.84 ns | 2.52 ns | 0.0191 |     960 B |                                                                                                                                                                    
+| GetReadableFileSize_BitShift   | 1,364.1 ns | 2.96 ns | 2.62 ns | 0.0191 |     960 B |
+| GetReadableFileSize_StackAlloc |   213.1 ns | 0.65 ns | 0.61 ns | 0.0095 |     480 B |
+| GetReadableFileSize_Optimized  |   175.0 ns | 0.42 ns | 0.39 ns | 0.0095 |     480 B |
 
 */
