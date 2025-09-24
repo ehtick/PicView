@@ -17,62 +17,15 @@ public static partial class SvgLoader
 
     /// <summary>
     /// Preprocesses SVG string data from a file.
-    /// It can resize the SVG to fit the screen or convert non-pixel units to pixels.
-    /// It also replaces the "currentColor" keyword with the application's main text color.
+    /// It converts non-pixel units to pixels and replaces the "currentColor" keyword with the application's main text color.
     /// </summary>
     /// <param name="filePath">The path to the SVG file.</param>
-    /// <param name="useScreenSize">If true, sets the SVG width and height to the screen's working area. If false, converts units like 'em', 'pt', etc., to pixels.</param>
     /// <returns>A preprocessed SVG string.</returns>
-    public static async Task<string> GetContentFromSvgFileAsync(string filePath, bool useScreenSize)
+    public static async Task<string> GetContentFromSvgFileAsync(string filePath)
     {
         var svgMarkup = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
 
-        if (useScreenSize)
-        {
-            var maxWidth = ScreenHelper.ScreenSize.WorkingAreaWidth;
-            var maxHeight = ScreenHelper.ScreenSize.WorkingAreaHeight;
-            var viewBoxMatch = ViewBoxRegex().Match(svgMarkup);
-
-            if (viewBoxMatch.Success &&
-                double.TryParse(viewBoxMatch.Groups[3].Value, CultureInfo.InvariantCulture, out var viewBoxWidth) &&
-                double.TryParse(viewBoxMatch.Groups[4].Value, CultureInfo.InvariantCulture, out var viewBoxHeight) &&
-                viewBoxHeight > 0)
-            {
-                // We have a valid viewBox, so we can calculate the correct aspect ratio
-                var svgAspectRatio = viewBoxWidth / viewBoxHeight;
-                var screenAspectRatio = maxWidth / maxHeight;
-
-                double newWidth;
-                double newHeight;
-
-                if (svgAspectRatio > screenAspectRatio)
-                {
-                    // SVG is wider than the available area; width is the limiting factor
-                    newWidth = maxWidth;
-                    newHeight = maxWidth / svgAspectRatio;
-                }
-                else
-                {
-                    // SVG is taller than or same as the available area; height is the limiting factor
-                    newHeight = maxHeight;
-                    newWidth = maxHeight * svgAspectRatio;
-                }
-
-                svgMarkup = SetSvgAttribute(svgMarkup, "width", newWidth.ToString("F2", CultureInfo.InvariantCulture));
-                svgMarkup = SetSvgAttribute(svgMarkup, "height",
-                    newHeight.ToString("F2", CultureInfo.InvariantCulture));
-            }
-            else
-            {
-                // Fallback for SVGs without a valid viewBox: use the original behavior
-                svgMarkup = SetSvgAttribute(svgMarkup, "width", maxWidth.ToString(CultureInfo.InvariantCulture));
-                svgMarkup = SetSvgAttribute(svgMarkup, "height", maxHeight.ToString(CultureInfo.InvariantCulture));
-            }
-        }
-        else
-        {
-            svgMarkup = ConvertUnitsToPixels(svgMarkup);
-        }
+        svgMarkup = ConvertUnitsToPixels(svgMarkup);
 
         if (!svgMarkup.Contains(CurrentColorKeyword, StringComparison.OrdinalIgnoreCase))
         {
@@ -125,37 +78,9 @@ public static partial class SvgLoader
         });
     }
 
-    /// <summary>
-    /// Sets an attribute on the root <svg> element.
-    /// It replaces the attribute if it exists or adds it if it doesn't.
-    /// </summary>
-    private static string SetSvgAttribute(string svgContent, string attributeName, string value)
-    {
-        // Regex to find and replace an existing attribute
-        var attributeRegex =
-            new Regex($"""(<\s*svg[^>]*?)(\s*{attributeName}\s*=\s*"[^"]*")""", RegexOptions.IgnoreCase);
-        if (attributeRegex.IsMatch(svgContent))
-        {
-            // Attribute exists, so replace its value
-            return attributeRegex.Replace(svgContent, $"$1 {attributeName}=\"{value}\"", 1);
-        }
-
-        // Attribute does not exist, so add it to the <svg> tag
-        var svgTagRegex = SvgOpenTagRegex();
-        return svgTagRegex.Replace(svgContent, $"<svg {attributeName}=\"{value}\"", 1);
-    }
-
-    [GeneratedRegex(@"<\s*svg", RegexOptions.IgnoreCase, "en-US")]
-    private static partial Regex SvgOpenTagRegex();
-
     [GeneratedRegex(@"(-?\d*\.?\d+)(em|rem|pt|pc|in|cm|mm)", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex UnitWithNumberRegex();
 
     [GeneratedRegex(CurrentColorKeyword, RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex CurrentColorRegex();
-
-    [GeneratedRegex(@"viewBox\s*=\s*""(-?\d*\.?\d+)\s+(-?\d*\.?\d+)\s+([\d\.]+)\s+([\d\.]+)""", RegexOptions.IgnoreCase,
-        "en-US")]
-    private static partial Regex ViewBoxRegex();
-
 }

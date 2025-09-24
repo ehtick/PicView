@@ -165,7 +165,7 @@ public static class GetImageModel
 
     private static async Task ProcessSvg(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
     {
-        var svgData = await SvgLoader.GetContentFromSvgFileAsync(fileInfo.FullName, false);
+        var svgData = await SvgLoader.GetContentFromSvgFileAsync(fileInfo.FullName);
         imageModel.PixelWidth = (int)magickImage.Width;
         imageModel.PixelHeight = (int)magickImage.Height;
         imageModel.ImageType = ImageType.Svg;

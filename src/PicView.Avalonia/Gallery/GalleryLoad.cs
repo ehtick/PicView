@@ -4,6 +4,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
+using PicView.Avalonia.Svg;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
@@ -172,13 +173,26 @@ public static class GalleryLoad
         }
 
         var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(fileInfo);
+        string? svgData = null;
+        if (isSvg)
+        {
+            svgData = await SvgLoader.GetContentFromSvgFileAsync(fileInfo.FullName);
+        }
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             UpdateGalleryItem(vm, fileInfo, thumbData, galleryItem);
             if (isSvg)
             {
-                galleryItem.GalleryImage.Source = new SvgImage { Source = SvgSource.Load(fileInfo.FullName) };
+                try
+                {
+                    galleryItem.GalleryImage.Source = new SvgImage { Source = SvgSource.LoadFromSvg(svgData) };
+                }
+                catch (Exception e)
+                {
+                    DebugHelper.LogDebug(nameof(GalleryLoad), nameof(LoadThumbnailAsync), e);
+                    galleryItem.GalleryImage.Source = null;
+                }
             }
             else
             {
