@@ -1,21 +1,35 @@
 ﻿<Window
-    BorderBrush="{DynamicResource MainBorderColor}"
-    BorderThickness="1"
     CanResize="False"
+    Focusable="False"
+    IsHitTestVisible="False"
+    ShowInTaskbar="False"
+    SizeToContent="WidthAndHeight"
     SystemDecorations="None"
     Title="ZoomPreviewWindow"
     Topmost="True"
     x:Class="PicView.Avalonia.Views.UC.ZoomPreviewWindow"
+    x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Panel>
-        <Image Stretch="Uniform" x:Name="OverlayImage" />
-        <Canvas
-            IsHitTestVisible="False"
-            PointerCaptureLost="OverlayCanvas_OnPointerCaptureLost"
-            PointerMoved="OverlayCanvas_OnPointerMoved"
-            PointerPressed="OverlayCanvas_OnPointerPressed"
-            PointerReleased="OverlayCanvas_OnPointerReleased"
-            x:Name="OverlayCanvas" />
-    </Panel>
+    <Border
+        Background="{DynamicResource MainBackgroundColor}"
+        BorderBrush="{DynamicResource MainBorderColor}"
+        BorderThickness="1">
+        <Panel>
+            <Image
+                Height="150"
+                Source="{CompiledBinding PicViewer.ImageSource.Value,
+                                         Mode=OneWay}"
+                Stretch="Uniform"
+                x:Name="OverlayImage" />
+            <Canvas IsHitTestVisible="False" x:Name="OverlayCanvas">
+                <Rectangle
+                    Fill="Transparent"
+                    Stroke="{DynamicResource AccentColor}"
+                    StrokeThickness="2"
+                    x:Name="ViewportBorder" />
+            </Canvas>
+        </Panel>
+    </Border>
 </Window>

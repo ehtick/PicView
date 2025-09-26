@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.Views.UC;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -29,6 +30,8 @@ public class ZoomPanControl : Decorator
 
     public static readonly StyledProperty<bool> EnableDeadzoneProperty =
         AvaloniaProperty.Register<ZoomPanControl, bool>(nameof(EnableDeadzone), true);
+
+    private ZoomPreviewWindow? _previewWindow;
 
     // Private fields for panning
     private bool _isPanning;
@@ -92,13 +95,54 @@ public class ZoomPanControl : Decorator
         // When the child changes, ensure transforms are applied
         ChildProperty.Changed.ToObservable().Skip(1).Subscribe(_ => UpdateChildTransform());
 
-        // When transform properties change, update RenderTransform
-        ScaleProperty.Changed.ToObservable().Skip(1).Subscribe(_ => UpdateChildTransform());
-        RotationProperty.Changed.ToObservable().Subscribe(_ => UpdateChildTransform());
-        TranslateXProperty.Changed.ToObservable().Skip(1).Subscribe(_ => UpdateChildTransform());
-        TranslateYProperty.Changed.ToObservable().Skip(1).Subscribe(_ => UpdateChildTransform());
+        _previewWindow = new ZoomPreviewWindow { DataContext = DataContext };
+        _previewWindow.SetZoomPanControl(this);
+
+        ScaleProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
+        {
+            UpdateChildTransform();
+            UpdatePreviewWindow();
+        });
+        TranslateXProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
+        {
+            UpdateChildTransform();
+            UpdatePreviewWindow();
+        });
+        TranslateYProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
+        {
+            UpdateChildTransform();
+            UpdatePreviewWindow();
+        });
     }
 
+    private void UpdatePreviewWindow()
+    {
+        if (_previewWindow == null)
+        {
+            return;
+        }
+
+        _previewWindow.UpdatePosition();
+
+        // Update visibility based on zoom state
+        _previewWindow.UpdateVisibility();
+
+        // Update viewport rectangle
+        _previewWindow.UpdateViewportRect();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+
+        // Show preview window when attached
+        if (_previewWindow != null && !_previewWindow.IsVisible)
+        {
+            _previewWindow.Show();
+            UpdatePreviewWindow();
+        }
+    }
+    
     protected override Size ArrangeOverride(Size finalSize)
     {
         // After layout, ensure transforms are constrained
@@ -429,6 +473,9 @@ public class ZoomPanControl : Decorator
         Child.RenderTransformOrigin = new RelativePoint(0, 0, RelativeUnit.Absolute);
 
         ZoomLevel = TranslateX;
+
+        // Update preview window after transform change
+        UpdatePreviewWindow();
     }
 
     /// <summary>
