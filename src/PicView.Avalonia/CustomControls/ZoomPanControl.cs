@@ -622,4 +622,16 @@ public class ZoomPanControl : Decorator
             return new Point(rx + TranslateX, ry + TranslateY);
         }
     }
+
+    // <summary>
+    /// Sets translation values and ensures they are constrained to bounds.
+    /// This method should be used by external controls (like ZoomPreviewer) to ensure consistent behavior.
+    /// </summary>
+    public void SetConstrainedTranslation(double translateX, double translateY)
+    {
+        TranslateX = translateX;
+        TranslateY = translateY;
+        ConstrainTranslationToBounds();
+        UpdateChildTransform();
+    }
 }

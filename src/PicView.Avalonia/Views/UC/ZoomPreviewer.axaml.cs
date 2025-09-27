@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
@@ -9,20 +10,140 @@ namespace PicView.Avalonia.Views.UC;
 
 public partial class ZoomPreviewer : UserControl
 {
-    private ZoomPanControl? _zoomPanControl;
     private Control? _childControl;
     private Timer? _hideTimer;
+
+    // Dragging state
+    private bool _isDragging;
+    private ZoomPanControl? _zoomPanControl;
 
     public ZoomPreviewer()
     {
         InitializeComponent();
-        Focusable = false;
+
+        // Add pointer event handlers for dragging
+        AddHandler(PointerPressedEvent, OnPointerPressed, RoutingStrategies.Tunnel);
+        AddHandler(PointerMovedEvent, OnPointerMoved, RoutingStrategies.Tunnel);
+        AddHandler(PointerReleasedEvent, OnPointerReleased, RoutingStrategies.Tunnel);
     }
 
     protected override void OnGotFocus(GotFocusEventArgs e)
     {
         // Don't call base to prevent focus
         e.Handled = true;
+    }
+
+    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (_zoomPanControl == null || !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            return;
+        }
+
+        var position = e.GetPosition(OverlayCanvas);
+
+        // Check if the click is within the viewport border area (with some tolerance)
+        if (!IsPointInViewportBorder(position))
+        {
+            return;
+        }
+
+        _isDragging = true;
+
+        e.Pointer.Capture(this);
+        e.Handled = true;
+
+        // Reset hide timer while dragging
+        _hideTimer?.Dispose();
+    }
+
+    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (!_isDragging || _zoomPanControl == null || _childControl == null)
+        {
+            return;
+        }
+
+        var currentPosition = e.GetPosition(OverlayCanvas);
+
+        // Convert preview window position to viewport center position in main control
+        var targetViewportCenter = ConvertPreviewPositionToMainControlPosition(currentPosition);
+
+        // Calculate what the translation should be to center the viewport at this position
+        var controlBounds = _zoomPanControl.Bounds;
+        var scale = _zoomPanControl.Scale;
+
+        // Calculate the translation needed to center the viewport at the target position
+        var newTranslateX = controlBounds.Width / 2.0 - targetViewportCenter.X * scale;
+        var newTranslateY = controlBounds.Height / 2.0 - targetViewportCenter.Y * scale;
+
+        // Use the ZoomPanControl's constrained translation method
+        _zoomPanControl.SetConstrainedTranslation(newTranslateX, newTranslateY);
+
+        e.Handled = true;
+    }
+
+    private Point ConvertPreviewPositionToMainControlPosition(Point previewPosition)
+    {
+        if (_zoomPanControl == null || _childControl == null)
+        {
+            return new Point(0, 0);
+        }
+
+        var previewBounds = OverlayCanvas.Bounds;
+        var childBounds = _childControl.Bounds;
+
+        if (previewBounds.Width == 0 || previewBounds.Height == 0 ||
+            childBounds.Width == 0 || childBounds.Height == 0)
+        {
+            return new Point(0, 0);
+        }
+
+        // Convert preview position to normalized coordinates (0-1)
+        var normalizedX = previewPosition.X / previewBounds.Width;
+        var normalizedY = previewPosition.Y / previewBounds.Height;
+
+        // Convert to child coordinates
+        var childX = normalizedX * childBounds.Width;
+        var childY = normalizedY * childBounds.Height;
+
+        return new Point(childX, childY);
+    }
+
+    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (!_isDragging)
+        {
+            return;
+        }
+
+        _isDragging = false;
+        e.Pointer.Capture(null);
+        e.Handled = true;
+
+        // Restart the hide timer
+        RestartHideTimer();
+    }
+
+    private bool IsPointInViewportBorder(Point point)
+    {
+        var borderRect = new Rect(
+            Canvas.GetLeft(ViewportBorder),
+            Canvas.GetTop(ViewportBorder),
+            ViewportBorder.Width,
+            ViewportBorder.Height
+        );
+
+        // Add some tolerance around the border for easier clicking
+        const double tolerance = 10;
+        var expandedRect = new Rect(
+            borderRect.X - tolerance,
+            borderRect.Y - tolerance,
+            borderRect.Width + tolerance * 2,
+            borderRect.Height + tolerance * 2
+        );
+
+        return expandedRect.Contains(point);
     }
 
     public void SetZoomPanControl(ZoomPanControl zoomPanControl)
@@ -50,10 +171,27 @@ public partial class ZoomPreviewer : UserControl
             UpdateViewportRect();
         }
 
-        // Reset the timer to hide the window after 1.5 seconds
+        // Don't start hide timer if we're currently dragging
+        if (!_isDragging)
+        {
+            RestartHideTimer();
+        }
+    }
+
+    private void RestartHideTimer()
+    {
         _hideTimer?.Dispose();
-        _hideTimer = new Timer(_ => { Dispatcher.UIThread.Post(() => IsVisible = false); }, null,
-            TimeSpan.FromSeconds(1.5), Timeout.InfiniteTimeSpan);
+        _hideTimer = new Timer(_ =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                // Only hide if we're not dragging
+                if (!_isDragging)
+                {
+                    IsVisible = false;
+                }
+            });
+        }, null, TimeSpan.FromSeconds(1.5), Timeout.InfiniteTimeSpan);
     }
 
     internal void UpdateViewportRect()
@@ -99,15 +237,39 @@ public partial class ZoomPreviewer : UserControl
         var visibleRight = Math.Min(1, (controlBounds.Width - translateX) / scale / childBounds.Width);
         var visibleBottom = Math.Min(1, (controlBounds.Height - translateY) / scale / childBounds.Height);
 
+        // Ensure valid bounds - prevent negative dimensions
+        visibleLeft = Math.Clamp(visibleLeft, 0, 1);
+        visibleTop = Math.Clamp(visibleTop, 0, 1);
+        visibleRight = Math.Clamp(visibleRight, 0, 1);
+        visibleBottom = Math.Clamp(visibleBottom, 0, 1);
+
+        // Ensure right >= left and bottom >= top
+        if (visibleRight < visibleLeft)
+        {
+            visibleRight = visibleLeft;
+        }
+
+        if (visibleBottom < visibleTop)
+        {
+            visibleBottom = visibleTop;
+        }
+
         // Convert to preview window coordinates
         var previewWidth = OverlayCanvas.Bounds.Width;
         var previewHeight = OverlayCanvas.Bounds.Height;
 
+        var width = (visibleRight - visibleLeft) * previewWidth;
+        var height = (visibleBottom - visibleTop) * previewHeight;
+
+        // Final safety check to ensure non-negative dimensions
+        width = Math.Max(0, width);
+        height = Math.Max(0, height);
+
         return new Rect(
             visibleLeft * previewWidth,
             visibleTop * previewHeight,
-            (visibleRight - visibleLeft) * previewWidth,
-            (visibleBottom - visibleTop) * previewHeight
+            width,
+            height
         );
     }
 

@@ -1,6 +1,5 @@
 ﻿<UserControl
     Focusable="False"
-    IsHitTestVisible="False"
     x:Class="PicView.Avalonia.Views.UC.ZoomPreviewer"
     x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -13,11 +12,12 @@
         <Panel>
             <Image
                 Height="150"
+                IsHitTestVisible="False"
                 Source="{CompiledBinding PicViewer.ImageSource.Value,
                                          Mode=OneWay}"
                 Stretch="Uniform"
                 x:Name="OverlayImage" />
-            <Canvas IsHitTestVisible="False" x:Name="OverlayCanvas">
+            <Canvas x:Name="OverlayCanvas">
                 <Rectangle
                     Fill="Transparent"
                     Stroke="{DynamicResource AccentColor}"
