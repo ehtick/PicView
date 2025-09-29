@@ -108,16 +108,6 @@ public class ZoomPanControl : Decorator
         AddHandler(PointerMovedEvent, HandlePointerMoved, RoutingStrategies.Tunnel);
         AddHandler(PointerReleasedEvent, HandlePointerReleased, RoutingStrategies.Tunnel);
 
-        // When the child changes, ensure transforms are applied
-        ChildProperty.Changed.ToObservable()
-            .Skip(3)
-            .Subscribe(_ =>
-            {
-                UpdateChildTransform();
-                UpdatePreviewWindow();
-            })
-            .AddTo(_disposables);
-
         _zoomPreviewer = new ZoomPreviewer
         {
             DataContext = DataContext,

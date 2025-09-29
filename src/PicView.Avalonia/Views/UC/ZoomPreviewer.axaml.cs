@@ -175,6 +175,8 @@ public partial class ZoomPreviewer : UserControl
             {
                 Margin = new Thickness(0, 0, 25, 25);
             }
+
+            UpdateSize(vm);
         }
 
         // Show when zoomed in or out (not at 1.0 scale)
@@ -190,6 +192,33 @@ public partial class ZoomPreviewer : UserControl
         if (!_isDragging)
         {
             RestartHideTimer();
+        }
+    }
+
+    private void UpdateSize(MainViewModel vm)
+    {
+        const int defaultHeight = 150;
+        OverlayImage.Height = defaultHeight;
+        if (vm.PicViewer.PixelWidth.CurrentValue is 0 || vm.PicViewer.PixelHeight.CurrentValue is 0)
+        {
+            return;
+        }
+
+        // ReSharper disable once PossibleLossOfFraction
+
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            var secondaryWidth = vm.PicViewer.SecondaryImageWidth.CurrentValue * defaultHeight /
+                                 vm.PicViewer.ImageHeight.CurrentValue;
+            var width = vm.PicViewer.ImageWidth.CurrentValue * defaultHeight / vm.PicViewer.ImageHeight.Value;
+            OverlayImage.Width = width;
+            OverlayImage.SecondaryImageWidth = secondaryWidth;
+        }
+        else
+        {
+            OverlayImage.Width = vm.PicViewer.PixelWidth.CurrentValue * defaultHeight /
+                                 vm.PicViewer.PixelHeight.CurrentValue;
+            OverlayImage.SecondaryImageWidth = 0;
         }
     }
 

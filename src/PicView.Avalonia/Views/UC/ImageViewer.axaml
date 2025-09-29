@@ -38,7 +38,6 @@
                         SecondarySource="{CompiledBinding PicViewer.SecondaryImageSource.Value,
                                                           Mode=OneWay}"
                         Source="{CompiledBinding PicViewer.ImageSource.Value}"
-                        UseLayoutRounding="True"
                         x:Name="MainImage" />
                 </Border>
             </customControls:AutoScrollViewer>

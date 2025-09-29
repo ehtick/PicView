@@ -48,15 +48,17 @@
                     <RotateTransform Angle="{CompiledBinding PicViewer.RotationAngle.Value}" />
                 </LayoutTransformControl.LayoutTransform>
                 <Panel>
-                    <customControls:ThumbImage
-                        Height="150"
+                    <customControls:PicBox
+                        ImageType="{CompiledBinding PicViewer.ImageType.Value,
+                                                    Mode=OneWay}"
+                        SecondarySource="{CompiledBinding PicViewer.SecondaryImageSource.Value,
+                                                          Mode=OneWay}"
                         Source="{CompiledBinding PicViewer.ImageSource.Value}"
-                        Stretch="Uniform"
                         x:Name="OverlayImage">
-                        <customControls:ThumbImage.RenderTransform>
+                        <customControls:PicBox.RenderTransform>
                             <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
-                        </customControls:ThumbImage.RenderTransform>
-                    </customControls:ThumbImage>
+                        </customControls:PicBox.RenderTransform>
+                    </customControls:PicBox>
                     <Canvas x:Name="OverlayCanvas">
                         <Rectangle
                             Fill="Transparent"

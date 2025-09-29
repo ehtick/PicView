@@ -1,6 +1,7 @@
 ﻿using ImageMagick;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -59,22 +60,30 @@ public static class TitleManager
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            var imageModel1 = new ImageModel
+            try
             {
-                FileInfo = vm.PicViewer.FileInfo.Value,
-                PixelWidth = vm.PicViewer.PixelWidth.Value,
-                PixelHeight = vm.PicViewer.PixelHeight.Value
-            };
-            var nextFileName = NavigationManager.GetNextFileName;
-            using var magickImage = new MagickImage();
-            magickImage.Ping(nextFileName);
-            var imageModel2 = new ImageModel
+                var imageModel1 = new ImageModel
+                {
+                    FileInfo = vm.PicViewer.FileInfo.Value,
+                    PixelWidth = vm.PicViewer.PixelWidth.Value,
+                    PixelHeight = vm.PicViewer.PixelHeight.Value
+                };
+                var nextFileName = NavigationManager.GetNextFileName;
+                using var magickImage = new MagickImage();
+                magickImage.Ping(nextFileName);
+                var imageModel2 = new ImageModel
+                {
+                    FileInfo = new FileInfo(nextFileName),
+                    PixelWidth = (int)magickImage.Width,
+                    PixelHeight = (int)magickImage.Height
+                };
+                SetSideBySideTitle(vm, imageModel1, imageModel2);
+            }
+            catch (Exception e)
             {
-                FileInfo = new FileInfo(nextFileName),
-                PixelWidth = (int)magickImage.Width,
-                PixelHeight = (int)magickImage.Height
-            };
-            SetSideBySideTitle(vm, imageModel1, imageModel2);
+                // TODO: fix SVG ping exception
+                DebugHelper.LogDebug(nameof(TiffManager), nameof(SetTitle), e);
+            }
             return;
         }
 
