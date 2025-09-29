@@ -31,7 +31,9 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<bool> IsAvoidingZoomingOut { get; } = new(Settings.Zoom.AvoidZoomingOut);
 
     public BindableReactiveProperty<bool> IsZoomAnimated { get; } = new(Settings.Zoom.IsZoomAnimated);
-    public BindableReactiveProperty<bool> IsShowingZoomPercentagePopup { get; } = new(Settings.Zoom.AvoidZoomingOut);
+
+    public BindableReactiveProperty<bool> IsShowingZoomPercentagePopup { get; } =
+        new(Settings.Zoom.IsShowingZoomPercentagePopup);
 
     public BindableReactiveProperty<double> WindowMargin { get; } = new(Settings.WindowProperties.Margin);
 
