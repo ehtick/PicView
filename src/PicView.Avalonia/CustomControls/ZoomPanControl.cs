@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -46,6 +47,8 @@ public class ZoomPanControl : Decorator
     private RotateTransform? _rotateTransform;
     private TranslateTransform? _translateTransform;
     private TransformGroup? _transformGroup;
+
+    private readonly CompositeDisposable _disposables = new();
 
     /// <summary>
     /// Represents the current zoom level as a percentage.
@@ -106,7 +109,14 @@ public class ZoomPanControl : Decorator
         AddHandler(PointerReleasedEvent, HandlePointerReleased, RoutingStrategies.Tunnel);
 
         // When the child changes, ensure transforms are applied
-        ChildProperty.Changed.ToObservable().Skip(1).Subscribe(_ => UpdateChildTransform());
+        ChildProperty.Changed.ToObservable()
+            .Skip(3)
+            .Subscribe(_ =>
+            {
+                UpdateChildTransform();
+                UpdatePreviewWindow();
+            })
+            .AddTo(_disposables);
 
         _zoomPreviewer = new ZoomPreviewer
         {
@@ -119,21 +129,13 @@ public class ZoomPanControl : Decorator
         _zoomPreviewer.SetZoomPanControl(this);
         UIHelper.GetMainView.MainGrid.Children.Add(_zoomPreviewer);
 
-        ScaleProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
+        Observable.EveryValueChanged(this, x => x.ZoomLevel).Subscribe(d =>
         {
-            UpdateChildTransform();
-            UpdatePreviewWindow();
-        });
-        TranslateXProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
-        {
-            UpdateChildTransform();
-            UpdatePreviewWindow();
-        });
-        TranslateYProperty.Changed.ToObservable().Skip(1).Subscribe(_ =>
-        {
-            UpdateChildTransform();
-            UpdatePreviewWindow();
-        });
+            if (DataContext is MainViewModel vm)
+            {
+                vm.GlobalSettings.ZoomValue.Value = d;
+            }
+        }).AddTo(_disposables);
     }
 
     private void UpdatePreviewWindow()
@@ -254,24 +256,9 @@ public class ZoomPanControl : Decorator
             return targetScale;
         }
 
-        // Snap to reset zoom and center the content
-        SetTransitions(animated);
-        Scale = resetZoom;
-        TranslateX = 0;
-        TranslateY = 0;
-
         ZoomLevel = resetZoom * 100;
 
-        // If we have a specific zoom point and child is available, center properly
-        if (zoomPoint.HasValue && Child != null)
-        {
-            var center = CenterPoint();
-            SetScaleImmediate(resetZoom, center);
-        }
-        else
-        {
-            SetScaleImmediate(resetZoom, CenterPoint());
-        }
+        SetScaleImmediate(resetZoom, CenterPoint());
 
         return resetZoom;
 
@@ -291,6 +278,17 @@ public class ZoomPanControl : Decorator
         SetScaleImmediate(1.0, CenterPoint());
 
         ZoomLevel = 100;
+
+        if (DataContext is MainViewModel vm)
+        {
+            TitleManager.SetTitle(vm);
+        }
+
+        if (Settings.Zoom.IsShowingZoomPercentagePopup)
+        {
+            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
+                TimeSpan.FromSeconds(1));
+        }
     }
 
     /// <summary>
@@ -390,6 +388,11 @@ public class ZoomPanControl : Decorator
     /// <param name="around">The point around which the scaling should occur. If null, the scaling is applied around the center of the control.</param>
     public void SetScaleImmediate(double newScale, Point? around = null)
     {
+        if (double.IsNaN(newScale) || double.IsInfinity(newScale))
+        {
+            return;
+        }
+
         var center = around ?? CenterPoint();
         ApplyScaleAroundPoint(newScale, center);
         ConstrainTranslationToBounds();
@@ -401,8 +404,6 @@ public class ZoomPanControl : Decorator
         {
             return;
         }
-
-        vm.GlobalSettings.ZoomValue.Value = ZoomLevel;
 
         TitleManager.SetTitle(vm);
         if (Settings.Zoom.IsShowingZoomPercentagePopup)
@@ -684,5 +685,11 @@ public class ZoomPanControl : Decorator
         TranslateY = translateY;
         ConstrainTranslationToBounds();
         UpdateChildTransform();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        _disposables.Dispose();
     }
 }
