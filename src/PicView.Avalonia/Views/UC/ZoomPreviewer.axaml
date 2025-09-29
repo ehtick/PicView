@@ -43,20 +43,29 @@
                         x:Name="CloseButton" />
                 </Grid>
             </Border>
-            <Panel>
-                <customControls:ThumbImage
-                    Height="150"
-                    Source="{CompiledBinding PicViewer.ImageSource.Value}"
-                    Stretch="Uniform"
-                    x:Name="OverlayImage" />
-                <Canvas x:Name="OverlayCanvas">
-                    <Rectangle
-                        Fill="Transparent"
-                        Stroke="{DynamicResource AccentColor}"
-                        StrokeThickness="2"
-                        x:Name="ViewportBorder" />
-                </Canvas>
-            </Panel>
+            <LayoutTransformControl>
+                <LayoutTransformControl.LayoutTransform>
+                    <RotateTransform Angle="{CompiledBinding PicViewer.RotationAngle.Value}" />
+                </LayoutTransformControl.LayoutTransform>
+                <Panel>
+                    <customControls:ThumbImage
+                        Height="150"
+                        Source="{CompiledBinding PicViewer.ImageSource.Value}"
+                        Stretch="Uniform"
+                        x:Name="OverlayImage">
+                        <customControls:ThumbImage.RenderTransform>
+                            <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
+                        </customControls:ThumbImage.RenderTransform>
+                    </customControls:ThumbImage>
+                    <Canvas x:Name="OverlayCanvas">
+                        <Rectangle
+                            Fill="Transparent"
+                            Stroke="{DynamicResource AccentColor}"
+                            StrokeThickness="2"
+                            x:Name="ViewportBorder" />
+                    </Canvas>
+                </Panel>
+            </LayoutTransformControl>
         </StackPanel>
     </Border>
 </UserControl>

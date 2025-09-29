@@ -344,20 +344,18 @@ public class ZoomPanControl : Decorator
     /// Updates the zoom level and optionally animates the zoom effect while focusing on a specific point.
     /// </summary>
     /// <param name="multiplier">The factor by which the scale is increased. Defaults to 1.2.</param>
-    /// <param name="animated">Indicates whether the zoom effect should be animated. Defaults to true.</param>
     /// <param name="zoomAtCursorPoint">The point to zoom around. Defaults to the center if null.</param>
-    public void ZoomIn(double multiplier = 1.2, bool animated = true,
-        Point? zoomAtCursorPoint = null)
+    public void ZoomIn(double multiplier = 1.2, Point? zoomAtCursorPoint = null)
     {
         var center = zoomAtCursorPoint ?? CenterPoint();
         var targetScale = Scale * multiplier;
 
         // Apply deadzone logic
-        targetScale = ApplyDeadzone(targetScale, animated, center);
+        targetScale = ApplyDeadzone(targetScale, false, center);
 
         if (Math.Abs(targetScale - Scale) > 1e-9)
         {
-            AnimateScaleTo(targetScale, center, animated);
+            AnimateScaleTo(targetScale, center, false);
         }
 
         ZoomLevel = targetScale * 100;
@@ -368,18 +366,17 @@ public class ZoomPanControl : Decorator
     /// and animation if enabled.
     /// </summary>
     /// <param name="multiplier">The factor by which to decrease the zoom level. For example, a multiplier of 1/1.2 reduces the scale.</param>
-    /// <param name="animated">Indicates whether the zoom-out operation should be animated.</param>
-    public void ZoomOut(double multiplier = 1.0 / 1.2, bool animated = true)
+    public void ZoomOut(double multiplier = 1.0 / 1.2)
     {
         var center = CenterPoint();
         var targetScale = Scale * multiplier;
 
         // Apply deadzone logic
-        targetScale = ApplyDeadzone(targetScale, animated, center);
+        targetScale = ApplyDeadzone(targetScale, false, center);
 
         if (Math.Abs(targetScale - Scale) > 1e-9)
         {
-            AnimateScaleTo(targetScale, center, animated);
+            AnimateScaleTo(targetScale, center, false);
         }
 
         ZoomLevel = targetScale * 100;

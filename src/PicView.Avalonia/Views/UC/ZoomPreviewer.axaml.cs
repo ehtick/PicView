@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -162,6 +163,18 @@ public partial class ZoomPreviewer : UserControl
         {
             IsVisible = false;
             return;
+        }
+
+        if (DataContext is MainViewModel vm)
+        {
+            if (vm.HoverbarViewModel.IsHoverbarVisible.CurrentValue)
+            {
+                Margin = new Thickness(0, 0, 70, 115);
+            }
+            else
+            {
+                Margin = new Thickness(0, 0, 25, 25);
+            }
         }
 
         // Show when zoomed in or out (not at 1.0 scale)
