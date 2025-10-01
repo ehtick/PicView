@@ -89,7 +89,7 @@ public static class TitleManager
 
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(pWidth, pHeight,
             NavigationManager.GetCurrentIndex,
-            fileInfo, vm.GlobalSettings.ZoomValue.CurrentValue, NavigationManager.GetCollection);
+            fileInfo, vm.PicViewer.ZoomValue.CurrentValue, NavigationManager.GetCollection);
         ApplyTitles(vm, windowTitles);
     }
 
@@ -129,7 +129,7 @@ public static class TitleManager
 
         var windowTitles = ImageTitleFormatter.GenerateTitleStrings(imageModel.PixelWidth, imageModel.PixelHeight,
             NavigationManager.GetCurrentIndex,
-            imageModel.FileInfo, vm.GlobalSettings.ZoomValue.CurrentValue, NavigationManager.GetCollection);
+            imageModel.FileInfo, vm.PicViewer.ZoomValue.CurrentValue, NavigationManager.GetCollection);
         ApplyTitles(vm, windowTitles);
     }
     

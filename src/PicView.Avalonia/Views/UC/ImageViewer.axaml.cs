@@ -55,7 +55,7 @@ public partial class ImageViewer : UserControl
             () => DataContext,
             () =>
             {
-                ResetZoom(false);
+                ZoomPanControl.ResetZoomSlim();
             });
     }
 

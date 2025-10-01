@@ -123,7 +123,7 @@ public class ZoomPanControl : Decorator
         {
             if (DataContext is MainViewModel vm)
             {
-                vm.GlobalSettings.ZoomValue.Value = d;
+                vm.PicViewer.ZoomValue.Value = d;
             }
         }).AddTo(_disposables);
     }
@@ -281,6 +281,15 @@ public class ZoomPanControl : Decorator
         }
     }
 
+    public void ResetZoomSlim()
+    {
+        SetTransitions(false);
+        Scale = TranslateX = TranslateY = 1.0;
+        SetScaleImmediate(1.0, CenterPoint());
+
+        ZoomLevel = 100;
+    }
+
     /// <summary>
     /// Handles zooming functionality using the mouse pointer wheel. Zooms in or out based on the scroll direction.
     /// </summary>
@@ -325,6 +334,18 @@ public class ZoomPanControl : Decorator
         }
 
         ZoomLevel = targetScale * 100;
+
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        TitleManager.SetTitle(vm);
+        if (Settings.Zoom.IsShowingZoomPercentagePopup)
+        {
+            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
+                TimeSpan.FromSeconds(1));
+        }
     }
 
     /// <summary>
@@ -389,18 +410,6 @@ public class ZoomPanControl : Decorator
         UpdateChildTransform();
 
         ZoomLevel = newScale * 100;
-
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        TitleManager.SetTitle(vm);
-        if (Settings.Zoom.IsShowingZoomPercentagePopup)
-        {
-            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
-                TimeSpan.FromSeconds(1));
-        }
     }
 
     private Point CenterPoint() => new(Bounds.Width / 2.0, Bounds.Height / 2.0);
