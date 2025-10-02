@@ -172,6 +172,10 @@ public partial class ZoomPreviewer : UserControl
             {
                 Margin = new Thickness(0, 0, 70, 115);
             }
+            else if (Settings.Gallery.IsBottomGalleryShown)
+            {
+                Margin = new Thickness(0, 0, 25, vm.Gallery.GalleryMargin.CurrentValue.Bottom + 7);
+            }
             else
             {
                 Margin = new Thickness(0, 0, 25, 25);

@@ -114,6 +114,7 @@ public class ZoomPanControl : Decorator
             HorizontalAlignment = HorizontalAlignment.Right,
             VerticalAlignment = VerticalAlignment.Bottom,
             Margin = new Thickness(0, 0, 25, 25),
+            ZIndex = 90,
             IsVisible = false
         };
         _zoomPreviewer.SetZoomPanControl(this);
