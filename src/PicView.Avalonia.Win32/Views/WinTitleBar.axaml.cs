@@ -1,9 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Media;
-using Avalonia.Threading;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -20,21 +18,6 @@ public partial class WinTitleBar : UserControl
 
         Loaded += (_, _) =>
         {
-            // Fix the menu unintendedly resizing the window, by decreasing Window size,
-            // when no image is loaded at the startup menu.
-            if (DataContext is MainViewModel vm)
-            {
-                if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-                {
-                    return;
-                }
-
-                if (vm.PicViewer.ImageSource.CurrentValue is null)
-                {
-                    Dispatcher.UIThread.Invoke(() => { MinWidth = desktop.MainWindow.Width; },
-                        DispatcherPriority.Background);
-                }
-            }
             if (Settings.Theme.GlassTheme)
             {
                 ApplyGlassThemeStyles();
@@ -106,7 +89,7 @@ public partial class WinTitleBar : UserControl
 
                     // Overflow buttons if the window is too small
                     if (vm.MainWindow.TitleMaxWidth.CurrentValue <
-                        vm.PlatformWindowService.CombinedTitleButtonsWidth * 2)
+                        vm.PlatformWindowService.CombinedTitleButtonsWidth)
                     {
                         vm.MainWindow.TopTitlebarViewModel.IsBtnPanelVisible.Value = false;
                     }

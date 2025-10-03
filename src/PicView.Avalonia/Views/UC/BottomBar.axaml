@@ -13,7 +13,6 @@
     <UserControl.Resources>
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ImageMenuBrush" />
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ToolsMenuBrush" />
-        <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="SettingsMenuBrush" />
     </UserControl.Resources>
 
     <UserControl.ContextMenu>

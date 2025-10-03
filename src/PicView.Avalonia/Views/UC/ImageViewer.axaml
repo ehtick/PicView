@@ -1,18 +1,13 @@
 <UserControl
     Background="{CompiledBinding MainWindow.ImageBackground.Value,
                                  Mode=OneWay}"
-    mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.UC.ImageViewer"
     x:DataType="vm:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.DataContext>
-        <vm:MainViewModel />
-    </Design.DataContext>
     <LayoutTransformControl x:Name="ImageLayoutTransformControl">
         <customControls:ZoomPanControl
             Height="{CompiledBinding PicViewer.ImageHeight.Value,
