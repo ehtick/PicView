@@ -150,7 +150,8 @@ public class ZoomPanControl : Decorator
         }
 
         var p = e.GetPosition(this);
-        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || !(Math.Abs(Scale) > 1.0001))
+        if (!e.GetCurrentPoint(this).Properties.IsLeftButtonPressed || !(Math.Abs(Scale) > 1.0001) ||
+            e.KeyModifiers == KeyModifiers.Shift)
         {
             return;
         }
