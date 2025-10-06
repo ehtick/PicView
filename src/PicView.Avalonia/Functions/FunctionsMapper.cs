@@ -97,6 +97,7 @@ public static class FunctionsMapper
             "SettingsWindow" => SettingsWindow,
             "KeybindingsWindow" => KeybindingsWindow,
             "BatchResizeWindow" => BatchResizeWindow,
+            "ConvertWindow" => ConvertWindow,
 
             // Open functions
             "Open" => Open,
@@ -449,6 +450,9 @@ public static class FunctionsMapper
 
     public static async ValueTask AboutWindow() =>
         await Dispatcher.UIThread.InvokeAsync(() => Vm?.PlatformWindowService?.ShowAboutWindow());
+
+    public static async ValueTask ConvertWindow() =>
+        await Dispatcher.UIThread.InvokeAsync(() => Vm?.PlatformWindowService?.ShowConvertWindow());
 
     public static async ValueTask KeybindingsWindow() =>
         await Dispatcher.UIThread.InvokeAsync(() => Vm?.PlatformWindowService?.ShowKeybindingsWindow());
