@@ -27,10 +27,10 @@ public static class FunctionsMapper
 {
     public static MainViewModel? Vm;
 
-    public static Task<Func<ValueTask>> GetFunctionByName(string functionName)
+    public static Func<ValueTask>? GetFunctionByName(string functionName)
     {
         // Remember to have exact matching names, or it will be null
-        return Task.FromResult<Func<ValueTask>>(functionName switch
+        return functionName switch
         {
             // Navigation values
             "Next" => Next,
@@ -171,7 +171,7 @@ public static class FunctionsMapper
             "Restart" => Restart,
 
             _ => null
-        });
+        };
     }
 
     #region Functions
