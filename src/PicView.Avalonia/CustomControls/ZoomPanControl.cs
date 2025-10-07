@@ -63,6 +63,8 @@ public class ZoomPanControl : Decorator
     private TranslateTransform? _translateTransform;
     private TransformGroup? _transformGroup;
 
+    public static readonly TimeSpan ZoomAnimationDuration = TimeSpan.FromSeconds(0.25);
+
     // Panning State
     private bool _isPanning;
     private Point _panStartPointer;
@@ -117,6 +119,14 @@ public class ZoomPanControl : Decorator
         return base.ArrangeOverride(finalSize);
     }
 
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        RemoveHandler(PointerPressedEvent, HandleResetZoomOrStartPanning);
+        RemoveHandler(PointerMovedEvent, HandlePanning);
+        RemoveHandler(PointerReleasedEvent, StopPanning);
+        base.OnDetachedFromVisualTree(e);
+    }
+
     #endregion
 
     #region Public Zoom API
@@ -159,6 +169,10 @@ public class ZoomPanControl : Decorator
         ZoomBy(targetScale, Settings.Zoom.IsZoomAnimated, center);
     }
 
+    /// <summary>
+    /// Resets the zoom level to its default state. Optionally allows enabling animations during the reset process.
+    /// </summary>
+    /// <param name="animated">Determines whether the reset should be animated.</param>
     public void ResetZoom(bool animated)
     {
         if (Child == null)
@@ -172,10 +186,15 @@ public class ZoomPanControl : Decorator
         SetZoomValue(100);
     }
 
+    /// <summary>
+    /// Used to quickly reset the zoom, I.E, when changing picture.
+    /// </summary>
     public void ResetZoomSlim()
     {
         SetTransitions(false);
-        Scale = TranslateX = TranslateY = 1.0;
+        Scale = 1.0;
+        TranslateX = 0;
+        TranslateY = 0;
         SetScaleImmediate(1.0, CenterPoint());
 
         SetZoomValue(100);
@@ -305,16 +324,16 @@ public class ZoomPanControl : Decorator
     }
 
     /// <summary>
-    /// Adjusts the zoom scale by a specified multiplier, with optional animation and zoom origin point.
+    /// Adjusts the zoom level to the specified target scale. Optionally, applies animation and centers the zoom at the provided point.
     /// </summary>
-    /// <param name="multiplier">The amount by which to adjust the current zoom scale. Positive values zoom in, negative values zoom out.</param>
-    /// <param name="animated">Specifies whether the zoom adjustment should include an animation.</param>
-    /// <param name="zoomAtPoint">The point where the zoom operation is centered. If null, the control's center is used.</param>
-    private void ZoomBy(double multiplier, bool animated = true, Point? zoomAtPoint = null)
+    /// <param name="targetScale">The desired target scale for zooming.</param>
+    /// <param name="animated">Indicates whether the zoom transition should be animated.</param>
+    /// <param name="zoomAtPoint">The point at which the zoom should be centered (optional).</param>
+    private void ZoomBy(double targetScale, bool animated = true, Point? zoomAtPoint = null)
     {
         var center = zoomAtPoint ?? CenterPoint();
 
-        if (Settings.Zoom.AvoidZoomingOut && multiplier < 1)
+        if (Settings.Zoom.AvoidZoomingOut && targetScale < 1)
         {
             ResetZoom(animated);
             return;
@@ -326,9 +345,9 @@ public class ZoomPanControl : Decorator
         var upperBound = resetZoom + DeadzoneTolerance;
 
         // Check if target scale is within deadzone
-        if (!(multiplier >= lowerBound) || !(multiplier <= upperBound))
+        if (!(targetScale >= lowerBound) || !(targetScale <= upperBound))
         {
-            ApplyZoomAndTitle(multiplier, center, animated);
+            ApplyZoomAndTitle(targetScale, center, animated);
         }
         else
         {
@@ -447,13 +466,13 @@ public class ZoomPanControl : Decorator
                 new DoubleTransition
                 {
                     Property = ScaleTransform.ScaleXProperty,
-                    Duration = TimeSpan.FromSeconds(.25)
+                    Duration = ZoomAnimationDuration
                 },
 
                 new DoubleTransition
                 {
                     Property = ScaleTransform.ScaleYProperty,
-                    Duration = TimeSpan.FromSeconds(.25)
+                    Duration = ZoomAnimationDuration
                 }
             ];
 
@@ -462,13 +481,13 @@ public class ZoomPanControl : Decorator
                 new DoubleTransition
                 {
                     Property = TranslateTransform.XProperty,
-                    Duration = TimeSpan.FromSeconds(.25)
+                    Duration = ZoomAnimationDuration
                 },
 
                 new DoubleTransition
                 {
                     Property = TranslateTransform.YProperty,
-                    Duration = TimeSpan.FromSeconds(.25)
+                    Duration = ZoomAnimationDuration
                 }
             ];
         }
