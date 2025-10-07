@@ -4,12 +4,10 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
-using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -30,8 +28,6 @@ public class ZoomPanControl : Decorator
     private ScaleTransform? _scaleTransform;
     private TranslateTransform? _translateTransform;
     private TransformGroup? _transformGroup;
-
-    private readonly CompositeDisposable _disposables = new();
 
     // Internal transform properties
     private double _scale = 1.0;
@@ -90,14 +86,6 @@ public class ZoomPanControl : Decorator
         };
         _zoomPreviewer.SetZoomPanControl(this);
         UIHelper.GetMainView.MainGrid.Children.Add(_zoomPreviewer);
-
-        Observable.EveryValueChanged(this, x => x.ZoomLevel).Subscribe(d =>
-        {
-            if (DataContext is MainViewModel vm)
-            {
-                vm.PicViewer.ZoomValue.Value = d;
-            }
-        }).AddTo(_disposables);
     }
 
     private void UpdatePreviewWindow()
@@ -214,12 +202,7 @@ public class ZoomPanControl : Decorator
             return targetScale;
         }
 
-        ZoomLevel = resetZoom * 100;
-
-        SetScaleImmediate(resetZoom, CenterPoint());
-
-        return resetZoom;
-
+        return resetZoom * 100;
     }
 
     public void ResetZoom(bool animated)
@@ -231,22 +214,8 @@ public class ZoomPanControl : Decorator
 
         _zoomPreviewer.IsVisible = false;
 
-        SetTransitions(animated);
-        Scale = TranslateX = TranslateY = 1.0;
-        SetScaleImmediate(1.0, CenterPoint());
-
-        ZoomLevel = 100;
-
-        if (DataContext is MainViewModel vm)
-        {
-            TitleManager.SetTitle(vm);
-        }
-
-        if (Settings.Zoom.IsShowingZoomPercentagePopup)
-        {
-            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
-                TimeSpan.FromSeconds(1));
-        }
+        ApplyZoomAndTitle(1.0, CenterPoint(), animated);
+        SetZoomValue(100);
     }
 
     public void ResetZoomSlim()
@@ -255,7 +224,16 @@ public class ZoomPanControl : Decorator
         Scale = TranslateX = TranslateY = 1.0;
         SetScaleImmediate(1.0, CenterPoint());
 
-        ZoomLevel = 100;
+        SetZoomValue(100);
+    }
+
+    private void SetZoomValue(double zoomValue)
+    {
+        ZoomLevel = zoomValue;
+        if (DataContext is MainViewModel vm)
+        {
+            vm.PicViewer.ZoomValue.Value = zoomValue;
+        }
     }
 
     /// <summary>
@@ -272,48 +250,7 @@ public class ZoomPanControl : Decorator
     private void ZoomWithPointerWheelCore(bool isZoomIn, Point pos)
     {
         var step = isZoomIn ? Settings.Zoom.ZoomSpeed : -Math.Abs(Settings.Zoom.ZoomSpeed);
-        ZoomBy(step, Settings.Zoom.IsZoomAnimated, pos);
-    }
-
-    /// <summary>
-    /// Adjusts the zoom scale by a specified multiplier, with optional animation and zoom origin point.
-    /// </summary>
-    /// <param name="multiplier">The amount by which to adjust the current zoom scale. Positive values zoom in, negative values zoom out.</param>
-    /// <param name="animated">Specifies whether the zoom adjustment should include an animation.</param>
-    /// <param name="zoomAtPoint">The point where the zoom operation is centered. If null, the control's center is used.</param>
-    public void ZoomBy(double multiplier, bool animated = true, Point? zoomAtPoint = null)
-    {
-        var center = zoomAtPoint ?? CenterPoint();
-        var targetScale = Math.Max(0.09, Scale + multiplier);
-
-        if (Settings.Zoom.AvoidZoomingOut && targetScale < 1)
-        {
-            ResetZoom(animated);
-            return;
-        }
-
-        // Apply deadzone logic
-        targetScale = ApplyDeadzone(targetScale);
-
-        // Only animate if deadzone didn't handle the zoom
-        if (Math.Abs(targetScale - Scale) > 1e-9)
-        {
-            AnimateScaleTo(targetScale, center, animated);
-        }
-
-        ZoomLevel = targetScale * 100;
-
-        if (DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        TitleManager.SetTitle(vm);
-        if (Settings.Zoom.IsShowingZoomPercentagePopup)
-        {
-            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
-                TimeSpan.FromSeconds(1));
-        }
+        ZoomBy(Math.Max(0.09, Scale + step), Settings.Zoom.IsZoomAnimated, pos);
     }
 
     /// <summary>
@@ -327,15 +264,7 @@ public class ZoomPanControl : Decorator
         var center = zoomAtCursorPoint ?? CenterPoint();
         var targetScale = Scale * multiplier;
 
-        // Apply deadzone logic
-        targetScale = ApplyDeadzone(targetScale);
-
-        if (Math.Abs(targetScale - Scale) > 1e-9)
-        {
-            AnimateScaleTo(targetScale, center, false);
-        }
-
-        ZoomLevel = targetScale * 100;
+        ZoomBy(targetScale, Settings.Zoom.IsZoomAnimated, center);
     }
 
     /// <summary>
@@ -348,16 +277,53 @@ public class ZoomPanControl : Decorator
         var center = CenterPoint();
         var targetScale = Scale * multiplier;
 
-        // Apply deadzone logic
-        targetScale = ApplyDeadzone(targetScale);
+        ZoomBy(targetScale, Settings.Zoom.IsZoomAnimated, center);
+    }
 
-        if (Math.Abs(targetScale - Scale) > 1e-9)
+    /// <summary>
+    /// Adjusts the zoom scale by a specified multiplier, with optional animation and zoom origin point.
+    /// </summary>
+    /// <param name="multiplier">The amount by which to adjust the current zoom scale. Positive values zoom in, negative values zoom out.</param>
+    /// <param name="animated">Specifies whether the zoom adjustment should include an animation.</param>
+    /// <param name="zoomAtPoint">The point where the zoom operation is centered. If null, the control's center is used.</param>
+    private void ZoomBy(double multiplier, bool animated = true, Point? zoomAtPoint = null)
+    {
+        var center = zoomAtPoint ?? CenterPoint();
+
+        if (Settings.Zoom.AvoidZoomingOut && multiplier < 1)
         {
-            AnimateScaleTo(targetScale, center, false);
+            ResetZoom(animated);
+            return;
         }
 
-        ZoomLevel = targetScale * 100;
+        // Apply deadzone logic
+        const double resetZoom = 1.0;
+        var lowerBound = resetZoom - DeadzoneTolerance;
+        var upperBound = resetZoom + DeadzoneTolerance;
+
+        // Check if target scale is within deadzone
+        if (!(multiplier >= lowerBound) || !(multiplier <= upperBound))
+        {
+            ApplyZoomAndTitle(multiplier, center, animated);
+        }
+        else
+        {
+            ResetZoom(animated);
+        }
     }
+
+    private void ApplyZoomAndTitle(double targetScale, Point center, bool animated)
+    {
+        SetTransitionsAndScale(targetScale, center, animated);
+        TitleManager.SetTitle(DataContext as MainViewModel);
+        if (Settings.Zoom.IsShowingZoomPercentagePopup)
+        {
+            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
+                TimeSpan.FromSeconds(1));
+        }
+    }
+
+
 
     /// <summary>
     /// Sets the scale of the control immediately, optionally focusing the scaling around a specific point.
@@ -377,12 +343,12 @@ public class ZoomPanControl : Decorator
         ConstrainTranslationToBounds();
         UpdateChildTransform();
 
-        ZoomLevel = newScale * 100;
+        SetZoomValue(newScale * 100);
     }
 
     private Point CenterPoint() => new(Bounds.Width / 2.0, Bounds.Height / 2.0);
 
-    private void AnimateScaleTo(double targetScale, Point center, bool animated)
+    private void SetTransitionsAndScale(double targetScale, Point center, bool animated)
     {
         SetTransitions(animated);
         SetScaleImmediate(targetScale, center);
@@ -593,11 +559,5 @@ public class ZoomPanControl : Decorator
         TranslateY = translateY;
         ConstrainTranslationToBounds();
         UpdateChildTransform();
-    }
-
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        _disposables.Dispose();
     }
 }
