@@ -94,6 +94,8 @@ public class ZoomPanControl : Decorator
             IsVisible = false
         };
         _zoomPreviewer.SetZoomPanControl(this);
+
+        // TODO: should figure out how to make a more self-contained approach, for ZoomPreviewer, for possible future tab-based layout
         UIHelper.GetMainView.MainGrid.Children.Add(_zoomPreviewer);
     }
 
@@ -124,6 +126,9 @@ public class ZoomPanControl : Decorator
         RemoveHandler(PointerPressedEvent, HandleResetZoomOrStartPanning);
         RemoveHandler(PointerMovedEvent, HandlePanning);
         RemoveHandler(PointerReleasedEvent, StopPanning);
+
+        UIHelper.GetMainView.MainGrid.Children.Remove(_zoomPreviewer);
+        _zoomPreviewer = null;
         base.OnDetachedFromVisualTree(e);
     }
 
@@ -262,6 +267,9 @@ public class ZoomPanControl : Decorator
             return;
         }
 
+        // Animated panning feels off, should disable it
+        SetTransitions(false);
+
         _isPanning = true;
         _panStartPointer = p;
         _panStartTranslate = new Point(TranslateX, TranslateY);
@@ -280,9 +288,6 @@ public class ZoomPanControl : Decorator
         {
             return;
         }
-
-        // Animated panning feels off, should disable it
-        SetTransitions(false);
 
         var p = e.GetPosition(this);
         var delta = p - _panStartPointer;

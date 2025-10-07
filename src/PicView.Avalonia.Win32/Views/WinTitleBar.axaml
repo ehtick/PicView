@@ -501,8 +501,11 @@
                     <Separator Margin="0" Opacity="1" />
 
                     <!--  Fullscreen  -->
-                    <MenuItem Command="{CompiledBinding MainWindow.ToggleFullscreenCommand}"
-                              Header="{CompiledBinding Translation.Fullscreen.Value, Mode=OneWay}">
+                    <MenuItem
+                        Command="{CompiledBinding MainWindow.ToggleFullscreenCommand}"
+                        Header="{CompiledBinding Translation.Fullscreen.Value,
+                                                 Mode=OneWay}"
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="FullscreenPath" />
                         </MenuItem.Icon>
@@ -515,6 +518,7 @@
                                                  Mode=OneWay}"
                         IsVisible="{CompiledBinding MainWindow.ShouldMaximizeBeShown.Value,
                                                     Mode=OneWay}"
+                        Theme="{StaticResource MainBg}"
                         x:Name="MaximizeMenuItem">
                         <MenuItem.Icon>
                             <Image Classes="MaximizeImage" />
@@ -527,7 +531,8 @@
                         Header="{CompiledBinding Translation.RestoreDown.Value,
                                                  Mode=OneWay}"
                         IsVisible="{CompiledBinding MainWindow.ShouldRestore.Value,
-                                                    Mode=OneWay}">
+                                                    Mode=OneWay}"
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="RestorePath" />
                         </MenuItem.Icon>
