@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
+using Avalonia.Threading;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
@@ -174,7 +175,13 @@ public partial class HoverBar : UserControl
         {
             if (props.IsRightButtonPressed)
             {
-                //TODO: Create popup window to navigate to index
+                ShowSearchDialog();
+
+                // Wait for animation to finish to properly close tooltip
+                await Task.Delay(TimeSpan.FromSeconds(0.3));
+                Dispatcher.UIThread.Post(() => { ToolTip.SetIsOpen(ProgressBar, false); },
+                    DispatcherPriority.Background);
+                
             }
         }
         else
@@ -194,6 +201,9 @@ public partial class HoverBar : UserControl
     
     private static void ShowQuickEditingDialog() =>
         UIHelper.GetMainView.MainGrid.Children.Add(new QuickEditingDialog());
+
+    private static void ShowSearchDialog() =>
+        UIHelper.GetMainView.MainGrid.Children.Add(new FileSearchDialog());
 
     private static void ShowMainContextMenu()
     {

@@ -122,6 +122,13 @@
       <Compile Update="Views\Main\PrintPreviewView.axaml.cs">
           <DependentUpon>PrintPreviewView.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\UC\PopUps\FileSearchDialog.axaml.cs">
+          <DependentUpon>FileSearchDialog.axaml</DependentUpon>
+          <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="CustomControls\AnimatedPopUp.cs">
+          <DependentUpon>AnimatedMenu.cs</DependentUpon>
+      </Compile>
   </ItemGroup>
 
 

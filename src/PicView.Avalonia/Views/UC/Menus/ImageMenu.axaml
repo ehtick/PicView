@@ -68,12 +68,16 @@
                     Canvas.Top="-1"
                     Classes="hover"
                     ClickMode="Release"
+                    Command="{CompiledBinding Tools.ShowSearchCommand}"
                     Data="{StaticResource SearchGeometry}"
                     Foreground="{DynamicResource MainTextColor}"
                     Height="47"
                     IconHeight="16"
                     IconWidth="16"
-                    IsEnabled="False"
+                    IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}"
+                    ToolTip.Tip="{CompiledBinding Translation.Search.Value,
+                                                  Mode=OneWay}"
                     Width="45" />
 
                 <customControls:IconButton

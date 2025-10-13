@@ -60,6 +60,12 @@ public class NavigationViewModel : IDisposable
     {
         await NavigationManager.NavigateIncrements(next: false, false, true).ConfigureAwait(false);
     });
+
+    public ReactiveCommand<string> LoadFileFromStringCommand { get; } = new(async (value, _) =>
+    {
+        await NavigationManager.LoadPicFromFile(value, UIHelper.GetMainView.DataContext as MainViewModel)
+            .ConfigureAwait(false);
+    });
     
     public void Dispose()
     {
