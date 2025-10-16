@@ -99,11 +99,11 @@ public class DateTimeInput : TemplatedControl
         {
             if (vm.PicViewer?.FileInfo.Value?.Exists == true)
             {
-                _partStackPanel.IsVisible = true;
+                _partStackPanel?.IsVisible = true;
             }
             else
             {
-                _partStackPanel.IsVisible = false;
+                _partStackPanel?.IsVisible = false;
             }
         }
         // Set a flag to indicate that the update is coming from the property,
