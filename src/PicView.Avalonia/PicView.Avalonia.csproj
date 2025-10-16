@@ -129,6 +129,10 @@
       <Compile Update="CustomControls\AnimatedPopUp.cs">
           <DependentUpon>AnimatedMenu.cs</DependentUpon>
       </Compile>
+      <Compile Update="Views\Config\InterfaceConfigurationView.axaml.cs">
+          <DependentUpon>InterfaceConfigurationView.axaml</DependentUpon>
+          <SubType>Code</SubType>
+      </Compile>
   </ItemGroup>
 
 
