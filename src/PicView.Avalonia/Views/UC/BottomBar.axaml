@@ -8,13 +8,11 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
-    xmlns:converters="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ImageMenuBrush" />
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ToolsMenuBrush" />
-        <converters:BoolToThicknessConverter x:Key="AllowResizeMarginConverter" TrueThickness="0,0,10,0" FalseThickness="0" />
     </UserControl.Resources>
 
     <UserControl.ContextMenu>
@@ -207,7 +205,7 @@
                                  Mode=OneWay}"
         x:Name="MainBottomBorder">
         <Panel>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Margin="{CompiledBinding MainWindow.CanResize.Value, Mode=OneWay, Converter={StaticResource AllowResizeMarginConverter}}">
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
                 <customControls:IconButton
                     Background="{DynamicResource SecondaryButtonBackgroundColor}"
@@ -221,7 +219,7 @@
                     IconHeight="17"
                     IconWidth="20"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
                     x:Name="FileMenuButton" />
 
                 <Button
@@ -233,7 +231,7 @@
                     Foreground="{StaticResource ImageMenuBrush}"
                     Height="25"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
                     x:Name="ImageMenuButton">
                     <Canvas
                         Height="25"
@@ -278,7 +276,7 @@
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
                     x:Name="ZoomOutButton" />
 
                 <customControls:IconButton
@@ -294,7 +292,7 @@
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
                     x:Name="ZoomInButton" />
 
                 <customControls:IconButton
@@ -349,7 +347,7 @@
                     Margin="0"
                     ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
                                                   Mode=OneWay}"
-                    Width="35"
+                    Width="38"
                     x:Name="RotateRightButton" />
 
                 <customControls:IconButton
@@ -370,7 +368,7 @@
                     Margin="0"
                     ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
                                                   Mode=OneWay}"
-                    Width="35"
+                    Width="38"
                     x:Name="FlipButton">
                     <Button.RenderTransform>
                         <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
@@ -386,7 +384,7 @@
                     Foreground="{StaticResource ToolsMenuBrush}"
                     Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
                     x:Name="ToolsMenuButton">
                     <Image Height="19" Width="19">
                         <Image.Resources>
@@ -430,7 +428,8 @@
                     IconHeight="16"
                     IconWidth="16"
                     IsTabStop="False"
-                    Width="35"
+                    Width="38"
+                    ZIndex="1"
                     x:Name="SettingsMenuButton" />
 
             </StackPanel>
