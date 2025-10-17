@@ -216,14 +216,13 @@ public partial class HoverBar : UserControl
                 await Task.Delay(TimeSpan.FromSeconds(0.3));
                 Dispatcher.UIThread.Post(() => { ToolTip.SetIsOpen(ProgressBar, false); },
                     DispatcherPriority.Background);
-                
             }
         }
         else
         {
             if (props.IsRightButtonPressed)
             {
-                ShowMainContextMenu();
+                UIHelper.ShowMainContextMenu();
             }
         }
     }
@@ -239,15 +238,6 @@ public partial class HoverBar : UserControl
 
     private static void ShowSearchDialog() =>
         UIHelper.GetMainView.MainGrid.Children.Add(new FileSearchDialog());
-
-    private static void ShowMainContextMenu()
-    {
-        if (UIHelper.GetMainView.Resources.TryGetResource("MainContextMenu", Application.Current.ActualThemeVariant, out var value)
-            && value is ContextMenu mainContextMenu)
-        {
-            mainContextMenu.Open();
-        }
-    }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
