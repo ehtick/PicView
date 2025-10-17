@@ -133,7 +133,7 @@
             <TabItem Classes="headerStyle" x:Name="InterfaceConfigurationTabItem">
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
-                        <Image Classes="imageStyle" Source="{StaticResource PaletteAltImage}" />
+                        <Image Classes="imageStyle" Source="{StaticResource ColumnsSettingsAltImage}" />
                         <TextBlock
                             Classes="txt txtShadow"
                             Foreground="{StaticResource SecondaryTextColor}"
