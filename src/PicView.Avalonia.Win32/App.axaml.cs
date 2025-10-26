@@ -164,7 +164,6 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         {
             _windowInitializer?.ShowPrintPreviewWindow(_vm, path);
         }
-
         else
         {
             ProcessHelper.Print(path);

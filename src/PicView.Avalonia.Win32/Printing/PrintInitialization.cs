@@ -10,6 +10,15 @@ public static class PrintInitialization
 {
     public static void Initialize(MainViewModel vm, string path, PrintPreviewWindow printPreviewWindow)
     {
+        if (vm.PicViewer.FileInfo.Value != null && File.Exists(path))
+        {
+            using var fs = File.OpenRead(path);
+            vm.PrintPreview.PreviewImage.Value = new Bitmap(fs);
+            // Prefill page sizes to avoid excessive resize
+            vm.PrintPreview.PageWidth.Value = 650;
+            vm.PrintPreview.PageHeight.Value = 950;
+        }
+        
         var printerSettings = new PrinterSettings();
 
         // Load installed printers
@@ -39,14 +48,6 @@ public static class PrintInitialization
             };
 
         vm.PrintPreview.PrintSettings.Value = currentPrintSettings;
-
-        // TODO: set a blank image at correct size first, and then update it with real image, to avoid resizing
-        if (vm.PicViewer.FileInfo.Value != null && File.Exists(path))
-        {
-            using var fs = File.OpenRead(path);
-            vm.PrintPreview.PreviewImage.Value = new Bitmap(fs);
-        }
-
         printPreviewWindow.Initialize();
     }
 }

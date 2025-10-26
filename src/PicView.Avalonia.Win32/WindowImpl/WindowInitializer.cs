@@ -290,7 +290,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
- public async Task ShowBatchResizeWindow(MainViewModel vm)
+    public async Task ShowBatchResizeWindow(MainViewModel vm)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {

@@ -89,13 +89,13 @@ public static class PrintEngine
             var dpiY = e.Graphics.DpiY;
 
             var page = e.PageBounds; // 1/100 inch units
-            const double mmToHi = 100.0 / 25.4; // 1 mm = 3.937 hundredths inch
+            // const double mmToHi = 100.0 / 25.4; // 1 mm = 3.937 hundredths inch
 
             // margins in hundredths of inch
-            var ml = (float)(settings.MarginLeft.Value * mmToHi);
-            var mr = (float)(settings.MarginRight.Value * mmToHi);
-            var mt = (float)(settings.MarginTop.Value * mmToHi);
-            var mb = (float)(settings.MarginBottom.Value * mmToHi);
+            // var ml = (float)(settings.MarginLeft.Value * mmToHi);
+            // var mr = (float)(settings.MarginRight.Value * mmToHi);
+            // var mt = (float)(settings.MarginTop.Value * mmToHi);
+            // var mb = (float)(settings.MarginBottom.Value * mmToHi);
 
             // drawable content area (full page coordinates)
             var contentRect = new RectangleF(0, 0, page.Width, page.Height);
@@ -103,12 +103,12 @@ public static class PrintEngine
             var imgW = image.Width * 100f / dpiX;
             var imgH = image.Height * 100f / dpiY;
 
-            double sx = contentRect.Width / imgW;
-            double sy = contentRect.Height / imgH;
+            double scaleFactorX = contentRect.Width / imgW;
+            double scaleFactorY = contentRect.Height / imgH;
             var s = settings.ScaleMode.Value switch
             {
-                (int)ScaleModes.Fill => Math.Max(sx, sy),
-                (int)ScaleModes.Fit => Math.Min(sx, sy),
+                (int)ScaleModes.Fill => Math.Max(scaleFactorX, scaleFactorY),
+                (int)ScaleModes.Fit => Math.Min(scaleFactorX, scaleFactorY),
                 (int)ScaleModes.Stretch => 0,
                 _ => 1.0
             };
@@ -181,7 +181,8 @@ public static class PrintEngine
     }
 
     private static int MmToPx(double mm, float dpi) => (int)Math.Round(mm / MmPerInch * dpi);
-    private static int MmToHundredths(double mm) => (int)Math.Round(mm * 100.0 / MmPerInch);
+
+    //private static int MmToHundredths(double mm) => (int)Math.Round(mm * 100.0 / MmPerInch);
     private static int HundredthsToMm(double hdth) => (int)Math.Round(hdth / 100.0 * MmPerInch);
 
     public static PaperInfo? ResolvePaper(string printerName, string requestedName, bool landscape)
