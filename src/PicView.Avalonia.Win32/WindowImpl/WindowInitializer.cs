@@ -108,7 +108,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 _imageInfoWindow.Closing += (_, _) =>
                 {
                     _imageInfoWindow = null;
-                    vm.Exif.Dispose();
+                    vm.Exif?.Dispose();
                     vm.Exif = null;
                     vm.InfoWindow.Dispose();
                     vm.InfoWindow = null;
