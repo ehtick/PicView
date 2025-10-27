@@ -118,6 +118,8 @@ public static class StartUpHelper
             Task.Run(() => KeybindingManager.SetDefaultKeybindings(vm.PlatformService));
         }
 
+        SetWindowEventHandlers(window);
+        
         HandleThemeUpdates(vm);
 
         UIHelper.SetControls(desktop);
@@ -154,7 +156,6 @@ public static class StartUpHelper
 
         MenuManager.AddMenus();
         UIHelper.AddHoverBar(vm);
-        SetWindowEventHandlers(window);
         TooltipHelper.StartTooltipSubscription(vm);
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
