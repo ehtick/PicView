@@ -281,6 +281,25 @@
                                                         Mode=OneWay}"
                             x:Name="FilterBox" />
 
+                        <!--  File count  -->
+                        <StackPanel
+                            DockPanel.Dock="Right"
+                            HorizontalAlignment="Right"
+                            IsVisible="{Binding Path=!IsVisible, ElementName=ClearButton}"
+                            Margin="0,0,10,0"
+                            Opacity="0.5"
+                            Orientation="Horizontal">
+                            <TextBlock
+                                Classes="txt"
+                                Foreground="{DynamicResource MainTextColorFaded}"
+                                Text="{CompiledBinding BatchResizeViewModel.SelectedFiles.Value.Count}" />
+                            <TextBlock Classes="txt" Text=" " />
+                            <TextBlock
+                                Classes="txt"
+                                Foreground="{DynamicResource MainTextColorFaded}"
+                                Text="{CompiledBinding Translation.Files}" />
+                        </StackPanel>
+
                         <!--  clear  -->
                         <customControls:IconButton
                             Classes="altHover"
@@ -295,6 +314,8 @@
                                                         Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                             Padding="10,3,10,3"
                             x:Name="ClearButton" />
+
+
                     </Panel>
                 </DockPanel>
             </Border>
@@ -308,7 +329,7 @@
                 DragDrop.AllowDrop="True"
                 Effect="{StaticResource MenuShadowButtonBorder}"
                 IsVisible="{Binding Path=IsSelected, ElementName=SelectFilesTabItem}"
-                Margin="10,0,10,20"
+                Margin="10,0,10,75"
                 x:Name="FilePanelLogBorder">
                 <Panel>
                     <customControls:AutoScrollViewer
@@ -384,23 +405,13 @@
                 </Panel>
             </Border>
 
-            <StackPanel
-                DockPanel.Dock="Top"
-                HorizontalAlignment="Right"
-                IsVisible="{Binding Path=IsSelected, ElementName=SelectFilesTabItem}"
-                Margin="0,-74,30,0"
-                Orientation="Horizontal">
-                <TextBlock Classes="txt" Text="{CompiledBinding BatchResizeViewModel.SelectedFiles.Value.Count}" />
-                <TextBlock Classes="txt" Text=" " />
-                <TextBlock Classes="txt" Text="{CompiledBinding Translation.Files}" />
-            </StackPanel>
-
-
             <!--  Output folder  -->
             <DockPanel
                 DockPanel.Dock="Top"
+                Height="36"
                 IsVisible="{Binding Path=IsSelected, ElementName=SelectFilesTabItem}"
-                LastChildFill="True">
+                LastChildFill="True"
+                Margin="0,-85,0,0">
                 <TextBlock
                     Classes="txt"
                     DockPanel.Dock="Left"
@@ -432,6 +443,7 @@
                                            Mode=TwoWay}"
                     x:Name="OutputFolderTextBox" />
             </DockPanel>
+
 
             <!--  Resize settings  -->
             <customControls:AutoScrollViewer
@@ -1219,7 +1231,6 @@
                 </StackPanel>
             </customControls:AutoScrollViewer>
 
-
             <DockPanel
                 DockPanel.Dock="Bottom"
                 HorizontalAlignment="Center"
@@ -1271,6 +1282,7 @@
                         TextAlignment="Center" />
                 </Button>
             </DockPanel>
+
         </DockPanel>
     </Panel>
 
