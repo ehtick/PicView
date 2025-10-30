@@ -581,6 +581,9 @@ public static class NavigationManager
     public static bool AddToPreloader(FileInfo file, ImageModel imageModel) =>
         ImageIterator?.Add(file, imageModel) ?? false;
 
+    public static void RemoveFromPreloader(string file) =>
+        ImageIterator.RemoveItemFromPreLoader(file);
+
     public static async ValueTask PreloadAsync() =>
         await ImageIterator.PreloadAsync();
 

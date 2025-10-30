@@ -53,7 +53,7 @@ public static class MainKeyboardShortcuts
     /// Processes the KeyDown event for the main window.
     /// </summary>
     /// <param name="e">The key event arguments.</param>
-    public static async ValueTask MainWindow_KeysDownAsync(KeyEventArgs e)
+    public static async Task MainWindow_KeysDownAsync(KeyEventArgs e)
     {
         if (KeybindingManager.CustomShortcuts is null || !IsKeysEnabled)
         {
