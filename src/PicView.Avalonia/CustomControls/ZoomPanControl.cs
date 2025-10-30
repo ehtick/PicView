@@ -307,7 +307,7 @@ public class ZoomPanControl : Decorator
 
     #region Internal Zoom Logic
 
-    private void ZoomWithPointerWheelCore(bool isZoomIn, Point pos)
+    public void ZoomWithPointerWheelCore(bool isZoomIn, Point pos)
     {
         var step = isZoomIn ? Settings.Zoom.ZoomSpeed : -Math.Abs(Settings.Zoom.ZoomSpeed);
         ZoomBy(Math.Max(0.09, Scale + step), Settings.Zoom.IsZoomAnimated, pos);
