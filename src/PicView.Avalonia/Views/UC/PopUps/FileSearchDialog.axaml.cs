@@ -113,14 +113,11 @@ public partial class FileSearchDialog : AnimatedPopUp
                     return;
                 }
 
-                await Task.Delay(100, ct);
-
                 for (var i = batchSize; i < fileSearchResults.Length; i += batchSize)
                 {
                     var batch = fileSearchResults.Skip(i).Take(batchSize);
                     foreach (var item in batch)
                     {
-                        await Task.Delay(100, ct);
                         ct.ThrowIfCancellationRequested();
                         if (!ct.IsCancellationRequested)
                         {
@@ -143,7 +140,7 @@ public partial class FileSearchDialog : AnimatedPopUp
     {
         _disposables.Dispose();
         KeyDown -= OnKeyDown;
-
+        
         if (DataContext is MainViewModel vm)
         {
             vm.PicViewer.FilteredFileInfos.Value.Clear();

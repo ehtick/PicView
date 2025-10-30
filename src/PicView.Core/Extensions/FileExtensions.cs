@@ -19,7 +19,7 @@ public static class FileExtensions
 
         var magnitude = BitOperations.Log2((ulong)fileSize) / 10;
 
-        return magnitude == 0 ? FormatBytes(fileSize) : FormatWithSuffix(fileSize, magnitude);
+        return magnitude is 0 ? FormatBytes(fileSize) : FormatWithSuffix(fileSize, magnitude);
     }
 
     private static string FormatBytes(long bytes)

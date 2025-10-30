@@ -315,10 +315,8 @@ public static class StartUpHelper
     private static void SetWindowEventHandlers(Window w)
     {
         // Using AddHandler fixes the first keydown event not firing properly
-        w.AddHandler(InputElement.KeyDownEvent, MainWindow_KeysDownAsync,
-            RoutingStrategies.Tunnel | RoutingStrategies.Bubble | RoutingStrategies.Direct);
-        w.AddHandler(InputElement.KeyUpEvent, MainWindow_KeyUp,
-            RoutingStrategies.Tunnel | RoutingStrategies.Bubble | RoutingStrategies.Direct);
+        w.AddHandler(InputElement.KeyDownEvent, MainWindow_KeysDownAsync, RoutingStrategies.Tunnel);
+        w.AddHandler(InputElement.KeyUpEvent, MainWindow_KeyUp, RoutingStrategies.Tunnel);
         w.PointerPressed += async (_, e) => await MouseShortcuts.MainWindow_PointerPressed(e).ConfigureAwait(false);
 
         w.Deactivated += delegate
@@ -330,13 +328,11 @@ public static class StartUpHelper
 
     private static async Task MainWindow_KeysDownAsync(object? sender, KeyEventArgs e)
     {
-        e.Handled = true;
         await MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
     }
 
     private static void MainWindow_KeyUp(object? sender, KeyEventArgs e)
     {
-        e.Handled = true;
         MainKeyboardShortcuts.MainWindow_KeysUp(e);
     }
 }
