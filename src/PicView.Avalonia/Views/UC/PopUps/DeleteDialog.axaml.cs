@@ -16,6 +16,8 @@ public partial class DeleteDialog : AnimatedPopUp
         ConfirmButtonText.Text = recycle ?
             TranslationManager.Translation.MoveToRecycleBin :
             TranslationManager.Translation.DeleteFile;
+
+        KeyChanged += OnKeyChanged;
         
         Loaded += delegate
         {
@@ -41,21 +43,14 @@ public partial class DeleteDialog : AnimatedPopUp
             };
 
             Focus();
-
-            KeyDown += (_, e) =>
-            {
-                switch (e.Key)
-                {
-                    case Key.Enter:
-                        ConfirmButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                        break;
-                    case Key.Escape:
-                        CancelButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-                        break;
-                }
-
-                e.Handled = true;
-            };
         };
+    }
+
+    private void OnKeyChanged(object? sender, KeyEventArgs e)
+    {
+        if (e.Key is Key.Enter)
+        {
+            ConfirmButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        }
     }
 }
