@@ -359,6 +359,10 @@ public static class NavigationManager
         if (!string.IsNullOrEmpty(lastFile))
         {
             await LoadPicFromStringAsync(lastFile, vm).ConfigureAwait(false);
+            if (Settings.WindowProperties.AutoFit)
+            {
+                WindowFunctions.CenterWindowOnScreen();
+            }
         }
         else
         {
@@ -366,6 +370,10 @@ public static class NavigationManager
             if (lastEntry != null)
             {
                 await LoadPicFromStringAsync(lastEntry, vm).ConfigureAwait(false);
+                if (Settings.WindowProperties.AutoFit)
+                {
+                    WindowFunctions.CenterWindowOnScreen();
+                }
             }
         }
     }
