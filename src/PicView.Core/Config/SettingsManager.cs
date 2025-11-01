@@ -51,6 +51,7 @@ public static class SettingsManager
     /// Overrides any UserSettings with GlobalSettings if they are set
     /// </remarks>
     public static GlobalSettingsConfiguration? GlobalConfig { get; private set; }
+
     public static AppSettings? GlobalSettings { get; private set; }
 
     /// <summary>
@@ -66,10 +67,9 @@ public static class SettingsManager
         {
             // Load global config (read-only, Program Path)
             GlobalConfig ??= new GlobalSettingsConfiguration();
-            string globalPath = GlobalConfig.LocalConfigPath;
-            if (File.Exists(globalPath))
+            if (File.Exists(GlobalConfig.LocalConfigPath))
             {
-                await using var globalStream = File.OpenRead(globalPath);
+                await using var globalStream = File.OpenRead(GlobalConfig.LocalConfigPath);
                 if (globalStream.Length > 0)
                 {
                     GlobalSettings = await JsonSerializer.DeserializeAsync<AppSettings>(
@@ -97,7 +97,9 @@ public static class SettingsManager
 
             // Apply Global Overrides
             if (GlobalSettings != null)
+            {
                 ApplyOverrides(Settings, GlobalSettings);
+            }
 
             return true;
         }
@@ -143,47 +145,6 @@ public static class SettingsManager
 
         Configuration.CorrectPath = saveLocation;
         return true;
-    }
-
-    private static AppSettings EnsureSettingsIfNeeded(AppSettings settings)
-    {
-        if (settings?.WindowProperties is null)
-        {
-            return GetDefaults();
-        }
-
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (settings.Version != SettingsConfiguration.CurrentSettingsVersion)
-        {
-            return EnsureSettings(settings);
-        }
-
-        // If navigation settings is null, it is an upgrade from an old version or the config is otherwise invalid
-        if (settings.Navigation is null)
-        {
-            return EnsureSettings(settings);
-        }
-
-        settings.Version = SettingsConfiguration.CurrentSettingsVersion;
-        return settings;
-    }
-
-    private static AppSettings EnsureSettings(AppSettings existingSettings)
-    {
-        var newSettings = GetDefaults();
-
-        existingSettings.UIProperties ??= newSettings.UIProperties;
-        existingSettings.Gallery ??= newSettings.Gallery;
-        existingSettings.Theme ??= newSettings.Theme;
-        existingSettings.Sorting ??= newSettings.Sorting;
-        existingSettings.ImageScaling ??= newSettings.ImageScaling;
-        existingSettings.WindowProperties ??= newSettings.WindowProperties;
-        existingSettings.Zoom ??= newSettings.Zoom;
-        existingSettings.StartUp ??= newSettings.StartUp;
-        existingSettings.Navigation ??= newSettings.Navigation;
-
-        existingSettings.Version = SettingsConfiguration.CurrentSettingsVersion;
-        return existingSettings;
     }
 
     /// <summary>
@@ -268,7 +229,7 @@ public static class SettingsManager
             }
         }
     }
-    
+
     private static void ApplyOverrides(AppSettings target, AppSettings global)
     {
         MergeObjects(target, global);
@@ -282,7 +243,9 @@ public static class SettingsManager
     private static void MergeObjects(object? target, object? source)
     {
         if (target == null || source == null)
+        {
             return;
+        }
 
         var targetType = target.GetType();
         var sourceType = source.GetType();
@@ -291,11 +254,15 @@ public static class SettingsManager
         {
             var sourceValue = prop.GetValue(source);
             if (sourceValue == null)
+            {
                 continue;
+            }
 
             var targetProp = targetType.GetProperty(prop.Name);
             if (targetProp == null || !targetProp.CanWrite)
+            {
                 continue;
+            }
 
             var targetValue = targetProp.GetValue(target);
 
