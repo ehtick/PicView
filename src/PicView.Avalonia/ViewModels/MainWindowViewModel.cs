@@ -121,18 +121,15 @@ public class MainWindowViewModel : IDisposable
             IsEditableTitlebarOpen);
     }
 
-    public void LayoutButtonSubscription()
+    public void LayoutButtonSubscription(MainViewModel vm)
     {
-        Observable.EveryValueChanged(this, x => x.IsMaximized.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(this, x => x.IsMaximized.CurrentValue)
             .Subscribe(_ => SetButtonValues());
-        Observable.EveryValueChanged(this, x => x.IsFullscreen.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(this, x => x.IsFullscreen.CurrentValue)
             .Subscribe(isFullscreen =>
             {
                 SetButtonValues();
-                if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-                {
-                    vm.HoverbarViewModel.IsHoverbarVisible.Value = isFullscreen && Settings.WindowProperties.Fullscreen;
-                }
+                vm.HoverbarViewModel.IsHoverbarVisible.Value = isFullscreen && Settings.WindowProperties.Fullscreen;
             });
     }
 

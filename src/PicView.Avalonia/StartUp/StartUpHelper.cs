@@ -132,12 +132,10 @@ public static class StartUpHelper
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
             SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+
+            vm.MainWindow.LayoutButtonSubscription(vm);
+            vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
         });
-
-       
-        vm.MainWindow.LayoutButtonSubscription();
-        vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
-
 
         if (!Settings.WindowProperties.AutoFit)
         {
@@ -205,7 +203,7 @@ public static class StartUpHelper
 
         if (Settings.WindowProperties.TopMost)
         {
-            desktop.MainWindow.Topmost = true;
+            Dispatcher.UIThread.Invoke(() => { desktop.MainWindow.Topmost = true; });
         }
     }
 
