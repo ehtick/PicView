@@ -155,8 +155,9 @@
                 Foreground="{DynamicResource MainTextColor}"
                 Height="{CompiledBinding MainWindow.TitlebarHeight.Value,
                                          Mode=OneWay}"
+                HorizontalAlignment="Left"
                 IsVisible="{CompiledBinding MainWindow.TopTitlebarViewModel.IsMainMenuVisible.Value}"
-                MinWidth="{CompiledBinding MainWindow.SecondaryWindowMinWidth.Value}"
+                Width="{CompiledBinding MainWindow.SecondaryWindowMinWidth.Value}"
                 ZIndex="9"
                 x:Name="MainMenu">
                 <MenuItem
