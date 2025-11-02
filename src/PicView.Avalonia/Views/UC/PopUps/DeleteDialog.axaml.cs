@@ -2,7 +2,6 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.CustomControls;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
 
@@ -13,33 +12,26 @@ public partial class DeleteDialog : AnimatedPopUp
     public DeleteDialog(string prompt, string file, bool recycle)
     {
         InitializeComponent();
-        ConfirmButtonText.Text = recycle ?
-            TranslationManager.Translation.MoveToRecycleBin :
-            TranslationManager.Translation.DeleteFile;
+        ConfirmButtonText.Text = recycle
+            ? TranslationManager.Translation.MoveToRecycleBin
+            : TranslationManager.Translation.DeleteFile;
 
         KeyChanged += OnKeyChanged;
-        
+
         Loaded += delegate
         {
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+
             PromptText.Text = prompt;
             PromptFileName.Text = Path.GetFileName(file) + "?";
             CancelButton.Click += async delegate { await AnimatedClosing(); };
             ConfirmButton.Click += async delegate
             {
-                if (DataContext is not MainViewModel vm)
-                {
-                    return;
-                }
-                var tasks = new List<Task>();
-                var success = vm.PlatformService.DeleteFile(file, true);
-                tasks.Add(success);
-                var animatedClosing = AnimatedClosing();
-                tasks.Add(animatedClosing);
-                await Task.WhenAll(tasks);
-                if (!success.Result && File.Exists(file))
-                {
-                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
-                }
+                await vm.PlatformService.DeleteFile(file, recycle);
+                await AnimatedClosing();
             };
 
             Focus();
