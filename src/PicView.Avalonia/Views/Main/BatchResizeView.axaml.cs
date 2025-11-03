@@ -112,6 +112,41 @@ public partial class BatchResizeView : UserControl
                     UnlinkChainImage.IsVisible = true;
                 }
             }).AddTo(_disposables);
+
+        for (var i = 0; i < 7; i++)
+        {
+            var oneBased = i + 1;
+            var (percentageItem, widthItem, heightItem, valueBox, outputBox, comboBox) =
+                GetThumbControls(oneBased);
+            comboBox.SelectionChanged += delegate
+            {
+                var (thumbIsPercentageResized, thumbIsWidthResized, thumbIsHeightResized, saveDestination) =
+                    GetUserInputtedOptions(percentageItem, widthItem, heightItem, outputBox, comboBox);
+
+                // Parse the value from the TextBox
+                if (!uint.TryParse(valueBox?.Text, out var thumbValue))
+                {
+                    return;
+                }
+
+                if (thumbIsPercentageResized)
+                {
+                    vm.BatchResizeViewModel.Thumbs[oneBased] =
+                        new BatchThumb(saveDestination, new Percentage(thumbValue));
+                }
+
+                if (thumbIsWidthResized)
+                {
+                    vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, width: thumbValue);
+                }
+
+                if (thumbIsHeightResized)
+                {
+                    vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, height: thumbValue);
+                }
+            };
+        }
+
     }
 
     private void SetThumbValues(int i)
@@ -124,29 +159,13 @@ public partial class BatchResizeView : UserControl
         var oneBased = i;
         i++;
 
-        // Dynamically construct the control names
-        var percentageItemName = $"Thumb{i}PercentageItem";
-        var widthItemName = $"Thumb{i}WidthItem";
-        var heightItemName = $"Thumb{i}HeightItem";
-        var valueBoxName = $"Thumb{i}ValueBox";
-        var outputBoxName = $"Thumb{i}OutputBox";
-        var comboBoxName = $"Thumb{i}ComboBox";
-
-        // Find controls based on their names
-        var percentageItem = this.FindControl<ComboBoxItem>(percentageItemName);
-        var widthItem = this.FindControl<ComboBoxItem>(widthItemName);
-        var heightItem = this.FindControl<ComboBoxItem>(heightItemName);
-        var valueBox = this.FindControl<TextBox>(valueBoxName);
-        var outputBox = this.FindControl<TextBox>(outputBoxName);
-        var comboBox = this.FindControl<ComboBox>(comboBoxName);
+        var (percentageItem, widthItem, heightItem, valueBox, outputBox, comboBox) =
+            GetThumbControls(i);
 
         valueBox.TextChanged += delegate
         {
-            // Check which resizing option is selected
-            var thumbIsPercentageResized = ReferenceEquals(comboBox.SelectedItem, percentageItem);
-            var thumbIsWidthResized = ReferenceEquals(comboBox.SelectedItem, widthItem);
-            var thumbIsHeightResized = ReferenceEquals(comboBox.SelectedItem, heightItem);
-            var saveDestination = outputBox.Text;
+            var (thumbIsPercentageResized, thumbIsWidthResized, thumbIsHeightResized, saveDestination) =
+                GetUserInputtedOptions(percentageItem, widthItem, heightItem, outputBox, comboBox);
 
             // Parse the value from the TextBox
             if (!uint.TryParse(valueBox?.Text, out var thumbValue))
@@ -169,6 +188,49 @@ public partial class BatchResizeView : UserControl
                 vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, height: thumbValue);
             }
         };
+    }
+
+    private (ComboBoxItem? percentageItem, ComboBoxItem? widthItem, ComboBoxItem? heightItem, TextBox? valueBox, TextBox
+        ? outputBox, ComboBox? comboBox)
+        GetThumbControls(int i)
+    {
+        // Dynamically construct the control names
+        var percentageItemName = $"Thumb{i}PercentageItem";
+        var widthItemName = $"Thumb{i}WidthItem";
+        var heightItemName = $"Thumb{i}HeightItem";
+        var valueBoxName = $"Thumb{i}ValueBox";
+        var outputBoxName = $"Thumb{i}OutputBox";
+        var comboBoxName = $"Thumb{i}ComboBox";
+
+        // Find controls based on their names
+        var percentageItem = this.FindControl<ComboBoxItem>(percentageItemName);
+        var widthItem = this.FindControl<ComboBoxItem>(widthItemName);
+        var heightItem = this.FindControl<ComboBoxItem>(heightItemName);
+        var valueBox = this.FindControl<TextBox>(valueBoxName);
+        var outputBox = this.FindControl<TextBox>(outputBoxName);
+        var comboBox = this.FindControl<ComboBox>(comboBoxName);
+
+        return (percentageItem, widthItem, heightItem, valueBox, outputBox, comboBox);
+    }
+
+    private static (
+        bool thumbIsPercentageResized,
+        bool thumbIsWidthResized,
+        bool thumbIsHeightResized,
+        string? saveDestination)
+        GetUserInputtedOptions(ComboBoxItem? percentageItem,
+            ComboBoxItem? widthItem,
+            ComboBoxItem? heightItem,
+            TextBox outputBox,
+            ComboBox comboBox)
+    {
+        // Check which resizing option is selected
+        var thumbIsPercentageResized = ReferenceEquals(comboBox.SelectedItem, percentageItem);
+        var thumbIsWidthResized = ReferenceEquals(comboBox.SelectedItem, widthItem);
+        var thumbIsHeightResized = ReferenceEquals(comboBox.SelectedItem, heightItem);
+        var saveDestination = outputBox.Text;
+
+        return (thumbIsPercentageResized, thumbIsWidthResized, thumbIsHeightResized, saveDestination);
     }
 
     private static void InitializeNavigationData(MainViewModel vm)
