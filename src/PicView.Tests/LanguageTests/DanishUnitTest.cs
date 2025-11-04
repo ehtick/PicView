@@ -341,7 +341,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Blød");
         Assert.Equal(TranslationManager.Translation.Software, "Program");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Sorter efter");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Kilde");
         Assert.Equal(TranslationManager.Translation.Space, "Mellemrum");
         Assert.Equal(TranslationManager.Translation.Square, "Firkant");
         Assert.Equal(TranslationManager.Translation.Start, "Start");

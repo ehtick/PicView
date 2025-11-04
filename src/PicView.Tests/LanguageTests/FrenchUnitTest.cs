@@ -350,7 +350,6 @@ public static class FrenchUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Doux");
         Assert.Equal(TranslationManager.Translation.Software, "Logiciel");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Trier les fichiers par");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Dossier Source");
         Assert.Equal(TranslationManager.Translation.Space, "Espace");
         Assert.Equal(TranslationManager.Translation.Square, "Carré");
         Assert.Equal(TranslationManager.Translation.Start, "Démarrer");

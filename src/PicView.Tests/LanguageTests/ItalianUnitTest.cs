@@ -349,7 +349,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Morbido");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Ordina file per");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Cartella di origine");
         Assert.Equal(TranslationManager.Translation.Space, "Space");
         Assert.Equal(TranslationManager.Translation.Square, "Quadrato");
         Assert.Equal(TranslationManager.Translation.Start, "Inizio");

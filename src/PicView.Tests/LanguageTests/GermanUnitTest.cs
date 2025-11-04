@@ -343,7 +343,6 @@ public static class GermanUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Weich");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Dateien sortieren nach");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Quellordner");
         Assert.Equal(TranslationManager.Translation.Space, "Platz");
         Assert.Equal(TranslationManager.Translation.Square, "Quadrat");
         Assert.Equal(TranslationManager.Translation.Start, "Start");

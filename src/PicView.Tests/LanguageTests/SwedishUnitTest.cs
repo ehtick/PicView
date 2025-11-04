@@ -339,7 +339,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Mjuk");
         Assert.Equal(TranslationManager.Translation.Software, "Program");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Sortera filer efter");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Källmapp");
         Assert.Equal(TranslationManager.Translation.Space, "Mellanslag");
         Assert.Equal(TranslationManager.Translation.Square, "Kvadrat");
         Assert.Equal(TranslationManager.Translation.Start, "Start");

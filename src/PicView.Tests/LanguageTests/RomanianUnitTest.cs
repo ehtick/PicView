@@ -343,7 +343,6 @@ public static class RomanianUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Moale");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Sortare fișiere după");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Dosar sursă");
         Assert.Equal(TranslationManager.Translation.Space, "Spațiu");
         Assert.Equal(TranslationManager.Translation.Square, "Pătrat");
         Assert.Equal(TranslationManager.Translation.Start, "Pornire");

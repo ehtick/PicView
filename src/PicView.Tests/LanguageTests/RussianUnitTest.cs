@@ -345,7 +345,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Мягкий");
         Assert.Equal(TranslationManager.Translation.Software, "Программное обеспечение");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Сортировать файлы по");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Источник папки");
         Assert.Equal(TranslationManager.Translation.Space, "Space");
         Assert.Equal(TranslationManager.Translation.Square, "Квадрат");
         Assert.Equal(TranslationManager.Translation.Start, "Начинать");

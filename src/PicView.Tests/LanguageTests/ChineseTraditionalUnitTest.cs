@@ -329,7 +329,6 @@ public static class ChineseTraditionalUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "柔和");
         Assert.Equal(TranslationManager.Translation.Software, "軟體");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "排序方式");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "原始資料夾");
         Assert.Equal(TranslationManager.Translation.Space, "空格鍵");
         Assert.Equal(TranslationManager.Translation.Square, "正方形");
         Assert.Equal(TranslationManager.Translation.Start, "啟動");

@@ -346,7 +346,6 @@ public static class BrazilianPortugueseUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Suave");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Ordenar arquivos por");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Pasta de origem");
         Assert.Equal(TranslationManager.Translation.Space, "Espaço");
         Assert.Equal(TranslationManager.Translation.Square, "Quadrado");
         Assert.Equal(TranslationManager.Translation.Start, "Iniciar");

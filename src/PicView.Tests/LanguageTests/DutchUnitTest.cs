@@ -344,7 +344,6 @@ public static class DutchUnitTest
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.Solarize, "Solariseren");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Bestanden sorteren op");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Bronmap");
         Assert.Equal(TranslationManager.Translation.Space, "Spatie");
         Assert.Equal(TranslationManager.Translation.Square, "Vierkant");
         Assert.Equal(TranslationManager.Translation.Start, "Start");

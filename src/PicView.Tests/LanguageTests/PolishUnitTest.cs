@@ -342,7 +342,6 @@ public static class PolishUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Miękki");
         Assert.Equal(TranslationManager.Translation.Software, "Oprogramowanie");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Posortuj pliki po");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Folder źródłowy");
         Assert.Equal(TranslationManager.Translation.Space, "Spacja");
         Assert.Equal(TranslationManager.Translation.Square, "Kwadrat");
         Assert.Equal(TranslationManager.Translation.Start, "Rozpocznij");

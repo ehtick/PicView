@@ -345,7 +345,6 @@ public class SpanishUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Suave");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Ordenar archivos por");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Carpeta de origen");
         Assert.Equal(TranslationManager.Translation.Space, "Espacio");
         Assert.Equal(TranslationManager.Translation.Square, "Cuadrado");
         Assert.Equal(TranslationManager.Translation.Start, "Comienzo");

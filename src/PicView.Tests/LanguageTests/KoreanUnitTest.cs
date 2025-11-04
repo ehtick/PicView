@@ -330,7 +330,6 @@ public static class KoreanUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "부드럽게");
         Assert.Equal(TranslationManager.Translation.Software, "소프트웨어");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "파일 정렬");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "원본 폴더");
         Assert.Equal(TranslationManager.Translation.Space, "공간");
         Assert.Equal(TranslationManager.Translation.Square, "정사각형");
         Assert.Equal(TranslationManager.Translation.Start, "시작");

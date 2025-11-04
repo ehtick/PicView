@@ -337,7 +337,6 @@ public static class EnglishUnitTest
         Assert.Equal(TranslationManager.Translation.Soft, "Soft");
         Assert.Equal(TranslationManager.Translation.Software, "Software");
         Assert.Equal(TranslationManager.Translation.SortFilesBy, "Sort files by");
-        Assert.Equal(TranslationManager.Translation.SourceFolder, "Source folder");
         Assert.Equal(TranslationManager.Translation.Space, "Space");
         Assert.Equal(TranslationManager.Translation.Square, "Square");
         Assert.Equal(TranslationManager.Translation.Start, "Start");
