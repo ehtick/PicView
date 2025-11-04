@@ -29,33 +29,45 @@ public class ConfigBenchmark
     private static AppSettings? GlobalSettings { get; set; }
 
     [Benchmark]
-    public async ValueTask OpenReadAsync()
+    public async ValueTask Initial()
     {
         await LoadSettingsAsync();
     }
 
     [Benchmark]
-    public void ReadToEnd()
+    public void WithStreamReader()
     {
         LoadSettingsWithStreamReader();
     }
 
     [Benchmark]
-    public async ValueTask OpenReadAsyncOptimized()
+    public async ValueTask WithParallelTasks()
     {
-        await LoadSettingsAsyncOptimized();
+        await LoadSettingsAsyncWithParallelTasks();
     }
 
     [Benchmark]
     public void ReadAllTextSync()
     {
-        LoadSettingsSync();
+        LoadSettingsAllTextSync();
     }
 
     [Benchmark]
     public void ReadAllLinesSync()
     {
         LoadSettingsLines();
+    }
+
+    [Benchmark]
+    public void ReadAllBytesSync()
+    {
+        LoadSettingsBytes();
+    }
+
+    [Benchmark]
+    public async ValueTask ReadAllBytesAsync()
+    {
+        await LoadSettingsBytesAsync();
     }
 
     [Benchmark]
@@ -96,7 +108,12 @@ public class ConfigBenchmark
             }
 
             // Fallback to defaults if no user config found
-            Settings ??= GetDefaults();
+            // Fallback to defaults if no user config found
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             // Apply Global Overrides
             if (GlobalSettings != null)
@@ -123,9 +140,8 @@ public class ConfigBenchmark
             if (File.Exists(GlobalConfig.LocalConfigPath))
             {
                 using var streamReader = new StreamReader(GlobalConfig.LocalConfigPath);
-                streamReader.ReadToEnd();
                 GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
-                    streamReader.BaseStream, SettingsGenerationContext.Default.AppSettings);
+                    streamReader.ReadToEnd(), SettingsGenerationContext.Default.AppSettings);
             }
 
             // Load user config (User Profile or Program Path)
@@ -136,13 +152,16 @@ public class ConfigBenchmark
             if (File.Exists(userPath))
             {
                 using var streamReader = new StreamReader(userPath);
-                streamReader.ReadToEnd();
-                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
-                    streamReader.BaseStream, SettingsGenerationContext.Default.AppSettings);
+                Settings = JsonSerializer.Deserialize<AppSettings>(
+                    streamReader.ReadToEnd(), SettingsGenerationContext.Default.AppSettings);
             }
 
             // Fallback to defaults if no user config found
-            Settings ??= GetDefaults();
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             // Apply Global Overrides
             if (GlobalSettings != null)
@@ -161,7 +180,7 @@ public class ConfigBenchmark
     }
 
 
-    public static async ValueTask<bool> LoadSettingsAsyncOptimized()
+    public static async ValueTask<bool> LoadSettingsAsyncWithParallelTasks()
     {
         try
         {
@@ -183,7 +202,11 @@ public class ConfigBenchmark
             GlobalSettings = await globalTask.ConfigureAwait(false);
             Settings = await userTask.ConfigureAwait(false);
 
-            Settings ??= GetDefaults();
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             if (GlobalSettings != null)
             {
@@ -212,7 +235,7 @@ public class ConfigBenchmark
             stream, SettingsGenerationContext.Default.AppSettings).ConfigureAwait(false);
     }
 
-    public static bool LoadSettingsSync()
+    public static bool LoadSettingsAllTextSync()
     {
         try
         {
@@ -237,7 +260,11 @@ public class ConfigBenchmark
                     json, SettingsGenerationContext.Default.AppSettings);
             }
 
-            Settings ??= GetDefaults();
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             if (GlobalSettings != null)
             {
@@ -279,7 +306,103 @@ public class ConfigBenchmark
                     json, SettingsGenerationContext.Default.AppSettings);
             }
 
-            Settings ??= GetDefaults();
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
+
+            if (GlobalSettings != null)
+            {
+                //ApplyOverrides(Settings, GlobalSettings);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
+            SetDefaults();
+            return false;
+        }
+    }
+
+    public static bool LoadSettingsBytes()
+    {
+        try
+        {
+            GlobalConfig ??= new GlobalSettingsConfiguration();
+            Configuration ??= new SettingsConfiguration();
+
+            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
+            Configuration.CorrectPath = userPath;
+
+            // Synchronous loading - fastest for startup
+            if (File.Exists(GlobalConfig.LocalConfigPath))
+            {
+                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
+                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
+                    bytes, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (File.Exists(userPath))
+            {
+                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
+                Settings = JsonSerializer.Deserialize<AppSettings>(
+                    bytes, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
+
+            if (GlobalSettings != null)
+            {
+                //ApplyOverrides(Settings, GlobalSettings);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
+            SetDefaults();
+            return false;
+        }
+    }
+
+    public static async ValueTask<bool> LoadSettingsBytesAsync()
+    {
+        try
+        {
+            GlobalConfig ??= new GlobalSettingsConfiguration();
+            Configuration ??= new SettingsConfiguration();
+
+            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
+            Configuration.CorrectPath = userPath;
+
+            // Synchronous loading - fastest for startup
+            if (File.Exists(GlobalConfig.LocalConfigPath))
+            {
+                var bytes = await File.ReadAllBytesAsync(GlobalConfig.LocalConfigPath);
+                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
+                    bytes, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (File.Exists(userPath))
+            {
+                var bytes = await File.ReadAllBytesAsync(GlobalConfig.LocalConfigPath);
+                Settings = JsonSerializer.Deserialize<AppSettings>(
+                    bytes, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             if (GlobalSettings != null)
             {
@@ -306,7 +429,6 @@ public class ConfigBenchmark
             var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
             Configuration.CorrectPath = userPath;
 
-            // Synchronous loading - fastest for startup
             if (File.Exists(GlobalConfig.LocalConfigPath))
             {
                 var json = await File.ReadAllTextAsync(GlobalConfig.LocalConfigPath);
@@ -321,7 +443,11 @@ public class ConfigBenchmark
                     json, SettingsGenerationContext.Default.AppSettings);
             }
 
-            Settings ??= GetDefaults();
+            if (Settings is null)
+            {
+                Settings = GetDefaults();
+                return false;
+            }
 
             if (GlobalSettings != null)
             {
@@ -341,22 +467,24 @@ public class ConfigBenchmark
 
 /*
 
-* Summary *
+// * Summary *
+                                                                                                                                                                                                                                                             
+BenchmarkDotNet v0.15.5, Windows 10 (10.0.19045.6456/22H2/2022Update)
+AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores                                                                                                                                                                                          
+.NET SDK 10.0.100-rc.2.25502.107                                                                                                                                                                                                                             
+  [Host]     : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v4                                                                                                                                                                      
+  DefaultJob : .NET 10.0.0 (10.0.0-rc.2.25502.107, 10.0.25.50307), X64 RyuJIT x86-64-v4                                                                                                                                                                      
+                                                                                                                                                                                                                                                             
 
-BenchmarkDotNet v0.15.2, Windows 10 (10.0.19045.6216/22H2/2022Update)
-AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores
-.NET SDK 10.0.100-preview.7.25380.108
-  [Host]     : .NET 10.0.0 (10.0.25.38108), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-  DefaultJob : .NET 10.0.0 (10.0.25.38108), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-
-
-| Method                 | Mean     | Error   | StdDev  | Gen0   | Allocated |
-|----------------------- |---------:|--------:|--------:|-------:|----------:|
-| OpenReadAsync          | 229.4 us | 3.93 us | 3.28 us |      - |   3.88 KB |                                                                                                                                                                               
-| ReadToEnd              | 177.2 us | 3.43 us | 3.67 us | 0.4883 |  24.66 KB |
-| OpenReadAsyncOptimized | 233.8 us | 4.22 us | 3.95 us |      - |   4.04 KB |
-| ReadAllTextSync        | 167.3 us | 2.39 us | 1.99 us | 0.2441 |  23.01 KB |
-| ReadAllLinesSync       | 166.6 us | 1.16 us | 1.03 us | 0.2441 |  23.01 KB |
-| ReadAllLinesAsync      | 288.0 us | 4.83 us | 4.52 us | 0.4883 |   21.1 KB |
+| Method            | Mean      | Error    | StdDev   | Gen0   | Allocated |
+|------------------ |----------:|---------:|---------:|-------:|----------:|
+| Initial           | 126.22 us | 2.219 us | 2.374 us |      - |   3.97 KB |                                                                                                                                                                                 
+| WithStreamReader  |  47.85 us | 0.195 us | 0.152 us | 0.3662 |  23.16 KB |
+| WithParallelTasks | 125.60 us | 1.810 us | 1.693 us |      - |   4.12 KB |
+| ReadAllTextSync   |  47.63 us | 0.269 us | 0.225 us | 0.3662 |  23.16 KB |
+| ReadAllLinesSync  |  48.07 us | 0.516 us | 0.482 us | 0.3662 |  23.16 KB |
+| ReadAllBytesSync  |  31.35 us | 0.058 us | 0.045 us |      - |   2.89 KB |
+| ReadAllBytesAsync |  31.61 us | 0.049 us | 0.044 us |      - |   2.89 KB |
+| ReadAllLinesAsync | 180.67 us | 2.893 us | 2.706 us | 0.4883 |  21.34 KB |
 
 */

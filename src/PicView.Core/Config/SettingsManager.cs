@@ -74,16 +74,16 @@ public static class SettingsManager
             // Synchronous loading - fastest for startup
             if (File.Exists(GlobalConfig.LocalConfigPath))
             {
-                var json = File.ReadAllText(GlobalConfig.LocalConfigPath);
+                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
                 GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
-                    json, SettingsGenerationContext.Default.AppSettings);
+                    bytes, SettingsGenerationContext.Default.AppSettings);
             }
 
             if (File.Exists(userPath))
             {
-                var json = File.ReadAllText(userPath);
+                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
                 Settings = JsonSerializer.Deserialize<AppSettings>(
-                    json, SettingsGenerationContext.Default.AppSettings);
+                    bytes, SettingsGenerationContext.Default.AppSettings);
             }
             
             // Fallback to defaults if no user config found
