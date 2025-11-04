@@ -22,7 +22,7 @@ public static class SettingsManager
     /// </summary>
     /// <remarks>
     /// This property reflects the full path to the settings file currently in use by the application.
-    /// It is updated when settings are loaded via <see cref="SettingsManager.LoadSettingsAsync"/>
+    /// It is updated when settings are loaded via <see cref="SettingsManager.LoadSettings"/>
     /// or saved using <see cref="SettingsManager.SaveSettingsAsync"/>. If no settings file is loaded,
     /// the value will be null. This path can be used to reference the specific configuration file
     /// being utilized or modified.
@@ -36,7 +36,7 @@ public static class SettingsManager
     /// <remarks>
     /// This property can be used to retrieve or assign settings related to application preferences,
     /// such as UI, theme, sorting, scaling, and startup configurations. The associated settings
-    /// are loaded via <see cref="SettingsManager.LoadSettingsAsync"/> or set to defaults using
+    /// are loaded via <see cref="SettingsManager.LoadSettings"/> or set to defaults using
     /// <see cref="SettingsManager.SetDefaults"/>. Changes to the settings can be saved using
     /// <see cref="SettingsManager.SaveSettingsAsync"/>.
     /// </remarks>
@@ -58,7 +58,7 @@ public static class SettingsManager
     /// Loads application settings synchronously from a file or initializes them to default if loading fails.
     /// </summary>
     /// <returns>
-    /// A boolean indicating whether the settings were successfully loaded.
+    /// True if a config file was present and loaded. False if not and reverted to default settings. 
     /// </returns>
     /// <exception cref="JsonException">Thrown if deserialization of the settings file fails.</exception>
     public static bool LoadSettings()
@@ -87,20 +87,30 @@ public static class SettingsManager
             }
             
             // Fallback to defaults if no user config found
-            Settings ??= GetDefaults();
-        
-            if (GlobalSettings != null)
+            if (Settings is null)
             {
-                ApplyOverrides(Settings, GlobalSettings);
+                Settings = GetDefaults();
+                CheckIfGlobalOverride();
+                return false;
             }
 
-            return true;
+            CheckIfGlobalOverride();
         }
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettings), ex);
             SetDefaults();
             return false;
+        }
+
+        return true;
+
+        void CheckIfGlobalOverride()
+        {
+            if (GlobalSettings != null)
+            {
+                ApplyOverrides(Settings, GlobalSettings);
+            }
         }
     }
 

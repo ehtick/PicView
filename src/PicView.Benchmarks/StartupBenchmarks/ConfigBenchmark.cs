@@ -29,7 +29,7 @@ public class ConfigBenchmark
     private static AppSettings? GlobalSettings { get; set; }
 
     [Benchmark]
-    public async Task OpenReadAsync()
+    public async ValueTask OpenReadAsync()
     {
         await LoadSettingsAsync();
     }
@@ -41,7 +41,7 @@ public class ConfigBenchmark
     }
 
     [Benchmark]
-    public async Task OpenReadAsyncOptimized()
+    public async ValueTask OpenReadAsyncOptimized()
     {
         await LoadSettingsAsyncOptimized();
     }
@@ -50,6 +50,18 @@ public class ConfigBenchmark
     public void ReadAllTextSync()
     {
         LoadSettingsSync();
+    }
+
+    [Benchmark]
+    public void ReadAllLinesSync()
+    {
+        LoadSettingsLines();
+    }
+
+    [Benchmark]
+    public async ValueTask ReadAllLinesAsync()
+    {
+        await LoadSettingsLinesAsync();
     }
 
     public static async ValueTask<bool> LoadSettingsAsync()
@@ -241,6 +253,90 @@ public class ConfigBenchmark
             return false;
         }
     }
+
+    public static bool LoadSettingsLines()
+    {
+        try
+        {
+            GlobalConfig ??= new GlobalSettingsConfiguration();
+            Configuration ??= new SettingsConfiguration();
+
+            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
+            Configuration.CorrectPath = userPath;
+
+            // Synchronous loading - fastest for startup
+            if (File.Exists(GlobalConfig.LocalConfigPath))
+            {
+                var json = File.ReadAllText(GlobalConfig.LocalConfigPath);
+                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
+                    json, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (File.Exists(userPath))
+            {
+                var json = File.ReadAllText(userPath);
+                Settings = JsonSerializer.Deserialize<AppSettings>(
+                    json, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            Settings ??= GetDefaults();
+
+            if (GlobalSettings != null)
+            {
+                //ApplyOverrides(Settings, GlobalSettings);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
+            SetDefaults();
+            return false;
+        }
+    }
+
+    public static async ValueTask<bool> LoadSettingsLinesAsync()
+    {
+        try
+        {
+            GlobalConfig ??= new GlobalSettingsConfiguration();
+            Configuration ??= new SettingsConfiguration();
+
+            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
+            Configuration.CorrectPath = userPath;
+
+            // Synchronous loading - fastest for startup
+            if (File.Exists(GlobalConfig.LocalConfigPath))
+            {
+                var json = await File.ReadAllTextAsync(GlobalConfig.LocalConfigPath);
+                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
+                    json, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            if (File.Exists(userPath))
+            {
+                var json = await File.ReadAllTextAsync(userPath);
+                Settings = JsonSerializer.Deserialize<AppSettings>(
+                    json, SettingsGenerationContext.Default.AppSettings);
+            }
+
+            Settings ??= GetDefaults();
+
+            if (GlobalSettings != null)
+            {
+                //ApplyOverrides(Settings, GlobalSettings);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
+            SetDefaults();
+            return false;
+        }
+    }
 }
 
 /*
@@ -256,9 +352,11 @@ AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores
 
 | Method                 | Mean     | Error   | StdDev  | Gen0   | Allocated |
 |----------------------- |---------:|--------:|--------:|-------:|----------:|
-| OpenReadAsync          | 227.3 us | 4.27 us | 4.56 us |      - |   3.96 KB |
-| ReadToEnd              | 171.3 us | 1.45 us | 1.21 us | 0.4883 |  24.67 KB |
-| OpenReadAsyncOptimized | 231.2 us | 1.18 us | 1.05 us |      - |   4.11 KB |
-| ReadAllTextSync        | 166.5 us | 2.89 us | 2.56 us | 0.2441 |  23.03 KB |
+| OpenReadAsync          | 229.4 us | 3.93 us | 3.28 us |      - |   3.88 KB |                                                                                                                                                                               
+| ReadToEnd              | 177.2 us | 3.43 us | 3.67 us | 0.4883 |  24.66 KB |
+| OpenReadAsyncOptimized | 233.8 us | 4.22 us | 3.95 us |      - |   4.04 KB |
+| ReadAllTextSync        | 167.3 us | 2.39 us | 1.99 us | 0.2441 |  23.01 KB |
+| ReadAllLinesSync       | 166.6 us | 1.16 us | 1.03 us | 0.2441 |  23.01 KB |
+| ReadAllLinesAsync      | 288.0 us | 4.83 us | 4.52 us | 0.4883 |   21.1 KB |
 
 */
