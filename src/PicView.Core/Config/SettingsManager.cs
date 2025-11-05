@@ -81,7 +81,7 @@ public static class SettingsManager
 
             if (File.Exists(userPath))
             {
-                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
+                var bytes = File.ReadAllBytes(userPath);
                 Settings = JsonSerializer.Deserialize<AppSettings>(
                     bytes, SettingsGenerationContext.Default.AppSettings);
             }

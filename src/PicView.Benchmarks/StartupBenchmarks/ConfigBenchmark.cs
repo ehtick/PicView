@@ -47,19 +47,13 @@ public class ConfigBenchmark
     }
 
     [Benchmark]
-    public void ReadAllTextSync()
+    public void ReadAllText()
     {
-        LoadSettingsAllTextSync();
+        LoadSettingsAllText();
     }
 
     [Benchmark]
-    public void ReadAllLinesSync()
-    {
-        LoadSettingsLines();
-    }
-
-    [Benchmark]
-    public void ReadAllBytesSync()
+    public void ReadAllBytes()
     {
         LoadSettingsBytes();
     }
@@ -235,53 +229,7 @@ public class ConfigBenchmark
             stream, SettingsGenerationContext.Default.AppSettings).ConfigureAwait(false);
     }
 
-    public static bool LoadSettingsAllTextSync()
-    {
-        try
-        {
-            GlobalConfig ??= new GlobalSettingsConfiguration();
-            Configuration ??= new SettingsConfiguration();
-
-            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
-            Configuration.CorrectPath = userPath;
-
-            // Synchronous loading - fastest for startup
-            if (File.Exists(GlobalConfig.LocalConfigPath))
-            {
-                var json = File.ReadAllText(GlobalConfig.LocalConfigPath);
-                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
-                    json, SettingsGenerationContext.Default.AppSettings);
-            }
-
-            if (File.Exists(userPath))
-            {
-                var json = File.ReadAllText(userPath);
-                Settings = JsonSerializer.Deserialize<AppSettings>(
-                    json, SettingsGenerationContext.Default.AppSettings);
-            }
-
-            if (Settings is null)
-            {
-                Settings = GetDefaults();
-                return false;
-            }
-
-            if (GlobalSettings != null)
-            {
-                //ApplyOverrides(Settings, GlobalSettings);
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(SettingsManager), nameof(LoadSettingsAsync), ex);
-            SetDefaults();
-            return false;
-        }
-    }
-
-    public static bool LoadSettingsLines()
+    public static bool LoadSettingsAllText()
     {
         try
         {
@@ -347,7 +295,7 @@ public class ConfigBenchmark
 
             if (File.Exists(userPath))
             {
-                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
+                var bytes = File.ReadAllBytes(userPath);
                 Settings = JsonSerializer.Deserialize<AppSettings>(
                     bytes, SettingsGenerationContext.Default.AppSettings);
             }
@@ -393,7 +341,7 @@ public class ConfigBenchmark
 
             if (File.Exists(userPath))
             {
-                var bytes = await File.ReadAllBytesAsync(GlobalConfig.LocalConfigPath);
+                var bytes = await File.ReadAllBytesAsync(userPath);
                 Settings = JsonSerializer.Deserialize<AppSettings>(
                     bytes, SettingsGenerationContext.Default.AppSettings);
             }
@@ -478,13 +426,12 @@ AMD Ryzen 7 9800X3D 4.70GHz, 1 CPU, 16 logical and 8 physical cores
 
 | Method            | Mean      | Error    | StdDev   | Gen0   | Allocated |
 |------------------ |----------:|---------:|---------:|-------:|----------:|
-| Initial           | 126.22 us | 2.219 us | 2.374 us |      - |   3.97 KB |                                                                                                                                                                                 
-| WithStreamReader  |  47.85 us | 0.195 us | 0.152 us | 0.3662 |  23.16 KB |
-| WithParallelTasks | 125.60 us | 1.810 us | 1.693 us |      - |   4.12 KB |
-| ReadAllTextSync   |  47.63 us | 0.269 us | 0.225 us | 0.3662 |  23.16 KB |
-| ReadAllLinesSync  |  48.07 us | 0.516 us | 0.482 us | 0.3662 |  23.16 KB |
-| ReadAllBytesSync  |  31.35 us | 0.058 us | 0.045 us |      - |   2.89 KB |
-| ReadAllBytesAsync |  31.61 us | 0.049 us | 0.044 us |      - |   2.89 KB |
-| ReadAllLinesAsync | 180.67 us | 2.893 us | 2.706 us | 0.4883 |  21.34 KB |
+| Initial           | 125.18 us | 2.488 us | 2.327 us |      - |   3.97 KB |                                                                                                                                                                                 
+| WithStreamReader  |  47.68 us | 0.169 us | 0.158 us | 0.3662 |  23.16 KB |
+| WithParallelTasks | 124.54 us | 0.884 us | 0.690 us |      - |   4.12 KB |
+| ReadAllText       |  47.25 us | 0.175 us | 0.155 us | 0.4272 |  23.16 KB |
+| ReadAllBytes      |  43.74 us | 0.093 us | 0.082 us | 0.0610 |   5.11 KB |
+| ReadAllBytesAsync | 137.07 us | 0.268 us | 0.238 us |      - |   5.78 KB |
+| ReadAllLinesAsync | 181.01 us | 1.563 us | 1.462 us | 0.4883 |  21.34 KB |
 
 */
