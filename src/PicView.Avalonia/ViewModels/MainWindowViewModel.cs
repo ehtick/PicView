@@ -143,13 +143,15 @@ public class MainWindowViewModel : IDisposable
         Observable.EveryValueChanged(vm.MainWindow.CurrentView, control => control.Value)
             .Subscribe(control =>
             {
-                if (control is ImageViewer)
+                if (control is ImageViewer && Settings.UIProperties.ShowHoverNavigationBar)
                 {
                     if (Settings.WindowProperties.Fullscreen)
                     {
                         vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
                     }
-                    else if (!Settings.UIProperties.ShowBottomNavBar && Settings.UIProperties.ShowAltInterfaceButtons)
+                    else if ((!Settings.UIProperties.ShowBottomNavBar &&
+                              Settings.UIProperties.ShowAltInterfaceButtons) ||
+                             !Settings.UIProperties.ShowInterface)
                     {
                         vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
                     }
