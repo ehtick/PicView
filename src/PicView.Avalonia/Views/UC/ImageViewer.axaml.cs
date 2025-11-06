@@ -87,6 +87,9 @@ public partial class ImageViewer : UserControl
     /// <inheritdoc cref="Zoom.ResetZoom(bool, MainViewModel)"/>
     public void ResetZoom(bool enableAnimations = true) =>
         ZoomPanControl.ResetZoom(enableAnimations);
+
+    public void ResetZoomSlim() =>
+        ZoomPanControl.ResetZoomSlim();
     #endregion
 
     #region Image Transformation

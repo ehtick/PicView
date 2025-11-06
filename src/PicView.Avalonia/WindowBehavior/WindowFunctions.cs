@@ -228,6 +228,9 @@ public static class WindowFunctions
             vm.MainWindow.CanResize.Value = false;
             Settings.WindowProperties.AutoFit = true;
             vm.GlobalSettings.IsAutoFit.Value = true;
+
+            // Fix unpleasant window placement
+            Dispatcher.UIThread.Post(() => { CenterWindowOnScreen(); }, DispatcherPriority.Background);
         }
 
         await ResizeAndFixRenderingError(vm);

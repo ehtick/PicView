@@ -124,11 +124,16 @@ public static class QuickLoad
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
                 WindowFunctions.CenterWindowOnScreen();
+                vm.ImageViewer.ResetZoomSlim();
             }, DispatcherPriority.Send);
         }
         else
         {
-            await Dispatcher.UIThread.InvokeAsync(window.Show, DispatcherPriority.Send);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                window.Show();
+                vm.ImageViewer.ResetZoomSlim();
+            }, DispatcherPriority.Send);
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
@@ -167,7 +172,11 @@ public static class QuickLoad
         }, DispatcherPriority.Send);
         if (Settings.WindowProperties.AutoFit && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
-            Dispatcher.UIThread.Post(() => WindowFunctions.CenterWindowOnScreen(), DispatcherPriority.Render);
+            Dispatcher.UIThread.Post(() =>
+            {
+                WindowFunctions.CenterWindowOnScreen();
+                vm.ImageViewer.ResetZoomSlim();
+            }, DispatcherPriority.Render);
         }
         SetPicViewerValues(vm, imageModel, fileInfo);
         

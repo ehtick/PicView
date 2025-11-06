@@ -170,7 +170,7 @@ public class ZoomPanControl : Decorator
             return;
         }
 
-        _zoomPreviewer.IsVisible = false;
+        _zoomPreviewer?.IsVisible = false;
 
         ApplyZoomAndTitle(1.0, CenterPoint(), animated);
         SetZoomValue(100);
