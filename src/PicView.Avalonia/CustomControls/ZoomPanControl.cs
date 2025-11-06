@@ -100,9 +100,13 @@ public class ZoomPanControl : Decorator
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        // After layout, ensure transforms are constrained
-        ConstrainTranslationToBounds();
-        UpdateChildTransform();
+        if (_isPanning)
+        {
+            // After layout, ensure transforms are constrained
+            ConstrainTranslationToBounds();
+            UpdateChildTransform();
+        }
+
         return base.ArrangeOverride(finalSize);
     }
 

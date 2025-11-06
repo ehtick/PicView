@@ -48,6 +48,7 @@ public static class NavigationManager
         ImageModel? nextImageModel = null;
         vm.PicViewer.ImageSource.Value = imageModel.Image;
         vm.PicViewer.ImageType.Value = imageModel.ImageType;
+
         if (!Settings.ImageScaling.ShowImageSideBySide)
         {
             var size = WindowResizing.GetSize(imageModel.PixelWidth, imageModel.PixelHeight, 0, 0, imageModel.Rotation, vm );

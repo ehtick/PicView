@@ -25,7 +25,7 @@ public partial class ImageViewer : UserControl
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         InitializeImageTransformer();
-        ZoomPanControl.ResetZoomSlim();
+        ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         
         // Start in dispatcher with low priority,
         // because it is more important to schedule it after more important things.
@@ -34,7 +34,6 @@ public partial class ImageViewer : UserControl
             AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
             AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
             AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            ImageControlHelper.TriggerScalingModeUpdate(MainImage, false);
             InitializeMouseInputHelper();
         }, DispatcherPriority.Background);
     }
@@ -57,7 +56,6 @@ public partial class ImageViewer : UserControl
             () => DataContext,
             () =>
             {
-                ZoomPanControl.ResetZoomSlim();
             });
     }
 
@@ -87,9 +85,7 @@ public partial class ImageViewer : UserControl
     /// <inheritdoc cref="Zoom.ResetZoom(bool, MainViewModel)"/>
     public void ResetZoom(bool enableAnimations = true) =>
         ZoomPanControl.ResetZoom(enableAnimations);
-
-    public void ResetZoomSlim() =>
-        ZoomPanControl.ResetZoomSlim();
+    
     #endregion
 
     #region Image Transformation

@@ -124,16 +124,11 @@ public static class QuickLoad
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height, vm);
                 window.Show();
                 WindowFunctions.CenterWindowOnScreen();
-                vm.ImageViewer.ResetZoomSlim();
             }, DispatcherPriority.Send);
         }
         else
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                window.Show();
-                vm.ImageViewer.ResetZoomSlim();
-            }, DispatcherPriority.Send);
+            await Dispatcher.UIThread.InvokeAsync(window.Show, DispatcherPriority.Send);
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
@@ -175,7 +170,6 @@ public static class QuickLoad
             Dispatcher.UIThread.Post(() =>
             {
                 WindowFunctions.CenterWindowOnScreen();
-                vm.ImageViewer.ResetZoomSlim();
             }, DispatcherPriority.Render);
         }
         SetPicViewerValues(vm, imageModel, fileInfo);
