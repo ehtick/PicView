@@ -25,6 +25,7 @@ public partial class ImageViewer : UserControl
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         InitializeImageTransformer();
+        ZoomPanControl.Initialize();
         ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         
         // Start in dispatcher with low priority,
@@ -49,13 +50,17 @@ public partial class ImageViewer : UserControl
 
     private void InitializeImageTransformer()
     {
-        ZoomPanControl.Initialize();
+        if (_imageTransformer is not null)
+        {
+            return;
+        }
         _imageTransformer = new RotationTransformer(
             ImageLayoutTransformControl,
             MainImage,
             () => DataContext,
             () =>
             {
+                ZoomPanControl.ResetZoomSlim();
             });
     }
 
@@ -92,7 +97,16 @@ public partial class ImageViewer : UserControl
     public void Rotate(bool clockWise) => _imageTransformer?.Rotate(clockWise);
     public void Rotate(double angle) => _imageTransformer?.Rotate(angle);
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
-    public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true) =>
-        _imageTransformer?.SetTransform(orientation, format, reset);
+
+    public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true)
+    {
+        if (_imageTransformer is null)
+        {
+            InitializeImageTransformer();
+        }
+
+        _imageTransformer.SetTransform(orientation, format, reset);
+    }
+        
     #endregion
 }
