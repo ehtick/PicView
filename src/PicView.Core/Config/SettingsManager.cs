@@ -52,6 +52,7 @@ public static class SettingsManager
     /// </remarks>
     public static GlobalSettingsConfiguration? GlobalConfig { get; private set; }
 
+    // TODO: Reimplement this and check it properly for bugs
     public static AppSettings? GlobalSettings { get; private set; }
 
     /// <summary>
@@ -65,36 +66,22 @@ public static class SettingsManager
     {
         try
         {
-            GlobalConfig ??= new GlobalSettingsConfiguration();
             Configuration ??= new SettingsConfiguration();
-        
-            var userPath = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
-            Configuration.CorrectPath = userPath;
-
-            // Synchronous loading - fastest for startup
-            if (File.Exists(GlobalConfig.LocalConfigPath))
-            {
-                var bytes = File.ReadAllBytes(GlobalConfig.LocalConfigPath);
-                GlobalSettings = JsonSerializer.Deserialize<AppSettings>(
-                    bytes, SettingsGenerationContext.Default.AppSettings);
-            }
-
-            if (File.Exists(userPath))
-            {
-                var bytes = File.ReadAllBytes(userPath);
-                Settings = JsonSerializer.Deserialize<AppSettings>(
-                    bytes, SettingsGenerationContext.Default.AppSettings);
-            }
+            var path = ConfigFileManager.ResolveDefaultConfigPath(Configuration);
             
-            // Fallback to defaults if no user config found
-            if (Settings is null)
+            if (File.Exists(path))
             {
+                var bytes = File.ReadAllBytes(path);
+                var settings = JsonSerializer.Deserialize<AppSettings>(
+                    bytes, SettingsGenerationContext.Default.AppSettings);
+                Settings = EnsureSettingsIfNeeded(settings);
+            }
+            else
+            {
+                // Fallback to defaults if no user config found
                 Settings = GetDefaults();
-                CheckIfGlobalOverride();
                 return false;
             }
-
-            CheckIfGlobalOverride();
         }
         catch (Exception ex)
         {
@@ -104,14 +91,6 @@ public static class SettingsManager
         }
 
         return true;
-
-        void CheckIfGlobalOverride()
-        {
-            if (GlobalSettings != null)
-            {
-                ApplyOverrides(Settings, GlobalSettings);
-            }
-        }
     }
 
     /// <summary>
@@ -237,6 +216,47 @@ public static class SettingsManager
                 File.Delete(path);
             }
         }
+    }
+
+    private static AppSettings EnsureSettingsIfNeeded(AppSettings settings)
+    {
+        if (settings?.WindowProperties is null)
+        {
+            return GetDefaults();
+        }
+
+        // ReSharper disable once CompareOfFloatsByEqualityOperator
+        if (settings.Version != SettingsConfiguration.CurrentSettingsVersion)
+        {
+            return EnsureSettings(settings);
+        }
+        
+        // If navigation settings is null, it is an upgrade from an old version or the config is otherwise invalid
+        if (settings.Navigation is null)
+        {
+            return EnsureSettings(settings);
+        }
+
+        settings.Version = SettingsConfiguration.CurrentSettingsVersion;
+        return settings;
+    }
+
+    private static AppSettings EnsureSettings(AppSettings existingSettings)
+    {
+        var newSettings = GetDefaults();
+
+        existingSettings.UIProperties ??= newSettings.UIProperties;
+        existingSettings.Gallery ??= newSettings.Gallery;
+        existingSettings.Theme ??= newSettings.Theme;
+        existingSettings.Sorting ??= newSettings.Sorting;
+        existingSettings.ImageScaling ??= newSettings.ImageScaling;
+        existingSettings.WindowProperties ??= newSettings.WindowProperties;
+        existingSettings.Zoom ??= newSettings.Zoom;
+        existingSettings.StartUp ??= newSettings.StartUp;
+        existingSettings.Navigation ??= newSettings.Navigation;
+
+        existingSettings.Version = SettingsConfiguration.CurrentSettingsVersion;
+        return existingSettings;
     }
 
     private static void ApplyOverrides(AppSettings target, AppSettings global)
