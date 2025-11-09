@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -96,6 +97,11 @@ public partial class HoverBar : UserControl
                 vm.HoverbarViewModel.IsHoverNavigationButtonPreviousClicked = true;
                 await NavigationManager.Navigate(false, vm, c);
             });
+
+        Debug.Assert(Settings.Gallery is not null);
+        Observable.EveryValueChanged(Settings.Gallery, x => x.IsBottomGalleryShown)
+            .Skip(1)
+            .Subscribe(_ => { ApplyResponsiveResize(Bounds.Width); });
     }
 
     private void ApplyResponsiveResize(double width)
