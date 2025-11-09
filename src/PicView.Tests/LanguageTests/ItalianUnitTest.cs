@@ -173,8 +173,6 @@ public static class ItalianUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Tema di vetro");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Torna indietro di 100 immagini");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Torna indietro di 10 immagini");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex,
-            "Vai all'immagine all'indice specificato");
         Assert.Equal(TranslationManager.Translation.Hard, "Duro");
         Assert.Equal(TranslationManager.Translation.Height, "Altezza");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Nascondi galleria inferiore");

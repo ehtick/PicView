@@ -169,7 +169,6 @@ public static class TurkishUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Cam Teması");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "100 Resim geri git");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "10 Resim geri git");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "Belirtilen dizindeki görüntüye git");
         Assert.Equal(TranslationManager.Translation.Hard, "Zor");
         Assert.Equal(TranslationManager.Translation.Height, "Yükseklik");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Alt galeriyi gizle");

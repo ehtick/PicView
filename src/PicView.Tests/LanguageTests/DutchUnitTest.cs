@@ -170,7 +170,6 @@ public static class DutchUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Glas thema");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Ga terug met 100 afbeeldingen");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Ga terug met 10 afbeeldingen");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "Ga naar afbeelding op opgegeven index");
         Assert.Equal(TranslationManager.Translation.Hard, "Hard");
         Assert.Equal(TranslationManager.Translation.Height, "Hoogte");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Verberg onderste galerij");

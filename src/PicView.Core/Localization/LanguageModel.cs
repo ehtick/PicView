@@ -177,7 +177,6 @@ public class LanguageModel
     public string? GlassTheme { get; set; }
     public string? GoBackBy100Images { get; set; }
     public string? GoBackBy10Images { get; set; }
-    public string? GoToImageAtSpecifiedIndex { get; set; }
     public string? Graphics { get; set; }
     public string? Hard { get; set; }
     public string? Height { get; set; }

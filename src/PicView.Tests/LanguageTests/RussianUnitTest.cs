@@ -171,8 +171,6 @@ public static class RussianUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Стеклянная тема");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Вернуться на 100 изображений назад");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Вернуться на 10 изображений назад");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex,
-            "Перейти к изображению по указанному индексу");
         Assert.Equal(TranslationManager.Translation.Hard, "Жесткий");
         Assert.Equal(TranslationManager.Translation.Height, "Высота");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Скрыть нижнюю галерею");

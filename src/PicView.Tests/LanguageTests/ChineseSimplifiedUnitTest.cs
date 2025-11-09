@@ -162,7 +162,6 @@ public static class ChineseSimplifiedUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "玻璃主题");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "后退 100 张图片");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "后退 10 张图片");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "跳转至指定图片");
         Assert.Equal(TranslationManager.Translation.Hard, "硬");
         Assert.Equal(TranslationManager.Translation.Height, "高度");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "收起底部图");

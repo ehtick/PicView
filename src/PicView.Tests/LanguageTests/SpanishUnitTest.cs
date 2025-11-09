@@ -172,7 +172,6 @@ public class SpanishUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Tema de vidrio");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Retroceder 100 imágenes");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Retroceder 10 imágenes");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "Ir a imagen en índice especificado");
         Assert.Equal(TranslationManager.Translation.Hard, "Duro");
         Assert.Equal(TranslationManager.Translation.Height, "Alto");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Ocultar galería inferior");

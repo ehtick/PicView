@@ -169,7 +169,6 @@ public static class SwedishUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Glastema");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Bakåt 100 bilder");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Bakåt 10 bilder");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "Gå till bildnummer");
         Assert.Equal(TranslationManager.Translation.Hard, "Hård");
         Assert.Equal(TranslationManager.Translation.Height, "Höjd");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Dölj nedre galleriet");

@@ -133,7 +133,6 @@ public class TranslationViewModel : IDisposable
         GlassTheme.Value = t.GlassTheme;
         GoBackBy10Images.Value = t.GoBackBy10Images;
         GoBackBy100Images.Value = t.GoBackBy100Images;
-        GoToImageAtSpecifiedIndex.Value = t.GoToImageAtSpecifiedIndex;
         Height.Value = t.Height;
         Help.Value = t.Help;
         HideBottomGallery.Value = t.HideBottomGallery;
@@ -445,7 +444,6 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> GlassTheme { get; } = new();
     public BindableReactiveProperty<string?> GoBackBy100Images { get; } = new();
     public BindableReactiveProperty<string?> GoBackBy10Images { get; } = new();
-    public BindableReactiveProperty<string?> GoToImageAtSpecifiedIndex { get; } = new();
     public BindableReactiveProperty<string?> Height { get; } = new();
     public BindableReactiveProperty<string?> Help { get; } = new();
     public BindableReactiveProperty<string?> HideBottomGallery { get; } = new();

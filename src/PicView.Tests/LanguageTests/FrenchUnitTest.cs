@@ -175,7 +175,6 @@ public static class FrenchUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Thème en verre");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Reculer de 100 images");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Reculer de 10 images");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex, "Aller à l'image à l'index spécifié");
         Assert.Equal(TranslationManager.Translation.Hard, "Dur");
         Assert.Equal(TranslationManager.Translation.Height, "Hauteur");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Masquer la galerie inférieure");

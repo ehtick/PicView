@@ -174,8 +174,6 @@ public static class BrazilianPortugueseUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Tema de vidro");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Retroceder em 100 imagens");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Retroceder em 10 imagens");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex,
-            "Ir para a imagem no índice especificado");
         Assert.Equal(TranslationManager.Translation.Hard, "Forte");
         Assert.Equal(TranslationManager.Translation.Height, "Altura");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Ocultar galeria inferior");

@@ -171,8 +171,6 @@ public static class PolishUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Motyw szklany");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Przejdź o 100 obrazów do tyłu");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Przejdź o 10 obrazów do tyłu");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex,
-            "Przejdź do zdjęcia o określonym indeksie");
         Assert.Equal(TranslationManager.Translation.Hard, "Twardy");
         Assert.Equal(TranslationManager.Translation.Height, "Wysokość");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Ukryj dolną galerię");

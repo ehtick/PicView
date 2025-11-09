@@ -170,8 +170,6 @@ public static class DanishUnitTest
         Assert.Equal(TranslationManager.Translation.GlassTheme, "Glas tema");
         Assert.Equal(TranslationManager.Translation.GoBackBy100Images, "Gå 100 billeder tilbage");
         Assert.Equal(TranslationManager.Translation.GoBackBy10Images, "Gå 10 billeder tilbage");
-        Assert.Equal(TranslationManager.Translation.GoToImageAtSpecifiedIndex,
-            "Indlæs billede ved at indtaste numerisk placering");
         Assert.Equal(TranslationManager.Translation.Hard, "Hård");
         Assert.Equal(TranslationManager.Translation.Height, "Højde");
         Assert.Equal(TranslationManager.Translation.HideBottomGallery, "Skjul nederste galleri");
