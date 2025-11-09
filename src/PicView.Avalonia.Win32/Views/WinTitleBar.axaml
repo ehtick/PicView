@@ -424,22 +424,6 @@
                 <!--  View  -->
                 <MenuItem Header="{CompiledBinding Translation.View, Mode=OneWay}">
 
-                    <!--  Toggle UI  -->
-                    <MenuItem
-                        Command="{CompiledBinding Tools.ToggleUICommand}"
-                        Header="{CompiledBinding Translation.IsShowingUI.Value,
-                                                 Mode=OneWay}"
-                        IsVisible="{CompiledBinding MainWindow.IsUIShown.Value,
-                                                    Mode=OneWay}"
-                        Theme="{StaticResource MainBg}">
-                        <MenuItem.Icon>
-                            <Image
-                                Height="12"
-                                Source="{StaticResource EyeOffImage}"
-                                Width="12" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
                     <!--  Change background  -->
                     <MenuItem
                         Command="{CompiledBinding Tools.ChangeBackgroundCommand}"
@@ -455,26 +439,23 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
-                    <!--  Toggle side-by-side  -->
-                    <MenuItem
-                        Command="{CompiledBinding Tools.ShowSideBySideCommand}"
-                        Header="{CompiledBinding Translation.SideBySide.Value,
-                                                 Mode=OneWay}"
-                        IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
-                        Theme="{StaticResource MainBg}"
-                        ToggleType="CheckBox" />
+                    <Separator
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Margin="0"
+                        Opacity=".9" />
 
-                    <!--  Toggle bottom gallery  -->
+                    <!--  Toggle UI  -->
                     <MenuItem
-                        Command="{CompiledBinding Gallery.ToggleBottomGalleryCommand}"
-                        Header="{CompiledBinding Translation.IsShowingBottomGallery.Value,
+                        Command="{CompiledBinding Tools.ToggleUICommand}"
+                        Header="{CompiledBinding Translation.IsShowingUI.Value,
                                                  Mode=OneWay}"
-                        IsChecked="{CompiledBinding Gallery.IsBottomGalleryShown.Value}"
+                        IsVisible="{CompiledBinding MainWindow.IsUIShown.Value,
+                                                    Mode=OneWay}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
                                 Height="12"
-                                Source="{StaticResource GalleryImage}"
+                                Source="{StaticResource EyeOffImage}"
                                 Width="12" />
                         </MenuItem.Icon>
                     </MenuItem>
@@ -506,6 +487,47 @@
                                 Width="12" />
                         </MenuItem.Icon>
                     </MenuItem>
+
+                    <Separator
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Margin="0"
+                        Opacity=".9" />
+
+                    <!--  Toggle side-by-side  -->
+                    <MenuItem
+                        Command="{CompiledBinding Tools.ShowSideBySideCommand}"
+                        Header="{CompiledBinding Translation.SideBySide.Value,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding PicViewer.IsShowingSideBySide.Value}"
+                        Theme="{StaticResource MainBg}"
+                        ToggleType="CheckBox" />
+
+
+                    <Separator
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Margin="0"
+                        Opacity=".9" />
+
+
+                    <!--  Toggle bottom gallery  -->
+                    <MenuItem
+                        Command="{CompiledBinding Gallery.ToggleBottomGalleryCommand}"
+                        Header="{CompiledBinding Translation.IsShowingBottomGallery.Value,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding Gallery.IsBottomGalleryShown.Value}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Height="12"
+                                Source="{StaticResource GalleryImage}"
+                                Width="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Margin="0"
+                        Opacity=".9" />
 
                     <Separator
                         Background="{DynamicResource ContextMenuBackgroundColor}"
