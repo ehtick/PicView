@@ -35,10 +35,6 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public override void Initialize()
     {
-        #if DEBUG
-        ProfileOptimization.SetProfileRoot(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config/"));
-        ProfileOptimization.StartProfile("ProfileOptimization");
-        #endif
         AvaloniaXamlLoader.Load(this);
     }
 
@@ -69,12 +65,14 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             desktop.MainWindow = _mainWindow;
 
             _mainWindow.DataContext = _vm;
-            StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow, startUpFilePath);
-            if (Settings.WindowProperties.AutoFit && startUpFilePath is not null)
+            if (string.IsNullOrWhiteSpace(startUpFilePath))
             {
-                WindowFunctions.CenterWindowOnScreen();
+                StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
             }
-
+            else
+            {
+                StartUpHelper.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
+            }
             _windowInitializer = new WindowInitializer();
             
             // Register for macOS file opening

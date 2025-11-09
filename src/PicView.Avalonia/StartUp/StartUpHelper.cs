@@ -85,6 +85,24 @@ public static class StartUpHelper
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
+    
+    public static void StartUpBlank(MainViewModel vm, bool settingsExists,
+        IClassicDesktopStyleApplicationLifetime desktop,
+        Window window)
+    {
+        SettingsUpdater.InitializeSettings(vm);
+        
+        HandleWindowScalingMode(vm, window);
+
+        window.Show();
+
+        Dispatcher.UIThread.Post(() =>
+        {
+            HandlePostWindowUpdates(vm, settingsExists, desktop, window);
+        }, DispatcherPriority.Background);
+    }
+    
+    
 
     private static void HandleWindowScalingMode(MainViewModel vm, Window window)
     {
