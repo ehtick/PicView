@@ -42,18 +42,7 @@ public static class SettingsManager
     /// </remarks>
     public static AppSettings? Settings { get; private set; }
 
-    public static SettingsConfiguration? Configuration { get; private set; }
-
-    /// <summary>
-    /// Global Configuration Support
-    /// </summary>
-    /// <remarks>
-    /// Overrides any UserSettings with GlobalSettings if they are set
-    /// </remarks>
-    public static GlobalSettingsConfiguration? GlobalConfig { get; private set; }
-
-    // TODO: Reimplement this and check it properly for bugs
-    public static AppSettings? GlobalSettings { get; private set; }
+    private static SettingsConfiguration? Configuration { get; set; }
 
     /// <summary>
     /// Loads application settings synchronously from a file or initializes them to default if loading fails.
@@ -74,7 +63,7 @@ public static class SettingsManager
                 var bytes = File.ReadAllBytes(path);
                 var settings = JsonSerializer.Deserialize<AppSettings>(
                     bytes, SettingsGenerationContext.Default.AppSettings);
-                Settings = EnsureSettingsIfNeeded(settings);
+                Settings = EnsureSettings(settings);
             }
             else
             {
@@ -142,35 +131,15 @@ public static class SettingsManager
     /// </returns>
     public static AppSettings GetDefaults()
     {
-        UIProperties uiProperties;
-        Zoom zoom;
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-            uiProperties = new UIProperties
-            {
-                IsTaskbarProgressEnabled = false,
-                OpenInSameWindow = true
-            };
-            zoom = new Zoom
-            {
-                ZoomSpeed = 0.15
-            };
-        }
-        else
-        {
-            uiProperties = new UIProperties();
-            zoom = new Zoom();
-        }
-
         var settings = new AppSettings
         {
-            UIProperties = uiProperties,
+            UIProperties = GetDefaultUIProperties(),
             Gallery = new Gallery(),
             ImageScaling = new ImageScaling(),
             Sorting = new Sorting(),
             Theme = new Theme(),
             WindowProperties = new WindowProperties(),
-            Zoom = zoom,
+            Zoom = GetDefaultZoom(),
             StartUp = new StartUp(),
             Navigation = new Navigation(),
             Version = SettingsConfiguration.CurrentSettingsVersion
@@ -180,6 +149,43 @@ public static class SettingsManager
         settings.UIProperties.UserLanguage = CultureInfo.CurrentCulture.Name;
 
         return settings;
+    }
+
+    public static UIProperties GetDefaultUIProperties()
+    {
+        UIProperties uiProperties;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            uiProperties = new UIProperties
+            {
+                IsTaskbarProgressEnabled = false,
+                OpenInSameWindow = true
+            };
+        }
+        else
+        {
+            uiProperties = new UIProperties();
+        }
+
+        return uiProperties;
+    }
+
+    public static Zoom GetDefaultZoom()
+    {
+        Zoom zoom;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            zoom = new Zoom
+            {
+                ZoomSpeed = 0.15
+            };
+        }
+        else
+        {
+            zoom = new Zoom();
+        }
+
+        return zoom;
     }
 
     /// <summary>
@@ -218,102 +224,19 @@ public static class SettingsManager
         }
     }
 
-    private static AppSettings EnsureSettingsIfNeeded(AppSettings settings)
+    public static AppSettings EnsureSettings(AppSettings existingSettings)
     {
-        if (settings?.WindowProperties is null)
-        {
-            return GetDefaults();
-        }
-
-        // ReSharper disable once CompareOfFloatsByEqualityOperator
-        if (settings.Version != SettingsConfiguration.CurrentSettingsVersion)
-        {
-            return EnsureSettings(settings);
-        }
-        
-        // If navigation settings is null, it is an upgrade from an old version or the config is otherwise invalid
-        if (settings.Navigation is null)
-        {
-            return EnsureSettings(settings);
-        }
-
-        settings.Version = SettingsConfiguration.CurrentSettingsVersion;
-        return settings;
-    }
-
-    private static AppSettings EnsureSettings(AppSettings existingSettings)
-    {
-        var newSettings = GetDefaults();
-
-        existingSettings.UIProperties ??= newSettings.UIProperties;
-        existingSettings.Gallery ??= newSettings.Gallery;
-        existingSettings.Theme ??= newSettings.Theme;
-        existingSettings.Sorting ??= newSettings.Sorting;
-        existingSettings.ImageScaling ??= newSettings.ImageScaling;
-        existingSettings.WindowProperties ??= newSettings.WindowProperties;
-        existingSettings.Zoom ??= newSettings.Zoom;
-        existingSettings.StartUp ??= newSettings.StartUp;
-        existingSettings.Navigation ??= newSettings.Navigation;
+        existingSettings.UIProperties ??= GetDefaultUIProperties();
+        existingSettings.Gallery ??= new Gallery();
+        existingSettings.Theme ??= new Theme();
+        existingSettings.Sorting ??= new Sorting();
+        existingSettings.ImageScaling ??= new ImageScaling();
+        existingSettings.WindowProperties ??= new WindowProperties();
+        existingSettings.Zoom ??= GetDefaultZoom();
+        existingSettings.StartUp ??= new StartUp();
+        existingSettings.Navigation ??= new Navigation();
 
         existingSettings.Version = SettingsConfiguration.CurrentSettingsVersion;
         return existingSettings;
-    }
-
-    private static void ApplyOverrides(AppSettings target, AppSettings global)
-    {
-        MergeObjects(target, global);
-    }
-
-    /// <summary>
-    /// Recursively merges all non-null properties from source into target.
-    /// Complex nested types (like UIProperties, Theme, etc.) are merged recursively.
-    /// Value types and simple properties are directly overwritten.
-    /// </summary>
-    private static void MergeObjects(object? target, object? source)
-    {
-        if (target == null || source == null)
-        {
-            return;
-        }
-
-        var targetType = target.GetType();
-        var sourceType = source.GetType();
-
-        foreach (var prop in sourceType.GetProperties())
-        {
-            var sourceValue = prop.GetValue(source);
-            if (sourceValue == null)
-            {
-                continue;
-            }
-
-            var targetProp = targetType.GetProperty(prop.Name);
-            if (targetProp == null || !targetProp.CanWrite)
-            {
-                continue;
-            }
-
-            var targetValue = targetProp.GetValue(target);
-
-            // If this is a nested object (class) and not a string, merge recursively
-            if (prop.PropertyType.IsClass && prop.PropertyType != typeof(string))
-            {
-                if (targetValue == null)
-                {
-                    // If user doesn't have that object at all, copy it fully
-                    targetProp.SetValue(target, sourceValue);
-                }
-                else
-                {
-                    // Recursively merge individual properties
-                    MergeObjects(targetValue, sourceValue);
-                }
-            }
-            else
-            {
-                // Simple value type or string – overwrite directly
-                targetProp.SetValue(target, sourceValue);
-            }
-        }
     }
 }
