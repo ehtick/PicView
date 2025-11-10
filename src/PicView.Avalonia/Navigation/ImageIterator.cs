@@ -86,7 +86,11 @@ public class ImageIterator : IAsyncDisposable
         ImagePaths = vm.PlatformService.GetFiles(initialDirectory);
         CurrentIndex = ImagePaths.FindIndex(x => x.FullName.Equals(fileInfo.FullName));
         InitiateFileSystemWatcher(fileInfo);
-        Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
+        if (setInitial)
+        {
+            Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
+        }
+        
         vm.PicViewer.Maximum.Value = ImagePaths.Count;
     }
 
@@ -109,10 +113,6 @@ public class ImageIterator : IAsyncDisposable
     private void InitiateFileSystemWatcher(FileInfo fileInfo)
     {
         InitialFileInfo = fileInfo;
-        if (!fileInfo.FullName.Contains(Settings.StartUp.StartUpDirectory))
-        {
-            Settings.StartUp.StartUpDirectory = fileInfo.DirectoryName;
-        }
         
         if (_watcher is not null)
         {
