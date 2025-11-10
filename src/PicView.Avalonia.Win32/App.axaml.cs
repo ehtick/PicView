@@ -228,8 +228,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public async Task ShowImageInfoWindow() =>
         await _windowInitializer?.ShowImageInfoWindow(_vm);
 
-    public void ShowKeybindingsWindow() =>
-        _windowInitializer?.ShowKeybindingsWindow(_vm);
+    public async Task ShowKeybindingsWindow() =>
+        await _windowInitializer?.ShowKeybindingsWindow(_vm);
 
     public async Task ShowSettingsWindow() =>
         await _windowInitializer?.ShowSettingsWindow(_vm);

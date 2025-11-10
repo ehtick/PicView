@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Runtime;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
@@ -13,7 +12,6 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
@@ -247,7 +245,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public async Task ShowImageInfoWindow() =>
         await _windowInitializer?.ShowImageInfoWindow(_vm);
 
-    public void ShowKeybindingsWindow() =>
+    public async Task ShowKeybindingsWindow() =>
         _windowInitializer?.ShowKeybindingsWindow(_vm);
 
     public async Task ShowSettingsWindow() =>

@@ -122,32 +122,38 @@ public class WindowInitializer : IPlatformSpecificUpdate
         await FunctionsMapper.CloseMenus();
     }
 
-    public void ShowKeybindingsWindow(MainViewModel vm)
+    public async Task ShowKeybindingsWindow(MainViewModel vm)
     {
-        if (Dispatcher.UIThread.CheckAccess())
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            Set();
+            return;
+        }
+
+        if (_keybindingsWindow is null)
+        {
+            if (vm.Window.KeybindingWindowConfig?.WindowProperties is null)
+            {
+                vm.Window.KeybindingWindowConfig = new KeybindingWindowConfig();
+                await vm.Window.KeybindingWindowConfig.LoadAsync();
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _keybindingsWindow = new KeybindingsWindow(vm.Window.KeybindingWindowConfig)
+                {
+                    DataContext = vm
+                };
+                Show();
+                _keybindingsWindow.Closing += (_, _) =>
+                {
+                    _keybindingsWindow?.Dispose();
+                    _keybindingsWindow = null;
+                };
+            });
         }
         else
         {
-            Dispatcher.UIThread.InvokeAsync(Set);
-        }
-
-        return;
-
-        void Set()
-        {
-            if (_keybindingsWindow is null)
-            {
-                _keybindingsWindow = new KeybindingsWindow
-                {
-                    DataContext = vm,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                _keybindingsWindow.Show();
-                _keybindingsWindow.Closing += (_, _) => _keybindingsWindow = null;
-            }
-            else
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (_keybindingsWindow.WindowState == WindowState.Minimized)
                 {
@@ -155,11 +161,20 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 }
                 else
                 {
-                    _keybindingsWindow.Activate();
+                    Show();
                 }
-            }
+            });
+        }
 
-            _ = FunctionsMapper.CloseMenus();
+        await FunctionsMapper.CloseMenus();
+
+        return;
+
+        void Show()
+        {
+            WindowFunctions.InitializeWindowSizeAndPosition(_keybindingsWindow,
+                vm.Window.KeybindingWindowConfig.WindowProperties);
+            _keybindingsWindow.Show(desktop.MainWindow);
         }
     }
 
