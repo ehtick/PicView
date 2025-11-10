@@ -3,7 +3,7 @@
     ExtendClientAreaChromeHints="SystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     MinHeight="200"
-    SizeToContent="WidthAndHeight"
+    SizeToContent="Width"
     Title="Loading..."
     x:Class="PicView.Avalonia.MacOS.Views.KeybindingsWindow"
     x:DataType="viewModels:MainViewModel"

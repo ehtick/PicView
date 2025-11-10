@@ -202,7 +202,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 _settingsWindow.Show();
                 _settingsWindow.Closing += (_, _) =>
                     _settingsWindow = null;
-                ;
             });
         }
         else

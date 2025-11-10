@@ -34,6 +34,19 @@ public partial class KeybindingsWindow : Window, IDisposable
             .Subscribe(UpdateWindowSize)
             .AddTo(_disposables);
         PositionChanged += (_, _) => UpdateWindowPosition();
+        
+        Closing += async delegate
+        {
+            Hide();
+            if (VisualRoot is null)
+            {
+                return;
+            }
+
+            var hostWindow = (Window)VisualRoot;
+            hostWindow?.Focus();
+            await _config.SaveAsync();
+        };
     }
 
     private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)
