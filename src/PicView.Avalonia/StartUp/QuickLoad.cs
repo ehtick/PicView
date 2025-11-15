@@ -8,6 +8,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.DebugTools;
 using PicView.Core.Exif;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
@@ -50,7 +51,16 @@ public static class QuickLoad
         }
 
         var magickImage = new MagickImage();
-        magickImage.Ping(fileInfo);
+        try
+        {
+            magickImage.Ping(fileInfo);
+        }
+        catch (Exception e)
+        {
+            // Pinging can lead to crashes when the file cannot be read. 
+            // Just catching the exception here means it will still load correctly regardless
+            DebugHelper.LogDebug(nameof(QuickLoad), nameof(QuickLoadAsync), e);
+        }
         vm.PicViewer.FileInfo.Value = fileInfo;
         var isLargeImage = magickImage.Width * magickImage.Height > 5000000; // ~5 megapixels threshold
         if (isLargeImage || Settings.ImageScaling.ShowImageSideBySide)
