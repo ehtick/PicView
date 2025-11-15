@@ -60,7 +60,7 @@ public static class WindowFunctions
         }
         else
         {
-            var url = vm?.PicViewer.Title.CurrentValue.GetURL();
+            var url = vm?.PicViewer.Title?.CurrentValue?.GetURL();
             lastFile = !string.IsNullOrWhiteSpace(url) ? url : FileHistoryManager.GetLastEntry();
         }
 
