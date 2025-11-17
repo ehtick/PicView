@@ -145,17 +145,21 @@ public class DateTimeInput : TemplatedControl
         var dateControls = new List<Control>();
         foreach (var part in dateParts)
         {
-            switch (part)
+            if (part.Contains('y') && _yearBox != null)
             {
-                case "y" or "Y" when _yearBox != null:
-                    dateControls.Add(_yearBox);
-                    break;
-                case "m" or "M" when _monthBox != null:
-                    dateControls.Add(_monthBox);
-                    break;
-                case "d" or "D" or "dd" or "DD" when _dayBox != null:
+                dateControls.Add(_yearBox);
+            }
+            else if (part.Contains('m') && _monthBox != null)
+            {
+                dateControls.Add(_monthBox);
+            }
+            else if (part.Contains('d') && _dayBox != null)
+            {
+                // Make sure not to select day of week (dddd)
+                if (part is "d" or "dd")
+                {
                     dateControls.Add(_dayBox);
-                    break;
+                }
             }
         }
 
