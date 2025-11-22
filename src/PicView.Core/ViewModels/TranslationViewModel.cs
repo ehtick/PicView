@@ -22,6 +22,7 @@ public class TranslationViewModel : IDisposable
         About.Value = t.About;
         AddFiles.Value = t.AddFiles;
         AddFolder.Value = t.AddFolder;
+        AdditionalFunctions.Value = t.AdditionalFunctions;
         AboutWindow.Value = t.InfoWindow;
         AdjustNavSpeed.Value = t.AdjustNavSpeed;
         AdjustTimingForSlideshow.Value = t.AdjustTimingForSlideshow;
@@ -300,6 +301,7 @@ public class TranslationViewModel : IDisposable
         ToggleLooping.Value = t.ToggleLooping;
         ToggleScroll.Value = t.ToggleScroll;
         ToggleTaskbarProgress.Value = t.ToggleTaskbarProgress;
+        ToolWindows.Value = t.ToolWindows;
         Top.Value = t.Top;
         Unassociate.Value = t.Unassociate;
         UnFlip.Value = t.Unflip;
@@ -336,6 +338,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> About { get; } = new();
     public BindableReactiveProperty<string?> AddFiles { get; } = new();
     public BindableReactiveProperty<string?> AddFolder { get; } = new();
+    public BindableReactiveProperty<string?> AdditionalFunctions { get; } = new();
     public BindableReactiveProperty<string?> AboutWindow { get; } = new();
     public BindableReactiveProperty<string?> AdjustNavSpeed { get; } = new();
     public BindableReactiveProperty<string?> AdjustTimingForSlideshow { get; } = new();
@@ -606,6 +609,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ToggleLooping { get; } = new();
     public BindableReactiveProperty<string?> ToggleScroll { get; } = new();
     public BindableReactiveProperty<string?> ToggleTaskbarProgress { get; } = new();
+    public BindableReactiveProperty<string?> ToolWindows { get; } = new();
     public BindableReactiveProperty<string?> Unassociate { get; } = new();
     public BindableReactiveProperty<string?> UnFlip { get; } = new();
     public BindableReactiveProperty<string?> Uniform { get; } = new();

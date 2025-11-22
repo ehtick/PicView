@@ -396,6 +396,7 @@ public class LanguageModel
     public string? ToggleLooping { get; set; }
     public string? ToggleScroll { get; set; }
     public string? ToggleTaskbarProgress { get; set; }
+    public string? ToolWindows { get; set; }
     public string? Top { get; set; }
     public string? UnableToRender { get; set; }
     public string? Unassociate { get; set; }
