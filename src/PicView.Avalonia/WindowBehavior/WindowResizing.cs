@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Runtime.InteropServices;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
@@ -97,8 +98,20 @@ public static class WindowResizing
         var control = controlProvider();
         if (control is not null)
         {
-            var screenPoint = control.PointToScreen(offset);
-            vm.PlatformService?.SetCursorPos(screenPoint.X, screenPoint.Y);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    var screenPoint = control.PointToScreen(offset);
+                    vm.PlatformService?.SetCursorPos(screenPoint.X, screenPoint.Y);
+                }, DispatcherPriority.Render);
+
+            }
+            else
+            {
+                var screenPoint = control.PointToScreen(offset);
+                vm.PlatformService?.SetCursorPos(screenPoint.X, screenPoint.Y);
+            }
         }
 
         setTrigger(false);

@@ -90,7 +90,6 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                 }
             };
             Current.UrlsOpened -= handler;
-
         }
         catch (Exception)
         {
@@ -113,7 +112,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public void SetCursorPos(int x, int y)
     {
-        // TODO: Implement SetCursorPos
+        NativeMethods.SetCursorPos(x, y);
     }
 
     public List<FileInfo> GetFiles(FileInfo fileInfo)
