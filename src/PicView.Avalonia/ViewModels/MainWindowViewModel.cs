@@ -22,6 +22,8 @@ public class MainWindowViewModel : IDisposable
     public bool IsClickArrowRightClicked { get; set; }
 
     public bool IsBottomToolbarRotationClicked { get; set; }
+    
+    public bool IsTitlebarRotationClicked { get; set; }
 
     public BindableReactiveProperty<Brush?> ImageBackground { get; } = new();
 
