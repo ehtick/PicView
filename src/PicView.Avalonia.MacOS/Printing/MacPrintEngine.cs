@@ -97,14 +97,41 @@ public static class MacPrintEngine
     {
         requestedName ??= "A4";
 
-        // Pull width/height from helper (in mm)
-        var (widthMm, heightMm) = PaperSizeHelper.GetMmSize(requestedName);
+        // Convert from CUPS naming patterns to PaperSizeHelper known names
+        // Examples:
+        //   "iso_a4_210x297mm"  → "A4"
+        //   "A4.Borderless"     → "A4"
+        //   "na_letter_8.5x11in"→ "Letter"
 
-        var isLandscape = orientation == (int)Orientations.Landscape;
+        var normalized = NormalizePaperName(requestedName);
 
-        return isLandscape
-            ? new PaperInfo(requestedName, heightMm, widthMm)   // swap
-            : new PaperInfo(requestedName, widthMm, heightMm);
+        var (w, h) = PaperSizeHelper.GetMmSize(normalized);
+
+        var landscape = orientation == (int)Orientations.Landscape;
+
+        return landscape
+            ? new PaperInfo(normalized, h, w)
+            : new PaperInfo(normalized, w, h);
+    }
+
+    private static string NormalizePaperName(string cupsName)
+    {
+        cupsName = cupsName.ToLowerInvariant();
+
+        return cupsName switch
+        {
+            _ when cupsName.Contains("a4") => "A4",
+            _ when cupsName.Contains("a3") => "A3",
+            _ when cupsName.Contains("a5") => "A5",
+            _ when cupsName.Contains("letter") => "Letter",
+            _ when cupsName.Contains("legal") => "Legal",
+            _ when cupsName.Contains("tabloid") => "Tabloid",
+            _ when cupsName.Contains("4x6") => "4x6",
+            _ when cupsName.Contains("5x7") => "5x7",
+            _ when cupsName.Contains("8x10") => "8x10",
+            // unknown → fallback
+            _ => cupsName
+        };
     }
 
     private static async ValueTask<string> SaveToTempPng(RenderTargetBitmap rtb)
@@ -119,7 +146,7 @@ public static class MacPrintEngine
     }
 
     public static IEnumerable<string> GetPaperSizes(string printerName)
-        => PaperSizeHelper.GetAllNames();
+        => CupsPaperQuery.GetPaperSizes(printerName);
 
     public readonly record struct PaperInfo(string Name, double WidthMm, double HeightMm);
 }

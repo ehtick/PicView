@@ -55,5 +55,38 @@ internal static partial class NativeMethods
     [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
     internal static partial int cupsPrintFile(string name, string filename, string title, int num_options, IntPtr options);
     
+    [LibraryImport(LibCups, StringMarshalling = StringMarshalling.Utf16)]
+    [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+    internal static partial IntPtr cupsGetPPD(string printerName);
+
+    [LibraryImport(LibCups, StringMarshalling = StringMarshalling.Utf16)]
+    [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+    internal static partial IntPtr ppdOpenFile(string filename);
+
+    [LibraryImport(LibCups)]
+    [UnmanagedCallConv(CallConvs = [typeof(System.Runtime.CompilerServices.CallConvCdecl)])]
+    internal static partial void ppdClose(IntPtr ppd);
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ppd_size_t
+    {
+        public IntPtr name;     // char*
+        public float width;     // PostScript points (1/72 inch)
+        public float length;
+        public float left;
+        public float bottom;
+        public float right;
+        public float top;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct ppd_file_t
+    {
+        public IntPtr filename;
+        public IntPtr name;
+        public int num_sizes;
+        public IntPtr sizes; // ppd_size_t*
+    }
+    
     #endregion
 }
