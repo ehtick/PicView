@@ -328,7 +328,12 @@ public static class WindowFunctions
 
     #region Window Size and Position
 
-    public static void CenterWindowOnScreen(bool horizontal = true, bool top = false)
+    public static void CenterWindowOnScreen(Window window)
+    {
+        CenterWindowOnScreen(horizontal: true, top: false, window: window);
+    }
+
+    public static void CenterWindowOnScreen(bool horizontal = true, bool top = false, Window? window = null)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -337,7 +342,7 @@ public static class WindowFunctions
 
         Dispatcher.UIThread.Post(() =>
         {
-            var window = desktop.MainWindow;
+            window ??= desktop.MainWindow;
             if (window.WindowState is WindowState.Maximized or WindowState.FullScreen)
             {
                 return;
