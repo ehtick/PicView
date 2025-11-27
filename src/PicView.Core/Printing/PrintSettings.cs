@@ -4,6 +4,10 @@ namespace PicView.Core.Printing
 {
     public class PrintSettings
     {
+        /// <summary>
+        /// Path to the image to print.
+        /// <remarks>Should point to a temporary file of a common format</remarks>
+        /// </summary>
         public BindableReactiveProperty<string?> ImagePath { get; } = new();
         public BindableReactiveProperty<string?> PrinterName { get; } = new();
         public BindableReactiveProperty<string?> PaperSize { get; } = new();

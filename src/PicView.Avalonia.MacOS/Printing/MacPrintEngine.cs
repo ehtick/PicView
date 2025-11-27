@@ -86,6 +86,7 @@ public static class MacPrintEngine
         }
         finally
         {
+            // 7. Cleanup, delete temporary file
             try { File.Delete(settings.ImagePath.Value); } catch { /* ignore */ }
         }
     }

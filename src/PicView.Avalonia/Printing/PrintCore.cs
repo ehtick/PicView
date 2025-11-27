@@ -64,10 +64,7 @@ public static class PrintCore
 
     public static Bitmap ToGrayScale(Bitmap src, float dpi)
     {
-        if (src is null)
-        {
-
-        }
+        ArgumentNullException.ThrowIfNull(src);
 
         int width, height;
         try

@@ -51,8 +51,7 @@ public class PrintPreviewViewModel : IDisposable
     public BindableReactiveProperty<bool> IsProcessing { get; } = new(false);
     public BindableReactiveProperty<double> Opacity { get; } = new(1.0);
 
-    public Object? GrayCache { get; set; }
-
+    public object? GrayCache { get; set; }
 
     #endregion
 

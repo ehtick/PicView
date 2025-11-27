@@ -63,6 +63,7 @@ public partial class PrintPreviewWindow : Window
             .AddTo(vm.PrintPreview.Disposables);
 
         // Any setting change triggers preview update
+        // ReSharper disable once InvokeAsExtensionMethod
         Observable.CombineLatest(
                 ps.Orientation.AsObservable(),
                 ps.MarginTop.AsObservable(),
@@ -182,7 +183,7 @@ public partial class PrintPreviewWindow : Window
 
         try
         {
-            await Task.Run(() => MacPrintEngine.RunPrintJob(settings, _outputImage as Bitmap));
+            await MacPrintEngine.RunPrintJob(settings, _outputImage as Bitmap);
             await Dispatcher.UIThread.InvokeAsync(Close);
         }
         catch (Exception ex)
