@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PicView.Core.Localization;
-using R3;
+﻿using R3;
 
-namespace PicView.Avalonia.Printing
+namespace PicView.Core.Printing
 {
     public class PrintSettings
     {

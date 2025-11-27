@@ -10,12 +10,12 @@ using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
 using PicView.Core.MacOS;
+using PicView.Core.MacOS.Cursor;
 using PicView.Core.MacOS.FileAssociation;
 using PicView.Core.MacOS.FileFunctions;
 using PicView.Core.MacOS.Wallpaper;
@@ -112,7 +112,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public void SetCursorPos(int x, int y)
     {
-        NativeMethods.SetCursorPos(x, y);
+        MacOSCursor.SetCursorPos(x, y);
     }
 
     public List<FileInfo> GetFiles(FileInfo fileInfo)
@@ -151,15 +151,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
     public void Print(string path)
     {
-        try
-        {
-            Process.Start("lpr", $"\"{path}\"");
-        }
-        catch (Exception e)
-        {
-            Debug.WriteLine(e);
-            TooltipHelper.ShowTooltipMessage(e.Message, true);
-        }
+        _windowInitializer?.ShowPrintPreviewWindow(_vm, path);
     }
 
     public async Task SetAsWallpaper(string path, int wallpaperStyle)
