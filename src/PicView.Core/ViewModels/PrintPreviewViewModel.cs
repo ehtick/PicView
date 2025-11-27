@@ -1,5 +1,5 @@
-﻿using PicView.Avalonia.Printing;
-using PicView.Core.Localization;
+﻿using PicView.Core.Localization;
+using PicView.Core.Printing;
 using R3;
 
 namespace PicView.Core.ViewModels;
