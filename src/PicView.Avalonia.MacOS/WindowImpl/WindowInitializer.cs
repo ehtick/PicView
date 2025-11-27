@@ -453,10 +453,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                 _printPreviewWindow.Show(desktop.MainWindow);
                 _printPreviewWindow.Closing += (_, _) => _printPreviewWindow = null;
 
-                Task.Run(() =>
-                {
-                     MacPrintInitialization.Initialize(vm, path, _printPreviewWindow);
-                });
+                Task.Run(() => MacPrintInitialization.Initialize(vm, path, _printPreviewWindow));
             }
             else
             {

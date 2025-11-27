@@ -18,17 +18,15 @@ public static class WindowResizing
 {
     #region Window Resize Handling
 
-    public static void HandleWindowResize(Window window, AvaloniaPropertyChangedEventArgs<Size> size)
+    public static bool KeepWindowSize(Window window, AvaloniaPropertyChangedEventArgs<Size> size)
     {
-        if (!Settings.WindowProperties.AutoFit ||
-            !size.OldValue.HasValue || !size.NewValue.HasValue ||
+        if (!size.OldValue.HasValue || !size.NewValue.HasValue ||
             size.Sender != window || size.OldValue.Value.Width == 0 || size.OldValue.Value.Height == 0 ||
-            size.NewValue.Value.Width == 0 || size.NewValue.Value.Height == 0 ||
-            window.DataContext is not MainViewModel vm)
+            size.NewValue.Value.Width == 0 || size.NewValue.Value.Height == 0)
         {
-            return;
+            return false;
         }
-
+        
         var oldSize = size.OldValue.Value;
         var newSize = size.NewValue.Value;
 
@@ -36,6 +34,22 @@ public static class WindowResizing
         var y = (oldSize.Height - newSize.Height) / 2;
 
         window.Position = new PixelPoint(window.Position.X + (int)x, window.Position.Y + (int)y);
+        
+        return true;
+    }
+
+    public static void HandleWindowResize(Window window, AvaloniaPropertyChangedEventArgs<Size> size)
+    {
+        if (!Settings.WindowProperties.AutoFit || window.DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        var isWindowResized = KeepWindowSize(window, size);
+        if (!isWindowResized)
+        {
+            return;
+        }
 
         RepositionCursorIfTriggered(vm, vm.MainWindow.IsNavigationButtonLeftClicked,
             clicked => vm.MainWindow.IsNavigationButtonLeftClicked = clicked,

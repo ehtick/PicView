@@ -1,4 +1,3 @@
-using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.MacOS.Views;
@@ -10,7 +9,7 @@ namespace PicView.Avalonia.MacOS.Printing;
 
 public static class MacPrintInitialization
 {
-    public static async ValueTask Initialize(MainViewModel vm, string path, PrintPreviewWindow printPreviewWindow)
+    public static async Task Initialize(MainViewModel vm, string path, PrintPreviewWindow printPreviewWindow)
     {
         // 1. Printers via CUPS
         var printers = MacOSPrint.GetAvailablePrinters().ToList(); // includes "Save as PDF" first
@@ -22,6 +21,7 @@ public static class MacPrintInitialization
         vm.PrintPreview.PaperSizes.Value =
             CupsPaperQuery.GetPaperSizes(defaultPrinter).ToList();
         
+        // Allow every format that is viewable to also be printed, or just make sure the image effect stays applied on print
         var commonSupportedFormat = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, vm)
             .ConfigureAwait(false);
 
@@ -41,6 +41,6 @@ public static class MacPrintInitialization
 
         vm.PrintPreview.PrintSettings.Value = currentPrintSettings;
 
-        await Dispatcher.UIThread.InvokeAsync(() => printPreviewWindow.Initialize(path));
+        await Dispatcher.UIThread.InvokeAsync(() => printPreviewWindow.Initialize(commonSupportedFormat));
     }
 }

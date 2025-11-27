@@ -36,7 +36,7 @@ public partial class PrintPreviewWindow : Window
             ClientSizeProperty.Changed.ToObservable()
                 .Subscribe(size =>
                 {
-                    WindowResizing.HandleWindowResize(this, size);
+                    WindowResizing.KeepWindowSize(this, size);
                 });
         };
     }
