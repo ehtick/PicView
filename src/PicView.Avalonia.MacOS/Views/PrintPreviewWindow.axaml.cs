@@ -22,6 +22,7 @@ namespace PicView.Avalonia.MacOS.Views;
 public partial class PrintPreviewWindow : Window
 {
     private const float PreviewDpi = 96f;
+    private object? _outputImage;
 
     public PrintPreviewWindow()
     {
@@ -40,7 +41,7 @@ public partial class PrintPreviewWindow : Window
         };
     }
 
-    public void Initialize()
+    public void Initialize(string filePath)
     {
         var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainViewModel);
         
@@ -48,19 +49,17 @@ public partial class PrintPreviewWindow : Window
         {
             return;
         }
-
-        // Initial render
-        UpdatePreview(vm.PrintPreview);
         
         WindowFunctions.CenterWindowOnScreen(this);
 
+        vm.PrintPreview.PrintSettings.Value.ImagePath.Value = filePath;
         var ps = vm.PrintPreview.PrintSettings.Value;
 
         // Printer change
         ps.PrinterName
             .AsObservable()
             .DistinctUntilChanged()
-            .Subscribe(_ => UpdatePreview(vm.PrintPreview))
+            .SubscribeAwait(async (_, _) =>{ await UpdatePreviewAsync(vm.PrintPreview); })
             .AddTo(vm.PrintPreview.Disposables);
 
         // Any setting change triggers preview update
@@ -76,20 +75,20 @@ public partial class PrintPreviewWindow : Window
                 (orientation, top, bottom, left, right, scale, color, paper)
                     => (orientation, top, bottom, left, right, scale, color, paper))
             .ThrottleLast(TimeSpan.FromMilliseconds(100))
-            .Subscribe(_ => UpdatePreview(vm.PrintPreview))
+            .SubscribeAwait(async (_, _) =>{ await UpdatePreviewAsync(vm.PrintPreview); })
             .AddTo(vm.PrintPreview.Disposables);
     }
 
     // -----------------------------------------------------------
-    //   Preview rendering (uses same layout as print)
+    //   Preview rendering 
     // -----------------------------------------------------------
 
-    private void UpdatePreview(PrintPreviewViewModel vm)
+    private async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
     {
         var settings = vm.PrintSettings.Value;
-        var mainVm = Dispatcher.UIThread.Invoke(() => DataContext as MainViewModel);
-        var avaloniaBmp = mainVm.PicViewer?.ImageSource.Value as Bitmap;
-        
+        var mainVm= Dispatcher.UIThread.Invoke(() => DataContext as MainViewModel);
+        await using var fs = File.OpenRead(settings.ImagePath.Value);
+        var avaloniaBmp = new Bitmap(fs);
         
         // Grayscale if needed
         if (settings.ColorMode.Value == (int)ColorModes.BlackAndWhite)
@@ -117,8 +116,8 @@ public partial class PrintPreviewWindow : Window
         catch (Exception e)
         {
             // Fix null exception by loading from cache
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreview), e);
-            var cached = NavigationManager.GetPreLoadValueAsync(mainVm.PicViewer.FileInfo.Value).Result;
+            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreviewAsync), e);
+            var cached = await NavigationManager.GetPreLoadValueAsync(mainVm.PicViewer.FileInfo.Value);
             printLayout = PrintCore.ComputeLayout(
                 paper.WidthMm,
                 paper.HeightMm,
@@ -133,7 +132,7 @@ public partial class PrintPreviewWindow : Window
         var rtb = new RenderTargetBitmap(
             new PixelSize((int)layout.PageWidthPx, (int)layout.PageHeightPx));
         
-        Dispatcher.UIThread.Invoke(() =>
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             using var ctx = rtb.CreateDrawingContext();
             ctx.FillRectangle(Brushes.White, new Rect(0, 0, layout.PageWidthPx, layout.PageHeightPx));
@@ -162,27 +161,28 @@ public partial class PrintPreviewWindow : Window
         vm.PreviewImage.Value = rtb;
         vm.PageWidth.Value = layout.PageWidthPx;
         vm.PageHeight.Value = layout.PageHeightPx;
+        
+        _outputImage = avaloniaBmp;
     }
 
     // -----------------------------------------------------------
     //   Print command
     // -----------------------------------------------------------
 
-    public async Task RunPrintAsync(MainViewModel vm)
+    public async ValueTask RunPrintAsync(MainViewModel vm)
     {
-        if (vm.PrintPreview == null) return;
-        var preview = vm.PrintPreview;
-        var settings = preview.PrintSettings.Value!;
-        if (DataContext is not MainViewModel mainVm) return;
-
-        if (mainVm.PicViewer?.ImageSource.Value is not Bitmap avaloniaBmp)
+        if (vm.PrintPreview == null)
+        {
             return;
+        }
+        var preview = vm.PrintPreview;
+        var settings = preview.PrintSettings.Value;
 
         preview.IsProcessing.Value = true;
 
         try
         {
-            await Task.Run(() => MacPrintEngine.RunPrintJob(settings, avaloniaBmp));
+            await Task.Run(() => MacPrintEngine.RunPrintJob(settings, _outputImage as Bitmap));
             await Dispatcher.UIThread.InvokeAsync(Close);
         }
         catch (Exception ex)

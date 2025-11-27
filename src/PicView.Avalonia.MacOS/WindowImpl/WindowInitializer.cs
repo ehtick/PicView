@@ -433,8 +433,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
             {
                 vm.PrintPreview = new PrintPreviewViewModel();
 
-                // TODO: Move this initialization to its own dedicated class
-
                 _printPreviewWindow = new PrintPreviewWindow
                 {
                     DataContext = vm,
@@ -443,7 +441,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
                 vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
                     {
-                        await _printPreviewWindow?.RunPrintAsync(vm);
+                        await _printPreviewWindow.RunPrintAsync(vm);
                     })
                     .AddTo(vm.PrintPreview.Disposables);
 

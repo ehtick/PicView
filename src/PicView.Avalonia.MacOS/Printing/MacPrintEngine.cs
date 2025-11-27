@@ -62,9 +62,6 @@ public static class MacPrintEngine
                 dest);
         });
 
-        // 5. Save temporary PNG file
-        var tempFile = await SaveToTempPng(rtb);
-
         try
         {
             // 6. Handle PDF exporting or printing
@@ -82,14 +79,14 @@ public static class MacPrintEngine
                     var title = Path.GetFileName(settings.ImagePath.Value) ?? "PicView";
                     var copies = settings.Copies.Value;
 
-                    MacOSPrint.Print(printerName, tempFile, title, copies);
+                    MacOSPrint.Print(printerName, settings.ImagePath.Value, title, copies);
                     break;
                 }
             }
         }
         finally
         {
-            try { File.Delete(tempFile); } catch { /* ignore */ }
+            try { File.Delete(settings.ImagePath.Value); } catch { /* ignore */ }
         }
     }
 
@@ -132,17 +129,6 @@ public static class MacPrintEngine
             // unknown → fallback
             _ => cupsName
         };
-    }
-
-    private static async ValueTask<string> SaveToTempPng(RenderTargetBitmap rtb)
-    {
-        var tempDir = Path.GetTempPath();
-        var path = Path.Combine(tempDir, $"picview-print-{Guid.NewGuid():N}.png");
-
-        await using var fs = File.Create(path);
-        rtb.Save(fs);
-
-        return path;
     }
 
     public static IEnumerable<string> GetPaperSizes(string printerName)
