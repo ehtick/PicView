@@ -26,9 +26,9 @@ public static class MacPrintInitialization
 
         var defaultPrinter = printers.FirstOrDefault() ?? string.Empty;
 
-        // 2. Paper sizes – simple catalog (A4 / Letter)
+        // 2. Paper sizes - from printer or fallback
         vm.PrintPreview.PaperSizes.Value =
-            new List<string>(MacPrintEngine.GetPaperSizes(defaultPrinter));
+            CupsPaperQuery.GetPaperSizes(defaultPrinter).ToList();
 
         // 3. Build initial PrintSettings
         var currentPrintSettings = new PrintSettings
