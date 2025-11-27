@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using R3.Avalonia;
@@ -42,7 +43,7 @@ public static class UIHelper
     /// </summary>
     public static void SetControls(IClassicDesktopStyleApplicationLifetime desktop)
     {
-        GetMainView = desktop.MainWindow?.FindControl<MainView>("MainView");
+        GetMainView = desktop.MainWindow?.FindControl<TabView>("TabView")?.FindControl<MainView>("MainView");
         GetTitlebar = desktop.MainWindow?.FindControl<Control>("Titlebar");
         GetEditableTitlebar = GetTitlebar?.FindControl<EditableTitlebar>("EditableTitlebar");
         GetGalleryView = GetMainView?.MainGrid.GetControl<GalleryAnimationControlView>("GalleryView");

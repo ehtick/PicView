@@ -1,0 +1,132 @@
+<UserControl
+    x:Class="PicView.Avalonia.Views.Main.TabView"
+    x:DataType="vm:MainViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:main="clr-namespace:PicView.Avalonia.Views.Main"
+    xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid RowDefinitions="Auto,*">
+        <customControls:AutoScrollViewer
+            Grid.Row="0"
+            HorizontalScrollBarVisibility="Auto"
+            Theme="{StaticResource InlineSlim}"
+            VerticalScrollBarVisibility="Disabled">
+            <TabControl
+                Height="28"
+                Padding="0"
+                VerticalAlignment="Top"
+                x:Name="MainTabStrip">
+
+                <TabControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <customControls:ResponsiveTabPanel MinTabWidth="140" />
+                    </ItemsPanelTemplate>
+                </TabControl.ItemsPanel>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+            </TabControl>
+        </customControls:AutoScrollViewer>
+
+        <main:MainView
+            Background="Transparent"
+            Grid.Row="1"
+            x:Name="MainView" />
+    </Grid>
+</UserControl>

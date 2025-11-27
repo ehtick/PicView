@@ -593,6 +593,7 @@
     <DockPanel LastChildFill="True">
         <views1:MacOSTitlebar DockPanel.Dock="Top" x:Name="Titlebar" />
         <uc:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
-        <main:MainView Background="Transparent" x:Name="MainView" />
+        <main:TabView x:Name="TabView" />
+
     </DockPanel>
 </Window>

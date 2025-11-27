@@ -24,7 +24,7 @@ public partial class EditableTitlebar : UserControl
 
     private void HandlePointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm ||
+        if (UIHelper.GetMainView?.DataContext is not MainViewModel vm ||
             !e.GetCurrentPoint(this).Properties.IsRightButtonPressed ||
             vm.MainWindow.IsEditableTitlebarOpen.CurrentValue)
         {
@@ -36,7 +36,7 @@ public partial class EditableTitlebar : UserControl
 
     private void HandlePointerEntered(object? sender, PointerEventArgs e)
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        if (UIHelper.GetMainView?.DataContext is not MainViewModel vm)
         {
             return;
         }

@@ -102,7 +102,7 @@ public static class DragAndDropHelper
 
     public static void RemoveDragDropView()
     {
-        UIHelper.GetMainView.MainGrid.Children.Remove(_dragDropView);
+        UIHelper.GetMainView?.MainGrid.Children.Remove(_dragDropView);
         _dragDropView = null;
     }
 

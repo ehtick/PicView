@@ -115,7 +115,7 @@ public static class UpdateImage
                 SetSize();
             }
 
-            UIHelper.GetToolTipMessage.IsVisible = false;
+            UIHelper.GetToolTipMessage?.IsVisible = false;
         }, DispatcherPriority.Send);
 
         vm.MainWindow.IsLoadingIndicatorShown.Value = false;

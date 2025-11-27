@@ -1,0 +1,26 @@
+﻿<ResourceDictionary
+    x:ClassModifier="internal"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme TargetType="TabStrip" x:Key="{x:Type TabStrip}">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border DockPanel.Dock="Top">
+                    <customControls:AutoScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <ItemsPresenter
+                            HorizontalAlignment="Stretch"
+                            ItemsPanel="{TemplateBinding ItemsPanel}"
+                            MinWidth="{Binding Bounds.Width, RelativeSource={RelativeSource TemplatedParent}}"
+                            Name="PART_ItemsPresenter" />
+                    </customControls:AutoScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <customControls:ResponsiveTabPanel />
+            </ItemsPanelTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

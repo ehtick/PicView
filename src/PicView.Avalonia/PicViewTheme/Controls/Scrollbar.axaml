@@ -290,4 +290,77 @@
         </Style>
 
     </ControlTheme>
+
+    <ControlTheme TargetType="ScrollBar" x:Key="FloatingSlim">
+        <Setter Property="Cursor" Value="Arrow" />
+
+        <Style Selector="^:horizontal">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <Track
+                            DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                            IsDirectionReversed="True"
+                            Maximum="{TemplateBinding Maximum}"
+                            Minimum="{TemplateBinding Minimum}"
+                            Orientation="{TemplateBinding Orientation}"
+                            Value="{TemplateBinding Value,
+                                                    Mode=TwoWay}"
+                            ViewportSize="{TemplateBinding ViewportSize}">
+                            <Thumb Name="thumb" />
+                        </Track>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^:vertical">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Track
+                        DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                        IsDirectionReversed="True"
+                        Maximum="{TemplateBinding Maximum}"
+                        Minimum="{TemplateBinding Minimum}"
+                        Orientation="{TemplateBinding Orientation}"
+                        Value="{TemplateBinding Value,
+                                                Mode=TwoWay}"
+                        ViewportSize="{TemplateBinding ViewportSize}">
+                        <Thumb Name="thumb" />
+                    </Track>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Thumb#thumb">
+            <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Thumb#thumb:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        </Style>
+        <Style Selector="^ /template/ Thumb#thumb:pressed">
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+        <Style Selector="^:horizontal /template/ Thumb#thumb">
+            <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="^:vertical /template/ Thumb#thumb">
+            <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}" />
+            <Setter Property="Width" Value="12" />
+        </Style>
+
+    </ControlTheme>
 </ResourceDictionary>

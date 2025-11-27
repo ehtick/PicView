@@ -134,4 +134,46 @@
         </Setter>
     </ControlTheme>
 
+    <ControlTheme TargetType="customControls:AutoScrollViewer" x:Key="InlineSlim">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <ScrollContentPresenter
+                        Background="Transparent"
+                        HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                        HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                        Name="PART_ContentPresenter"
+                        Padding="{TemplateBinding Padding}"
+                        ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}"
+                        VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                        VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}">
+                        <ScrollContentPresenter.GestureRecognizers>
+                            <ScrollGestureRecognizer
+                                CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
+                        </ScrollContentPresenter.GestureRecognizers>
+                    </ScrollContentPresenter>
+                    <ScrollBar
+                        Name="PART_HorizontalScrollBar"
+                        Orientation="Horizontal"
+                        Theme="{StaticResource FloatingSlim}" />
+                    <ScrollBar
+                        HorizontalAlignment="Right"
+                        Name="PART_VerticalScrollBar"
+                        Orientation="Vertical"
+                        Theme="{StaticResource FloatingSlim}" />
+                    <Canvas>
+                        <customControls:AutoScrollSign
+                            HorizontalAlignment="Center"
+                            IsVisible="False"
+                            Name="PART_AutoScrollSign"
+                            VerticalAlignment="Center" />
+                    </Canvas>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+
 </ResourceDictionary>
