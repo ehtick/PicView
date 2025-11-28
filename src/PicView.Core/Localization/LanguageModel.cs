@@ -318,6 +318,7 @@ public class LanguageModel
     public string? Saturation { get; set; }
     public string? Save { get; set; }
     public string? SaveAs { get; set; }
+    public string? SaveAsPdf { get; set; }
     public string? SavingFileFailed { get; set; }
     public string? Scale { get; set; }
     public string? ScrollAndRotate { get; set; }

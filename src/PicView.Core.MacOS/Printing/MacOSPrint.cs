@@ -9,7 +9,7 @@ public static class MacOSPrint
     public static List<string> GetAvailablePrinters()
     {
         // 1. Add the dummy PDF printer first
-        var printers = new List<string> { TranslationManager.GetTranslation("SaveAsPdf") };
+        var printers = new List<string> { TranslationManager.Translation.SaveAsPdf };
         
         var destsPtr = IntPtr.Zero;
         var count = 0;

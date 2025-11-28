@@ -66,7 +66,7 @@ public static class MacPrintEngine
         {
             // 6. Handle PDF exporting or printing
             var printerName = settings.PrinterName.Value ?? "";
-            var saveAsPdf = TranslationManager.GetTranslation("SaveAsPdf");
+            var saveAsPdf = TranslationManager.Translation.SaveAsPdf;
 
             switch (string.IsNullOrWhiteSpace(printerName))
             {
