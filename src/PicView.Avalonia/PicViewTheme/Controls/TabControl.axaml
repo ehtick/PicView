@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTheme TargetType="TabControl" x:Key="{x:Type TabControl}">
         <Setter Property="Padding" Value="8" />
@@ -57,5 +58,46 @@
         <Style Selector="^[TabStripPlacement=Right]">
             <Setter Property="Padding" Value="0 0 4 0" />
         </Style>
+    </ControlTheme>
+
+    <ControlTheme TargetType="TabControl" x:Key="ScrollableTabControl">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="{TemplateBinding CornerRadius}"
+                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                    Padding="{TemplateBinding Padding}"
+                    VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                    <DockPanel>
+                        <customControls:AutoScrollViewer
+                            DockPanel.Dock="Top"
+                            HorizontalScrollBarVisibility="Auto"
+                            Name="PART_ScrollViewer"
+                            Theme="{StaticResource InlineSlim}"
+                            VerticalScrollBarVisibility="Disabled">
+                            <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" Name="PART_ItemsPresenter" />
+                        </customControls:AutoScrollViewer>
+
+                        <ContentPresenter
+                            Content="{TemplateBinding SelectedContent}"
+                            ContentTemplate="{TemplateBinding SelectedContentTemplate}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            Margin="{TemplateBinding Padding}"
+                            Name="PART_SelectedContentHost"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!--  Default horizontal layout for tabs  -->
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <customControls:ResponsiveTabPanel MinTabWidth="140" />
+            </ItemsPanelTemplate>
+        </Setter>
     </ControlTheme>
 </ResourceDictionary>

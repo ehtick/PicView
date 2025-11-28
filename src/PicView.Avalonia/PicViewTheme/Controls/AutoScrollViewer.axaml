@@ -157,8 +157,18 @@
                     </ScrollContentPresenter>
                     <ScrollBar
                         Name="PART_HorizontalScrollBar"
+                        Opacity="0"
                         Orientation="Horizontal"
-                        Theme="{StaticResource FloatingSlim}" />
+                        Theme="{StaticResource FloatingSlim}">
+                        <ScrollBar.Transitions>
+                            <Transitions>
+                                <DoubleTransition
+                                    Duration="0:0:0.25"
+                                    Easing="CubicEaseOut"
+                                    Property="Opacity" />
+                            </Transitions>
+                        </ScrollBar.Transitions>
+                    </ScrollBar>
                     <ScrollBar
                         HorizontalAlignment="Right"
                         Name="PART_VerticalScrollBar"
@@ -174,6 +184,11 @@
                 </Panel>
             </ControlTemplate>
         </Setter>
+
+        <Style Selector="^:pointerover /template/ ScrollBar#PART_HorizontalScrollBar">
+            <Setter Property="Opacity" Value="1" />
+        </Style>
+
     </ControlTheme>
 
 </ResourceDictionary>

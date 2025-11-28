@@ -229,7 +229,6 @@
                 <ControlTemplate>
                     <Track
                         DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                        IsDirectionReversed="True"
                         Maximum="{TemplateBinding Maximum}"
                         Minimum="{TemplateBinding Minimum}"
                         Orientation="{TemplateBinding Orientation}"
@@ -247,7 +246,6 @@
                 <ControlTemplate>
                     <Track
                         DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                        IsDirectionReversed="True"
                         Maximum="{TemplateBinding Maximum}"
                         Minimum="{TemplateBinding Minimum}"
                         Orientation="{TemplateBinding Orientation}"
@@ -300,7 +298,6 @@
                     <Panel>
                         <Track
                             DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                            IsDirectionReversed="True"
                             Maximum="{TemplateBinding Maximum}"
                             Minimum="{TemplateBinding Minimum}"
                             Orientation="{TemplateBinding Orientation}"
@@ -319,7 +316,6 @@
                 <ControlTemplate>
                     <Track
                         DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                        IsDirectionReversed="True"
                         Maximum="{TemplateBinding Maximum}"
                         Minimum="{TemplateBinding Minimum}"
                         Orientation="{TemplateBinding Orientation}"
@@ -354,7 +350,7 @@
         </Style>
         <Style Selector="^:horizontal /template/ Thumb#thumb">
             <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
-            <Setter Property="Height" Value="10" />
+            <Setter Property="Height" Value="6" />
             <Setter Property="VerticalAlignment" Value="Top" />
         </Style>
         <Style Selector="^:vertical /template/ Thumb#thumb">

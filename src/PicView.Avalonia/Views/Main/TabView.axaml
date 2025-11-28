@@ -15,15 +15,81 @@
             VerticalScrollBarVisibility="Disabled">
             <TabControl
                 Height="28"
-                Padding="0"
+                Theme="{StaticResource ScrollableTabControl}"
                 VerticalAlignment="Top"
                 x:Name="MainTabStrip">
 
-                <TabControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <customControls:ResponsiveTabPanel MinTabWidth="140" />
-                    </ItemsPanelTemplate>
-                </TabControl.ItemsPanel>
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
+
+                <TabItem Theme="{StaticResource MainTabItem}">
+                    <TabItem.Header>
+                        <Grid ColumnDefinitions="Auto,*">
+                            <customControls:IconButton
+                                Classes="altHover"
+                                CornerRadius="3"
+                                Data="{StaticResource CloseGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Height="22"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Margin="0,0,5,0"
+                                Padding="9,0" />
+                            <TextBlock
+                                Classes="txt"
+                                Grid.Column="1"
+                                Text="{CompiledBinding PicViewer.Title.Value,
+                                                       Mode=OneWay}"
+                                TextAlignment="Center"
+                                ToolTip.Tip="{Binding PicViewer.TitleTooltip.Value, Mode=OneWay}" />
+                        </Grid>
+                    </TabItem.Header>
+                </TabItem>
 
                 <TabItem Theme="{StaticResource MainTabItem}">
                     <TabItem.Header>
