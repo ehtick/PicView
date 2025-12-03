@@ -75,14 +75,17 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="hover"
+            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+            Data="{StaticResource GalleryGeometry}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
-            Icon="{StaticResource MenuImage}"
-            IconHeight="13"
-            IconWidth="13"
+            IconHeight="17"
+            IconWidth="17"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
             IsRepeatEnabled="False"
             IsTabStop="False"
-            Margin="0"
+            Name="GalleryButton"
             Width="30" />
 
         <customControls:IconButton
@@ -106,17 +109,14 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="hover"
-            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
-            Data="{StaticResource GalleryGeometry}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
-            IconHeight="17"
-            IconWidth="17"
-            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            Icon="{StaticResource SearchImage}"
+            IconHeight="13"
+            IconWidth="13"
             IsRepeatEnabled="False"
             IsTabStop="False"
-            Name="GalleryButton"
+            Margin="0"
             Width="30" />
 
         <uc:EditableTitlebar

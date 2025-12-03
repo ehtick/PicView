@@ -595,6 +595,9 @@
         <views1:MacOSTitlebar DockPanel.Dock="Top" x:Name="Titlebar" />
         <uc:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
         <customControls:DraggableTabStrip
+            Background="{DynamicResource MainBackgroundColor}"
+            BorderBrush="{DynamicResource TertiaryBorderColor}"
+            BorderThickness="0,0,0,1"
             DataContext="{Binding NavigationViewModel}"
             DockPanel.Dock="Top"
             IsVisible="{CompiledBinding IsTabPanelVisible.Value}"
@@ -606,6 +609,7 @@
                 <DataTemplate>
                     <DockPanel LastChildFill="True">
                         <customControls:IconButton
+                            Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding CloseTabCommand}"
                             CommandParameter="{CompiledBinding Id}"
@@ -617,11 +621,6 @@
                             IconWidth="12"
                             Margin="0,0,5,0"
                             Padding="9,0" />
-                        <Rectangle
-                            DockPanel.Dock="Right"
-                            Fill="{DynamicResource TertiaryBorderColor}"
-                            Height="32"
-                            Width="1" />
                         <TextBlock
                             Classes="txt"
                             Text="{CompiledBinding TabTitle,

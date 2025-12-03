@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using PicView.Core.Models;
 using PicView.Core.Navigation;
 using R3;
 
@@ -12,28 +11,47 @@ public class NavigationViewModel : IDisposable
     
     public BindableReactiveProperty<bool> IsTabPanelVisible { get; } = new();
 
-    private readonly IImageIteratorFactory? _iteratorFactory;
-    private readonly INavigationService? _navService;
-    private readonly IImageCache? _sharedCache;
+    private IImageIteratorFactory? _iteratorFactory;
+    private INavigationService? _navService;
+    private IImageCache? _sharedCache;
 
-    public NavigationViewModel(IImageIteratorFactory iteratorFactory, INavigationService navService, IImageCache cache)
+    public NavigationViewModel()
+    {
+        CreateInitialTab();
+    }
+
+    public void Initialize(IImageIteratorFactory iteratorFactory, INavigationService navService, IImageCache cache)
     {
         _iteratorFactory = iteratorFactory;
         _navService = navService;
         _sharedCache = cache;
-        
-        for (var i = 0; i < 4; i++)
+
+        // Create dummy tabs for testing
+        for (var i = 0; i < 3; i++)
         {
             CreateTab();
         }
     }
-
-    public void CreateTab()
+    
+    public void CreateInitialTab()
     {
         //var picModel = new PicViewerModel();
         //var iterator = _iteratorFactory?.Create(file ?? new FileInfo(Environment.CurrentDirectory));
 
         //var tab = new TabViewModel(picModel, iterator);
+        var randomFileName = Path.GetRandomFileName();
+        var id = Guid.NewGuid().ToString("N");
+        var tabViewModel = new TabViewModel(null, null, id, CloseTab)
+        {
+            TabTitle = randomFileName,
+            TabTooltip = randomFileName
+        };
+        Tabs.Value.Add(tabViewModel);
+        ActiveTabIndex.Value = Tabs.Value.Count - 1;
+    }
+
+    public void CreateTab()
+    {
         var randomFileName = Path.GetRandomFileName();
         var id = Guid.NewGuid().ToString("N");
         var tabViewModel = new TabViewModel(null, null, id, CloseTab)

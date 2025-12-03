@@ -17,7 +17,6 @@ public class DraggableTabStrip : TabStrip
     private readonly Dictionary<TabStripItem, double> _originalX = new();
     private int _currentTargetIndex = -1;
 
-    private object? _draggedItem;
     private double _draggedTabStartX;
     private double _draggedTabWidth;
     private bool _isDragging;
@@ -26,6 +25,8 @@ public class DraggableTabStrip : TabStrip
     private TabStripItem? _pressedContainer;
     private Point _pressedPoint;
     private int _sourceIndex = -1;
+    
+    
 
     protected override Type StyleKeyOverride => typeof(TabStrip);
 
@@ -86,7 +87,7 @@ public class DraggableTabStrip : TabStrip
         _pressedContainer = tsi;
         _pressedPoint = e.GetPosition(this);
         _isDragging = false;
-        _draggedItem = ItemFromContainer(tsi);
+        ItemFromContainer(tsi);
         _sourceIndex = IndexFromContainer(tsi);
         _currentTargetIndex = _sourceIndex;
 
@@ -197,7 +198,7 @@ public class DraggableTabStrip : TabStrip
                     }
                 }
             }
-
+            
             tab.RenderTransform = new TranslateTransform(offset, 0);
         }
 
@@ -244,7 +245,6 @@ public class DraggableTabStrip : TabStrip
         }
 
         _pressedContainer = null;
-        _draggedItem = null;
         _isDragging = false;
         _sourceIndex = -1;
         _currentTargetIndex = -1;
@@ -295,15 +295,15 @@ public class DraggableTabStrip : TabStrip
         }
     }
 
-    public void ResetStateFromMoved(Control tsi)
+    private void SetTransitions()
     {
-        // Reset any transform that might be applied
-        tsi.RenderTransform = null;
-
-        // If the item being removed is the one currently being tracked/dragged, stop tracking it.
-        if (_pressedContainer == tsi)
+        if (Settings.UIProperties.IsTabAnimated)
         {
-            EndDrag();
+            
+        }
+        else
+        {
+            
         }
     }
 }

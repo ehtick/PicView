@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ControlTheme TargetType="TabStripItem" x:Key="{x:Type TabStripItem}">
-        <Setter Property="Background" Value="{DynamicResource DarkenUnselected}" />
+        <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
         <Setter Property="Foreground" Value="{DynamicResource MainTextColorFaded}" />
         <Setter Property="Height" Value="32" />
         <Setter Property="Template">
@@ -36,7 +36,7 @@
         </Style>
         <Style Selector="^:selected /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Foreground" Value="{DynamicResource MainTextColor}" />
-            <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
+            <Setter Property="Background" Value="{DynamicResource DarkenSelected}" />
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
             <Setter Property="BorderThickness" Value="0,0,0,2" />
         </Style>
@@ -44,12 +44,27 @@
             <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
         </Style>
 
-        <!--  Applies when :dragging pseudo-class is active  -->
-        <Style Selector="^:dragging">
-            <Setter Property="Opacity" Value="0.9" />
+        <Style Selector="^:nth-child(1):not(.noBorder) /template/ Border#PART_LayoutRoot">
+            <Setter Property="BorderThickness" Value="0,0,0,0" />
+        </Style>
+        <Style Selector="^:not(.noBorder) /template/ Border#PART_LayoutRoot">
+            <Setter Property="BorderThickness" Value="0,0,1,0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
+        </Style>
+        <Style Selector="^:nth-last-child(1):not(.noBorder) /template/ Border#PART_LayoutRoot">
+            <Setter Property="BorderThickness" Value="0,0,0,0" />
+        </Style>
+
+        <!--  Applies when dragging  -->
+        <Style Selector="^:pressed">
+            <Setter Property="Opacity" Value="0.95" />
             <Setter Property="RenderTransform">
                 <ScaleTransform ScaleX="1.05" ScaleY="1.05" />
             </Setter>
+        </Style>
+        <Style Selector="^:pressed:not(.noBorder) /template/ Border#PART_LayoutRoot">
+            <Setter Property="BorderThickness" Value="1,0,1,0" />
+            <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>
