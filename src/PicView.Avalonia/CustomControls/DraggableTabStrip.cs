@@ -54,8 +54,8 @@ public class DraggableTabStrip : TabStrip
             tsi.RemoveHandler(PointerReleasedEvent, OnItemPointerReleased);
             tsi.PointerCaptureLost -= OnPointerCaptureLost;
 
-            // If the title is null, the item was removed from the collection.
-            if (tsi.DataContext is TabViewModel { TabTitle: null })
+            // If the item was removed from the collection.
+            if (tsi.DataContext is TabViewModel { IsClosing: true })
             {
                 // Reset any transform that might be applied
                 tsi.RenderTransform = null;

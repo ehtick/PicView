@@ -205,6 +205,8 @@ public class UIProperties
     /// Shows the "Set as Wallpaper" option int the menus.
     /// </summary>
     public bool ShowSetAsWallpaper { get; set; } = true;
+
+    public bool IsTabAnimated { get; set; } = true;
 }
 
 public class Theme

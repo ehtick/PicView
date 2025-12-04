@@ -12,6 +12,7 @@
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons;assembly=PicView.Avalonia"
     xmlns:converters="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
@@ -602,6 +603,8 @@
             DockPanel.Dock="Top"
             IsVisible="{CompiledBinding IsTabPanelVisible.Value}"
             ItemsSource="{CompiledBinding Tabs.Value}"
+            SelectedIndex="{CompiledBinding ActiveTabIndex.Value,
+                                            Mode=TwoWay}"
             Theme="{StaticResource ScrollableTabControl}"
             x:Name="MainTabStrip">
 
@@ -611,8 +614,7 @@
                         <customControls:IconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding CloseTabCommand}"
-                            CommandParameter="{CompiledBinding Id}"
+                            Command="{CompiledBinding CloseTab}"
                             Data="{StaticResource CloseGeometry}"
                             DockPanel.Dock="Left"
                             Foreground="{DynamicResource MainTextColor}"
@@ -623,15 +625,33 @@
                             Padding="9,0" />
                         <TextBlock
                             Classes="txt"
-                            Text="{CompiledBinding TabTitle,
+                            Text="{CompiledBinding TabTitle.Value,
                                                    Mode=OneWay}"
-                            ToolTip.Tip="{Binding TabTooltip, Mode=OneWay}" />
+                            ToolTip.Tip="{Binding TabTooltip.Value, Mode=OneWay}" />
                     </DockPanel>
                 </DataTemplate>
             </customControls:DraggableTabStrip.ItemTemplate>
         </customControls:DraggableTabStrip>
 
-        <main:MainView Background="Transparent" x:Name="MainView" />
+        <Panel>
 
+            <Image
+                DataContext="{CompiledBinding NavigationViewModel.ActiveTab.Value}"
+                Source="{CompiledBinding ImageSource.Value}"
+                Stretch="Uniform" />
+
+            <buttons:ClickArrowRight
+                HorizontalAlignment="Right"
+                Margin="{CompiledBinding MainWindow.RightControlOffSetMargin.Value}"
+                Opacity="0"
+                VerticalAlignment="Center"
+                x:Name="ClickArrowRight" />
+            <buttons:ClickArrowLeft
+                HorizontalAlignment="Left"
+                Opacity="0"
+                VerticalAlignment="Center"
+                x:Name="ClickArrowLeft" />
+
+        </Panel>
     </DockPanel>
 </Window>

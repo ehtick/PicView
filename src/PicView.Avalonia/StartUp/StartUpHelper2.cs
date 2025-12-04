@@ -24,7 +24,7 @@ using NavigationViewModel = PicView.Core.ViewModels.NavigationViewModel;
 
 namespace PicView.Avalonia.StartUp;
 
-public static class StartUpHelper
+public static class StartUpHelper2
 {
     public static void StartWithArguments(MainViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
@@ -148,6 +148,7 @@ public static class StartUpHelper
         UIHelper.SetControls(desktop);
         Task.Run(() =>
         {
+            vm.NavigationViewModel ??= new NavigationViewModel();
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
             SettingsUpdater.ValidateGallerySettings(vm, settingsExists);

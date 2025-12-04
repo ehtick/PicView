@@ -85,6 +85,7 @@
                                         Converter={x:Static ObjectConverters.IsNotNull}}"
             IsRepeatEnabled="False"
             IsTabStop="False"
+            IsVisible="False"
             Name="GalleryButton"
             Width="30" />
 
@@ -92,7 +93,24 @@
             Background="Transparent"
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
-            Classes="hover"
+            Classes="altHover"
+            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+            Data="{StaticResource FilledArrowDownGeometry}"
+            DockPanel.Dock="Right"
+            Foreground="{DynamicResource MainTextColor}"
+            IconHeight="17"
+            IconWidth="17"
+            IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+            IsRepeatEnabled="False"
+            IsTabStop="False"
+            Width="30" />
+
+        <customControls:IconButton
+            Background="Transparent"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="0"
+            Classes="altHover"
             Command="{CompiledBinding NavigationViewModel.CreateTab}"
             Data="{StaticResource AddGeometry}"
             DockPanel.Dock="Right"
@@ -108,7 +126,7 @@
             Background="Transparent"
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
-            Classes="hover"
+            Classes="altHover"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
             Icon="{StaticResource SearchImage}"

@@ -1,32 +1,64 @@
-﻿using PicView.Core.Navigation;
+﻿using PicView.Core.Models;
+using PicView.Core.Navigation;
 using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class TabViewModel : IAsyncDisposable
+public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncDisposable
 {
-    public string Id { get; init; }
-    public PicViewerModel PicViewer { get; }
-    public IImageIterator? ImageIterator { get; }
+    private CompositeDisposable Disposables { get; } = new();
+    public string Id { get; init; } = id;
+    public bool IsClosing { get; private set; }
+    public bool IsSelected { get; set; } = false;
+    public ImageModel IModel { get; set; } = new();
+    public IImageIterator? ImageIterator { get; set; }
     public CancellationTokenSource NavigationCts { get; private set; } = new();
-    
-    public string? TabTitle { get; set; } = string.Empty;
-    public string? TabTooltip { get; set; } = string.Empty;
-    
 
-    public TabViewModel(PicViewerModel model, IImageIterator iterator, string id, Func<string, ValueTask> closeTab)
+    public bool CanNavigate()
     {
-        PicViewer = model;
-        ImageIterator = iterator;
-        Id = id;
-        CloseTabCommand = new ReactiveCommand(async _ =>
+        if (ImageIterator is null)
         {
-            TabTitle = null; // Signal it to be removed from the UI
-            await closeTab.Invoke(id);
-        });
+            return false;
+        }
+
+        return false;
     }
 
-    public ReactiveCommand CloseTabCommand { get; }
+    
+    // Used to bind the tab content to the UI. I.E, the image viewer or start-up menu.
+    public BindableReactiveProperty<object?> TabContent { get; set; } = new();
+    
+    public BindableReactiveProperty<string> TabTitle { get; } = new(string.Empty);
+    public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
+    public BindableReactiveProperty<object?> ImageSource { get; } = new(null);
+
+    public void Initialize()
+    {
+        Observable.EveryValueChanged(IModel, model => model.FileInfo).Subscribe(file => 
+        {
+            if (file is null)
+            {
+                return;
+            }
+
+            TabTitle.Value = file.Name;
+            TabTooltip.Value = file.FullName;
+        })
+        .AddTo(Disposables);
+        
+        Observable.EveryValueChanged(IModel, model => model.Image).Subscribe(img => 
+        {
+            ImageSource.Value = img;
+        })
+        .AddTo(Disposables);
+    }
+
+
+    public async ValueTask CloseTab()
+    {
+        IsClosing = true; // Signal it to be removed from the UI
+        await closeTab(Id);
+    }
 
     public void CancelNavigation()
     {
@@ -35,12 +67,17 @@ public class TabViewModel : IAsyncDisposable
         NavigationCts = new CancellationTokenSource();
     }
 
-    public void Dispose() => ImageIterator.DisposeAsync().AsTask().Wait();
+    public void Dispose()
+    {
+        ImageIterator?.DisposeAsync().AsTask().Start();
+        Disposables.Dispose();
+    }
     public async ValueTask DisposeAsync()
     {
         if (ImageIterator is not null)
         {
             await ImageIterator.DisposeAsync();
         }
+        Disposables.Dispose();
     }
 }
