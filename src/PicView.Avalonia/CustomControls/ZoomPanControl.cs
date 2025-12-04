@@ -244,7 +244,7 @@ public class ZoomPanControl : Decorator
             return;
         }
 
-        if (e.ClickCount == 2)
+        if (e.ClickCount is 2 && Settings.UIProperties.DoubleClickBehavior is 1)
         {
             ResetZoom(Settings.Zoom.IsZoomAnimated);
             return;
