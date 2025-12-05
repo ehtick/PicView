@@ -37,6 +37,9 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
         ProfileOptimization.StartProfile("ProfileOptimization");
 #endif
         AvaloniaXamlLoader.Load(this);
+#if DEBUG
+        this.AttachDeveloperTools();
+#endif
     }
 
     public override void OnFrameworkInitializationCompleted()
