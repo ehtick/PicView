@@ -105,42 +105,46 @@ public static class SupportedFiles
     public static List<string> ConvertArchivesToGlobFormat() =>
         FileExtensionsArchives.Select(ext => $"*{ext}").ToList();
 
-    public static bool IsCommon(this string file)
-        => Path.GetExtension(file).ToLower() switch
-        {
-            ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".jfif" => true,
-            _ => false
-        };
-
-    /// <summary>
-    /// Extension method to check if a file is supported.
-    /// </summary>
     /// <param name="file">File to check</param>
-    /// <returns>True if file is supported, False otherwise</returns>
-    public static bool IsSupported(this string file) =>
-        SupportedExtensionsSetLookup.Contains(Path.GetExtension(file.AsSpan()));
+    extension(string file)
+    {
+        public bool IsCommon()
+            => Path.GetExtension(file).ToLower() switch
+            {
+                ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" or ".jfif" => true,
+                _ => false
+            };
 
-    /// <summary>
-    /// Extension method to check if a `FileInfo` is supported.
-    /// </summary>
+        /// <summary>
+        /// Extension method to check if a file is supported.
+        /// </summary>
+        /// <returns>True if file is supported, False otherwise</returns>
+        public bool IsSupported() =>
+            SupportedExtensionsSetLookup.Contains(Path.GetExtension(file.AsSpan()));
+
+        /// <summary>
+        /// Extension method to check if a file is a supported archive.
+        /// </summary>
+        /// <returns>True if file is a supported archive, False otherwise</returns>
+        public bool IsArchive() =>
+            ArchiveExtensionsSetLookup.Contains(Path.GetExtension(file.AsSpan()));
+    }
+
     /// <param name="fileInfo">FileInfo to check</param>
-    /// <returns>True if `FileInfo` is supported, False otherwise</returns>
-    public static bool IsSupported(this FileInfo fileInfo) =>
-        SupportedExtensionsSetLookup.Contains(Path.GetExtension(fileInfo.FullName.AsSpan()));
+    extension(FileInfo fileInfo)
+    {
+        /// <summary>
+        /// Extension method to check if a `FileInfo` is supported.
+        /// </summary>
+        /// <returns>True if `FileInfo` is supported, False otherwise</returns>
+        public bool IsSupported() =>
+            SupportedExtensionsSetLookup.Contains(Path.GetExtension(fileInfo.FullName.AsSpan()));
 
-    /// <summary>
-    /// Extension method to check if a file is a supported archive.
-    /// </summary>
-    /// <param name="file">File to check</param>
-    /// <returns>True if file is a supported archive, False otherwise</returns>
-    public static bool IsArchive(this string file) =>
-        ArchiveExtensionsSetLookup.Contains(Path.GetExtension(file.AsSpan()));
-
-    /// <summary>
-    /// Extension method to check if a `FileInfo` is a supported archive.
-    /// </summary>
-    /// <param name="fileInfo">FileInfo to check</param>
-    /// <returns>True if `FileInfo` is a supported archive, False otherwise</returns>
-    public static bool IsArchive(this FileInfo fileInfo) =>
-        ArchiveExtensionsSetLookup.Contains(Path.GetExtension(fileInfo.FullName.AsSpan()));
+        /// <summary>
+        /// Extension method to check if a `FileInfo` is a supported archive.
+        /// </summary>
+        /// <returns>True if `FileInfo` is a supported archive, False otherwise</returns>
+        public bool IsArchive() =>
+            ArchiveExtensionsSetLookup.Contains(Path.GetExtension(fileInfo.FullName.AsSpan()));
+    }
 }
