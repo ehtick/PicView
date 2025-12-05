@@ -11,7 +11,6 @@ using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.DebugTools;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.Localization;
@@ -35,6 +34,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        
 #if DEBUG
         this.AttachDeveloperTools();
 #endif
@@ -69,11 +69,11 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             _mainWindow.DataContext = _vm;
             if (string.IsNullOrWhiteSpace(startUpFilePath))
             {
-                StartUpHelper2.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
+                StartUpHelper.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
             }
             else
             {
-                StartUpHelper2.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
+                StartUpHelper.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
             }
             _windowInitializer = new WindowInitializer();
             
@@ -95,9 +95,9 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             };
             Current.UrlsOpened -= handler;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            DebugHelper.LogDebug(nameof(App), nameof(OnFrameworkInitializationCompleted), e);
+            //
         }
     }
 
