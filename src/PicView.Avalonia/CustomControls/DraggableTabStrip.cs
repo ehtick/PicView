@@ -1,6 +1,7 @@
 using System.Collections;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -9,26 +10,31 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.CustomControls;
 
+[PseudoClasses(DraggingPseudoClass, DetachingPseudoClass)]
 public class DraggableTabStrip : TabStrip
 {
     private const double DragThreshold = 4.0;
+    private const double DetachThreshold = 50.0; // Vertical distance to trigger detachment
     private const string DraggingPseudoClass = ":dragging";
+    private const string DetachingPseudoClass = ":detaching";
 
     private readonly Dictionary<TabStripItem, double> _originalX = new();
     private int _currentTargetIndex = -1;
 
     private double _draggedTabStartX;
     private double _draggedTabWidth;
+    private bool _isDetaching;
     private bool _isDragging;
 
     private double _pointerOffsetWithinTab;
     private TabStripItem? _pressedContainer;
     private Point _pressedPoint;
     private int _sourceIndex = -1;
-    
-    
 
     protected override Type StyleKeyOverride => typeof(TabStrip);
+
+    // Event for when a tab should be detached
+    public event EventHandler<TabDetachEventArgs>? TabDetached;
 
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
@@ -54,13 +60,10 @@ public class DraggableTabStrip : TabStrip
             tsi.RemoveHandler(PointerReleasedEvent, OnItemPointerReleased);
             tsi.PointerCaptureLost -= OnPointerCaptureLost;
 
-            // If the item was removed from the collection.
             if (tsi.DataContext is TabViewModel { IsClosing: true })
             {
-                // Reset any transform that might be applied
                 tsi.RenderTransform = null;
 
-                // If the item being removed is the one currently being tracked/dragged, stop tracking it.
                 if (_pressedContainer == tsi)
                 {
                     EndDrag();
@@ -87,6 +90,7 @@ public class DraggableTabStrip : TabStrip
         _pressedContainer = tsi;
         _pressedPoint = e.GetPosition(this);
         _isDragging = false;
+        _isDetaching = false;
         ItemFromContainer(tsi);
         _sourceIndex = IndexFromContainer(tsi);
         _currentTargetIndex = _sourceIndex;
@@ -104,9 +108,6 @@ public class DraggableTabStrip : TabStrip
         _draggedTabStartX = tsi.Bounds.X;
         _draggedTabWidth = tsi.Bounds.Width;
         _pointerOffsetWithinTab = _pressedPoint.X - _draggedTabStartX;
-
-        // Note: We do NOT capture the pointer immediately. 
-        // We wait until the threshold is crossed to avoid interfering with standard clicks.
     }
 
     private void OnItemPointerMoved(object? sender, PointerEventArgs e)
@@ -118,21 +119,16 @@ public class DraggableTabStrip : TabStrip
 
         var pos = e.GetPosition(this);
         var deltaX = pos.X - _pressedPoint.X;
+        var deltaY = pos.Y - _pressedPoint.Y;
 
-        // 1. Start Dragging if threshold crossed
+        // Start dragging if threshold crossed
         if (!_isDragging)
         {
-            if (Math.Abs(deltaX) > DragThreshold)
+            if (Math.Abs(deltaX) > DragThreshold || Math.Abs(deltaY) > DragThreshold)
             {
                 _isDragging = true;
-
-                // Now we capture
                 e.Pointer.Capture(_pressedContainer);
-
-                if (_pressedContainer is IPseudoClasses pcs)
-                {
-                    pcs.Set(DraggingPseudoClass, true);
-                }
+                PseudoClasses.Set(DraggingPseudoClass, true);
 
                 _pressedContainer.ZIndex = 1000;
             }
@@ -142,9 +138,37 @@ public class DraggableTabStrip : TabStrip
             }
         }
 
-        // 2. Handle Drag Logic
-        var dragLeft = pos.X - _pointerOffsetWithinTab;
-        var dragCenter = dragLeft + _draggedTabWidth / 2;
+        // Check for vertical detachment
+        var absVerticalDelta = Math.Abs(deltaY);
+        if (absVerticalDelta > DetachThreshold && !_isDetaching)
+        {
+            _isDetaching = true;
+
+            PseudoClasses.Set(DetachingPseudoClass, true);
+            PseudoClasses.Set(DraggingPseudoClass, false);
+
+            // Visual feedback for detachment
+            _pressedContainer.Opacity = 0.7;
+
+            e.Handled = true;
+            return;
+        }
+
+        // If detaching, only update vertical position
+        if (_isDetaching)
+        {
+            var dragLeft = pos.X - _pointerOffsetWithinTab;
+            _pressedContainer.RenderTransform = new TranslateTransform(
+                dragLeft - _draggedTabStartX,
+                deltaY
+            );
+            e.Handled = true;
+            return;
+        }
+
+        // Normal horizontal drag logic
+        var dragLeftPos = pos.X - _pointerOffsetWithinTab;
+        var dragCenter = dragLeftPos + _draggedTabWidth / 2;
 
         var realized = GetRealizedContainers().OfType<TabStripItem>().ToList();
         if (realized.Count == 0)
@@ -157,7 +181,6 @@ public class DraggableTabStrip : TabStrip
         for (var i = 0; i < realized.Count; i++)
         {
             var tab = realized[i];
-            // Fallback if dictionary is stale
             var tabX = _originalX.TryGetValue(tab, out var val) ? val : tab.Bounds.X;
             var center = tabX + tab.Bounds.Width / 2;
 
@@ -169,7 +192,7 @@ public class DraggableTabStrip : TabStrip
 
         _currentTargetIndex = newTargetIndex;
 
-        // 3. Visual Updates (Transforms)
+        // Visual updates
         for (var i = 0; i < realized.Count; i++)
         {
             var tab = realized[i];
@@ -178,7 +201,7 @@ public class DraggableTabStrip : TabStrip
 
             if (tab == _pressedContainer)
             {
-                offset = dragLeft - startX;
+                offset = dragLeftPos - startX;
             }
             else
             {
@@ -198,7 +221,7 @@ public class DraggableTabStrip : TabStrip
                     }
                 }
             }
-            
+
             tab.RenderTransform = new TranslateTransform(offset, 0);
         }
 
@@ -207,9 +230,38 @@ public class DraggableTabStrip : TabStrip
 
     private void OnItemPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        if (_isDragging && _pressedContainer != null && _currentTargetIndex >= 0)
+        if (_pressedContainer == null)
         {
-            // Perform the data move
+            return;
+        }
+
+        // Handle detachment
+        if (_isDetaching)
+        {
+            var item = ItemFromContainer(_pressedContainer);
+            if (item != null)
+            {
+                var screenPos = _pressedContainer.PointToScreen(e.GetPosition(_pressedContainer));
+
+                // Remove item from current collection
+                var list = ItemsSource as IList ?? Items;
+                if (list != null && _sourceIndex >= 0 && _sourceIndex < list.Count)
+                {
+                    list.RemoveAt(_sourceIndex);
+                }
+
+                // Raise event for creating new window
+                TabDetached?.Invoke(this, new TabDetachEventArgs(item, screenPos));
+            }
+
+            EndDrag();
+            e.Handled = true;
+            return;
+        }
+
+        // Normal reorder logic
+        if (_isDragging && _currentTargetIndex >= 0)
+        {
             TryMoveItem(_sourceIndex, _currentTargetIndex);
             SelectedIndex = _currentTargetIndex;
         }
@@ -227,13 +279,11 @@ public class DraggableTabStrip : TabStrip
     {
         if (_pressedContainer != null)
         {
-            if (_pressedContainer is IPseudoClasses pcs)
-            {
-                pcs.Set(DraggingPseudoClass, false);
-            }
+            PseudoClasses.Remove(DraggingPseudoClass);
+            PseudoClasses.Remove(DetachingPseudoClass);
 
             _pressedContainer.Opacity = 1.0;
-            _pressedContainer.ZIndex = 0; // RESET ZINDEX
+            _pressedContainer.ZIndex = 0;
         }
 
         // Iterate ALL containers and reset their transforms.
@@ -246,6 +296,7 @@ public class DraggableTabStrip : TabStrip
 
         _pressedContainer = null;
         _isDragging = false;
+        _isDetaching = false;
         _sourceIndex = -1;
         _currentTargetIndex = -1;
         _originalX.Clear();
@@ -264,7 +315,6 @@ public class DraggableTabStrip : TabStrip
             return false;
         }
 
-        // Clamp newIndex
         if (newIndex < 0)
         {
             newIndex = 0;
@@ -279,13 +329,6 @@ public class DraggableTabStrip : TabStrip
         {
             var item = list[oldIndex];
             list.RemoveAt(oldIndex);
-
-            // Adjust insert index because we removed an item
-            // If we are moving it forward (0 -> 2), the indices shift down after removal
-            // but the target index (2) was calculated based on the list WITH the item.
-            // However, your logic `if (newIndex > oldIndex) newIndex--;` depends on how you calculated target.
-            // With the "Drag Center" logic, simpler insertion usually works:
-
             list.Insert(newIndex, item);
             return true;
         }
@@ -294,16 +337,11 @@ public class DraggableTabStrip : TabStrip
             return false;
         }
     }
+}
 
-    private void SetTransitions()
-    {
-        if (Settings.UIProperties.IsTabAnimated)
-        {
-            
-        }
-        else
-        {
-            
-        }
-    }
+// Event args for tab detachment
+public class TabDetachEventArgs(object detachedItem, PixelPoint screenPosition) : EventArgs
+{
+    public object DetachedItem { get; } = detachedItem;
+    public PixelPoint ScreenPosition { get; } = screenPosition;
 }

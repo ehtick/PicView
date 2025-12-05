@@ -1,4 +1,6 @@
+using Avalonia;
 using Avalonia.Controls;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -77,6 +79,22 @@ public partial class MacMainWindow : Window
                 }
             });
         };
+        
+        MainTabStrip.TabDetached += MainTabStripOnTabDetached;
+    }
+
+    private void MainTabStripOnTabDetached(object? sender, TabDetachEventArgs e)
+    {
+        // Create a new window with the detached tab
+        var newWindow = new FloatingWindow
+        {
+            Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
+            Width = Width,
+            Height = Height,
+            DataContext = e.DetachedItem
+        };
+
+        newWindow.Show();
     }
 
     private void Control_OnSizeChanged(object? sender, SizeChangedEventArgs e)

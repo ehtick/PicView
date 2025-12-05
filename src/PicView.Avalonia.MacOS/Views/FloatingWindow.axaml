@@ -1,0 +1,27 @@
+<Window
+    ExtendClientAreaChromeHints="SystemChrome"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    x:Class="PicView.Avalonia.MacOS.Views.FloatingWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border
+        BorderBrush="{DynamicResource MainBorderColor}"
+        BorderThickness="1"
+        CornerRadius="8">
+        <Panel>
+
+            <DockPanel
+                Background="{DynamicResource SecondaryBackgroundColor}"
+                Height="28"
+                PointerPressed="MoveWindow"
+                VerticalAlignment="Top">
+
+                <TextBlock
+                    Classes="txt"
+                    Text="Floating window"
+                    TextAlignment="Center" />
+            </DockPanel>
+
+        </Panel>
+    </Border>
+</Window>
