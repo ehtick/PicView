@@ -31,6 +31,7 @@ public class MainViewModel
     public BatchResizeViewModel? BatchResizeViewModel { get; set; }
 
     public Core.ViewModels.NavigationViewModel NavigationViewModel { get; set; } = new();
+    public TabMenuViewModel? TabMenu { get; set; }
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)
     {

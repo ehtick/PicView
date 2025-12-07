@@ -19,39 +19,130 @@
         CornerRadius="8"
         Effect="{DynamicResource MenuShadowButtonBorder}"
         x:Name="MainBorder">
+
         <DockPanel MinHeight="400" MinWidth="315">
-            <DockPanel
-                DockPanel.Dock="Top"
-                LastChildFill="True"
-                VerticalAlignment="Top">
+            <Carousel DockPanel.Dock="Top" x:Name="MainCarousel">
+                <Carousel.PageTransition>
+                    <CompositePageTransition>
+                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                    </CompositePageTransition>
+                </Carousel.PageTransition>
+                <Carousel.Items>
+                    <DockPanel LastChildFill="True" VerticalAlignment="Top">
 
-                <customControls:IconButton
-                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Window.ShowSettingsWindow}"
-                    CornerRadius="0,8,0,0"
-                    Data="{StaticResource FilledArrowRightGeometry}"
-                    DockPanel.Dock="Right"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="12"
-                    IconWidth="12"
-                    Width="35"
-                    x:Name="GalleryExpandButton" />
+                        <customControls:IconButton
+                            Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                            BorderBrush="{DynamicResource MainBorderColor}"
+                            BorderThickness="0,0,1,0"
+                            Classes="noBorderHover"
+                            Command="{CompiledBinding TabMenu.OpenGalleryOptionsCommand}"
+                            CornerRadius="0,8,0,0"
+                            Data="{StaticResource FilledArrowRightGeometry}"
+                            DockPanel.Dock="Right"
+                            Foreground="{DynamicResource MainTextColor}"
+                            IconHeight="12"
+                            IconWidth="12"
+                            Width="35"
+                            x:Name="GalleryExpandButton" />
 
-                <customControls:TextIconButton
-                    Background="Transparent"
-                    Classes="altHover"
-                    Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
-                    CornerRadius="8,0,0,0"
-                    Icon="{StaticResource GalleryImage}"
-                    IconHeight="12"
-                    IconMargin="0,0,5,0"
-                    IconWidth="12"
-                    Padding="15,7,15,7"
-                    Text="{CompiledBinding Translation.ShowImageGallery.Value}" />
-            </DockPanel>
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="{CompiledBinding Translation.ShowImageGallery.Value}"
+                            x:Name="MainGalleryButton" />
+                    </DockPanel>
+                    <StackPanel VerticalAlignment="Top">
+                        <Panel Height="30">
+                            <customControls:IconButton
+                                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                                BorderBrush="{DynamicResource MainBorderColor}"
+                                BorderThickness="0,0,1,0"
+                                Classes="noBorderHover"
+                                Command="{CompiledBinding TabMenu.CloseGalleryOptionsCommand}"
+                                CornerRadius="8,0,0,0"
+                                Data="{StaticResource FilledArrowLeftGeometry}"
+                                Foreground="{DynamicResource MainTextColor}"
+                                HorizontalAlignment="Left"
+                                IconHeight="12"
+                                IconWidth="12"
+                                Width="35"
+                                x:Name="GalleryContractButton" />
+                            <TextBlock
+                                Classes="txt"
+                                HorizontalAlignment="Center"
+                                Text="{CompiledBinding Translation.GallerySettings.Value,
+                                                       Mode=OneWay}" />
+                        </Panel>
+                        <Rectangle
+                            Fill="{DynamicResource MainBorderColor}"
+                            Height="1"
+                            Margin="5,2" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="Show docked gallery at bottom" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="Show docked gallery to the left" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="Show docked gallery to the right" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="Show docked gallery at top" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding Gallery.CloseGallery}"
+                            CornerRadius="8,0,0,0"
+                            Data="{StaticResource CloseGeometry}"
+                            IconHeight="12"
+                            IconMargin="0,0,5,0"
+                            IconWidth="12"
+                            Padding="15,7,15,7"
+                            Text="Close docked gallery" />
+                    </StackPanel>
+                </Carousel.Items>
+            </Carousel>
+
         </DockPanel>
     </Border>
 </customControls:AnimatedMenu>

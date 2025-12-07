@@ -19,6 +19,7 @@
                 <ResourceInclude Source="Controls/CalendarButton.axaml" />
                 <ResourceInclude Source="Controls/CalendarDayButton.axaml" />
                 <ResourceInclude Source="Controls/CalendarItem.axaml" />
+                <ResourceInclude Source="Controls/Carousel.axaml" />
                 <ResourceInclude Source="Controls/CheckBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBox.axaml" />
                 <ResourceInclude Source="Controls/ComboBoxItem.axaml" />
