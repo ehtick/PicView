@@ -6,7 +6,7 @@ namespace PicView.Core.ViewModels;
 
 public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncDisposable
 {
-    private CompositeDisposable Disposables { get; } = new();
+    private CompositeDisposable? Disposables { get; set; }
     public string Id { get; init; } = id;
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; } = false;
@@ -16,17 +16,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
 
     public bool CanNavigate()
     {
-        if (ImageIterator is null)
-        {
-            return false;
-        }
-
-        return false;
+        return ImageIterator is { Files.Count: > 0 };
     }
-
-    
-    // Used to bind the tab content to the UI. I.E, the image viewer or start-up menu.
-    public BindableReactiveProperty<object?> TabContent { get; set; } = new();
     
     public BindableReactiveProperty<string> TabTitle { get; } = new(string.Empty);
     public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
@@ -34,6 +25,15 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
 
     public void Initialize()
     {
+        if (Disposables is null)
+        {
+            Disposables = new CompositeDisposable();
+        }
+        else
+        {
+            // Already initialized
+            return;
+        }
         Observable.EveryValueChanged(IModel, model => model.FileInfo).Subscribe(file => 
         {
             if (file is null)
@@ -60,18 +60,19 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         await closeTab(Id);
     }
 
-    public void CancelNavigation()
+    public CancellationTokenSource ResetNavigationCts()
     {
         NavigationCts.Cancel();
         NavigationCts.Dispose();
         NavigationCts = new CancellationTokenSource();
+        return NavigationCts;
     }
 
     public void Dispose()
     {
-        ImageIterator?.DisposeAsync().AsTask().Start();
-        Disposables.Dispose();
+        _ = DisposeAsync().AsTask();
     }
+    
     public async ValueTask DisposeAsync()
     {
         if (ImageIterator is not null)
@@ -79,5 +80,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
             await ImageIterator.DisposeAsync();
         }
         Disposables.Dispose();
+        NavigationCts.Dispose();
+        
+        GC.SuppressFinalize(this);
     }
 }

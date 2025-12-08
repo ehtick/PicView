@@ -2,7 +2,10 @@
 
 public interface IImageIterator : IAsyncDisposable
 {
-    IReadOnlyList<FileInfo> ImagePaths { get; }
+    event EventHandler<EventArgs>? FileListChanged;
+    event EventHandler<EventArgs>? CurrentChanged;
+    
+    IReadOnlyList<FileInfo> Files { get; }
     int CurrentIndex { get; }
     int GetIteration(int index, NavigateTo navigation, bool skip1=false, bool skip10=false, bool skip100=false);
     ValueTask IterateToIndexAsync(int index, CancellationToken ct);
@@ -10,4 +13,5 @@ public interface IImageIterator : IAsyncDisposable
     ValueTask SlimUpdate(int index, object? imageSource);
     ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token);
     ValueTask PreloadAsync();
+    ValueTask ReloadFileListAsync(CancellationToken ct);
 }

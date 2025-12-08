@@ -1,24 +1,16 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
-using PicView.Core.Exif;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
-using PicView.Core.FileHistory;
-using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
-using PicView.Core.ViewModels;
-using R3;
+using PicView.Core.Navigation;
+using ImageIterator = PicView.Core.Navigation.ImageIterator;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -70,6 +62,7 @@ public static class QuickLoad2
 
         SetPicViewerValues(vm, imageModel, fileInfo);
 
+        vm.NavigationViewModel.Initialize(null, new NavigationService(null, null, null), null);
     }
     private static void SetPicViewerValues(MainViewModel vm, ImageModel imageModel, FileInfo fileInfo)
     {
@@ -81,7 +74,6 @@ public static class QuickLoad2
         vm.PicViewer.FileInfo.Value = fileInfo;
         
         vm.NavigationViewModel.ActiveTab.Value.IModel.FileInfo = fileInfo;
-        vm.NavigationViewModel.ActiveTab.Value.Initialize();
         vm.NavigationViewModel.ActiveTab.Value.IModel.Image = imageModel.Image;
         vm.NavigationViewModel.ActiveTab.Value.IModel.ImageType = imageModel.ImageType;
         vm.NavigationViewModel.ActiveTab.Value.IModel.PixelWidth = imageModel.PixelWidth;
