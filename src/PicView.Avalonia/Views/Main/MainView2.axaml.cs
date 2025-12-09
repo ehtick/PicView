@@ -121,8 +121,6 @@ public partial class MainView2 : UserControl
             };
 
             // Setup hover fade buttons
-            _ = new HoverFadeButtonHandler(ClickArrowRight, vm, ClickArrowRight.PolyButton);
-            _ = new HoverFadeButtonHandler(ClickArrowLeft, vm, ClickArrowLeft.PolyButton);
             _ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
 
             PointerWheelChanged += async (_, e) =>

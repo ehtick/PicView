@@ -149,6 +149,14 @@
         <DependentUpon>ImageViewer2.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\UC\Buttons\ClickArrowRight2.axaml.cs">
+        <DependentUpon>ClickArrowRight2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\UC\Buttons\ClickArrowLeft2.axaml.cs">
+        <DependentUpon>ClickArrowLeft2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
   </ItemGroup>
 
 

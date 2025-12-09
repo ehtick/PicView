@@ -126,6 +126,8 @@ public class NavigationViewModel
 
     public bool CanNavigate(TabViewModel tab) =>
         tab.CanNavigate();
+    public bool CanNavigate() =>
+        ActiveTab.Value.CanNavigate();
 
     public async ValueTask NextFile() =>
         await NextFileCore(NavigateTo.Next).ConfigureAwait(false);

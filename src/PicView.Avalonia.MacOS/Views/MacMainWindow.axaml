@@ -12,6 +12,7 @@
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons;assembly=PicView.Avalonia"
     xmlns:converters="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
@@ -605,7 +606,6 @@
                 SelectedIndex="{CompiledBinding ActiveTabIndex.Value,
                                                 Mode=TwoWay}"
                 Tag="{CompiledBinding IsTabPanelVisible.Value}"
-                Theme="{StaticResource ScrollableTabControl}"
                 x:Name="MainTabStrip">
 
                 <customControls:DraggableTabControl.Styles>
@@ -640,15 +640,12 @@
 
                 <customControls:DraggableTabControl.ContentTemplate>
                     <DataTemplate DataType="viewModels1:TabViewModel">
-                        <DockPanel LastChildFill="True">
-                            <Image Source="{CompiledBinding ImageSource.Value}" Stretch="Uniform" />
-
-                        </DockPanel>
+                        <Image Source="{CompiledBinding ImageSource.Value}" Stretch="Uniform" />
                     </DataTemplate>
                 </customControls:DraggableTabControl.ContentTemplate>
 
             </customControls:DraggableTabControl>
-            <main:MainView2 x:Name="MainView" />
+            <main:MainView2 ZIndex="1" x:Name="MainView" />
         </Panel>
     </DockPanel>
 </Window>

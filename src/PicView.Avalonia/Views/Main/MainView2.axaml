@@ -1024,13 +1024,13 @@
                                         Mode=OneWay}"
             VerticalAlignment="Center"
             ZIndex="3" />
-        <buttons:ClickArrowRight
+        <buttons:ClickArrowRight2
             HorizontalAlignment="Right"
             Margin="{CompiledBinding MainWindow.RightControlOffSetMargin.Value}"
             Opacity="0"
             VerticalAlignment="Center"
             x:Name="ClickArrowRight" />
-        <buttons:ClickArrowLeft
+        <buttons:ClickArrowLeft2
             HorizontalAlignment="Left"
             Opacity="0"
             VerticalAlignment="Center"

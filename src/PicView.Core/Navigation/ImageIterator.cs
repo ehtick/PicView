@@ -4,28 +4,18 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Core.Navigation;
 
-public class ImageIterator : IImageIterator
+public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, TabViewModel tab) : IImageIterator
 {
-    private readonly IImageCache _cache;
-    private readonly IThumbnailLoader _thumbnailLoader;
-    private readonly int _negativeIterations;
-    private readonly TabViewModel _tab;
+    private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
+
+    private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
 
     // Configuration for preloading window
-    private readonly int _positiveIterations;
-
+    private readonly int _positiveIterations = PreLoaderConfig.PositiveIterations;
+    private readonly int _negativeIterations = PreLoaderConfig.NegativeIterations;
+    
     private List<FileInfo> _files = [];
-
-    public ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, TabViewModel tab)
-    {
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-        _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
-        _tab = tab ?? throw new ArgumentNullException(nameof(tab));
-
-        // Defaults from settings or injected config
-        _positiveIterations = PreLoaderConfig.PositiveIterations;
-        _negativeIterations = PreLoaderConfig.NegativeIterations;
-    }
 
     public IReadOnlyList<FileInfo> Files => _files;
     public int CurrentIndex { get; private set; } = -1;

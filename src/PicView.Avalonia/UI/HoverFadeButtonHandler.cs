@@ -89,12 +89,7 @@ public class HoverFadeButtonHandler
             return false;
         }
 
-        if (_childButton != null && !NavigationManager.CanNavigate(_vm))
-        {
-            return false;
-        }
-
-        return _childButton == null || NavigationManager.GetCount > 1;
+        return _childButton == null || _vm.NavigationViewModel.CanNavigate();
     }
 
     /// <summary>

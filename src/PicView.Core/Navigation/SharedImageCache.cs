@@ -25,8 +25,6 @@ public class SharedImageCache : IImageCache
         _maxItems = maxItems > 0 ? maxItems : 100;
     }
     
-    // Returns the PreLoadValue immediately. 
-// If it needs loading, it starts the task in the background but does NOT await it here.
     public PreLoadValue GetOrScheduleLoad(FileInfo file, CancellationToken ct = default)
     {
         ArgumentNullException.ThrowIfNull(file);
