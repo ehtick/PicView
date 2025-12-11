@@ -1,113 +1,164 @@
-﻿using PicView.Core.Navigation.Interfaces;
+﻿using PicView.Core.DebugTools;
+using PicView.Core.Models;
+using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
 
 namespace PicView.Core.Navigation;
 
-public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, TabViewModel tab) : IImageIterator
+public class ImageIterator : IImageIterator
 {
-    private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-    private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
+    private readonly IImageCache _cache;
+    private readonly IThumbnailLoader _thumbnailLoader;
 
-    private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
-
-    // Configuration for preloading window
-    private readonly int _positiveIterations = PreLoaderConfig.PositiveIterations;
-    private readonly int _negativeIterations = PreLoaderConfig.NegativeIterations;
+    private readonly TabViewModel _tab;
     
     private List<FileInfo> _files = [];
+    public bool IsReversed { get; private set; }
 
     public IReadOnlyList<FileInfo> Files => _files;
     public int CurrentIndex { get; private set; } = -1;
 
-    public async ValueTask IterateToIndexAsync(int index, CancellationToken ct)
+    public ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, TabViewModel tab)
+    {
+        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
+        _tab = tab ?? throw new ArgumentNullException(nameof(tab));
+    }
+
+    public async ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct)
     {
         if (index < 0 || index >= _files.Count)
         {
             return;
         }
-
-        // Get the current image to ensure it's loaded (User is waiting for this)
-        var currentFile = _files[index];
-        var preLoadValue = _cache.GetOrScheduleLoad(currentFile, ct);
-        
-        if (preLoadValue.IsLoading && preLoadValue.ImageModel.Image is null)
-        {
-            // Try to load thumbnail if full image is not ready
-            var thumb = await _thumbnailLoader.GetThumbnailAsync(currentFile).ConfigureAwait(false);
-            
-            // Check if full image loaded while we were getting the thumbnail
-            if (preLoadValue.IsLoading && preLoadValue.ImageModel.Image is null && thumb is not null)
-            {
-                 // Show thumbnail temporarily
-                 var tempModel = new Models.ImageModel
-                 {
-                     FileInfo = currentFile,
-                     Image = thumb,
-                 };
-                 _tab.CurrentModel.Value = tempModel;
-            }
-            
-            // Wait for full load
-            await preLoadValue.WaitForLoadingCompleteAsync().WaitAsync(ct).ConfigureAwait(false);
-        }
-
-        // Now update with the final loaded image
-        _tab.CurrentModel.Value = preLoadValue.ImageModel;
         
         CurrentIndex = index;
+        var nextFile = _files[index];
+        if (_cache.TryGet(_tab.Id, CurrentIndex, out var preLoadValue))
+        {
+            if (preLoadValue is not null)
+            {
+                if (preLoadValue.IsLoading && preLoadValue.ImageModel.Image is null)
+                {
+                    var thumb = await _thumbnailLoader.GetThumbnailAsync(nextFile).ConfigureAwait(false);
+                    _tab.CurrentModel.Value = new ImageModel
+                    {
+                        Image = thumb,
+                        FileInfo = nextFile
+                    };
+                    if (CurrentIndex != index)
+                    {
+                        await ct.CancelAsync();
+                        return;
+                    }
+                    await LoadManually();
+                }
+                else
+                {
+                    _tab.CurrentModel.Value = preLoadValue.ImageModel;
+                }
+            }
+        }
+        else
+        {
+            await LoadManually();
+        }
 
-        // Update background priorities
-        UpdateCachePriorities();
+        // Need to explicitly start preloading in a new thread and not wait for it, for performance
+        _ = Task.Run(() =>
+        {
+            _cache.PreloadAsync(_tab.Id, CurrentIndex, IsReversed, _files, ct.Token);
+        });
+        
+        return;
+
+        async Task LoadManually()
+        {
+            var imageModel = await _cache.LoadAsync(_tab.Id, index, _files, ct.Token).ConfigureAwait(false);
+            if (CurrentIndex != index)
+            {
+                await ct.CancelAsync();
+                return;
+            }
+            if (imageModel is not null)
+            {
+                _tab.CurrentModel.Value = imageModel;
+            }
+        }
     }
 
-    // UI-Agnostic "GetIteration" logic
     public int GetIteration(int index, NavigateTo navigation, bool skip1 = false, bool skip10 = false,
         bool skip100 = false)
     {
-        if (_files.Count == 0)
-        {
-            return -1;
-        }
-
-        var skipAmount = skip100 ? 100 : skip10 ? 10 : skip1 ? 2 : 1;
         int next;
+
+        // Determine skipAmount based on input flags
+        var skipAmount = skip100 ? 100 : skip10 ? 10 : skip1 ? 2 : 1;
+        
+        if (skip100)
+        {
+            if (_files.Count > PreLoaderConfig.MaxCount)
+            {
+                //PreLoader.Clear();
+            }
+        }
 
         switch (navigation)
         {
             case NavigateTo.Next:
             case NavigateTo.Previous:
-                var change = navigation == NavigateTo.Next ? skipAmount : -skipAmount;
-                // Assuming looping is handled by caller or config?
-                // The original code checked Settings.UIProperties.Looping.
-                // We should inject this or assume true/false.
-                // For Core, let's implement standard looping logic or make it configurable.
-                // Let's assume looping for now as it's common.
-                next = (index + change) % _files.Count;
-                if (next < 0)
+                var indexChange = navigation == NavigateTo.Next ? skipAmount : -skipAmount;
+                IsReversed = navigation == NavigateTo.Previous;
+
+                if (Settings.UIProperties.Looping)
                 {
-                    next += _files.Count;
+                    // Calculate new index with looping
+                    next = (index + indexChange + _files.Count) % _files.Count;
+                }
+                else
+                {
+                    // Calculate new index without looping and ensure bounds
+                    var newIndex = index + indexChange;
+                    if (newIndex < 0)
+                    {
+                        return 0;
+                    }
+
+                    if (newIndex >= _files.Count)
+                    {
+                        return _files.Count - 1;
+                    }
+
+                    next = newIndex;
                 }
 
                 break;
 
             case NavigateTo.First:
-                next = 0;
-                break;
             case NavigateTo.Last:
-                next = _files.Count - 1;
+                if (_files.Count > PreLoaderConfig.MaxCount)
+                {
+                    //PreLoader.Clear();
+                }
+
+                next = navigation == NavigateTo.First ? 0 : _files.Count - 1;
                 break;
+
             default:
-                return index;
+#if DEBUG
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIteration), $"{navigation} is not a valid NavigateTo value.");
+#endif
+                return -1;
         }
 
         return next;
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
-        _cache.RemoveOwner(_tab);
-        return ValueTask.CompletedTask;
+        // _preloader is managed by cache
+        await ValueTask.CompletedTask;
     }
 
     // Implementing interface stubs
@@ -124,12 +175,6 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     public ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token)
     {
         throw new NotImplementedException();
-    }
-
-    public ValueTask PreloadAsync()
-    {
-        UpdateCachePriorities();
-        return ValueTask.CompletedTask;
     }
 
     public ValueTask ReloadFileListAsync(CancellationToken ct)
@@ -151,39 +196,5 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         {
             CurrentIndex = _files.Count - 1;
         }
-
-        UpdateCachePriorities();
-    }
-
-    private void UpdateCachePriorities()
-    {
-        if (_files.Count == 0)
-        {
-            return;
-        }
-
-        // Calculate window around current index
-        // Priority list: [Current, Next, Prev, Next+1, Prev+1, ...]
-
-        var priorities = new List<string> { _files[CurrentIndex].FullName };
-
-        for (var i = 1; i <= Math.Max(_positiveIterations, _negativeIterations); i++)
-        {
-            if (i <= _positiveIterations)
-            {
-                var nextIndex = (CurrentIndex + i) % _files.Count;
-                priorities.Add(_files[nextIndex].FullName);
-            }
-
-            if (i > _negativeIterations)
-            {
-                continue;
-            }
-
-            var prevIndex = (CurrentIndex - i + _files.Count) % _files.Count;
-            priorities.Add(_files[prevIndex].FullName);
-        }
-
-        _cache.UpdatePriorities(_tab, priorities);
     }
 }

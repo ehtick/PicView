@@ -4,6 +4,7 @@ using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
@@ -83,9 +84,9 @@ public static class QuickLoad2
 
         var thumbnailService = new AvaloniaThumbnailLoader();
 
+        var files = vm.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        vm.NavigationViewModel.Initialize(galleryService, navService, sharedCache, thumbnailService);
-        vm.NavigationViewModel.ActiveTab.Value.InitializeImageIterator(vm.PlatformService.GetFiles(fileInfo), sharedCache, thumbnailService);
+        vm.NavigationViewModel.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService);
     }
     
     private static void SetPicViewerValues(MainViewModel vm, ImageModel imageModel, FileInfo fileInfo)

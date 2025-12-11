@@ -13,11 +13,6 @@ public static class GetThumbnails
     {
         try
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                return await GetSkBitmapThumbAsync(fileInfo, height);
-            }
-
             using var magick = new MagickImage();
             magick.Ping(fileInfo);
             var profile = magick.GetExifProfile();

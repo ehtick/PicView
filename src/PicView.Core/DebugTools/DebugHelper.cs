@@ -8,6 +8,9 @@ namespace PicView.Core.DebugTools;
 /// </summary>
 public static class DebugHelper
 {
+#if DEBUG
+    public static bool ShowCacheAdditionsAndRemovals { get; set; }
+#endif
     /// <summary>
     /// Logs detailed debug information for an exception, including the class name, method name, message, and stack trace.
     /// This method is intended to be used for development and debugging purposes only.

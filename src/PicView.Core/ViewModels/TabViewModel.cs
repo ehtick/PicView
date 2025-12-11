@@ -61,7 +61,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
     public void InitializeImageIterator(List<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader)
     {
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
-        ImageIterator.Initialize(files);
+        var index = files.FindIndex(x => x.FullName.Equals(CurrentModel.Value?.FileInfo.FullName));
+        ImageIterator.Initialize(files, index);
     }
 
     public async ValueTask CloseTab()
@@ -73,7 +74,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
     public CancellationTokenSource ResetNavigationCts()
     {
         NavigationCts.Cancel();
-        NavigationCts.Dispose();
         NavigationCts = new CancellationTokenSource();
         return NavigationCts;
     }
@@ -93,5 +93,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         NavigationCts.Dispose();
         
         GC.SuppressFinalize(this);
+    }
+
+    public override string ToString()
+    {
+        return id;
     }
 }

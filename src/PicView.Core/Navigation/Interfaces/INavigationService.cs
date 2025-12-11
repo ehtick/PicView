@@ -4,8 +4,8 @@ namespace PicView.Core.Navigation.Interfaces;
 
 public interface INavigationService
 {
-    ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationToken ct);
-    ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationToken ct);
-    ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationToken ct);
+    ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct);
+    ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct);
+    ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationTokenSource ct);
     bool CanNavigate(TabViewModel tab);
 }

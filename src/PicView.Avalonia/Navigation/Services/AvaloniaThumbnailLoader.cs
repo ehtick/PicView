@@ -1,3 +1,4 @@
+using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -9,10 +10,7 @@ public class AvaloniaThumbnailLoader : IThumbnailLoader
 {
     public async ValueTask<object?> GetThumbnailAsync(FileInfo file)
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return null;
-        }
+        var vm = await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
         
         return await GetThumbnails.GetThumbAsync(file, (uint)vm.Gallery.GalleryItem.ItemHeight.Value).ConfigureAwait(false);
     }

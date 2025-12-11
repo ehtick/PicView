@@ -121,6 +121,13 @@ public class NavigationViewModel
     {
         Tabs.Value.Clear();
     }
+    
+    public void LoadAndInitializeFromPath(List<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    {
+        Initialize(gallery, navigationService, cache, thumbnailLoader);
+        ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader);
+        _sharedCache.PreloadAsync(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files, CancellationToken.None);
+    }
 
     #region Navigation
 
@@ -149,7 +156,7 @@ public class NavigationViewModel
         {
             return;
         }
-        var ct = tab.ResetNavigationCts().Token;
+        var ct = tab.ResetNavigationCts();
         await _sharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
     }
 
@@ -161,12 +168,12 @@ public class NavigationViewModel
             return;
         }
         var tab = ActiveTab.Value;
-        var ct = tab.ResetNavigationCts().Token;
+        var ct = tab.ResetNavigationCts();
         
         await _sharedNavigation.LoadFromStringAsync(source, tab, ct)
             .ConfigureAwait(false);
     }
-    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationToken ct)
+    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
     {
         if (_sharedNavigation is null || tab.ImageIterator is null)
         {
@@ -180,7 +187,7 @@ public class NavigationViewModel
         {
             return;
         }
-        await _sharedNavigation.NavigateToIndexAsync(ActiveTab.Value, index, ActiveTab.Value.NavigationCts.Token).ConfigureAwait(false);
+        await _sharedNavigation.NavigateToIndexAsync(ActiveTab.Value, index, ActiveTab.Value.NavigationCts).ConfigureAwait(false);
     }
 
     #endregion

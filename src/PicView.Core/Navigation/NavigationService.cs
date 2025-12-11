@@ -16,27 +16,12 @@ public class NavigationService : INavigationService
         _cache = cache;
     }
 
-    public async ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationToken ct)
+    public async ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct)
     {
-        // TODO: Implement logic to determine if source is URL, File, etc.
-        // For now, assume file.
-        var fileInfo = new FileInfo(source);
-        if (fileInfo.Exists)
-        {
-            // Logic to load file into tab
-            // This might involve setting up the ImageIterator for the tab?
-            // Or just loading the single image?
-
-            // In the new architecture, the TabViewModel manages the Iterator.
-            // But NavigationService orchestrates it.
-
-            // Example:
-            // tab.ImageIterator.Initialize(new List<FileInfo>{ fileInfo }, 0);
-            // await tab.ImageIterator.IterateToIndexAsync(0, ct);
-        }
+        throw new NotImplementedException();
     }
 
-    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationToken ct)
+    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
     {
         if (!CanNavigate(tab))
         {
@@ -48,11 +33,11 @@ public class NavigationService : INavigationService
             return;
         }
 
-        var next = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to);
-        await tab.ImageIterator.IterateToIndexAsync(next, ct).ConfigureAwait(false);
+        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to);
+        await tab.ImageIterator.IterateToIndexAsync(nextFileIndex, ct).ConfigureAwait(false);
     }
 
-    public ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationToken ct)
+    public ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationTokenSource ct)
     {
         if (tab.ImageIterator is null)
         {
