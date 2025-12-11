@@ -66,6 +66,27 @@ public class PicBox : Control, IDisposable
         set => SetValue(SourceProperty, value);
     }
 
+    public static readonly StyledProperty<object?> SecondarySourceProperty =
+        AvaloniaProperty.Register<PicBox, object?>(nameof(SecondarySource));
+
+    /// <summary>
+    ///     Gets or sets the second image that will be displayed, when side by side view is enabled
+    /// </summary>
+    public object? SecondarySource
+    {
+        get => GetValue(SecondarySourceProperty);
+        set => SetValue(SecondarySourceProperty, value);
+    }
+
+    public static readonly StyledProperty<double> SecondaryImageWidthProperty =
+        AvaloniaProperty.Register<PicBox, double>(nameof(SecondaryImageWidth));
+
+    public double SecondaryImageWidth
+    {
+        get => GetValue(SecondaryImageWidthProperty);
+        set => SetValue(SecondaryImageWidthProperty, value);
+    }
+
     /// <summary>
     ///     Defines the <see cref="ImageType" /> property.
     /// </summary>
@@ -227,7 +248,16 @@ public class PicBox : Control, IDisposable
 
         var viewPort = DetermineViewPort();
 
-        RenderImage(context, source, viewPort, GetImageSize(source));
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            var secondarySource = SecondarySource as IImage;
+            RenderImageSideBySide(context, source, secondarySource, viewPort, GetImageSize(source),
+                GetSecondaryImageInfo(secondarySource));
+        }
+        else
+        {
+            RenderImage(context, source, viewPort, GetImageSize(source));
+        }
     }
 
     private Size GetImageSize(IImage source)
@@ -270,6 +300,48 @@ public class PicBox : Control, IDisposable
         catch (Exception exception)
         {
             DebugHelper.LogDebug(nameof(PicBox), nameof(GetSizeFromAlternativeSources), exception);
+        }
+
+        return new Size();
+    }
+
+    private Size GetSecondaryImageInfo(IImage? secondarySource)
+    {
+        if (secondarySource == null)
+        {
+            return new Size();
+        }
+
+        try
+        {
+            return secondarySource.Size;
+        }
+        catch (Exception)
+        {
+            if (DataContext is not MainViewModel vm)
+            {
+                return new Size();
+            }
+
+            var nextPreloadValue = NavigationManager.GetNextPreLoadValue();
+            if (nextPreloadValue?.ImageModel != null)
+            {
+                return new Size(nextPreloadValue.ImageModel.PixelWidth, nextPreloadValue.ImageModel.PixelHeight);
+            }
+
+            if (NavigationManager.CanNavigate(vm))
+            {
+                try
+                {
+                    using var magickImage = new MagickImage();
+                    magickImage.Ping(NavigationManager.GetNextFileName);
+                    return new Size(magickImage.Width, magickImage.Height);
+                }
+                catch
+                {
+                    return new Size();
+                }
+            }
         }
 
         return new Size();
@@ -320,6 +392,51 @@ public class PicBox : Control, IDisposable
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(PicBox), nameof(RenderImage), e);
+        }
+    }
+
+    private void RenderImageSideBySide(DrawingContext context, IImage source, IImage? secondarySource, Rect viewPort,
+        Size sourceSize, Size secondarySourceSize)
+    {
+        if (source == null || secondarySource == null)
+        {
+            return;
+        }
+
+        // Scale both images based on the height of the viewport
+        var scale = viewPort.Height / Math.Max(sourceSize.Height, secondarySourceSize.Height);
+
+        // Calculate the scaled size of the second image based on the specified width (SecondaryImageWidth)
+        var scaledSecondarySize = new Size(SecondaryImageWidth, secondarySourceSize.Height * scale);
+
+        // Calculate the remaining width for the first image
+        var firstImageWidth = viewPort.Width - scaledSecondarySize.Width;
+
+        if (firstImageWidth <= 0)
+        {
+            // If there's no space left for the first image, don't render anything
+            return;
+        }
+
+        // Calculate the destination rectangles for both images
+        var sourceDestRect = new Rect(0, 0, firstImageWidth, viewPort.Height);
+        var secondaryDestRect = new Rect(firstImageWidth, 0, SecondaryImageWidth, viewPort.Height);
+
+        // Calculate the source rectangles (ensuring the aspect ratio is maintained)
+        var sourceRect = new Rect(sourceSize);
+        var secondarySourceRect = new Rect(secondarySourceSize);
+
+        try
+        {
+            // Render the first image (filling the remaining space)
+            context.DrawImage(source, sourceRect, sourceDestRect);
+
+            // Render the second image (with the fixed SecondaryImageWidth)
+            context.DrawImage(secondarySource, secondarySourceRect, secondaryDestRect);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(RenderImageSideBySide), e);
         }
     }
 

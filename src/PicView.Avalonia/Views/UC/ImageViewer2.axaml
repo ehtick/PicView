@@ -8,14 +8,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <LayoutTransformControl x:Name="ImageLayoutTransformControl">
         <customControls:ZoomPanControl x:Name="ZoomPanControl">
-            <customControls:AutoScrollViewer Focusable="False" x:Name="ImageScrollViewer">
+            <customControls:AutoScrollViewer
+                Focusable="False"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Disabled"
+                x:Name="ImageScrollViewer">
                 <!--  ReSharper disable once Xaml.PossibleNullReferenceException  -->
-                <Border
-                    Background="{Binding $parent[Window].((viewModels:MainViewModel)DataContext).MainWindow.ConstrainedImageBackground.Value}"
-                    Height="{CompiledBinding CurrentModel.Value.PixelHeight}"
-                    Width="{CompiledBinding CurrentModel.Value.PixelWidth}"
-                    x:Name="MainBorder">
-                    <customControls:PicBox Source="{CompiledBinding CurrentModel.Value.Image}" x:Name="MainImage" />
+                <Border Background="{Binding $parent[Window].((viewModels:MainViewModel)DataContext).MainWindow.ConstrainedImageBackground.Value}" x:Name="MainBorder">
+                    <customControls:PicBox2 Source="{CompiledBinding CurrentModel.Value.Image}" x:Name="MainImage" />
                 </Border>
             </customControls:AutoScrollViewer>
         </customControls:ZoomPanControl>

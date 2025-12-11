@@ -616,7 +616,7 @@
                 VerticalAlignment="Center"
                 ZIndex="3" />
             <customControls:DraggableTabControl
-                Background="{DynamicResource MainBackgroundColor}"
+                Background="{DynamicResource SecondaryBackgroundColor}"
                 BorderBrush="{DynamicResource TertiaryBorderColor}"
                 BorderThickness="0,0,0,1"
                 DataContext="{Binding NavigationViewModel}"

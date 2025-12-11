@@ -61,15 +61,19 @@
         </Style>
 
         <!--  Applies when dragging  -->
-        <Style Selector="^:pressed">
+        <Style Selector="^:dragging">
             <Setter Property="Opacity" Value="0.95" />
             <Setter Property="RenderTransform">
                 <ScaleTransform ScaleX="1.05" ScaleY="1.05" />
             </Setter>
         </Style>
-        <Style Selector="^:pressed:not(.noBorder) /template/ Border#PART_LayoutRoot">
+        <Style Selector="^:dragging:not(.noBorder) /template/ Border#PART_LayoutRoot">
             <Setter Property="BorderThickness" Value="1,0,1,0" />
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
+        </Style>
+
+        <Style Selector="^:detached">
+            <Setter Property="Width" Value="0" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -234,9 +234,9 @@ public static class FunctionsMapper
 
     #region Navigation, zoom and rotation
 
-    /// <inheritdoc cref="NavigationManager.Iterate(bool, MainViewModel)" />
+    /// <inheritdoc cref="Core.ViewModels.NavigationViewModel.NextFile()" />
     public static async ValueTask Next() =>
-        await NavigationManager.Iterate(true, Vm, CancellationToken.None).ConfigureAwait(false);
+        await Vm.NavigationViewModel.NextFile().ConfigureAwait(false);
     
     /// <inheritdoc cref="NavigationManager.NavigateBetweenDirectories(bool, MainViewModel)" />
     public static async ValueTask NextFolder() =>
@@ -246,9 +246,9 @@ public static class FunctionsMapper
     public static async ValueTask Last() =>
         await NavigationManager.NavigateFirstOrLast(last: true, Vm).ConfigureAwait(false);
 
-    /// <inheritdoc cref="NavigationManager.Iterate(bool, MainViewModel)" />
+    /// <inheritdoc cref="Core.ViewModels.NavigationViewModel.PrevFile()" />
     public static async ValueTask Prev() =>
-        await NavigationManager.Iterate(false, Vm, CancellationToken.None).ConfigureAwait(false);
+        await Vm.NavigationViewModel.PrevFile().ConfigureAwait(false);
     
     /// <inheritdoc cref="NavigationManager.NavigateBetweenDirectories(bool, MainViewModel)" />
     public static async ValueTask PrevFolder() =>

@@ -54,14 +54,14 @@ public partial class ImageViewer2 : UserControl
         {
             return;
         }
-        _imageTransformer = new RotationTransformer(
-            ImageLayoutTransformControl,
-            MainImage,
-            () => DataContext,
-            () =>
-            {
-                ZoomPanControl.ResetZoomSlim();
-            });
+        // _imageTransformer = new RotationTransformer(
+        //     ImageLayoutTransformControl,
+        //     MainImage,
+        //     () => DataContext,
+        //     () =>
+        //     {
+        //         ZoomPanControl.ResetZoomSlim();
+        //     });
     }
 
     private void InitializeMouseInputHelper() =>
