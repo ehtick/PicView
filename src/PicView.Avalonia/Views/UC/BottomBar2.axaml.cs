@@ -65,9 +65,9 @@ public partial class BottomBar2 : UserControl
                 CropButton.Classes.Remove("noBorderHover");
                 CropButton.Classes.Add("hover");
 
-                GalleryButton.Background = Brushes.Transparent;
-                GalleryButton.Classes.Remove("noBorderHover");
-                GalleryButton.Classes.Add("hover");
+                ImageInfoButton.Background = Brushes.Transparent;
+                ImageInfoButton.Classes.Remove("noBorderHover");
+                ImageInfoButton.Classes.Add("hover");
 
                 SettingsMenuButton.Background = Brushes.Transparent;
                 SettingsMenuButton.Classes.Remove("noBorderHover");
@@ -95,7 +95,7 @@ public partial class BottomBar2 : UserControl
 
                 FileMenuButton.Foreground = new SolidColorBrush(color);
                 CropButton.Foreground = new SolidColorBrush(color);
-                GalleryButton.Foreground = new SolidColorBrush(color);
+                ImageInfoButton.Foreground = new SolidColorBrush(color);
                 SettingsMenuButton.Foreground = new SolidColorBrush(color);
 
                 NextButton.Foreground = new SolidColorBrush(color);
@@ -117,14 +117,14 @@ public partial class BottomBar2 : UserControl
                     }
                 }
 
-                GalleryButton.Classes.Remove("noBorderHover");
-                GalleryButton.Classes.Add("noBorderHoverAlt");
+                ImageInfoButton.Classes.Remove("noBorderHover");
+                ImageInfoButton.Classes.Add("noBorderHoverAlt");
                 if (TryGetResource("ToolsMenuBrush", Application.Current.RequestedThemeVariant,
                         out var toolsMenuBrush))
                 {
                     if (toolsMenuBrush is SolidColorBrush brush)
                     {
-                        UIHelper.SetButtonHover(GalleryButton, brush);
+                        UIHelper.SetButtonHover(ImageInfoButton, brush);
                     }
                 }
 

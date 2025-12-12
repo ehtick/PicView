@@ -12,6 +12,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
@@ -330,24 +331,22 @@ public static class FunctionsMapper
         });
     }
 
-    public static async ValueTask ZoomIn()
+    public static ValueTask ZoomIn()
     {
-        // TODO: ImageViewer Needs refactor
-        if (Vm is null)
+        if (Vm.NavigationViewModel.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
         {
-            return;
+            imageViewer.ZoomIn();
         }
-        await Dispatcher.UIThread.InvokeAsync(Vm.ImageViewer.ZoomIn);
+        return ValueTask.CompletedTask;
     }
 
-    public static async ValueTask ZoomOut()
+    public static ValueTask ZoomOut()
     {
-        // TODO: ImageViewer Needs refactor
-        if (Vm is null)
+        if (Vm.NavigationViewModel.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
         {
-            return;
+            imageViewer.ZoomOut();
         }
-        await Dispatcher.UIThread.InvokeAsync(Vm.ImageViewer.ZoomOut);
+        return ValueTask.CompletedTask;
     }
 
     public static async ValueTask ResetZoom()

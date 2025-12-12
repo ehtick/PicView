@@ -20,7 +20,7 @@
 
             <!--  Next  -->
             <MenuItem
-                Command="{CompiledBinding Navigation.NextCommand}"
+                Command="{CompiledBinding NavigationViewModel.NextFile}"
                 Header="{CompiledBinding Translation.NextImage,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
@@ -36,7 +36,7 @@
 
             <!--  Prev  -->
             <MenuItem
-                Command="{CompiledBinding Navigation.PreviousCommand}"
+                Command="{CompiledBinding NavigationViewModel.PrevFile}"
                 Header="{CompiledBinding Translation.PrevImage,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
@@ -219,6 +219,8 @@
                     IconHeight="17"
                     IconWidth="20"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value}"
                     Width="38"
                     x:Name="FileMenuButton" />
 
@@ -234,10 +236,10 @@
                     IconHeight="17"
                     IconWidth="17"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.ImageInfo.Value}"
                     Width="38"
-                    x:Name="GalleryButton" />
-
-
+                    x:Name="ImageInfoButton" />
 
                 <customControls:IconButton
                     Background="{DynamicResource AltBackgroundColor}"
@@ -252,6 +254,8 @@
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.ZoomOut.Value}"
                     Width="38"
                     x:Name="ZoomOutButton" />
 
@@ -268,6 +272,8 @@
                     IsEnabled="{CompiledBinding PicViewer.ImageSource.Value,
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.ZoomIn.Value}"
                     Width="38"
                     x:Name="ZoomInButton" />
 
@@ -322,6 +328,7 @@
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsRepeatEnabled="False"
                     Margin="0"
+                    ToolTip.HorizontalOffset="15"
                     ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
                                                   Mode=OneWay}"
                     Width="38"
@@ -343,6 +350,7 @@
                                                 Converter={x:Static ObjectConverters.IsNotNull}}"
                     IsRepeatEnabled="False"
                     Margin="0"
+                    ToolTip.HorizontalOffset="15"
                     ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
                                                   Mode=OneWay}"
                     Width="38"
@@ -364,6 +372,8 @@
                     IconHeight="16"
                     IconWidth="16"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.Crop.Value}"
                     Width="38"
                     x:Name="CropButton" />
 
@@ -379,6 +389,8 @@
                     IconHeight="16"
                     IconWidth="16"
                     IsTabStop="False"
+                    ToolTip.HorizontalOffset="15"
+                    ToolTip.Tip="{CompiledBinding Translation.Settings.Value}"
                     Width="38"
                     ZIndex="1"
                     x:Name="SettingsMenuButton" />

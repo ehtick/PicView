@@ -347,7 +347,7 @@ public class ZoomPanControl2 : Decorator
     private void ApplyZoomAndTitle(double targetScale, Point center, bool animated)
     {
         SetTransitionsAndScale(targetScale, center, animated);
-        TitleManager.SetTitle(DataContext as MainViewModel);
+        // TitleManager.SetTitle(DataContext as MainViewModel); // TODO: Replace with reactive subscription update to zoom level
         if (Settings.Zoom.IsShowingZoomPercentagePopup)
         {
             _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
