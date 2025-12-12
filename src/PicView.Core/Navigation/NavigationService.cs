@@ -23,12 +23,15 @@ public class NavigationService : INavigationService
     {
         try
         {
+            // Show image quickly to make it feel fast
             var model = await _imageLoader.GetImageModelAsync(fileInfo, ct.Token).ConfigureAwait(false);
-            tab.Model.Value = model;
+            tab.Model.Value = model; // Image updated via reactive subscription
+            
             tab.ImageIterator.Files = FileListRetriever.RetrieveFiles(fileInfo, CompareStrings);
             var index = FindIndex(fileInfo, tab);
             tab.ImageIterator.SetCurrentIndex(index);
             tab.UpdateTabTitle();
+            _cache.Clear();
             _cache.Add(tab.Id, index, new PreLoadValue(model), tab.ImageIterator.Files.Count, false);
         }
         catch (Exception e)

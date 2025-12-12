@@ -6,6 +6,14 @@ using R3;
 
 namespace PicView.Core.ViewModels;
 
+/// <summary>
+/// Represents the state, data, and context for a single navigation tab.
+/// <para>
+/// This class acts as the holder for the tab's specific <see cref="ImageIterator"/>, the current 
+/// <see cref="ImageModel"/>, and the visual properties (Title, Tooltip). It manages the 
+/// lifecycle of resources specific to this tab instance.
+/// </para>
+/// </summary>
 public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncDisposable
 {
     private CompositeDisposable? Disposables { get; set; }

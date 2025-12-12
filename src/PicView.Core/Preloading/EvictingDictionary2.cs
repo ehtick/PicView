@@ -9,19 +9,20 @@ using System.Diagnostics;
 namespace PicView.Core.Preloading;
 
 /// <summary>
-/// A thread-safe, fixed-size dictionary that evicts items according to a 
-/// directional policy intended for image iteration.
-/// 
-/// Refactored to separate Logical Slots (Owner/Index) from Physical Data (FilePath)
-/// to allow deduplication of images across tabs.
+/// A thread-safe, capacity-constrained container responsible for storing loaded images and managing eviction.
+/// <para>
+/// This dictionary separates logical slots (Owner ID + Index) from physical data (File Paths) to allow 
+/// deduplication across tabs. It enforces an eviction policy that removes items that are calculated 
+/// to be too far away from the current viewing index of the specific tab owner.
+/// </para>
 /// </summary>
 public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string OwnerId, int Index), TValue>>
 {
-    // 2. Data Store: Tracks the actual loaded images by FilePath
+    //  Data Store: Tracks the actual loaded images by FilePath
     //    Controls the "Pixel" memory (large footprint)
     private readonly Dictionary<string, TValue> _data;
 
-    // 1. Logical Map: Tracks which Tab/Index points to which File
+    //  Logical Map: Tracks which Tab/Index points to which File
     //    Controls the "Navigation" memory (small footprint)
     private readonly Dictionary<CacheKey, string> _indexMap;
 
@@ -130,26 +131,6 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
             {
                 _currentMaxSize = _initialMaxSize;
             }
-        }
-    }
-
-    public TValue Get(string ownerId, int index)
-    {
-        lock (_lock)
-        {
-            var key = new CacheKey(ownerId, index);
-            if (_indexMap.TryGetValue(key, out var path))
-            {
-                if (_data.TryGetValue(path, out var value))
-                {
-                    return value;
-                }
-
-                // Inconsistent state protection: Logical map exists but data missing
-                _indexMap.Remove(key);
-            }
-
-            throw new KeyNotFoundException($"Key ({ownerId}, {index}) was not found.");
         }
     }
 
@@ -283,22 +264,6 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
         return default;
     }
 
-    public bool Remove(string ownerId, int index)
-    {
-        lock (_lock)
-        {
-            var val = RemoveInternal(new CacheKey(ownerId, index));
-            // Return true if we found the key to remove (regardless of whether data was evicted)
-            // Original contract implies "Did we remove the entry?".
-            // Since we don't return the evicted value here, just bool.
-            // But RemoveInternal returns value only if data evicted. 
-            // We need to check if indexMap contained it.
-            // Simplified:
-            return !_indexMap.ContainsKey(new CacheKey(ownerId, index)); // Wait, we just removed it.
-            // Correct approach: TryGetValue -> RemoveInternal -> return true
-        }
-    }
-
     // Explicit TryGetValue for logic that just checks existence
     public bool TryGetValue(string ownerId, int index, [MaybeNullWhen(false)] out TValue value)
     {
@@ -344,6 +309,18 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
         {
             _indexMap.Clear();
             _data.Clear();
+        }
+    }
+
+    public void Clear(string ownerId)
+    {
+        lock (_lock)
+        {
+            var keysToRemove = _indexMap.Keys.Where(k => k.OwnerId == ownerId).AsValueEnumerable();
+            foreach (var key in keysToRemove)
+            {
+                RemoveInternal(key);
+            }
         }
     }
 

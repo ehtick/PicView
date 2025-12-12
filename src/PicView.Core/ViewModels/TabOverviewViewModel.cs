@@ -7,6 +7,14 @@ using R3;
 
 namespace PicView.Core.ViewModels;
 
+/// <summary>
+/// The central hub that orchestrates the lifecycle and interaction of all application tabs.
+/// <para>
+/// This ViewModel manages the collection of <see cref="TabViewModel"/>s, handles the creation and 
+/// closing of tabs, and initializes the shared services (Gallery, Navigation, Cache) that 
+/// are injected into individual tabs.
+/// </para>
+/// </summary>
 public class TabOverviewViewModel
 {
     public TitleViewModel TitleViewModel { get; } = new();

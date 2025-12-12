@@ -1,15 +1,55 @@
 ﻿namespace PicView.Core.Navigation.Interfaces;
 
+/// <summary>
+/// Defines the contract for navigating a collection of files within a specific context (Tab).
+/// <para>
+/// This interface manages the file list and the "Current Index" cursor. It determines 
+/// logic for looping, skipping (next/previous), and resolving the next target index.
+/// </para>
+/// </summary>
 public interface IImageIterator : IAsyncDisposable
 {
+    /// <summary>
+    /// Gets or sets the list of files currently being iterated.
+    /// </summary>
     List<FileInfo> Files { get; internal set; }
+
+    /// <summary>
+    /// Gets the current position in the file list.
+    /// </summary>
     int CurrentIndex { get; }
+
+    /// <summary>
+    /// Manually forces the current index to a specific value.
+    /// </summary>
     void SetCurrentIndex(int index);
+
+    /// <summary>
+    /// Gets a value indicating if the last navigation action was backwards.
+    /// </summary>
     bool IsReversed { get; }
+
+    /// <summary>
+    /// Initializes the iterator with a new list of files and a starting position.
+    /// </summary>
     void Initialize(List<FileInfo> files, int initialIndex = 0);
+
+    /// <summary>
+    /// Calculates the next index based on navigation direction and skip modifiers.
+    /// </summary>
+    /// <returns>The calculated target index.</returns>
     int GetIteration(int index, NavigateTo navigation, bool skip1=false, bool skip10=false, bool skip100=false);
+
+    /// <summary>
+    /// Moves the iterator to the specified index and triggers the loading of that image.
+    /// </summary>
     ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
-    ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);  // held-key repeat
+
+    /// <summary>
+    /// Handles continuous navigation (e.g., holding down a key).
+    /// </summary>
+    ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);
+
     ValueTask SlimUpdate(int index, object? imageSource);
     ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token);
     ValueTask ReloadFileListAsync(CancellationToken ct);

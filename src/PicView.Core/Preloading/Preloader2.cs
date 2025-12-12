@@ -7,6 +7,14 @@ using PicView.Core.Navigation.Interfaces;
 
 namespace PicView.Core.Preloading;
 
+/// <summary>
+/// The background worker responsible for calculating navigation indices and orchestrating image loading.
+/// <para>
+/// This class calculates the "look-ahead" indices (forward and backward) based on the current 
+/// navigation direction and delegates the physical loading of the <see cref="ImageModel"/> 
+/// to the loader. It ensures images are pre-fetched into the cache before the UI requests them.
+/// </para>
+/// </summary>
 public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache) : IPreloader
 {
     private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
