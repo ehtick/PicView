@@ -8,14 +8,26 @@ namespace PicView.Core.Preloading;
 
 public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache) : IPreloader
 {
-    
     private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     
     private CancellationTokenSource? _cancellationTokenSource;
+
+    private int _isRunningFlag; // 0 = idle, 1 = running
+
     
-    public void Add(string ownerId, int index, FileInfo file, ImageModel model)
+    public void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list)
     {
-        
+        var evicted = _cache.TryAdd(ownerId,  index, new PreLoadValue(model), list.Count, false, out var evictedValue);
+
+        if (!evicted)
+        {
+            return;
+        }
+
+        if (_cache is SharedImageCache cache)
+        {
+            cache.DisposeHelper(evictedValue);
+        }
     }
 
     // Update AddAsync to reuse this logic and avoid circular logic
@@ -117,6 +129,13 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         {
             return;
         }
+        
+        // Running preloader consecutively will slow down pc
+        // TODO: Make sure it can run consecutively, if it is from different tabs (ownerId)
+        if (Interlocked.CompareExchange(ref _isRunningFlag, 1, 0) != 0)
+        {
+            return; // Already running
+        }
 
         if (_cancellationTokenSource is not null)
         {
@@ -138,6 +157,10 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         catch (Exception exception)
         {
             DebugHelper.LogDebug(nameof(Preloader2), nameof(PreloadAsync), exception);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _isRunningFlag, 0);
         }
     }
     

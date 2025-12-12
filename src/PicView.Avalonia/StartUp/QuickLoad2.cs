@@ -11,6 +11,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 
@@ -31,6 +32,9 @@ public static class QuickLoad2
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
     public static async ValueTask QuickLoadAsync(MainViewModel vm, string file, Window window, bool continueFromLeftOff)
     {
+        vm.NavigationViewModel.TitleViewModel.WindowTitle.Value =
+            TranslationManager.Translation.Loading ?? "Loading...";
+        
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
         {
@@ -87,6 +91,7 @@ public static class QuickLoad2
         var files = vm.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
         vm.NavigationViewModel.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService);
+        vm.NavigationViewModel.ActiveTab.Value.UpdateTabTitle(vm.NavigationViewModel.TitleViewModel);
     }
     
     private static void SetPicViewerValues(MainViewModel vm, ImageModel imageModel, FileInfo fileInfo)
@@ -99,7 +104,7 @@ public static class QuickLoad2
         vm.PicViewer.FileInfo.Value = fileInfo;
         
         vm.NavigationViewModel.ActiveTab.Value.CurrentModel.Value = imageModel;
-        vm.NavigationViewModel.ActiveTab.Value.Initialize();
+        vm.NavigationViewModel.ActiveTab.Value.Initialize(vm.NavigationViewModel.TitleViewModel);
         
         vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
         vm.PicViewer.Index.Value = NavigationManager.GetCurrentIndex;
@@ -113,11 +118,5 @@ public static class QuickLoad2
         vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
         
         Settings.StartUp.LastFile = fileInfo.FullName;
-        
-        // Temporary Dummy title
-        var title = $"{fileInfo.Name} 1234/5678 files ({imageModel.PixelWidth} x {imageModel.PixelHeight}) {fileInfo.Length.GetReadableFileSize()}";
-        vm.PicViewer.WindowTitle.Value = 
-        vm.PicViewer.Title.Value = 
-        vm.PicViewer.TitleTooltip.Value = title;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
+using PicView.Core.Titles;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -24,7 +25,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
     public BindableReactiveProperty<string> TabTitle { get; } = new(string.Empty);
     public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
     
-    public void Initialize()
+    public void Initialize(TitleViewModel titleViewModel)
     {
         if (Disposables is null)
         {
@@ -40,16 +41,37 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
             .Select(model => model?.FileInfo) 
             .Subscribe(file => 
             {
-                if (file is null) return;
+                if (file is null)
+                {
+                    return;
+                }
                 TabTitle.Value = file.Name;
                 TabTooltip.Value = file.FullName;
+
+                UpdateTabTitle(titleViewModel);
             })
             .AddTo(Disposables);
     }
-
-    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader)
+    
+    public void UpdateTabTitle(TitleViewModel titleViewModel)
     {
-        Initialize();
+        if (ImageIterator?.Files is null || !IsSelected)
+        {
+            return;
+        }
+            
+        var width = CurrentModel.CurrentValue.PixelWidth;
+        var height = CurrentModel.CurrentValue.PixelHeight;
+        var index = ImageIterator.CurrentIndex;
+        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(width, height,
+            index, CurrentModel.CurrentValue.FileInfo, 100, ImageIterator.Files);
+        titleViewModel.WindowTitle.Value = windowTitles.BaseTitle;
+        titleViewModel.WindowTitleTooltip.Value = windowTitles.FilePathTitle;
+    }
+
+    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, TitleViewModel titleViewModel)
+    {
+        Initialize(titleViewModel);
         ImageIterator = new ImageIterator(cache, thumbnailLoader, this);
     }
 

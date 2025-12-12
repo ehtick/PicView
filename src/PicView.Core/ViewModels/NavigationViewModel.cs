@@ -9,6 +9,7 @@ namespace PicView.Core.ViewModels;
 
 public class NavigationViewModel
 {
+    public TitleViewModel TitleViewModel { get; } = new();
     public BindableReactiveProperty<ObservableCollection<TabViewModel>>? Tabs { get; } = new([]);
     public BindableReactiveProperty<int> ActiveTabIndex { get; } = new(0);
     public BindableReactiveProperty<TabViewModel> ActiveTab { get; }
@@ -51,9 +52,14 @@ public class NavigationViewModel
     /// before the Initialize has been called.
     /// </summary>
     /// <returns></returns>
-    public TabViewModel CreateInitialTab() => CreateTabInternal();
-    
-    
+    public TabViewModel CreateInitialTab()
+    {
+        var tab = CreateTabInternal();
+        tab.IsSelected = true;
+        return tab;
+    }
+
+
     private TabViewModel CreateTabInternal()
     {
         var id = Guid.NewGuid().ToString("N");
@@ -67,7 +73,7 @@ public class NavigationViewModel
         var tab = CreateTabInternal();
         if (_sharedCache != null && _sharedThumbnailLoader != null)
         {
-            tab.Initialize(_sharedCache, _sharedThumbnailLoader);
+            tab.Initialize(_sharedCache, _sharedThumbnailLoader, TitleViewModel);
         }
         ActiveTab.Value = tab;
         ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
@@ -77,6 +83,7 @@ public class NavigationViewModel
     {
         ActiveTab.Value = tab;
         ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
+        ActiveTab.Value.IsSelected = true;
     }
 
 

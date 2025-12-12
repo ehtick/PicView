@@ -4,7 +4,7 @@ namespace PicView.Core.Preloading;
 
 public interface IPreloader
 {
-    void Add(string ownerId, int index, FileInfo file, ImageModel model);
+    void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list);
 
     ValueTask<ImageModel?> AddAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, bool isReverse = false,
         CancellationToken ct = default);
