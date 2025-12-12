@@ -30,9 +30,16 @@ public class SharedImageCache : IImageCache
         return await _preLoader.AddAsync(ownerId, index, list, false, ct).ConfigureAwait(false);
     }
 
-    public void RemoveOwner(object owner)
+    public void RegisterOwner(object owner)
     {
-        _items.DecreaseCapacity(owner.ToString());
+        _preLoader.RegisterOwner(owner.ToString());
+    }
+
+    public async ValueTask RemoveOwner(object owner)
+    {
+        var id = owner.ToString();
+        _items.DecreaseCapacity(id);
+        await _preLoader.CancelOwnerInstanceAsync(id).ConfigureAwait(false);
     }
 
     public bool TryGet(FileInfo f, out PreLoadValue? value)

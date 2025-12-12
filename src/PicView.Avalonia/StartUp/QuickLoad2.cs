@@ -4,13 +4,10 @@ using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
-using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
-using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -73,6 +70,8 @@ public static class QuickLoad2
         SetPicViewerValues(vm, imageModel, fileInfo);
 
         // --- Initialization Logic ---
+        // This is the initialization logic for the navigation system.
+        // It is initialized after initial image load, to make it feel faster by showing the image asap. 
         
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
@@ -96,16 +95,11 @@ public static class QuickLoad2
     
     private static void SetPicViewerValues(MainViewModel vm, ImageModel imageModel, FileInfo fileInfo)
     {
-        if (imageModel.ImageType is ImageType.AnimatedGif or ImageType.AnimatedWebp)
-        {
-            vm.ImageViewer.MainImage.InitialAnimatedSource = fileInfo.FullName;
-        }
-        
-        vm.PicViewer.FileInfo.Value = fileInfo;
-        
         vm.NavigationViewModel.ActiveTab.Value.CurrentModel.Value = imageModel;
         vm.NavigationViewModel.ActiveTab.Value.Initialize(vm.NavigationViewModel.TitleViewModel);
         
+        // Legacy, delete later
+        vm.PicViewer.FileInfo.Value = fileInfo;
         vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
         vm.PicViewer.Index.Value = NavigationManager.GetCurrentIndex;
         

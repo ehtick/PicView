@@ -20,23 +20,17 @@ public partial class ImageViewer2 : UserControl
     public ImageViewer2()
     {
         InitializeComponent();
+        ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         Loaded += OnLoaded;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         InitializeImageTransformer();
-        ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
-        
-        // Start in dispatcher with low priority,
-        // because it is more important to schedule it after more important things.
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
-            AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            InitializeMouseInputHelper();
-        }, DispatcherPriority.Background);
+        AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
+        AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        InitializeMouseInputHelper();
     }
 
     public void TriggerScalingModeUpdate(bool invalidate) =>

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
 using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -12,8 +13,8 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
     
     private CancellationTokenSource? _cancellationTokenSource;
 
-    private int _isRunningFlag; // 0 = idle, 1 = running
-
+    // Map Owner IDs to their specific Cancellation Tokens
+    private readonly ConcurrentDictionary<string, CancellationTokenSource> _loadingTasks = new();
     
     public void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list)
     {
@@ -123,6 +124,24 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         throw new NotImplementedException();
     }
 
+    public async ValueTask CancelOwnerInstanceAsync(string ownerId)
+    {
+        // 1. Try to remove the token for this specific ID
+        if (_loadingTasks.TryRemove(ownerId, out var cts))
+        {
+            // 2. Cancel it
+            await cts.CancelAsync().ConfigureAwait(false);
+            
+            // 3. Dispose resources
+            cts.Dispose();
+        }
+    }
+
+    public void RegisterOwner(string ownerId)
+    {
+        _loadingTasks.TryAdd(ownerId, new CancellationTokenSource());
+    }
+
     public async Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct)
     {
         if (files == null)
@@ -130,13 +149,6 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
             return;
         }
         
-        // Running preloader consecutively will slow down pc
-        // TODO: Make sure it can run consecutively, if it is from different tabs (ownerId)
-        if (Interlocked.CompareExchange(ref _isRunningFlag, 1, 0) != 0)
-        {
-            return; // Already running
-        }
-
         if (_cancellationTokenSource is not null)
         {
             if (_cancellationTokenSource.IsCancellationRequested)
@@ -158,10 +170,6 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         {
             DebugHelper.LogDebug(nameof(Preloader2), nameof(PreloadAsync), exception);
         }
-        finally
-        {
-            Interlocked.Exchange(ref _isRunningFlag, 0);
-        }
     }
     
     private async Task PreLoadInternalAsync(string ownerId, int currentIndex, bool reverse, IReadOnlyList<FileInfo> list,
@@ -170,6 +178,13 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         var count = list.Count;
         var nextStartingIndex = (currentIndex + 1) % count;
         var prevStartingIndex = (currentIndex - 1 + count) % count;
+        
+        var options = new ParallelOptions
+        {
+            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
+            CancellationToken = token
+        };
+
 
         if (reverse)
         {
@@ -189,17 +204,13 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         {
             if (positive)
             {
-                for (var i = 0; i < PreLoaderConfig.PositiveIterations; i++)
-                {
-                    await AddAddition((nextStartingIndex + i) % count);
-                }
+                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, options,
+                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
             }
             else
             {
-                for (var i = 0; i < PreLoaderConfig.NegativeIterations; i++)
-                {
-                    await AddAddition((prevStartingIndex - i + count) % count);
-                }
+                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, options,
+                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
             }
         }
 
@@ -217,20 +228,31 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         }
     }
 
-    public void Dispose()
-    {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
-    }
-
     public async ValueTask DisposeAsync()
     {
         if (_cancellationTokenSource is not null)
         {
             await _cancellationTokenSource.CancelAsync();
-            _cancellationTokenSource.Dispose();
-            _cancellationTokenSource = null;
         }
+        // Cancel all running tasks for all tabs
+        foreach (var key in _loadingTasks.Keys)
+        {
+            await CancelOwnerInstanceAsync(key);
+        }
+        _loadingTasks.Clear();
+        _cancellationTokenSource?.Dispose();
+    }
+    
+    // Non-Async Dispose
+    public void Dispose()
+    {
+        _cancellationTokenSource?.Cancel();
+        foreach (var cts in _loadingTasks.Values)
+        {
+            cts.Cancel();
+            cts.Dispose();
+        }
+        _loadingTasks.Clear();
+        _cancellationTokenSource?.Dispose();
     }
 }

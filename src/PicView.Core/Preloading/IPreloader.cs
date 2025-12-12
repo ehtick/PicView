@@ -15,4 +15,7 @@ public interface IPreloader
     void Resynchronize(IReadOnlyList<FileInfo> files);
     
     Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct);
+
+    void RegisterOwner(string ownerId);
+    ValueTask CancelOwnerInstanceAsync(string ownerId);
 }

@@ -123,9 +123,16 @@ public class PicBox2 : Control
                 ? BitmapInterpolationMode.Unspecified
                 : BitmapInterpolationMode.HighQuality
         };
-        using (context.PushRenderOptions(options))
+        try
         {
-            context.DrawImage(source, sourceRect, destRect);
+            using (context.PushRenderOptions(options))
+            {
+                context.DrawImage(source, sourceRect, destRect);
+            }
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(Render), e);
         }
     }
 
@@ -139,10 +146,13 @@ public class PicBox2 : Control
         var source = Source;
         var result = new Size();
 
-        if (source != null)
+        if (source == null)
         {
-            result = Stretch.CalculateSize(availableSize, source.Size, StretchDirection);
+            return result;
         }
+
+        var size = GetImageSize(source);
+        result = Stretch.CalculateSize(availableSize, size, StretchDirection);
 
         return result;
     }

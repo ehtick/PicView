@@ -45,6 +45,7 @@ public class NavigationViewModel
         _sharedGallery = gallery;
         _sharedNavigation = navigationService;
         _sharedThumbnailLoader = thumbnailLoader;
+        _sharedCache.RegisterOwner(ActiveTab.Value);
     }
     
     /// <summary>
@@ -77,6 +78,7 @@ public class NavigationViewModel
         }
         ActiveTab.Value = tab;
         ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
+        _sharedCache.RegisterOwner(tab);
     }
     
     private void SelectTab(TabViewModel tab)
@@ -99,10 +101,6 @@ public class NavigationViewModel
         var wasActive = ReferenceEquals(tab, ActiveTab.Value);
         Tabs.Value.Remove(tab);
         IsTabPanelVisible.Value = Tabs.Value.Count > 1;
-        if (tab is not null)
-        {
-            await tab.DisposeAsync();
-        }
 
         if (wasActive)
         {
@@ -112,6 +110,11 @@ public class NavigationViewModel
             {
                 SelectTab(Tabs.Value[newIndex]);
             }
+        }
+        _sharedCache?.RemoveOwner(tab.Id);
+        if (tab is not null)
+        {
+            await tab.DisposeAsync();
         }
     }
     

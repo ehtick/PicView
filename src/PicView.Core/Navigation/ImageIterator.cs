@@ -157,8 +157,7 @@ public class ImageIterator : IImageIterator
 
     public async ValueTask DisposeAsync()
     {
-        // _preloader is managed by cache
-        await ValueTask.CompletedTask;
+        _cache.RemoveOwner(_tab.Id);
     }
 
     // Implementing interface stubs

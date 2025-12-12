@@ -9,9 +9,9 @@ namespace PicView.Core.ViewModels;
 public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncDisposable
 {
     private CompositeDisposable? Disposables { get; set; }
-    public string Id { get; init; } = id;
+    public string Id { get; } = id;
     public bool IsClosing { get; private set; }
-    public bool IsSelected { get; set; } = false;
+    public bool IsSelected { get; set; }
     public BindableReactiveProperty<ImageModel?> CurrentModel { get; } = new(null);
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     public IImageIterator? ImageIterator { get; private set; }
@@ -114,6 +114,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
 
     public override string ToString()
     {
-        return id;
+        return Id;
     }
 }
