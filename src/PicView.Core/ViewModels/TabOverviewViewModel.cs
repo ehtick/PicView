@@ -18,7 +18,6 @@ namespace PicView.Core.ViewModels;
 public class TabOverviewViewModel
 {
     public BindableReactiveProperty<ObservableCollection<TabViewModel>> Tabs { get; } = new([]);
-    public BindableReactiveProperty<ObservableCollection<TabViewModel>>? DetachedTabs { get; set; }
     public BindableReactiveProperty<int> ActiveTabIndex { get; } = new(0);
     public BindableReactiveProperty<TabViewModel> ActiveTab { get; }
     public BindableReactiveProperty<bool> CanActiveTabNavigate { get; } = new();
@@ -37,6 +36,14 @@ public class TabOverviewViewModel
     {
         ActiveTab = new BindableReactiveProperty<TabViewModel>(CreateInitialTab());
         ActiveTab.Value.IsSelected = true;
+    }
+    
+    public TabOverviewViewModel(TabViewModel initialTab)
+    {
+        Tabs.Value.Add(initialTab);
+        ActiveTab = new BindableReactiveProperty<TabViewModel>(initialTab);
+        ActiveTab.Value.IsSelected = true;
+        ActiveTabIndex.Value = 0;
     }
 
     /// <summary>
@@ -124,7 +131,6 @@ public class TabOverviewViewModel
         
         // 2. Try removing from both collections
         var removedFromMain = Tabs.Value.Remove(tab);
-        var removedFromFloating = DetachedTabs?.Value?.Remove(tab);
 
         IsTabPanelVisible.Value = Tabs.Value.Count > 1;
 
@@ -153,8 +159,7 @@ public class TabOverviewViewModel
     
     public async ValueTask CloseTabAsync(string tabId)
     {
-        var tab = Tabs.Value.FirstOrDefault(t => t.Id == tabId) 
-                  ?? DetachedTabs?.Value?.FirstOrDefault(t => t.Id == tabId);
+        var tab = Tabs.Value.FirstOrDefault(t => t.Id == tabId);
         if (tab is not null)
         {
             await CloseTabAsync(tab);

@@ -71,21 +71,10 @@ public static class StartUpHelper2
         }
         else
         {
-            RegularStartUp();
+            RegularStartUp(vm, settingsExists, desktop, window);
         }
             
         return;
-
-        void RegularStartUp()
-        {
-            SettingsUpdater.InitializeSettings(vm);
-
-            HandleWindowScalingMode(vm, window);
-
-            StartUpMenuOrLastFile(vm, window);
-
-            HandlePostWindowUpdates(vm, settingsExists, desktop, window);
-        }
         
         void ImageStartUp(string filePath)
         {
@@ -108,13 +97,12 @@ public static class StartUpHelper2
         }
     }
     
-    public static void StartUpBlank(MainViewModel vm, bool settingsExists,
-        IClassicDesktopStyleApplicationLifetime desktop,
-        Window window)
+    public static void StartUpBlank(MainViewModel vm, bool settingsExists, bool setPos,
+        IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         SettingsUpdater.InitializeSettings(vm);
         
-        HandleWindowScalingMode(vm, window);
+        HandleWindowScalingMode(vm, window, setPos);
 
         window.Show();
 
@@ -124,9 +112,22 @@ public static class StartUpHelper2
         }, DispatcherPriority.Background);
     }
     
+    public static void RegularStartUp(MainViewModel vm, bool settingsExists,
+        IClassicDesktopStyleApplicationLifetime desktop,
+        Window window)
+    {
+        SettingsUpdater.InitializeSettings(vm);
+
+        HandleWindowScalingMode(vm, window);
+
+        StartUpMenuOrLastFile(vm, window);
+
+        HandlePostWindowUpdates(vm, settingsExists, desktop, window);
+    }
+    
     
 
-    private static void HandleWindowScalingMode(MainViewModel vm, Window window)
+    private static void HandleWindowScalingMode(MainViewModel vm, Window window, bool setPos = true)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -139,9 +140,9 @@ public static class StartUpHelper2
         {
             HandleAutoFit(vm, window);
         }
-        else
+        else 
         {
-            HandleNormalWindow(vm, window);
+            HandleNormalWindow(vm, window, setPos);
         }
     }
 
@@ -284,7 +285,7 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleNormalWindow(MainViewModel vm, Window window)
+    private static void HandleNormalWindow(MainViewModel vm, Window window, bool setPos)
     {
         vm.MainWindow.CanResize.Value = true;
         vm.GlobalSettings.IsAutoFit.Value = false;
@@ -294,7 +295,10 @@ public static class StartUpHelper2
             vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
 
-        WindowFunctions.InitializeWindowSizeAndPosition(window);
+        if (setPos)
+        {
+            WindowFunctions.InitializeWindowSizeAndPosition(window);
+        }
     }
 
     private static void HandleAutoFit(MainViewModel vm, Window window)

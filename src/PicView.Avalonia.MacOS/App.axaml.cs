@@ -71,7 +71,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
             }
             else
             {
-                StartUpHelper2.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
+                StartUpHelper2.StartUpBlank(_vm, settingsExists,  true, desktop, _mainWindow);
             }
             _windowInitializer = new WindowInitializer();
             

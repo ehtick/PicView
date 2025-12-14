@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.StartUp;
@@ -153,28 +154,36 @@ public partial class MacMainWindow2 : Window
         {
             return;
         }
-        
-        vm.Tabs.DetachedTabs ??= new BindableReactiveProperty<ObservableCollection<TabViewModel>>([]);
-        vm.Tabs.DetachedTabs.Value.Add(tab);
-        // Create a new window with the detached tab
-        var newWindow = new MacMainWindow2
+
+        Task.Run(async () =>
         {
-            Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
-            Width = Width,
-            Height = Height,
-            DataContext = vm,
-            MainTabControl =
+            var newVm = new MainViewModel(vm.PlatformService, vm.PlatformWindowService)
             {
-                ItemsSource = vm.Tabs.DetachedTabs.Value
-            }
-        };
-        newWindow.Closing += (_, _) => vm.Tabs.DetachedTabs.Value.Remove(tab);
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-        StartUpHelper2.StartUpBlank(vm, false, desktop, newWindow);
-        
+                Tabs = new TabOverviewViewModel(tab)
+            };
+
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                // Create a new window with the detached tab
+                var newWindow = new MacMainWindow2
+                {
+                    Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
+                    Width = Width,
+                    Height = Height,
+                    DataContext = newVm
+                };
+
+                if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    return;
+                }
+
+                StartUpHelper2.StartUpBlank(newVm, true, false, desktop, newWindow);
+            }, DispatcherPriority.Send);
+            
+            // Need to properly remove it
+            await vm.Tabs.CloseTabAsync(tab);
+        });
     }
 
     private void Control_OnSizeChanged(object? sender, SizeChangedEventArgs e)

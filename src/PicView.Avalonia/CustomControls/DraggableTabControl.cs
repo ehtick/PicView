@@ -333,7 +333,6 @@ public class DraggableTabControl : TabControl
         var screenPos = _pressedTab.PointToScreen(e.GetPosition(_pressedTab));
 
         // Remove from collection
-        // We need to add it to detached tabs in event
         var list = ItemsSource as IList ?? Items;
         if (list != null && _sourceIndex >= 0 && _sourceIndex < list.Count)
         {
