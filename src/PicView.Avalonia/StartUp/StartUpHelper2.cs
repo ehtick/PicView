@@ -10,6 +10,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;

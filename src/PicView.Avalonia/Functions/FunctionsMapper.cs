@@ -26,7 +26,7 @@ namespace PicView.Avalonia.Functions;
 /// </summary>
 public static class FunctionsMapper
 {
-    public static MainViewModel? Vm;
+    public static MainViewModel? Vm { get; set; }
 
     public static Func<ValueTask>? GetFunctionByName(string functionName)
     {
@@ -235,7 +235,7 @@ public static class FunctionsMapper
 
     #region Navigation, zoom and rotation
 
-    /// <inheritdoc cref="Core.ViewModels.NavigationViewModel.NextFile()" />
+    /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.NextFile()" />
     public static async ValueTask Next() =>
         await Vm.Tabs.NextFile().ConfigureAwait(false);
     
@@ -247,7 +247,7 @@ public static class FunctionsMapper
     public static async ValueTask Last() =>
         await NavigationManager.NavigateFirstOrLast(last: true, Vm).ConfigureAwait(false);
 
-    /// <inheritdoc cref="Core.ViewModels.NavigationViewModel.PrevFile()" />
+    /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.PrevFile()" />
     public static async ValueTask Prev() =>
         await Vm.Tabs.PrevFile().ConfigureAwait(false);
     

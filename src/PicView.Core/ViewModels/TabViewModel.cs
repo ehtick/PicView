@@ -134,8 +134,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         GC.SuppressFinalize(this);
     }
 
+    #if DEBUG
     public override string ToString()
     {
-        return Id;
+        return $"{Id}: {Model.Value?.FileInfo?.FullName}";
     }
+    #endif
 }

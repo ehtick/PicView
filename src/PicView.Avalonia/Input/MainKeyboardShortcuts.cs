@@ -82,12 +82,20 @@ public static class MainKeyboardShortcuts
         // Track key repeat for held down state
         _keyRepeatCount++;
         IsKeyHeldDown = _keyRepeatCount > KeyRepeatThreshold;
-
-        // Handle special cases before processing shortcuts
-        if (await HandleSpecialCases(e))
+        
+        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
         {
             return;
         }
+
+        // Handle special cases before processing shortcuts
+        if (await HandleSpecialCases(e, vm))
+        {
+            return;
+        }
+
+        // Make sure the right window gets the right vm
+        FunctionsMapper.Vm = vm;
 
         // Handle registered shortcuts
         await ExecuteShortcutIfRegistered();
@@ -166,12 +174,12 @@ public static class MainKeyboardShortcuts
     /// Handles special cases like cropping, dialog handling, and escape key.
     /// </summary>
     /// <returns>True if the key event was handled by a special case handler.</returns>
-    private static async Task<bool> HandleSpecialCases(KeyEventArgs e)
+    private static async Task<bool> HandleSpecialCases(KeyEventArgs e, MainViewModel vm)
     {
         // Handle cropping mode
         if (CropFunctions.IsCropping)
         {
-            if (UIHelper.GetMainView.MainGrid.DataContext is MainViewModel { MainWindow.CurrentView.CurrentValue: CropControl cropControl })
+            if (vm.MainWindow.CurrentView.CurrentValue is CropControl cropControl )
             {
                 await cropControl.KeyDownHandler(null, e);
             }

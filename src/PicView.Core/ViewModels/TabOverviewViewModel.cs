@@ -27,10 +27,10 @@ public class TabOverviewViewModel
     /// </summary>
     public BindableReactiveProperty<bool> IsTabPanelVisible { get; } = new();
     
-    private INavigationService? _sharedNavigation;
-    private IImageCache? _sharedCache;
-    private IGalleryService? _sharedGallery;
-    private IThumbnailLoader? _sharedThumbnailLoader;
+    public INavigationService? SharedNavigation { get; private set; }
+    public IImageCache? SharedCache { get; private set; }
+    public IGalleryService? SharedGallery { get; private set; }
+    public IThumbnailLoader? SharedThumbnailLoader { get; private set; }
 
     public TabOverviewViewModel()
     {
@@ -57,18 +57,18 @@ public class TabOverviewViewModel
     /// <param name="thumbnailLoader">The thumbnail loader to use for preloading images</param>
     public void Initialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
     {
-        _sharedCache = cache;
-        _sharedGallery = gallery;
-        _sharedNavigation = navigationService;
-        _sharedThumbnailLoader = thumbnailLoader;
-        _sharedCache.RegisterOwner(ActiveTab.Value);
+        SharedCache = cache;
+        SharedGallery = gallery;
+        SharedNavigation = navigationService;
+        SharedThumbnailLoader = thumbnailLoader;
+        SharedCache.RegisterOwner(ActiveTab.Value.Id);
     }
     
     public void LoadAndInitializeFromPath(List<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
     {
         Initialize(gallery, navigationService, cache, thumbnailLoader);
         ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader);
-        _sharedCache.PreloadAsync(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files, CancellationToken.None);
+        SharedCache.PreloadAsync(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files, CancellationToken.None);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
     
@@ -89,8 +89,7 @@ public class TabOverviewViewModel
         tab.IsSelected = true;
         return tab;
     }
-
-
+    
     private TabViewModel CreateTabInternal()
     {
         var id = Guid.NewGuid().ToString("N");
@@ -102,11 +101,11 @@ public class TabOverviewViewModel
     public void CreateTab()
     {
         var tab = CreateTabInternal();
-        if (_sharedCache != null && _sharedThumbnailLoader != null)
+        if (SharedCache != null && SharedThumbnailLoader != null)
         {
-            tab.Initialize(_sharedCache, _sharedThumbnailLoader);
+            tab.Initialize(SharedCache, SharedThumbnailLoader);
         }
-        _sharedCache.RegisterOwner(tab);
+        SharedCache.RegisterOwner(tab.Id);
         SelectTab(tab);
     }
     
@@ -146,9 +145,9 @@ public class TabOverviewViewModel
             // unless we want that specific behavior.
         }
 
-        if (_sharedCache is not null)
+        if (SharedCache is not null)
         {
-            await _sharedCache.RemoveOwner(tab.Id);
+            await SharedCache.RemoveOwner(tab.Id);
         }
      
         if (tab is not null)
@@ -164,6 +163,11 @@ public class TabOverviewViewModel
         {
             await CloseTabAsync(tab);
         }
+    }
+
+    public void RemoveTab(TabViewModel tab)
+    {
+        Tabs.Value.Remove(tab);
     }
 
     #region Navigation
@@ -184,38 +188,38 @@ public class TabOverviewViewModel
     {
         var tab = ActiveTab.Value;
 
-        if (!CanActiveTabNavigate.Value || _sharedNavigation is null)
+        if (!CanActiveTabNavigate.Value || SharedNavigation is null)
         {
             return;
         }
         var ct = tab.ResetNavigationCts();
-        await _sharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
+        await SharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
     }
 
 
     public async ValueTask LoadFromStringAsync(string source, TabViewModel? senderTab = null)
     {
-        if (_sharedNavigation is null)
+        if (SharedNavigation is null)
         {
             return;
         }
         var tab = senderTab ?? ActiveTab.Value;
         var ct = tab.ResetNavigationCts();
         
-        await _sharedNavigation.LoadFromStringAsync(source, tab, ct)
+        await SharedNavigation.LoadFromStringAsync(source, tab, ct)
             .ConfigureAwait(false);
         CanActiveTabNavigate.Value = tab.ImageIterator?.Files?.Count > 1;
     }
     
     public async ValueTask LoadFromFileAsync(FileInfo file, TabViewModel? senderTab = null)
     {
-        if (_sharedNavigation is null)
+        if (SharedNavigation is null)
         {
             return;
         }
         var tab = senderTab ?? ActiveTab.Value;
         var ct = tab.ResetNavigationCts();
-        await _sharedNavigation.LoadFromFileAsync(file, tab, ct).ConfigureAwait(false);
+        await SharedNavigation.LoadFromFileAsync(file, tab, ct).ConfigureAwait(false);
         CanActiveTabNavigate.Value = tab.ImageIterator?.Files?.Count > 1;
     }
     
@@ -226,19 +230,19 @@ public class TabOverviewViewModel
     
     public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
     {
-        if (_sharedNavigation is null || tab.ImageIterator is null)
+        if (SharedNavigation is null || tab.ImageIterator is null)
         {
             return;
         }
-        await _sharedNavigation.NavigateAsync(tab, to, ct).ConfigureAwait(false);
+        await SharedNavigation.NavigateAsync(tab, to, ct).ConfigureAwait(false);
     }
     public async ValueTask NavigateToIndexAsync(int index)
     {
-        if (!CanActiveTabNavigate.Value || _sharedNavigation is null)
+        if (!CanActiveTabNavigate.Value || SharedNavigation is null)
         {
             return;
         }
-        await _sharedNavigation.NavigateToIndexAsync(ActiveTab.Value, index, ActiveTab.Value.NavigationCts).ConfigureAwait(false);
+        await SharedNavigation.NavigateToIndexAsync(ActiveTab.Value, index, ActiveTab.Value.NavigationCts).ConfigureAwait(false);
     }
 
     #endregion

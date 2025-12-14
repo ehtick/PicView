@@ -42,18 +42,16 @@ public class SharedImageCache : IImageCache
         return await _preLoader.AddAsync(ownerId, index, list, false, ct).ConfigureAwait(false);
     }
 
-    public void RegisterOwner(object owner)
+    public void RegisterOwner(string ownerId)
     {
-        var id = owner.ToString();
-        _items.ExpandCapacity(id); 
-        _preLoader.RegisterOwner(id);
+        _items.ExpandCapacity(ownerId); 
+        _preLoader.RegisterOwner(ownerId);
     }
 
-    public async ValueTask RemoveOwner(object owner)
+    public async ValueTask RemoveOwner(string ownerId)
     {
-        var id = owner.ToString();
-        _items.DecreaseCapacity(id);
-        await _preLoader.CancelOwnerInstanceAsync(id).ConfigureAwait(false);
+        _items.DecreaseCapacity(ownerId);
+        await _preLoader.CancelOwnerInstanceAsync(ownerId).ConfigureAwait(false);
     }
 
     public bool TryGet(FileInfo f, out PreLoadValue? value) =>
@@ -102,7 +100,7 @@ public class SharedImageCache : IImageCache
         => await _preLoader.PreloadAsync(ownerId, currentIndex, reversed, files, ct).ConfigureAwait(false);
     
     public async ValueTask Clear(TabViewModel tab) =>
-        await RemoveOwner(tab);
+        await RemoveOwner(tab.Id);
 
     internal void DisposeHelper(PreLoadValue? item)
     {

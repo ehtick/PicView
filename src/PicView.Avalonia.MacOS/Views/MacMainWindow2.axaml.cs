@@ -150,14 +150,14 @@ public partial class MacMainWindow2 : Window
         {
             return;
         }
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainViewModel parentVm)
         {
             return;
         }
 
-        Task.Run(async () =>
+        Task.Run(() =>
         {
-            var newVm = new MainViewModel(vm.PlatformService, vm.PlatformWindowService)
+            var newVm = new MainViewModel(parentVm.PlatformService, parentVm.PlatformWindowService)
             {
                 Tabs = new TabOverviewViewModel(tab)
             };
@@ -178,11 +178,30 @@ public partial class MacMainWindow2 : Window
                     return;
                 }
 
-                StartUpHelper2.StartUpBlank(newVm, true, false, desktop, newWindow);
+                StartUpHelper2.StartUpBlank(newVm, settingsExists:true, setPos: false, desktop, newWindow);
             }, DispatcherPriority.Send);
             
-            // Need to properly remove it
-            await vm.Tabs.CloseTabAsync(tab);
+            // Initialize the NEW window's tabs with the OLD window's services
+            // This ensures both windows share the same memory cache
+            if (parentVm.Tabs.SharedCache is not  { } cache ||
+                parentVm.Tabs.SharedNavigation is not { } nav ||
+                parentVm.Tabs.SharedThumbnailLoader is not { } thumb ||
+                parentVm.Tabs.SharedGallery is not { } gallery)
+            {
+                return;
+            }
+
+            if (newVm.Tabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
+            {
+                newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery, nav, cache, thumb);
+            }
+            else
+            {
+                newVm.Tabs.LoadAndInitialize(gallery, nav, cache, thumb);
+            }
+            
+            // Need to properly remove it from the previous location
+            parentVm.Tabs.RemoveTab(tab);
         });
     }
 

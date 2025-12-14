@@ -69,12 +69,12 @@ public interface IImageCache
     /// Removes an owner from the cache tracking. 
     /// Should be called when a Tab is closed to free up reserved capacity.
     /// </summary>
-    ValueTask RemoveOwner(object owner);
+    ValueTask RemoveOwner(string ownerId);
 
     /// <summary>
     /// Registers a new owner (tab) to allow it to reserve capacity in the cache.
     /// </summary>
-    void RegisterOwner(object owner);
+    void RegisterOwner(string ownerId);
 
     /// <summary>
     /// Helper to clear resources specifically for a <see cref="TabViewModel"/>.
