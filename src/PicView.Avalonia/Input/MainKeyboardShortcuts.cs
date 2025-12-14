@@ -206,6 +206,7 @@ public static class MainKeyboardShortcuts
             
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { Windows.Count: > 1 } desktop)
             {
+                // TODO: Test for multiple detached windows
                 desktop.Windows[^1].Close();
                 IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
                 return true;

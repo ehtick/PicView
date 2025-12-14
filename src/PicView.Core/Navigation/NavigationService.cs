@@ -97,7 +97,7 @@ public class NavigationService : INavigationService
             return;
         }
 
-        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to);
+        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to, tab.Id, SkipAmount.One);
         await tab.ImageIterator.IterateToIndexAsync(nextFileIndex, ct).ConfigureAwait(false);
     }
 

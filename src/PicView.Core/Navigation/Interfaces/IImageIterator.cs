@@ -20,14 +20,14 @@ public interface IImageIterator : IAsyncDisposable
     int CurrentIndex { get; }
 
     /// <summary>
-    /// Manually forces the current index to a specific value.
-    /// </summary>
-    void SetCurrentIndex(int index);
-
-    /// <summary>
     /// Gets a value indicating if the last navigation action was backwards.
     /// </summary>
     bool IsReversed { get; }
+
+    /// <summary>
+    /// Manually forces the current index to a specific value.
+    /// </summary>
+    void SetCurrentIndex(int index);
 
     /// <summary>
     /// Initializes the iterator with a new list of files and a starting position.
@@ -38,7 +38,7 @@ public interface IImageIterator : IAsyncDisposable
     /// Calculates the next index based on navigation direction and skip modifiers.
     /// </summary>
     /// <returns>The calculated target index.</returns>
-    int GetIteration(int index, NavigateTo navigation, bool skip1=false, bool skip10=false, bool skip100=false);
+    int GetIteration(int index, NavigateTo navigation, string tabId, SkipAmount skipAmount);
 
     /// <summary>
     /// Moves the iterator to the specified index and triggers the loading of that image.
