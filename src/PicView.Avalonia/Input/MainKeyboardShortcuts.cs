@@ -53,7 +53,8 @@ public static class MainKeyboardShortcuts
     /// Processes the KeyDown event for the main window.
     /// </summary>
     /// <param name="e">The key event arguments.</param>
-    public static async Task MainWindow_KeysDownAsync(KeyEventArgs e)
+    /// <param name="mainViewModel"></param>
+    public static async Task MainWindow_KeysDownAsync(KeyEventArgs e, MainViewModel? mainViewModel = null)
     {
         if (KeybindingManager.CustomShortcuts is null || !IsKeysEnabled)
         {
@@ -82,20 +83,15 @@ public static class MainKeyboardShortcuts
         // Track key repeat for held down state
         _keyRepeatCount++;
         IsKeyHeldDown = _keyRepeatCount > KeyRepeatThreshold;
-        
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
 
         // Handle special cases before processing shortcuts
-        if (await HandleSpecialCases(e, vm))
+        if (await HandleSpecialCases(e, mainViewModel))
         {
             return;
         }
 
         // Make sure the right window gets the right vm
-        FunctionsMapper.Vm = vm;
+        FunctionsMapper.Vm = mainViewModel;
 
         // Handle registered shortcuts
         await ExecuteShortcutIfRegistered();

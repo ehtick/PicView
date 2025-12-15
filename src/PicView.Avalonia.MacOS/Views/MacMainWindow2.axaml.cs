@@ -179,6 +179,12 @@ public partial class MacMainWindow2 : Window
                 }
 
                 StartUpHelper2.StartUpBlank(newVm, settingsExists:true, setPos: false, desktop, newWindow);
+                // Fix null DataContext
+                if (tab.CurrentView.CurrentValue is Control control)
+                {
+                    control.DataContext = tab;
+                }                
+                
             }, DispatcherPriority.Send);
             
             // Initialize the NEW window's tabs with the OLD window's services

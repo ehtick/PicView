@@ -340,7 +340,9 @@ public static class StartUpHelper2
 
     private static async Task MainWindow_KeysDownAsync(object? sender, KeyEventArgs e)
     {
-        await MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
+        // Extract the ViewModel from the window that received the key press
+        var vm = (sender as Control)?.DataContext as MainViewModel;
+        await MainKeyboardShortcuts.MainWindow_KeysDownAsync(e, vm).ConfigureAwait(false);
     }
 
     private static void MainWindow_KeyUp(object? sender, KeyEventArgs e)
