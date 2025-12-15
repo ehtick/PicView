@@ -116,11 +116,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         NavigationCts = new CancellationTokenSource();
         return NavigationCts;
     }
-
-    public void Dispose()
-    {
-        _ = DisposeAsync().AsTask();
-    }
     
     public async ValueTask DisposeAsync()
     {

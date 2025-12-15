@@ -31,11 +31,6 @@ public class SharedImageCache : IImageCache
     {
         _preLoader = new Preloader2(imageLoader, this);
     }
-
-    public void Initialize(string ownerId, int index, IReadOnlyList<FileInfo> list)
-    {
-        _ = _preLoader.PreloadAsync(ownerId, index, false, list, CancellationToken.None);
-    }
     
     public async Task<ImageModel?> LoadAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, CancellationToken ct = default)
     {

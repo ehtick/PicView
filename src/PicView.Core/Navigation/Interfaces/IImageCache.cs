@@ -51,6 +51,11 @@ public interface IImageCache
     bool Contains(ReadOnlySpan<char> span, out PreLoadValue? value);
 
     /// <summary>
+    /// Checks if the cache contains a file with the specified path.
+    /// </summary>
+    bool Contains(PreLoadValue value);
+
+    /// <summary>
     /// Adds a value to the cache, potentially triggering eviction of distant items.
     /// </summary>
     bool Add(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse);

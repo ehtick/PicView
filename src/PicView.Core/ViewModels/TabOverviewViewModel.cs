@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -124,25 +123,16 @@ public class TabOverviewViewModel
 
     public async ValueTask CloseTabAsync(TabViewModel tab)
     {
-        // ... (Check for minimum tabs if necessary, usually enforced on main tabs) ...
-
         var wasActive = ReferenceEquals(tab, ActiveTab.Value);
-        
-        // 2. Try removing from both collections
-        var removedFromMain = Tabs.Value.Remove(tab);
+        Tabs.Value.Remove(tab);
 
         IsTabPanelVisible.Value = Tabs.Value.Count > 1;
 
-        if (wasActive)
+        if (wasActive && Tabs.Value.Count > 0)
         {
-            // If it was a main tab, select the nearest main tab
-            if (removedFromMain && Tabs.Value.Count > 0)
-            {
-                var newIndex = Math.Clamp(ActiveTabIndex.Value, 0, Tabs.Value.Count - 1);
-                SelectTab(Tabs.Value[newIndex]);
-            }
-            // If it was a floating tab, we generally don't automatically focus the main window
-            // unless we want that specific behavior.
+            // Select closest tab to the left.
+            var newIndex = Math.Clamp(ActiveTabIndex.Value, 0, Tabs.Value.Count - 1);
+            SelectTab(Tabs.Value[newIndex]);
         }
 
         if (SharedCache is not null)
