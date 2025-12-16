@@ -106,6 +106,16 @@ public class NavigationService : INavigationService
         return tab.ImageIterator?.IterateToIndexAsync(index, ct) ?? ValueTask.CompletedTask;
     }
 
+    public async ValueTask NavigateByIncrementsAsync(TabViewModel tab, SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
+    {
+        var iterator = tab.ImageIterator;
+        if (iterator is null)
+        {
+            return;
+        }
+        await iterator.NavigateByIncrementsAsync(skipAmount,forwards, ct).ConfigureAwait(false);
+    }
+
     public bool CanNavigate(TabViewModel tab) => tab?.ImageIterator?.Files?.Count > 0;
 
     private static int FindIndex(FileInfo fileInfo, TabViewModel tab) =>

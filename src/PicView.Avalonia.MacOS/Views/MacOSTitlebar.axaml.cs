@@ -12,72 +12,34 @@ namespace PicView.Avalonia.MacOS.Views;
 
 public partial class MacOSTitlebar : UserControl
 {
-    private RotationContextMenu? _rotationContextMenu;
-    
     public MacOSTitlebar()
     {
         InitializeComponent();
         Loaded += (_, _) =>
         {
-            if (Settings.Theme.GlassTheme)
+            if (!Settings.Theme.GlassTheme)
             {
-                TopWindowBorder.Background = Brushes.Transparent;
-
-                EditableTitlebar.Background = Brushes.Transparent;
-                EditableTitlebar.BorderThickness = new Thickness(0);
-
-                FlipButton.Background = Brushes.Transparent;
-                FlipButton.BorderThickness = new Thickness(0);
-
-                GalleryButton.Background = Brushes.Transparent;
-                GalleryButton.BorderThickness = new Thickness(0);
-
-                RotateRightButton.Background = Brushes.Transparent;
-                RotateRightButton.BorderThickness = new Thickness(0);
-                
-                var brush = UIHelper.GetBrush("SecondaryTextColor");
-                EditableTitlebar.Foreground = brush;
-                FlipButton.Foreground = brush;
-                GalleryButton.Foreground = brush;
-                RotateRightButton.Foreground = brush;
+                return;
             }
 
-            _rotationContextMenu = new RotationContextMenu();
-            _rotationContextMenu.UpdateSubscription();
-            FlipButton.ContextMenu = _rotationContextMenu;
-            RotateRightButton.ContextMenu = _rotationContextMenu;
-            
-            FlipButton.PointerPressed += (_, e) => { OpenContextMenu(e); };
-            RotateRightButton.AddHandler(PointerPressedEvent, RotateRightButtonHandler, RoutingStrategies.Bubble | RoutingStrategies.Tunnel);
+            TopWindowBorder.Background = Brushes.Transparent;
+
+            EditableTitlebar.Background = Brushes.Transparent;
+            EditableTitlebar.BorderThickness = new Thickness(0);
+
+            CreateTabButton.Background = Brushes.Transparent;
+            CreateTabButton.BorderThickness = new Thickness(0);;
+                
+            MenuButton.Background = Brushes.Transparent;
+            MenuButton.BorderThickness = new Thickness(0);;
+                
+            var brush = UIHelper.GetBrush("SecondaryTextColor");
+            EditableTitlebar.Foreground = brush;
+            SearchButton.Foreground = brush;
+            CreateTabButton.Foreground = brush;
+            MenuButton.Foreground = brush;
         };
         PointerPressed += (_, e) => MoveWindow(e);
-    }
-
-    private void RotateRightButtonHandler(object? sender, PointerPressedEventArgs e)
-    {
-        if (e.Properties.IsLeftButtonPressed)
-        {
-            if (DataContext is MainViewModel vm)
-            {
-                vm.MainWindow.IsTitlebarRotationClicked = true;
-            }
-        }
-        else if (e.Properties.IsRightButtonPressed)
-        {
-            OpenContextMenu(e);
-        }
-    }
-
-
-    private void OpenContextMenu(PointerPressedEventArgs e)
-    {
-        if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
-        {
-            return;
-        }
-
-        // Context menu doesn't want to be opened normally
-        _rotationContextMenu.Open();
     }
 
     private void MoveWindow(PointerPressedEventArgs e)

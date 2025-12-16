@@ -37,6 +37,8 @@ public interface INavigationService
     /// </summary>
     ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationTokenSource ct);
 
+    ValueTask NavigateByIncrementsAsync(TabViewModel tab, SkipAmount skipAmount, bool forwards, CancellationTokenSource ct);
+
     /// <summary>
     /// Determines if the specified tab currently has content that can be navigated.
     /// </summary>

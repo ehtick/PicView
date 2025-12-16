@@ -259,13 +259,13 @@ public static class FunctionsMapper
     public static async ValueTask First() =>
         await NavigationManager.NavigateFirstOrLast(last: false, Vm).ConfigureAwait(false);
     
-    /// <inheritdoc cref="NavigationManager.Next10(MainViewModel)" />
+    /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.Next10()" />
     public static async ValueTask Next10() =>
-        await NavigationManager.Next10(Vm).ConfigureAwait(false);
+        await Vm.Tabs.Next10().ConfigureAwait(false);
 
-    /// <inheritdoc cref="NavigationManager.Next100(MainViewModel)" />
+    /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.Next100()" />
     public static async ValueTask Next100() =>
-        await NavigationManager.Next100(Vm).ConfigureAwait(false);
+        await Vm.Tabs.Next100().ConfigureAwait(false);
     
     /// <inheritdoc cref="NavigationManager.Prev10(MainViewModel)" />
     public static async ValueTask Prev10() =>

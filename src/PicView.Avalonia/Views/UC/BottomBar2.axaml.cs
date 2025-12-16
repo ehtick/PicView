@@ -12,6 +12,8 @@ namespace PicView.Avalonia.Views.UC;
 
 public partial class BottomBar2 : UserControl
 {
+    
+    private RotationContextMenu? _rotationContextMenu;
     public BottomBar2()
     {
         InitializeComponent();
@@ -20,6 +22,13 @@ public partial class BottomBar2 : UserControl
         {
             PointerPressed += (_, e) => MoveWindow(e);
             PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
+            
+            _rotationContextMenu = new RotationContextMenu();
+            _rotationContextMenu.UpdateSubscription();
+            FlipButton.ContextMenu = _rotationContextMenu;
+            RotateRightButton.ContextMenu = _rotationContextMenu;
+            FlipButton.PointerPressed += (_, e) => { OpenRotationContextMenu(e); };
+            RotateRightButton.PointerPressed += (_, e) => { OpenRotationContextMenu(e); };
 
             if (DataContext is not MainViewModel vm)
             {
@@ -154,10 +163,21 @@ public partial class BottomBar2 : UserControl
         if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
         {
             // Context menu doesn't want to be opened normally
-            MainContextMenu.Open();
+            //MainContextMenu.Open();
             return;
         }
 
         WindowFunctions.WindowDragBehavior((Window)VisualRoot, e);
+    }
+    
+    private void OpenRotationContextMenu(PointerPressedEventArgs e)
+    {
+        if (!e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
+        {
+            return;
+        }
+
+        // Context menu doesn't want to be opened normally
+        _rotationContextMenu.Open();
     }
 }

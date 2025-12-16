@@ -13,10 +13,8 @@
     <UserControl.Resources>
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ImageMenuBrush" />
         <SolidColorBrush Color="{DynamicResource MainTextColor}" x:Key="ToolsMenuBrush" />
-    </UserControl.Resources>
 
-    <UserControl.ContextMenu>
-        <ContextMenu x:Name="MainContextMenu">
+        <ContextMenu x:Key="MainContextMenu">
 
             <!--  Next  -->
             <MenuItem
@@ -188,7 +186,7 @@
             </MenuItem>
 
         </ContextMenu>
-    </UserControl.ContextMenu>
+    </UserControl.Resources>
 
     <Border
         Background="{DynamicResource WindowBackgroundColor}"
@@ -198,197 +196,196 @@
         Height="{CompiledBinding MainWindow.BottombarHeight.Value,
                                  Mode=OneWay}"
         x:Name="MainBottomBorder">
-        <Panel>
-            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
 
-                <customControls:IconButton
-                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.OpenFileCommand}"
-                    Data="{StaticResource FolderGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    IconHeight="17"
-                    IconWidth="20"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value}"
-                    Width="38"
-                    x:Name="FileMenuButton" />
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.OpenFileCommand}"
+                Data="{StaticResource FolderGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                IconHeight="17"
+                IconWidth="20"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value}"
+                Width="38"
+                x:Name="FileMenuButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Window.ShowImageInfoWindow}"
-                    Data="{StaticResource ImageInfoGeometry}"
-                    Foreground="{StaticResource ImageMenuBrush}"
-                    Height="25"
-                    IconHeight="17"
-                    IconWidth="17"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.ImageInfo.Value}"
-                    Width="38"
-                    x:Name="ImageInfoButton" />
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Window.ShowImageInfoWindow}"
+                Data="{StaticResource ImageInfoGeometry}"
+                Foreground="{StaticResource ImageMenuBrush}"
+                Height="25"
+                IconHeight="17"
+                IconWidth="17"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.ImageInfo.Value}"
+                Width="38"
+                x:Name="ImageInfoButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource AltBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.ZoomOutCommand}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    Icon="{StaticResource ZoomOutImage}"
-                    IconHeight="16"
-                    IconWidth="18"
-                    IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.ZoomOut.Value}"
-                    Width="38"
-                    x:Name="ZoomOutButton" />
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.ZoomOutCommand}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Icon="{StaticResource ZoomOutImage}"
+                IconHeight="16"
+                IconWidth="18"
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.ZoomOut.Value}"
+                Width="38"
+                x:Name="ZoomOutButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource AltBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.ZoomInCommand}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    Icon="{StaticResource ZoomAltImage}"
-                    IconHeight="16"
-                    IconWidth="18"
-                    IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.ZoomIn.Value}"
-                    Width="38"
-                    x:Name="ZoomInButton" />
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.ZoomInCommand}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Icon="{StaticResource ZoomAltImage}"
+                IconHeight="16"
+                IconWidth="18"
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.ZoomIn.Value}"
+                Width="38"
+                x:Name="ZoomInButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource MainButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="hover"
-                    Command="{CompiledBinding Tabs.PrevFile}"
-                    Data="{StaticResource FilledArrowLeftGeometry}"
-                    Focusable="False"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    IconHeight="20"
-                    IconWidth="17"
-                    IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
-                    IsTabStop="False"
-                    Width="80"
-                    x:Name="PreviousButton" />
+            <customControls:IconButton
+                Background="{DynamicResource MainButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="hover"
+                Command="{CompiledBinding Tabs.PrevFile}"
+                Data="{StaticResource FilledArrowLeftGeometry}"
+                Focusable="False"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                IconHeight="20"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsTabStop="False"
+                Width="80"
+                x:Name="PreviousButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource MainButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="hover"
-                    Command="{CompiledBinding Tabs.NextFile}"
-                    Data="{StaticResource FilledArrowRightGeometry}"
-                    Focusable="False"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    IconHeight="20"
-                    IconWidth="17"
-                    IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
-                    IsTabStop="False"
-                    Width="80"
-                    x:Name="NextButton" />
+            <customControls:IconButton
+                Background="{DynamicResource MainButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="hover"
+                Command="{CompiledBinding Tabs.NextFile}"
+                ContextMenu="{StaticResource MainContextMenu}"
+                Data="{StaticResource FilledArrowRightGeometry}"
+                Focusable="False"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                IconHeight="20"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsTabStop="False"
+                Width="80"
+                x:Name="NextButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource AltBackgroundColor}"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.RotateRightCommand}"
-                    DockPanel.Dock="Left"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    Icon="{StaticResource RefreshCcwDot}"
-                    IconHeight="16"
-                    IconWidth="16"
-                    IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsRepeatEnabled="False"
-                    Margin="0"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
-                                                  Mode=OneWay}"
-                    Width="38"
-                    x:Name="RotateRightButton" />
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.RotateRightCommand}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Icon="{StaticResource RefreshCcwDot}"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
+                                              Mode=OneWay}"
+                Width="38"
+                x:Name="RotateRightButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource AltBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.FlipCommand}"
-                    Data="{StaticResource FlipGeometry}"
-                    DockPanel.Dock="Left"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    IconHeight="16"
-                    IconWidth="16"
-                    IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsRepeatEnabled="False"
-                    Margin="0"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
-                                                  Mode=OneWay}"
-                    Width="38"
-                    x:Name="FlipButton">
-                    <Button.RenderTransform>
-                        <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
-                    </Button.RenderTransform>
-                </customControls:IconButton>
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="1,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.FlipCommand}"
+                Data="{StaticResource FlipGeometry}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
+                                              Mode=OneWay}"
+                Width="38"
+                x:Name="FlipButton">
+                <Button.RenderTransform>
+                    <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
+                </Button.RenderTransform>
+            </customControls:IconButton>
 
-                <customControls:IconButton
-                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Tools.CropCommand}"
-                    Data="{StaticResource CropGeometry}"
-                    Foreground="{StaticResource ImageMenuBrush}"
-                    Height="25"
-                    IconHeight="16"
-                    IconWidth="16"
-                    IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.Crop.Value}"
-                    Width="38"
-                    x:Name="CropButton" />
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Tools.CropCommand}"
+                Data="{StaticResource CropGeometry}"
+                Foreground="{StaticResource ImageMenuBrush}"
+                Height="25"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.Crop.Value}"
+                Width="38"
+                x:Name="CropButton" />
 
-                <customControls:IconButton
-                    Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="noBorderHover"
-                    Command="{CompiledBinding Window.ShowSettingsWindow}"
-                    Data="{StaticResource CogGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-                    IconHeight="16"
-                    IconWidth="16"
-                    IsTabStop="False"
-                    ToolTip.HorizontalOffset="15"
-                    ToolTip.Tip="{CompiledBinding Translation.Settings.Value}"
-                    Width="38"
-                    ZIndex="1"
-                    x:Name="SettingsMenuButton" />
+            <customControls:IconButton
+                Background="{DynamicResource SecondaryButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding Window.ShowSettingsWindow}"
+                Data="{StaticResource CogGeometry}"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                IconHeight="16"
+                IconWidth="16"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.Settings.Value}"
+                Width="38"
+                ZIndex="1"
+                x:Name="SettingsMenuButton" />
 
-            </StackPanel>
-        </Panel>
+        </StackPanel>
     </Border>
 </UserControl>

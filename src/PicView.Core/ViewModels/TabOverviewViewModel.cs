@@ -173,6 +173,18 @@ public class TabOverviewViewModel
 
     public async ValueTask LastFile() =>
         await NextFileCore(NavigateTo.Last).ConfigureAwait(false);
+    
+    public async ValueTask Next10() =>
+        await IncrementsCore(SkipAmount.Ten, true).ConfigureAwait(false);
+    
+    public async ValueTask Next100() =>
+        await IncrementsCore(SkipAmount.Hundred, true).ConfigureAwait(false);
+    
+    public async ValueTask Prev10() =>
+        await IncrementsCore(SkipAmount.Ten, false).ConfigureAwait(false);
+    
+    public async ValueTask Prev100() =>
+        await IncrementsCore(SkipAmount.Hundred, false).ConfigureAwait(false);
 
     private async ValueTask NextFileCore(NavigateTo navigateTo)
     {
@@ -184,6 +196,18 @@ public class TabOverviewViewModel
         }
         var ct = tab.ResetNavigationCts();
         await SharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
+    }
+    
+    private async ValueTask IncrementsCore(SkipAmount skipAmount, bool forwards)
+    {
+        var tab = ActiveTab.Value;
+        
+        if (SharedNavigation is null || tab.ImageIterator is null)
+        {
+            return;
+        }
+        var ct = tab.ResetNavigationCts();
+        await SharedNavigation.NavigateByIncrementsAsync(tab, skipAmount, forwards, ct).ConfigureAwait(false);
     }
 
 
@@ -217,23 +241,5 @@ public class TabOverviewViewModel
     {
         await LoadFromFileAsync(new FileInfo(file), senderTab).ConfigureAwait(false);
     }
-    
-    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
-    {
-        if (SharedNavigation is null || tab.ImageIterator is null)
-        {
-            return;
-        }
-        await SharedNavigation.NavigateAsync(tab, to, ct).ConfigureAwait(false);
-    }
-    public async ValueTask NavigateToIndexAsync(int index)
-    {
-        if (!CanActiveTabNavigate.Value || SharedNavigation is null)
-        {
-            return;
-        }
-        await SharedNavigation.NavigateToIndexAsync(ActiveTab.Value, index, ActiveTab.Value.NavigationCts).ConfigureAwait(false);
-    }
-
     #endregion
 }

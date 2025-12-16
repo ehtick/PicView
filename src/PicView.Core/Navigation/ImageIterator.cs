@@ -47,6 +47,12 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         // Need to explicitly start preloading in a new thread and not wait for it, for performance
         SafeFireAndForgetPreload(index, ct.Token);
     }
+    
+    public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
+    {
+        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, _tab.Id, skipAmount);
+        await IterateToIndexAsync(iteration, ct).ConfigureAwait(false);
+    }
 
     public void SetCurrentIndex(int index)
     {

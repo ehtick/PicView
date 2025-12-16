@@ -45,6 +45,8 @@ public interface IImageIterator : IAsyncDisposable
     /// </summary>
     ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
 
+    ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct);
+
     /// <summary>
     /// Handles continuous navigation (e.g., holding down a key).
     /// </summary>
