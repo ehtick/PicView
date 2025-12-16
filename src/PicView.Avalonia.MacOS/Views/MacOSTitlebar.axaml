@@ -60,6 +60,7 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="altHover"
+            Command="{CompiledBinding Tools.ShowSearchCommand}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
             Icon="{StaticResource SearchImage}"

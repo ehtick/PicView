@@ -35,7 +35,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TabMenu.OpenGalleryOptionsCommand}"
+                            Command="{CompiledBinding TabMenu.OpenGalleryOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -65,7 +65,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TabMenu.CloseGalleryOptionsCommand}"
+                                Command="{CompiledBinding TabMenu.CloseGalleryOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -151,6 +151,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
+                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ResizeImage.Value}"
                 VerticalAlignment="Top" />
@@ -163,6 +164,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
+                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Effects.Value}"
                 VerticalAlignment="Top" />
@@ -175,6 +177,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
+                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ApplicationShortcuts.Value}"
                 VerticalAlignment="Top" />
@@ -187,6 +190,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
+                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Settings.Value}"
                 VerticalAlignment="Top" />
@@ -199,6 +203,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
+                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.About.Value}"
                 VerticalAlignment="Top" />

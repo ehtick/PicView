@@ -127,38 +127,18 @@ public class TabOverviewViewModel
     {
         ActiveTab.Value = tab;
         
-        // If the tab is floating, IndexOf will be -1. 
+        // If the tab is detached, IndexOf will be -1. 
         // This effectively "deselects" the tab in the Main Window's TabControl, which is correct behavior.
         ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
         
         ActiveTab.Value.IsSelected = true;
         CanActiveTabNavigate.Value = ActiveTab.Value.ImageIterator?.Files?.Count > 1;
     }
-
-
-    public async ValueTask CloseTabAsync(TabViewModel tab)
+    
+    public async ValueTask CloseTabAsync()
     {
-        var wasActive = ReferenceEquals(tab, ActiveTab.Value);
-        Tabs.Value.Remove(tab);
-
-        IsTabPanelVisible.Value = Tabs.Value.Count > 1;
-
-        if (wasActive && Tabs.Value.Count > 0)
-        {
-            // Select closest tab to the left.
-            var newIndex = Math.Clamp(ActiveTabIndex.Value, 0, Tabs.Value.Count - 1);
-            SelectTab(Tabs.Value[newIndex]);
-        }
-
-        if (SharedCache is not null)
-        {
-            await SharedCache.RemoveOwner(tab.Id);
-        }
-     
-        if (tab is not null)
-        {
-            await tab.DisposeAsync();
-        }
+        var tab = ActiveTab.Value;
+        await CloseTabAsync(tab);
     }
     
     public async ValueTask CloseTabAsync(string tabId)
@@ -170,16 +150,66 @@ public class TabOverviewViewModel
         }
     }
 
+
+    public async ValueTask CloseTabAsync(TabViewModel tab)
+    {
+        // 1. Guard Clause: Prevent closing if this is the last tab.
+        if (Tabs.Value.Count <= 1)
+        {
+            return;
+        }
+
+        var wasActive = ReferenceEquals(tab, ActiveTab.Value);
+    
+        // 2. Capture the index BEFORE removing the item
+        var indexToRemove = Tabs.Value.IndexOf(tab);
+        Tabs.Value.Remove(tab);
+
+        IsTabPanelVisible.Value = Tabs.Value.Count > 1;
+
+        if (wasActive && Tabs.Value.Count > 0)
+        {
+            // 3. Calculate the new index. 
+            // We subtract 1 to go "behind" (left). 
+            // We use Math.Max(0, ...) to ensure we don't go below zero if the first tab was closed.
+            var targetIndex = Math.Max(0, indexToRemove - 1);
+        
+            // 4. Clamp ensures we don't exceed the new count
+            var newIndex = Math.Clamp(targetIndex, 0, Tabs.Value.Count - 1);
+            SelectTab(Tabs.Value[newIndex]);
+        }
+
+        if (SharedCache is not null)
+        {
+            await SharedCache.RemoveOwner(tab.Id);
+        }
+    
+        if (tab is not null)
+        {
+            await tab.DisposeAsync();
+        }
+    }
+
+    // Used when detaching the tab
     public void RemoveTab(TabViewModel tab)
     {
         var wasActive = ReferenceEquals(tab, ActiveTab.Value);
+    
+        // Capture index
+        var indexToRemove = Tabs.Value.IndexOf(tab);
+    
         Tabs.Value.Remove(tab);
-        // If it was active and we still have tabs left, select a new one explicitly
-        if (wasActive && Tabs.Value.Count > 0)
+
+        if (!wasActive || Tabs.Value.Count <= 0)
         {
-            var newIndex = Math.Clamp(ActiveTabIndex.Value, 0, Tabs.Value.Count - 1);
-            SelectTab(Tabs.Value[newIndex]);
+            return;
         }
+
+        // Target the previous tab
+        var targetIndex = Math.Max(0, indexToRemove - 1);
+        var newIndex = Math.Clamp(targetIndex, 0, Tabs.Value.Count - 1);
+        
+        SelectTab(Tabs.Value[newIndex]);
     }
 
     #region Navigation

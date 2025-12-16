@@ -164,6 +164,10 @@ public static class FunctionsMapper
             "SetAsWallpaperFilled" => SetAsWallpaperFilled,
             "SetAsWallpaperCentered" => SetAsWallpaperCentered,
             "SetAsWallpaperTiled" => SetAsWallpaperTiled,
+            
+            // Tabs
+            "NewTab" => NewTab,
+            "CloseTab" => CloseTab,
 
             // Misc
             "ChangeBackground" => ChangeBackground,
@@ -777,6 +781,21 @@ public static class FunctionsMapper
     
     public static async ValueTask SetAsLockScreen() =>
         await Task.Run(() => Vm.PlatformService.SetAsLockScreen(Vm.PicViewer.FileInfo.CurrentValue.FullName)).ConfigureAwait(false);
+
+    #endregion
+
+    #region Tabs
+
+    public static ValueTask NewTab()
+    {
+        Vm.Tabs.CreateTab();
+        return ValueTask.CompletedTask;
+    }
+    
+    public static async ValueTask CloseTab()
+    {
+        await Vm.Tabs.CloseTabAsync();
+    }
 
     #endregion
 

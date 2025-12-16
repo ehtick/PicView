@@ -6,20 +6,17 @@ public class TabMenuViewModel
 {
     public BindableReactiveProperty<int> MenuCarouselIndex { get; } = new(0);
     public BindableReactiveProperty<bool> IsGalleryOptionsVisible { get; } = new(false);
-    public ReactiveCommand OpenGalleryOptionsCommand { get; }
-    public ReactiveCommand CloseGalleryOptionsCommand { get; }
 
-    public TabMenuViewModel()
+    public void OpenGalleryOptions()
     {
-        OpenGalleryOptionsCommand = new ReactiveCommand(_ =>
-        {
-            IsGalleryOptionsVisible.Value = true;
-            MenuCarouselIndex.Value = 1;
-        });
-        CloseGalleryOptionsCommand = new ReactiveCommand(_ =>
-        {
-            IsGalleryOptionsVisible.Value = false;
-            MenuCarouselIndex.Value = 0;
-        });
+        MenuCarouselIndex.Value = 1;
+        IsGalleryOptionsVisible.Value = true;
+    }
+
+    public async ValueTask CloseGalleryOptions()
+    {
+        MenuCarouselIndex.Value = 0;
+        await Task.Delay(95);
+        IsGalleryOptionsVisible.Value = false;
     }
 }

@@ -203,6 +203,105 @@
             </MenuItem>
 
         </ContextMenu>
+        <ContextMenu x:Key="ToolsMenu">
+
+            <!--  Show image gallery  -->
+            <MenuItem
+                Command="{CompiledBinding Gallery.ToggleGallery}"
+                Header="{CompiledBinding Translation.ShowImageGallery.Value,
+                                         Mode=OneWay}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource GalleryImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Gallery options  -->
+            <MenuItem Header="Gallery options">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource GalleryImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+                <MenuItem Header="Show docked gallery at bottom">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource GalleryImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Show docked gallery to the left">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource GalleryImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Show docked gallery to the right">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource GalleryImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Show docked gallery at top">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource GalleryImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+
+            <!--  Resize image  -->
+            <MenuItem IsVisible="{CompiledBinding TabMenu.IsGalleryOptionsVisible.Value}"
+                Command="{CompiledBinding Window.ShowBatchResizeWindow}"
+                Header="{CompiledBinding Translation.ResizeImage,
+                                         Mode=OneWay}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource BatchResizeImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--  Effects  -->
+            <MenuItem
+                Command="{CompiledBinding Window.ShowEffectsWindow}"
+                Header="{CompiledBinding Translation.Effects,
+                                         Mode=OneWay}"
+                StaysOpenOnClick="True">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource FlaskImage}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+
+
+            <Separator />
+            <!--  Hide bottom bar  -->
+            <MenuItem Command="{CompiledBinding Tools.ToggleBottomNavBarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Image
+                        Height="12"
+                        Source="{StaticResource Panel-Bottom}"
+                        Width="12" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+
     </UserControl.Resources>
 
     <Border
@@ -238,6 +337,7 @@
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
                 Command="{CompiledBinding Window.ShowImageInfoWindow}"
+                ContextMenu="{StaticResource ToolsMenu}"
                 Data="{StaticResource ImageInfoGeometry}"
                 Foreground="{StaticResource ImageMenuBrush}"
                 Height="25"
