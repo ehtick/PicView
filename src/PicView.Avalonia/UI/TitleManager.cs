@@ -7,6 +7,7 @@ using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Titles;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.UI;
 
@@ -132,6 +133,16 @@ public static class TitleManager
             NavigationManager.GetCurrentIndex,
             imageModel.FileInfo, vm.PicViewer.ZoomValue.CurrentValue, NavigationManager.GetCollection);
         ApplyTitles(vm, windowTitles);
+    }
+    
+    public static void SetTabTitle(TabViewModel tab, double zoomValue)
+    {
+        var titles = ImageTitleFormatter.GenerateTitleStrings(tab.Model.CurrentValue.PixelWidth, tab.Model.CurrentValue.PixelHeight,
+            tab.ImageIterator.CurrentIndex,
+            tab.Model.CurrentValue.FileInfo, zoomValue, tab.ImageIterator.Files);
+        tab.WindowTitle.Value = titles.TitleWithAppName;
+        tab.Title.Value = titles.BaseTitle;
+        tab.TitleTooltip.Value = titles.FilePathTitle;
     }
     
     public static void SetTitleSlim(MainViewModel vm, int width, int height, int index, IReadOnlyList<FileInfo> collection)

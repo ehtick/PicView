@@ -7,8 +7,11 @@ using ImageMagick;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Exif;
+using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -16,6 +19,7 @@ namespace PicView.Avalonia.Views.UC;
 public partial class ImageViewer2 : UserControl
 {
     private RotationTransformer? _imageTransformer;
+    private IDisposable? _disposable;
     
     public ImageViewer2()
     {
@@ -58,6 +62,15 @@ public partial class ImageViewer2 : UserControl
         //     });
         ZoomPanControl.Initialize(DataContext);
         MainPanel.Children.Add(ZoomPanControl.ZoomPreviewer);
+
+        if (DataContext is TabViewModel tab)
+        {
+            _disposable = Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
+                .Subscribe(z =>
+                {
+                    TitleManager.SetTabTitle(tab, z);
+                });
+        }
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -66,6 +79,7 @@ public partial class ImageViewer2 : UserControl
         RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
         RemoveHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
         RemoveHandler(Gestures.PinchEvent, TouchMagnifyEvent);
+        _disposable?.Dispose();
     }
 
     private void InitializeMouseInputHelper() =>
