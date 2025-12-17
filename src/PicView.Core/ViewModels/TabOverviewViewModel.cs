@@ -66,7 +66,7 @@ public class TabOverviewViewModel
         SharedCache.RegisterOwner(ActiveTab.Value.Id);
     }
     
-    public void LoadAndInitializeFromPath(List<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
     {
         Initialize(gallery, navigationService, cache, thumbnailLoader);
         ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader);

@@ -1,4 +1,5 @@
-﻿using PicView.Core.Localization;
+﻿using PicView.Core.Extensions;
+using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -99,7 +100,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         ImageIterator = new ImageIterator(cache, thumbnailLoader, this);
     }
 
-    public void InitializeImageIterator(List<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader)
     {
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model.Value?.FileInfo.FullName));

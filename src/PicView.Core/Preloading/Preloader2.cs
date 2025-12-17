@@ -48,7 +48,7 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
             return null;
         }
 
-        if (_cache.Contains(list[index].FullName, out var cached))
+        if (_cache.TryGet(list[index], out var cached))
         {
             if (!cached.IsLoading && cached.ImageModel != null)
             {
@@ -107,7 +107,7 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         }
         
         // Don't re-add at same index
-        if (_cache.Contains(list[index].FullName.AsSpan(), out var cached))
+        if (_cache.TryGet(list[index], out var cached))
         {
             if (!cached.IsLoading)
             {
@@ -116,7 +116,7 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         }
 
         await AddAsync(ownerId, index, list, false, ct).ConfigureAwait(false);
-        return _cache.Contains(list[index].FullName.AsSpan(), out var newlyAdded) ? newlyAdded.ImageModel : null;
+        return _cache.TryGet(list[index], out var newlyAdded) ? newlyAdded.ImageModel : null;
     }
     
     public PreLoadValue? Get(string ownerId, int index, IReadOnlyList<FileInfo> list)
@@ -163,13 +163,11 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         {
             if (_cancellationTokenSource.IsCancellationRequested)
             {
-                _cancellationTokenSource = new CancellationTokenSource();
+                await _cancellationTokenSource.CancelAsync();
+                _cancellationTokenSource.Dispose();
             }
         }
-        else
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-        }
+        _cancellationTokenSource = new CancellationTokenSource();
 
         try
         {
@@ -248,19 +246,6 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         foreach (var key in _loadingTasks.Keys)
         {
             await CancelOwnerInstanceAsync(key);
-        }
-        _loadingTasks.Clear();
-        _cancellationTokenSource?.Dispose();
-    }
-    
-    // Non-Async Dispose
-    public void Dispose()
-    {
-        _cancellationTokenSource?.Cancel();
-        foreach (var cts in _loadingTasks.Values)
-        {
-            cts.Cancel();
-            cts.Dispose();
         }
         _loadingTasks.Clear();
         _cancellationTokenSource?.Dispose();

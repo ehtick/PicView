@@ -1,4 +1,5 @@
 ﻿using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.FileSorting;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;

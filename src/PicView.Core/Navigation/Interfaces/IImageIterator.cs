@@ -10,9 +10,9 @@
 public interface IImageIterator : IAsyncDisposable
 {
     /// <summary>
-    /// Gets or sets the list of files currently being iterated.
+    /// The list of files currently being iterated.
     /// </summary>
-    List<FileInfo> Files { get; internal set; }
+    IReadOnlyList<FileInfo> Files { get; internal set; }
 
     /// <summary>
     /// Gets the current position in the file list.
@@ -32,7 +32,7 @@ public interface IImageIterator : IAsyncDisposable
     /// <summary>
     /// Initializes the iterator with a new list of files and a starting position.
     /// </summary>
-    void Initialize(List<FileInfo> files, int initialIndex = 0);
+    void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0);
 
     /// <summary>
     /// Calculates the next index based on navigation direction and skip modifiers.

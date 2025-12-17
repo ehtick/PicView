@@ -48,11 +48,6 @@ public interface IImageCache
     /// <summary>
     /// Checks if the cache contains a file with the specified path.
     /// </summary>
-    bool Contains(ReadOnlySpan<char> span, out PreLoadValue? value);
-
-    /// <summary>
-    /// Checks if the cache contains a file with the specified path.
-    /// </summary>
     bool Contains(PreLoadValue value);
 
     /// <summary>

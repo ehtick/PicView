@@ -11,15 +11,13 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
     private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
-
-    // Use a private backing field or keep it simple. 
-    // Ideally, this list should be immutable or only set via Initialize.
-    public List<FileInfo> Files { get; set; } = [];
+    
+    public IReadOnlyList<FileInfo> Files { get; set; } = [];
 
     public int CurrentIndex { get; private set; } = -1;
     public bool IsReversed { get; private set; }
 
-    public void Initialize(List<FileInfo> files, int initialIndex = 0)
+    public void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0)
     {
         Files = files ?? [];
         CurrentIndex = Math.Clamp(initialIndex, 0, Math.Max(0, Files.Count - 1));
@@ -141,7 +139,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     private async ValueTask<bool> TryLoadFromCacheAsync(int index, FileInfo file, CancellationTokenSource ct)
     {
         // Check cache first
-        if (!_cache.TryGet(_tab.Id, index, out var preLoadValue) || preLoadValue is null)
+        if (!_cache.TryGet(file, out var preLoadValue) || preLoadValue is null)
         {
             return false;
         }
