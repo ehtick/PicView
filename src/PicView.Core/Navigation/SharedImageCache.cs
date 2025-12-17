@@ -55,19 +55,8 @@ public class SharedImageCache : IImageCache
     public bool TryGet(string ownerId, int index, out PreLoadValue? value) =>
         _items.TryGetValue(ownerId, index, out value);
 
-    public bool TryGet(ReadOnlySpan<char> f, out PreLoadValue? value)
-    {
-        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-        foreach (var kvp in _items)
-        {
-            var fullName = kvp.Value.ImageModel.FileInfo.FullName;
-            value = kvp.Value;
-            return fullName.AsSpan().Equals(f, comparison);
-        }
-
-        value = null;
-        return false;
-    }
+    public bool TryGet(ReadOnlySpan<char> f, out PreLoadValue? value) =>
+        _items.TryGetValueByPath(f, out value);
 
     public void Clear() =>
         _items.Clear();

@@ -2,17 +2,11 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using ZLinq;
-#if DEBUG
-using PicView.Core.DebugTools;
-using System.Diagnostics;
+
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
-#endif
 
 namespace PicView.Core.Preloading;
-
-
 
 /// <summary>
 /// A thread-safe, capacity-constrained container responsible for storing loaded images and managing eviction.
@@ -43,7 +37,12 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
         _currentMaxSize = initialMaxSize;
 
         _indexMap = new Dictionary<CacheKey, (string, TValue)>(initialMaxSize, Comparer);
-        _data = new Dictionary<string, TValue>(initialMaxSize);
+
+        var pathComparer = OperatingSystem.IsWindows()
+            ? StringComparer.OrdinalIgnoreCase
+            : StringComparer.Ordinal;
+
+        _data = new Dictionary<string, TValue>(initialMaxSize, pathComparer);
     }
     
     public int Count
@@ -81,7 +80,6 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
         lock (_lock)
         {
             snapshot = new List<KeyValuePair<(string, int), TValue>>(_indexMap.Count);
-            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
             foreach (var kvp in _indexMap)
             {
                 snapshot.Add(new KeyValuePair<(string, int), TValue>(
@@ -206,10 +204,16 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
             {
                 if (existingEntry.Path == filePath)
                 {
-                    return false;
+                    // IMPORTANT: ensure the slot points to the canonical instance
+                    if (_data.TryGetValue(filePath, out var canonical) &&
+                        !ReferenceEquals(existingEntry.Value, canonical))
+                    {
+                        existingEntry = (filePath, canonical);
+                    }
+
+                    return false; // no eviction, nothing else to do
                 }
 
-                // Remove the old link. Capture the value if it was the last ref.
                 evictedValue = RemoveInternal(newKey);
             }
             else if (_indexMap.Count >= _currentMaxSize)
@@ -221,12 +225,21 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
                 }
             }
 
-            _data.TryAdd(filePath, value);
-            _indexMap[newKey] = (filePath, value);
+            // Canonicalize the value by filePath
+            if (!_data.TryGetValue(filePath, out var storedValue))
+            {
+                _data[filePath] = value;
+                storedValue = value;
+            }
+            // Always link the logical slot to the canonical stored value
+            _indexMap[newKey] = (filePath, storedValue);
 
+            // NOTE: if storedValue != value, value is redundant; if TValue can hold resources,
+            // consider disposing it at the call-site or changing the API to return it.
             return evictedValue is not null;
         }
     }
+
 
     public bool TryRemove(string ownerId, int index, [MaybeNullWhen(false)] out TValue value)
     {
@@ -251,7 +264,7 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
         lock (_lock)
         {
             // ALLOCATION FIX: Manual iteration instead of LINQ
-            List<CacheKey> toRemove = new();
+            List<CacheKey> toRemove = [];
             foreach (var k in _indexMap.Keys)
             {
                 if (k.OwnerId == ownerId)
@@ -361,16 +374,10 @@ public class EvictingDictionary2<TValue> : IEnumerable<KeyValuePair<(string Owne
 
     public readonly record struct CacheKey(string OwnerId, int Index);
 
-    public readonly ref struct CacheKeyLookup
+    public readonly ref struct CacheKeyLookup(ReadOnlySpan<char> ownerIdSpan, int index)
     {
-        public readonly ReadOnlySpan<char> OwnerIdSpan;
-        public readonly int Index;
-
-        public CacheKeyLookup(ReadOnlySpan<char> ownerIdSpan, int index)
-        {
-            OwnerIdSpan = ownerIdSpan;
-            Index = index;
-        }
+        public readonly ReadOnlySpan<char> OwnerIdSpan = ownerIdSpan;
+        public readonly int Index = index;
     }
 
     private class CacheKeyComparer : IEqualityComparer<CacheKey>, IAlternateEqualityComparer<CacheKey, CacheKeyLookup>

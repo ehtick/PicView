@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Diagnostics;
 using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -7,247 +6,218 @@ using PicView.Core.Navigation.Interfaces;
 
 namespace PicView.Core.Preloading;
 
-/// <summary>
-/// The background worker responsible for calculating navigation indices and orchestrating image loading.
-/// <para>
-/// This class calculates the "look-ahead" indices (forward and backward) based on the current 
-/// navigation direction and delegates the physical loading of the <see cref="ImageModel"/> 
-/// to the loader. It ensures images are pre-fetched into the cache before the UI requests them.
-/// </para>
-/// </summary>
-public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache) : IPreloader
+public class Preloader2 : IPreloader
 {
-    private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly IImageCache _cache;
+    private readonly Func<FileInfo, ValueTask<ImageModel>> _imageModelLoader;
     
-    private CancellationTokenSource? _cancellationTokenSource;
+    // One worker per Tab (OwnerId)
+    private readonly ConcurrentDictionary<string, PreloadWorker> _workers = new();
 
-    // Map Owner IDs to their specific Cancellation Tokens
-    private readonly ConcurrentDictionary<string, CancellationTokenSource> _loadingTasks = new();
-    
-    public void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list)
+    public Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache)
     {
-        var evicted = _cache.TryAdd(ownerId,  index, new PreLoadValue(model), list.Count, false, out var evictedValue);
+        _imageModelLoader = imageModelLoader ?? throw new ArgumentNullException(nameof(imageModelLoader));
+        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    }
 
-        if (!evicted)
+    public Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct)
+    {
+        if (files is null || files.Count == 0) return Task.CompletedTask;
+
+        var worker = _workers.GetOrAdd(ownerId, CreateWorker);
+        var job = new PreloadJob(currentIndex, reversed, files);
+        
+        // Non-blocking write
+        worker.Writer.TryWrite(job);
+
+        return Task.CompletedTask;
+    }
+
+    private PreloadWorker CreateWorker(string ownerId)
+    {
+        // Pass the method that performs the actual heavy lifting
+        return new PreloadWorker((job, token) => ExecuteBatchLoadAsync(ownerId, job, token));
+    }
+
+    /// <summary>
+    /// The core logic for calculating indices and loading them concurrently.
+    /// </summary>
+    private async Task ExecuteBatchLoadAsync(string ownerId, PreloadJob job, CancellationToken token)
+    {
+        // 1. Calculate the indices we want to load
+        var indicesToLoad = GetLookaheadIndices(job);
+        
+        // 2. Setup concurrency limits
+        using var semaphore = new SemaphoreSlim(PreLoaderConfig.MaxParallelism);
+        var tasks = new List<Task>(indicesToLoad.Count);
+
+        foreach (var index in indicesToLoad)
         {
-            return;
+            if (token.IsCancellationRequested) break;
+
+            // 3. Queue the tasks. 
+            // Note: We do NOT await here. We add the task to the list.
+            // The semaphore inside LoadItemInternal ensures we don't flood the system.
+            tasks.Add(LoadItemInternal(ownerId, index, job.Files, job.Reversed, semaphore, token));
         }
 
-        if (_cache is SharedImageCache cache)
+        // 4. Wait for this batch to finish (or be cancelled)
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+    }
+    
+    /// <summary>
+    /// Wraps the AddAsync call with Semaphore throttling.
+    /// </summary>
+    private async Task LoadItemInternal(string ownerId, int index, IReadOnlyList<FileInfo> list, bool reversed, SemaphoreSlim semaphore, CancellationToken token)
+    {
+        // Wait for a slot to open up
+        await semaphore.WaitAsync(token).ConfigureAwait(false);
+        try
         {
-            cache.DisposeHelper(evictedValue);
+            // Double check cancellation after waiting
+            if (token.IsCancellationRequested) return;
+
+            await AddAsync(ownerId, index, list, reversed, token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Ignore
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(Preloader2), "LoadItemInternal", ex);
+        }
+        finally
+        {
+            semaphore.Release();
         }
     }
 
-    // Update AddAsync to reuse this logic and avoid circular logic
-    public async ValueTask<ImageModel?> AddAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, bool isReverse = false, CancellationToken ct = default)
+    /// <summary>
+    /// Generates the list of indices to preload based on direction.
+    /// </summary>
+    private List<int> GetLookaheadIndices(PreloadJob job)
     {
-        if (list == null || index < 0 || index >= list.Count)
+        var results = new List<int>();
+        var count = job.Files.Count;
+        var start = job.Index;
+
+        // Helper for wrap-around math
+        int Wrap(int i) => (i % count + count) % count;
+
+        void AddForward(int iterations)
         {
-            DebugHelper.LogDebug(nameof(Preloader2), nameof(AddAsync), "invalid parameters");
-            return null;
+            for (int i = 1; i <= iterations; i++) 
+                results.Add(Wrap(start + i));
         }
 
-        if (_cache.TryGet(list[index], out var cached))
+        void AddBackward(int iterations)
         {
-            if (!cached.IsLoading && cached.ImageModel != null)
-            {
-                return cached.ImageModel;
-            }
+            for (int i = 1; i <= iterations; i++) 
+                results.Add(Wrap(start - i));
         }
 
-        // Pre-insert a placeholder marked as loading to avoid duplicate concurrent loads for same index
+        // Prioritize based on direction (reversed = user going left/up)
+        if (job.Reversed)
+        {
+            AddBackward(PreLoaderConfig.NegativeIterations); // e.g. Look behind 5
+            AddForward(PreLoaderConfig.PositiveIterations);  // e.g. Look ahead 2
+        }
+        else
+        {
+            AddForward(PreLoaderConfig.PositiveIterations);  // e.g. Look ahead 5
+            AddBackward(PreLoaderConfig.NegativeIterations); // e.g. Look behind 2
+        }
+
+        return results;
+    }
+
+    public void RegisterOwner(string ownerId) => _workers.GetOrAdd(ownerId, CreateWorker);
+
+    public async ValueTask CancelOwnerInstanceAsync(string ownerId)
+    {
+        if (_workers.TryRemove(ownerId, out var worker))
+        {
+            await worker.DisposeAsync().ConfigureAwait(false);
+        }
+    }
+
+    // --- Core Loading Logic (AddAsync) ---
+
+    public async ValueTask<ImageModel?> AddAsync(string ownerId, int index, IReadOnlyList<FileInfo> list,
+        bool isReverse = false, CancellationToken ct = default)
+    {
+        if (list == null || index < 0 || index >= list.Count) return null;
+
         var fileInfo = list[index];
-        var preLoadValue = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
-        ct.ThrowIfCancellationRequested();
-        var evicted = _cache.TryAdd(ownerId,  index, preLoadValue, list.Count, isReverse, out var evictedValue);
 
+        // 1. Fast Path: Already cached?
+        if (_cache.TryGet(fileInfo, out var cachedValue) && cachedValue is not null)
+        {
+            // Refresh LRU position
+            _cache.Add(ownerId, index, cachedValue, list.Count, isReverse);
+            
+            if (cachedValue.IsLoading)
+            {
+                // Piggyback on the existing load
+                await cachedValue.WaitForLoadingCompleteAsync().ConfigureAwait(false);
+            }
+            return cachedValue.ImageModel;
+        }
+
+        if (ct.IsCancellationRequested) return null;
+
+        // 2. Reserve the slot (Optimistic locking)
+        var placeholder = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, true);
+        
+        // 'evicted' tells us if we bumped someone out. 
+        // Note: The logic for SharedImageCache disposal is preserved here.
+        var evicted = _cache.TryAdd(ownerId, index, placeholder, list.Count, isReverse, out var evictedValue);
+        if (evicted && _cache is SharedImageCache shared)
+        {
+            shared.DisposeHelper(evictedValue);
+        }
+
+        // 3. Re-check: Did someone beat us to it?
+        _cache.TryGet(ownerId, index, out var slotValue);
+        slotValue ??= placeholder;
+
+        if (!ReferenceEquals(slotValue, placeholder))
+        {
+            // Lost the race, wait for winner
+            if (slotValue.IsLoading) await slotValue.WaitForLoadingCompleteAsync().ConfigureAwait(false);
+            return slotValue.ImageModel;
+        }
+
+        // 4. Heavy Lift: Load from disk
         try
         {
-            if (evicted)
+            // Check cancel before IO
+            if (ct.IsCancellationRequested)
             {
-                if (_cache is SharedImageCache cache)
-                {
-                    cache.DisposeHelper(evictedValue);
-                }
+                _cache.TryRemove(ownerId, index);
+                return null;
             }
 
-            var imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
-            
-            ct.ThrowIfCancellationRequested();
-
-            preLoadValue.ImageModel = imageModel;
-#if DEBUG
-            if (DebugHelper.ShowCacheAdditionsAndRemovals)
-            {
-                Trace.WriteLine($"{imageModel?.FileInfo?.Name} added at {index}");
-            }
-#endif
+            var imageModel = await _imageModelLoader(fileInfo).ConfigureAwait(false);
+            slotValue.ImageModel = imageModel;
             return imageModel;
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(PreLoader), nameof(AddAsync), ex);
-            // Remove the placeholder so we can try again later
-            _cache.TryRemove(ownerId, index);
+            DebugHelper.LogDebug(nameof(Preloader2), nameof(AddAsync), ex);
+            _cache.TryRemove(ownerId, index); // Clean up failed load
             return null;
         }
         finally
         {
-            preLoadValue?.IsLoading = false; // This will trigger the TaskCompletionSource
-        }
-    }
-
-    public async ValueTask<ImageModel?> GetOrLoadAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, CancellationToken ct = default)
-    {
-        if (list == null || index < 0 || index >= list.Count)
-        {
-            DebugHelper.LogDebug(nameof(PreLoader), nameof(GetOrLoadAsync), "invalid parameters");
-            return null;
-        }
-        
-        // Don't re-add at same index
-        if (_cache.TryGet(list[index], out var cached))
-        {
-            if (!cached.IsLoading)
-            {
-                return cached.ImageModel;
-            }
-        }
-
-        await AddAsync(ownerId, index, list, false, ct).ConfigureAwait(false);
-        return _cache.TryGet(list[index], out var newlyAdded) ? newlyAdded.ImageModel : null;
-    }
-    
-    public PreLoadValue? Get(string ownerId, int index, IReadOnlyList<FileInfo> list)
-    {
-        throw new NotImplementedException();
-    }
-
-    public PreLoadValue? Get(FileInfo file, IReadOnlyList<FileInfo> list)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Resynchronize(IReadOnlyList<FileInfo> files)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async ValueTask CancelOwnerInstanceAsync(string ownerId)
-    {
-        // 1. Try to remove the token for this specific ID
-        if (_loadingTasks.TryRemove(ownerId, out var cts))
-        {
-            // 2. Cancel it
-            await cts.CancelAsync().ConfigureAwait(false);
-            
-            // 3. Dispose resources
-            cts.Dispose();
-        }
-    }
-
-    public void RegisterOwner(string ownerId)
-    {
-        _loadingTasks.TryAdd(ownerId, new CancellationTokenSource());
-    }
-
-    public async Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct)
-    {
-        if (files == null)
-        {
-            return;
-        }
-        
-        if (_cancellationTokenSource is not null)
-        {
-            if (_cancellationTokenSource.IsCancellationRequested)
-            {
-                await _cancellationTokenSource.CancelAsync();
-                _cancellationTokenSource.Dispose();
-            }
-        }
-        _cancellationTokenSource = new CancellationTokenSource();
-
-        try
-        {
-            await PreLoadInternalAsync(ownerId, currentIndex, reversed, files, _cancellationTokenSource.Token)
-                .ConfigureAwait(false);
-        }
-        catch (Exception exception)
-        {
-            DebugHelper.LogDebug(nameof(Preloader2), nameof(PreloadAsync), exception);
+            slotValue.IsLoading = false;
         }
     }
     
-    private async Task PreLoadInternalAsync(string ownerId, int currentIndex, bool reverse, IReadOnlyList<FileInfo> list,
-        CancellationToken token)
-    {
-        var count = list.Count;
-        var nextStartingIndex = (currentIndex + 1) % count;
-        var prevStartingIndex = (currentIndex - 1 + count) % count;
-        
-        var options = new ParallelOptions
-        {
-            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
-            CancellationToken = token
-        };
-
-
-        if (reverse)
-        {
-            await LoopAsync(false);
-            await LoopAsync( true);
-        }
-        else
-        {
-            await LoopAsync(true);
-            await LoopAsync(false);
-        }
-
-        return;
-
-
-        async Task LoopAsync(bool positive)
-        {
-            if (positive)
-            {
-                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, options,
-                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
-            }
-            else
-            {
-                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, options,
-                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
-            }
-        }
-
-        async Task AddAddition(int index)
-        {
-            token.ThrowIfCancellationRequested();
-            try
-            {
-                await AddAsync(ownerId, index, list, reverse, token);
-            }
-            catch (Exception e)
-            {
-                DebugHelper.LogDebug(nameof(PreLoader), nameof(PreLoadInternalAsync), e);
-            }
-        }
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_cancellationTokenSource is not null)
-        {
-            await _cancellationTokenSource.CancelAsync();
-        }
-        // Cancel all running tasks for all tabs
-        foreach (var key in _loadingTasks.Keys)
-        {
-            await CancelOwnerInstanceAsync(key);
-        }
-        _loadingTasks.Clear();
-        _cancellationTokenSource?.Dispose();
-    }
+    // --- Unused Interface Implementations ---
+    public PreLoadValue? Get(FileInfo file, IReadOnlyList<FileInfo> list) => throw new NotImplementedException();
+    public PreLoadValue? Get(string ownerId, int index, IReadOnlyList<FileInfo> list) => throw new NotImplementedException();
+    public void Resynchronize(IReadOnlyList<FileInfo> files) => throw new NotImplementedException();
+    public void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list) => throw new NotImplementedException();
 }

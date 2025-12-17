@@ -33,17 +33,20 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         CurrentIndex = index;
         var targetFile = Files[index];
 
-        // Try to get from Cache
-        var loadedFromCache = await TryLoadFromCacheAsync(index, targetFile, ct);
+        // 1. Try to get from Cache (Fastest)
+        var loadedFromCache = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
 
-        // If cache missed or failed, load manually
+        // 2. If cache missed or failed, load manually (Slower, prioritized)
         if (!loadedFromCache)
         {
-            await LoadManuallyAsync(index, ct);
+            await LoadManuallyAsync(index, ct).ConfigureAwait(false);
         }
 
-        // Need to explicitly start preloading in a new thread and not wait for it, for performance
-        SafeFireAndForgetPreload(index, ct.Token);
+        // 3. Queue Preloading
+        // OPTIMIZATION: We call this directly on the current thread.
+        // The preloader merely writes to a buffer (Channel) and returns immediately.
+        // This eliminates the overhead of scheduling a Task.Run for every keystroke.
+        SafeFireAndForgetPreload(index);
     }
     
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
@@ -152,10 +155,13 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
             // Check for cancellation before UI update
             if (ct.IsCancellationRequested || CurrentIndex != index)
             {
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Cancelled");
                 return true;
             }
 
             _tab.Model.Value = new ImageModel { Image = thumb, FileInfo = file };
+            
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Showing thumbnail");
 
             // We showed the thumb, but we still need the full load
             return false; // Return false to trigger LoadManuallyAsync for the full image
@@ -176,21 +182,13 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         }
     }
 
-    private void SafeFireAndForgetPreload(int index, CancellationToken token)
+    private void SafeFireAndForgetPreload(int index)
     {
-        // Don't await this, but catch exceptions to prevent app crash
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await _cache.PreloadAsync(_tab.Id, index, IsReversed, Files, token);
-            }
-            catch (Exception ex)
-            {
-                // Log exception here
-                DebugHelper.LogDebug(nameof(ImageIterator), "PreloadAsync", ex.Message);
-            }
-        }, token);
+        // We pass CancellationToken.None here because the preloader manages its own lifecycle.
+        // We don't want the preloading of neighbors to be cancelled just because 
+        // the navigation animation for *this* image finished.
+        // The Preloader2 handles "canceling old requests" automatically via its Channel (DropOldest).
+        _ = _cache.PreloadAsync(_tab.Id, index, IsReversed, Files, CancellationToken.None);
     }
 
     #endregion
