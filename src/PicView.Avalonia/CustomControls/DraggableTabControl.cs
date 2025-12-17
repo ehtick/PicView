@@ -2,8 +2,8 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -38,6 +38,7 @@ public class DraggableTabControl : TabControl
     private bool _isDetaching;
 
     private bool _isDragging;
+    private bool _isForeignDragging; // True if this control is currently previewing a tab from another window
     private double _pointerOffsetWithinTab;
 
     private TabItem? _pressedTab;
@@ -157,7 +158,8 @@ public class DraggableTabControl : TabControl
         // 3. Execute Movement
         if (_isDetaching)
         {
-            UpdateGhostWindowPosition(e);
+            // NEW: Handle Cross-Window Logic
+            HandleExternalDrag(e);
         }
         else
         {
@@ -179,7 +181,25 @@ public class DraggableTabControl : TabControl
 
         if (_isDetaching)
         {
-            PerformDetach(sender, e);
+            // NEW: Handle drop on external target
+            if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+            {
+                // Commit the move on the target
+                TabDragContext.CurrentTarget.ExternalDrop(TabDragContext.DraggingItem!);
+
+                // Fire detached event so Source VM can clean up
+                var item = ItemFromContainer(_pressedTab);
+                if (item != null)
+                {
+                    var screenPos = _pressedTab.PointToScreen(e.GetPosition(_pressedTab));
+                    TabDetached?.Invoke(sender, new TabDetachEventArgs(item, screenPos));
+                }
+            }
+            else
+            {
+                // Standard Detach (New Window) logic
+                PerformDetach(sender, e);
+            }
         }
         else if (_isDragging && _currentTargetIndex >= 0)
         {
@@ -229,6 +249,13 @@ public class DraggableTabControl : TabControl
         PseudoClasses.Set(PseudoDragging, true);
         _pressedTab.ZIndex = 1000;
 
+        // Initialize Context
+        TabDragContext.StartDrag(DataContext as TabViewModel, this);
+        if (_pressedTab.DataContext is TabViewModel vm)
+        {
+            TabDragContext.DraggingItem = vm;
+        }
+
         return true;
     }
 
@@ -252,12 +279,24 @@ public class DraggableTabControl : TabControl
                 break;
             // Transition: Detaching -> Attached
             case true when absDeltaY <= DetachThreshold:
-                _isDetaching = false;
-                PseudoClasses.Set(PseudoDetaching, false);
-                PseudoClasses.Set(PseudoDragging, true);
+                // Only re-attach if we are NOT currently over a foreign target
+                if (TabDragContext.CurrentTarget == null || TabDragContext.CurrentTarget == this)
+                {
+                    _isDetaching = false;
+                    PseudoClasses.Set(PseudoDetaching, false);
+                    PseudoClasses.Set(PseudoDragging, true);
 
-                _pressedTab.Opacity = 1.0; // Restore original tab
-                CloseGhostWindow();
+                    _pressedTab.Opacity = 1.0; // Restore original tab
+                    CloseGhostWindow();
+
+                    // Clear any previous target interactions
+                    if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+                    {
+                        TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
+                        TabDragContext.CurrentTarget = null;
+                    }
+                }
+
                 break;
         }
     }
@@ -344,6 +383,8 @@ public class DraggableTabControl : TabControl
 
     private void EndDrag()
     {
+        TabDragContext.EndDrag();
+
         if (_pressedTab != null)
         {
             PseudoClasses.Remove(PseudoDragging);
@@ -363,6 +404,7 @@ public class DraggableTabControl : TabControl
         _pressedTab = null;
         _isDragging = false;
         _isDetaching = false;
+        _isForeignDragging = false;
         _sourceIndex = -1;
         _currentTargetIndex = -1;
         _originalXPositions.Clear();
@@ -395,6 +437,194 @@ public class DraggableTabControl : TabControl
         {
             return false;
         }
+    }
+
+    #endregion
+
+    #region External Drag Logic
+
+    private void HandleExternalDrag(PointerEventArgs e)
+    {
+        if (_pressedTab == null)
+        {
+            return;
+        }
+
+        var screenPosPixel = _pressedTab.PointToScreen(e.GetPosition(_pressedTab));
+
+        // Find window under mouse
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            foreach (var window in desktop.Windows)
+            {
+                // Check if mouse is over this window
+                // Convert screen pixel position to window-relative local coordinates to handle DPI/Scaling correctly
+                var winPoint = window.PointToClient(screenPosPixel);
+                var winRect = new Rect(0, 0, window.ClientSize.Width, window.ClientSize.Height);
+
+                if (!winRect.Contains(winPoint))
+                {
+                    continue;
+                }
+
+                // Find DraggableTabControl in this window
+                var tabControl = window.FindDescendantOfType<DraggableTabControl>();
+
+                // Verify we are actually over the TabControl (or reasonably close) to prevent snapping when just over the window content
+                var isOverTabControl = false;
+                if (tabControl != null)
+                {
+                    var tabPoint = tabControl.PointToClient(screenPosPixel);
+                    // Restrict target area to the top strip (header) where tabs reside
+                    var tabStripBounds = new Rect(0, 0, tabControl.Bounds.Width, DetachThreshold);
+
+                    if (tabStripBounds.Contains(tabPoint))
+                    {
+                        isOverTabControl = true;
+                    }
+                }
+
+                if (tabControl == null || !isOverTabControl)
+                {
+                    continue;
+                }
+
+                if (tabControl != TabDragContext.CurrentTarget)
+                {
+                    // Leaving old target
+                    if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+                    {
+                        TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
+                    }
+
+                    // Entering new target
+                    TabDragContext.CurrentTarget = tabControl;
+                    if (tabControl != this)
+                    {
+                        tabControl.ExternalDragEnter(TabDragContext.DraggingItem!);
+                    }
+                }
+
+                // Drag Over
+                if (tabControl != this)
+                {
+                    tabControl.ExternalDragOver(screenPosPixel);
+                    _ghostWindow?.Hide();
+                }
+                else
+                {
+                    // Back over source
+                    UpdateGhostWindowPosition(e);
+                    _ghostWindow?.Show();
+                }
+
+                return;
+            }
+        }
+
+        // No target found (or left target)
+        if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+        {
+            TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
+        }
+
+        TabDragContext.CurrentTarget = null;
+
+        UpdateGhostWindowPosition(e);
+        _ghostWindow?.Show();
+    }
+
+    // Called by Source when drag enters this control
+    internal void ExternalDragEnter(object item)
+    {
+        var list = ItemsSource as IList ?? Items;
+        if (list == null || list.Contains(item))
+        {
+            return;
+        }
+
+        _isForeignDragging = true;
+        list.Add(item);
+
+        // Force layout update so we can find the container
+        UpdateLayout();
+
+        // Find the container for this item
+        if (ContainerFromItem(item) is not TabItem container)
+        {
+            return;
+        }
+
+        _pressedTab = container;
+        _sourceIndex = IndexFromContainer(container);
+        _draggedTabWidth = container.Bounds.Width;
+        _draggedTabStartX = container.Bounds.X;
+
+        // Calculate fake click point relative to tab for smooth dragging
+        // We assume the user grabbed it somewhat in the middle or we just center it
+        _pointerOffsetWithinTab = _draggedTabWidth / 2;
+
+        CacheTabPositions();
+    }
+
+    // Called by Source when drag moves over this control
+    internal void ExternalDragOver(PixelPoint screenPos)
+    {
+        if (!_isForeignDragging || _pressedTab == null)
+        {
+            return;
+        }
+
+        var localPos = this.PointToClient(screenPos);
+        var dragLeftPos = localPos.X - _pointerOffsetWithinTab;
+
+        UpdateTabReorderingVisuals(dragLeftPos);
+    }
+
+    // Called by Source when drag leaves this control
+    internal void ExternalDragLeave(object item)
+    {
+        if (!_isForeignDragging)
+        {
+            return;
+        }
+
+        var list = ItemsSource as IList ?? Items;
+        if (list != null && list.Contains(item))
+        {
+            list.Remove(item);
+        }
+
+        _isForeignDragging = false;
+        _pressedTab = null;
+        _sourceIndex = -1;
+        _currentTargetIndex = -1;
+
+        // Reset transforms
+        foreach (var c in GetRealizedContainers())
+        {
+            c.RenderTransform = null;
+        }
+    }
+
+    // Called by Source when dropped on this control
+    internal void ExternalDrop(object item)
+    {
+        if (!_isForeignDragging)
+        {
+            return;
+        }
+
+        // We just keep the item in the list
+        _isForeignDragging = false;
+
+        // Reset Visuals
+        foreach (var c in GetRealizedContainers())
+        {
+            c.RenderTransform = null;
+        }
+
+        _pressedTab = null;
     }
 
     #endregion
@@ -521,4 +751,26 @@ public class TabCreatedEventArgs(object createdItem, int index) : EventArgs
 {
     public object CreatedItem { get; } = createdItem;
     public int Index { get; } = index;
+}
+
+// Helper for Shared Drag State
+internal static class TabDragContext
+{
+    public static object? DraggingItem { get; set; }
+    public static DraggableTabControl? SourceControl { get; set; }
+    public static DraggableTabControl? CurrentTarget { get; set; }
+
+    public static void StartDrag(object? item, DraggableTabControl source)
+    {
+        DraggingItem = item;
+        SourceControl = source;
+        CurrentTarget = null;
+    }
+
+    public static void EndDrag()
+    {
+        DraggingItem = null;
+        SourceControl = null;
+        CurrentTarget = null;
+    }
 }

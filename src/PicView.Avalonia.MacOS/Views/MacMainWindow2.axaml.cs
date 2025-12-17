@@ -192,9 +192,12 @@ public partial class MacMainWindow2 : Window
 
             // Need to properly remove it from the previous location
             parentVm.Tabs.RemoveTab(tab);
-                
-            // Add to new window
-            targetVm.Tabs.Tabs.Value.Add(tab);
+            
+            // Add to new window (if not already added by drag preview)
+            if (!targetVm.Tabs.Tabs.Value.Contains(tab))
+            {
+                targetVm.Tabs.Tabs.Value.Add(tab);
+            }
             targetVm.Tabs.SelectTab(tab);
                 
             // Update context
