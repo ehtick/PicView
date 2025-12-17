@@ -4,10 +4,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using PicView.Core.ViewModels;
 
@@ -19,6 +21,11 @@ public class DraggableTabControl : TabControl
     // --- Constants ---
     private const double DragThreshold = 4.0;
     private const double DetachThreshold = 50.0;
+
+    // Auto-Scroll Settings
+    private const double ScrollTriggerZone = 30.0; // Distance from edge to trigger scroll
+    private const double ScrollSpeed = 15.0; // Pixels per tick
+
     private const string PseudoDragging = ":dragging";
     private const string PseudoDetaching = ":detaching";
 
@@ -27,6 +34,7 @@ public class DraggableTabControl : TabControl
     private const double GhostOpacity = 0.5;
     private const double GhostOffsetX = 100.0;
     private const double GhostOffsetY = 50.0;
+    private readonly DispatcherTimer? _autoScrollTimer;
 
     // --- State Fields ---
     private readonly Dictionary<TabItem, double> _originalXPositions = new();
@@ -38,13 +46,30 @@ public class DraggableTabControl : TabControl
     private bool _isDetaching;
 
     private bool _isDragging;
-    private bool _isForeignDragging; // True if this control is currently previewing a tab from another window
+    private bool _isForeignDragging;
+    private Point _lastPointerPosition; // Track pointer for timer updates
+
+    // Represents the mouse offset relative to the Dragged Tab's Left Edge (Content Space)
     private double _pointerOffsetWithinTab;
 
     private TabItem? _pressedTab;
+    private double _scrollDirection; // -1 for Left, 1 for Right, 0 for None
+
+    // Auto-Scroll State
+    private ScrollViewer? _scrollViewer;
 
     private int _sourceIndex = -1;
     private Point _startClickPoint;
+
+    public DraggableTabControl()
+    {
+        // Initialize Auto-Scroll Timer
+        _autoScrollTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromMilliseconds(16) // ~60 FPS
+        };
+        _autoScrollTimer.Tick += AutoScrollTimerOnTick;
+    }
 
     protected override Type StyleKeyOverride => typeof(DraggableTabControl);
 
@@ -52,7 +77,46 @@ public class DraggableTabControl : TabControl
     public event EventHandler<TabDetachEventArgs>? TabDetached;
     public event EventHandler<TabCreatedEventArgs>? TabCreated;
 
+    #region Auto-Scroll Logic
+
+    private void AutoScrollTimerOnTick(object? sender, EventArgs e)
+    {
+        if (_scrollViewer == null || _scrollDirection == 0 || !_isDragging)
+        {
+            return;
+        }
+
+        var currentOffset = _scrollViewer.Offset.X;
+        var maxOffset = _scrollViewer.Extent.Width - _scrollViewer.Viewport.Width;
+        var targetOffset = currentOffset + _scrollDirection * ScrollSpeed;
+
+        // Clamp Target
+        targetOffset = Math.Clamp(targetOffset, 0, maxOffset);
+
+
+        if (!(Math.Abs(targetOffset - currentOffset) > 0.1))
+        {
+            return;
+        }
+
+        // Apply Scroll
+        _scrollViewer.Offset = new Vector(targetOffset, _scrollViewer.Offset.Y);
+
+        // Re-process the drag visuals with the new Scroll Offset
+        // using the last known mouse position (which hasn't moved relative to the Window)
+        ProcessDragMovement(_lastPointerPosition);
+    }
+
+    #endregion
+
     #region Lifecycle Overrides
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        // Attempt to find the internal ScrollViewer defined in the template
+        _scrollViewer = this.FindDescendantOfType<AutoScrollViewer>();
+    }
 
     protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
     {
@@ -63,13 +127,11 @@ public class DraggableTabControl : TabControl
             return;
         }
 
-        // Notify if this is a fresh tab (not closing)
         if (item is TabViewModel { IsClosing: false })
         {
             TabCreated?.Invoke(tabItem, new TabCreatedEventArgs(item, index));
         }
 
-        // Attach Events
         tabItem.AddHandler(PointerPressedEvent, OnItemPointerPressed,
             RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
         tabItem.AddHandler(PointerMovedEvent, OnItemPointerMoved, RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
@@ -87,7 +149,6 @@ public class DraggableTabControl : TabControl
             tabItem.RemoveHandler(PointerReleasedEvent, OnItemPointerReleased);
             tabItem.PointerCaptureLost -= OnPointerCaptureLost;
 
-            // If the tab is closing while being dragged, clean up
             if (tabItem.DataContext is TabViewModel { IsClosing: true } && _pressedTab == tabItem)
             {
                 EndDrag();
@@ -112,23 +173,25 @@ public class DraggableTabControl : TabControl
         }
 
         _pressedTab = tabItem;
-        _startClickPoint = e.GetPosition(this);
+        _startClickPoint = e.GetPosition(this); // Viewport relative
 
-        // Reset state
         _isDragging = false;
         _isDetaching = false;
 
-        // Calculate indices
-        ItemFromContainer(tabItem); // Ensure container realization
+        ItemFromContainer(tabItem);
         _sourceIndex = IndexFromContainer(tabItem);
         _currentTargetIndex = _sourceIndex;
 
-        // Cache geometry
         CacheTabPositions();
 
-        _draggedTabStartX = tabItem.Bounds.X;
+        _draggedTabStartX = tabItem.Bounds.X; // Content relative
         _draggedTabWidth = tabItem.Bounds.Width;
-        _pointerOffsetWithinTab = _startClickPoint.X - _draggedTabStartX;
+
+        // Calculate offset in Content Space
+        var currentScrollX = _scrollViewer?.Offset.X ?? 0;
+        // The mouse X in content space is (ViewportX + ScrollX)
+        // The Tab X is (ContentX)
+        _pointerOffsetWithinTab = _startClickPoint.X + currentScrollX - _draggedTabStartX;
     }
 
     private void OnItemPointerMoved(object? sender, PointerEventArgs e)
@@ -138,12 +201,12 @@ public class DraggableTabControl : TabControl
             return;
         }
 
-        var currentPos = e.GetPosition(this);
-        var deltaX = currentPos.X - _startClickPoint.X;
-        var deltaY = currentPos.Y - _startClickPoint.Y;
+        _lastPointerPosition = e.GetPosition(this);
+        var deltaX = _lastPointerPosition.X - _startClickPoint.X;
+        var deltaY = _lastPointerPosition.Y - _startClickPoint.Y;
         var absDeltaY = Math.Abs(deltaY);
 
-        // 1. Check if we should start dragging
+        // 1. Check start dragging
         if (!_isDragging)
         {
             if (!HandleDragStart(e, deltaX, absDeltaY))
@@ -152,27 +215,105 @@ public class DraggableTabControl : TabControl
             }
         }
 
-        // 2. Check if we should switch between Reordering and Detaching
+        // 2. State Transition (Attached <-> Detached)
         HandleStateTransition(absDeltaY);
 
-        // 3. Execute Movement
+        // 3. Movement Logic
         if (_isDetaching)
         {
-            // NEW: Handle Cross-Window Logic
+            StopAutoScroll(); // Don't scroll parent when detached
             HandleExternalDrag(e);
         }
         else
         {
-            var dragLeftPos = currentPos.X - _pointerOffsetWithinTab;
-            UpdateTabReorderingVisuals(dragLeftPos);
+            // Handle Auto-Scroll Triggers
+            UpdateScrollState(_lastPointerPosition.X);
+
+            // Update Visuals
+            ProcessDragMovement(_lastPointerPosition);
         }
 
         e.Handled = true;
     }
 
+    private void UpdateScrollState(double mouseViewportX)
+    {
+        if (_scrollViewer == null)
+        {
+            return;
+        }
+
+        // Determine direction
+        if (mouseViewportX < ScrollTriggerZone)
+        {
+            _scrollDirection = -1; // Scroll Left
+        }
+        else if (mouseViewportX > Bounds.Width - ScrollTriggerZone)
+        {
+            _scrollDirection = 1; // Scroll Right
+        }
+        else
+        {
+            _scrollDirection = 0;
+        }
+
+        // Start/Stop Timer
+        if (_scrollDirection != 0 && !_autoScrollTimer!.IsEnabled)
+        {
+            _autoScrollTimer.Start();
+        }
+        else if (_scrollDirection == 0 && _autoScrollTimer!.IsEnabled)
+        {
+            _autoScrollTimer.Stop();
+        }
+    }
+
+    private void StopAutoScroll()
+    {
+        _scrollDirection = 0;
+        _autoScrollTimer?.Stop();
+    }
+
+    private void ProcessDragMovement(Point mouseViewportPos)
+    {
+        if (_scrollViewer == null)
+        {
+            return;
+        }
+
+        // 1. Calculate Clamped Viewport Position (The "Stickiness" Logic)
+        var clampedViewportX = mouseViewportPos.X;
+        var currentScrollX = _scrollViewer.Offset.X;
+        var maxScrollX = _scrollViewer.Extent.Width - _scrollViewer.Viewport.Width;
+
+        var canScrollLeft = currentScrollX > 0.1;
+        var canScrollRight = currentScrollX < maxScrollX - 0.1;
+
+        // If we can't scroll left, clamp drag to 0
+        if (!canScrollLeft && clampedViewportX < 0)
+        {
+            clampedViewportX = 0;
+        }
+        // If we can't scroll right, clamp drag to Bounds
+        else if (!canScrollRight && clampedViewportX > Bounds.Width)
+        {
+            clampedViewportX = Bounds.Width;
+        }
+
+        // 2. Convert to Content Space
+        // Visual Pos + Scroll Offset = Absolute Content Position
+        var contentMouseX = clampedViewportX + currentScrollX;
+
+        // 3. Apply the original click offset to find the top-left of the dragging tab
+        var dragLeftPosContent = contentMouseX - _pointerOffsetWithinTab;
+
+        UpdateTabReorderingVisuals(dragLeftPosContent);
+    }
+
     private void OnItemPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         CloseGhostWindow();
+        StopAutoScroll();
 
         if (_pressedTab == null)
         {
@@ -181,13 +322,9 @@ public class DraggableTabControl : TabControl
 
         if (_isDetaching)
         {
-            // NEW: Handle drop on external target
             if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
             {
-                // Commit the move on the target
-                TabDragContext.CurrentTarget.ExternalDrop(TabDragContext.DraggingItem!);
-
-                // Fire detached event so Source VM can clean up
+                TabDragContext.CurrentTarget.ExternalDrop();
                 var item = ItemFromContainer(_pressedTab);
                 if (item != null)
                 {
@@ -197,13 +334,11 @@ public class DraggableTabControl : TabControl
             }
             else
             {
-                // Standard Detach (New Window) logic
                 PerformDetach(sender, e);
             }
         }
         else if (_isDragging && _currentTargetIndex >= 0)
         {
-            // Commit the reorder
             if (TryMoveItem(_sourceIndex, _currentTargetIndex))
             {
                 SelectedIndex = _currentTargetIndex;
@@ -216,6 +351,7 @@ public class DraggableTabControl : TabControl
 
     private void OnPointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
     {
+        StopAutoScroll();
         EndDrag();
     }
 
@@ -249,7 +385,6 @@ public class DraggableTabControl : TabControl
         PseudoClasses.Set(PseudoDragging, true);
         _pressedTab.ZIndex = 1000;
 
-        // Initialize Context
         TabDragContext.StartDrag(DataContext as TabViewModel, this);
         if (_pressedTab.DataContext is TabViewModel vm)
         {
@@ -268,39 +403,37 @@ public class DraggableTabControl : TabControl
 
         switch (_isDetaching)
         {
-            // Transition: Attached -> Detaching
             case false when absDeltaY > DetachThreshold:
                 _isDetaching = true;
                 PseudoClasses.Set(PseudoDetaching, true);
                 PseudoClasses.Set(PseudoDragging, false);
-
-                _pressedTab.Opacity = 0; // Hide original tab
+                _pressedTab.Opacity = 0;
                 CreateGhostWindow(_pressedTab);
                 break;
-            // Transition: Detaching -> Attached
             case true when absDeltaY <= DetachThreshold:
-                // Only re-attach if we are NOT currently over a foreign target
                 if (TabDragContext.CurrentTarget == null || TabDragContext.CurrentTarget == this)
                 {
                     _isDetaching = false;
                     PseudoClasses.Set(PseudoDetaching, false);
                     PseudoClasses.Set(PseudoDragging, true);
-
-                    _pressedTab.Opacity = 1.0; // Restore original tab
+                    _pressedTab.Opacity = 1.0;
                     CloseGhostWindow();
 
-                    // Clear any previous target interactions
                     if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
                     {
                         TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
                         TabDragContext.CurrentTarget = null;
                     }
+
+                    // Force a visual update immediately upon re-attaching
+                    ProcessDragMovement(_lastPointerPosition);
                 }
 
                 break;
         }
     }
 
+    // Expects dragLeftPos in CONTENT SPACE (Absolute position inside the scroll viewer)
     private void UpdateTabReorderingVisuals(double dragLeftPos)
     {
         var dragCenter = dragLeftPos + _draggedTabWidth / 2;
@@ -336,22 +469,22 @@ public class DraggableTabControl : TabControl
 
             if (tab == _pressedTab)
             {
+                // Move based on mouse drag
                 offsetX = dragLeftPos - startX;
             }
             else
             {
-                // Shift items left or right to make room
+                // Shift other items
                 if (_currentTargetIndex > _sourceIndex && i > _sourceIndex && i <= _currentTargetIndex)
                 {
-                    offsetX = -_draggedTabWidth; // Shift Left
+                    offsetX = -_draggedTabWidth;
                 }
                 else if (_currentTargetIndex < _sourceIndex && i >= _currentTargetIndex && i < _sourceIndex)
                 {
-                    offsetX = _draggedTabWidth; // Shift Right
+                    offsetX = _draggedTabWidth;
                 }
             }
 
-            // Note: Y is always 0 to snap back to the strip row
             tab.RenderTransform = new TranslateTransform(offsetX, 0);
         }
     }
@@ -370,8 +503,6 @@ public class DraggableTabControl : TabControl
         }
 
         var screenPos = _pressedTab.PointToScreen(e.GetPosition(_pressedTab));
-
-        // Remove from collection
         var list = ItemsSource as IList ?? Items;
         if (list != null && _sourceIndex >= 0 && _sourceIndex < list.Count)
         {
@@ -384,6 +515,7 @@ public class DraggableTabControl : TabControl
     private void EndDrag()
     {
         TabDragContext.EndDrag();
+        StopAutoScroll();
 
         if (_pressedTab != null)
         {
@@ -393,7 +525,6 @@ public class DraggableTabControl : TabControl
             _pressedTab.ZIndex = 0;
         }
 
-        // Reset all transforms to clean slate
         foreach (var c in GetRealizedContainers())
         {
             c.RenderTransform = null;
@@ -423,7 +554,6 @@ public class DraggableTabControl : TabControl
             return false;
         }
 
-        // Clamp index
         newIndex = Math.Clamp(newIndex, 0, list.Count - 1);
 
         try
@@ -443,6 +573,11 @@ public class DraggableTabControl : TabControl
 
     #region External Drag Logic
 
+    // Note: External drag logic generally doesn't require auto-scrolling of the SOURCE window
+    // but relies on the target window's scroll logic. 
+    // This implementation keeps external logic mostly as is, assuming 'UpdateTabReorderingVisuals'
+    // handles the transforms correctly.
+
     private void HandleExternalDrag(PointerEventArgs e)
     {
         if (_pressedTab == null)
@@ -452,13 +587,10 @@ public class DraggableTabControl : TabControl
 
         var screenPosPixel = _pressedTab.PointToScreen(e.GetPosition(_pressedTab));
 
-        // Find window under mouse
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             foreach (var window in desktop.Windows)
             {
-                // Check if mouse is over this window
-                // Convert screen pixel position to window-relative local coordinates to handle DPI/Scaling correctly
                 var winPoint = window.PointToClient(screenPosPixel);
                 var winRect = new Rect(0, 0, window.ClientSize.Width, window.ClientSize.Height);
 
@@ -467,74 +599,57 @@ public class DraggableTabControl : TabControl
                     continue;
                 }
 
-                // Find DraggableTabControl in this window
                 var tabControl = window.FindDescendantOfType<DraggableTabControl>();
-
-                // Verify we are actually over the TabControl (or reasonably close) to prevent snapping when just over the window content
-                var isOverTabControl = false;
-                if (tabControl != null)
-                {
-                    var tabPoint = tabControl.PointToClient(screenPosPixel);
-                    // Restrict target area to the top strip (header) where tabs reside
-                    var tabStripBounds = new Rect(0, 0, tabControl.Bounds.Width, DetachThreshold);
-
-                    if (tabStripBounds.Contains(tabPoint))
-                    {
-                        isOverTabControl = true;
-                    }
-                }
-
-                if (tabControl == null || !isOverTabControl)
+                if (tabControl == null)
                 {
                     continue;
                 }
 
-                if (tabControl != TabDragContext.CurrentTarget)
+                var tabPoint = tabControl.PointToClient(screenPosPixel);
+                var tabStripBounds = new Rect(0, 0, tabControl.Bounds.Width, DetachThreshold);
+
+                if (tabStripBounds.Contains(tabPoint))
                 {
-                    // Leaving old target
-                    if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+                    if (tabControl != TabDragContext.CurrentTarget)
                     {
-                        TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
+                        if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
+                        {
+                            TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
+                        }
+
+                        TabDragContext.CurrentTarget = tabControl;
+                        if (tabControl != this)
+                        {
+                            tabControl.ExternalDragEnter(TabDragContext.DraggingItem!);
+                        }
                     }
 
-                    // Entering new target
-                    TabDragContext.CurrentTarget = tabControl;
                     if (tabControl != this)
                     {
-                        tabControl.ExternalDragEnter(TabDragContext.DraggingItem!);
+                        tabControl.ExternalDragOver(screenPosPixel);
+                        _ghostWindow?.Hide();
                     }
-                }
+                    else
+                    {
+                        UpdateGhostWindowPosition(e);
+                        _ghostWindow?.Show();
+                    }
 
-                // Drag Over
-                if (tabControl != this)
-                {
-                    tabControl.ExternalDragOver(screenPosPixel);
-                    _ghostWindow?.Hide();
+                    return;
                 }
-                else
-                {
-                    // Back over source
-                    UpdateGhostWindowPosition(e);
-                    _ghostWindow?.Show();
-                }
-
-                return;
             }
         }
 
-        // No target found (or left target)
         if (TabDragContext.CurrentTarget != null && TabDragContext.CurrentTarget != this)
         {
             TabDragContext.CurrentTarget.ExternalDragLeave(TabDragContext.DraggingItem!);
         }
 
         TabDragContext.CurrentTarget = null;
-
         UpdateGhostWindowPosition(e);
         _ghostWindow?.Show();
     }
 
-    // Called by Source when drag enters this control
     internal void ExternalDragEnter(object item)
     {
         var list = ItemsSource as IList ?? Items;
@@ -545,11 +660,8 @@ public class DraggableTabControl : TabControl
 
         _isForeignDragging = true;
         list.Add(item);
-
-        // Force layout update so we can find the container
         UpdateLayout();
 
-        // Find the container for this item
         if (ContainerFromItem(item) is not TabItem container)
         {
             return;
@@ -560,14 +672,11 @@ public class DraggableTabControl : TabControl
         _draggedTabWidth = container.Bounds.Width;
         _draggedTabStartX = container.Bounds.X;
 
-        // Calculate fake click point relative to tab for smooth dragging
-        // We assume the user grabbed it somewhat in the middle or we just center it
+        // Center the dragged item under the mouse
         _pointerOffsetWithinTab = _draggedTabWidth / 2;
-
         CacheTabPositions();
     }
 
-    // Called by Source when drag moves over this control
     internal void ExternalDragOver(PixelPoint screenPos)
     {
         if (!_isForeignDragging || _pressedTab == null)
@@ -576,12 +685,15 @@ public class DraggableTabControl : TabControl
         }
 
         var localPos = this.PointToClient(screenPos);
-        var dragLeftPos = localPos.X - _pointerOffsetWithinTab;
+
+        // Convert local pos (Viewport) to Content space
+        var scrollX = _scrollViewer?.Offset.X ?? 0;
+        var contentX = localPos.X + scrollX;
+        var dragLeftPos = contentX - _pointerOffsetWithinTab;
 
         UpdateTabReorderingVisuals(dragLeftPos);
     }
 
-    // Called by Source when drag leaves this control
     internal void ExternalDragLeave(object item)
     {
         if (!_isForeignDragging)
@@ -600,25 +712,20 @@ public class DraggableTabControl : TabControl
         _sourceIndex = -1;
         _currentTargetIndex = -1;
 
-        // Reset transforms
         foreach (var c in GetRealizedContainers())
         {
             c.RenderTransform = null;
         }
     }
 
-    // Called by Source when dropped on this control
-    internal void ExternalDrop(object item)
+    internal void ExternalDrop()
     {
         if (!_isForeignDragging)
         {
             return;
         }
 
-        // We just keep the item in the list
         _isForeignDragging = false;
-
-        // Reset Visuals
         foreach (var c in GetRealizedContainers())
         {
             c.RenderTransform = null;
@@ -647,6 +754,7 @@ public class DraggableTabControl : TabControl
         var (windowWidth, windowHeight) = CalculateGhostSize(contentBitmap.Size);
         var cornerRadius = new CornerRadius(16);
         var isMacOs = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+
         _ghostWindow = new Window
         {
             SystemDecorations = isMacOs ? SystemDecorations.BorderOnly : SystemDecorations.None,
@@ -676,7 +784,7 @@ public class DraggableTabControl : TabControl
     private Bitmap? CaptureContentBitmap(TabItem tabItem)
     {
         var vm = tabItem.DataContext as TabViewModel;
-        return CaptureVisual(vm.CurrentView.Value as Control);
+        return CaptureVisual(vm?.CurrentView.Value as Control);
     }
 
     private (double width, double height) CalculateGhostSize(Size contentSize)
@@ -690,10 +798,7 @@ public class DraggableTabControl : TabControl
         }
 
         var scale = GhostTargetHeight / height;
-        height = GhostTargetHeight;
-        width *= scale;
-
-        return (width, height);
+        return (width * scale, GhostTargetHeight);
     }
 
     private void UpdateGhostWindowPosition(PointerEventArgs e)
@@ -716,8 +821,13 @@ public class DraggableTabControl : TabControl
         _ghostWindow = null;
     }
 
-    private static Bitmap? CaptureVisual(Visual visual)
+    private static Bitmap? CaptureVisual(Visual? visual)
     {
+        if (visual == null)
+        {
+            return null;
+        }
+
         var bounds = visual.Bounds;
         if (bounds.Width <= 0 || bounds.Height <= 0)
         {
@@ -733,7 +843,6 @@ public class DraggableTabControl : TabControl
         }
         catch
         {
-            // Visual might not be ready for rendering
             return null;
         }
     }
