@@ -22,6 +22,11 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         Files = files ?? [];
         CurrentIndex = Math.Clamp(initialIndex, 0, Math.Max(0, Files.Count - 1));
     }
+    
+    public ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
+    {
+        return ValueTask.FromException(new NotImplementedException());
+    }
 
     public async ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct)
     {
@@ -185,21 +190,6 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     #endregion
 
     #region Not yet made Interface Implementations
-
-    public ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
-    {
-        return ValueTask.FromException(new NotImplementedException());
-    }
-
-    public ValueTask SlimUpdate(int index, object? imageSource)
-    {
-        return ValueTask.FromException(new NotImplementedException());
-    }
-
-    public ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token)
-    {
-        return ValueTask.FromException(new NotImplementedException());
-    }
 
     public ValueTask ReloadFileListAsync(CancellationToken ct)
     {

@@ -51,8 +51,5 @@ public interface IImageIterator : IAsyncDisposable
     /// Handles continuous navigation (e.g., holding down a key).
     /// </summary>
     ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);
-
-    ValueTask SlimUpdate(int index, object? imageSource);
-    ValueTask IterateToIndexSlim(int index, bool isReverse, CancellationToken token);
     ValueTask ReloadFileListAsync(CancellationToken ct);
 }

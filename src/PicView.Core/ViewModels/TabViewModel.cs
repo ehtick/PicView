@@ -18,14 +18,17 @@ namespace PicView.Core.ViewModels;
 /// </summary>
 public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatcherService? fileWatcherService = null) : IAsyncDisposable
 {
-    // The MainViewModel that currently "owns" this tab
+    /// The MainViewModel that currently "owns" this tab
     public object? ParentWindowContext { get; set; }
     private CompositeDisposable? Disposables { get; set; }
+
+    /// Unique identifier for this tab.
     public string Id { get; } = id;
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
     public BindableReactiveProperty<ImageModel> Model { get; } = new(new ImageModel());
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
+    /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }
 
     private IFileWatcherService? _fileWatcherService = fileWatcherService;
@@ -35,15 +38,33 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     /// </summary>
     private CancellationTokenSource NavigationCts { get; set; } = new();
     
-    // Titles
+    
+    /// <summary>
+    /// The main title displayed in the window title bar.
+    /// </summary>
     public BindableReactiveProperty<string>? Title { get; } = new();
-
+    /// <summary>
+    /// The tooltip displayed when hovering over the title.
+    /// </summary>
     public BindableReactiveProperty<string>? TitleTooltip { get; } = new();
+    /// <summary>
+    /// The title displayed in the taskbar or task manager.
+    /// </summary>
     public BindableReactiveProperty<string>? WindowTitle { get; } = new();
+    /// <summary>
+    /// The title displayed in the tab.
+    /// </summary>
     public BindableReactiveProperty<string> TabTitle { get; } = new(string.Empty);
+    /// <summary>
+    /// The tooltip displayed when hovering over the tab.
+    /// </summary>
     public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
 
-    
+    /// <summary>
+    /// Initializes the TabViewModel instance by setting up necessary disposables
+    /// and subscribing to model changes. If the instance is already initialized,
+    /// this method returns without performing any further action.
+    /// </summary>
     public void Initialize()
     {
         if (Disposables is null)
@@ -83,6 +104,9 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
             .AddTo(Disposables);
     }
     
+    /// <summary>
+    /// Updates the window title and tab title based on the current image model.
+    /// </summary>
     public void UpdateTabTitle()
     {
         if (ImageIterator?.Files is null || !IsSelected)
