@@ -252,7 +252,8 @@ public partial class MacMainWindow2 : Window
             if (parentVm.Tabs.SharedCache is not { } cache ||
                 parentVm.Tabs.SharedNavigation is not { } nav ||
                 parentVm.Tabs.SharedThumbnailLoader is not { } thumb ||
-                parentVm.Tabs.SharedGallery is not { } gallery)
+                parentVm.Tabs.SharedGallery is not { } gallery ||
+                parentVm.Tabs.SharedFileWatcher is not { } fileWatcher)
             {
                 return;
             }
@@ -260,11 +261,11 @@ public partial class MacMainWindow2 : Window
             if (newVm.Tabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
             {
                 newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery, nav,
-                    cache, thumb);
+                    cache, thumb, fileWatcher);
             }
             else
             {
-                newVm.Tabs.LoadAndInitialize(gallery, nav, cache, thumb);
+                newVm.Tabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
             }
 
             // Need to properly remove it from the previous location

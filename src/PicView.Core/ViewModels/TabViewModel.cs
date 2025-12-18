@@ -16,7 +16,7 @@ namespace PicView.Core.ViewModels;
 /// lifecycle of resources specific to this tab instance.
 /// </para>
 /// </summary>
-public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncDisposable
+public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatcherService? fileWatcherService = null) : IAsyncDisposable
 {
     // The MainViewModel that currently "owns" this tab
     public object? ParentWindowContext { get; set; }
@@ -27,6 +27,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
     public BindableReactiveProperty<ImageModel> Model { get; } = new(new ImageModel());
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     public IImageIterator? ImageIterator { get; private set; }
+
+    private IFileWatcherService? _fileWatcherService = fileWatcherService;
     
     /// <summary>
     /// Should be used when changing directory or closing the tab
@@ -98,17 +100,28 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
         TitleTooltip.Value = windowTitles.FilePathTitle;
     }
 
-    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader)
+    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null)
     {
         Initialize();
+        if (fileWatcherService != null)
+        {
+            _fileWatcherService = fileWatcherService;
+        }
         ImageIterator = new ImageIterator(cache, thumbnailLoader, this);
     }
 
-    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null)
     {
+        if (fileWatcherService != null)
+        {
+            _fileWatcherService = fileWatcherService;
+        }
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model.Value?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
+        
+        var directory = files.Count > 0 ? files[0].DirectoryName : null;
+        _fileWatcherService?.Watch(this, directory);
     }
 
     public async ValueTask CloseTab()
@@ -129,6 +142,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab) : IAsyncD
     
     public async ValueTask DisposeAsync()
     {
+        _fileWatcherService?.Unwatch(this);
         if (ImageIterator is not null)
         {
             await ImageIterator.DisposeAsync();

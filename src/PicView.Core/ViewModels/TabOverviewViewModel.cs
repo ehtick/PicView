@@ -31,6 +31,7 @@ public class TabOverviewViewModel
     public IImageCache? SharedCache { get; private set; }
     public IGalleryService? SharedGallery { get; private set; }
     public IThumbnailLoader? SharedThumbnailLoader { get; private set; }
+    public IFileWatcherService? SharedFileWatcher { get; private set; }
 
     // Needed for correct context in multi-window scenarios
     private object? _parentVm;
@@ -58,28 +59,31 @@ public class TabOverviewViewModel
     /// <param name="navigationService">The navigation service responsible for navigating within the tabs</param>
     /// <param name="cache">The bitmap cache shared between tabs to reduce application memory usage</param>
     /// <param name="thumbnailLoader">The thumbnail loader to use for preloading images</param>
-    public void Initialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    /// <param name="fileWatcherService">The service that watches for file changes in the directory</param>
+    private void Initialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
         SharedCache = cache;
         SharedGallery = gallery;
         SharedNavigation = navigationService;
         SharedThumbnailLoader = thumbnailLoader;
+        SharedFileWatcher = fileWatcherService;
         SharedCache.RegisterOwner(ActiveTab.Value.Id);
     }
     
-    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    /// <inheritdoc cref="Initialize(IGalleryService, INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
+    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(gallery, navigationService, cache, thumbnailLoader);
-        ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader);
+        Initialize(gallery, navigationService, cache, thumbnailLoader, fileWatcherService);
+        ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader, fileWatcherService);
         SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
-    
-    public void LoadAndInitialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader)
+    /// <inheritdoc cref="Initialize(IGalleryService, INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
+    public void LoadAndInitialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(gallery, navigationService, cache, thumbnailLoader);
-        ActiveTab.Value.InitializeImageIterator([], cache, thumbnailLoader);
-        ActiveTab.Value.Initialize(cache, thumbnailLoader);
+        Initialize(gallery, navigationService, cache, thumbnailLoader, fileWatcherService);
+        ActiveTab.Value.InitializeImageIterator([], cache, thumbnailLoader, fileWatcherService);
+        ActiveTab.Value.Initialize(cache, thumbnailLoader, fileWatcherService);
     }
     
     /// <summary>
@@ -97,7 +101,7 @@ public class TabOverviewViewModel
     private TabViewModel CreateTabInternal()
     {
         var id = Guid.NewGuid().ToString("N");
-        var tab = new TabViewModel(id, CloseTabAsync);
+        var tab = new TabViewModel(id, CloseTabAsync, SharedFileWatcher);
         tab.ParentWindowContext = _parentVm;
         Tabs.Value.Add(tab);
         return tab;
@@ -108,7 +112,7 @@ public class TabOverviewViewModel
         var tab = CreateTabInternal();
         if (SharedCache != null && SharedThumbnailLoader != null)
         {
-            tab.Initialize(SharedCache, SharedThumbnailLoader);
+            tab.Initialize(SharedCache, SharedThumbnailLoader, SharedFileWatcher);
         }
         SharedCache.RegisterOwner(tab.Id);
         SelectTab(tab);

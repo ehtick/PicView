@@ -27,8 +27,10 @@ public static class TabNavigationInitializer
 
         var thumbnailService = new AvaloniaThumbnailLoader();
 
+        var fileWatcher = new FileWatcherService(vm.PlatformService.CompareStrings, sharedCache);
+
         // 4. Initialize ViewModel
-        vm.Tabs.LoadAndInitialize(galleryService, navService, sharedCache, thumbnailService);
+        vm.Tabs.LoadAndInitialize(galleryService, navService, sharedCache, thumbnailService, fileWatcher);
         vm.Tabs.ActiveTab.Value.UpdateTabTitle();
     }
     
@@ -51,10 +53,11 @@ public static class TabNavigationInitializer
         var navService = new NavigationService(imageLoader, archiveService, sharedCache, vm.PlatformService.CompareStrings);
 
         var thumbnailService = new AvaloniaThumbnailLoader();
+        var fileWatcher = new FileWatcherService(vm.PlatformService.CompareStrings, sharedCache);
 
         var files = vm.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        vm.Tabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService);
+        vm.Tabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService, fileWatcher);
         vm.Tabs.SetParentContext(vm);
         vm.Tabs.ActiveTab.Value.UpdateTabTitle();
     }
