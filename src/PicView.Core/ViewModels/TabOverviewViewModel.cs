@@ -70,7 +70,7 @@ public class TabOverviewViewModel
     {
         Initialize(gallery, navigationService, cache, thumbnailLoader);
         ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader);
-        SharedCache.PreloadAsync(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files, CancellationToken.None);
+        SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
     

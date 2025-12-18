@@ -31,7 +31,7 @@ public interface IPreloader
     /// <summary>
     /// Starts the predictive loop to load images ahead of the current view.
     /// </summary>
-    Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct);
+    void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files);
 
     /// <summary>
     /// Registers a new owner to track cancellation tokens for their specific load tasks.

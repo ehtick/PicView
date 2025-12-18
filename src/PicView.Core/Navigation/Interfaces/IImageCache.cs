@@ -63,7 +63,7 @@ public interface IImageCache
     /// <summary>
     /// Initiates the background predictive loading (pre-fetching) process.
     /// </summary>
-    Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct);
+    void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files);
     
     /// <summary>
     /// Removes an owner from the cache tracking. 

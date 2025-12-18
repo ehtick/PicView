@@ -80,8 +80,8 @@ public class SharedImageCache : IImageCache
         return evicted;
     }
 
-    public async Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct) 
-        => await _preLoader.PreloadAsync(ownerId, currentIndex, reversed, files, ct).ConfigureAwait(false);
+    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files) 
+        => _preLoader.Preload(ownerId, currentIndex, reversed, files);
     
     public async ValueTask Clear(TabViewModel tab) =>
         await RemoveOwner(tab.Id);

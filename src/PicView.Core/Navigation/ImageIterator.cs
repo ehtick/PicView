@@ -46,7 +46,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         // OPTIMIZATION: We call this directly on the current thread.
         // The preloader merely writes to a buffer (Channel) and returns immediately.
         // This eliminates the overhead of scheduling a Task.Run for every keystroke.
-        SafeFireAndForgetPreload(index);
+        _cache.Preload(_tab.Id, index, IsReversed, Files);
     }
     
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
@@ -180,15 +180,6 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         {
             _tab.Model.Value = imageModel;
         }
-    }
-
-    private void SafeFireAndForgetPreload(int index)
-    {
-        // We pass CancellationToken.None here because the preloader manages its own lifecycle.
-        // We don't want the preloading of neighbors to be cancelled just because 
-        // the navigation animation for *this* image finished.
-        // The Preloader2 handles "canceling old requests" automatically via its Channel (DropOldest).
-        _ = _cache.PreloadAsync(_tab.Id, index, IsReversed, Files, CancellationToken.None);
     }
 
     #endregion

@@ -20,17 +20,19 @@ public class Preloader2 : IPreloader
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     }
 
-    public Task PreloadAsync(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken ct)
+    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files)
     {
-        if (files is null || files.Count == 0) return Task.CompletedTask;
+        if (files is null || files.Count == 0)
+        {
+            DebugHelper.LogDebug(nameof(Preloader2), nameof(Preload), "No files to preload");
+            return;
+        }
 
         var worker = _workers.GetOrAdd(ownerId, CreateWorker);
         var job = new PreloadJob(currentIndex, reversed, files);
         
         // Non-blocking write
         worker.Writer.TryWrite(job);
-
-        return Task.CompletedTask;
     }
 
     private PreloadWorker CreateWorker(string ownerId)
@@ -96,7 +98,7 @@ public class Preloader2 : IPreloader
     /// <summary>
     /// Generates the list of indices to preload based on direction.
     /// </summary>
-    private List<int> GetLookaheadIndices(PreloadJob job)
+    private static List<int> GetLookaheadIndices(PreloadJob job)
     {
         var results = new List<int>();
         var count = job.Files.Count;
@@ -168,7 +170,7 @@ public class Preloader2 : IPreloader
         if (ct.IsCancellationRequested) return null;
 
         // 2. Reserve the slot (Optimistic locking)
-        var placeholder = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, true);
+        var placeholder = new PreLoadValue(new ImageModel { FileInfo = fileInfo }, isLoading: true);
         
         // 'evicted' tells us if we bumped someone out. 
         // Note: The logic for SharedImageCache disposal is preserved here.
