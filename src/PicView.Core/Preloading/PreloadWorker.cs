@@ -14,14 +14,14 @@ internal class PreloadWorker : IAsyncDisposable
     private readonly CancellationTokenSource _lifecycleCts = new();
     private readonly Task _processingTask;
     private readonly Func<PreloadJob, CancellationToken, Task> _workPayload;
-    
+
     // The CTS for the specific batch currently executing
     private CancellationTokenSource? _activeBatchCts;
 
     public PreloadWorker(Func<PreloadJob, CancellationToken, Task> workPayload)
     {
         _workPayload = workPayload;
-        
+
         // Capacity 1 + DropOldest ensures we only care about the latest navigation target
         _channel = Channel.CreateBounded<PreloadJob>(new BoundedChannelOptions(1)
         {
@@ -35,7 +35,7 @@ internal class PreloadWorker : IAsyncDisposable
 
     public ChannelWriter<PreloadJob> Writer => _channel.Writer;
 
-    private async Task ProcessLoopAsync()
+    private async ValueTask ProcessLoopAsync()
     {
         var reader = _channel.Reader;
 
@@ -46,14 +46,17 @@ internal class PreloadWorker : IAsyncDisposable
             {
                 // 1. Drain to get the absolute latest item
                 PreloadJob job = default;
-                bool hasJob = false;
+                var hasJob = false;
                 while (reader.TryRead(out var item))
                 {
                     job = item;
                     hasJob = true;
                 }
 
-                if (!hasJob) continue;
+                if (!hasJob)
+                {
+                    continue;
+                }
 
                 // 2. Debounce: Wait for navigation to settle
                 await Task.Delay(DebounceMs, _lifecycleCts.Token);
@@ -101,27 +104,41 @@ internal class PreloadWorker : IAsyncDisposable
 
     private void CancelActiveBatch()
     {
-        if (_activeBatchCts == null) return;
+        if (_activeBatchCts == null)
+        {
+            return;
+        }
+
         try
         {
             _activeBatchCts.Cancel();
             _activeBatchCts.Dispose();
         }
-        catch (ObjectDisposedException) { /* Safe to ignore */ }
+        catch (ObjectDisposedException)
+        {
+            /* Safe to ignore */
+        }
         finally
         {
             _activeBatchCts = null;
         }
     }
-
+    
     public async ValueTask DisposeAsync()
     {
         // ReSharper disable once MethodHasAsyncOverload
         _lifecycleCts.Cancel();
         CancelActiveBatch();
-        
-        try { await _processingTask; } catch { /* Ignore task cancellation */ }
-        
+
+        try
+        {
+            await _processingTask;
+        }
+        catch
+        {
+            /* Ignore task cancellation */
+        }
+
         _lifecycleCts.Dispose();
     }
 }

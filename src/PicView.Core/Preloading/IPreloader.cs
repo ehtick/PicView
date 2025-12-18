@@ -14,17 +14,13 @@ public interface IPreloader
     /// <summary>
     /// Adds a fully loaded item directly to the cache.
     /// </summary>
-    void Add(string ownerId, int index, FileInfo file, ImageModel model, IReadOnlyList<FileInfo> list);
-
+    void Add(string ownerId, int index, ImageModel model, IReadOnlyList<FileInfo> list);
 
     /// <summary>
     /// Asynchronously loads an item and adds it to the cache.
     /// </summary>
     ValueTask<ImageModel?> AddAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, bool isReverse = false,
         CancellationToken ct = default);
-    
-    PreLoadValue? Get(FileInfo file, IReadOnlyList<FileInfo> list);
-    PreLoadValue? Get(string ownerId, int index, IReadOnlyList<FileInfo> list);
     
     void Resynchronize(IReadOnlyList<FileInfo> files);
     

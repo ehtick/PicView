@@ -427,18 +427,12 @@ public class Navigation
     /// <summary>
     /// The number of iterations to process in the forward direction while navigating through items and preloading.
     /// </summary>
-    /// <remarks>
-    /// Experimental feature, it is recommended not to change.
-    /// </remarks>
-    public int PositiveIterations { get; set; } = 6;
+    public int PositiveIterations { get; set; } = 7;
 
     /// <summary>
     /// The number of iterations to process in the backwards direction while navigating through items and preloading.
     /// </summary>
-    ///     /// <remarks>
-    /// Experimental feature, it is recommended not to change.
-    /// </remarks>
-    public int NegativeIterations { get; set; } = 4;
+    public int NegativeIterations { get; set; } = 3;
 
     /// <summary>
     /// Determines whether navigating through the file history is enabled, with the mouse side buttons.
