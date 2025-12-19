@@ -346,7 +346,7 @@ public static class StartUpHelper2
         };
     }
 
-    private static async Task MainWindow_KeysDownAsync(object? sender, KeyEventArgs e)
+    private static async ValueTask MainWindow_KeysDownAsync(object? sender, KeyEventArgs e)
     {
         // Extract the ViewModel from the window that received the key press
         var vm = (sender as Control)?.DataContext as MainViewModel;

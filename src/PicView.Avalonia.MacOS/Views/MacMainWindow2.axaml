@@ -1642,6 +1642,7 @@
                                 Classes="txt"
                                 Text="{CompiledBinding TabTitle.Value,
                                                        Mode=OneWay}"
+                                TextWrapping="NoWrap"
                                 ToolTip.Tip="{Binding TabTooltip.Value, Mode=OneWay}" />
                         </DockPanel>
                     </DataTemplate>

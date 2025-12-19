@@ -54,7 +54,7 @@ public static class MainKeyboardShortcuts
     /// </summary>
     /// <param name="e">The key event arguments.</param>
     /// <param name="mainViewModel"></param>
-    public static async Task MainWindow_KeysDownAsync(KeyEventArgs e, MainViewModel? mainViewModel = null)
+    public static async ValueTask MainWindow_KeysDownAsync(KeyEventArgs e, MainViewModel? mainViewModel = null)
     {
         if (KeybindingManager.CustomShortcuts is null || !IsKeysEnabled)
         {
