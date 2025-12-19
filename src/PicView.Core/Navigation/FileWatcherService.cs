@@ -11,12 +11,14 @@ namespace PicView.Core.Navigation;
 
 public class FileWatcherService : IFileWatcherService, IDisposable
 {
-    private readonly Func<string, string, int> _stringComparer;
     private readonly IImageCache _cache;
-    
-    // Maps Directory Path -> (Watcher, Subscribers)
-    private readonly ConcurrentDictionary<string, (FileSystemWatcher Watcher, IDisposable Subscription, List<WeakReference<TabViewModel>> Subscribers)> _watchers = new();
     private readonly Lock _lock = new();
+    private readonly Func<string, string, int> _stringComparer;
+
+    // Maps Directory Path -> (Watcher, Subscribers)
+    private readonly
+        ConcurrentDictionary<string, (FileSystemWatcher Watcher, IDisposable Subscription,
+            List<WeakReference<TabViewModel>> Subscribers)> _watchers = new();
 
     public FileWatcherService(Func<string, string, int> stringComparer, IImageCache cache)
     {
@@ -44,12 +46,13 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             {
                 // Remove dead references first
                 entry.Subscribers.RemoveAll(wr => !wr.TryGetTarget(out _));
-                
+
                 // Add if not exists
                 if (!entry.Subscribers.Any(wr => wr.TryGetTarget(out var t) && ReferenceEquals(t, tab)))
                 {
                     entry.Subscribers.Add(new WeakReference<TabViewModel>(tab));
                 }
+
                 return;
             }
 
@@ -58,39 +61,39 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                 EnableRaisingEvents = true,
                 Filter = "*.*",
                 IncludeSubdirectories = Settings.Sorting.IncludeSubDirectories,
-                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite 
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
             };
-            
+
             // We use Observable.FromEvent to bridge standard .NET events to R3
-            
+
             var created = Observable.FromEvent<FileSystemEventHandler, FileSystemEventArgs>(
-                h => (s, e) => h(e), 
-                h => watcher.Created += h, 
+                h => (s, e) => h(e),
+                h => watcher.Created += h,
                 h => watcher.Created -= h
             );
 
             var deleted = Observable.FromEvent<FileSystemEventHandler, FileSystemEventArgs>(
-                h => (s, e) => h(e), 
-                h => watcher.Deleted += h, 
+                h => (s, e) => h(e),
+                h => watcher.Deleted += h,
                 h => watcher.Deleted -= h
             );
 
             var renamed = Observable.FromEvent<RenamedEventHandler, RenamedEventArgs>(
-                h => (s, e) => h(e), 
-                h => watcher.Renamed += h, 
+                h => (s, e) => h(e),
+                h => watcher.Renamed += h,
                 h => watcher.Renamed -= h
             );
 
             // AwaitOperation.Sequential ensures we don't process two file events for the same folder at the exact same time, 
             // which protects the Integrity of the 'files' list and the CurrentIndex.
-            
-            var fileCreatedSub = created.SubscribeAwait(async (e, ct) => 
+
+            var fileCreatedSub = created.SubscribeAwait(async (e, ct) =>
                 await OnFileCreatedAsync(directory, e, ct));
-            
-            var fileDeletedSub = deleted.SubscribeAwait(async (e, ct) => 
+
+            var fileDeletedSub = deleted.SubscribeAwait(async (e, ct) =>
                 await OnFileDeletedAsync(directory, e, ct));
-            
-            var fileRenamedSub = renamed.SubscribeAwait(async (e, ct) => 
+
+            var fileRenamedSub = renamed.SubscribeAwait(async (e, ct) =>
                 await OnFileRenamedAsync(directory, e, ct));
 
             // Combine disposables
@@ -105,67 +108,75 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         lock (_lock)
         {
             // iterate all watchers to find the tab
-             var keysToRemove = new List<string>();
+            var keysToRemove = new List<string>();
 
-             foreach (var kvp in _watchers)
-             {
-                 var (watcher, subscription, subscribers) = kvp.Value;
-                 
-                 // Remove the tab
-                 subscribers.RemoveAll(wr => !wr.TryGetTarget(out var t) || ReferenceEquals(t, tab));
+            foreach (var kvp in _watchers)
+            {
+                var (watcher, subscription, subscribers) = kvp.Value;
 
-                 if (subscribers.Count != 0)
-                 {
-                     continue;
-                 }
+                // Remove the tab
+                subscribers.RemoveAll(wr => !wr.TryGetTarget(out var t) || ReferenceEquals(t, tab));
 
-                 // Dispose R3 subscription AND Watcher
-                 subscription.Dispose(); 
-                 watcher.Dispose();
-                 keysToRemove.Add(kvp.Key);
-             }
+                if (subscribers.Count != 0)
+                {
+                    continue;
+                }
 
-             foreach (var key in keysToRemove)
-             {
-                 _watchers.TryRemove(key, out _);
-             }
+                // Dispose R3 subscription AND Watcher
+                subscription.Dispose();
+                watcher.Dispose();
+                keysToRemove.Add(kvp.Key);
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                _watchers.TryRemove(key, out _);
+            }
         }
     }
 
     private async ValueTask OnFileCreatedAsync(string directory, FileSystemEventArgs e, CancellationToken ct)
     {
-        if (!e.FullPath.IsSupported()) return;
+        if (!e.FullPath.IsSupported())
+        {
+            return;
+        }
 
         await HandleUpdateAsync(directory, (tab, files) =>
         {
             tab.ImageIterator.Files = files;
-            
+
             var currentFile = tab.Model.Value?.FileInfo;
             if (currentFile != null)
             {
-                var newIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(currentFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
+                var newIndex = files.FindIndex(x =>
+                    x.FullName.AsSpan().Equals(currentFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
                 if (newIndex >= 0)
                 {
                     tab.ImageIterator.SetCurrentIndex(newIndex);
                 }
             }
-            
+
             _cache.Resynchronize(tab.Id, files);
             tab.UpdateTabTitle();
-            
+
             return ValueTask.CompletedTask;
         });
     }
 
     private async ValueTask OnFileDeletedAsync(string directory, FileSystemEventArgs e, CancellationToken ct)
     {
-        if (!e.FullPath.IsSupported()) return;
-        
+        if (!e.FullPath.IsSupported())
+        {
+            return;
+        }
+
         await HandleUpdateAsync(directory, async (tab, files) =>
         {
             var oldIndex = tab.ImageIterator.CurrentIndex;
             var currentFile = tab.Model.Value?.FileInfo;
-            var wasCurrentFileDeleted = currentFile?.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
+            var wasCurrentFileDeleted =
+                currentFile?.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
             tab.ImageIterator.Files = files;
 
@@ -178,14 +189,15 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                 else
                 {
                     var targetIndex = Math.Clamp(oldIndex, 0, files.Count - 1);
-                    await tab.ImageIterator.IterateToIndexAsync(targetIndex, tab.GetTabCancellation()); 
+                    await tab.ImageIterator.IterateToIndexAsync(targetIndex, tab.GetTabCancellation());
                 }
             }
             else
             {
                 if (currentFile != null)
                 {
-                    var newIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(currentFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
+                    var newIndex = files.FindIndex(x =>
+                        x.FullName.AsSpan().Equals(currentFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
                     if (newIndex >= 0)
                     {
                         tab.ImageIterator.SetCurrentIndex(newIndex);
@@ -197,54 +209,60 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             tab.UpdateTabTitle();
         });
     }
-    
-  private async ValueTask OnFileRenamedAsync(string directory, RenamedEventArgs e, CancellationToken ct)
+
+    private async ValueTask OnFileRenamedAsync(string directory, RenamedEventArgs e, CancellationToken ct)
     {
-         if (!e.FullPath.IsSupported()) return;
+        if (!e.FullPath.IsSupported())
+        {
+            return;
+        }
 
-         await HandleUpdateAsync(directory, (tab, files) =>
-         {
-             var currentFile = tab.Model.Value?.FileInfo;
-             var wasCurrentFileRenamed = currentFile?.FullName.AsSpan().Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
-             
-             tab.ImageIterator.Files = files;
-             
-             if (wasCurrentFileRenamed)
-             {
-                 var newFileInfo = new FileInfo(e.FullPath);
-                 var currentModel = tab.Model.Value;
-                 if (currentModel != null)
-                 {
-                     var newModel = new ImageModel
-                     {
-                         FileInfo = newFileInfo,
-                         Image = currentModel.Image,
-                         Orientation = currentModel.Orientation,
-                         ImageType = currentModel.ImageType
-                     };
-                     tab.Model.Value = newModel;
-                 }
-             }
+        await HandleUpdateAsync(directory, (tab, files) =>
+        {
+            var currentFile = tab.Model.Value?.FileInfo;
+            var wasCurrentFileRenamed = currentFile?.FullName.AsSpan()
+                .Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
-             var fileToCheck = wasCurrentFileRenamed ? new FileInfo(e.FullPath) : currentFile;
-             
-             if (fileToCheck != null)
-             {
-                 var newIndex = files.FindIndex(x => x.FullName.Equals(fileToCheck.FullName, StringComparison.OrdinalIgnoreCase));
-                 if (newIndex >= 0)
-                 {
-                     tab.ImageIterator.SetCurrentIndex(newIndex);
-                 }
-             }
-             
-             _cache.Resynchronize(tab.Id, files);
-             tab.UpdateTabTitle();
-             
-             return ValueTask.CompletedTask;
-         });
+            tab.ImageIterator.Files = files;
+
+            if (wasCurrentFileRenamed)
+            {
+                var newFileInfo = new FileInfo(e.FullPath);
+                var currentModel = tab.Model.Value;
+                if (currentModel != null)
+                {
+                    var newModel = new ImageModel
+                    {
+                        FileInfo = newFileInfo,
+                        Image = currentModel.Image,
+                        Orientation = currentModel.Orientation,
+                        ImageType = currentModel.ImageType
+                    };
+                    tab.Model.Value = newModel;
+                }
+            }
+
+            var fileToCheck = wasCurrentFileRenamed ? new FileInfo(e.FullPath) : currentFile;
+
+            if (fileToCheck != null)
+            {
+                var newIndex = files.FindIndex(x =>
+                    x.FullName.Equals(fileToCheck.FullName, StringComparison.OrdinalIgnoreCase));
+                if (newIndex >= 0)
+                {
+                    tab.ImageIterator.SetCurrentIndex(newIndex);
+                }
+            }
+
+            _cache.Resynchronize(tab.Id, files);
+            tab.UpdateTabTitle();
+
+            return ValueTask.CompletedTask;
+        });
     }
 
-    private async ValueTask HandleUpdateAsync(string directory, Func<TabViewModel, List<FileInfo>, ValueTask> updateAction)
+    private async ValueTask HandleUpdateAsync(string directory,
+        Func<TabViewModel, List<FileInfo>, ValueTask> updateAction)
     {
         List<TabViewModel> targets = [];
         lock (_lock)
@@ -261,18 +279,21 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             }
         }
 
-        if (targets.Count == 0) return;
+        if (targets.Count == 0)
+        {
+            return;
+        }
 
         try
         {
             // Perform IO to get fresh list
             var files = FileListRetriever.RetrieveFiles(new FileInfo(directory), _stringComparer);
-            
+
             foreach (var tab in targets)
             {
                 try
                 {
-                     await updateAction(tab, files);
+                    await updateAction(tab, files);
                 }
                 catch (Exception ex)
                 {
@@ -286,6 +307,8 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         }
     }
 
+    #region IDispose
+
     public void Dispose()
     {
         lock (_lock)
@@ -295,8 +318,12 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                 subscription.Dispose();
                 watcher.Dispose();
             }
+
             _watchers.Clear();
         }
+
         GC.SuppressFinalize(this);
     }
+
+    #endregion
 }

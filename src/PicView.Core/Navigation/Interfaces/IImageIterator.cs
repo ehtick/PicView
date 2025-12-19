@@ -52,5 +52,4 @@ public interface IImageIterator : IAsyncDisposable
     /// </summary>
     ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);
     void StopRepeatedNavigation();
-    ValueTask ReloadFileListAsync(CancellationToken ct);
 }

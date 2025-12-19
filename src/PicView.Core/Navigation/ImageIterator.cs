@@ -63,19 +63,23 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         CurrentIndex = index;
         var targetFile = Files[index];
 
-        // 1. Try to get from Cache (Fastest)
-        var loadedFromCache = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
+        // 1. Try to get from Cache
+        var cacheStatus = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
 
-        // 2. If cache missed or failed, load manually (Slower, prioritized)
-        if (!loadedFromCache)
+        switch (cacheStatus)
         {
-            await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+            case CacheStatus.NotInCache:
+            case CacheStatus.IsLoadingInCache:
+                await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+                break;
+            case CacheStatus.IsInCache:
+                break;
+            case CacheStatus.Cancelled:
+            default:
+                return;
         }
 
-        // 3. Queue Preloading
-        // OPTIMIZATION: We call this directly on the current thread.
-        // The preloader merely writes to a buffer (Channel) and returns immediately.
-        // This eliminates the overhead of scheduling a Task.Run for every keystroke.
+        // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
         _cache.Preload(_tab.Id, index, IsReversed, Files);
     }
     
@@ -160,47 +164,49 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
 
         return next;
     }
-
-    public async ValueTask DisposeAsync()
-    {
-        _timer?.Dispose();
-        await _cache.RemoveOwner(_tab.Id);
-        GC.SuppressFinalize(this);
-    }
-
+    
     #region Private Helpers
 
-    private async ValueTask<bool> TryLoadFromCacheAsync(int index, FileInfo file, CancellationTokenSource ct)
+    private async ValueTask<CacheStatus> TryLoadFromCacheAsync(int index, FileInfo file, CancellationTokenSource ct)
     {
-        // Check cache first
+        // Check if the item is in the cache
         if (!_cache.TryGet(file, out var preLoadValue) || preLoadValue is null)
         {
-            return false;
+            return await LoadThumbnailInternalAsync(index, file, ct, CacheStatus.NotInCache);
         }
 
-        // If it's loading but image isn't ready, show thumbnail first
+        // If we have the full image, show it and return
         if (preLoadValue.IsLoading && preLoadValue.ImageModel.Image is null)
         {
-            var thumb = await _thumbnailLoader.GetThumbnailAsync(file).ConfigureAwait(false);
-
-            // Check for cancellation before UI update
-            if (ct.IsCancellationRequested || CurrentIndex != index)
-            {
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Cancelled");
-                return true;
-            }
-
-            _tab.Model.Value = new ImageModel { Image = thumb, FileInfo = file };
-            
-            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Showing thumbnail");
-
-            // We showed the thumb, but we still need the full load
-            return false; // Return false to trigger LoadManuallyAsync for the full image
+            return await LoadThumbnailInternalAsync(index, file, ct, CacheStatus.IsLoadingInCache);
         }
 
-        // Cache hit is good
         _tab.Model.Value = preLoadValue.ImageModel;
-        return true;
+        return CacheStatus.IsInCache;
+    }
+    
+    /// <summary>
+    /// Loads and displays a thumbnail for immediate feedback, then returns the status needed for the next step.
+    /// </summary>
+    private async ValueTask<CacheStatus> LoadThumbnailInternalAsync(int index, FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
+    {
+        var thumb = await _thumbnailLoader.GetThumbnailAsync(file).ConfigureAwait(false);
+
+        // Check for cancellation or navigation change before updating UI
+        if (ct.IsCancellationRequested || CurrentIndex != index)
+        {
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Cancelled");
+            return CacheStatus.Cancelled;
+        }
+
+        _tab.Model.Value = new ImageModel { Image = thumb, FileInfo = file };
+
+        if (statusToReturn == CacheStatus.IsLoadingInCache)
+        {
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Showing thumbnail (waiting for load)");
+        }
+
+        return statusToReturn;
     }
 
     private async ValueTask LoadManuallyAsync(int index, CancellationTokenSource ct)
@@ -215,11 +221,13 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
 
     #endregion
 
-    #region Not yet made Interface Implementations
+    #region IDispose
 
-    public ValueTask ReloadFileListAsync(CancellationToken ct)
+    public async ValueTask DisposeAsync()
     {
-        return ValueTask.FromException(new NotImplementedException());
+        _timer?.Dispose();
+        await _cache.RemoveOwner(_tab.Id);
+        GC.SuppressFinalize(this);
     }
 
     #endregion
