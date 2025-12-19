@@ -262,7 +262,7 @@
             </MenuItem>
 
             <!--  Resize image  -->
-            <MenuItem IsVisible="{CompiledBinding TabMenu.IsGalleryOptionsVisible.Value}"
+            <MenuItem
                 Command="{CompiledBinding Window.ShowBatchResizeWindow}"
                 Header="{CompiledBinding Translation.ResizeImage,
                                          Mode=OneWay}"

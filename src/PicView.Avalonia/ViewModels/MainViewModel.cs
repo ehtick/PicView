@@ -31,7 +31,7 @@ public class MainViewModel
     public BatchResizeViewModel? BatchResizeViewModel { get; set; }
 
     public TabOverviewViewModel Tabs { get; set; } = new();
-    public TabMenuViewModel? TabMenu { get; set; }
+    public DropDownMenuViewModel? DropDownMenu { get; set; }
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)
     {

@@ -96,23 +96,23 @@ public partial class MacMainWindow2 : Window
             MainTabControl.TabCreated += MainTabControlOnTabCreated;
             MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
 
-            var tabMenu = new TabMenu
+            var dropDownMenu = new DropDownMenu
             {
-                Name = "TabsMenu",
+                Name = "DropDownMenu",
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(3, 0, 3, 0),
                 IsVisible = false,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 ZIndex = 2
             };
-            MainPanel.Children.Add(tabMenu);
+            MainPanel.Children.Add(dropDownMenu);
             
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>
             {
-                if (!tabMenu.IsPointerOver)
+                if (!dropDownMenu.IsPointerOver)
                 {
-                    vm.MainWindow.IsTabMenuVisible.Value = false;
+                    vm.MainWindow.IsDropDownMenuVisible.Value = false;
                 }
 
                 if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)

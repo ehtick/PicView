@@ -1,7 +1,7 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding MainWindow.IsTabMenuVisible.Value}"
+    IsOpen="{CompiledBinding MainWindow.IsDropDownMenuVisible.Value}"
     mc:Ignorable="d"
-    x:Class="PicView.Avalonia.Views.UC.Menus.TabMenu"
+    x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
     x:DataType="viewModels:MainViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
@@ -35,7 +35,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TabMenu.OpenGalleryOptions}"
+                            Command="{CompiledBinding DropDownMenu.OpenGalleryOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -65,7 +65,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TabMenu.CloseGalleryOptions}"
+                                Command="{CompiledBinding DropDownMenu.CloseGalleryOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -151,7 +151,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ResizeImage.Value}"
                 VerticalAlignment="Top" />
@@ -164,7 +164,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Effects.Value}"
                 VerticalAlignment="Top" />
@@ -177,7 +177,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ApplicationShortcuts.Value}"
                 VerticalAlignment="Top" />
@@ -190,7 +190,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Settings.Value}"
                 VerticalAlignment="Top" />
@@ -203,7 +203,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !TabMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.About.Value}"
                 VerticalAlignment="Top" />

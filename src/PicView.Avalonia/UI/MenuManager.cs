@@ -47,7 +47,7 @@ public static class MenuManager
         vm.MainWindow.IsImageMenuVisible.Value = false;
         vm.MainWindow.IsSettingsMenuVisible.Value = false;
         vm.MainWindow.IsToolsMenuVisible.Value = false;
-        vm.MainWindow.IsTabMenuVisible.Value = false;
+        vm.MainWindow.IsDropDownMenuVisible.Value = false;
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public static class MenuManager
                vm.MainWindow.IsImageMenuVisible.CurrentValue ||
                vm.MainWindow.IsSettingsMenuVisible.CurrentValue ||
                vm.MainWindow.IsToolsMenuVisible.CurrentValue ||
-               vm.MainWindow.IsTabMenuVisible.CurrentValue;
+               vm.MainWindow.IsDropDownMenuVisible.CurrentValue;
     }
 
     /// <summary>
@@ -83,9 +83,9 @@ public static class MenuManager
     public static void ToggleToolsMenu(MainViewModel vm) => ToggleMenu(vm, MenuType.Tools);
     
     /// <summary>
-    /// Toggles the tabs menu
+    /// Toggles the drop down menu
     /// </summary>
-    public static void ToggleTabsMenu(MainViewModel vm) => ToggleMenu(vm, MenuType.Tabs);
+    public static void ToggleDropDownMenu(MainViewModel vm) => ToggleMenu(vm, MenuType.Tabs);
 
     private static void ToggleMenu(MainViewModel vm, MenuType menuType)
     {
@@ -116,7 +116,7 @@ public static class MenuManager
             MenuType.Image => vm.MainWindow.IsImageMenuVisible.CurrentValue,
             MenuType.Settings => vm.MainWindow.IsSettingsMenuVisible.CurrentValue,
             MenuType.Tools => vm.MainWindow.IsToolsMenuVisible.CurrentValue,
-            MenuType.Tabs => vm.MainWindow.IsTabMenuVisible.CurrentValue,
+            MenuType.Tabs => vm.MainWindow.IsDropDownMenuVisible.CurrentValue,
             _ => false
         };
     }
@@ -138,7 +138,7 @@ public static class MenuManager
                 vm.MainWindow.IsToolsMenuVisible.Value = state;
                 break;
             case MenuType.Tabs:
-                vm.MainWindow.IsTabMenuVisible.Value = state;
+                vm.MainWindow.IsDropDownMenuVisible.Value = state;
                 break;
         }
     }

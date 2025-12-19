@@ -57,7 +57,7 @@ public class MainWindowViewModel : IDisposable
 
     public BindableReactiveProperty<UserControl?> CurrentView { get; } = new();
     
-    public BindableReactiveProperty<bool> IsTabMenuVisible { get; } = new();
+    public BindableReactiveProperty<bool> IsDropDownMenuVisible { get; } = new();
 
     public BindableReactiveProperty<bool> IsFileMenuVisible { get; } = new();
 
@@ -215,7 +215,7 @@ public class MainWindowViewModel : IDisposable
     private static void CloseMenus(Unit unit) =>
         MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
     private static void ToggleTabsMenu(Unit unit) =>
-        MenuManager.ToggleTabsMenu(UIHelper.GetMainView.DataContext as MainViewModel);
+        MenuManager.ToggleDropDownMenu(UIHelper.GetMainView.DataContext as MainViewModel);
 
     private static void ToggleFileMenu(Unit unit) =>
         MenuManager.ToggleFileMenu(UIHelper.GetMainView.DataContext as MainViewModel);

@@ -171,7 +171,7 @@ public static class MainKeyboardShortcuts
     /// Handles special cases like cropping, dialog handling, and escape key.
     /// </summary>
     /// <returns>True if the key event was handled by a special case handler.</returns>
-    private static async Task<bool> HandleSpecialCases(KeyEventArgs e, MainViewModel vm)
+    private static async ValueTask<bool> HandleSpecialCases(KeyEventArgs e, MainViewModel vm)
     {
         // Handle cropping mode
         if (CropFunctions.IsCropping)
@@ -217,7 +217,7 @@ public static class MainKeyboardShortcuts
 
             if (!IsKeyHeldDown && IsEscKeyEnabled)
             {
-                _ = FunctionsMapper.Close();
+                await FunctionsMapper.Close();
             }
         }
 

@@ -2,7 +2,7 @@ using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class TabMenuViewModel
+public class DropDownMenuViewModel
 {
     public BindableReactiveProperty<int> MenuCarouselIndex { get; } = new(0);
     public BindableReactiveProperty<bool> IsGalleryOptionsVisible { get; } = new(false);

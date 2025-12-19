@@ -6,17 +6,17 @@ using R3;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
-public partial class TabMenu : AnimatedMenu
+public partial class DropDownMenu : AnimatedMenu
 {
-    public TabMenu()
+    public DropDownMenu()
     {
         if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
         {
             return;
         }
-        vm.TabMenu ??= new TabMenuViewModel();
+        vm.DropDownMenu ??= new DropDownMenuViewModel();
         InitializeComponent();
-        Observable.EveryValueChanged(vm.TabMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(vm.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(i =>
             {
                 MainCarousel.SelectedIndex = i;
