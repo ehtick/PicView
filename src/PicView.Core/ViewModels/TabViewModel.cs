@@ -27,6 +27,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
     public BindableReactiveProperty<ImageModel> Model { get; } = new(new ImageModel());
+    public BindableReactiveProperty<ImageModel?> SecondaryModel { get; } = new();
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }

@@ -180,6 +180,10 @@ public class ZoomPanControl2 : Decorator
     /// </summary>
     public void ResetZoomSlim()
     {
+        if (ZoomLevel is 100)
+        {
+            return;
+        }
         SetTransitions(false);
         Scale = 1.0;
         TranslateX = 0;

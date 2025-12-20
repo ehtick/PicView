@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -19,7 +20,7 @@ namespace PicView.Avalonia.Views.UC;
 public partial class ImageViewer2 : UserControl
 {
     private RotationTransformer? _imageTransformer;
-    private IDisposable? _disposable;
+    private CompositeDisposable? _disposables;
     
     public ImageViewer2()
     {
@@ -63,19 +64,40 @@ public partial class ImageViewer2 : UserControl
         ZoomPanControl.Initialize(DataContext);
         MainPanel.Children.Add(ZoomPanControl.ZoomPreviewer);
 
-        if (DataContext is TabViewModel tab)
+        if (DataContext is not TabViewModel tab)
         {
-            _disposable = Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
-                .Subscribe(zoomLevel =>
-                {
-                    TitleManager.SetTabTitle(tab, zoomLevel);
-                    if (Settings.Zoom.IsShowingZoomPercentagePopup)
-                    {
-                        _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{zoomLevel}%", true,
-                            TimeSpan.FromSeconds(1));
-                    }
-                });
+            return;
         }
+
+        _disposables = new CompositeDisposable();
+        Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
+            .Subscribe(zoomLevel =>
+            {
+                TitleManager.SetTabTitle(tab, zoomLevel);
+                if (Settings.Zoom.IsShowingZoomPercentagePopup)
+                {
+                    _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{zoomLevel}%", true,
+                        TimeSpan.FromSeconds(1));
+                }
+            }).AddTo(_disposables);
+            
+        
+        Debug.Assert(Settings.ImageScaling is not null);
+        Observable.EveryValueChanged(Settings.ImageScaling, s => s.ShowImageSideBySide)
+            .Skip(1)
+            .SubscribeAwait(async (isSideBySide, c) =>
+            {
+                if (isSideBySide)
+                {
+                    SecondaryImage.IsVisible = true;
+                    var ct = CancellationTokenSource.CreateLinkedTokenSource(c, tab.GetTabCancellation().Token);
+                    await tab.ImageIterator.IterateToIndexAsync(tab.ImageIterator.CurrentIndex, ct);
+                }
+                else
+                {
+                    SecondaryImage.IsVisible = false;
+                }
+            }).AddTo(_disposables);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -84,7 +106,7 @@ public partial class ImageViewer2 : UserControl
         RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
         RemoveHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
         RemoveHandler(Gestures.PinchEvent, TouchMagnifyEvent);
-        _disposable?.Dispose();
+        _disposables.Dispose();
     }
 
     private void InitializeMouseInputHelper() =>

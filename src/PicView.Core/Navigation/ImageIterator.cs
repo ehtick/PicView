@@ -3,6 +3,7 @@ using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Core.Navigation;
 
@@ -63,24 +64,67 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         CurrentIndex = index;
         var targetFile = Files[index];
 
-        // 1. Try to get from Cache
-        var cacheStatus = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
+        // 1. Load Primary Image
+        await LoadImageToModel(index, targetFile, _tab.Model, ct).ConfigureAwait(false);
 
-        switch (cacheStatus)
+        // 2. Load Secondary Image (if Side-by-Side)
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            // In Side-by-Side mode, we want the immediate next image (index + 1).
+            // Note: GetIteration(SkipAmount.One) returns index + 2 in this mode, so we calculate manually.
+            var nextIndex = index + 1;
+            if (nextIndex < Files.Count)
+            {
+                 var secondaryFile = Files[nextIndex];
+                 await LoadImageToModel(nextIndex, secondaryFile, _tab.SecondaryModel, ct).ConfigureAwait(false);
+            }
+            else
+            {
+                _tab.SecondaryModel.Value = null;
+            }
+        }
+        else
+        {
+            _tab.SecondaryModel.Value = null;
+        }
+
+        // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
+        _cache.Preload(_tab.Id, index, IsReversed, Files);
+    }
+
+    private async ValueTask LoadImageToModel<T>(int index, FileInfo file, BindableReactiveProperty<T> property, CancellationTokenSource ct) where T : class?
+    {
+        var (status, model) = await TryLoadFromCacheAsync(index, file, ct).ConfigureAwait(false);
+        
+        if (property.Value != null && model == null && status == CacheStatus.Cancelled)
+        {
+             return;
+        }
+
+        switch (status)
         {
             case CacheStatus.NotInCache:
             case CacheStatus.IsLoadingInCache:
-                await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+                if (model is T thumbnailModel) 
+                {
+                     property.Value = thumbnailModel; // Set thumbnail
+                }
+                var loadedModel = await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+                if (loadedModel is T fullModel)
+                {
+                    property.Value = fullModel;
+                }
                 break;
             case CacheStatus.IsInCache:
+                if (model is T cachedModel)
+                {
+                    property.Value = cachedModel;
+                }
                 break;
             case CacheStatus.Cancelled:
             default:
                 return;
         }
-
-        // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
-        _cache.Preload(_tab.Id, index, IsReversed, Files);
     }
     
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
@@ -99,7 +143,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         int next;
         var skip = skipAmount switch
         {
-            SkipAmount.One => 1,
+            SkipAmount.One => Settings.ImageScaling.ShowImageSideBySide ? 2 : 1,
             SkipAmount.Two => 2,
             SkipAmount.Ten => 10,
             SkipAmount.Hundred => 100,
@@ -167,7 +211,8 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     
     #region Private Helpers
 
-    private async ValueTask<CacheStatus> TryLoadFromCacheAsync(int index, FileInfo file, CancellationTokenSource ct)
+    private async ValueTask<(CacheStatus Status, ImageModel? Model)> TryLoadFromCacheAsync(int index, FileInfo file,
+        CancellationTokenSource ct)
     {
         // Check if the item is in the cache
         if (!_cache.TryGet(file, out var preLoadValue) || preLoadValue is null)
@@ -181,14 +226,14 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
             return await LoadThumbnailInternalAsync(index, file, ct, CacheStatus.IsLoadingInCache);
         }
 
-        _tab.Model.Value = preLoadValue.ImageModel;
-        return CacheStatus.IsInCache;
+        return (CacheStatus.IsInCache, preLoadValue.ImageModel);
     }
-    
+
     /// <summary>
     /// Loads and displays a thumbnail for immediate feedback, then returns the status needed for the next step.
     /// </summary>
-    private async ValueTask<CacheStatus> LoadThumbnailInternalAsync(int index, FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
+    private async ValueTask<(CacheStatus Status, ImageModel? Model)> LoadThumbnailInternalAsync(int index,
+        FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
     {
         var thumb = await _thumbnailLoader.GetThumbnailAsync(file).ConfigureAwait(false);
 
@@ -196,27 +241,30 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         if (ct.IsCancellationRequested || CurrentIndex != index)
         {
             DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Cancelled");
-            return CacheStatus.Cancelled;
+            return (CacheStatus.Cancelled, null);
         }
 
-        _tab.Model.Value = new ImageModel { Image = thumb, FileInfo = file };
+        var model = new ImageModel { Image = thumb, FileInfo = file };
 
         if (statusToReturn == CacheStatus.IsLoadingInCache)
         {
-            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync), "Showing thumbnail (waiting for load)");
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCacheAsync),
+                "Showing thumbnail (waiting for load)");
         }
 
-        return statusToReturn;
+        return (statusToReturn, model);
     }
 
-    private async ValueTask LoadManuallyAsync(int index, CancellationTokenSource ct)
+    private async ValueTask<ImageModel?> LoadManuallyAsync(int index, CancellationTokenSource ct)
     {
         var imageModel = await _cache.LoadAsync(_tab.Id, index, Files, ct.Token).ConfigureAwait(false);
 
         if (!ct.IsCancellationRequested && CurrentIndex == index && imageModel is not null)
         {
-            _tab.Model.Value = imageModel;
+            return imageModel;
         }
+
+        return null;
     }
 
     #endregion
