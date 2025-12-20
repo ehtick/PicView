@@ -84,14 +84,16 @@ public partial class ImageViewer2 : UserControl
         
         Debug.Assert(Settings.ImageScaling is not null);
         Observable.EveryValueChanged(Settings.ImageScaling, s => s.ShowImageSideBySide)
-            .Skip(1)
             .SubscribeAwait(async (isSideBySide, c) =>
             {
                 if (isSideBySide)
                 {
                     SecondaryImage.IsVisible = true;
-                    var ct = CancellationTokenSource.CreateLinkedTokenSource(c, tab.GetTabCancellation().Token);
-                    await tab.ImageIterator.IterateToIndexAsync(tab.ImageIterator.CurrentIndex, ct);
+                    if (SecondaryImage.Source is null)
+                    {
+                        var ct = CancellationTokenSource.CreateLinkedTokenSource(c, tab.GetTabCancellation().Token);
+                        await tab.ImageIterator.IterateToIndexAsync(tab.ImageIterator.CurrentIndex, ct);   
+                    }
                 }
                 else
                 {

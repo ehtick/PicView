@@ -70,8 +70,6 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         // 2. Load Secondary Image (if Side-by-Side)
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            // In Side-by-Side mode, we want the immediate next image (index + 1).
-            // Note: GetIteration(SkipAmount.One) returns index + 2 in this mode, so we calculate manually.
             var nextIndex = index + 1;
             if (nextIndex < Files.Count)
             {
@@ -143,7 +141,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         int next;
         var skip = skipAmount switch
         {
-            SkipAmount.One => Settings.ImageScaling.ShowImageSideBySide ? 2 : 1,
+            SkipAmount.One => 1,
             SkipAmount.Two => 2,
             SkipAmount.Ten => 10,
             SkipAmount.Hundred => 100,

@@ -130,11 +130,11 @@
             <!--  Locate on disk  -->
             <MenuItem
                 Command="{CompiledBinding Tools.LocateOnDiskCommand}"
-                CommandParameter="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo,
+                CommandParameter="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.ShowInFolder.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Path Classes="ShowInFolderPath" />

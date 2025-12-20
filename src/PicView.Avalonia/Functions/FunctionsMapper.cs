@@ -555,7 +555,7 @@ public static class FunctionsMapper
     
     /// <inheritdoc cref="FileManager.LocateOnDisk(string, MainViewModel)" />
     public static async ValueTask OpenInExplorer()=>
-        await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.PicViewer.FileInfo?.CurrentValue?.FullName))
+        await Task.Run(() => Vm?.PlatformService?.LocateOnDisk(Vm.Tabs.ActiveTab.CurrentValue.Model.CurrentValue.FileInfo?.FullName))
             .ConfigureAwait(false);
 
     /// <inheritdoc cref="FileSaverHelper.SaveCurrentFile(MainViewModel)" />

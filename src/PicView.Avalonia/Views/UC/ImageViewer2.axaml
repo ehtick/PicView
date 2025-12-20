@@ -18,7 +18,10 @@
                     <Border Background="{Binding $parent[Window].((viewModels:MainViewModel)DataContext).MainWindow.ConstrainedImageBackground.Value}" x:Name="MainBorder">
                         <UniformGrid Rows="1">
                             <customControls:PicBox2 Source="{CompiledBinding Model.Value.Image}" x:Name="MainImage" />
-                            <customControls:PicBox2 Source="{CompiledBinding SecondaryModel.Value.Image}" x:Name="SecondaryImage" />
+                            <customControls:PicBox2
+                                IsVisible="False"
+                                Source="{CompiledBinding SecondaryModel.Value.Image}"
+                                x:Name="SecondaryImage" />
                         </UniformGrid>
                     </Border>
                 </customControls:AutoScrollViewer>
