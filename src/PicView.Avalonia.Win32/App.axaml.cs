@@ -25,7 +25,7 @@ namespace PicView.Avalonia.Win32;
 
 public class App : Application, IPlatformSpecificService, IPlatformWindowService
 {
-    private static WinMainWindow? _mainWindow;
+    private static WinMainWindow2? _mainWindow;
     private static WindowInitializer? _windowInitializer;
     private TaskbarProgress? _taskbarProgress;
     private MainViewModel? _vm;
@@ -64,10 +64,10 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
 
         ThemeManager.DetermineTheme(Current, settingsExists);
 
-        _mainWindow = new WinMainWindow();
+        _mainWindow = new WinMainWindow2();
         desktop.MainWindow = _mainWindow;
         _mainWindow.DataContext = _vm;
-        StartUpHelper.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
+        StartUpHelper2.StartWithArguments(_vm, settingsExists, desktop, _mainWindow);
         _windowInitializer = new WindowInitializer();
     }
 

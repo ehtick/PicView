@@ -71,6 +71,7 @@ public partial class ImageViewer2 : UserControl
 
         _disposables = new CompositeDisposable();
         Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
+            .Skip(1)
             .Subscribe(zoomLevel =>
             {
                 TitleManager.SetTabTitle(tab, zoomLevel);

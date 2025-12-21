@@ -87,6 +87,14 @@
       <Compile Update="Views\PrintPreviewWindow.axaml.cs">
           <DependentUpon>PrintPreviewWindow.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\WinMainWindow2.axaml.cs">
+        <DependentUpon>MacMainWindow2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\WinTitleBar2.axaml.cs">
+        <DependentUpon>WinTitleBar2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
   </ItemGroup>
 
 	<ItemGroup>
