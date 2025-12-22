@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using PicView.Core.Localization;
+using R3;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 
@@ -46,6 +47,20 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<double> SlideshowSpeed { get; } = new(Settings.UIProperties.SlideShowTimer);
     public BindableReactiveProperty<double> GetSlideshowSpeed { get; } = new();
 
+    public BindableReactiveProperty<string[]> MouseDoubleClickBehaviors { get; }
+    public BindableReactiveProperty<int> MouseDoubleClickBehaviorIndex { get; }
+
+    public SettingsViewModel()
+    {
+        MouseDoubleClickBehaviors = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.None!,
+            TranslationManager.Translation.ResetZoom!,
+            TranslationManager.Translation.ToggleFullscreen!
+        ]);
+        MouseDoubleClickBehaviorIndex = new BindableReactiveProperty<int>(Settings.UIProperties.DoubleClickBehavior);
+    }
+
     public void Dispose()
     {
         Disposable.Dispose(_disposables,
@@ -68,7 +83,9 @@ public class SettingsViewModel : IDisposable
             NavSpeed,
             SlideshowSpeed,
             WindowMargin,
-            ZoomSpeed);
+            ZoomSpeed,
+            MouseDoubleClickBehaviorIndex,
+            MouseDoubleClickBehaviors);
     }
 
     /// <summary>
@@ -136,6 +153,9 @@ public class SettingsViewModel : IDisposable
         
         Observable.EveryValueChanged(this, x => x.WindowMargin.CurrentValue)
             .Subscribe(x => Settings.WindowProperties.Margin = x).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.MouseDoubleClickBehaviorIndex.CurrentValue)
+            .Subscribe(x => Settings.UIProperties.DoubleClickBehavior = x).AddTo(_disposables);
     }
 
     #region Tab history navigation
