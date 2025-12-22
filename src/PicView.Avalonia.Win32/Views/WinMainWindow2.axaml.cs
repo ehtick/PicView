@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
@@ -8,6 +9,7 @@ using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.Win32.WindowImpl;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ViewModels;
@@ -91,6 +93,31 @@ public partial class WinMainWindow2 : Window
             MainTabControl.TabDetached += MainTabControlOnTabDetached;
             MainTabControl.TabCreated += MainTabControlOnTabCreated;
             MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
+            
+            var dropDownMenu = new DropDownMenu
+            {
+                Name = "DropDownMenu",
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(3, 0, 3, 0),
+                IsVisible = false,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                ZIndex = 2
+            };
+            MainPanel.Children.Add(dropDownMenu);
+            
+            // Close tabMenu when clicking outside of it
+            PointerPressed += (_, _) =>
+            {
+                if (!dropDownMenu.IsPointerOver)
+                {
+                    vm.MainWindow.IsDropDownMenuVisible.Value = false;
+                }
+
+                if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
+                {
+                    Titlebar.EditableTitlebar.CloseTitlebar();
+                }
+            };
         };
     }
     
