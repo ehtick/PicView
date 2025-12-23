@@ -410,7 +410,10 @@ public class DraggableTabControl : TabControl
                 CreateGhostWindow(_pressedTab);
                 break;
             case true when absDeltaY <= DetachThreshold:
-                if (TabDragContext.CurrentTarget == null || TabDragContext.CurrentTarget == this)
+                // Check if the pointer is within the horizontal bounds of the control
+                var isWithinBounds = _lastPointerPosition.X >= 0 && _lastPointerPosition.X <= Bounds.Width;
+
+                if (isWithinBounds && (TabDragContext.CurrentTarget == null || TabDragContext.CurrentTarget == this))
                 {
                     _isDetaching = false;
                     PseudoClasses.Set(PseudoDetaching, false);
