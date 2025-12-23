@@ -25,16 +25,15 @@ public class DraggableTabControl : TabControl
     // Auto-Scroll Settings
     private const double ScrollTriggerZone = 30.0; // Distance from edge to trigger scroll
     private const double ScrollSpeed = 15.0; // Pixels per tick
+    private readonly DispatcherTimer? _autoScrollTimer;
 
     private const string PseudoDragging = ":dragging";
     private const string PseudoDetaching = ":detaching";
 
     // Ghost Window Settings
-    private const double GhostTargetHeight = 400.0;
     private const double GhostOpacity = 0.5;
-    private const double GhostOffsetX = 100.0;
-    private const double GhostOffsetY = 50.0;
-    private readonly DispatcherTimer? _autoScrollTimer;
+    private const double GhostOffsetX = 30.0;
+    private const double GhostOffsetY = 15.0;
 
     // --- State Fields ---
     private readonly Dictionary<TabItem, double> _originalXPositions = new();
@@ -751,7 +750,9 @@ public class DraggableTabControl : TabControl
             return;
         }
 
-        var (windowWidth, windowHeight) = CalculateGhostSize(contentBitmap.Size);
+        var window = TopLevel.GetTopLevel(this) as Window;
+        var windowWidth = window?.Width ?? double.NaN;
+        var windowHeight = window?.Height ?? double.NaN;
         var cornerRadius = new CornerRadius(16);
         var isMacOs = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 
@@ -771,7 +772,6 @@ public class DraggableTabControl : TabControl
                 Opacity = GhostOpacity,
                 Child = new Image
                 {
-                    MaxHeight = GhostTargetHeight,
                     Source = contentBitmap,
                     Stretch = Stretch.Uniform
                 }
@@ -785,20 +785,6 @@ public class DraggableTabControl : TabControl
     {
         var vm = tabItem.DataContext as TabViewModel;
         return CaptureVisual(vm?.CurrentView.Value as Control);
-    }
-
-    private (double width, double height) CalculateGhostSize(Size contentSize)
-    {
-        var width = contentSize.Width;
-        var height = contentSize.Height;
-
-        if (height < GhostTargetHeight)
-        {
-            return (width, height);
-        }
-
-        var scale = GhostTargetHeight / height;
-        return (width * scale, GhostTargetHeight);
     }
 
     private void UpdateGhostWindowPosition(PointerEventArgs e)
