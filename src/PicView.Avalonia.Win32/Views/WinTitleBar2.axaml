@@ -1051,7 +1051,6 @@
             </Menu>
             <DockPanel>
 
-
                 <Border
                     Background="{DynamicResource WindowButtonBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
@@ -1081,22 +1080,23 @@
                     x:Name="MenuButton" />
 
 
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
+                <Button
+                    Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
                     Classes="noBorderHover"
                     Command="{CompiledBinding Tools.ShowSearchCommand}"
+                    CornerRadius="6"
                     DockPanel.Dock="Left"
                     Foreground="{DynamicResource MainTextColor}"
-                    Icon="{StaticResource SearchImage}"
-                    IconHeight="13"
-                    IconWidth="13"
-                    IsRepeatEnabled="False"
                     IsTabStop="False"
-                    Margin="0"
+                    Margin="2,3,7,3"
                     Width="30"
-                    x:Name="SearchButton" />
+                    x:Name="SearchButton">
+                    <Image
+                        Height="13"
+                        Source="{StaticResource SearchImage}"
+                        Width="13" />
+                </Button>
 
                 <StackPanel
                     DockPanel.Dock="Right"
@@ -1172,7 +1172,8 @@
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     Classes="noBorderHover"
-                    Command="{CompiledBinding MainWindow.ToggleTabsCommand}"
+                    Command="{CompiledBinding MainWindow.TopTitlebarViewModel.ToggleDropDownMenuCommand}"
+                    CommandParameter="{CompiledBinding}"
                     CornerRadius="6"
                     DockPanel.Dock="Right"
                     IsTabStop="False"

@@ -34,10 +34,9 @@ namespace PicView.Avalonia.Win32.Views;
 
 public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatformWindowService
 {
-    private readonly AvaloniaRenderingFrameProvider _frameProvider;
-    private readonly CompositeDisposable _disposables = new();
-    
     private static WindowInitializer? _windowInitializer;
+    private readonly CompositeDisposable _disposables = new();
+    private readonly AvaloniaRenderingFrameProvider _frameProvider;
     private TaskbarProgress? _taskbarProgress;
     private MainViewModel? _vm;
 
@@ -46,10 +45,10 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         // initialize RenderingFrameProvider
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
         UIHelper.SetFrameProvider(_frameProvider);
-        
+
         Initialization();
     }
-    
+
     public WinMainWindow2(bool mainWindowAlreadyExists)
     {
         if (mainWindowAlreadyExists)
@@ -57,17 +56,29 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             // initialize RenderingFrameProvider
             _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
             UIHelper.SetFrameProvider(_frameProvider);
-            
+
+            _vm = new MainViewModel(this, this);
+            DataContext = _vm;
+
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
+
+            ThemeManager.DetermineTheme(Application.Current, true);
+            StartUpHelper2.StartUpBlank(_vm, true, false, desktop, this);
+            _windowInitializer = new WindowInitializer();
+
             Initialization();
             return;
         }
-        
+
         var settingsExists = LoadSettings();
-        
+
         // initialize RenderingFrameProvider
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
         UIHelper.SetFrameProvider(_frameProvider);
-        
+
         Initialization();
         WindowInitialization(settingsExists);
     }
@@ -75,16 +86,10 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
     private void WindowInitialization(bool settingsExists)
     {
         TranslationManager.Init();
-        
-        _vm = new MainViewModel(this, this)
-        {
-            MainWindow =
-            {
-                TopTitlebarViewModel = new TopTitlebarViewModel()
-            }
-        };
+
+        _vm = new MainViewModel(this, this);
         DataContext = _vm;
-        
+
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
@@ -110,7 +115,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             {
                 return;
             }
-            
+
             Observable.EveryValueChanged(MainTabControl.Items, x => x.Count).Subscribe(count =>
             {
                 vm.Tabs.IsTabPanelVisible.Value = count > 1;
@@ -162,11 +167,11 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
                         break;
                 }
             });
-            
+
             MainTabControl.TabDetached += MainTabControlOnTabDetached;
             MainTabControl.TabCreated += MainTabControlOnTabCreated;
             MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
-            
+
             var dropDownMenu = new DropDownMenu
             {
                 Name = "DropDownMenu",
@@ -177,15 +182,10 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
                 ZIndex = 2
             };
             MainPanel.Children.Add(dropDownMenu);
-            
+
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>
             {
-                if (!dropDownMenu.IsPointerOver)
-                {
-                    vm.MainWindow.IsDropDownMenuVisible.Value = false;
-                }
-
                 if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
                 {
                     Titlebar.EditableTitlebar.CloseTitlebar();
@@ -193,7 +193,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             };
         };
     }
-    
+
     private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (DataContext is not MainViewModel vm)
@@ -268,45 +268,31 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
 
             // Need to properly remove it from the previous location
             parentVm.Tabs.RemoveTab(tab);
-            
+
             // Add to new window (if not already added by drag preview)
             if (!targetVm.Tabs.Tabs.Value.Contains(tab))
             {
                 targetVm.Tabs.Tabs.Value.Add(tab);
             }
+
             targetVm.Tabs.SelectTab(tab);
-                
+
             // Update context
             tab.ParentWindowContext = targetVm;
-                
+
             // Refresh bindings
             if (tab.CurrentView.CurrentValue is Control control)
             {
                 control.DataContext = tab;
             }
-                
-            // Close the source window if it's empty
-            if (parentVm.Tabs.Tabs.Value.Count == 0)
-            {
-                // Close();
-            }
-            // Logic handled, return
+
             return;
         }
 
         // 3. Fallback: Create a new window (Detaching behavior)
         Task.Run(() =>
         {
-            var newVm = new MainViewModel(parentVm.PlatformService, parentVm.PlatformWindowService)
-            {
-                Tabs = new TabOverviewViewModel(tab),
-                MainWindow =
-                {
-                    TopTitlebarViewModel = new TopTitlebarViewModel()
-                }
-            };
-            tab.ParentWindowContext = newVm;
-
+            MainViewModel? newVm = null;
             Dispatcher.UIThread.Invoke(() =>
             {
                 // Create a new window with the detached tab
@@ -314,18 +300,19 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
                 {
                     Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
                     Width = Width,
-                    Height = Height,
-                    DataContext = newVm
+                    Height = Height
                 };
 
-                StartUpHelper2.StartUpBlank(newVm, settingsExists: true, setPos: false, desktop, newWindow);
+                newVm = newWindow.DataContext as MainViewModel;
+
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
                 {
                     control.DataContext = tab;
                 }
-
             }, DispatcherPriority.Send);
+
+            newVm.Tabs.Tabs.Value[0] = tab;
 
             // Initialize the NEW window's tabs with the OLD window's services
             // This ensures both windows share the same memory cache
@@ -340,7 +327,8 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
 
             if (newVm.Tabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
             {
-                newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery, nav,
+                newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery,
+                    nav,
                     cache, thumb, fileWatcher);
             }
             else
@@ -386,16 +374,17 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         _disposables.Dispose();
         base.OnClosed(e);
     }
-    
-        #region Interface Implementations
-        
-        public int CombinedTitleButtonsWidth
-        {
-            get => (int)(Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen
-                ? OffScreenMargin.Left + OffScreenMargin.Right + field : field);
-            set;
-        } = 185;
-    
+
+    #region Interface Implementations
+
+    public int CombinedTitleButtonsWidth
+    {
+        get => (int)(Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen
+            ? OffScreenMargin.Left + OffScreenMargin.Right + field
+            : field);
+        set;
+    } = 185;
+
     public Task<bool> DeleteFile(string path, bool recycle) =>
         Task.Run(() => WinFileHelper.DeleteFile(path, recycle));
 
@@ -539,7 +528,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
     #endregion
 
     #region Window interface implementations
-    
+
     public void ShowAboutWindow() =>
         _windowInitializer?.ShowAboutWindow(_vm);
 
@@ -556,7 +545,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         _windowInitializer?.ShowSingleImageResizeWindow(_vm);
 
     public async Task ShowBatchResizeWindow() =>
-       await _windowInitializer?.ShowBatchResizeWindow(_vm);
+        await _windowInitializer?.ShowBatchResizeWindow(_vm);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow(_vm);
@@ -567,7 +556,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
     /// <inheritdoc />
     public async Task Maximize(bool saveSetting = true) =>
         await Win32Window.Maximize(this, _vm, saveSetting);
-    
+
     /// <inheritdoc />
     public async Task MaximizeRestore(bool saveSetting = true) =>
         await Win32Window.ToggleMaximize(this, _vm, saveSetting);
@@ -575,11 +564,11 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
     /// <inheritdoc />
     public async Task Fullscreen(bool saveSetting = true) =>
         await Win32Window.Fullscreen(this, _vm, saveSetting);
-    
+
     /// <inheritdoc />
     public async Task ToggleFullscreen(bool saveSetting = true) =>
         await Win32Window.ToggleFullscreen(this, _vm, saveSetting);
-    
+
     /// <inheritdoc />
     public async Task Restore() =>
         await Win32Window.Restore(this, _vm);

@@ -112,7 +112,7 @@ public partial class MacMainWindow2 : Window
             {
                 if (!dropDownMenu.IsPointerOver)
                 {
-                    vm.MainWindow.IsDropDownMenuVisible.Value = false;
+                    vm.MainWindow.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
                 }
 
                 if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
@@ -213,13 +213,6 @@ public partial class MacMainWindow2 : Window
             {
                 control.DataContext = tab;
             }
-                
-            // Close the source window if it's empty
-            if (parentVm.Tabs.Tabs.Value.Count == 0)
-            {
-                // Close();
-            }
-            // Logic handled, return
             return;
         }
 

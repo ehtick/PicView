@@ -1,7 +1,6 @@
-﻿using PicView.Avalonia.Update;
-using PicView.Core.Update;
+﻿using PicView.Core.Update;
 
-namespace PicView.Avalonia.Interfaces;
+namespace PicView.Core.IPlatform;
 
 public interface IPlatformSpecificUpdate
 {

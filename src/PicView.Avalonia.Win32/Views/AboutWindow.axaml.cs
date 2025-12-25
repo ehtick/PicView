@@ -8,6 +8,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.PlatformUpdate;
+using PicView.Core.Update;
 
 namespace PicView.Avalonia.Win32.Views;
 

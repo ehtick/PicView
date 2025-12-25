@@ -31,8 +31,7 @@ public class MainViewModel
     public BatchResizeViewModel? BatchResizeViewModel { get; set; }
     public KeybindingsViewModel? Keybindings { get; set; }
 
-    public TabOverviewViewModel Tabs { get; set; } = new();
-    public DropDownMenuViewModel? DropDownMenu { get; set; }
+    public TabOverviewViewModel Tabs { get; } = new();
 
     public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)
     {

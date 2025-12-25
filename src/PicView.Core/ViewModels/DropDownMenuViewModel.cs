@@ -4,6 +4,8 @@ namespace PicView.Core.ViewModels;
 
 public class DropDownMenuViewModel
 {
+    public BindableReactiveProperty<bool> IsDropDownMenuVisible { get; } = new();
+    
     public BindableReactiveProperty<int> MenuCarouselIndex { get; } = new(0);
     public BindableReactiveProperty<bool> IsGalleryOptionsVisible { get; } = new(false);
 

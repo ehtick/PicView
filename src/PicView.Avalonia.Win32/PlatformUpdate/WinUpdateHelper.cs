@@ -4,6 +4,8 @@ using Microsoft.Win32;
 using PicView.Avalonia.Update;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
+using PicView.Core.Update;
+using UpdateManager = PicView.Avalonia.Update.UpdateManager;
 
 namespace PicView.Avalonia.Win32.PlatformUpdate;
 

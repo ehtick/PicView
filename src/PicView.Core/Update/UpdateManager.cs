@@ -1,15 +1,13 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Http;
-using PicView.Core.Update;
+using PicView.Core.IPlatform;
+using PicView.Core.ViewModels;
 
-namespace PicView.Avalonia.Update;
+namespace PicView.Core.Update;
 
 /// <summary>
 ///     JSON source generation for UpdateInfo deserialization
@@ -124,26 +122,22 @@ public static class UpdateManager
             var jsonString = await File.ReadAllTextAsync(jsonFilePath);
 
             if (JsonSerializer.Deserialize(
-                    jsonString, typeof(UpdateInfo),
-                    UpdateSourceGenerationContext.Default) is UpdateInfo updateInfo)
+                    jsonString, typeof(UpdateInfo),UpdateSourceGenerationContext.Default) is UpdateInfo updateInfo)
             {
                 return updateInfo;
             }
 
-            TooltipHelper.ShowTooltipMessage("Update information is missing or corrupted.");
             return null;
         }
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(UpdateManager), nameof(ParseUpdateJson), e);
-            TooltipHelper.ShowTooltipMessage("Failed to parse update information: \n" + e.Message);
             return null;
         }
     }
     
-    public static async Task DownloadUpdateFile(string downloadUrl, string tempPath)
+    public static async Task DownloadUpdateFile(CoreViewModel vm, string downloadUrl, string tempPath)
     {
-        var vm = UIHelper.GetMainView.DataContext as MainViewModel;
         vm.PlatformService.StopTaskbarProgress();
 
         using var downloader = new HttpClientDownloadWithProgress(downloadUrl, tempPath);
@@ -157,7 +151,6 @@ public static class UpdateManager
         catch (Exception e)
         {
             DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
-            TooltipHelper.ShowTooltipMessage(e.Message);
         }
         finally
         {
@@ -166,7 +159,7 @@ public static class UpdateManager
     }
     
     private static void UpdateDownloadProgress(
-        MainViewModel vm,
+        CoreViewModel vm,
         long? totalFileSize,
         long? totalBytesDownloaded,
         double? progressPercentage)

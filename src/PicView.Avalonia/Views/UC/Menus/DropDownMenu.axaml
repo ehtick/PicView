@@ -1,5 +1,5 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding MainWindow.IsDropDownMenuVisible.Value}"
+    IsOpen="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
     x:DataType="viewModels:MainViewModel"
@@ -35,7 +35,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding DropDownMenu.OpenGalleryOptions}"
+                            Command="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.OpenGalleryOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -65,7 +65,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding DropDownMenu.CloseGalleryOptions}"
+                                Command="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.CloseGalleryOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -151,7 +151,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ResizeImage.Value}"
                 VerticalAlignment="Top" />
@@ -164,7 +164,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Effects.Value}"
                 VerticalAlignment="Top" />
@@ -177,7 +177,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ApplicationShortcuts.Value}"
                 VerticalAlignment="Top" />
@@ -190,7 +190,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Settings.Value}"
                 VerticalAlignment="Top" />
@@ -203,7 +203,7 @@
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.About.Value}"
                 VerticalAlignment="Top" />

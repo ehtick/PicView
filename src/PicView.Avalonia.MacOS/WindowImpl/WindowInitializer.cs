@@ -14,6 +14,7 @@ using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Update;
 using PicView.Core.ViewModels;
 using R3;
 

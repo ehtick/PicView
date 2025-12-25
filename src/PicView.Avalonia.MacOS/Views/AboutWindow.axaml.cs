@@ -4,8 +4,8 @@ using Avalonia.Media;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.PlatformUpdate;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Update;
 
 namespace PicView.Avalonia.MacOS.Views;
 

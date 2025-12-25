@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using PicView.Avalonia.ViewModels;
@@ -47,7 +46,6 @@ public static class MenuManager
         vm.MainWindow.IsImageMenuVisible.Value = false;
         vm.MainWindow.IsSettingsMenuVisible.Value = false;
         vm.MainWindow.IsToolsMenuVisible.Value = false;
-        vm.MainWindow.IsDropDownMenuVisible.Value = false;
     }
 
     /// <summary>
@@ -58,8 +56,7 @@ public static class MenuManager
         return vm.MainWindow.IsFileMenuVisible.CurrentValue ||
                vm.MainWindow.IsImageMenuVisible.CurrentValue ||
                vm.MainWindow.IsSettingsMenuVisible.CurrentValue ||
-               vm.MainWindow.IsToolsMenuVisible.CurrentValue ||
-               vm.MainWindow.IsDropDownMenuVisible.CurrentValue;
+               vm.MainWindow.IsToolsMenuVisible.CurrentValue;
     }
 
     /// <summary>
@@ -81,11 +78,6 @@ public static class MenuManager
     /// Toggles the tools menu
     /// </summary>
     public static void ToggleToolsMenu(MainViewModel vm) => ToggleMenu(vm, MenuType.Tools);
-    
-    /// <summary>
-    /// Toggles the drop down menu
-    /// </summary>
-    public static void ToggleDropDownMenu(MainViewModel vm) => ToggleMenu(vm, MenuType.Tabs);
 
     private static void ToggleMenu(MainViewModel vm, MenuType menuType)
     {
@@ -116,7 +108,6 @@ public static class MenuManager
             MenuType.Image => vm.MainWindow.IsImageMenuVisible.CurrentValue,
             MenuType.Settings => vm.MainWindow.IsSettingsMenuVisible.CurrentValue,
             MenuType.Tools => vm.MainWindow.IsToolsMenuVisible.CurrentValue,
-            MenuType.Tabs => vm.MainWindow.IsDropDownMenuVisible.CurrentValue,
             _ => false
         };
     }
@@ -136,9 +127,6 @@ public static class MenuManager
                 break;
             case MenuType.Tools:
                 vm.MainWindow.IsToolsMenuVisible.Value = state;
-                break;
-            case MenuType.Tabs:
-                vm.MainWindow.IsDropDownMenuVisible.Value = state;
                 break;
         }
     }

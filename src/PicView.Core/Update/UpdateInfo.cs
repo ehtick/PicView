@@ -1,4 +1,4 @@
-﻿namespace PicView.Avalonia.Update;
+﻿namespace PicView.Core.Update;
 
 public class UpdateInfo
 {

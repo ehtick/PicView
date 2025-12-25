@@ -1,12 +1,15 @@
 ﻿using PicView.Avalonia.Crop;
 using PicView.Avalonia.UI;
 using PicView.Core.Conversion;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.ViewModels;
 
 public class TopTitlebarViewModel
 {
+    public DropDownMenuViewModel DropDownMenu { get; } = new();
+    
     public BindableReactiveProperty<bool> IsMainMenuVisible { get; } = new();
     public BindableReactiveProperty<bool> IsEditableTitlebarVisible { get; } = new(true);
     public BindableReactiveProperty<bool> IsGalleryButtonVisible { get; } = new(true);
@@ -15,11 +18,19 @@ public class TopTitlebarViewModel
 
     public ReactiveCommand? ToggleMenuCommand { get; private set; }
     public ReactiveCommand? OpenMenuCommand { get; private set; }
+    
+    public ReactiveCommand? ToggleDropDownMenuCommand { get; private set; }
 
     public TopTitlebarViewModel()
     {
         ToggleMenuCommand = new ReactiveCommand(ToggleMenu);
         OpenMenuCommand = new ReactiveCommand(OpenMenu);
+        ToggleDropDownMenuCommand = new ReactiveCommand(ToggleDropDownMenu);
+    }
+
+    private void ToggleDropDownMenu(Unit unit)
+    {
+        DropDownMenu?.IsDropDownMenuVisible.Value = !DropDownMenu.IsDropDownMenuVisible.CurrentValue;
     }
 
     public void ToggleMenu(Unit unit)

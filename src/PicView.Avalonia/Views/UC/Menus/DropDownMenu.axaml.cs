@@ -1,3 +1,5 @@
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -10,16 +12,27 @@ public partial class DropDownMenu : AnimatedMenu
 {
     public DropDownMenu()
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        InitializeComponent();
+        Loaded += OnLoaded;
+
+    }
+
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm)
         {
             return;
         }
-        vm.DropDownMenu ??= new DropDownMenuViewModel();
-        InitializeComponent();
-        Observable.EveryValueChanged(vm.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(vm.MainWindow.TopTitlebarViewModel.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(i =>
             {
                 MainCarousel.SelectedIndex = i;
             });
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        Loaded -= OnLoaded;
     }
 }

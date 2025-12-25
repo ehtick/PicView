@@ -13,7 +13,7 @@ namespace PicView.Avalonia.ViewModels;
 
 public class MainWindowViewModel : IDisposable
 {
-    public TopTitlebarViewModel? TopTitlebarViewModel { get; set; }
+    public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }
@@ -56,8 +56,6 @@ public class MainWindowViewModel : IDisposable
     public BindableReactiveProperty<bool> CanResize { get; } = new();
 
     public BindableReactiveProperty<UserControl?> CurrentView { get; } = new();
-    
-    public BindableReactiveProperty<bool> IsDropDownMenuVisible { get; } = new();
 
     public BindableReactiveProperty<bool> IsFileMenuVisible { get; } = new();
 
@@ -214,7 +212,6 @@ public class MainWindowViewModel : IDisposable
     #region Menus
 
     public ReactiveCommand CloseMenuCommand { get; } = new(CloseMenus);
-    public ReactiveCommand ToggleTabsCommand { get; } = new(ToggleTabsMenu);
     public ReactiveCommand ToggleFileMenuCommand { get; } = new(ToggleFileMenu);
     public ReactiveCommand ToggleImageMenuCommand { get; } = new(ToggleImageMenu);
     public ReactiveCommand ToggleSettingsMenuCommand { get; } = new(ToggleSettingsMenu);
@@ -222,8 +219,6 @@ public class MainWindowViewModel : IDisposable
 
     private static void CloseMenus(Unit unit) =>
         MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-    private static void ToggleTabsMenu(Unit unit) =>
-        MenuManager.ToggleDropDownMenu(UIHelper.GetMainView.DataContext as MainViewModel);
 
     private static void ToggleFileMenu(Unit unit) =>
         MenuManager.ToggleFileMenu(UIHelper.GetMainView.DataContext as MainViewModel);

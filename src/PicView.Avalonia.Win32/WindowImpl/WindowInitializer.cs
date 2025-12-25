@@ -14,6 +14,7 @@ using PicView.Avalonia.Win32.Printing;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Update;
 using PicView.Core.ViewModels;
 using R3;
 
