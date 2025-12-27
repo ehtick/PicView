@@ -52,6 +52,9 @@ public static class FunctionsMapper
             "Prev100" => Prev100,
 
             "Search" => Search,
+
+            "NextArchive" => NextArchive,
+            "PrevArchive" => PrevArchive,
             
             // Rotate
             "RotateLeft" => RotateLeft,
@@ -239,6 +242,9 @@ public static class FunctionsMapper
     /// <inheritdoc cref="NavigationManager.NavigateBetweenDirectories(bool, MainViewModel)" />
     public static async ValueTask NextFolder() =>
         await NavigationManager.NavigateBetweenDirectories(true, Vm).ConfigureAwait(false);
+
+    public static async ValueTask NextArchive() =>
+        await NavigationManager.NavigateBetweenArchives(true, Vm).ConfigureAwait(false);
     
     /// <inheritdoc cref="NavigationManager.NavigateFirstOrLast(bool, MainViewModel)" />
     public static async ValueTask Last() =>
@@ -251,6 +257,9 @@ public static class FunctionsMapper
     /// <inheritdoc cref="NavigationManager.NavigateBetweenDirectories(bool, MainViewModel)" />
     public static async ValueTask PrevFolder() =>
         await NavigationManager.NavigateBetweenDirectories(false, Vm).ConfigureAwait(false);
+
+    public static async ValueTask PrevArchive() =>
+        await NavigationManager.NavigateBetweenArchives(false, Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="NavigationManager.NavigateFirstOrLast(bool, MainViewModel)" />
     public static async ValueTask First() =>

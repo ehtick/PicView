@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using Avalonia.Input;
 using PicView.Avalonia.Input;
@@ -101,6 +102,8 @@ public static class FunctionsKeyHelper
         AddBinding(navKeys, "First", TranslationManager.Translation.FirstImage);
         AddBinding(navKeys, "NextFolder", TranslationManager.Translation.NextFolder);
         AddBinding(navKeys, "PrevFolder", TranslationManager.Translation.PrevFolder);
+        AddBinding(navKeys, "NextArchive", TranslationManager.Translation.NextArchive);
+        AddBinding(navKeys, "PrevArchive", TranslationManager.Translation.PrevArchive);
         AddBinding(navKeys, "Search", TranslationManager.Translation.Search);
         AddBinding(navKeys, "GalleryClick", TranslationManager.Translation.SelectGalleryThumb);
         AddBinding(navKeys, "ToggleLooping", TranslationManager.Translation.ToggleLooping);
@@ -264,7 +267,7 @@ public static class FunctionsKeyHelper
         ObservableCollection<KeyBindingsModel> collection,
         string methodName,
         string friendlyName,
-        System.Collections.IEnumerable? customGestures = null,
+        IEnumerable? customGestures = null,
         bool isReadOnly = false)
     {
         // Use custom gestures if provided, otherwise fetch via method name
