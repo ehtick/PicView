@@ -124,12 +124,12 @@ public partial class NavigationDialog : AnimatedPopUp
             })
             .AddTo(_subscriptions);
 
-        Observable.FromEventHandler<RoutedEventArgs>(h => PrevFolderButton.Click += h,
+        Observable.FromEventHandler<RoutedEventArgs>(h => PrevArchiveButton.Click += h,
                 h => PrevFolderButton.Click -= h)
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.PrevFolder();
+                await FunctionsMapper.PrevArchive();
             })
             .AddTo(_subscriptions);
     }
