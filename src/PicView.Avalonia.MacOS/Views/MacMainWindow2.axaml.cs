@@ -219,10 +219,10 @@ public partial class MacMainWindow2 : Window
         // 3. Fallback: Create a new window (Detaching behavior)
         Task.Run(() =>
         {
-            var newVm = new MainViewModel(parentVm.PlatformService, parentVm.PlatformWindowService)
-            {
-                Tabs = new TabOverviewViewModel(tab)
-            };
+            var newVm = new MainViewModel(parentVm.PlatformService, parentVm.PlatformWindowService);
+            newVm.Tabs.Tabs.Value.Clear();
+            newVm.Tabs.Tabs.Value.Add(tab);
+            newVm.Tabs.SelectTab(tab);
             tab.ParentWindowContext = newVm;
 
             Dispatcher.UIThread.Invoke(() =>
