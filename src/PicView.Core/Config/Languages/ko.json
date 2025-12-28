@@ -295,6 +295,7 @@
   "Reset": "재설정",
   "ResetButtonText": "기본값으로 재설정",
   "ResetZoom": "확대/축소 재설정",
+  "ResetZoomOnChange": "이미지 변경 시 확대/축소 초기화",
   "Resize": "크기 조정",
   "ResizeImage": "이미지 크기 조정",
   "ResizeSettings": "크기 조정 설정",

@@ -295,6 +295,7 @@
   "Reset": "Sıfırla",
   "ResetButtonText": "Varsayılana sıfırla",
   "ResetZoom": "Yakınlaştırmayı sıfırla",
+  "ResetZoomOnChange": "Resim değiştirildiğinde yakınlaştırmayı sıfırla",
   "Resize": "Yeniden boyutlandır",
   "ResizeImage": "Görüntüyü yeniden boyutlandır",
   "ResizeSettings": "Boyutlandırma ayarları",

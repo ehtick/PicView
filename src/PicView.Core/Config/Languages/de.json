@@ -295,6 +295,7 @@
   "Reset": "Zurücksetzen",
   "ResetButtonText": "Auf Standard zurücksetzen",
   "ResetZoom": "Zoom zurücksetzen",
+  "ResetZoomOnChange": "Zoom beim Bildwechsel zurücksetzen",
   "Resize": "Größe ändern",
   "ResizeImage": "Bildgröße ändern",
   "ResizeSettings": "Einstellungen zur Größenänderung",

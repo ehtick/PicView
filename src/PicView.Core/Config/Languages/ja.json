@@ -295,6 +295,7 @@
   "Reset": "リセット",
   "ResetButtonText": "既定値にリセット",
   "ResetZoom": "ズームをリセット",
+  "ResetZoomOnChange": "画像切り替え時にズームをリセット",
   "Resize": "サイズ変更",
   "ResizeImage": "画像のサイズ変更",
   "ResizeSettings": "リサイズ設定",

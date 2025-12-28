@@ -295,6 +295,7 @@
   "Reset": "Visszaállítás",
   "ResetButtonText": "Visszaállítás alapértelmezettre",
   "ResetZoom": "Nagyítás visszaállítása",
+  "ResetZoomOnChange": "Nagyítás visszaállítása képváltáskor",
   "Resize": "Átméretezés",
   "ResizeImage": "Kép átméretezése",
   "ResizeSettings": "Átméretezési beállítások",

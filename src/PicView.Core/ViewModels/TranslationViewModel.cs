@@ -231,6 +231,7 @@ public class TranslationViewModel : IDisposable
         Reset.Value = t.Reset;
         ResetButtonText.Value = t.ResetButtonText;
         ResetZoom.Value = t.ResetZoom;
+        ResetZoomOnChange.Value = t.ResetZoomOnChange;
         Resize.Value = t.Resize;
         ResizeImage.Value = t.ResizeImage;
         ResizeSettings.Value = t.ResizeSettings;
@@ -542,6 +543,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Reset { get; } = new();
     public BindableReactiveProperty<string?> ResetButtonText { get; } = new();
     public BindableReactiveProperty<string?> ResetZoom { get; } = new();
+    public BindableReactiveProperty<string?> ResetZoomOnChange { get; } = new();
     public BindableReactiveProperty<string?> Resize { get; } = new();
     public BindableReactiveProperty<string?> ResizeImage { get; } = new();
     public BindableReactiveProperty<string?> ResizeSettings { get; } = new();

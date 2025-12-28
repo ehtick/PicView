@@ -295,6 +295,7 @@
   "Reset": "重設",
   "ResetButtonText": "重置為默認設置",
   "ResetZoom": "重設縮放",
+  "ResetZoomOnChange": "切換圖片時重設縮放",
   "Resize": "調整尺寸",
   "ResizeImage": "調整影像尺寸",
   "ResizeSettings": "調整大小設定",

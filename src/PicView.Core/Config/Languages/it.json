@@ -295,6 +295,7 @@
   "Reset": "Reimposta",
   "ResetButtonText": "Reimposta alle impostazioni predefinite",
   "ResetZoom": "Ripristina lo zoom",
+  "ResetZoomOnChange": "Ripristina lo zoom al cambio dell'immagine",
   "Resize": "Ridimensionamento",
   "ResizeImage": "Ridimensiona l'immagine",
   "ResizeSettings": "Impostazioni ridimensionamento",

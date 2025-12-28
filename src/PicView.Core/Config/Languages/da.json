@@ -295,6 +295,7 @@
   "Reset": "Nulstil",
   "ResetButtonText": "Nulstil til standard",
   "ResetZoom": "Nulstil zoom",
+  "ResetZoomOnChange": "Nulstil zoom ved skift af billede",
   "Resize": "Ændre størrelse",
   "ResizeImage": "Ændre billedets størrelse",
   "ResizeSettings": "Indstillinger for størrelsesændring",

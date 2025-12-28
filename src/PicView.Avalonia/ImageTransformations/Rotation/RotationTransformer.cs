@@ -109,7 +109,10 @@ public class RotationTransformer(
         imageLayoutTransformControl.RenderTransform = new ScaleTransform(vm.PicViewer.ScaleX.CurrentValue, 1);
         imageLayoutTransformControl.LayoutTransform = new RotateTransform(rotationAngle);
 
-        resetZoom?.Invoke();
+        if (Settings.Zoom.ResetZoomOnChange)
+        {
+            resetZoom?.Invoke();
+        }
     }
 
     public void SetTransform(ExifOrientation? orientation, MagickFormat? format, bool reset = true)

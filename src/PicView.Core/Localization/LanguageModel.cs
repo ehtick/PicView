@@ -305,6 +305,7 @@ public class LanguageModel
     public string? Reset { get; set; }
     public string? ResetButtonText { get; set; }
     public string? ResetZoom { get; set; }
+    public string? ResetZoomOnChange { get; set; }
     public string? Resize { get; set; }
     public string? ResizeImage { get; set; }
     public string? ResizeSettings { get; set; }

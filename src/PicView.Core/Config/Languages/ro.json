@@ -295,6 +295,7 @@
   "Reset": "Resetează",
   "ResetButtonText": "Resetare la implicit",
   "ResetZoom": "Resetare transfocare",
+  "ResetZoomOnChange": "Resetează zoom-ul la schimbarea imaginii",
   "Resize": "Redimensionare",
   "ResizeImage": "Redimensionare imagine",
   "ResizeSettings": "Setări de redimensionare",
