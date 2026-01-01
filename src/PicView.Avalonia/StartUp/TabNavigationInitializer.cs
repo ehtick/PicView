@@ -2,12 +2,13 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.Navigation;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
 
 public static class TabNavigationInitializer
 {
-    public static void Initialize(MainViewModel vm)
+    public static void Initialize(CoreViewModel vm)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -16,7 +17,7 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
-        var galleryService = new AvaloniaGalleryService(vm);
+        var galleryService = new AvaloniaGalleryService(null);
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
@@ -30,11 +31,11 @@ public static class TabNavigationInitializer
         var fileWatcher = new FileWatcherService(vm.PlatformService.CompareStrings, sharedCache);
 
         // 4. Initialize ViewModel
-        vm.Tabs.LoadAndInitialize(galleryService, navService, sharedCache, thumbnailService, fileWatcher);
-        vm.Tabs.ActiveTab.Value.UpdateTabTitle();
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(galleryService, navService, sharedCache, thumbnailService, fileWatcher);
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
     
-    public static void Initialize(MainViewModel vm, FileInfo fileInfo)
+    public static void Initialize(CoreViewModel vm, FileInfo fileInfo)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -43,7 +44,7 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
-        var galleryService = new AvaloniaGalleryService(vm);
+        var galleryService = new AvaloniaGalleryService(null);
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
@@ -57,8 +58,8 @@ public static class TabNavigationInitializer
 
         var files = vm.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        vm.Tabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService, fileWatcher);
-        vm.Tabs.SetParentContext(vm);
-        vm.Tabs.ActiveTab.Value.UpdateTabTitle();
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService, fileWatcher);
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(vm);
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
 }

@@ -3,10 +3,10 @@ using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class MainWindowViewModel : IDisposable
+public class MainWindowViewModel(TranslationViewModel translations) : IDisposable
 {
+    public TranslationViewModel Translation { get;  } = translations; 
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
-    
     public TabOverviewViewModel WindowTabs { get; } = new();
     public GalleryViewModel Gallery  { get; } = new();
     
@@ -37,6 +37,7 @@ public class MainWindowViewModel : IDisposable
 
     public BindableReactiveProperty<object?> ConstrainedImageBackground { get; } = new();
     public BindableReactiveProperty<object> RightControlOffSetMargin { get; } = new(0);
+    public BindableReactiveProperty<object> TopScreenMargin { get; } = new(0);
 
 
     // public BindableReactiveProperty<SizeToContent> SizeToContent { get; } = new();
@@ -71,6 +72,8 @@ public class MainWindowViewModel : IDisposable
     public BindableReactiveProperty<bool> IsTopToolbarShown { get; } = new();
 
     public BindableReactiveProperty<bool> IsBottomToolbarShown { get; } = new();
+    public BindableReactiveProperty<object> BottomScreenMargin { get; } = new(0);
+    public BindableReactiveProperty<object> BottomCornerRadius { get; } = new();
 
     public BindableReactiveProperty<bool> IsEditableTitlebarOpen { get; } = new();
 

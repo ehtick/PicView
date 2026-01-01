@@ -11,6 +11,7 @@ using PicView.Core.FileHandling;
 using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -27,30 +28,30 @@ public static class QuickLoad2
     /// <param name="file">The file, URL, or directory path to be loaded.</param>
     /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async ValueTask QuickLoadAsync(MainViewModel vm, string file, Window window, bool continueFromLeftOff)
+    public static async ValueTask QuickLoadAsync(CoreViewModel vm, string file, Window window, bool continueFromLeftOff)
     {
-        vm.Tabs.ActiveTab.CurrentValue.WindowTitle.Value = vm.Tabs.ActiveTab.CurrentValue.Title.Value =
+        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.CurrentValue.WindowTitle.Value = vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.CurrentValue.Title.Value =
             TranslationManager.Translation.Loading ?? "Loading...";
         
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+  //          vm.MainWindow.IsLoadingIndicatorShown.Value = true;
             Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
-            await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
+                //          await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
             return;
         }
 
         if (file.IsArchive()) // Handle if file exist and is an archive
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+     //       vm.MainWindow.IsLoadingIndicatorShown.Value = true;
             Dispatcher.UIThread.Invoke(window.Show, DispatcherPriority.Send);
-            await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
+          //  await NavigationManager.LoadPicFromArchiveAsync(file, vm).ConfigureAwait(false);
             return;
         }
         Dispatcher.UIThread.Invoke(() =>
         {
-            vm.Tabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+           vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
         }, DispatcherPriority.Send);
     
         var magickImage = new MagickImage();
@@ -72,24 +73,12 @@ public static class QuickLoad2
         TabNavigationInitializer.Initialize(vm, fileInfo);
     }
     
-    private static void SetPicViewerValues(MainViewModel vm, ImageModel imageModel, FileInfo fileInfo)
+    private static void SetPicViewerValues(CoreViewModel vm, ImageModel imageModel, FileInfo fileInfo)
     {
-        vm.Tabs.ActiveTab.Value.Model.Value = imageModel;
-        vm.Tabs.ActiveTab.Value.Initialize();
-        
-        // Legacy, delete later
-        vm.PicViewer.FileInfo.Value = fileInfo;
-        vm.PicViewer.GetIndex.Value = NavigationManager.GetNonZeroIndex;
-        vm.PicViewer.Index.Value = NavigationManager.GetCurrentIndex;
-        
-        vm.PicViewer.ImageSource.Value = imageModel.Image;
-        vm.PicViewer.ImageType.Value = imageModel.ImageType;
-        vm.PicViewer.RotationAngle.Value = 0;
-        vm.PicViewer.PixelWidth.Value = imageModel.PixelWidth;
-        vm.PicViewer.PixelHeight.Value = imageModel.PixelHeight;
-        vm.PicViewer.Format.Value = imageModel.Format;
-        vm.PicViewer.ExifOrientation.Value = imageModel.Orientation;
+       vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model.Value = imageModel;
+       vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Initialize();
         
         Settings.StartUp.LastFile = fileInfo.FullName;
+        vm.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
     }
 }

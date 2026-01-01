@@ -16,7 +16,7 @@ public partial class RotationContextMenu : ContextMenu
 
     public void UpdateSubscription()
     {
-        Observable.EveryValueChanged(this, x => IsOpen, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(this, x => IsOpen, UIHelper2.GetFrameProvider)
             .Subscribe(_ => { UpdateRotation(); });
     }
     

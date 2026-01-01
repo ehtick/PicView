@@ -6,23 +6,22 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Crop;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
-using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.UI.FileHistory;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Conversion;
-using PicView.Core.FileHistory;
+using PicView.Core.ViewModels;
 using R3;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Views.Main;
 
 public partial class MainView3 : UserControl
 {
-    public FileHistoryMenuController? FileHistoryMenuController;
-    
     public MainView3()
     {
         InitializeComponent();
@@ -55,22 +54,42 @@ public partial class MainView3 : UserControl
                 }
             }
             
-            if (DataContext is not MainViewModel vm)
-            {
-                return;
-            }
-            Observable.EveryValueChanged(vm.Tabs, model => model.IsTabPanelVisible.Value)
-                .Subscribe(b =>
-                {
-                    Margin = new Thickness(0, b ? 32 : 0, 0, 0);
-                });
+            //MainTabControl.TabDetached += MainTabControlOnTabDetached;
+            MainTabControl.TabCreated += MainTabControlOnTabCreated;
+            MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
 
             // Setup hover fade buttons
-            _ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
+            //_ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
 
             PointerWheelChanged += async (_, e) =>
-                await MouseShortcuts2.HandlePointerWheelChanged(e, DataContext as MainViewModel).ConfigureAwait(false);
+                await MouseShortcuts2.HandlePointerWheelChanged(e, DataContext as MainWindowViewModel).ConfigureAwait(false);
         };
+    }
+    
+    private void MainTabControlOnTabCreated(object? sender, TabCreatedEventArgs e)
+    {
+        // Only set the StartUpMenu if the View is currently null.
+        // This prevents overwriting the view (e.g. an image) when reordering tabs,
+        // as reordering triggers the TabCreated event again by recreating containers.
+        if (e.CreatedItem is TabViewModel { CurrentView.Value: null } tabViewModel)
+        {
+            tabViewModel.CurrentView.Value = new StartUpMenu();
+        }
+    }
+    private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        if (e.AddedItems[0] is not TabViewModel tab)
+        {
+            return;
+        }
+
+        vm.WindowTabs.SelectTab(tab);
+        tab.UpdateTabTitle();
     }
 
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)
@@ -131,9 +150,6 @@ public partial class MainView3 : UserControl
             vm.MainWindow.ChangeCtrlZoomImage.Value = isNavigatingWithCtrl ? leftRightArrowsImage as DrawingImage : scanEyeImage as DrawingImage;
         });
         
-        // Update file history menu items in Dispatcher with low priority to avoid slowdown
-        await Dispatcher.UIThread.InvokeAsync(() => FileHistoryMenuController?.UpdateFileHistoryMenu(),
-            DispatcherPriority.Background);
     }
 
     private async Task Drop(object? sender, DragEventArgs e)

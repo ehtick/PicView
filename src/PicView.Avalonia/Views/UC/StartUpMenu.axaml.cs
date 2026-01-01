@@ -157,7 +157,7 @@ private async ValueTask OpenLastButtonOnClick()
     {
         var (vm, tab) = await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            if (DataContext is not TabViewModel currentTab || ParentContext is not { } parentVm)
+            if (DataContext is not TabViewModel { ParentWindowContext: CoreViewModel parentVm } currentTab)
             {
                 return (null, null);
             }
@@ -168,7 +168,7 @@ private async ValueTask OpenLastButtonOnClick()
 
         if (vm is not null && tab is not null)
         {
-            await vm.Tabs.LoadFromStringAsync(fileToLoad, tab).ConfigureAwait(false);
+            await vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromStringAsync(fileToLoad, tab).ConfigureAwait(false);
         }
     }
     catch (Exception e)

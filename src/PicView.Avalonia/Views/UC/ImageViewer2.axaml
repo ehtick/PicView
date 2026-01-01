@@ -3,7 +3,6 @@
     x:DataType="viewModels1:TabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <LayoutTransformControl x:Name="ImageLayoutTransformControl">
@@ -15,7 +14,7 @@
                     VerticalScrollBarVisibility="Disabled"
                     x:Name="ImageScrollViewer">
                     <!--  ReSharper disable once Xaml.PossibleNullReferenceException  -->
-                    <Border Background="{Binding $parent[Window].((viewModels:MainViewModel)DataContext).MainWindow.ConstrainedImageBackground.Value}" x:Name="MainBorder">
+                    <Border x:Name="MainBorder">
                         <UniformGrid Rows="1">
                             <customControls:PicBox2 Source="{CompiledBinding Model.Value.Image}" x:Name="MainImage" />
                             <customControls:PicBox2

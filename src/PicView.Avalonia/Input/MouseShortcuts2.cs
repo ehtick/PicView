@@ -8,8 +8,8 @@ using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Input;
 
@@ -29,17 +29,16 @@ public static class MouseShortcuts2
         _zoomOut = zoomOut;
     }
 
-    public static async Task HandlePointerWheelChanged(PointerWheelEventArgs e, MainViewModel vm)
+    public static async Task HandlePointerWheelChanged(PointerWheelEventArgs e, MainWindowViewModel vm)
     {
         // Don't handle mouse wheel if the view is not the image viewer
         // or a dialog is opened
         var shouldReturn = await Dispatcher.UIThread.InvokeAsync(() =>
-            vm.Tabs.ActiveTab.Value.CurrentView.Value is not ImageViewer2 || DialogManager.IsDialogOpen);
+            vm.WindowTabs.ActiveTab.Value.CurrentView.Value is not ImageViewer2 || DialogManager.IsDialogOpen);
         if (shouldReturn)
         {
             return;
         }
-
         
         e.Handled = true;
 
@@ -148,7 +147,7 @@ public static class MouseShortcuts2
         }
     }
 
-    private static async Task ScrollOrNavigateAsync(PointerWheelEventArgs e, bool reverse, MainViewModel mainViewModel)
+    private static async Task ScrollOrNavigateAsync(PointerWheelEventArgs e, bool reverse, MainWindowViewModel mainViewModel)
     {
         if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
         {
@@ -172,7 +171,7 @@ public static class MouseShortcuts2
         }
     }
 
-    private static async Task LoadNextPicAsync(bool reverse, MainViewModel mainViewModel)
+    private static async Task LoadNextPicAsync(bool reverse, MainWindowViewModel mainViewModel)
     {
         if (Settings.Zoom.IsUsingTouchPad)
         {
@@ -180,7 +179,15 @@ public static class MouseShortcuts2
         }
 
         var next = reverse ? Settings.Zoom.HorizontalReverseScroll : !Settings.Zoom.HorizontalReverseScroll;
-        await NavigationManager.Navigate(next, mainViewModel, CancellationToken.None).ConfigureAwait(false);
+        if (next)
+        {
+            await mainViewModel.WindowTabs.NextFile().ConfigureAwait(false);
+        }
+        else
+        {
+            await mainViewModel.WindowTabs.PrevFile().ConfigureAwait(false);
+
+        }
     }
     
     public static async Task MainWindow_PointerPressed(PointerPressedEventArgs e)

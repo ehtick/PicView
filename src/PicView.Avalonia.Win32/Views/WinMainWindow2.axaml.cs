@@ -1,94 +1,85 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Layout;
-using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using Clowd.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
-using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
-using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.Win32.WindowImpl;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.FileAssociations;
-using PicView.Core.FileSorting;
 using PicView.Core.Localization;
-using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
-using PicView.Core.WindowsNT;
-using PicView.Core.WindowsNT.Copy;
-using PicView.Core.WindowsNT.FileAssociation;
-using PicView.Core.WindowsNT.FileHandling;
-using PicView.Core.WindowsNT.Taskbar;
-using PicView.Core.WindowsNT.Wallpaper;
 using R3;
 using R3.Avalonia;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatformWindowService
+public partial class WinMainWindow2 : Window
 {
-    private static WindowInitializer? _windowInitializer;
     private readonly CompositeDisposable _disposables = new();
     private readonly AvaloniaRenderingFrameProvider _frameProvider;
-    private TaskbarProgress? _taskbarProgress;
-    private MainViewModel? _vm;
+    private MainWindowViewModel _mainWindowViewModel;
 
     public WinMainWindow2()
     {
-        // initialize RenderingFrameProvider
-        _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
-        UIHelper.SetFrameProvider(_frameProvider);
-
-        Initialization();
-    }
-
-    public WinMainWindow2(bool mainWindowAlreadyExists)
-    {
-        if (mainWindowAlreadyExists)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
-            // initialize RenderingFrameProvider
-            _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
-            UIHelper.SetFrameProvider(_frameProvider);
-
-            _vm = new MainViewModel(this, this);
-            DataContext = _vm;
-
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-
-            ThemeManager.DetermineTheme(Application.Current, true);
-            StartUpHelper2.StartUpBlank(_vm, true, false, desktop, this);
-            _windowInitializer = new WindowInitializer();
-
-            Initialization();
             return;
         }
-
-        var settingsExists = LoadSettings();
-
+        _mainWindowViewModel = new MainWindowViewModel(core.Translation);
+        DataContext = _mainWindowViewModel;
+        
         // initialize RenderingFrameProvider
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
-        UIHelper.SetFrameProvider(_frameProvider);
+        UIHelper2.SetFrameProvider(_frameProvider);
 
         Initialization();
-        WindowInitialization(settingsExists);
     }
+
+    // public WinMainWindow2(bool mainWindowAlreadyExists)
+    // {
+    //     if (Application.Current.DataContext is not CoreViewModel core)
+    //     {
+    //         return;
+    //     }
+    //     _mainWindowViewModel = new MainWindowViewModel(core.Translation);
+    //     DataContext = _mainWindowViewModel;
+    //     
+    //     if (mainWindowAlreadyExists)
+    //     {
+    //         // initialize RenderingFrameProvider
+    //         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
+    //         UIHelper.SetFrameProvider(_frameProvider);
+    //
+    //         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+    //         {
+    //             return;
+    //         }
+    //         
+    //         ThemeManager.DetermineTheme(Application.Current, true);
+    //         StartUpHelper2.StartUpBlank(Application.Current.DataContext as CoreViewModel, true, false, desktop, this);
+    //
+    //         Initialization();
+    //         return;
+    //     }
+    //
+    //     var settingsExists = LoadSettings();
+    //
+    //     // initialize RenderingFrameProvider
+    //     _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
+    //     UIHelper.SetFrameProvider(_frameProvider);
+    //
+    //     Initialization();
+    //     WindowInitialization(settingsExists);
+    // }
 
     private void WindowInitialization(bool settingsExists)
     {
         TranslationManager.Init();
-
-        _vm = new MainViewModel(this, this);
-        DataContext = _vm;
 
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -96,8 +87,8 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         }
 
         ThemeManager.DetermineTheme(Application.Current, settingsExists);
-        StartUpHelper2.StartWithArguments(_vm, settingsExists, desktop, this);
-        _windowInitializer = new WindowInitializer();
+        // StartUpHelper2.StartWithArguments(_vm, settingsExists, desktop, this);
+        // _windowInitializer = new WindowInitializer();
     }
 
     private void Initialization()
@@ -111,15 +102,10 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
     {
         Loaded += delegate
         {
-            if (DataContext is not MainViewModel vm)
+            if (Application.Current.DataContext is not CoreViewModel vm)
             {
                 return;
             }
-
-            Observable.EveryValueChanged(MainTabControl.Items, x => x.Count).Subscribe(count =>
-            {
-                vm.Tabs.IsTabPanelVisible.Value = count > 1;
-            }).AddTo(_disposables);
 
             // Keep window position when resizing
             ClientSizeProperty.Changed.ToObservable()
@@ -168,57 +154,28 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
                 }
             });
 
-            MainTabControl.TabDetached += MainTabControlOnTabDetached;
-            MainTabControl.TabCreated += MainTabControlOnTabCreated;
-            MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
-
-            var dropDownMenu = new DropDownMenu
-            {
-                Name = "DropDownMenu",
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(3, 0, 3, 0),
-                IsVisible = false,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                ZIndex = 2
-            };
-            MainPanel.Children.Add(dropDownMenu);
+            UIHelper2.AddDropDownMenu();
 
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>
             {
-                if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
+                if (vm.MainWindows.ActiveWindow.CurrentValue.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
                 {
                     Titlebar.EditableTitlebar.CloseTitlebar();
                 }
             };
+            UIHelper2.GetMainTabControl.TabDetached += MainTabControlOnTabDetached;
+            Activated += OnActivated;
         };
     }
 
-    private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void OnActivated(object? sender, EventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
-
-        if (e.AddedItems[0] is not TabViewModel tab)
-        {
-            return;
-        }
-
-        vm.Tabs.SelectTab(tab);
-        tab.UpdateTabTitle();
-    }
-
-    private void MainTabControlOnTabCreated(object? sender, TabCreatedEventArgs e)
-    {
-        // Only set the StartUpMenu if the View is currently null.
-        // This prevents overwriting the view (e.g. an image) when reordering tabs,
-        // as reordering triggers the TabCreated event again by recreating containers.
-        if (e.CreatedItem is TabViewModel { CurrentView.Value: null } tabViewModel)
-        {
-            tabViewModel.CurrentView.Value = new StartUpMenu();
-        }
+        core.MainWindows.ActiveWindow.Value = DataContext as MainWindowViewModel;
     }
 
     private void MainTabControlOnTabDetached(object? sender, TabDetachEventArgs e)
@@ -228,7 +185,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             return;
         }
 
-        if (DataContext is not MainViewModel parentVm)
+        if (DataContext is not MainWindowViewModel parentVm)
         {
             return;
         }
@@ -267,7 +224,7 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             }
 
             // Need to properly remove it from the previous location
-            parentVm.Tabs.RemoveTab(tab);
+            parentVm.WindowTabs.RemoveTab(tab);
 
             // Add to new window (if not already added by drag preview)
             if (!targetVm.Tabs.Tabs.Value.Contains(tab))
@@ -292,18 +249,25 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         // 3. Fallback: Create a new window (Detaching behavior)
         Task.Run(() =>
         {
-            MainViewModel? newVm = null;
+            MainWindowViewModel? newVm = null;
             Dispatcher.UIThread.Invoke(() =>
             {
                 // Create a new window with the detached tab
-                var newWindow = new WinMainWindow2(true)
+                var newWindow = new WinMainWindow2
                 {
                     Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
                     Width = Width,
                     Height = Height
                 };
+                if (Application.Current.DataContext is not CoreViewModel core)
+                {
+                    return;
+                }
+                newVm = newWindow.DataContext as MainWindowViewModel;
+                core.MainWindows.MainWindows.Add(newVm);
+                core.MainWindows.ActiveWindow.Value = newVm;
+                StartUpHelper2.StartUpBlank(core, true, false, desktop, newWindow);
 
-                newVm = newWindow.DataContext as MainViewModel;
 
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
@@ -312,32 +276,33 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
                 }
             }, DispatcherPriority.Send);
 
-            newVm.Tabs.Tabs.Value[0] = tab;
+            newVm.WindowTabs.Tabs.Value[0] = tab;
 
             // Initialize the NEW window's tabs with the OLD window's services
             // This ensures both windows share the same memory cache
-            if (parentVm.Tabs.SharedCache is not { } cache ||
-                parentVm.Tabs.SharedNavigation is not { } nav ||
-                parentVm.Tabs.SharedThumbnailLoader is not { } thumb ||
-                parentVm.Tabs.SharedGallery is not { } gallery ||
-                parentVm.Tabs.SharedFileWatcher is not { } fileWatcher)
+            if (parentVm.WindowTabs.SharedCache is not { } cache ||
+                parentVm.WindowTabs.SharedNavigation is not { } nav ||
+                parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
+                parentVm.WindowTabs.SharedGallery is not { } gallery ||
+                parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
             {
                 return;
             }
 
-            if (newVm.Tabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
+            if (newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
             {
-                newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery,
+                newVm.WindowTabs.LoadAndInitializeFromPath(newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery,
                     nav,
                     cache, thumb, fileWatcher);
             }
             else
             {
-                newVm.Tabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
+                newVm.WindowTabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
             }
 
             // Need to properly remove it from the previous location
-            parentVm.Tabs.RemoveTab(tab);
+            parentVm.WindowTabs.RemoveTab(tab);
+            parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
         });
     }
 
@@ -364,8 +329,12 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
             return;
         }
 
-        var wm = (MainViewModel)DataContext;
-        WindowResizing.SetSize(wm);
+        if (DataContext is not MainViewModel vm)
+        {
+            return;
+        }
+
+        WindowResizing.SetSize(vm);
     }
 
     protected override void OnClosed(EventArgs e)
@@ -374,204 +343,4 @@ public partial class WinMainWindow2 : Window, IPlatformSpecificService, IPlatfor
         _disposables.Dispose();
         base.OnClosed(e);
     }
-
-    #region Interface Implementations
-
-    public int CombinedTitleButtonsWidth
-    {
-        get => (int)(Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen
-            ? OffScreenMargin.Left + OffScreenMargin.Right + field
-            : field);
-        set;
-    } = 185;
-
-    public Task<bool> DeleteFile(string path, bool recycle) =>
-        Task.Run(() => WinFileHelper.DeleteFile(path, recycle));
-
-    public void SetTaskbarProgress(ulong progress, ulong maximum)
-    {
-        if (_taskbarProgress is null)
-        {
-            var handle = TryGetPlatformHandle()?.Handle;
-
-            // Ensure the handle is valid before proceeding
-            if (handle == IntPtr.Zero || handle is null)
-            {
-                return;
-            }
-
-            _taskbarProgress = new TaskbarProgress(handle.Value);
-        }
-
-        _taskbarProgress.SetProgress(progress, maximum);
-    }
-
-    public void StopTaskbarProgress()
-    {
-        var handle = TryGetPlatformHandle()?.Handle;
-
-        // Ensure the handle is valid before proceeding
-        if (handle == IntPtr.Zero || handle is null)
-        {
-            return;
-        }
-
-        _taskbarProgress?.StopProgress();
-
-        _taskbarProgress = null;
-    }
-
-    public void SetCursorPos(int x, int y)
-    {
-        NativeMethods.SetCursorPos(x, y);
-    }
-
-    public List<FileInfo> GetFiles(FileInfo fileInfo)
-    {
-        return FileListRetriever.RetrieveFiles(fileInfo, CompareStrings);
-    }
-
-    public int CompareStrings(string str1, string str2)
-    {
-        return NativeMethods.StrCmpLogicalW(str1, str2);
-    }
-
-    public void OpenWith(string path)
-    {
-        ProcessHelper.OpenWith(path);
-    }
-
-    public void LocateOnDisk(string path)
-    {
-        var folder = Path.GetDirectoryName(path);
-        FileExplorer.OpenFolderAndSelectFile(folder, path);
-    }
-
-    public void ShowFileProperties(string path)
-    {
-        FileExplorer.ShowFileProperties(path);
-    }
-
-    public void Print(string path)
-    {
-        if (Settings.UIProperties.ShowPrintPreview)
-        {
-            _windowInitializer?.ShowPrintPreviewWindow(_vm, path);
-        }
-        else
-        {
-            ProcessHelper.Print(path);
-        }
-    }
-
-    public async Task SetAsWallpaper(string path, int wallpaperStyle)
-    {
-        await Task.Run(() =>
-        {
-            var style = (WallpaperHelper.WallpaperStyle)wallpaperStyle;
-            WallpaperHelper.SetDesktopWallpaper(path, style);
-        });
-    }
-
-    public bool SetAsLockScreen(string path)
-    {
-        return false;
-        // return LockscreenHelper.SetLockScreenImage(path);
-    }
-
-    public bool CopyFile(string path)
-    {
-        return Win32Clipboard.CopyFileToClipboard(false, path);
-    }
-
-    public bool CutFile(string path)
-    {
-        return Win32Clipboard.CopyFileToClipboard(true, path);
-    }
-
-    public async Task CopyImageToClipboard(Bitmap bitmap)
-    {
-        await ClipboardAvalonia.SetImageAsync(bitmap).ConfigureAwait(false);
-    }
-
-    public async Task<Bitmap?> GetImageFromClipboard()
-    {
-        return await ClipboardAvalonia.GetImageAsync().ConfigureAwait(false);
-    }
-
-    public async Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)
-    {
-        return await ArchiveExtractionHelper.ExtractWithLocalSoftwareAsync(path, tempDirectory);
-    }
-
-    public string DefaultJsonKeyMap()
-    {
-        return WindowsKeybindings.DefaultKeybindings;
-    }
-
-    public void InitiateFileAssociationService()
-    {
-        var iIFileAssociationService = new WindowsFileAssociationService();
-        FileAssociationManager.Initialize(iIFileAssociationService);
-    }
-
-    public void DisableScreensaver()
-    {
-        NativeMethods.DisableScreensaver();
-    }
-
-    public void EnableScreensaver()
-    {
-        NativeMethods.EnableScreensaver();
-    }
-
-    #endregion
-
-    #region Window interface implementations
-
-    public void ShowAboutWindow() =>
-        _windowInitializer?.ShowAboutWindow(_vm);
-
-    public async Task ShowImageInfoWindow() =>
-        await _windowInitializer?.ShowImageInfoWindow(_vm);
-
-    public async Task ShowKeybindingsWindow() =>
-        await _windowInitializer?.ShowKeybindingsWindow(_vm);
-
-    public async Task ShowSettingsWindow() =>
-        await _windowInitializer?.ShowSettingsWindow(_vm);
-
-    public void ShowSingleImageResizeWindow() =>
-        _windowInitializer?.ShowSingleImageResizeWindow(_vm);
-
-    public async Task ShowBatchResizeWindow() =>
-        await _windowInitializer?.ShowBatchResizeWindow(_vm);
-
-    public void ShowEffectsWindow() =>
-        _windowInitializer?.ShowEffectsWindow(_vm);
-
-    public void ShowConvertWindow() =>
-        _windowInitializer?.ShowConvertWindow(_vm);
-
-    /// <inheritdoc />
-    public async Task Maximize(bool saveSetting = true) =>
-        await Win32Window.Maximize(this, _vm, saveSetting);
-
-    /// <inheritdoc />
-    public async Task MaximizeRestore(bool saveSetting = true) =>
-        await Win32Window.ToggleMaximize(this, _vm, saveSetting);
-
-    /// <inheritdoc />
-    public async Task Fullscreen(bool saveSetting = true) =>
-        await Win32Window.Fullscreen(this, _vm, saveSetting);
-
-    /// <inheritdoc />
-    public async Task ToggleFullscreen(bool saveSetting = true) =>
-        await Win32Window.ToggleFullscreen(this, _vm, saveSetting);
-
-    /// <inheritdoc />
-    public async Task Restore() =>
-        await Win32Window.Restore(this, _vm);
-
-    #endregion
 }

@@ -116,6 +116,7 @@ public class TabOverviewViewModel
         }
         SharedCache.RegisterOwner(tab.Id);
         SelectTab(tab);
+        IsTabPanelVisible.Value = Tabs.CurrentValue.Count > 1;
     }
     
     public void SetParentContext(object parent)

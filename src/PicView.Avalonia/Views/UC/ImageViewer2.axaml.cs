@@ -10,7 +10,6 @@ using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Exif;
 using PicView.Core.ViewModels;
 using R3;
@@ -49,12 +48,9 @@ public partial class ImageViewer2 : UserControl
     {
         if (sender is Control control)
         {
-            if (control.GetVisualRoot() is Window window)
+            if (control.GetVisualRoot() is Window { DataContext: MainWindowViewModel vm })
             {
-                if (window.DataContext is MainViewModel vm)
-                {
-                    await MouseShortcuts2.HandlePointerWheelChanged(e, vm);
-                }
+                await MouseShortcuts2.HandlePointerWheelChanged(e, vm);
             }
         }
     }

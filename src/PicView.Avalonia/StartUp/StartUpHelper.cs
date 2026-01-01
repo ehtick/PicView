@@ -144,7 +144,7 @@ public static class StartUpHelper
         SetWindowEventHandlers(window);
         HandleThemeUpdates(vm);
 
-        UIHelper.SetControls(window);
+        UIHelper2.SetControls(window);
         Task.Run(() =>
         {
             _ = FileHistoryManager.InitializeAsync();

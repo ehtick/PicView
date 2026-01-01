@@ -2,9 +2,8 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
-using PicView.Core.ViewModels;
 using R3;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Views.UC.Menus;
 
@@ -19,11 +18,11 @@ public partial class DropDownMenu : AnimatedMenu
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
             return;
         }
-        Observable.EveryValueChanged(vm.MainWindow.TopTitlebarViewModel.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper.GetFrameProvider)
+        Observable.EveryValueChanged(vm.TopTitlebarViewModel.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper2.GetFrameProvider)
             .Subscribe(i =>
             {
                 MainCarousel.SelectedIndex = i;

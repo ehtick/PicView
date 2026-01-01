@@ -133,10 +133,6 @@
             <DependentUpon>InterfaceConfigurationView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\Main\MainView2.axaml.cs">
-            <DependentUpon>MainView2.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\UC\BottomBar2.axaml.cs">
             <DependentUpon>BottomBar2.axaml</DependentUpon>
             <SubType>Code</SubType>

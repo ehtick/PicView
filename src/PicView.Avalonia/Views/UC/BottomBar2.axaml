@@ -1,13 +1,13 @@
 <UserControl
-    Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
-    IsVisible="{CompiledBinding MainWindow.IsBottomToolbarShown.Value}"
-    Margin="{CompiledBinding MainWindow.BottomScreenMargin.Value,
+    Height="{CompiledBinding BottombarHeight.Value}"
+    IsVisible="{CompiledBinding IsBottomToolbarShown.Value}"
+    Margin="{CompiledBinding BottomScreenMargin.Value,
                              Mode=OneWay}"
     x:Class="PicView.Avalonia.Views.UC.BottomBar2"
-    x:DataType="viewModels:MainViewModel"
+    x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Resources>
@@ -18,10 +18,10 @@
 
             <!--  Next  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.NextFile}"
-                Header="{CompiledBinding Translation.NextImage,
+                Command="{CompiledBinding WindowTabs.NextFile}"
+                Header="{CompiledBinding Translation.NextImage.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
@@ -34,11 +34,9 @@
 
             <!--  Prev  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.PrevFile}"
+                Command="{CompiledBinding WindowTabs.PrevFile}"
                 Header="{CompiledBinding Translation.PrevImage,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding PicViewer.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -53,10 +51,9 @@
 
             <!--  Next 10  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.Prev10}"
                 Header="{CompiledBinding Translation.AdvanceBy10Images,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -68,10 +65,9 @@
 
             <!--  Next 100  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.Next100}"
                 Header="{CompiledBinding Translation.AdvanceBy100Images.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -83,10 +79,9 @@
 
             <!--  Prev 10  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.Prev10}"
                 Header="{CompiledBinding Translation.GoBackBy10Images.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -98,10 +93,9 @@
 
             <!--  Prev 100  -->
             <MenuItem
-                Command="{CompiledBinding Tabs.Prev100}"
                 Header="{CompiledBinding Translation.GoBackBy100Images.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -114,11 +108,7 @@
             <Separator />
 
             <!--  First Image  -->
-            <MenuItem
-                Command="{CompiledBinding Tabs.FirstFile}"
-                Header="{CompiledBinding Translation.FirstImage.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}">
+            <MenuItem Header="{CompiledBinding Translation.FirstImage.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -128,11 +118,7 @@
             </MenuItem>
 
             <!--  Last Image  -->
-            <MenuItem
-                Command="{CompiledBinding Tabs.LastFile}"
-                Header="{CompiledBinding Translation.LastImage.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}">
+            <MenuItem Header="{CompiledBinding Translation.LastImage.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -144,12 +130,7 @@
             <Separator />
 
             <!--  Next folder  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.NextFolderCommand}"
-                Header="{CompiledBinding Translation.NextFolder.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+            <MenuItem Header="{CompiledBinding Translation.NextFolder.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -159,12 +140,7 @@
             </MenuItem>
 
             <!--  Prev folder  -->
-            <MenuItem
-                Command="{CompiledBinding Navigation.PreviousFolderCommand}"
-                Header="{CompiledBinding Translation.PrevFolder.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+            <MenuItem Header="{CompiledBinding Translation.PrevFolder.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -176,12 +152,7 @@
             <Separator />
 
             <!--  Slideshow  -->
-            <MenuItem
-                Command="{CompiledBinding Tools.StartSlideShowTask}"
-                Header="{CompiledBinding Translation.Slideshow.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+            <MenuItem Header="{CompiledBinding Translation.Slideshow.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -193,7 +164,7 @@
             <Separator />
 
             <!--  Hide bottom bar  -->
-            <MenuItem Command="{CompiledBinding Tools.ToggleBottomNavBarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
+            <MenuItem Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -206,11 +177,7 @@
         <ContextMenu x:Key="ToolsMenu">
 
             <!--  Show image gallery  -->
-            <MenuItem
-                Command="{CompiledBinding Gallery.ToggleGallery}"
-                Header="{CompiledBinding Translation.ShowImageGallery.Value,
-                                         Mode=OneWay}"
-                StaysOpenOnClick="True">
+            <MenuItem Header="{CompiledBinding Translation.ShowImageGallery.Value, Mode=OneWay}" StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -262,11 +229,7 @@
             </MenuItem>
 
             <!--  Resize image  -->
-            <MenuItem
-                Command="{CompiledBinding Window.ShowBatchResizeWindow}"
-                Header="{CompiledBinding Translation.ResizeImage,
-                                         Mode=OneWay}"
-                StaysOpenOnClick="True">
+            <MenuItem Header="{CompiledBinding Translation.ResizeImage, Mode=OneWay}" StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -276,11 +239,7 @@
             </MenuItem>
 
             <!--  Effects  -->
-            <MenuItem
-                Command="{CompiledBinding Window.ShowEffectsWindow}"
-                Header="{CompiledBinding Translation.Effects,
-                                         Mode=OneWay}"
-                StaysOpenOnClick="True">
+            <MenuItem Header="{CompiledBinding Translation.Effects, Mode=OneWay}" StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -292,7 +251,7 @@
 
             <Separator />
             <!--  Hide bottom bar  -->
-            <MenuItem Command="{CompiledBinding Tools.ToggleBottomNavBarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
+            <MenuItem Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Height="12"
@@ -308,8 +267,7 @@
         Background="{DynamicResource WindowBackgroundColor}"
         BorderBrush="{DynamicResource WindowBorderColor}"
         BorderThickness="0,1,0,0"
-        CornerRadius="{CompiledBinding MainWindow.BottomCornerRadius.Value}"
-        Height="{CompiledBinding MainWindow.BottombarHeight.Value,
+        Height="{CompiledBinding BottombarHeight.Value,
                                  Mode=OneWay}"
         x:Name="MainBottomBorder">
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -319,10 +277,9 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.OpenFileCommand}"
                 Data="{StaticResource FolderGeometry}"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="17"
                 IconWidth="20"
                 IsTabStop="False"
@@ -336,7 +293,6 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Window.ShowImageInfoWindow}"
                 ContextMenu="{StaticResource ToolsMenu}"
                 Data="{StaticResource ImageInfoGeometry}"
                 Foreground="{StaticResource ImageMenuBrush}"
@@ -354,12 +310,11 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.ZoomOutCommand}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 Icon="{StaticResource ZoomOutImage}"
                 IconHeight="16"
                 IconWidth="18"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
@@ -372,12 +327,11 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.ZoomInCommand}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 Icon="{StaticResource ZoomAltImage}"
                 IconHeight="16"
                 IconWidth="18"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
@@ -390,15 +344,15 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="hover"
-                Command="{CompiledBinding Tabs.PrevFile}"
+                Command="{CompiledBinding WindowTabs.PrevFile}"
                 ContextMenu="{StaticResource MainContextMenu}"
                 Data="{StaticResource FilledArrowLeftGeometry}"
                 Focusable="False"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="PreviousButton" />
@@ -408,15 +362,15 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="hover"
-                Command="{CompiledBinding Tabs.NextFile}"
+                Command="{CompiledBinding WindowTabs.NextFile}"
                 ContextMenu="{StaticResource MainContextMenu}"
                 Data="{StaticResource FilledArrowRightGeometry}"
                 Focusable="False"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding Tabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="NextButton" />
@@ -424,14 +378,13 @@
             <customControls:IconButton
                 Background="{DynamicResource AltBackgroundColor}"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.RotateRightCommand}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 Icon="{StaticResource RefreshCcwDot}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
@@ -446,14 +399,13 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.FlipCommand}"
                 Data="{StaticResource FlipGeometry}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
@@ -461,24 +413,19 @@
                 ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
                                               Mode=OneWay}"
                 Width="38"
-                x:Name="FlipButton">
-                <Button.RenderTransform>
-                    <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" />
-                </Button.RenderTransform>
-            </customControls:IconButton>
+                x:Name="FlipButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Tools.CropCommand}"
                 Data="{StaticResource CropGeometry}"
                 Foreground="{StaticResource ImageMenuBrush}"
                 Height="25"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding Tabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
@@ -491,10 +438,9 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding Window.ShowSettingsWindow}"
                 Data="{StaticResource CogGeometry}"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding MainWindow.BottombarHeight.Value}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="16"
                 IconWidth="16"
                 IsTabStop="False"

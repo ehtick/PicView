@@ -190,7 +190,7 @@ public partial class ZoomPreviewer2 : UserControl
             return;
         }
 
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
+        if (UIHelper2.GetMainView.DataContext is MainViewModel vm)
         {
             if (vm.HoverbarViewModel.IsHoverbarVisible.CurrentValue && UIHelper.GetHoverBar?.Opacity > 0)
             {

@@ -1,11 +1,10 @@
 ﻿<UserControl
     Focusable="False"
     x:Class="PicView.Avalonia.Views.UC.ZoomPreviewer2"
-    x:DataType="viewModels1:TabViewModel"
+    x:DataType="vm:TabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border
         Background="{DynamicResource MainBackgroundColor}"
@@ -22,7 +21,6 @@
                 <Grid ColumnDefinitions="*,*">
                     <customControls:IconButton
                         Classes="altHover mainBtn"
-                        Command="{CompiledBinding $parent[Window].((vm:MainViewModel)DataContext).Tools.ResetZoomCommand}"
                         CornerRadius="6,0,0,0"
                         Data="{StaticResource ReloadGeometry}"
                         Foreground="{DynamicResource MainTextColor}"
@@ -31,7 +29,7 @@
                         IconHeight="11"
                         IconWidth="11"
                         Padding="1"
-                        ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainViewModel)DataContext).Translation.ResetZoom.Value}"
+                        ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.ResetZoom.Value}"
                         x:Name="ResetZoomButton" />
 
                     <customControls:IconButton
@@ -44,7 +42,7 @@
                         IconHeight="10"
                         IconWidth="10"
                         Padding="1"
-                        ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainViewModel)DataContext).Translation.Close.Value}"
+                        ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.Close.Value}"
                         x:Name="CloseButton" />
                 </Grid>
             </Border>
@@ -57,20 +55,13 @@
                         ImageType="{CompiledBinding Model.Value.ImageType,
                                                     Mode=OneWay}"
                         Source="{CompiledBinding Model.Value.Image}"
-                        x:Name="OverlayImage">
-                        <customControls:PicBox.RenderTransform>
-                            <ScaleTransform ScaleX="{CompiledBinding $parent[Window].((vm:MainViewModel)DataContext).PicViewer.ScaleX.Value}" />
-                        </customControls:PicBox.RenderTransform>
-                    </customControls:PicBox>
+                        x:Name="OverlayImage" />
                     <Canvas x:Name="OverlayCanvas">
                         <Rectangle
                             Fill="Transparent"
                             Stroke="{DynamicResource AccentColor}"
                             StrokeThickness="2"
                             x:Name="ViewportBorder" />
-                        <Canvas.RenderTransform>
-                            <ScaleTransform ScaleX="{CompiledBinding $parent[Window].((vm:MainViewModel)DataContext).PicViewer.ScaleX.Value}" />
-                        </Canvas.RenderTransform>
                     </Canvas>
                 </Panel>
             </LayoutTransformControl>

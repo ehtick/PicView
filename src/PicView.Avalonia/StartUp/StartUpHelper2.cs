@@ -19,13 +19,15 @@ using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileHistory;
+using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
 
 public static class StartUpHelper2
 {
-    public static void StartWithArguments(MainViewModel vm, bool settingsExists,
+    public static void StartWithArguments(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
         Window window)
     {
@@ -77,7 +79,7 @@ public static class StartUpHelper2
         
         void ImageStartUp(string filePath)
         {
-            SettingsUpdater.InitializeSettings(vm);
+            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
 
             HandleWindowScalingMode(vm, window);
 
@@ -88,7 +90,7 @@ public static class StartUpHelper2
 
         void BlankStartUp()
         {
-            SettingsUpdater.InitializeSettings(vm);
+            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
 
             HandleWindowScalingMode(vm, window);
 
@@ -96,10 +98,10 @@ public static class StartUpHelper2
         }
     }
     
-    public static void StartUpBlank(MainViewModel vm, bool settingsExists, bool setPos,
+    public static void StartUpBlank(CoreViewModel vm, bool settingsExists, bool setPos,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
-        SettingsUpdater.InitializeSettings(vm);
+        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
         
         HandleWindowScalingMode(vm, window, setPos);
 
@@ -111,11 +113,12 @@ public static class StartUpHelper2
         }, DispatcherPriority.Background);
     }
     
-    public static void RegularStartUp(MainViewModel vm, bool settingsExists,
+    public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
         Window window)
     {
-        SettingsUpdater.InitializeSettings(vm);
+        TranslationManager.Init();
+        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
 
         HandleWindowScalingMode(vm, window);
 
@@ -127,7 +130,7 @@ public static class StartUpHelper2
     
     
 
-    private static void HandleWindowScalingMode(MainViewModel vm, Window window, bool setPos = true)
+    private static void HandleWindowScalingMode(CoreViewModel vm, Window window, bool setPos = true)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -146,37 +149,37 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandlePostWindowUpdates(MainViewModel vm, bool settingsExists,
+    private static void HandlePostWindowUpdates(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         SetMemorySettings();
 
-        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, vm.PicViewer, settingsExists));
+        Task.Run(() => LanguageUpdater2.UpdateLanguageAsync(vm.Translation, settingsExists));
         if (settingsExists)
         {
-            Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
+            //Task.Run(() => KeybindingManager.LoadKeybindings(vm.PlatformService));
         }
         else
         {
             Task.Run(() =>
             {
-                KeybindingManager.SetDefaultKeybindings(vm.PlatformService);
+                //KeybindingManager.SetDefaultKeybindings(vm.PlatformService);
             });
         }
 
         SetWindowEventHandlers(window);
         HandleThemeUpdates(vm);
 
-        UIHelper.SetControls(window);
+        UIHelper2.SetControls(window);
         Task.Run(() =>
         {
-            vm.Tabs.SetParentContext(vm);
+   //         vm.Tabs.SetParentContext(vm);
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
-            SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+     //       SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
 
-            vm.MainWindow.LayoutButtonSubscription(vm);
-            vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
+            // vm.MainWindow.LayoutButtonSubscription(vm);
+            // vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
         });
 
         if (!Settings.WindowProperties.AutoFit)
@@ -200,17 +203,17 @@ public static class StartUpHelper2
 
         if (Settings.UIProperties.ShowHoverNavigationBar)
         {
-            UIHelper.AddHoverBar(vm);
+//            UIHelper.AddHoverBar(vm);
         }
         
-        TooltipHelper.StartTooltipSubscription(vm);
+ //       TooltipHelper.StartTooltipSubscription(vm);
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
             // Windows needs a named pipe server to open files in the same window
             if (Settings.UIProperties.OpenInSameWindow && !ProcessHelper.CheckIfAnotherInstanceIsRunning())
             {
-                _ = IPC.StartListeningForArguments(vm);
+  //              _ = IPC.StartListeningForArguments(vm);
             }
         }
         
@@ -223,26 +226,26 @@ public static class StartUpHelper2
         GCSettings.LatencyMode = GCLatencyMode.LowLatency;
     }
 
-    private static void HandleThemeUpdates(MainViewModel vm)
+    private static void HandleThemeUpdates(CoreViewModel vm)
     {
         if (Settings.Theme.GlassTheme)
         {
             GlassThemeHelper.GlassThemeUpdates();
         }
 
-        BackgroundManager.SetBackground(vm);
+  //      BackgroundManager.SetBackground(vm);
         ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
     }
 
-    private static void HandleWindowControlSettings(MainViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
+    private static void HandleWindowControlSettings(CoreViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
         if (Settings.Zoom.ScrollEnabled)
         {
-            SettingsUpdater.TurnOnScroll(vm);
+            //SettingsUpdater.TurnOnScroll(vm);
         }
         else
         {
-            vm.MainWindow.ToggleScrollBarVisibility.Value = ScrollBarVisibility.Disabled;
+      //      vm.MainWindow.ToggleScrollBarVisibility.Value = ScrollBarVisibility.Disabled;
             vm.GlobalSettings.IsScrollingEnabled.Value = false;
         }
 
@@ -252,12 +255,12 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleStartImage(MainViewModel vm, Window window, string arg)
+    private static void HandleStartImage(CoreViewModel vm, Window window, string arg)
     {
         Task.Run(() => QuickLoad2.QuickLoadAsync(vm, arg, window, false));
     }
 
-    private static void StartUpMenuOrLastFile(MainViewModel vm, Window window)
+    private static void StartUpMenuOrLastFile(CoreViewModel vm, Window window)
     {
         if (Settings.StartUp.OpenLastFile)
         {
@@ -287,19 +290,19 @@ public static class StartUpHelper2
                     DataContext = vm
                 }
             };
-            vm.Tabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
+           // vm.Tabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
             TabNavigationInitializer.Initialize(vm);
         }
     }
 
-    private static void HandleNormalWindow(MainViewModel vm, Window window, bool setPos)
+    private static void HandleNormalWindow(CoreViewModel vm, Window window, bool setPos)
     {
-        vm.MainWindow.CanResize.Value = true;
+      //  vm.MainWindow.CanResize.Value = true;
         vm.GlobalSettings.IsAutoFit.Value = false;
         if (Settings.UIProperties.ShowInterface)
         {
-            vm.MainWindow.IsTopToolbarShown.Value = true;
-            vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
+         //   vm.MainWindow.IsTopToolbarShown.Value = true;
+        //    vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
 
         if (setPos)
@@ -308,15 +311,15 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleAutoFit(MainViewModel vm, Window window)
+    private static void HandleAutoFit(CoreViewModel vm, Window window)
     {
-        vm.MainWindow.SizeToContent.Value = SizeToContent.WidthAndHeight;
-        vm.MainWindow.CanResize.Value = false;
+    //    vm.MainWindow.SizeToContent.Value = SizeToContent.WidthAndHeight;
+   //    vm.MainWindow.CanResize.Value = false;
         vm.GlobalSettings.IsAutoFit.Value = true;
         if (Settings.UIProperties.ShowInterface)
         {
-            vm.MainWindow.IsTopToolbarShown.Value = true;
-            vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
+  //          vm.MainWindow.IsTopToolbarShown.Value = true;
+    //        vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
         }
 
         if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)

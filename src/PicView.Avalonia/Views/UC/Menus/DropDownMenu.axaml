@@ -1,17 +1,14 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
+    IsOpen="{CompiledBinding TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
-    x:DataType="viewModels:MainViewModel"
+    x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.DataContext>
-        <viewModels:MainViewModel />
-    </Design.DataContext>
     <Border
         Background="{DynamicResource MenuBackgroundColor}"
         BorderBrush="{DynamicResource OuterBorderColor}"
@@ -35,7 +32,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.OpenGalleryOptions}"
+                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenGalleryOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -48,7 +45,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
@@ -65,7 +61,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding MainWindow.TopTitlebarViewModel.DropDownMenu.CloseGalleryOptions}"
+                                Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.CloseGalleryOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -87,7 +83,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
@@ -98,7 +93,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
@@ -109,7 +103,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
@@ -120,7 +113,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
@@ -131,7 +123,6 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding Gallery.CloseGallery}"
                             CornerRadius="8,0,0,0"
                             Data="{StaticResource CloseGeometry}"
                             IconHeight="12"
@@ -145,65 +136,60 @@
             <customControls:TextIconButton
                 Background="Transparent"
                 Classes="altHover"
-                Command="{CompiledBinding Window.ShowBatchResizeWindow}"
                 DockPanel.Dock="Top"
                 Icon="{StaticResource BatchResizeImage}"
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ResizeImage.Value}"
                 VerticalAlignment="Top" />
             <customControls:TextIconButton
                 Background="Transparent"
                 Classes="altHover"
-                Command="{CompiledBinding Window.ShowEffectsWindow}"
                 DockPanel.Dock="Top"
                 Icon="{StaticResource FlaskImage}"
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Effects.Value}"
                 VerticalAlignment="Top" />
             <customControls:TextIconButton
                 Background="Transparent"
                 Classes="altHover"
-                Command="{CompiledBinding Window.ShowKeybindingsWindow}"
                 DockPanel.Dock="Top"
                 Icon="{StaticResource ShortcutsImage}"
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.ApplicationShortcuts.Value}"
                 VerticalAlignment="Top" />
             <customControls:TextIconButton
                 Background="Transparent"
                 Classes="altHover"
-                Command="{CompiledBinding Window.ShowSettingsWindow}"
                 Data="{StaticResource CogGeometry}"
                 DockPanel.Dock="Top"
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.Settings.Value}"
                 VerticalAlignment="Top" />
             <customControls:TextIconButton
                 Background="Transparent"
                 Classes="altHover"
-                Command="{CompiledBinding Window.ShowAboutWindow}"
                 DockPanel.Dock="Top"
                 Icon="{StaticResource AboutImage}"
                 IconHeight="12"
                 IconMargin="0,0,7,0"
                 IconWidth="12"
-                IsVisible="{CompiledBinding !MainWindow.TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsGalleryOptionsVisible.Value}"
                 Padding="15,7,15,7"
                 Text="{CompiledBinding Translation.About.Value}"
                 VerticalAlignment="Top" />

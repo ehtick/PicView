@@ -1,32 +1,34 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.WindowBehavior;
 using R3.Avalonia;
-using BottomBar = PicView.Avalonia.Views.UC.BottomBar;
 using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
-using MainView = PicView.Avalonia.Views.Main.MainView;
+using MainWindowViewModel = PicView.Avalonia.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.UI;
 
 /// <summary>
 /// Provides UI-related helper methods and properties
 /// </summary>
-public static class UIHelper
+public static class UIHelper2
 {
     #region Controls
 
-    public static MainView? GetMainView { get; private set; }
+    public static MainView3? GetMainView { get; private set; }
+    public static DraggableTabControl? GetMainTabControl { get; private set; }
     public static Control? GetTitlebar { get; private set; }
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
-    public static BottomBar? GetBottomBar { get; private set; }
+    public static BottomBar2? GetBottomBar { get; private set; }
     public static HoverBar? GetHoverBar { get; private set; }
     
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
@@ -40,14 +42,15 @@ public static class UIHelper
     /// <summary>
     /// Sets up control references from the main desktop application
     /// </summary>
-    public static void SetControls(IClassicDesktopStyleApplicationLifetime desktop)
+    public static void SetControls(Window mainWindow)
     {
-        GetMainView = desktop.MainWindow?.FindControl<MainView>("MainView");
-        GetTitlebar = desktop.MainWindow?.FindControl<Control>("Titlebar");
+        GetMainView = mainWindow?.FindControl<MainView3>("MainView");
+        GetTitlebar = mainWindow?.FindControl<Control>("Titlebar");
         GetEditableTitlebar = GetTitlebar?.FindControl<EditableTitlebar>("EditableTitlebar");
-        GetGalleryView = GetMainView?.MainGrid.GetControl<GalleryAnimationControlView>("GalleryView");
-        GetBottomBar = desktop.MainWindow?.FindControl<BottomBar>("BottomBar");
-        GetToolTipMessage = GetMainView?.MainGrid.FindControl<ToolTipMessage>("ToolTipMessage");
+        //GetGalleryView = GetMainView?.MainPanel.GetControl<GalleryAnimationControlView>("GalleryView");
+        GetBottomBar = mainWindow?.FindControl<BottomBar2>("BottomBar");
+        //GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage>("ToolTipMessage");
+        GetMainTabControl = GetMainView.MainTabControl;
     }
 
     public static void AddHoverBar(MainViewModel vm)
@@ -57,9 +60,23 @@ public static class UIHelper
             return;
         }
         GetHoverBar = new HoverBar();
-        GetMainView.MainGrid.Children.Add(GetHoverBar);
+        GetMainView.MainPanel.Children.Add(GetHoverBar);
         _ = new HoverFadeButtonHandler(GetHoverBar, vm, GetHoverBar.BottomBorder);
         MainWindowViewModel.HoverBarSubscription();
+    }
+    
+    public static void AddDropDownMenu()
+    {
+        var dropDownMenu = new DropDownMenu
+        {
+            Name = "DropDownMenu",
+            VerticalAlignment = VerticalAlignment.Top,
+            Margin = new Thickness(3, 0, 3, 0),
+            IsVisible = false,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            ZIndex = 2
+        };
+        GetMainView.MainPanel.Children.Add(dropDownMenu);
     }
 
     #endregion
