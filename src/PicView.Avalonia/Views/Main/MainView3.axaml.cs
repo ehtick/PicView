@@ -60,9 +60,6 @@ public partial class MainView3 : UserControl
 
             // Setup hover fade buttons
             //_ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
-
-            PointerWheelChanged += async (_, e) =>
-                await MouseShortcuts2.HandlePointerWheelChanged(e, DataContext as MainWindowViewModel).ConfigureAwait(false);
         };
     }
     

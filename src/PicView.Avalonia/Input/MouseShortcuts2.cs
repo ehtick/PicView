@@ -6,7 +6,6 @@ using Avalonia.Input;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.ViewModels;
@@ -15,21 +14,12 @@ namespace PicView.Avalonia.Input;
 
 public static class MouseShortcuts2
 {
-    private static AutoScrollViewer? _imageScrollViewer;
-    private static Func<PointerWheelEventArgs, Task>? _zoomIn;
-    private static Func<PointerWheelEventArgs, Task>? _zoomOut;
-
-    public static void InitializeMouseShortcuts(
+    public static async ValueTask HandlePointerWheelChanged(
+        PointerWheelEventArgs e,
+        MainWindowViewModel vm,
         AutoScrollViewer imageScrollViewer,
-        Func<PointerWheelEventArgs, Task> zoomIn,
-        Func<PointerWheelEventArgs, Task> zoomOut)
-    {
-        _imageScrollViewer = imageScrollViewer;
-        _zoomIn = zoomIn;
-        _zoomOut = zoomOut;
-    }
-
-    public static async Task HandlePointerWheelChanged(PointerWheelEventArgs e, MainWindowViewModel vm)
+        Func<PointerWheelEventArgs, ValueTask>? zoomIn,
+        Func<PointerWheelEventArgs, ValueTask>? zoomOut)
     {
         // Don't handle mouse wheel if the view is not the image viewer
         // or a dialog is opened
@@ -61,9 +51,9 @@ public static class MouseShortcuts2
                     return;
                 }
 
-                if (IsVerticalScrollBarVisible())
+                if (IsVerticalScrollBarVisible(imageScrollViewer))
                 {
-                    ScrollVertically(reverse);
+                    ScrollVertically(reverse, imageScrollViewer);
                 }
                 else
                 {
@@ -85,44 +75,44 @@ public static class MouseShortcuts2
 
                 if (reverse)
                 {
-                    if (_zoomOut is not null)
+                    if (zoomOut is not null)
                     {
-                        await _zoomOut(e);
+                        await zoomOut(e);
                     }
                 }
                 else
                 {
-                    if (_zoomIn is not null)
+                    if (zoomIn is not null)
                     {
-                        await _zoomIn(e);
+                        await zoomIn(e);
                     }
                 }
             }
             else
             {
-                await ScrollOrNavigateAsync(e, reverse, vm);
+                await ScrollOrNavigateAsync(e, reverse, vm, imageScrollViewer);
             }
         }
         else
         {
             if (ctrl)
             {
-                await ScrollOrNavigateAsync(e, reverse, vm);
+                await ScrollOrNavigateAsync(e, reverse, vm, imageScrollViewer);
             }
             else
             {
                 if (reverse)
                 {
-                    if (_zoomOut is not null)
+                    if (zoomOut is not null)
                     {
-                        await _zoomOut(e);
+                        await zoomOut(e);
                     }
                 }
                 else
                 {
-                    if (_zoomIn is not null)
+                    if (zoomIn is not null)
                     {
-                        await _zoomIn(e);
+                        await zoomIn(e);
                     }
                 }
             }
@@ -132,22 +122,26 @@ public static class MouseShortcuts2
     private static bool IsTouchPadOrTouch(PointerEventArgs e)
         => Settings.Zoom.IsUsingTouchPad || e.Pointer.Type == PointerType.Touch;
 
-    private static bool IsVerticalScrollBarVisible()
-        => _imageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto;
+    private static bool IsVerticalScrollBarVisible(AutoScrollViewer imageScrollViewer)
+        => imageScrollViewer.VerticalScrollBarVisibility is ScrollBarVisibility.Visible or ScrollBarVisibility.Auto;
 
-    private static void ScrollVertically(bool reverse)
+    private static void ScrollVertically(bool reverse, AutoScrollViewer imageScrollViewer)
     {
         if (reverse)
         {
-            _imageScrollViewer.LineDown();
+            imageScrollViewer.LineDown();
         }
         else
         {
-            _imageScrollViewer.LineUp();
+            imageScrollViewer.LineUp();
         }
     }
 
-    private static async Task ScrollOrNavigateAsync(PointerWheelEventArgs e, bool reverse, MainWindowViewModel mainViewModel)
+    private static async ValueTask ScrollOrNavigateAsync(
+        PointerWheelEventArgs e,
+        bool reverse,
+        MainWindowViewModel mainViewModel,
+        AutoScrollViewer imageScrollViewer)
     {
         if (!Settings.Zoom.ScrollEnabled || e.KeyModifiers == KeyModifiers.Shift)
         {
@@ -160,9 +154,9 @@ public static class MouseShortcuts2
         }
         else
         {
-            if (IsVerticalScrollBarVisible())
+            if (IsVerticalScrollBarVisible(imageScrollViewer))
             {
-                ScrollVertically(reverse);
+                ScrollVertically(reverse, imageScrollViewer);
             }
             else
             {
@@ -171,7 +165,7 @@ public static class MouseShortcuts2
         }
     }
 
-    private static async Task LoadNextPicAsync(bool reverse, MainWindowViewModel mainViewModel)
+    private static async ValueTask LoadNextPicAsync(bool reverse, MainWindowViewModel mainViewModel)
     {
         if (Settings.Zoom.IsUsingTouchPad)
         {

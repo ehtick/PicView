@@ -35,7 +35,6 @@ public partial class ImageViewer2 : UserControl
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
         AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
         AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-        InitializeMouseInputHelper();
     }
 
     public void TriggerScalingModeUpdate(bool invalidate) =>
@@ -44,13 +43,18 @@ public partial class ImageViewer2 : UserControl
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e) =>
         ZoomPanControl.ZoomWithPointerWheelCore(e.Delta.Y > 0, e.GetPosition(this));
 
-    public async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    private async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         if (sender is Control control)
         {
             if (control.GetVisualRoot() is Window { DataContext: MainWindowViewModel vm })
             {
-                await MouseShortcuts2.HandlePointerWheelChanged(e, vm);
+                await MouseShortcuts2.HandlePointerWheelChanged(
+                    e, 
+                    vm, 
+                    ImageScrollViewer,
+                    async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomIn(args)),
+                    async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomOut(args)));
             }
         }
     }
@@ -120,12 +124,6 @@ public partial class ImageViewer2 : UserControl
         RemoveHandler(Gestures.PinchEvent, TouchMagnifyEvent);
         _disposables.Dispose();
     }
-
-    private void InitializeMouseInputHelper() =>
-        MouseShortcuts2.InitializeMouseShortcuts(
-            ImageScrollViewer,
-            async e => { await Dispatcher.UIThread.InvokeAsync(() => { ZoomIn(e); }); },
-            async e => { await Dispatcher.UIThread.InvokeAsync(() => { ZoomOut(e); }); });
 
     #region Zoom
     /// <inheritdoc cref="Zoom.ZoomIn(MainViewModel)"/>
