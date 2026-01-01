@@ -109,10 +109,7 @@ public static class StartUpHelper2
 
         window.Show();
 
-        Dispatcher.UIThread.Post(() =>
-        {
-            HandlePostWindowUpdates(vm, settingsExists, desktop, window);
-        }, DispatcherPriority.Background);
+        HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
     
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,

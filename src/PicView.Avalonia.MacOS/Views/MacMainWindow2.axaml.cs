@@ -1,19 +1,17 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Layout;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.MacOS.WindowImpl;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
-using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ViewModels;
 using R3;
 using R3.Avalonia;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -21,13 +19,20 @@ public partial class MacMainWindow2 : Window
 {
     private readonly AvaloniaRenderingFrameProvider _frameProvider;
     private readonly CompositeDisposable _disposables = new();
+    private MainWindowViewModel _mainWindowViewModel;
 
     public MacMainWindow2()
     {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        _mainWindowViewModel = new MainWindowViewModel(core.Translation);
+        DataContext = _mainWindowViewModel;
         InitializeComponent();
 
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this));
-        UIHelper.SetFrameProvider(_frameProvider);
+        UIHelper2.SetFrameProvider(_frameProvider);
 
         Loaded += delegate
         {
@@ -42,7 +47,7 @@ public partial class MacMainWindow2 : Window
 
                     WindowResizing.HandleWindowResize(this, size);
                 }).AddTo(_disposables);
-            if (DataContext is not MainViewModel vm)
+            if (DataContext is not MainWindowViewModel vm)
             {
                 return;
             }
@@ -55,28 +60,28 @@ public partial class MacMainWindow2 : Window
                     case WindowState.FullScreen:
                         if (!Settings.WindowProperties.Fullscreen)
                         {
-                            await MacOSWindow2.Fullscreen(this, vm);
+                            //await MacOSWindow2.Fullscreen(this, vm);
                         }
 
                         break;
                     case WindowState.Maximized:
                         if (!Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
                         {
-                            await MacOSWindow2.Maximize(this, vm);
+                            //await MacOSWindow2.Maximize(this, vm);
                         }
 
                         break;
                     case WindowState.Normal:
                         if (Settings.WindowProperties.Maximized || Settings.WindowProperties.Fullscreen)
                         {
-                            await MacOSWindow2.Restore(this, vm);
+                            //await MacOSWindow2.Restore(this, vm);
                         }
                         break;
                 }
             }).AddTo(_disposables);
             
             // Hide macOS buttons when interface is hidden
-            Observable.EveryValueChanged(vm, x => x.MainWindow.IsTopToolbarShown.CurrentValue, _frameProvider).Subscribe(shown =>
+            Observable.EveryValueChanged(vm, x => x.IsTopToolbarShown.CurrentValue, _frameProvider).Subscribe(shown =>
             {
                 if (Settings.WindowProperties.Fullscreen)
                 {
@@ -87,69 +92,30 @@ public partial class MacMainWindow2 : Window
                     SystemDecorations = shown ? SystemDecorations.Full : SystemDecorations.None;
                 }
             });
-            Observable.EveryValueChanged(MainTabControl.Items, x => x.Count).Subscribe(count =>
-            {
-                vm.Tabs.IsTabPanelVisible.Value = count > 1;
-            }).AddTo(_disposables);
             
-            MainTabControl.TabDetached += MainTabControlOnTabDetached;
-            MainTabControl.TabCreated += MainTabControlOnTabCreated;
-            MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
+            UIHelper2.AddDropDownMenu();
 
-            var dropDownMenu = new DropDownMenu
-            {
-                Name = "DropDownMenu",
-                VerticalAlignment = VerticalAlignment.Top,
-                Margin = new Thickness(3, 0, 3, 0),
-                IsVisible = false,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                ZIndex = 2
-            };
-            MainPanel.Children.Add(dropDownMenu);
-            
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>
             {
-                if (!dropDownMenu.IsPointerOver)
+                if (vm.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
                 {
-                    vm.MainWindow.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
-                }
-
-                if (vm.MainWindow.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
-                {
-                   Titlebar.EditableTitlebar.CloseTitlebar();
+                    Titlebar.EditableTitlebar.CloseTitlebar();
                 }
             };
+            UIHelper2.GetMainTabControl.TabDetached += MainTabControlOnTabDetached;
+            Activated += OnActivated;
         };
     }
-
-    private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    private void OnActivated(object? sender, EventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
-
-        if (e.AddedItems[0] is not TabViewModel tab)
-        {
-            return;
-        }
-
-        vm.Tabs.SelectTab(tab);
-        tab.UpdateTabTitle();
+        core.MainWindows.ActiveWindow.Value = DataContext as MainWindowViewModel;
     }
-
-    private void MainTabControlOnTabCreated(object? sender, TabCreatedEventArgs e)
-    {
-        // Only set the StartUpMenu if the View is currently null.
-        // This prevents overwriting the view (e.g. an image) when reordering tabs,
-        // as reordering triggers the TabCreated event again by recreating containers.
-        if (e.CreatedItem is TabViewModel { CurrentView.Value: null } tabViewModel)
-        {
-            tabViewModel.CurrentView.Value = new StartUpMenu();
-        }
-    }
-
+    
     private void MainTabControlOnTabDetached(object? sender, TabDetachEventArgs e)
     {
         if (e.DetachedItem is not TabViewModel tab)
@@ -157,7 +123,7 @@ public partial class MacMainWindow2 : Window
             return;
         }
 
-        if (DataContext is not MainViewModel parentVm)
+        if (DataContext is not MainWindowViewModel parentVm)
         {
             return;
         }
@@ -196,35 +162,32 @@ public partial class MacMainWindow2 : Window
             }
 
             // Need to properly remove it from the previous location
-            parentVm.Tabs.RemoveTab(tab);
-            
+            parentVm.WindowTabs.RemoveTab(tab);
+
             // Add to new window (if not already added by drag preview)
             if (!targetVm.Tabs.Tabs.Value.Contains(tab))
             {
                 targetVm.Tabs.Tabs.Value.Add(tab);
             }
+
             targetVm.Tabs.SelectTab(tab);
-                
+
             // Update context
             tab.ParentWindowContext = targetVm;
-                
+
             // Refresh bindings
             if (tab.CurrentView.CurrentValue is Control control)
             {
                 control.DataContext = tab;
             }
+
             return;
         }
 
         // 3. Fallback: Create a new window (Detaching behavior)
         Task.Run(() =>
         {
-            var newVm = new MainViewModel(parentVm.PlatformService, parentVm.PlatformWindowService);
-            newVm.Tabs.Tabs.Value.Clear();
-            newVm.Tabs.Tabs.Value.Add(tab);
-            newVm.Tabs.SelectTab(tab);
-            tab.ParentWindowContext = newVm;
-
+            MainWindowViewModel? newVm = null;
             Dispatcher.UIThread.Invoke(() =>
             {
                 // Create a new window with the detached tab
@@ -232,42 +195,52 @@ public partial class MacMainWindow2 : Window
                 {
                     Position = new PixelPoint(e.ScreenPosition.X - 100, e.ScreenPosition.Y - 50),
                     Width = Width,
-                    Height = Height,
-                    DataContext = newVm
+                    Height = Height
                 };
+                if (Application.Current.DataContext is not CoreViewModel core)
+                {
+                    return;
+                }
+                newVm = newWindow.DataContext as MainWindowViewModel;
+                core.MainWindows.MainWindows.Add(newVm);
+                core.MainWindows.ActiveWindow.Value = newVm;
+                StartUpHelper2.StartUpBlank(core, true, false, desktop, newWindow);
 
-                StartUpHelper2.StartUpBlank(newVm, settingsExists: true, setPos: false, desktop, newWindow);
+
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
                 {
                     control.DataContext = tab;
                 }
-
             }, DispatcherPriority.Send);
+
+            newVm.WindowTabs.Tabs.Value[0] = tab;
 
             // Initialize the NEW window's tabs with the OLD window's services
             // This ensures both windows share the same memory cache
-            if (parentVm.Tabs.SharedCache is not { } cache ||
-                parentVm.Tabs.SharedNavigation is not { } nav ||
-                parentVm.Tabs.SharedThumbnailLoader is not { } thumb ||
-                parentVm.Tabs.SharedGallery is not { } gallery ||
-                parentVm.Tabs.SharedFileWatcher is not { } fileWatcher)
+            if (parentVm.WindowTabs.SharedCache is not { } cache ||
+                parentVm.WindowTabs.SharedNavigation is not { } nav ||
+                parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
+                parentVm.WindowTabs.SharedGallery is not { } gallery ||
+                parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
             {
                 return;
             }
 
-            if (newVm.Tabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
+            if (newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
             {
-                newVm.Tabs.LoadAndInitializeFromPath(newVm.Tabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery, nav,
+                newVm.WindowTabs.LoadAndInitializeFromPath(newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery,
+                    nav,
                     cache, thumb, fileWatcher);
             }
             else
             {
-                newVm.Tabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
+                newVm.WindowTabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
             }
 
             // Need to properly remove it from the previous location
-            parentVm.Tabs.RemoveTab(tab);
+            parentVm.WindowTabs.RemoveTab(tab);
+            parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
         });
     }
 
@@ -282,8 +255,8 @@ public partial class MacMainWindow2 : Window
         {
             return;
         }
-        var vm = (MainViewModel)DataContext;
-        WindowResizing.SetSize(vm);
+        // var vm = (MainViewModel)DataContext;
+        // WindowResizing.SetSize(vm);
     }
 
     protected override async void OnClosing(WindowClosingEventArgs e)

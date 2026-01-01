@@ -1,20 +1,17 @@
 <UserControl
-    IsVisible="{CompiledBinding MainWindow.IsTopToolbarShown.Value,
+    IsVisible="{CompiledBinding IsTopToolbarShown.Value,
                                 Mode=OneWay}"
     mc:Ignorable="d"
     x:Class="PicView.Avalonia.MacOS.Views.MacOSTitlebar"
-    x:DataType="viewModels:MainViewModel"
+    x:DataType="viewModels:MainWindowViewModel"
     x:Name="Titlebar"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Design.DataContext>
-        <viewModels:MainViewModel />
-    </Design.DataContext>
 
     <DockPanel
         Background="{DynamicResource MainBackgroundColor}"
@@ -27,7 +24,7 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="altHover"
-            Command="{CompiledBinding MainWindow.TopTitlebarViewModel.ToggleMenu}"
+            Command="{CompiledBinding TopTitlebarViewModel.ToggleMenu}"
             Data="{StaticResource FilledArrowDownGeometry}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
@@ -43,7 +40,7 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="altHover"
-            Command="{CompiledBinding Tabs.CreateTab}"
+            Command="{CompiledBinding WindowTabs.CreateTab}"
             Data="{StaticResource AddGeometry}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
@@ -60,7 +57,6 @@
             BorderBrush="{DynamicResource MainBorderColor}"
             BorderThickness="0"
             Classes="altHover"
-            Command="{CompiledBinding Tools.ShowSearchCommand}"
             DockPanel.Dock="Right"
             Foreground="{DynamicResource MainTextColor}"
             Icon="{StaticResource SearchImage}"
