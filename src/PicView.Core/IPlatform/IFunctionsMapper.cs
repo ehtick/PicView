@@ -4,9 +4,8 @@ namespace PicView.Core.IPlatform;
 public interface IFunctionsMapper
 {
     Func<ValueTask>? GetFunctionByName(string functionName);
-    
-    ValueTask ToggleDropDownMenu();
 
+    // Navigation
     ValueTask Next();
     ValueTask NextFolder();
     ValueTask NextArchive();
@@ -20,8 +19,10 @@ public interface IFunctionsMapper
     ValueTask Prev10();
     ValueTask Prev100();
     ValueTask StopRepeatedNavigation();
-    
     ValueTask Search();
+    ValueTask ToggleLooping();
+    
+    // Viewport / Zoom
     ValueTask Up();
     ValueTask RotateRight();
     ValueTask RotateLeft();
@@ -33,21 +34,25 @@ public interface IFunctionsMapper
     ValueTask ZoomIn();
     ValueTask ZoomOut();
     ValueTask ResetZoom();
-
     ValueTask ToggleScroll();
     ValueTask ChangeCtrlZoom();
-    ValueTask ToggleLooping();
+    
+    // Interface Toggles
     ValueTask ToggleInterface();
     ValueTask ToggleSubdirectories();
     ValueTask ToggleBottomToolbar();
     ValueTask ToggleTaskbarProgress();
     ValueTask ToggleConstrainBackgroundColor();
-
+    ValueTask ChangeBackground();
+    ValueTask ToggleDropDownMenu();
+    
+    // Gallery
     ValueTask ToggleGallery();
     ValueTask OpenCloseBottomGallery();
     ValueTask CloseGallery();
     ValueTask GalleryClick();
 
+    // Open Windows/Dialogs
     ValueTask ShowStartUpMenu();
     ValueTask AboutWindow();
     ValueTask ConvertWindow();
@@ -57,7 +62,8 @@ public interface IFunctionsMapper
     ValueTask ResizeWindow();
     ValueTask BatchResizeWindow();
     ValueTask SettingsWindow();
-
+    
+    // Windows operations
     ValueTask Stretch();
     ValueTask AutoFitWindow();
     ValueTask NormalWindow();
@@ -72,6 +78,7 @@ public interface IFunctionsMapper
     ValueTask Restore();
     ValueTask NewWindow();
 
+    // File Operations
     ValueTask OpenLastFile();
     ValueTask OpenPreviousFileHistoryEntry();
     ValueTask OpenNextFileHistoryEntry();
@@ -86,6 +93,7 @@ public interface IFunctionsMapper
     ValueTask Rename();
     ValueTask ShowFileProperties();
 
+    // Clipboard & Edit
     ValueTask CopyFile();
     ValueTask CopyFilePath();
     ValueTask CopyImage();
@@ -94,7 +102,8 @@ public interface IFunctionsMapper
     ValueTask CutFile();
     ValueTask Paste();
 
-    ValueTask ChangeBackground();
+
+    // Image Operations
     ValueTask SideBySide();
     ValueTask Reload();
     ValueTask ResizeImage();
@@ -104,6 +113,7 @@ public interface IFunctionsMapper
     ValueTask Slideshow();
     ValueTask ColorPicker();
 
+    // Sorting
     ValueTask SortFilesByName();
     ValueTask SortFilesByCreationTime();
     ValueTask SortFilesByLastAccessTime();
@@ -113,7 +123,10 @@ public interface IFunctionsMapper
     ValueTask SortFilesRandomly();
     ValueTask SortFilesAscending();
     ValueTask SortFilesDescending();
+    
+    ValueTask ToggleFileHistory();
 
+    // Ratings
     ValueTask Set0Star();
     ValueTask Set1Star();
     ValueTask Set2Star();
@@ -121,9 +134,11 @@ public interface IFunctionsMapper
     ValueTask Set4Star();
     ValueTask Set5Star();
 
+    // Maps
     ValueTask OpenGoogleMaps();
     ValueTask OpenBingMaps();
 
+    // Wallpaper
     ValueTask SetAsWallpaper();
     ValueTask SetAsWallpaperTiled();
     ValueTask SetAsWallpaperCentered();
@@ -133,14 +148,16 @@ public interface IFunctionsMapper
     ValueTask SetAsLockscreenCentered();
     ValueTask SetAsLockScreen();
 
+    // Tabs
     ValueTask NewTab();
     ValueTask CloseTab();
 
+    // System & Settings
     ValueTask ResetSettings();
     ValueTask Restart();
     ValueTask ShowSettingsFile();
     ValueTask ShowKeybindingsFile();
     ValueTask ShowRecentHistoryFile();
     ValueTask ToggleOpeningInSameWindow();
-    ValueTask ToggleFileHistory();
+
 }
