@@ -3,9 +3,9 @@ using Avalonia.Input;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -52,7 +52,7 @@ public partial class WinTitleBar2 : UserControl
     
     private void InitializeEventHandlers()
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
             return;
         }
@@ -60,9 +60,9 @@ public partial class WinTitleBar2 : UserControl
         PointerPressed += (_, e) => TryDragWindow(e);
         PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
         MainMenu.Closed += (_, _) => { CloseMenu(); };
-
-        Observable.EveryValueChanged(vm.MainWindow.TopTitlebarViewModel.IsMainMenuVisible, x => x.Value,
-                UIHelper.GetFrameProvider)
+        
+        Observable.EveryValueChanged(vm.TopTitlebarViewModel.IsMainMenuVisible, x => x.Value,
+                UIHelper2.GetFrameProvider)
             .Subscribe(isVisible =>
             {
                 if (isVisible)
@@ -70,11 +70,11 @@ public partial class WinTitleBar2 : UserControl
                     // Overflow buttons if the window is too small
                     if (Bounds.Width - SearchButton.Bounds.Width - DropDownMenuButton.Bounds.Width - CreateTabButton.Bounds.Width < SizeDefaults.WindowMinSize)
                     {
-                        HideButtons(vm.MainWindow);
+                        HideButtons(vm);
                     }
                     else
                     {
-                        ShowButtons(vm.MainWindow);
+                        ShowButtons(vm);
                     }
                     
                     MainMenu.Open();
@@ -83,7 +83,7 @@ public partial class WinTitleBar2 : UserControl
                 else
                 {
                     MainMenu.Close();
-                    ShowButtons(vm.MainWindow);
+                    ShowButtons(vm);
                 }
             });
     }
@@ -108,26 +108,26 @@ public partial class WinTitleBar2 : UserControl
     {
         MainMenu.Close();
 
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
             return;
         }
 
-        vm.MainWindow.TopTitlebarViewModel.CloseMenu();
+        vm.TopTitlebarViewModel.CloseMenu();
     }
 
     private void TryDragWindow(PointerPressedEventArgs e)
     {
-        if (VisualRoot is null || DataContext is not MainViewModel vm)
+        if (VisualRoot is null || DataContext is not MainWindowViewModel vm)
         {
             return;
         }
 
-        if (vm.MainWindow.IsEditableTitlebarOpen.Value || MainMenu.IsOpen)
+        if (vm.IsEditableTitlebarOpen.Value || MainMenu.IsOpen)
         {
             return;
         }
 
-        WindowFunctions.WindowDragAndDoubleClickBehavior((Window)VisualRoot, e, vm.PlatformWindowService);
+        WindowFunctions2.WindowDragAndDoubleClickBehavior((Window)VisualRoot, e, vm.PlatformWindowService);
     }
 }

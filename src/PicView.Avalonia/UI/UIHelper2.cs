@@ -30,6 +30,7 @@ public static class UIHelper2
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar2? GetBottomBar { get; private set; }
     public static HoverBar? GetHoverBar { get; private set; }
+    public static DropDownMenu? GetDropDownMenu { get; private set; }
     
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
 
@@ -77,6 +78,7 @@ public static class UIHelper2
             ZIndex = 2
         };
         GetMainView.MainPanel.Children.Add(dropDownMenu);
+        GetDropDownMenu = dropDownMenu;
     }
 
     #endregion

@@ -58,10 +58,7 @@ public class App : Application, IPlatformSpecificService
 
             ThemeManager.DetermineTheme(Current, settingsExists);
             
-            _mainWindow = new MacMainWindow2
-            {
-                DataContext = _mainWindowViewModel
-            };
+            _mainWindow = new MacMainWindow2();
             _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
             _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
             if (string.IsNullOrWhiteSpace(startUpFilePath))

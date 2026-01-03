@@ -30,6 +30,10 @@ public class TopTitlebarViewModel
     {
         DropDownMenu?.IsDropDownMenuVisible.Value = !DropDownMenu.IsDropDownMenuVisible.CurrentValue;
     }
+    public void CloseDropDownMenu()
+    {
+        DropDownMenu?.IsDropDownMenuVisible.Value = false;
+    }
 
     public void ToggleMenu(Unit unit)
         => ToggleMenu();

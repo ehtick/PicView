@@ -5,8 +5,8 @@ using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -30,23 +30,23 @@ public partial class BottomBar2 : UserControl
             FlipButton.PointerPressed += (_, e) => { OpenRotationContextMenu(e); };
             RotateRightButton.PointerPressed += (_, e) => { OpenRotationContextMenu(e); };
 
-            if (DataContext is not MainViewModel vm)
+            if (DataContext is not MainWindowViewModel vm)
             {
                 return;
             }
 
             PreviousButton.Click += (_, _) =>
             {
-                vm.MainWindow.IsNavigationButtonLeftClicked = true;
+                vm.IsNavigationButtonLeftClicked = true;
                 UIHelper.SetButtonInterval((IconButton?)PreviousButton);
             };
             NextButton.Click += (_, _) =>
             {
-                vm.MainWindow.IsNavigationButtonRightClicked = true;
+                vm.IsNavigationButtonRightClicked = true;
                 UIHelper.SetButtonInterval((IconButton?)NextButton);
             };
 
-            RotateRightButton.Click += (_, _) => { vm.MainWindow.IsBottomToolbarRotationClicked = true; };
+            RotateRightButton.Click += (_, _) => { vm.IsBottomToolbarRotationClicked = true; };
 
             if (!Application.Current.TryGetResource("SecondaryTextColor",
                     Application.Current.RequestedThemeVariant, out var textColor))
@@ -128,14 +128,6 @@ public partial class BottomBar2 : UserControl
 
                 ImageInfoButton.Classes.Remove("noBorderHover");
                 ImageInfoButton.Classes.Add("noBorderHoverAlt");
-                if (TryGetResource("ToolsMenuBrush", Application.Current.RequestedThemeVariant,
-                        out var toolsMenuBrush))
-                {
-                    if (toolsMenuBrush is SolidColorBrush brush)
-                    {
-                        UIHelper.SetButtonHover(ImageInfoButton, brush);
-                    }
-                }
 
                 SettingsMenuButton.Classes.Remove("noBorderHover");
                 SettingsMenuButton.Classes.Add("noBorderHoverAlt");

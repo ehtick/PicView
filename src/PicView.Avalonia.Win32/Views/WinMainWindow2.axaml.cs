@@ -45,7 +45,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
         Loaded += delegate
         {
             _windowInitializer = new WindowInitializer();
-            if (Application.Current.DataContext is not CoreViewModel vm)
+            if (Application.Current.DataContext is not CoreViewModel coreViewModel || DataContext is not MainWindowViewModel windowViewModel)
             {
                 return;
             }
@@ -65,7 +65,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
             ScalingChanged += (_, _) =>
             {
                 ScreenHelper.UpdateScreenSize(this);
-                WindowResizing.SetSize(DataContext as MainViewModel);
+                //WindowResizing.SetSize(windowViewModel);
             };
             PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
 
@@ -103,9 +103,14 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>
             {
-                if (vm.MainWindows.ActiveWindow.CurrentValue.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
+                if (windowViewModel.IsEditableTitlebarOpen.Value && !Titlebar.IsPointerOver)
                 {
                     Titlebar.EditableTitlebar.CloseTitlebar();
+                }
+
+                if (!UIHelper2.GetDropDownMenu.IsPointerOver)
+                {
+                    windowViewModel.TopTitlebarViewModel.CloseDropDownMenu();
                 }
             };
             UIHelper2.GetMainTabControl.TabDetached += MainTabControlOnTabDetached;
