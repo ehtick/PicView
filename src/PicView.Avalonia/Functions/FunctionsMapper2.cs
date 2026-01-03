@@ -642,19 +642,30 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public async ValueTask DeleteFile()
     {
-        // await FileManager
-        //     .DeleteFileWithOptionalDialog(true, vm.PicViewer?.FileInfo?.CurrentValue?.FullName, vm.PlatformService)
-        //     .ConfigureAwait(false);
-        return;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        const bool recycle = true;
+        await FileManager2
+            .DeleteFileWithOptionalDialog(recycle, vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+                .FileInfo?.FullName, core.PlatformService)
+            .ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />
     public async ValueTask DeleteFilePermanently()
     {
-        // await FileManager
-        //     .DeleteFileWithOptionalDialog(false, vm.PicViewer?.FileInfo?.CurrentValue?.FullName, vm.PlatformService)
-        //     .ConfigureAwait(false);
-        return;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        const bool recycle = false;
+        await FileManager2
+            .DeleteFileWithOptionalDialog(recycle, vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+                .FileInfo?.FullName, core.PlatformService)
+            .ConfigureAwait(false);
     }
 
     public async ValueTask Rename()
@@ -667,12 +678,15 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     }
 
     /// <inheritdoc cref="FileManager.ShowFileProperties(string, MainViewModel)" />
-    public ValueTask ShowFileProperties()
+    public async ValueTask ShowFileProperties()
     {
-        // await Task.Run(() =>
-        //     vm?.PlatformSpecificService?.ShowFileProperties(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
-        //         .FileInfo?.FullName)).ConfigureAwait(false);
-        return ValueTask.CompletedTask;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        await Task.Run(() =>
+            FileManager2.ShowFileProperties(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+                .FileInfo?.FullName, core.PlatformService)).ConfigureAwait(false);
     }
 
     #endregion
@@ -682,8 +696,8 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="ClipboardFileOperations.CopyFileToClipboard(string, MainViewModel)" />
     public async ValueTask CopyFile()
     {
-        // await ClipboardFileOperations.CopyFileToClipboard(vm?.PicViewer.FileInfo?.CurrentValue.FullName).ConfigureAwait(false);
-        return;
+        await ClipboardFileOperations.CopyFileToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+            .FileInfo?.FullName).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="ClipboardTextOperations.CopyTextToClipboard(string)" />

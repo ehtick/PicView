@@ -237,26 +237,46 @@
                 <Separator />
 
                 <!--  Toggle scrolling  -->
-                <MenuItem Header="{CompiledBinding Translation.IsScrolling.Value, Mode=OneWay}" ToggleType="CheckBox" />
+                <MenuItem
+                    Command="{CompiledBinding ToggleScrollCommand}"
+                    Header="{CompiledBinding Translation.IsScrolling.Value,
+                                             Mode=OneWay}"
+                    ToggleType="CheckBox" />
 
                 <!--  Toggle stretching  -->
-                <MenuItem Header="{CompiledBinding Translation.Stretch.Value, Mode=OneWay}" ToggleType="CheckBox" />
+                <MenuItem
+                    Command="{CompiledBinding StretchCommand}"
+                    Header="{CompiledBinding Translation.Stretch.Value,
+                                             Mode=OneWay}"
+                    ToggleType="CheckBox" />
 
                 <!--  Toggle side-by-side  -->
-                <MenuItem Header="{CompiledBinding Translation.SideBySide.Value, Mode=OneWay}" ToggleType="CheckBox" />
+                <MenuItem
+                    Command="{CompiledBinding SideBySideCommand}"
+                    Header="{CompiledBinding Translation.SideBySide.Value,
+                                             Mode=OneWay}"
+                    ToggleType="CheckBox" />
 
                 <Separator />
 
                 <!--  Toggle topmost  -->
-                <MenuItem Header="{CompiledBinding Translation.StayTopMost.Value, Mode=OneWay}" ToggleType="CheckBox" />
+                <MenuItem
+                    Command="{CompiledBinding SetTopMostCommand}"
+                    Header="{CompiledBinding Translation.StayTopMost.Value,
+                                             Mode=OneWay}"
+                    ToggleType="CheckBox" />
 
                 <!--  Toggle auto fit  -->
-                <MenuItem Header="{CompiledBinding Translation.AutoFitWindow.Value, Mode=OneWay}" ToggleType="CheckBox" />
+                <MenuItem
+                    Command="{CompiledBinding AutoFitWindowCommand}"
+                    Header="{CompiledBinding Translation.AutoFitWindow.Value,
+                                             Mode=OneWay}"
+                    ToggleType="CheckBox" />
 
                 <Separator />
 
                 <!--  Toggle ctrl zoom  -->
-                <MenuItem Header="{CompiledBinding Translation.IsCtrlToZoom.Value, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding ChangeCtrlZoomCommand}" Header="{CompiledBinding Translation.IsCtrlToZoom.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Height="12" Width="12" />
                     </MenuItem.Icon>
@@ -265,7 +285,12 @@
                 <Separator />
 
                 <!--  Toggle UI  -->
-                <MenuItem Header="{CompiledBinding Translation.IsShowingUI.Value, Mode=OneWay}" IsVisible="{CompiledBinding IsUIShown.Value, Mode=OneWay}">
+                <MenuItem
+                    Command="{CompiledBinding ToggleInterfaceCommand}"
+                    Header="{CompiledBinding Translation.IsShowingUI.Value,
+                                             Mode=OneWay}"
+                    IsVisible="{CompiledBinding IsUIShown.Value,
+                                                Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -274,7 +299,12 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="{CompiledBinding Translation.IsShowingUI.Value, Mode=OneWay}" IsVisible="{CompiledBinding !IsUIShown.Value, Mode=OneWay}">
+                <MenuItem
+                    Command="{CompiledBinding ToggleInterfaceCommand}"
+                    Header="{CompiledBinding Translation.IsShowingUI.Value,
+                                             Mode=OneWay}"
+                    IsVisible="{CompiledBinding !IsUIShown.Value,
+                                                Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -284,7 +314,11 @@
                 </MenuItem>
 
                 <!--  Change background  -->
-                <MenuItem Header="{CompiledBinding Translation.ChangeBackground.Value, Mode=OneWay}" StaysOpenOnClick="True">
+                <MenuItem
+                    Command="{CompiledBinding ChangeBackgroundCommand}"
+                    Header="{CompiledBinding Translation.ChangeBackground.Value,
+                                             Mode=OneWay}"
+                    StaysOpenOnClick="True">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -321,7 +355,7 @@
                 <Separator />
 
                 <!--  Show Settings window  -->
-                <MenuItem Header="{CompiledBinding Translation.ShowAllSettingsWindow.Value, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding SettingsWindowCommand}" Header="{CompiledBinding Translation.ShowAllSettingsWindow.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CogGeometry}"
@@ -346,6 +380,7 @@
 
                 <!--  Next  -->
                 <MenuItem
+                    Command="{CompiledBinding NextCommand}"
                     Header="{CompiledBinding Translation.NextImage.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -361,6 +396,7 @@
 
                 <!--  Prev  -->
                 <MenuItem
+                    Command="{CompiledBinding PrevCommand}"
                     Header="{CompiledBinding Translation.PrevImage.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -378,6 +414,7 @@
 
                 <!--  Next 10  -->
                 <MenuItem
+                    Command="{CompiledBinding Next10Command}"
                     Header="{CompiledBinding Translation.AdvanceBy10Images.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -393,6 +430,7 @@
 
                 <!--  Next 100  -->
                 <MenuItem
+                    Command="{CompiledBinding Next100Command}"
                     Header="{CompiledBinding Translation.AdvanceBy100Images.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -408,6 +446,7 @@
 
                 <!--  Prev 10  -->
                 <MenuItem
+                    Command="{CompiledBinding Prev10Command}"
                     Header="{CompiledBinding Translation.GoBackBy10Images.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -423,6 +462,7 @@
 
                 <!--  Prev 100  -->
                 <MenuItem
+                    Command="{CompiledBinding Prev100Command}"
                     Header="{CompiledBinding Translation.GoBackBy100Images.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -439,7 +479,12 @@
                 <Separator />
 
                 <!--  First Image  -->
-                <MenuItem Header="{CompiledBinding Translation.FirstImage.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem
+                    Command="{CompiledBinding FirstCommand}"
+                    Header="{CompiledBinding Translation.FirstImage.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -449,7 +494,12 @@
                 </MenuItem>
 
                 <!--  Last Image  -->
-                <MenuItem Header="{CompiledBinding Translation.LastImage.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem
+                    Command="{CompiledBinding LastCommand}"
+                    Header="{CompiledBinding Translation.LastImage.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
@@ -461,7 +511,12 @@
                 <Separator />
 
                 <!--  Next folder  -->
-                <MenuItem Header="{CompiledBinding Translation.NextFolder.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem
+                    Command="{CompiledBinding NextFolderCommand}"
+                    Header="{CompiledBinding Translation.NextFolder.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
                         <Image
                             Height="14"
@@ -471,7 +526,12 @@
                 </MenuItem>
 
                 <!--  Prev folder  -->
-                <MenuItem Header="{CompiledBinding Translation.PrevFolder.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem
+                    Command="{CompiledBinding PrevFolderCommand}"
+                    Header="{CompiledBinding Translation.PrevFolder.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                                                Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Icon>
                         <Image
                             Height="14"
@@ -485,6 +545,7 @@
 
             <!--  Set as wallpaper  -->
             <MenuItem
+                Command="{CompiledBinding SetAsWallpaperFittedCommand}"
                 CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.SetAsWallpaper.Value,
@@ -511,7 +572,7 @@
                 </MenuItem.Icon>
 
                 <!--  Exif window  -->
-                <MenuItem Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding ImageInfoWindowCommand}" Header="{CompiledBinding Translation.ImageInfo.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path Classes="ImageInfoPath" />
                     </MenuItem.Icon>
@@ -519,6 +580,7 @@
 
                 <!--  File properties  -->
                 <MenuItem
+                    Command="{CompiledBinding ShowFilePropertiesCommand}"
                     CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                        FallbackValue=''}"
                     Header="{CompiledBinding Translation.FileProperties.Value,
@@ -634,8 +696,7 @@
 
             <!--  Delete file  -->
             <MenuItem
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                                   FallbackValue=''}"
+                Command="{CompiledBinding DeleteFileCommand}"
                 Header="{CompiledBinding Translation.DeleteFile.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
@@ -648,14 +709,14 @@
             <Separator />
 
             <!--  Paste  -->
-            <MenuItem Header="{CompiledBinding Translation.Paste.Value, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding PasteCommand}" Header="{CompiledBinding Translation.Paste.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path Classes="PastePath" />
                 </MenuItem.Icon>
             </MenuItem>
 
             <!--  Copy  -->
-            <MenuItem CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, FallbackValue=''}" Header="{CompiledBinding Translation.Copy.Value, Mode=OneWay}">
+            <MenuItem Header="{CompiledBinding Translation.Copy.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Data="{StaticResource CopyGeometry}"
@@ -674,18 +735,17 @@
 
                 <!--  Copy file path  -->
                 <MenuItem
-                    CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                                       FallbackValue=''}"
+                    Command="{CompiledBinding CopyFileCommand}"
                     Header="{Binding Translation.FileCopyPath.Value, Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}">
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                                                FallbackValue=''}">
                     <MenuItem.Icon>
                         <Path Classes="CopyPath" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <!--  Copy base64  -->
-                <MenuItem CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, FallbackValue=''}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <MenuItem Command="{CompiledBinding CopyBase64Command}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                     <MenuItem.Header>
                         <TextBlock>
                             <Run Text="{CompiledBinding Translation.Copy.Value, Mode=OneWay}" />
@@ -701,8 +761,7 @@
 
                 <!--  Duplicate file  -->
                 <MenuItem
-                    CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                                       FallbackValue=''}"
+                    Command="{CompiledBinding DuplicateFileCommand}"
                     Header="{CompiledBinding Translation.DuplicateFile.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
@@ -716,20 +775,13 @@
 
             <!--  Copy file  -->
             <MenuItem
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                                   FallbackValue=''}"
+                Command="{CompiledBinding CopyFileCommand}"
                 Header="{CompiledBinding Translation.CopyFile.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
-                x:Name="CopyFileMenuItem">
+                                            FallbackValue=''}">
                 <MenuItem.Icon>
-                    <Path
-                        Data="{StaticResource CopyGeometry}"
-                        Fill="{StaticResource Brush0}"
-                        Height="12"
-                        Stretch="Fill"
-                        Width="12" />
+                    <Path Classes="CopyPath" />
                 </MenuItem.Icon>
             </MenuItem>
 
