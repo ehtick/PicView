@@ -78,7 +78,7 @@ public partial class WinTitleBar2 : UserControl
                     }
                     
                     MainMenu.Open();
-                    //FileMenuItem.Open();
+                    FileMenuItem.Open();
                 }
                 else
                 {
