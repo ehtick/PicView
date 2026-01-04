@@ -99,6 +99,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
             });
 
             UIHelper2.AddDropDownMenu();
+            UIHelper2.AddHoverBar(windowViewModel);
 
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>

@@ -1,0 +1,266 @@
+﻿using System.Diagnostics;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.Media;
+using Avalonia.Threading;
+using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC.PopUps;
+using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
+using R3;
+
+namespace PicView.Avalonia.Views.UC;
+
+public partial class HoverBar2 : UserControl
+{
+    public HoverBar2()
+    {
+        InitializeComponent();
+        Loaded += OnLoaded;
+        if (Settings.Theme.Dark)
+        {
+            return;
+        }
+
+        FileMenuButton.Classes.Remove("noBorderHover");
+        FileMenuButton.Classes.Add("hover");
+
+        ZoomOutMenuButton.Classes.Remove("noBorderHover");
+        ZoomOutMenuButton.Classes.Add("hover");
+
+        ZoomInMenuButton.Classes.Remove("noBorderHover");
+        ZoomInMenuButton.Classes.Add("hover");
+
+        RotateLeftButton.Classes.Remove("noBorderHover");
+        RotateLeftButton.Classes.Add("hover");
+
+        RotateRightButton.Classes.Remove("noBorderHover");
+        RotateRightButton.Classes.Add("hover");
+
+        FlipButton.Classes.Remove("noBorderHover");
+        FlipButton.Classes.Add("hover");
+
+        ImageMenuButton.Classes.Remove("noBorderHover");
+        ImageMenuButton.Classes.Add("hover");
+
+        SettingsMenuButton.Classes.Remove("noBorderHover");
+        SettingsMenuButton.Classes.Add("hover");
+    }
+
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
+        UIHelper2.GetMainView.SizeChanged += (_, args) => ApplyResponsiveResize(args.NewSize.Width);
+        ApplyResponsiveResize(Bounds.Width);
+
+
+        if (Settings.Theme.GlassTheme)
+        {
+            var brush = new SolidColorBrush(Color.Parse("#D1333333"));
+            NextButton.Background = brush;
+            PreviousButton.Background = brush;
+
+            var noThickness = new Thickness(0);
+            FileMenuButton.BorderThickness = noThickness;
+            ZoomOutMenuButton.BorderThickness = noThickness;
+            ZoomInMenuButton.BorderThickness = noThickness;
+            RotateLeftButton.BorderThickness = noThickness;
+            RotateRightButton.BorderThickness = noThickness;
+            FlipButton.BorderThickness = noThickness;
+            ImageMenuButton.BorderThickness = noThickness;
+            SettingsMenuButton.BorderThickness = noThickness;
+            NextButton.BorderThickness = noThickness;
+            PreviousButton.BorderThickness = noThickness;
+        }
+
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        Observable.FromEventHandler<RoutedEventArgs>(h => NextButton.Click += h,
+                h => NextButton.Click -= h)
+            .SubscribeAwait(async (_, c) =>
+            {
+                vm.Hoverbar.IsHoverNavigationButtonNextClicked = true;
+                await vm.WindowTabs.NextFile();
+            });
+        Observable.FromEventHandler<RoutedEventArgs>(h => PreviousButton.Click += h,
+                h => PreviousButton.Click -= h)
+            .SubscribeAwait(async (_, c) =>
+            {
+                vm.Hoverbar.IsHoverNavigationButtonPreviousClicked = true;
+                await vm.WindowTabs.PrevFile();
+            });
+
+        Debug.Assert(Settings.Gallery is not null);
+        Observable.EveryValueChanged(Settings.Gallery, x => x.IsBottomGalleryShown)
+            .Skip(1)
+            .Subscribe(_ => { ApplyResponsiveResize(Bounds.Width); });
+    }
+
+    private void ApplyResponsiveResize(double width)
+    {
+        const int firstBreakpoint = 475;
+        const int secondBreakpoint = 550;
+        const int thirdBreakpoint = 800;
+
+        switch (width)
+        {
+            case < SizeDefaults.SecondaryWindowMinWidth:
+                // Too small to fit
+                IsVisible = false;
+                break;
+            case <= firstBreakpoint:
+                ApplyLayout(
+                    70,
+                    false,
+                    false);
+                break;
+
+            case <= secondBreakpoint:
+                ApplyLayout(
+                    75,
+                    false,
+                    false);
+                break;
+
+            case < thirdBreakpoint:
+                ApplyLayout(
+                    72,
+                    false,
+                    true);
+                break;
+
+            default:
+                ApplyLayout(
+                    75,
+                    true,
+                    true);
+                break;
+        }
+    }
+
+    private void ApplyLayout(double buttonWidth, bool showRotateLeft, bool showAdvancedButtons)
+    {
+        NextButton.Width = PreviousButton.Width = buttonWidth;
+        RotateLeftButton.IsVisible = showRotateLeft;
+        RotateRightButton.IsVisible =
+            FlipButton.IsVisible =
+                ZoomInMenuButton.IsVisible =
+                    ZoomOutMenuButton.IsVisible = showAdvancedButtons;
+
+        IsVisible = true;
+
+        // Make sure hover bar is above the bottom gallery if needed
+        var newHeight = Settings.Gallery.IsBottomGalleryShown ? 50 : 160;
+        Height = UIHelper2.GetMainView.Bounds.Height > SizeDefaults.WindowMinSize ? newHeight : double.NaN;
+    }
+
+
+    private async Task ManagePointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        
+        var props = e.Properties;
+        
+        if (NextButton.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                ShowNavigationDialog();
+            }
+            else if (props.IsLeftButtonPressed)
+            {
+                UIHelper2.SetButtonInterval(NextButton);
+            }
+        }
+        else if (PreviousButton.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                ShowNavigationDialog();
+            }
+            else if (props.IsLeftButtonPressed)
+            {
+                UIHelper2.SetButtonInterval(PreviousButton);
+            }
+        }
+        else if (SettingsMenuButton.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                ShowQuickSettingsDialog();
+            }
+            else if (props.IsLeftButtonPressed)
+            {
+                await vm.Mapper.SettingsWindow();
+            }
+        }
+        else if (ImageMenuButton.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed || props.IsLeftButtonPressed)
+            {
+                ShowQuickEditingDialog();
+            }
+        }
+        else if (RotateLeftButton.IsPointerOver)
+        {
+            if (props.IsLeftButtonPressed)
+            {
+                vm.Hoverbar.IsHoverRotateLeftClicked = true;
+            }
+        }
+        else if (RotateRightButton.IsPointerOver)
+        {
+            if (props.IsLeftButtonPressed)
+            {
+                vm.Hoverbar.IsHoverRotateRightClicked = true;
+            }
+        }
+        else if (ProgressBar.IsPointerOver)
+        {
+            if (props.IsRightButtonPressed)
+            {
+                ShowSearchDialog();
+
+                // Wait for animation to finish to properly close tooltip
+                await Task.Delay(TimeSpan.FromSeconds(0.3));
+                Dispatcher.UIThread.Post(() => { ToolTip.SetIsOpen(ProgressBar, false); },
+                    DispatcherPriority.Background);
+            }
+        }
+        else
+        {
+            if (props.IsRightButtonPressed)
+            {
+                UIHelper2.ShowMainContextMenu();
+            }
+        }
+    }
+
+    private static void ShowNavigationDialog() =>
+        DialogManager2.AddNavigationDialog();
+
+    private static void ShowQuickSettingsDialog() =>
+        UIHelper2.GetMainView.MainPanel.Children.Add(new QuickSettingsDialog());
+    
+    private static void ShowQuickEditingDialog() =>
+        UIHelper2.GetMainView.MainPanel.Children.Add(new QuickEditingDialog());
+
+    private static void ShowSearchDialog() =>
+        DialogManager2.AddFileSearchDialog();
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        Loaded -= OnLoaded;
+        RemoveHandler(PointerPressedEvent, ManagePointerPressed);
+    }
+}

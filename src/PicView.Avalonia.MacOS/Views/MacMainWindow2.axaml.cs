@@ -96,6 +96,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
             });
             
             UIHelper2.AddDropDownMenu();
+            UIHelper2.AddHoverBar(vm);
 
             // Close tabMenu when clicking outside of it
             PointerPressed += (_, _) =>

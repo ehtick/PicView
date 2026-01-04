@@ -5,14 +5,13 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.ViewModels;
 using R3.Avalonia;
 using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
-using MainWindowViewModel = PicView.Avalonia.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.UI;
 
@@ -29,7 +28,7 @@ public static class UIHelper2
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar2? GetBottomBar { get; private set; }
-    public static HoverBar? GetHoverBar { get; private set; }
+    public static HoverBar2? GetHoverBar { get; private set; }
     public static DropDownMenu? GetDropDownMenu { get; private set; }
     
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
@@ -54,16 +53,17 @@ public static class UIHelper2
         GetMainTabControl = GetMainView.MainTabControl;
     }
 
-    public static void AddHoverBar(MainViewModel vm)
+    public static void AddHoverBar(MainWindowViewModel vm)
     {
         if (GetHoverBar is not null)
         {
             return;
         }
-        GetHoverBar = new HoverBar();
+        GetHoverBar = new HoverBar2();
+        vm.Hoverbar ??= new HoverbarViewModel();
         GetMainView.MainPanel.Children.Add(GetHoverBar);
-        _ = new HoverFadeButtonHandler(GetHoverBar, vm, GetHoverBar.BottomBorder);
-        MainWindowViewModel.HoverBarSubscription();
+        _ = new HoverFadeButtonHandler2(GetHoverBar, vm, GetHoverBar.BottomBorder);
+        vm.HoverBarSubscription();
     }
     
     public static void AddDropDownMenu()
@@ -103,25 +103,25 @@ public static class UIHelper2
     /// <summary>
     /// Centers the window or gallery based on current state
     /// </summary>
-    public static void Center(MainViewModel? vm)
+    public static void Center(MainWindowViewModel? vm)
     {
         if (vm is null)
         {
             return;
         }
 
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            GalleryFunctions.CenterGallery(vm);
-        }
-        else
-        {
-            WindowFunctions.CenterWindowOnScreen();
-        }
+        // if (GalleryFunctions.IsFullGalleryOpen)
+        // {
+        //     GalleryFunctions.CenterGallery(vm);
+        // }
+        // else
+        // {
+        //     WindowFunctions.CenterWindowOnScreen();
+        // }
     }
 
     /// <inheritdoc cref="Center"/>
-    public static async Task CenterAsync(MainViewModel? vm)
+    public static async Task CenterAsync(MainWindowViewModel? vm)
     {
         if (vm is null)
         {

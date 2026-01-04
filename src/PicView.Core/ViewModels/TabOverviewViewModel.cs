@@ -326,6 +326,18 @@ public class TabOverviewViewModel
     {
         await LoadFromFileAsync(new FileInfo(file), senderTab).ConfigureAwait(false);
     }
+    
+    public async ValueTask NavigateToIndexAsync(int index, TabViewModel? senderTab = null)
+    {
+        if (SharedNavigation is null)
+        {
+            return;
+        }
+        var tab = senderTab ?? ActiveTab.Value;
+        var ct = tab.GetTabCancellation();
+        await SharedNavigation.NavigateToIndexAsync(tab, index, ct).ConfigureAwait(false);
+        CanActiveTabNavigate.Value = tab.ImageIterator?.Files?.Count > 1;
+    }
     #endregion
 
     #region Sort

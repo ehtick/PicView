@@ -160,6 +160,10 @@
           <DependentUpon>MainView3.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\UC\HoverBar2.axaml.cs">
+          <DependentUpon>HoverBar2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

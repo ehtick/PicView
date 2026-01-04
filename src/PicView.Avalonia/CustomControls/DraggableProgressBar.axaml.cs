@@ -7,9 +7,8 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -42,9 +41,6 @@ public class DraggableProgressBar : TemplatedControl
 
     private readonly CompositeDisposable _disposables = new();
 
-    // Flag to signal that a full, non-slim update is needed after dragging ends
-    private bool _needsFullUpdateOnDragEnd;
-
     static DraggableProgressBar()
     {
         // This allows the control to react to property changes
@@ -69,32 +65,26 @@ public class DraggableProgressBar : TemplatedControl
         ToolTip.SetPlacement(this, PlacementMode.Top);
         ToolTip.SetVerticalOffset(this, -3);
 
-        // Observe the CurrentIndexProperty for changes,
-        // wait for a 25ms pause in changes (debounce), and then emit the last value.
-        CurrentIndexProperty.Changed.ToObservable()
-            .Debounce(TimeSpan.FromMilliseconds(25))
-            .Skip(1) // Skip first loading, when it is just setup
-            .SubscribeAwait(async (x, cancel) =>
-            {
-                if (IsDragging)
+        if (DataContext is MainWindowViewModel vm)
+        {
+            // TODO: Need to move subscription elsewhere
+            
+            // Observe the CurrentIndexProperty for changes,
+            // wait for a 25ms pause in changes (debounce), and then emit the last value.
+            CurrentIndexProperty.Changed.ToObservable()
+                .Debounce(TimeSpan.FromMilliseconds(25))
+                .Skip(1) // Skip first loading, when it is just setup
+                .SubscribeAwait(async (x, _) =>
                 {
-                    var isReverse = x.NewValue.Value < x.OldValue.Value;
-                    // Use lightweight image changing (without changing size) while dragging:
-                    await NavigationManager.ImageIterator.IterateToIndexSlim(x.NewValue.Value, isReverse, cancel);
-                    _needsFullUpdateOnDragEnd = true;
-                }
-                else
-                {
-                    await NavigationManager.ImageIterator.IterateToIndex(x.NewValue.Value, cancel);
-                    _needsFullUpdateOnDragEnd = false;
-                }
-            }, AwaitOperation.Switch)
-            .AddTo(_disposables);
+                    await vm.WindowTabs.NavigateToIndexAsync(x.NewValue.Value).ConfigureAwait(false);
+                }, AwaitOperation.Drop)
+                .AddTo(_disposables);
 
-        this.GetObservable(PointerReleasedEvent)
-            .ToObservable()
-            .SubscribeAwait(async (x, _) => { await HandlePointerReleased(x); })
-            .AddTo(_disposables);
+            this.GetObservable(PointerReleasedEvent)
+                .ToObservable()
+                .Subscribe(HandlePointerReleased)
+                .AddTo(_disposables);
+        }
 
         UpdateThumbPosition();
     }
@@ -294,7 +284,7 @@ public class DraggableProgressBar : TemplatedControl
         UpdateThumbPosition();
     }
 
-    private async ValueTask HandlePointerReleased(PointerReleasedEventArgs e)
+    private void HandlePointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
 
@@ -302,14 +292,6 @@ public class DraggableProgressBar : TemplatedControl
         if (!ReferenceEquals(e.Pointer.Captured, _thumb) && !IsDragging)
         {
             return; // Not dragging, or capture was lost/handled elsewhere
-        }
-
-        if (_needsFullUpdateOnDragEnd)
-        {
-            var vm = DataContext as MainViewModel;
-            // Update from lightweight image loading to properly instantiate everything and update size
-            await NavigationManager.ImageIterator.SlimUpdate(CurrentIndex, vm?.PicViewer.ImageSource.CurrentValue);
-            _needsFullUpdateOnDragEnd = false; // Reset flag
         }
 
         IsDragging = false;

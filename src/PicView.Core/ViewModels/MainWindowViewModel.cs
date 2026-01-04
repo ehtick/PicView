@@ -7,12 +7,15 @@ namespace PicView.Core.ViewModels;
 public class MainWindowViewModel : IDisposable
 {
     public IFunctionsMapper? Mapper { get; set; }
+    public HoverbarViewModel? Hoverbar { get; set; }
     public IPlatformWindowService? PlatformWindowService { get; set; }
     
     public TranslationViewModel Translation { get;  } 
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     public TabOverviewViewModel WindowTabs { get; } = new();
     public GalleryViewModel Gallery  { get; } = new();
+    public BindableReactiveProperty<int> NavigationIndex { get; } = new();
+    public BindableReactiveProperty<int> MaxIndex { get; } = new();
     
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }
@@ -659,19 +662,51 @@ public class MainWindowViewModel : IDisposable
             IsBottomToolbarShown,
             IsEditableTitlebarOpen);
     }
-    
-    // Call this method from the View's "Activated" or "GotFocus" event
-    public void SetAsActive()
-    {
-        RequestActive.OnNext(Unit.Default);
-    }
 
     public void LayoutButtonSubscription()
     {
     }
 
-    public static void HoverBarSubscription()
+    public void HoverBarSubscription()
     {
+        // TODO: Needs to subscribe to visibility changes properly
+        Observable.EveryValueChanged(CurrentView, control => control.Value)
+            .Subscribe(control =>
+            {
+                // if (control is ImageViewer && Settings.UIProperties.ShowHoverNavigationBar)
+                // {
+                //     if (Settings.WindowProperties.Fullscreen)
+                //     {
+                //         vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
+                //     }
+                //     else if ((!Settings.UIProperties.ShowBottomNavBar &&
+                //               Settings.UIProperties.ShowAltInterfaceButtons) ||
+                //              !Settings.UIProperties.ShowInterface)
+                //     {
+                //         vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
+                //     }
+                //     else
+                //     {
+                //         vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+                //     }
+                // }
+                // else
+                // {
+                //     vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+                // }
+                Hoverbar.IsHoverbarVisible.Value = true;
+            });
+        // TODO: Move and call elsewhere
+        IndexSubscription();
+    }
+
+    private void IndexSubscription()
+    {
+        // TODO: Add to disposables
+        Observable.EveryValueChanged(WindowTabs.ActiveTab.CurrentValue.ImageIterator, i => i.CurrentIndex)
+            .Subscribe(i => NavigationIndex.Value = i);
+        Observable.EveryValueChanged(WindowTabs.ActiveTab.CurrentValue.ImageIterator, i => i.Files.Count)
+            .Subscribe(i => MaxIndex.Value = i);
     }
 
 
