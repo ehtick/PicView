@@ -22,6 +22,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public object? ParentWindowContext { get; set; }
     private CompositeDisposable? Disposables { get; set; }
 
+    public HoverbarViewModel Hoverbar { get; } = new();
+
     /// Unique identifier for this tab.
     public string Id { get; } = id;
     public bool IsClosing { get; private set; }
@@ -34,11 +36,13 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 
     private IFileWatcherService? _fileWatcherService = fileWatcherService;
     
+    public BindableReactiveProperty<int> NavigationIndex { get; } = new(0);
+    public BindableReactiveProperty<int> MaxIndex { get; } = new(0);
+    
     /// <summary>
     /// Should be used when changing directory or closing the tab
     /// </summary>
     private CancellationTokenSource NavigationCts { get; set; } = new();
-    
     
     /// <summary>
     /// The main title displayed in the window title bar.
@@ -102,6 +106,21 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
                 TabTooltip.Value = file.FullName;
                 UpdateTabTitle();
             })
+            .AddTo(Disposables);
+    }
+    
+    private void IndexSubscription()
+    {
+        if (ImageIterator is null || Disposables is null)
+        {
+            return;
+        }
+        
+        Observable.EveryValueChanged(ImageIterator, i => i.CurrentIndex)
+            .Subscribe(i => NavigationIndex.Value = i)
+            .AddTo(Disposables);
+        Observable.EveryValueChanged(ImageIterator, i => i.Files.Count)
+            .Subscribe(i => MaxIndex.Value = i)
             .AddTo(Disposables);
     }
     

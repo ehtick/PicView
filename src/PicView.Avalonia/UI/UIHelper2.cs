@@ -4,11 +4,9 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
-using PicView.Avalonia.Gallery;
 using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Menus;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ViewModels;
 using R3.Avalonia;
 using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
@@ -51,19 +49,6 @@ public static class UIHelper2
         GetBottomBar = mainWindow?.FindControl<BottomBar2>("BottomBar");
         //GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage>("ToolTipMessage");
         GetMainTabControl = GetMainView.MainTabControl;
-    }
-
-    public static void AddHoverBar(MainWindowViewModel vm)
-    {
-        if (GetHoverBar is not null)
-        {
-            return;
-        }
-        GetHoverBar = new HoverBar2();
-        vm.Hoverbar ??= new HoverbarViewModel();
-        GetMainView.MainPanel.Children.Add(GetHoverBar);
-        _ = new HoverFadeButtonHandler2(GetHoverBar, vm, GetHoverBar.BottomBorder);
-        vm.HoverBarSubscription();
     }
     
     public static void AddDropDownMenu()

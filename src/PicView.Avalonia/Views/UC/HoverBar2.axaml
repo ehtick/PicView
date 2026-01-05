@@ -1,12 +1,9 @@
 ﻿<UserControl
     Background="Transparent"
     Height="160"
-    IsVisible="{CompiledBinding Hoverbar.IsHoverbarVisible.Value}"
-    Margin="{CompiledBinding Gallery.GalleryMargin.Value}"
     Opacity="0"
-    VerticalAlignment="Bottom"
     x:Class="PicView.Avalonia.Views.UC.HoverBar2"
-    x:DataType="vm:MainWindowViewModel"
+    x:DataType="vm:TabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
@@ -19,13 +16,18 @@
         Height="37"
         MaxWidth="{CompiledBinding Hoverbar.MaxWidth}"
         x:Name="BottomBorder">
+        <Border.Styles>
+            <Style Selector="DockPanel">
+                <Setter Property="ContextFlyout" Value="{x:Null}" />
+            </Style>
+        </Border.Styles>
         <DockPanel LastChildFill="True">
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding OpenCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenCommand}"
                 CornerRadius="6,0,0,6"
                 Data="{StaticResource AltFolderGeometry}"
                 Foreground="{DynamicResource MainTextColor}"
@@ -33,7 +35,7 @@
                 IconHeight="17"
                 IconWidth="20"
                 IsTabStop="False"
-                ToolTip.Tip="{CompiledBinding Translation.OpenFileDialog.Value,
+                ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.OpenFileDialog.Value,
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="FileMenuButton" />
@@ -43,7 +45,7 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding ZoomOutCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).ZoomOutCommand}"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 Icon="{StaticResource ZoomOutImage}"
@@ -58,7 +60,7 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding ZoomInCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).ZoomInCommand}"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 Icon="{StaticResource ZoomAltImage}"
@@ -73,17 +75,17 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding RotateLeftCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).RotateLeftCommand}"
                 Data="{StaticResource RotateLeftGeometry}"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
-                ToolTip.Tip="{CompiledBinding Translation.RotateLeft.Value,
+                ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.RotateLeft.Value,
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="RotateLeftButton" />
@@ -91,18 +93,18 @@
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                 Classes="noBorderHover"
-                Command="{CompiledBinding RotateRightCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).RotateRightCommand}"
                 Data="{StaticResource RotateRightGeometry}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
-                ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
+                ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.RotateRight.Value,
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="RotateRightButton" />
@@ -112,18 +114,18 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding FlipCommand}"
+                Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).FlipCommand}"
                 Data="{StaticResource FlipGeometry}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="35"
                 IconHeight="17"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding Model.Value.Image,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
-                ToolTip.Tip="{CompiledBinding Translation.IsFlipped.Value,
+                ToolTip.Tip="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.IsFlipped.Value,
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="FlipButton">
@@ -171,7 +173,7 @@
                 Height="35"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 Width="80"
@@ -188,7 +190,7 @@
                 Height="35"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 Width="80"
@@ -196,10 +198,9 @@
 
             <customControls:DraggableProgressBar
                 CornerRadius="0,6,6,0"
-                CurrentIndex="{CompiledBinding NavigationIndex.Value,
-                                               Mode=TwoWay}"
+                CurrentIndex="{CompiledBinding NavigationIndex.Value}"
                 DragSensitivity="1"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Maximum="{CompiledBinding MaxIndex.Value}"
                 ThumbFill="{DynamicResource SecondaryBorderColor}"

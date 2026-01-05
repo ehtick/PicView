@@ -56,7 +56,6 @@ public partial class HoverBar2 : UserControl
         UIHelper2.GetMainView.SizeChanged += (_, args) => ApplyResponsiveResize(args.NewSize.Width);
         ApplyResponsiveResize(Bounds.Width);
 
-
         if (Settings.Theme.GlassTheme)
         {
             var brush = new SolidColorBrush(Color.Parse("#D1333333"));
@@ -76,24 +75,26 @@ public partial class HoverBar2 : UserControl
             PreviousButton.BorderThickness = noThickness;
         }
 
-        if (DataContext is not MainWindowViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
 
+        _ = new HoverFadeButtonHandler2(this, core.MainWindows.ActiveWindow.CurrentValue, BottomBorder);
+        
         Observable.FromEventHandler<RoutedEventArgs>(h => NextButton.Click += h,
                 h => NextButton.Click -= h)
             .SubscribeAwait(async (_, c) =>
             {
-                vm.Hoverbar.IsHoverNavigationButtonNextClicked = true;
-                await vm.WindowTabs.NextFile();
+                core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonNextClicked = true;
+                await core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.NextFile();
             });
         Observable.FromEventHandler<RoutedEventArgs>(h => PreviousButton.Click += h,
                 h => PreviousButton.Click -= h)
             .SubscribeAwait(async (_, c) =>
             {
-                vm.Hoverbar.IsHoverNavigationButtonPreviousClicked = true;
-                await vm.WindowTabs.PrevFile();
+                core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonPreviousClicked = true;
+                await core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.PrevFile();
             });
 
         Debug.Assert(Settings.Gallery is not null);
@@ -163,7 +164,7 @@ public partial class HoverBar2 : UserControl
 
     private async Task ManagePointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (DataContext is not MainWindowViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
@@ -200,7 +201,7 @@ public partial class HoverBar2 : UserControl
             }
             else if (props.IsLeftButtonPressed)
             {
-                await vm.Mapper.SettingsWindow();
+                await core.MainWindows.ActiveWindow.CurrentValue.Mapper.SettingsWindow();
             }
         }
         else if (ImageMenuButton.IsPointerOver)
@@ -214,14 +215,14 @@ public partial class HoverBar2 : UserControl
         {
             if (props.IsLeftButtonPressed)
             {
-                vm.Hoverbar.IsHoverRotateLeftClicked = true;
+                core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateLeftClicked = true;
             }
         }
         else if (RotateRightButton.IsPointerOver)
         {
             if (props.IsLeftButtonPressed)
             {
-                vm.Hoverbar.IsHoverRotateRightClicked = true;
+                core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateRightClicked = true;
             }
         }
         else if (ProgressBar.IsPointerOver)

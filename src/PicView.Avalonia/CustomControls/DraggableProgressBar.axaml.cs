@@ -39,8 +39,6 @@ public class DraggableProgressBar : TemplatedControl
     private Ellipse? _thumb;
     private Border? _track;
 
-    private readonly CompositeDisposable _disposables = new();
-
     static DraggableProgressBar()
     {
         // This allows the control to react to property changes
@@ -64,29 +62,8 @@ public class DraggableProgressBar : TemplatedControl
     {
         ToolTip.SetPlacement(this, PlacementMode.Top);
         ToolTip.SetVerticalOffset(this, -3);
-
-        if (DataContext is MainWindowViewModel vm)
-        {
-            // TODO: Need to move subscription elsewhere
-            
-            // Observe the CurrentIndexProperty for changes,
-            // wait for a 25ms pause in changes (debounce), and then emit the last value.
-            CurrentIndexProperty.Changed.ToObservable()
-                .Debounce(TimeSpan.FromMilliseconds(25))
-                .Skip(1) // Skip first loading, when it is just setup
-                .SubscribeAwait(async (x, _) =>
-                {
-                    await vm.WindowTabs.NavigateToIndexAsync(x.NewValue.Value).ConfigureAwait(false);
-                }, AwaitOperation.Drop)
-                .AddTo(_disposables);
-
-            this.GetObservable(PointerReleasedEvent)
-                .ToObservable()
-                .Subscribe(HandlePointerReleased)
-                .AddTo(_disposables);
-        }
-
         UpdateThumbPosition();
+        PointerReleased += HandlePointerReleased;
     }
 
     public bool IsDragging { get; private set; }
@@ -284,7 +261,7 @@ public class DraggableProgressBar : TemplatedControl
         UpdateThumbPosition();
     }
 
-    private void HandlePointerReleased(PointerReleasedEventArgs e)
+    private void HandlePointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
 
@@ -310,10 +287,10 @@ public class DraggableProgressBar : TemplatedControl
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromLogicalTree(e);
-        _disposables.Dispose();
 
         Loaded -= OnLoaded;
         LostFocus -= OnLostFocus;
+        PointerReleased -= HandlePointerReleased;
     }
 
     #region Helpers

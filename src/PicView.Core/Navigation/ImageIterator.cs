@@ -15,6 +15,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     private System.Timers.Timer? _timer;
 
     public IReadOnlyList<FileInfo> Files { get; set; } = [];
+    private CompositeDisposable? _disposable;
 
     public int CurrentIndex { get; private set; } = -1;
     public bool IsReversed { get; private set; }
@@ -23,6 +24,15 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     {
         Files = files ?? [];
         CurrentIndex = Math.Clamp(initialIndex, 0, Math.Max(0, Files.Count - 1));
+
+        _disposable = new CompositeDisposable();
+        // Update UI bound values
+        Observable.EveryValueChanged(this, i => i.CurrentIndex)
+            .Subscribe(i => _tab.NavigationIndex.Value = i)
+            .AddTo(_disposable);
+        Observable.EveryValueChanged(Files, i => i.Count)
+            .Subscribe(i => _tab.MaxIndex.Value = i)
+            .AddTo(_disposable);
     }
     
     public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
@@ -85,6 +95,10 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         {
             _tab.SecondaryModel.Value = null;
         }
+
+        // Update UI bound vales
+        _tab.NavigationIndex.Value = CurrentIndex;
+        _tab.MaxIndex.Value = Files.Count;
 
         // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
         _cache.Preload(_tab.Id, index, IsReversed, Files);
@@ -273,6 +287,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     {
         _timer?.Dispose();
         await _cache.RemoveOwner(_tab.Id);
+        _disposable.Dispose();
         GC.SuppressFinalize(this);
     }
 

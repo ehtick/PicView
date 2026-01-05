@@ -2,7 +2,7 @@
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.UC.Buttons;
 public partial class ClickArrowLeft2 : UserControl
@@ -12,7 +12,7 @@ public partial class ClickArrowLeft2 : UserControl
         InitializeComponent();
         Loaded += delegate
         {
-            if (DataContext is not MainViewModel vm)
+            if (DataContext is not MainWindowViewModel vm)
             {
                 return;
             }
@@ -20,11 +20,11 @@ public partial class ClickArrowLeft2 : UserControl
             AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
             PolyButton.Click += (_, _) =>
             {
-                vm.MainWindow.IsClickArrowLeftClicked = true;
+                vm.IsClickArrowLeftClicked = true;
                 UIHelper.SetButtonInterval(PolyButton);
             };
             
-            _ = new HoverFadeButtonHandler(this, vm, PolyButton);
+            _ = new HoverFadeButtonHandler2(this, vm, PolyButton);
         };
     }
 

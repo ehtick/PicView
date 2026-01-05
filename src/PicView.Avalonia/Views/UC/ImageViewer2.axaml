@@ -2,8 +2,11 @@
     x:Class="PicView.Avalonia.Views.UC.ImageViewer2"
     x:DataType="viewModels1:TabViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:vm="clr-namespace:PicView.Avalonia.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <LayoutTransformControl x:Name="ImageLayoutTransformControl">
         <Panel x:Name="MainPanel">
@@ -13,7 +16,6 @@
                     HorizontalScrollBarVisibility="Disabled"
                     VerticalScrollBarVisibility="Disabled"
                     x:Name="ImageScrollViewer">
-                    <!--  ReSharper disable once Xaml.PossibleNullReferenceException  -->
                     <Border x:Name="MainBorder">
                         <UniformGrid Rows="1">
                             <customControls:PicBox2 Source="{CompiledBinding Model.Value.Image}" x:Name="MainImage" />
@@ -25,6 +27,23 @@
                     </Border>
                 </customControls:AutoScrollViewer>
             </customControls:ZoomPanControl2>
+            <buttons:ClickArrowRight2
+                HorizontalAlignment="Right"
+                Margin="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).RightControlOffSetMargin.Value}"
+                Opacity="0"
+                VerticalAlignment="Center" />
+            <buttons:ClickArrowLeft2
+                HorizontalAlignment="Left"
+                Opacity="0"
+                VerticalAlignment="Center" />
+            <uc:ZoomPreviewer2
+                HorizontalAlignment="Right"
+                IsVisible="False"
+                Margin="0,0,25,25"
+                VerticalAlignment="Bottom"
+                ZIndex="90"
+                x:Name="ZoomPreview" />
+            <uc:HoverBar2 VerticalAlignment="Bottom" x:Name="HoverBar" />
         </Panel>
     </LayoutTransformControl>
 </UserControl>

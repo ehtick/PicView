@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -43,7 +44,7 @@ public partial class ImageViewer2 : UserControl
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e) =>
         ZoomPanControl.ZoomWithPointerWheelCore(e.Delta.Y > 0, e.GetPosition(this));
 
-    private async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    public async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         if (sender is Control control)
         {
@@ -74,8 +75,8 @@ public partial class ImageViewer2 : UserControl
         //     {
         //         ZoomPanControl.ResetZoomSlim();
         //     });
-        ZoomPanControl.Initialize(DataContext);
-        MainPanel.Children.Add(ZoomPanControl.ZoomPreviewer);
+        ZoomPanControl.Initialize(ZoomPreview);
+        //MainPanel.Children.Add(ZoomPanControl.ZoomPreviewer);
 
         if (DataContext is not TabViewModel tab)
         {
@@ -93,6 +94,8 @@ public partial class ImageViewer2 : UserControl
                     _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{zoomLevel}%", true,
                         TimeSpan.FromSeconds(1));
                 }
+
+                ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,(HoverBar.Bounds.Height / 2) + 25) : new Thickness(0, 0, 25, 25);
             }).AddTo(_disposables);
             
         
@@ -114,6 +117,16 @@ public partial class ImageViewer2 : UserControl
                     SecondaryImage.IsVisible = false;
                 }
             }).AddTo(_disposables);
+        
+        // Observe the CurrentIndexProperty for changes,
+        // wait for a 25ms pause in changes (debounce), and then emit the last value.
+        Observable.EveryValueChanged(HoverBar.ProgressBar, bar => bar.CurrentIndex)
+            .Debounce(TimeSpan.FromMilliseconds(25))
+            .SubscribeAwait(async (x, _) =>
+            {
+                await tab.ImageIterator.IterateToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+            }, AwaitOperation.Drop)
+            .AddTo(_disposables);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)

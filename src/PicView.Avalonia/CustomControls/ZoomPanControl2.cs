@@ -3,7 +3,6 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
@@ -61,23 +60,15 @@ public class ZoomPanControl2 : Decorator
 
     #region Initialization and Lifecycle
 
-    public void Initialize(object dataContext)
+    public void Initialize(ZoomPreviewer2 zoomPreviewer)
     {
         // Pointer handling for panning
         AddHandler(PointerPressedEvent, HandleResetZoomOrStartPanning, RoutingStrategies.Tunnel);
         AddHandler(PointerMovedEvent, HandlePanning, RoutingStrategies.Tunnel);
         AddHandler(PointerReleasedEvent, StopPanning, RoutingStrategies.Tunnel);
 
-        ZoomPreviewer = new ZoomPreviewer2
-        {
-            DataContext = dataContext,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Bottom,
-            Margin = new Thickness(0, 0, 25, 25),
-            ZIndex = 90,
-            IsVisible = false
-        };
-        ZoomPreviewer.SetZoomPanControl(this);
+        zoomPreviewer.SetZoomPanControl(this);
+        ZoomPreviewer = zoomPreviewer;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
