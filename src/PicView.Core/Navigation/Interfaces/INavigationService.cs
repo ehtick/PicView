@@ -1,12 +1,11 @@
 ﻿using PicView.Core.FileSorting;
-using PicView.Core.Models;
 using PicView.Core.ViewModels;
 
 namespace PicView.Core.Navigation.Interfaces;
 
 public interface INavigationService
 {
-    ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct);
+    ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct, List<FileInfo>? files = null);
     
     ValueTask LoadFromFileAsync(string source, TabViewModel tab, CancellationTokenSource ct);
     

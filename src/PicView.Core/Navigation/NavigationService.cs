@@ -24,7 +24,7 @@ public class NavigationService : INavigationService
         _stringComparer = stringComparer ?? string.CompareOrdinal;
     }
     
-    public async ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct)
+    public async ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct, List<FileInfo>? files = null)
     {
         try
         {
@@ -35,7 +35,7 @@ public class NavigationService : INavigationService
             var model = await _imageLoader.GetImageModelAsync(fileInfo, ct.Token).ConfigureAwait(false);
             tab.Model.Value = model; // Image updated via reactive subscription
             
-            tab.ImageIterator.Files = FileListRetriever.RetrieveFiles(fileInfo, _stringComparer);
+            tab.ImageIterator.Files = files ?? FileListRetriever.RetrieveFiles(fileInfo, _stringComparer);
             var index = FindIndex(fileInfo, tab);
             tab.ImageIterator.SetCurrentIndex(index);
             
@@ -86,7 +86,41 @@ public class NavigationService : INavigationService
 
     public async ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct)
     {
-        await LoadFromFileAsync(source, tab, ct).ConfigureAwait(false); // TODO: Implement
+        if (string.IsNullOrWhiteSpace(source))
+        {
+            return;
+        }
+
+        var check = FileTypeResolver.CheckIfLoadableString(source);
+        if (check == null)
+        {
+            return;
+        }
+
+        switch (check.Value.Type)
+        {
+            case FileTypeResolver.LoadAbleFileType.File:
+                await LoadFromFileAsync(check.Value.Data, tab, ct).ConfigureAwait(false);
+                return;
+            case FileTypeResolver.LoadAbleFileType.Directory:
+            {
+                var files = await Task.Run(() => FileListRetriever.RetrieveFiles(new FileInfo(check.Value.Data), _stringComparer), ct.Token).ConfigureAwait(false);
+                if (files.Count == 0)
+                {
+                    return;
+                }
+
+                var first = files[0];
+                await RepopulateIterator(first, tab, ct, files).ConfigureAwait(false);
+                return;
+            }
+            case FileTypeResolver.LoadAbleFileType.Web:
+            case FileTypeResolver.LoadAbleFileType.Base64:
+            case FileTypeResolver.LoadAbleFileType.Zip:
+                throw new NotImplementedException();
+            default:
+                return;
+        }
     }
 
     public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
