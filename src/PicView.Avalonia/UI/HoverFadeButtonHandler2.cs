@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Gallery;
@@ -10,7 +11,7 @@ namespace PicView.Avalonia.UI;
 /// <summary>
 ///     Handles fade-in and fade-out animation for a button (or button group) based on pointer proximity.
 /// </summary>
-public class HoverFadeButtonHandler2
+public class HoverFadeButtonHandler2 : IDisposable
 {
     private readonly Control? _childButton;
     private readonly Control _mainButton;
@@ -40,6 +41,8 @@ public class HoverFadeButtonHandler2
 
     private void AttachEvents()
     {
+        _mainButton.DetachedFromLogicalTree += OnDetachedFromLogicalTree;
+
         _mainButton.PointerEntered += OnPointerEntered;
         _mainButton.PointerExited += OnPointerExited;
         if (_childButton == null)
@@ -49,6 +52,11 @@ public class HoverFadeButtonHandler2
 
         _childButton.PointerEntered += OnPointerEntered;
         _childButton.PointerExited += OnPointerExited;
+    }
+
+    private void OnDetachedFromLogicalTree(object? sender, LogicalTreeAttachmentEventArgs e)
+    {
+        Dispose();
     }
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -149,5 +157,23 @@ public class HoverFadeButtonHandler2
     {
         _mainButton.Opacity = opacity;
         _childButton?.Opacity = opacity;
+    }
+
+    public void Dispose()
+    {
+        _mainButton.DetachedFromLogicalTree -= OnDetachedFromLogicalTree;
+        _mainButton.PointerEntered -= OnPointerEntered;
+        _mainButton.PointerExited -= OnPointerExited;
+
+        if (_childButton != null)
+        {
+            _childButton.PointerEntered -= OnPointerEntered;
+            _childButton.PointerExited -= OnPointerExited;
+        }
+
+        _fadeCts?.Cancel();
+        _fadeCts?.Dispose();
+        
+        GC.SuppressFinalize(this);
     }
 }

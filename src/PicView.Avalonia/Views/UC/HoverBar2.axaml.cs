@@ -79,9 +79,9 @@ public partial class HoverBar2 : UserControl
         {
             return;
         }
-
-        _ = new HoverFadeButtonHandler2(this, core.MainWindows.ActiveWindow.CurrentValue, BottomBorder);
         
+        _ = new HoverFadeButtonHandler2(this, core.MainWindows.ActiveWindow.CurrentValue, BottomBorder);
+
         Observable.FromEventHandler<RoutedEventArgs>(h => NextButton.Click += h,
                 h => NextButton.Click -= h)
             .SubscribeAwait(async (_, c) =>
