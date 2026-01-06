@@ -122,6 +122,7 @@ public class LanguageModel
     public string? Effects { get; set; }
     public string? EffectsTooltip { get; set; }
     public string? Enter { get; set; }
+    public string? ErrorLoadingImage { get; set; }
     public string? Esc { get; set; }
     public string? EscCloseTooltip { get; set; }
     public string? ExifVersion { get; set; }

@@ -111,21 +111,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
             .AddTo(Disposables);
     }
     
-    private void IndexSubscription()
-    {
-        if (ImageIterator is null || Disposables is null)
-        {
-            return;
-        }
-        
-        Observable.EveryValueChanged(ImageIterator, i => i.CurrentIndex)
-            .Subscribe(i => NavigationIndex.Value = i)
-            .AddTo(Disposables);
-        Observable.EveryValueChanged(ImageIterator, i => i.Files.Count)
-            .Subscribe(i => MaxIndex.Value = i)
-            .AddTo(Disposables);
-    }
-    
     /// <summary>
     /// Updates the window title and tab title based on the current image model.
     /// </summary>

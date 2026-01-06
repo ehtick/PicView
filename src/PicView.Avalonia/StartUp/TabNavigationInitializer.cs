@@ -1,6 +1,7 @@
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.FileHandling;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
@@ -26,7 +27,8 @@ public static class TabNavigationInitializer
         var fileWatcher = new FileWatcherService(vm.PlatformService.CompareStrings, sharedCache);
 
         // 3. Create NavigationService (Core)
-        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, vm.PlatformService.CompareStrings);
+        var tempFileService = new TempFileService();
+        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, vm.PlatformService, tempFileService, vm.PlatformService.CompareStrings);
 
         var thumbnailService = new AvaloniaThumbnailLoader();
 
@@ -54,7 +56,8 @@ public static class TabNavigationInitializer
         var fileWatcher = new FileWatcherService(vm.PlatformService.CompareStrings, sharedCache);
 
         // 3. Create NavigationService (Core)
-        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, vm.PlatformService.CompareStrings);
+        var tempFileService = new TempFileService();
+        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, vm.PlatformService, tempFileService, vm.PlatformService.CompareStrings);
 
         var thumbnailService = new AvaloniaThumbnailLoader();
 
