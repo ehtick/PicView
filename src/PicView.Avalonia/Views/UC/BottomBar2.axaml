@@ -20,8 +20,8 @@
                 Command="{CompiledBinding WindowTabs.NextFile}"
                 Header="{CompiledBinding Translation.NextImage.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.CanNavigateForwards.Value,
+                                            FallbackValue=False}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -36,6 +36,8 @@
                 Command="{CompiledBinding WindowTabs.PrevFile}"
                 Header="{CompiledBinding Translation.PrevImage,
                                          Mode=OneWay}"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.CanNavigateBackwards.Value,
+                                            FallbackValue=False}"
                 StaysOpenOnClick="True">
                 <MenuItem.Icon>
                     <Image
@@ -382,7 +384,8 @@
                 Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.CanNavigateBackwards.Value,
+                                            FallbackValue=False}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="PreviousButton" />
@@ -400,7 +403,8 @@
                 Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding WindowTabs.CanActiveTabNavigate.Value}"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.CanNavigateForwards.Value,
+                                            FallbackValue=False}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="NextButton" />

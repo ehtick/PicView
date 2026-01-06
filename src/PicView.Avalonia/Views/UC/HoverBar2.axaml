@@ -173,8 +173,8 @@
                 Height="35"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsEnabled="{CompiledBinding CanNavigateBackwards.Value,
+                                            FallbackValue=False}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="PreviousButton" />
@@ -190,8 +190,8 @@
                 Height="35"
                 IconHeight="20"
                 IconWidth="17"
-                IsEnabled="{CompiledBinding Model.Value.FileInfo,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                IsEnabled="{CompiledBinding CanNavigateForwards.Value,
+                                            FallbackValue=False}"
                 IsTabStop="False"
                 Width="80"
                 x:Name="NextButton" />

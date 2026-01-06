@@ -27,15 +27,6 @@
                     </Border>
                 </customControls:AutoScrollViewer>
             </customControls:ZoomPanControl2>
-            <buttons:ClickArrowRight2
-                HorizontalAlignment="Right"
-                Margin="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).RightControlOffSetMargin.Value}"
-                Opacity="0"
-                VerticalAlignment="Center" />
-            <buttons:ClickArrowLeft2
-                HorizontalAlignment="Left"
-                Opacity="0"
-                VerticalAlignment="Center" />
             <uc:ZoomPreviewer2
                 HorizontalAlignment="Right"
                 IsVisible="False"

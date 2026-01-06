@@ -38,6 +38,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     
     public BindableReactiveProperty<int> NavigationIndex { get; } = new(0);
     public BindableReactiveProperty<int> MaxIndex { get; } = new(0);
+    public BindableReactiveProperty<bool> CanNavigateForwards { get; } = new();
+    public BindableReactiveProperty<bool> CanNavigateBackwards { get; } = new();
     
     /// <summary>
     /// Should be used when changing directory or closing the tab

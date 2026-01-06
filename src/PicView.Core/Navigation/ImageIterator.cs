@@ -28,11 +28,34 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         _disposable = new CompositeDisposable();
         // Update UI bound values
         Observable.EveryValueChanged(this, i => i.CurrentIndex)
-            .Subscribe(i => _tab.NavigationIndex.Value = i)
+            .Subscribe(i =>
+            {
+                _tab.NavigationIndex.Value = i;
+                UpdateNavigationProperties(i, Files.Count);
+            })
             .AddTo(_disposable);
         Observable.EveryValueChanged(Files, i => i.Count)
-            .Subscribe(i => _tab.MaxIndex.Value = i)
+            .Subscribe(i =>
+            {
+                _tab.MaxIndex.Value = i;
+                UpdateNavigationProperties(CurrentIndex, i);
+            })
             .AddTo(_disposable);
+    }
+
+    private void UpdateNavigationProperties(int index, int count)
+    {
+        if (count <= 1)
+        {
+            _tab.CanNavigateForwards.Value = false;
+            _tab.CanNavigateBackwards.Value = false;
+        }
+        else
+        {
+            var isLooping = Settings.UIProperties.Looping;
+            _tab.CanNavigateForwards.Value = isLooping || index < count - 1;
+            _tab.CanNavigateBackwards.Value = isLooping || index > 0;
+        }
     }
     
     public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
