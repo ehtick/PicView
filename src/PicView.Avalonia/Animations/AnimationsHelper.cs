@@ -129,20 +129,20 @@ public static class AnimationsHelper
         {
             rectangle = new Rectangle
             {
-                Width = UIHelper.GetMainView.Width,
-                Height = UIHelper.GetMainView.Height,
+                Width = UIHelper2.GetMainView.Width,
+                Height = UIHelper2.GetMainView.Height,
                 Opacity = 0,
                 Fill = Brushes.Black,
                 IsHitTestVisible = false
             };
-            UIHelper.GetMainView.MainGrid.Children.Add(rectangle);
+            UIHelper2.GetMainView.MainPanel.Children.Add(rectangle);
         });
 
         await startOpacityAnimation.RunAsync(rectangle);
         await endOpacityAnimation.RunAsync(rectangle);
         await Task.Delay(200);
 
-        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetMainView.MainGrid.Children.Remove(rectangle); });
+        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper2.GetMainView.MainPanel.Children.Remove(rectangle); });
     }
 
     /// <summary>

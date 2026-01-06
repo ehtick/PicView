@@ -696,7 +696,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="ClipboardFileOperations.CopyFileToClipboard(string, MainViewModel)" />
     public async ValueTask CopyFile()
     {
-        await ClipboardFileOperations.CopyFileToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+        await ClipboardFileOperations2.CopyFileToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
             .FileInfo?.FullName).ConfigureAwait(false);
     }
     
@@ -724,15 +724,20 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
     public async ValueTask DuplicateFile()
     {
-        // await ClipboardFileOperations.Duplicate(vm.PicViewer.FileInfo?.CurrentValue.FullName, vm).ConfigureAwait(false);
+        await ClipboardFileOperations2.Duplicate(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+            .FileInfo?.FullName, vm).ConfigureAwait(false);
         return;
     }
 
     /// <inheritdoc cref="ClipboardFileOperations.CutFile(string, MainViewModel)" />
     public async ValueTask CutFile()
     {
-        // await ClipboardFileOperations.CutFile(vm.PicViewer.FileInfo.CurrentValue.FullName, vm).ConfigureAwait(false);
-        return;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        await ClipboardFileOperations2.CutFile(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue
+            .FileInfo?.FullName, core.PlatformService).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ClipboardPasteOperations.Paste(MainViewModel)" />
