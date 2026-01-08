@@ -216,7 +216,6 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
                 core.MainWindows.ActiveWindow.Value = newVm;
                 StartUpHelper2.StartUpBlank(core, true, false, desktop, newWindow);
 
-
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
                 {
@@ -226,33 +225,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
                 desktop.MainWindow = newWindow;
             }, DispatcherPriority.Send);
 
-            newVm.WindowTabs.Tabs.Value[0] = tab;
-
-            // Initialize the NEW window's tabs with the OLD window's services
-            // This ensures both windows share the same memory cache
-            if (parentVm.WindowTabs.SharedCache is not { } cache ||
-                parentVm.WindowTabs.SharedNavigation is not { } nav ||
-                parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
-                parentVm.WindowTabs.SharedGallery is not { } gallery ||
-                parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
-            {
-                return;
-            }
-
-            if (newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator?.Files?.Count > 0)
-            {
-                newVm.WindowTabs.LoadAndInitializeFromPath(newVm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.Files, gallery,
-                    nav,
-                    cache, thumb, fileWatcher);
-            }
-            else
-            {
-                newVm.WindowTabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
-            }
-
-            // Need to properly remove it from the previous location
-            parentVm.WindowTabs.RemoveTab(tab);
-            parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
+            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
         });
     }
 

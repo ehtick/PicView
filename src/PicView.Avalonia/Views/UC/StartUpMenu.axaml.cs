@@ -111,13 +111,11 @@ public partial class StartUpMenu : UserControl
 
         SelectFileButton.Click += async delegate { await SelectFileButtonOnClick(); };
         OpenLastFileButton.Click += async delegate { await OpenLastButtonOnClick(); };
-        
-        UIHelper.GetHoverBar?.IsVisible = false;
     }
     
   private async ValueTask SelectFileButtonOnClick()
 {
-    var file = await FilePicker.SelectFile().ConfigureAwait(false);
+    var file = await FilePicker2.SelectFile().ConfigureAwait(false);
     if (file is null)
     {
         return;

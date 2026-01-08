@@ -1,6 +1,5 @@
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation.Services;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.FileHandling;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
@@ -66,5 +65,31 @@ public static class TabNavigationInitializer
         vm.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService, fileWatcher);
         vm.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(vm);
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
+    }
+    
+    public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab)
+    {
+        newVm.WindowTabs.Tabs.Value[0] = tab;
+        
+        // Initialize the NEW window's tabs with the OLD window's services
+        // This ensures both windows share the same memory cache
+        if (parentVm.WindowTabs.SharedCache is not { } cache ||
+            parentVm.WindowTabs.SharedNavigation is not { } nav ||
+            parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
+            parentVm.WindowTabs.SharedGallery is not { } gallery ||
+            parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
+        {
+            return;
+        }
+        
+        newVm.WindowTabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
+        newVm.WindowTabs.SetParentContext(newVm);
+        newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
+        newVm.WindowTabs.SelectTab(tab);
+        tab.ImageIterator.UpdateNavigationProperties();
+        
+        // Need to properly remove it from the previous location
+        parentVm.WindowTabs.RemoveTab(tab);
+        parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
     }
 }
