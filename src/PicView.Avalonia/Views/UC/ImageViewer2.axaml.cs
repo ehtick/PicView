@@ -120,8 +120,11 @@ public partial class ImageViewer2 : UserControl
         
         // Observe the CurrentIndexProperty for changes,
         // wait for a 25ms pause in changes (debounce), and then emit the last value.
-        Observable.EveryValueChanged(HoverBar.ProgressBar, bar => bar.CurrentIndex)
-            .Debounce(TimeSpan.FromMilliseconds(25))
+        Observable.FromEvent<EventHandler<int>, int>(
+                handler => (sender, index) => handler(index),
+                handler => HoverBar.ProgressBar.ClickedOnTrack += handler,
+                handler => HoverBar.ProgressBar.ClickedOnTrack -= handler)
+            .Debounce(TimeSpan.FromMilliseconds(25)) // Debounce handles rapid events during drag
             .SubscribeAwait(async (x, _) =>
             {
                 await tab.ImageIterator.IterateToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);

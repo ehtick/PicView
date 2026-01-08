@@ -32,6 +32,8 @@ public class DraggableProgressBar : TemplatedControl
     // Define the DragSensitivity property
     public static readonly StyledProperty<double> DragSensitivityProperty =
         AvaloniaProperty.Register<DraggableProgressBar, double>(nameof(DragSensitivity), 1.0);
+    
+    public event EventHandler<int>? ClickedOnTrack;
 
     private int _dragStartIndex;
     private Point _dragStartPoint;
@@ -186,6 +188,10 @@ public class DraggableProgressBar : TemplatedControl
             // Click was on the track (outside expanded thumb), so jump to position
             IsDragging = false;
             CurrentIndex = Math.Max(PositionToIndex(clickPosition.X) - 1, 0);
+
+            // Fire the event reporting the new index
+            ClickedOnTrack?.Invoke(this, CurrentIndex);
+            
             return; 
         }
 
