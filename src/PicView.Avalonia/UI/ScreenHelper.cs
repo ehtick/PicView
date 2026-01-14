@@ -46,6 +46,7 @@ public static class ScreenHelper
                     X = 0,
                     Y = 0
                 };
+                return;
             }
         
             var monitorWidth = screen.WorkingArea.Width / screen.Scaling;
