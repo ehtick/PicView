@@ -36,8 +36,6 @@
                             Width="20" />
                     </Border>
 
-                    <buttons:SettingsMenuButton DockPanel.Dock="Left" x:Name="SettingsButton" />
-
                     <customControls:IconButton
                         Background="{DynamicResource WindowSecondaryBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
@@ -48,7 +46,8 @@
                         Icon="{StaticResource HomeImage}"
                         IconHeight="12"
                         IconWidth="12"
-                        Padding="8,0" />
+                        Padding="8,0"
+                        x:Name="HomeButton" />
 
                     <Border
                         Background="{DynamicResource WindowButtonBackgroundColor}"
@@ -114,37 +113,8 @@
                         Width="30"
                         x:Name="MinimizeButton" />
 
-                    <Border
-                        Background="{StaticResource WindowSecondaryBackgroundColor}"
-                        Cursor="Hand"
-                        DockPanel.Dock="Right"
-                        Width="200">
-                        <Panel Margin="5,0">
+                    <buttons:SettingsMenuButton DockPanel.Dock="Right" x:Name="SettingsButton" />
 
-                            <Image
-                                Height="12"
-                                HorizontalAlignment="Left"
-                                Margin="15,5,0,5"
-                                Source="{StaticResource SearchImage}"
-                                Width="12" />
-
-                            <Border
-                                BorderBrush="{DynamicResource MainBorderColor}"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                Margin="0,3">
-                                <TextBlock
-                                    Background="Transparent"
-                                    Classes="txt regular"
-                                    Foreground="{DynamicResource MainTextColorFaded}"
-                                    Opacity=".7"
-                                    Padding="35,0,4,0"
-                                    Text="Type / to search"
-                                    VerticalAlignment="Center"
-                                    x:Name="FilterBox" />
-                            </Border>
-                        </Panel>
-                    </Border>
                     <TextBlock
                         Background="{StaticResource WindowSecondaryBackgroundColor}"
                         Classes="txt"
