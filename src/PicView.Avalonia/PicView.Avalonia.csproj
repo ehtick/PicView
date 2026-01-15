@@ -196,6 +196,10 @@
           <DependentUpon>SlideshowSettingsView2.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Config\NavigationView2.axaml.cs">
+          <DependentUpon>NavigationView2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

@@ -621,12 +621,12 @@
                             Margin="0,0,0,30"
                             x:Name="SlideshowSection" />
 
-                        <Border x:Name="NavigationSection">
-                            <TextBlock
-                                Classes="txt bold"
-                                Text="{Binding Translation.Navigation.Value, Mode=OneWay}"
-                                VerticalAlignment="Top" />
-                        </Border>
+                        <!--  Navigation  -->
+                        <config:NavigationView2
+                            Background="Transparent"
+                            Focusable="True"
+                            Margin="0,0,0,30"
+                            x:Name="NavigationSection" />
 
                         <Border x:Name="ZoomSection">
                             <TextBlock

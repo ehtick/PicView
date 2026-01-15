@@ -8,10 +8,43 @@ namespace PicView.Core.ViewModels;
 
 public class SettingsViewModel : IDisposable
 {
+    private readonly Stack<NavigationState> _backStack = new();
     private readonly CompositeDisposable _disposables = new();
-    
+    private readonly Stack<NavigationState> _forwardStack = new();
+    private NavigationState _currentState;
+    private bool _isNavigatingHistory;
+
+    public SettingsViewModel()
+    {
+        MouseDoubleClickBehaviors = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.None!,
+            TranslationManager.Translation.ResetZoom!,
+            TranslationManager.Translation.ToggleFullscreen!
+        ]);
+        MouseDoubleClickBehaviorIndex = new BindableReactiveProperty<int>(Settings.UIProperties.DoubleClickBehavior);
+
+        NavigateToCategoryCommand = new ReactiveCommand<SettingsCategory>();
+        NavigateToCategoryCommand.Subscribe(category =>
+        {
+            SelectedCategory.Value = category;
+            IsOverviewVisible.Value = false;
+        }).AddTo(_disposables);
+
+        IsOverviewVisible.Subscribe(_ => OnStateChanged()).AddTo(_disposables);
+        SelectedCategory.Subscribe(_ => OnStateChanged()).AddTo(_disposables);
+
+        _currentState = GetCurrentState();
+
+        GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ => GoBack()).AddTo(_disposables);
+        GoForwardCommand = IsForwardButtonEnabled.ToReactiveCommand(_ => GoForward()).AddTo(_disposables);
+        GoHomeCommand = IsHome.ToReactiveCommand(_ => GoHome()).AddTo(_disposables);
+
+        UpdateNavigationProperties();
+    }
+
     public SettingsWindowConfig? SettingsWindowConfig { get; set; }
-    
+
     public BindableReactiveProperty<bool> IsShowingRecycleDialog { get; } =
         new(Settings.UIProperties.ShowRecycleConfirmation);
 
@@ -58,25 +91,6 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
     public ReactiveCommand<SettingsCategory> NavigateToCategoryCommand { get; }
-
-    public SettingsViewModel()
-    {
-        MouseDoubleClickBehaviors = new BindableReactiveProperty<string[]>(
-        [
-            TranslationManager.Translation.None!,
-            TranslationManager.Translation.ResetZoom!,
-            TranslationManager.Translation.ToggleFullscreen!
-        ]);
-        MouseDoubleClickBehaviorIndex = new BindableReactiveProperty<int>(Settings.UIProperties.DoubleClickBehavior);
-        
-        NavigateToCategoryCommand = new ReactiveCommand<SettingsCategory>();
-        NavigateToCategoryCommand.Subscribe(category =>
-        {
-            SelectedCategory.Value = category;
-            IsOverviewVisible.Value = false;
-            IsBackButtonEnabled.Value = true;
-        }).AddTo(_disposables);
-    }
 
     public void Dispose()
     {
@@ -134,14 +148,14 @@ public class SettingsViewModel : IDisposable
                 Settings.UIProperties.SlideShowTimer = roundedValue;
                 GetSlideshowSpeed.Value = roundedValue;
             }).AddTo(_disposables);
-        
+
         Observable.EveryValueChanged(this, x => x.IsShowingPermanentDeletionDialog.CurrentValue)
             .SubscribeAwait(async (x, _) =>
             {
                 Settings.UIProperties.ShowPermanentDeletionConfirmation = x;
                 await SaveSettingsAsync();
             }).AddTo(_disposables);
-        
+
         Observable.EveryValueChanged(this, x => x.IsShowingRecycleDialog.CurrentValue)
             .SubscribeAwait(async (x, _) =>
             {
@@ -172,7 +186,7 @@ public class SettingsViewModel : IDisposable
 
         Observable.EveryValueChanged(this, x => x.IsOpeningInSameWindow.CurrentValue)
             .Subscribe(x => Settings.UIProperties.OpenInSameWindow = x).AddTo(_disposables);
-        
+
         Observable.EveryValueChanged(this, x => x.WindowMargin.CurrentValue)
             .Subscribe(x => Settings.WindowProperties.Margin = x).AddTo(_disposables);
 
@@ -180,35 +194,153 @@ public class SettingsViewModel : IDisposable
             .Subscribe(x => Settings.UIProperties.DoubleClickBehavior = x).AddTo(_disposables);
     }
 
+    private readonly record struct NavigationState(bool IsOverview, SettingsCategory Category);
+
     #region Tab history navigation
 
     public BindableReactiveProperty<bool> IsBackButtonEnabled { get; } = new();
     public BindableReactiveProperty<bool> IsForwardButtonEnabled { get; } = new();
     public BindableReactiveProperty<bool> IsHome { get; } = new();
-    public ReactiveCommand? GoHomeCommand { get; private set; }
-    public ReactiveCommand? GoForwardCommand { get; set; }
 
-    public ReactiveCommand? GoBackCommand { get; set; }
+    public ReactiveCommand GoHomeCommand { get; }
+    public ReactiveCommand GoForwardCommand { get; }
+    public ReactiveCommand GoBackCommand { get; }
 
-    public void InitializeNavigation(Action goBack, Action goForward)
+    public void RestoreLastTab(int lastTab)
     {
-        GoForwardCommand = IsForwardButtonEnabled.ToReactiveCommand(_ => { goForward(); });
-        GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ =>
+        _isNavigatingHistory = true;
+        try
         {
-            if (!IsOverviewVisible.Value)
+            if (lastTab <= 0)
             {
                 IsOverviewVisible.Value = true;
-                IsBackButtonEnabled.Value = false;
             }
             else
             {
-                goBack();
+                var categoryIndex = lastTab - 1;
+                if (Enum.IsDefined(typeof(SettingsCategory), categoryIndex))
+                {
+                    SelectedCategory.Value = (SettingsCategory)categoryIndex;
+                    IsOverviewVisible.Value = false;
+                }
+                else
+                {
+                    IsOverviewVisible.Value = true;
+                }
             }
-        });
-        GoHomeCommand = IsHome.ToReactiveCommand(_ =>
+
+            _currentState = GetCurrentState();
+            _backStack.Clear();
+            _forwardStack.Clear();
+            UpdateNavigationProperties();
+        }
+        finally
         {
-            IsOverviewVisible.Value = true;
-        });
+            _isNavigatingHistory = false;
+        }
+    }
+
+    public int GetLastTabId()
+    {
+        if (IsOverviewVisible.Value)
+        {
+            return 0;
+        }
+
+        return (int)SelectedCategory.Value + 1;
+    }
+
+    private void GoBack()
+    {
+        if (_backStack.Count == 0)
+        {
+            return;
+        }
+
+        var targetState = _backStack.Pop();
+        _forwardStack.Push(GetCurrentState());
+
+        ApplyState(targetState);
+        UpdateNavigationProperties();
+    }
+
+    private void GoForward()
+    {
+        if (_forwardStack.Count == 0)
+        {
+            return;
+        }
+
+        var targetState = _forwardStack.Pop();
+        _backStack.Push(GetCurrentState());
+
+        ApplyState(targetState);
+        UpdateNavigationProperties();
+    }
+
+    private void GoHome()
+    {
+        if (IsOverviewVisible.Value)
+        {
+            return;
+        }
+
+        IsOverviewVisible.Value = true;
+    }
+
+    private void ApplyState(NavigationState state)
+    {
+        _isNavigatingHistory = true;
+        try
+        {
+            if (state.IsOverview)
+            {
+                IsOverviewVisible.Value = true;
+            }
+            else
+            {
+                SelectedCategory.Value = state.Category;
+                IsOverviewVisible.Value = false;
+            }
+
+            _currentState = state;
+        }
+        finally
+        {
+            _isNavigatingHistory = false;
+        }
+    }
+
+    private void OnStateChanged()
+    {
+        if (_isNavigatingHistory)
+        {
+            return;
+        }
+
+        var newState = GetCurrentState();
+        if (newState == _currentState)
+        {
+            return;
+        }
+
+        _backStack.Push(_currentState);
+        _forwardStack.Clear();
+        _currentState = newState;
+
+        UpdateNavigationProperties();
+    }
+
+    private NavigationState GetCurrentState() =>
+        IsOverviewVisible.Value
+            ? new NavigationState(true, default)
+            : new NavigationState(false, SelectedCategory.Value);
+
+    private void UpdateNavigationProperties()
+    {
+        IsBackButtonEnabled.Value = _backStack.Count > 0;
+        IsForwardButtonEnabled.Value = _forwardStack.Count > 0;
+        IsHome.Value = !IsOverviewVisible.Value;
     }
 
     #endregion

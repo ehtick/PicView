@@ -70,7 +70,6 @@ public partial class SettingsView : UserControl
         var settingsVm = vm.SettingsViewModel;
         Task.Run(() =>
         {
-            settingsVm.InitializeNavigation(GoBack, GoForward);
             settingsVm.SubscriptionSettingsUpdate();
         });
         SubscribeToChanges(vm, settingsVm);

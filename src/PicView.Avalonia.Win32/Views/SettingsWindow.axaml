@@ -19,6 +19,7 @@
         x:Name="ParentBorder">
         <DockPanel>
             <Border
+                Background="{StaticResource WindowSecondaryBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,0,1"
                 DockPanel.Dock="Top"
@@ -116,7 +117,7 @@
                     <buttons:SettingsMenuButton DockPanel.Dock="Right" x:Name="SettingsButton" />
 
                     <TextBlock
-                        Background="{StaticResource WindowSecondaryBackgroundColor}"
+                        Background="Transparent"
                         Classes="txt"
                         Foreground="{DynamicResource MainTextColor}"
                         LineHeight="{StaticResource TopBorderHeight}"

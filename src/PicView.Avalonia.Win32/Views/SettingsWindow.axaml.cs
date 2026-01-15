@@ -29,6 +29,11 @@ public partial class SettingsWindow : Window
             await _config.LoadAsync();
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
+                if (DataContext is CoreViewModel vm)
+                {
+                    vm.SettingsViewModel.RestoreLastTab(_config.WindowProperties.LastTab);
+                }
+
                 if (_config.WindowProperties.Maximized)
                 {
                     WindowState = WindowState.Maximized;
@@ -142,6 +147,10 @@ public partial class SettingsWindow : Window
         Closing += async delegate
         {
             Hide();
+            if (DataContext is CoreViewModel vm)
+            {
+                _config.WindowProperties.LastTab = vm.SettingsViewModel.GetLastTabId();
+            }
             await _config.SaveAsync();
             await SaveSettingsAsync();
             _disposable?.Dispose();
@@ -201,5 +210,36 @@ public partial class SettingsWindow : Window
         FileAssociationManager.Initialize(iIFileAssociationService);
     }
 
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
 
+        if (DataContext is not CoreViewModel vm)
+        {
+            return;
+        }
+
+        var properties = e.GetCurrentPoint(this).Properties;
+        switch (properties.PointerUpdateKind)
+        {
+            case PointerUpdateKind.XButton1Pressed:
+            {
+                if (vm.SettingsViewModel.GoBackCommand.CanExecute())
+                {
+                    vm.SettingsViewModel.GoBackCommand.Execute(Unit.Default);
+                }
+
+                break;
+            }
+            case PointerUpdateKind.XButton2Pressed:
+            {
+                if (vm.SettingsViewModel.GoForwardCommand.CanExecute())
+                {
+                    vm.SettingsViewModel.GoForwardCommand.Execute(Unit.Default);
+                }
+
+                break;
+            }
+        }
+    }
 }

@@ -132,14 +132,9 @@ public partial class SettingsView2 : UserControl
         SettingsCategory? bestMatch = null;
         
         // Find the last section whose Top is <= offset (plus some buffer)
-        foreach (var kvp in _sections)
+        foreach (var kvp in from kvp in _sections let section = kvp.Value where section.Bounds.Y <= offset + 10 select kvp)
         {
-            var section = kvp.Value;
-            // Buffer of 10px to switch slightly before the line hits the top
-            if (section.Bounds.Y <= offset + 10) 
-            {
-                bestMatch = kvp.Key;
-            }
+            bestMatch = kvp.Key;
         }
 
         // If no section is above offset (e.g. at very top), default to General

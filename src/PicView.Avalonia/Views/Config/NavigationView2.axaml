@@ -1,0 +1,106 @@
+﻿<UserControl
+    x:Class="PicView.Avalonia.Views.Config.NavigationView2"
+    x:DataType="viewModels:CoreViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,20,0,20"
+            Text="{CompiledBinding Translation.Navigation.Value,
+                                   Mode=OneWay}" />
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleSubdirectoriesCommand}"
+            IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.SearchSubdirectory.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleLoopingCommand}"
+            IsChecked="{CompiledBinding GlobalSettings.IsLooping.Value}"
+            Margin="0,0,0,10"
+            ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
+                                          Mode=OneWay}"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.IsLooping.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleTaskbarProgressCommand}"
+            IsChecked="{CompiledBinding GlobalSettings.IsShowingTaskbarProgress.Value}"
+            Margin="0,0,0,10"
+            Width="300"
+            x:Name="TaskBarToggleButton">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.ToggleTaskbarProgress.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,10,0,10"
+            MaxWidth="300"
+            Text="{CompiledBinding Translation.AdjustNavSpeed.Value,
+                                   Mode=OneWay}" />
+        <customControls:CustomSlider
+            Height="30"
+            HorizontalAlignment="Center"
+            IsSnapToTickEnabled="True"
+            Margin="0,1,0,1"
+            Maximum="0.95"
+            Minimum="0.05"
+            TickFrequency="0.01"
+            TickPlacement="BottomRight"
+            Value="{CompiledBinding SettingsViewModel.NavSpeed.Value,
+                                    Mode=TwoWay}"
+            Width="300" />
+
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            Foreground="{DynamicResource MainTextColorFaded}"
+            Margin="0,0,0,15">
+            <Run Text="{CompiledBinding SettingsViewModel.GetNavSpeed.Value, Mode=OneWay}" />
+            <Run Text="{CompiledBinding Translation.SecAbbreviation.Value, Mode=OneWay}" />
+        </TextBlock>
+    </StackPanel>
+</UserControl>
