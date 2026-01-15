@@ -179,7 +179,7 @@ public class AutoScrollViewer : ScrollViewer
 
         Observable.Interval(TimeSpan.FromMilliseconds(16))
             .TakeUntil(_autoScrollingSubject.Where(isScrolling => !isScrolling))
-            .ObserveOn(UIHelper.GetFrameProvider)
+            .ObserveOn(UIHelper2.GetFrameProvider)
             .Subscribe(_ => PerformAutoScroll())
             .AddTo(_disposables);
     }

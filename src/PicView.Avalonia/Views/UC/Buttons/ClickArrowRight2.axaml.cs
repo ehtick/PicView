@@ -16,7 +16,6 @@ public partial class ClickArrowRight2 : UserControl
             {
                 return;
             }
-            PointerWheelChanged += async (_, e) => await ImageViewer.PreviewOnPointerWheelChanged(this, e);
             AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
             PolyButton.Click += (_, _) =>
             {
