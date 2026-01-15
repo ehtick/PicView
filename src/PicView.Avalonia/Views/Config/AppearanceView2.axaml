@@ -1,0 +1,285 @@
+<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="PicView.Avalonia.Views.Config.AppearanceView2"
+    x:DataType="ViewModels:CoreViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:ViewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
+
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,20,0,20"
+            Text="{CompiledBinding Translation.Theme.Value,
+                                   Mode=OneWay}" />
+
+        <ComboBox
+            Classes="CStyle"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,0,0,10"
+            Padding="5,7,0,7"
+            Width="300"
+            x:Name="ThemeBox">
+            <ComboBoxItem
+                Content="{CompiledBinding Translation.DarkTheme.Value,
+                                          Mode=OneWay}"
+                Foreground="{DynamicResource MainTextColor}"
+                x:Name="DarkThemeBox" />
+            <ComboBoxItem x:Name="LightThemeBox">
+                <TextBlock Classes="txt" Foreground="{DynamicResource MainTextColor}">
+                    <TextBlock.Inlines>
+                        <Run Text="{CompiledBinding Translation.LightTheme.Value, Mode=OneWay}" />
+                        <Run FontStyle="Italic" Text=" (beta)" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </ComboBoxItem>
+            <ComboBoxItem x:Name="GlassThemeBox">
+                <TextBlock Classes="txt" Foreground="{DynamicResource MainTextColor}">
+                    <TextBlock.Inlines>
+                        <Run Text="{CompiledBinding Translation.GlassTheme.Value, Mode=OneWay}" />
+                        <Run FontStyle="Italic" Text=" (beta)" />
+                    </TextBlock.Inlines>
+                </TextBlock>
+            </ComboBoxItem>
+        </ComboBox>
+
+        <Button
+            Classes="errorHover"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.RestartCommand}"
+            Margin="0,0,0,20"
+            x:Name="RestartButton">
+            <TextBlock
+                Classes="txt"
+                FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Padding="5"
+                Text="{CompiledBinding Translation.ChangingThemeRequiresRestart.Value,
+                                       Mode=OneWay}" />
+        </Button>
+
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,5,0,20"
+            Text="{CompiledBinding Translation.HighlightColor.Value,
+                                   Mode=OneWay}" />
+
+        <WrapPanel
+            HorizontalAlignment="Center"
+            Margin="0,0,0,10"
+            MaxWidth="300"
+            Orientation="Horizontal">
+            <WrapPanel.Styles>
+                <Styles>
+                    <Style Selector="Button.colorBtn">
+                        <Setter Property="CornerRadius" Value="6" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Width" Value="35" />
+                        <Setter Property="Height" Value="35" />
+                    </Style>
+                    <Style Selector="Button.colorBtn.activeColorBtn">
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="BorderBrush" Value="#FFFFFF" />
+                    </Style>
+                    <Style Selector="Button.colorBtn:pointerover">
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="BorderBrush" Value="#FFFFFF" />
+                    </Style>
+                </Styles>
+            </WrapPanel.Styles>
+
+            <!--  Blue  -->
+            <Button
+                Background="#1A8CF0"
+                Classes="colorBtn"
+                x:Name="BlueButton" />
+            <!--  Cyan  -->
+            <Button
+                Background="#1BA1E2"
+                Classes="colorBtn"
+                x:Name="CyanButton" />
+            <!--  TealButton  -->
+            <Button
+                Background="#36E6CC"
+                Classes="colorBtn"
+                x:Name="TealButton" />
+            <!--  Emerald  -->
+            <Button
+                Background="#007200"
+                Classes="colorBtn"
+                x:Name="EmeraldButton" />
+            <!--  Gold  -->
+            <Button
+                Background="#FEA955"
+                Classes="colorBtn"
+                x:Name="GoldButton" />
+            <!--  Orange  -->
+            <Button
+                Background="#DB5B3D"
+                Classes="colorBtn"
+                x:Name="OrangeButton" />
+            <!--  Red  -->
+            <Button
+                Background="#F91110"
+                Classes="colorBtn"
+                x:Name="RedButton" />
+            <!--  Ruby  -->
+            <Button
+                Background="#FF206E"
+                Classes="colorBtn"
+                x:Name="RubyButton" />
+            <!--  Pink  -->
+            <Button
+                Background="#FF35C5"
+                Classes="colorBtn"
+                x:Name="PinkButton" />
+            <!--  Raspberry  -->
+            <Button
+                Background="#b5457e"
+                Classes="colorBtn"
+                x:Name="RaspberryButton" />
+            <!--  Magenta  -->
+            <Button
+                Background="#E68BEE"
+                Classes="colorBtn"
+                x:Name="MagentaButton" />
+            <!--  Purple  -->
+            <Button
+                Background="#9738EB"
+                Classes="colorBtn"
+                x:Name="PurpleButton" />
+        </WrapPanel>
+
+        <TextBlock
+            Classes="txt"
+            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
+            FontSize="14"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,20,0,10"
+            Text="{CompiledBinding Translation.ChangeBackground.Value,
+                                   Mode=OneWay}" />
+
+        <WrapPanel
+            HorizontalAlignment="Center"
+            Margin="0,0,0,10"
+            MaxWidth="300"
+            Orientation="Horizontal">
+            <WrapPanel.Styles>
+                <Styles>
+                    <Style Selector="Button.colorBtn">
+                        <Setter Property="CornerRadius" Value="6" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Width" Value="35" />
+                        <Setter Property="Height" Value="35" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
+                    </Style>
+                    <Style Selector="Button.colorBtn.activeColorAccentBtn">
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+                    </Style>
+                    <Style Selector="Button.colorBtn:pointerover">
+                        <Setter Property="BorderThickness" Value="2" />
+                        <Setter Property="BorderBrush" Value="#FFFFFF" />
+                    </Style>
+                </Styles>
+            </WrapPanel.Styles>
+
+            <!--  Transparent  -->
+            <Button
+                Background="Transparent"
+                Classes="colorBtn"
+                x:Name="TransparentBgButton" />
+
+            <!--  Noise Texture  -->
+            <Button
+                Background="{DynamicResource NoisyTexture}"
+                Classes="colorBtn"
+                x:Name="NoiseTextureButton" />
+
+            <!--  Dark Gray Semi Transparent Alt  -->
+            <Button
+                Background="#C8323232"
+                Classes="colorBtn"
+                x:Name="DarkGraySemiTransparentAltBgButton" />
+
+            <!--  Dark Gray Semi Transparent  -->
+            <Button
+                Background="#C8646464"
+                Classes="colorBtn"
+                x:Name="DarkGraySemiTransparentBgButton" />
+
+            <!--  Checkerboard  -->
+            <Button
+                Background="Transparent"
+                Classes="colorBtn"
+                x:Name="CheckerboardButton" />
+
+            <!--  Checkerboard alt  -->
+            <Button
+                Background="Transparent"
+                Classes="colorBtn"
+                x:Name="CheckerboardAltButton" />
+
+            <!--  White  -->
+            <Button
+                Background="#fff"
+                Classes="colorBtn"
+                x:Name="WhiteBgButton" />
+
+            <!--  Gray  -->
+            <Button
+                Background="#C8C8C8"
+                Classes="colorBtn"
+                x:Name="GrayBgButton" />
+
+            <!--  Medium Gray  -->
+            <Button
+                Background="#9B9B9B"
+                Classes="colorBtn"
+                x:Name="MediumGrayBgButton" />
+
+            <!--  Dark Gray  -->
+            <Button
+                Background="#303030"
+                Classes="colorBtn"
+                x:Name="DarkGrayBgButton" />
+
+            <!--  Black  -->
+            <Button
+                Background="#050505"
+                Classes="colorBtn"
+                x:Name="BlackBgButton" />
+
+        </WrapPanel>
+
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleConstrainBackgroundColorCommand}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsConstrainingBackgroundColor.Value}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.ConstrainBackgroundToImage.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+    </StackPanel>
+</UserControl>

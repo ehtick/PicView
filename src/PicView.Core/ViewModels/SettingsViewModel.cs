@@ -1,4 +1,4 @@
-﻿using PicView.Core.Config;
+using PicView.Core.Config;
 using PicView.Core.Localization;
 using R3;
 
@@ -55,6 +55,10 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<string[]> MouseDoubleClickBehaviors { get; }
     public BindableReactiveProperty<int> MouseDoubleClickBehaviorIndex { get; }
 
+    public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
+    public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
+    public ReactiveCommand<SettingsCategory> NavigateToCategoryCommand { get; }
+
     public SettingsViewModel()
     {
         MouseDoubleClickBehaviors = new BindableReactiveProperty<string[]>(
@@ -64,6 +68,14 @@ public class SettingsViewModel : IDisposable
             TranslationManager.Translation.ToggleFullscreen!
         ]);
         MouseDoubleClickBehaviorIndex = new BindableReactiveProperty<int>(Settings.UIProperties.DoubleClickBehavior);
+        
+        NavigateToCategoryCommand = new ReactiveCommand<SettingsCategory>();
+        NavigateToCategoryCommand.Subscribe(category =>
+        {
+            SelectedCategory.Value = category;
+            IsOverviewVisible.Value = false;
+            IsBackButtonEnabled.Value = true;
+        }).AddTo(_disposables);
     }
 
     public void Dispose()
@@ -90,7 +102,10 @@ public class SettingsViewModel : IDisposable
             WindowMargin,
             ZoomSpeed,
             MouseDoubleClickBehaviorIndex,
-            MouseDoubleClickBehaviors);
+            MouseDoubleClickBehaviors,
+            NavigateToCategoryCommand,
+            IsOverviewVisible,
+            SelectedCategory);
     }
 
     /// <summary>
@@ -168,8 +183,9 @@ public class SettingsViewModel : IDisposable
     #region Tab history navigation
 
     public BindableReactiveProperty<bool> IsBackButtonEnabled { get; } = new();
-
     public BindableReactiveProperty<bool> IsForwardButtonEnabled { get; } = new();
+    public BindableReactiveProperty<bool> IsHome { get; } = new();
+    public ReactiveCommand? GoHomeCommand { get; private set; }
     public ReactiveCommand? GoForwardCommand { get; set; }
 
     public ReactiveCommand? GoBackCommand { get; set; }
@@ -177,8 +193,39 @@ public class SettingsViewModel : IDisposable
     public void InitializeNavigation(Action goBack, Action goForward)
     {
         GoForwardCommand = IsForwardButtonEnabled.ToReactiveCommand(_ => { goForward(); });
-        GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ => { goBack(); });
+        GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ =>
+        {
+            if (!IsOverviewVisible.Value)
+            {
+                IsOverviewVisible.Value = true;
+                IsBackButtonEnabled.Value = false;
+            }
+            else
+            {
+                goBack();
+            }
+        });
+        GoHomeCommand = IsHome.ToReactiveCommand(_ =>
+        {
+            IsOverviewVisible.Value = true;
+        });
     }
 
     #endregion
+}
+
+public enum SettingsCategory
+{
+    General,
+    Appearance,
+    Interface,
+    Image,
+    Navigation,
+    Gallery,
+    Slideshow,
+    Window,
+    Zoom,
+    Mouse,
+    Language,
+    FileAssociations
 }

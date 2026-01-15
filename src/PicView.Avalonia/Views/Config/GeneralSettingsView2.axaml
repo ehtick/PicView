@@ -1,0 +1,131 @@
+<UserControl
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d"
+    x:Class="PicView.Avalonia.Views.Config.GeneralSettingsView2"
+    x:DataType="viewModels:CoreViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Center">
+
+        <TextBlock
+            Classes="txt bold"
+            Margin="0,0,0,5"
+            Text="{CompiledBinding Translation.ApplicationStartup.Value,
+                                   Mode=OneWay}" />
+        <ComboBox
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+            Foreground="{DynamicResource MainTextColor}"
+            Margin="0,6,0,10"
+            Padding="5,7,0,7"
+            Width="300"
+            x:Name="ApplicationStartupBox">
+            <ComboBoxItem Content="{CompiledBinding Translation.None.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
+            <ComboBoxItem Content="{CompiledBinding Translation.OpenLastFile.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
+        </ComboBox>
+
+        <TextBlock
+            Classes="txt bold"
+            Foreground="{StaticResource SecondaryTextColor}"
+            Margin="0,20"
+            Text="{CompiledBinding Translation.FileManagement.Value,
+                                   Mode=OneWay}" />
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            IsChecked="{CompiledBinding SettingsViewModel.IsShowingPermanentDeletionDialog.Value,
+                                        Mode=TwoWay}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.ShowConfirmationDialogWhenPermanentlyDeletingFile.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            IsChecked="{CompiledBinding SettingsViewModel.IsShowingRecycleDialog.Value,
+                                        Mode=TwoWay}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.ShowConfirmationDialogWhenMovingFileToRecycleBin.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleSubdirectoriesCommand}"
+            IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.SearchSubdirectory.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <ToggleButton
+            Background="Transparent"
+            BorderThickness="0"
+            Classes="altHover changeColor"
+            IsChecked="{CompiledBinding GlobalSettings.IsFileHistoryEnabled.Value}"
+            Margin="0,0,0,10"
+            Width="300">
+            <TextBlock
+                Classes="txt"
+                Foreground="{StaticResource SecondaryTextColor}"
+                Margin="0"
+                MaxWidth="240"
+                Padding="0,1,5,0"
+                Text="{CompiledBinding Translation.ToggleFileHistory.Value,
+                                       Mode=OneWay}" />
+        </ToggleButton>
+
+        <TextBlock
+            Classes="txt bold"
+            Margin="0,20,0,20"
+            Text="{CompiledBinding Translation.WhenDeletingAFile.Value,
+                                   Mode=OneWay}" />
+        <ComboBox
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+            Foreground="{DynamicResource MainTextColor}"
+            Margin="0,6,0,10"
+            Padding="5,7,0,7"
+            Width="300"
+            x:Name="DeletingFileBox">
+            <ComboBoxItem Content="{CompiledBinding Translation.NavigateForwards.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
+            <ComboBoxItem Content="{CompiledBinding Translation.NavigateBackwards.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
+        </ComboBox>
+
+    </StackPanel>
+</UserControl>

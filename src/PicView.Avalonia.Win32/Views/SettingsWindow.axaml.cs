@@ -6,9 +6,9 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.ViewModels;
 using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.WindowsNT.FileAssociation;
@@ -115,13 +115,14 @@ public partial class SettingsWindow : Window
         Loaded += delegate
         {
             Title = TranslationManager.GetTranslation("Settings") + " - PicView";
-            if (DataContext is not MainViewModel vm)
+            if (DataContext is not CoreViewModel vm)
             {
                 return;
             }
 
-            GoForwardButton.Command = vm.SettingsViewModel.GoForwardCommand;
-            GoBackButton.Command = vm.SettingsViewModel.GoBackCommand;
+            GoForwardButton.Command = vm.SettingsViewModel?.GoForwardCommand;
+            GoBackButton.Command = vm.SettingsViewModel?.GoBackCommand;
+            HomeButton.Command = vm.SettingsViewModel?.GoHomeCommand;
         };
         KeyDown += (_, e) =>
         {
