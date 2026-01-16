@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -10,12 +10,12 @@ using PicView.Avalonia.MacOS.PlatformUpdate;
 using PicView.Avalonia.MacOS.Printing;
 using PicView.Avalonia.MacOS.Views;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.Update;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Update;
 using PicView.Core.ViewModels;
+using PicView.Avalonia.Services;
 using R3;
 
 namespace PicView.Avalonia.MacOS.WindowImpl;
@@ -216,6 +216,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         {
             vm.AssociationsViewModel ??= new FileAssociationsViewModel();
             vm.SettingsViewModel ??= new SettingsViewModel();
+            vm.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 _settingsWindow = new SettingsWindow(vm.Window.SettingsWindowConfig)

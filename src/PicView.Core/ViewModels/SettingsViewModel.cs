@@ -1,5 +1,7 @@
 using PicView.Core.Config;
 using PicView.Core.Localization;
+using PicView.Core.ColorHandling;
+using PicView.Core.ISettings;
 using R3;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
@@ -13,6 +15,11 @@ public class SettingsViewModel : IDisposable
     private readonly Stack<NavigationState> _forwardStack = new();
     private NavigationState _currentState;
     private bool _isNavigatingHistory;
+    
+    // Services
+    private IThemeService? _themeService;
+    private ILanguageService? _languageService;
+    private IImageSettingsService? _imageSettingsService;
 
     public SettingsViewModel()
     {
@@ -39,11 +46,74 @@ public class SettingsViewModel : IDisposable
         GoBackCommand = IsBackButtonEnabled.ToReactiveCommand(_ => GoBack()).AddTo(_disposables);
         GoForwardCommand = IsForwardButtonEnabled.ToReactiveCommand(_ => GoForward()).AddTo(_disposables);
         GoHomeCommand = IsHome.ToReactiveCommand(_ => GoHome()).AddTo(_disposables);
+        
+        // Navigation Properties
+        IsIncludingSubdirectories.Subscribe(x => Settings.Sorting.IncludeSubDirectories = x).AddTo(_disposables);
+        IsLooping.Subscribe(x => Settings.UIProperties.Looping = x).AddTo(_disposables);
+        IsShowingTaskbarProgress.Subscribe(x => Settings.UIProperties.IsTaskbarProgressEnabled = x).AddTo(_disposables);
+        IsFileHistoryEnabled.Subscribe(x => Settings.Navigation.IsFileHistoryEnabled = x).AddTo(_disposables);
+        
+        ToggleUsingTouchpadCommand = new ReactiveCommand(_ => IsUsingTouchpad.Value = !IsUsingTouchpad.Value).AddTo(_disposables);
 
         UpdateNavigationProperties();
     }
+    
+    public void Initialize(IThemeService themeService, ILanguageService languageService, IImageSettingsService imageSettingsService)
+    {
+        _themeService = themeService;
+        _languageService = languageService;
+        _imageSettingsService = imageSettingsService;
+        
+        AvailableLanguages.Value = _languageService.GetAvailableLanguages()
+            .Select(x => new LanguageItem(x.Code, x.DisplayName)).ToList();
+        
+        SubscriptionSettingsUpdate();
+    }
+    
+    private async Task SaveSettingsAsync()
+    {
+        await SettingsManager.SaveSettingsAsync();
+    }
 
     public SettingsWindowConfig? SettingsWindowConfig { get; set; }
+
+    // General
+    public BindableReactiveProperty<bool> OpenLastFile { get; } = new(Settings.StartUp.OpenLastFile);
+    public BindableReactiveProperty<int> StartUpIndex { get; } = new(Settings.StartUp.OpenLastFile ? 1 : 0);
+    
+    public BindableReactiveProperty<bool> IsNavigatingBackwardsWhenDeleting { get; } = new(Settings.Navigation.IsNavigatingBackwardsWhenDeleting);
+    public BindableReactiveProperty<int> DeletionIndex { get; } = new(Settings.Navigation.IsNavigatingBackwardsWhenDeleting ? 1 : 0);
+
+    // Appearance
+    public BindableReactiveProperty<int> ThemeIndex { get; } = new(Settings.Theme.GlassTheme ? 2 : (Settings.Theme.Dark ? 0 : 1));
+    public BindableReactiveProperty<int> ColorThemeIndex { get; } = new(Settings.Theme.ColorTheme);
+    public BindableReactiveProperty<int> BackgroundChoice { get; } = new(Settings.UIProperties.BgColorChoice);
+    
+    // Image
+    public BindableReactiveProperty<bool> IsScalingSetToNearestNeighbor { get; } = new(Settings.ImageScaling.IsScalingSetToNearestNeighbor);
+    public BindableReactiveProperty<int> ImageScalingIndex { get; } = new(Settings.ImageScaling.IsScalingSetToNearestNeighbor ? 1 : 0);
+
+    // Zoom
+    public BindableReactiveProperty<bool> CtrlZoom { get; } = new(Settings.Zoom.CtrlZoom);
+    public BindableReactiveProperty<bool> HorizontalReverseScroll { get; } = new(Settings.Zoom.HorizontalReverseScroll);
+    public BindableReactiveProperty<int> ScrollDirectionIndex { get; } = new(Settings.Zoom.HorizontalReverseScroll ? 0 : 1);
+
+    // Mouse
+    public BindableReactiveProperty<int> MouseSideButtonBehavior { get; } = new(
+        Settings.Navigation.IsNavigatingFileHistory ? 0 : 
+        (Settings.Navigation.IsNavigatingBetweenDirectories ? 1 : 2));
+    
+    public BindableReactiveProperty<int> MouseWheelBehavior { get; } = new(Settings.Zoom.CtrlZoom ? 0 : 1);
+
+    // Language
+    public BindableReactiveProperty<List<LanguageItem>> AvailableLanguages { get; } = new();
+    public BindableReactiveProperty<string> UserLanguage { get; } = new(Settings.UIProperties.UserLanguage);
+
+    // Navigation (Missing ones)
+    public BindableReactiveProperty<bool> IsIncludingSubdirectories { get; } = new(Settings.Sorting.IncludeSubDirectories);
+    public BindableReactiveProperty<bool> IsLooping { get; } = new(Settings.UIProperties.Looping);
+    public BindableReactiveProperty<bool> IsShowingTaskbarProgress { get; } = new(Settings.UIProperties.IsTaskbarProgressEnabled);
+    public BindableReactiveProperty<bool> IsFileHistoryEnabled { get; } = new(Settings.Navigation.IsFileHistoryEnabled);
 
     public BindableReactiveProperty<bool> IsShowingRecycleDialog { get; } =
         new(Settings.UIProperties.ShowRecycleConfirmation);
@@ -87,6 +157,12 @@ public class SettingsViewModel : IDisposable
 
     public BindableReactiveProperty<string[]> MouseDoubleClickBehaviors { get; }
     public BindableReactiveProperty<int> MouseDoubleClickBehaviorIndex { get; }
+    
+    // Commands for simple toggles or actions
+    public ReactiveCommand<ColorOptions> SetColorThemeCommand { get; } = new ReactiveCommand<ColorOptions>();
+    public ReactiveCommand<BackgroundType> SetBackgroundCommand { get; } = new ReactiveCommand<BackgroundType>();
+    public ReactiveCommand ToggleUsingTouchpadCommand { get; }
+
 
     public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
@@ -119,7 +195,30 @@ public class SettingsViewModel : IDisposable
             MouseDoubleClickBehaviors,
             NavigateToCategoryCommand,
             IsOverviewVisible,
-            SelectedCategory);
+            SelectedCategory,
+            OpenLastFile,
+            StartUpIndex,
+            IsNavigatingBackwardsWhenDeleting,
+            DeletionIndex,
+            ThemeIndex,
+            ColorThemeIndex,
+            BackgroundChoice,
+            IsScalingSetToNearestNeighbor,
+            ImageScalingIndex,
+            CtrlZoom,
+            HorizontalReverseScroll,
+            ScrollDirectionIndex,
+            MouseSideButtonBehavior,
+            MouseWheelBehavior,
+            UserLanguage,
+            IsIncludingSubdirectories,
+            IsLooping,
+            IsShowingTaskbarProgress,
+            IsFileHistoryEnabled,
+            SetColorThemeCommand,
+            SetBackgroundCommand,
+            ToggleUsingTouchpadCommand
+            );
     }
 
     /// <summary>
@@ -129,6 +228,7 @@ public class SettingsViewModel : IDisposable
     /// </summary>
     public void SubscriptionSettingsUpdate()
     {
+        // Existing logic
         Observable.EveryValueChanged(this, x => x.NavSpeed.CurrentValue)
             .Subscribe(x =>
             {
@@ -192,8 +292,106 @@ public class SettingsViewModel : IDisposable
 
         Observable.EveryValueChanged(this, x => x.MouseDoubleClickBehaviorIndex.CurrentValue)
             .Subscribe(x => Settings.UIProperties.DoubleClickBehavior = x).AddTo(_disposables);
-    }
+        
+        // General
+        Observable.EveryValueChanged(this, x => x.StartUpIndex.CurrentValue)
+             .SubscribeAwait(async (x, _) => {
+                 OpenLastFile.Value = x == 1;
+                 Settings.StartUp.OpenLastFile = x == 1;
+                 await SaveSettingsAsync();
+             }).AddTo(_disposables);
+             
+        Observable.EveryValueChanged(this, x => x.DeletionIndex.CurrentValue)
+             .SubscribeAwait(async (x, _) => {
+                 IsNavigatingBackwardsWhenDeleting.Value = x == 1;
+                 Settings.Navigation.IsNavigatingBackwardsWhenDeleting = x == 1;
+                 await SaveSettingsAsync();
+             }).AddTo(_disposables);
+             
+        // Appearance
+        Observable.EveryValueChanged(this, x => x.ThemeIndex.CurrentValue)
+            .Subscribe(x => _themeService?.SetTheme(x)).AddTo(_disposables);
+            
+        SetColorThemeCommand.Subscribe(x => {
+            ColorThemeIndex.Value = (int)x;
+            _themeService?.SetColorTheme((int)x);
+        }).AddTo(_disposables);
 
+        SetBackgroundCommand.Subscribe(x => {
+            BackgroundChoice.Value = (int)x;
+            _themeService?.SetBackground((int)x);
+        }).AddTo(_disposables);
+
+        // Image
+        Observable.EveryValueChanged(this, x => x.ImageScalingIndex.CurrentValue)
+            .SubscribeAwait(async (x, _) => {
+                var isNearestNeighbor = x == 1;
+                IsScalingSetToNearestNeighbor.Value = isNearestNeighbor;
+                Settings.ImageScaling.IsScalingSetToNearestNeighbor = isNearestNeighbor;
+                _imageSettingsService?.TriggerScalingModeUpdate(isNearestNeighbor);
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+            
+        // Zoom
+        Observable.EveryValueChanged(this, x => x.CtrlZoom.CurrentValue)
+            .SubscribeAwait(async (x, _) => {
+                Settings.Zoom.CtrlZoom = x;
+                // Sync MouseWheelBehavior if needed
+                MouseWheelBehavior.Value = x ? 0 : 1;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.ScrollDirectionIndex.CurrentValue)
+             .SubscribeAwait(async (x, _) => {
+                 var reverse = x == 0;
+                 HorizontalReverseScroll.Value = reverse;
+                 Settings.Zoom.HorizontalReverseScroll = reverse;
+                 await SaveSettingsAsync();
+             }).AddTo(_disposables);
+             
+        // Mouse
+        Observable.EveryValueChanged(this, x => x.MouseSideButtonBehavior.CurrentValue)
+            .SubscribeAwait(async (x, _) => {
+                switch(x)
+                {
+                    case 0:
+                        Settings.Navigation.IsNavigatingFileHistory = true;
+                        Settings.Navigation.IsNavigatingBetweenDirectories = false;
+                        break;
+                    case 1:
+                        Settings.Navigation.IsNavigatingFileHistory = false;
+                        Settings.Navigation.IsNavigatingBetweenDirectories = true;
+                        break;
+                    case 2:
+                        Settings.Navigation.IsNavigatingFileHistory = false;
+                        Settings.Navigation.IsNavigatingBetweenDirectories = false;
+                        break;
+                }
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.MouseWheelBehavior.CurrentValue)
+            .SubscribeAwait(async (x, _) => {
+                var ctrlZoom = x == 0;
+                Settings.Zoom.CtrlZoom = ctrlZoom;
+                if (CtrlZoom.Value != ctrlZoom) CtrlZoom.Value = ctrlZoom;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+            
+        // Language
+        Observable.EveryValueChanged(this, x => x.UserLanguage.CurrentValue)
+            .SubscribeAwait(async (x, _) => {
+                if (Settings.UIProperties.UserLanguage != x)
+                {
+                    Settings.UIProperties.UserLanguage = x;
+                    if (_languageService != null)
+                    {
+                        await _languageService.UpdateLanguageAsync(x);
+                    }
+                }
+            }).AddTo(_disposables);
+    }
+    
     private readonly record struct NavigationState(bool IsOverview, SettingsCategory Category);
 
     #region Tab history navigation
@@ -361,3 +559,5 @@ public enum SettingsCategory
     Language,
     FileAssociations
 }
+
+public record LanguageItem(string Code, string DisplayName);

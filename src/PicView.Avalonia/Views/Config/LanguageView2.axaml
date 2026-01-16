@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.LanguageView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -21,7 +21,11 @@
             Margin="0,0,0,25"
             Padding="5,7,0,7"
             Width="300"
-            x:Name="LanguageBox" />
+            x:Name="LanguageBox"
+            ItemsSource="{CompiledBinding SettingsViewModel.AvailableLanguages.Value}"
+            SelectedValue="{CompiledBinding SettingsViewModel.UserLanguage.Value, Mode=TwoWay}"
+            SelectedValueBinding="{CompiledBinding Code}"
+            DisplayMemberBinding="{CompiledBinding DisplayName}" />
     </StackPanel>
 
 

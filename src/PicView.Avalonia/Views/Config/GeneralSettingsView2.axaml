@@ -24,6 +24,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,10"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.StartUpIndex.Value, Mode=TwoWay}"
             Width="300"
             x:Name="ApplicationStartupBox">
             <ComboBoxItem Content="{CompiledBinding Translation.None.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -77,8 +78,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
-            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleSubdirectoriesCommand}"
-            IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsIncludingSubdirectories.Value, Mode=TwoWay}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock
@@ -95,7 +95,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
-            IsChecked="{CompiledBinding GlobalSettings.IsFileHistoryEnabled.Value}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsFileHistoryEnabled.Value, Mode=TwoWay}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock
@@ -121,6 +121,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,10"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.DeletionIndex.Value, Mode=TwoWay}"
             Width="300"
             x:Name="DeletingFileBox">
             <ComboBoxItem Content="{CompiledBinding Translation.NavigateForwards.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />

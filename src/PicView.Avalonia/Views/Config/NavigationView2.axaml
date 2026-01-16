@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.NavigationView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -19,8 +19,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
-            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleSubdirectoriesCommand}"
-            IsChecked="{CompiledBinding GlobalSettings.IsIncludingSubdirectories.Value}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsIncludingSubdirectories.Value, Mode=TwoWay}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock
@@ -37,8 +36,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
-            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleLoopingCommand}"
-            IsChecked="{CompiledBinding GlobalSettings.IsLooping.Value}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsLooping.Value, Mode=TwoWay}"
             Margin="0,0,0,10"
             ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
                                           Mode=OneWay}"
@@ -57,8 +55,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover changeColor"
-            Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleTaskbarProgressCommand}"
-            IsChecked="{CompiledBinding GlobalSettings.IsShowingTaskbarProgress.Value}"
+            IsChecked="{CompiledBinding SettingsViewModel.IsShowingTaskbarProgress.Value, Mode=TwoWay}"
             Margin="0,0,0,10"
             Width="300"
             x:Name="TaskBarToggleButton">

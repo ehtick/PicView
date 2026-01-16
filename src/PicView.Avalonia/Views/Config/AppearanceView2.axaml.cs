@@ -16,5 +16,7 @@ public partial class AppearanceView2 : UserControl
     public AppearanceView2()
     {
         InitializeComponent();
+        CheckerboardButton.Background = BackgroundManager.CreateCheckerboardBrush(default, default,10);
+        CheckerboardAltButton.Background = BackgroundManager.CreateCheckerboardBrushAlt(25);
     }
 }

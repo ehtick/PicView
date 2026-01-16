@@ -1,20 +1,16 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Input;
 using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Win32.PlatformUpdate;
-using PicView.Avalonia.Win32.Printing;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Update;
 using PicView.Core.ViewModels;
-using R3;
+using PicView.Avalonia.Services;
 
 namespace PicView.Avalonia.Win32.WindowImpl;
 
@@ -225,7 +221,11 @@ public class WindowInitializer : IPlatformSpecificUpdate
             return;
         }
 
-        core.SettingsViewModel ??= new SettingsViewModel();
+        if (core.SettingsViewModel is null)
+        {
+            core.SettingsViewModel = new SettingsViewModel();
+            core.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
+        }
         
         if (core.SettingsViewModel.SettingsWindowConfig is null)
         {

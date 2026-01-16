@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.MouseView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -42,6 +42,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.MouseSideButtonBehavior.Value, Mode=TwoWay}"
             Width="300"
             x:Name="MouseSideButtonBox">
             <ComboBoxItem Content="{CompiledBinding Translation.NavigateFileHistory.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -66,6 +67,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.MouseWheelBehavior.Value, Mode=TwoWay}"
             Width="300"
             x:Name="MouseWheelBox">
             <ComboBoxItem Content="{CompiledBinding Translation.CtrlToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -89,6 +91,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.ScrollDirectionIndex.Value, Mode=TwoWay}"
             Width="300"
             x:Name="ScrollDirectionBox">
             <ComboBoxItem Content="{CompiledBinding Translation.Reverse.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -99,6 +102,7 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover"
+            Command="{CompiledBinding SettingsViewModel.ToggleUsingTouchpadCommand}"
             Margin="0,0,0,10"
             Padding="0,10,0,10"
             Width="300">

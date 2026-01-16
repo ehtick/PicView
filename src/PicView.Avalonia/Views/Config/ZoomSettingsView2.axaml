@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.ZoomSettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -89,6 +89,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.MouseWheelBehavior.Value, Mode=TwoWay}"
             Width="300"
             x:Name="MouseWheelBox">
             <ComboBoxItem Content="{CompiledBinding Translation.CtrlToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />

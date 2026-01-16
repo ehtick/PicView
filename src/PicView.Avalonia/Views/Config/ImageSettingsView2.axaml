@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.ImageSettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -79,6 +79,7 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,10"
             Padding="5,7,0,7"
+            SelectedIndex="{CompiledBinding SettingsViewModel.ImageScalingIndex.Value, Mode=TwoWay}"
             Width="300"
             x:Name="ImageAliasingBox">
             <ComboBoxItem Content="{CompiledBinding Translation.HighQuality.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
