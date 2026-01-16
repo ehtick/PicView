@@ -9,6 +9,7 @@
     xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
@@ -22,7 +23,8 @@
             Classes="txt bold"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.Theme.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}" />
 
         <ComboBox
             Classes="CStyle"
@@ -32,6 +34,7 @@
             SelectedIndex="{CompiledBinding SettingsViewModel.ThemeIndex.Value,
                                             Mode=TwoWay}"
             Width="300"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}"
             x:Name="ThemeBox">
             <ComboBoxItem
                 Content="{CompiledBinding Translation.DarkTheme.Value,
@@ -64,7 +67,6 @@
             <TextBlock
                 Classes="txt"
                 FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                Foreground="{StaticResource SecondaryTextColor}"
                 Padding="5"
                 Text="{CompiledBinding Translation.ChangingThemeRequiresRestart.Value,
                                        Mode=OneWay}" />

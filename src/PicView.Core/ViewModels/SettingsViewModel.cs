@@ -54,8 +54,68 @@ public class SettingsViewModel : IDisposable
         IsFileHistoryEnabled.Subscribe(x => Settings.Navigation.IsFileHistoryEnabled = x).AddTo(_disposables);
         
         ToggleUsingTouchpadCommand = new ReactiveCommand(_ => IsUsingTouchpad.Value = !IsUsingTouchpad.Value).AddTo(_disposables);
+        
+        // Search Initialization
+        StartUpSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.ApplicationStartup!,
+            TranslationManager.Translation.Start!,
+            TranslationManager.Translation.Open!,
+            TranslationManager.Translation.OpenLastFile!,
+            "Boot",
+            "Launch"
+        ]);
+        ThemeSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.Theme!,
+            TranslationManager.Translation.Appearance!,
+            TranslationManager.Translation.DarkTheme!,
+            TranslationManager.Translation.LightTheme!,
+            TranslationManager.Translation.Color!,
+            "Customization"
+        ]);
+        
+        ClearSearchCommand = new ReactiveCommand(_ => SearchQuery.Value = string.Empty).AddTo(_disposables);
+
+        SearchQuery.Subscribe(query =>
+        {
+            var hasText = !string.IsNullOrEmpty(query);
+            IsSearchVisible.Value = hasText;
+
+            if (hasText)
+            {
+                IsOverviewVisible.Value = false;
+                PerformSearch(query);
+            }
+            else
+            {
+                // Reset search results visibility
+            }
+
+        }).AddTo(_disposables);
 
         UpdateNavigationProperties();
+    }
+
+    private void PerformSearch(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return;
+        }
+        
+        // Theme Search
+        if (ThemeSearchTags.Value != null)
+        {
+             foreach(var t in ThemeSearchTags.Value)
+             {
+                 if (t == null) continue;
+                 if (t.Contains(query, StringComparison.OrdinalIgnoreCase))
+                 {
+                     return;
+                 }
+             }
+        }
     }
     
     public void Initialize(IThemeService themeService, ILanguageService languageService, IImageSettingsService imageSettingsService)
@@ -165,6 +225,15 @@ public class SettingsViewModel : IDisposable
 
     
     public BindableReactiveProperty<bool> IsSearchVisible { get; } = new(false);
+    public BindableReactiveProperty<string> SearchQuery { get; } = new(string.Empty);
+    public ReactiveCommand ClearSearchCommand { get; }
+
+    // Search properties (Tags and Visibility)
+    public BindableReactiveProperty<string[]> StartUpSearchTags { get; }
+    public BindableReactiveProperty<string[]> ThemeSearchTags { get; }
+    
+    
+
     public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
     public ReactiveCommand<SettingsCategory> NavigateToCategoryCommand { get; }
@@ -218,7 +287,11 @@ public class SettingsViewModel : IDisposable
             IsFileHistoryEnabled,
             SetColorThemeCommand,
             SetBackgroundCommand,
-            ToggleUsingTouchpadCommand
+            ToggleUsingTouchpadCommand,
+            SearchQuery,
+            IsSearchVisible,
+            ClearSearchCommand,
+            ThemeSearchTags
             );
     }
 

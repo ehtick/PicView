@@ -79,6 +79,7 @@
                 FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
                 Foreground="{DynamicResource MainTextColor}"
                 Padding="50,7,4,7"
+                Text="{CompiledBinding SettingsViewModel.SearchQuery.Value, Mode=TwoWay}"
                 VerticalAlignment="Center"
                 Watermark="{CompiledBinding Translation.Search.Value,
                                             Mode=OneWay}"
@@ -87,22 +88,19 @@
             <!--  clear  -->
             <customControls:IconButton
                 Classes="altHover"
+                Command="{CompiledBinding SettingsViewModel.ClearSearchCommand}"
                 Data="{StaticResource CloseGeometry}"
                 Foreground="{DynamicResource MainTextColorFaded}"
                 HorizontalAlignment="Right"
                 IconHeight="12"
                 IconWidth="12"
+                IsVisible="{CompiledBinding SettingsViewModel.IsSearchVisible.Value}"
                 Padding="10,3,10,3"
                 x:Name="ClearButton" />
         </Panel>
 
-        <!--  Search results  -->
-        <customControls:AutoScrollViewer DockPanel.Dock="Top" IsVisible="{CompiledBinding SettingsViewModel.IsSearchVisible.Value}">
-            <StackPanel x:Name="SearchResultsPanel" />
-        </customControls:AutoScrollViewer>
-
         <!--  Main content  -->
-        <Panel DockPanel.Dock="Top" IsVisible="{CompiledBinding !SettingsViewModel.IsSearchVisible.Value}">
+        <Panel DockPanel.Dock="Top">
 
             <!--  Overview Panel  -->
             <customControls:AutoScrollViewer
@@ -392,8 +390,7 @@
             </customControls:AutoScrollViewer>
 
             <!--  Split View  -->
-            <Grid
-                ColumnDefinitions="200, *"
+            <DockPanel
                 IsVisible="{Binding !SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}"
                 x:Name="SplitViewGrid">
 
@@ -403,11 +400,13 @@
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Grid.Column="0"
+                    DockPanel.Dock="Left"
+                    IsVisible="{CompiledBinding !SettingsViewModel.IsSearchVisible.Value}"
                     Margin="7,2,1,1"
                     SelectionMode="Single"
                     Theme="{StaticResource SlimListBox}"
                     VerticalAlignment="Top"
+                    Width="200"
                     x:Name="CategoriesListBox">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
@@ -580,7 +579,7 @@
                 </ListBox>
 
                 <!--  Content  -->
-                <customControls:AutoScrollViewer Grid.Column="1" x:Name="ContentScrollViewer">
+                <customControls:AutoScrollViewer x:Name="ContentScrollViewer">
                     <StackPanel Margin="20" Spacing="75">
 
                         <!--  General settings  -->
@@ -657,7 +656,7 @@
                         </Border>
                     </StackPanel>
                 </customControls:AutoScrollViewer>
-            </Grid>
+            </DockPanel>
         </Panel>
     </DockPanel>
 </UserControl>
