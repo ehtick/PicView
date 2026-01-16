@@ -1,0 +1,28 @@
+﻿<UserControl
+    x:Class="PicView.Avalonia.Views.Config.LanguageView2"
+    x:DataType="viewModels:CoreViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel HorizontalAlignment="Center">
+
+        <TextBlock
+            Classes="txt bold"
+            Margin="0,20,0,20"
+            Text="{CompiledBinding Translation.Language.Value,
+                                   Mode=OneWay}" />
+        <ComboBox
+            AutoScrollToSelectedItem="True"
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            BorderBrush="{DynamicResource MainBorderColor}"
+            BorderThickness="1"
+            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+            Foreground="{DynamicResource MainTextColor}"
+            Margin="0,0,0,25"
+            Padding="5,7,0,7"
+            Width="300"
+            x:Name="LanguageBox" />
+    </StackPanel>
+
+
+</UserControl>

@@ -646,12 +646,11 @@
                             Margin="0,0,0,30"
                             x:Name="MouseSection" />
 
-                        <Border x:Name="LanguageSection">
-                            <TextBlock
-                                Classes="txt bold"
-                                Text="{Binding Translation.Language.Value, Mode=OneWay}"
-                                VerticalAlignment="Top" />
-                        </Border>
+                        <config:LanguageView2
+                            Background="Transparent"
+                            Focusable="True"
+                            Margin="0,0,0,30"
+                            x:Name="LanguageSection" />
 
                         <Border x:Name="FileAssociationsSection">
                             <TextBlock
