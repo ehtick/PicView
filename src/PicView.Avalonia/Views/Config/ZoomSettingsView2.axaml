@@ -81,21 +81,6 @@
                                        Mode=OneWay}" />
         </ToggleButton>
 
-        <ComboBox
-            Background="{DynamicResource SecondaryBackgroundColor}"
-            BorderBrush="{DynamicResource MainBorderColor}"
-            BorderThickness="1"
-            FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
-            Foreground="{DynamicResource MainTextColor}"
-            Margin="0,6,0,15"
-            Padding="5,7,0,7"
-            SelectedIndex="{CompiledBinding SettingsViewModel.MouseWheelBehavior.Value, Mode=TwoWay}"
-            Width="300"
-            x:Name="MouseWheelBox">
-            <ComboBoxItem Content="{CompiledBinding Translation.CtrlToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
-            <ComboBoxItem Content="{CompiledBinding Translation.ScrollToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
-        </ComboBox>
-
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -116,6 +101,7 @@
             TickPlacement="BottomRight"
             Value="{CompiledBinding SettingsViewModel.ZoomSpeed.Value}"
             Width="300" />
+
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"

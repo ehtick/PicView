@@ -163,7 +163,8 @@ public class SettingsViewModel : IDisposable
     public ReactiveCommand<BackgroundType> SetBackgroundCommand { get; } = new ReactiveCommand<BackgroundType>();
     public ReactiveCommand ToggleUsingTouchpadCommand { get; }
 
-
+    
+    public BindableReactiveProperty<bool> IsSearchVisible { get; } = new(false);
     public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
     public ReactiveCommand<SettingsCategory> NavigateToCategoryCommand { get; }

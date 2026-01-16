@@ -59,7 +59,7 @@
 
     <DockPanel>
 
-        <!--  Search  -->
+        <!--  Search box  -->
         <Panel
             Background="{DynamicResource MainBackgroundColor}"
             DockPanel.Dock="Top"
@@ -96,13 +96,20 @@
                 x:Name="ClearButton" />
         </Panel>
 
-        <Panel>
+        <!--  Search results  -->
+        <customControls:AutoScrollViewer DockPanel.Dock="Top" IsVisible="{CompiledBinding SettingsViewModel.IsSearchVisible.Value}">
+            <StackPanel x:Name="SearchResultsPanel" />
+        </customControls:AutoScrollViewer>
+
+        <!--  Main content  -->
+        <Panel DockPanel.Dock="Top" IsVisible="{CompiledBinding !SettingsViewModel.IsSearchVisible.Value}">
+
             <!--  Overview Panel  -->
-            <ScrollViewer
+            <customControls:AutoScrollViewer
                 Background="Transparent"
                 Focusable="True"
                 IsVisible="{Binding SettingsViewModel.IsOverviewVisible.Value, FallbackValue=True}"
-                x:Name="ScrollViewer">
+                x:Name="OverViewScrollViewer">
                 <Panel>
 
                     <WrapPanel
@@ -382,7 +389,7 @@
                     </WrapPanel>
 
                 </Panel>
-            </ScrollViewer>
+            </customControls:AutoScrollViewer>
 
             <!--  Split View  -->
             <Grid
@@ -574,82 +581,72 @@
 
                 <!--  Content  -->
                 <customControls:AutoScrollViewer Grid.Column="1" x:Name="ContentScrollViewer">
-                    <StackPanel Margin="20" Spacing="20">
+                    <StackPanel Margin="20" Spacing="75">
 
                         <!--  General settings  -->
                         <config:GeneralSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
+                            Margin="0,5,0,0"
                             x:Name="GeneralSection" />
 
                         <!--  Appearance  -->
                         <config:AppearanceView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="AppearanceSection" />
 
                         <!--  Interface config  -->
                         <config:InterfaceConfigurationView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="InterfaceSection" />
 
                         <!--  Image settings  -->
                         <config:ImageSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="ImageSection" />
 
                         <!--  Window settings  -->
                         <config:WindowSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="WindowSection" />
 
                         <!--  Gallery settings  -->
                         <config:GallerySettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="GallerySection" />
 
                         <!--  Slideshow  -->
                         <config:SlideshowSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="SlideshowSection" />
 
                         <!--  Navigation  -->
                         <config:NavigationView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="NavigationSection" />
 
                         <!--  Zoom  -->
                         <config:ZoomSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="ZoomSection" />
 
                         <!--  Mouse  -->
                         <config:MouseView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="MouseSection" />
 
                         <config:LanguageView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,0,0,30"
                             x:Name="LanguageSection" />
 
                         <Border x:Name="FileAssociationsSection">
