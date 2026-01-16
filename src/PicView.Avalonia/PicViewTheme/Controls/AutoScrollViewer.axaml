@@ -214,7 +214,7 @@
                     </ScrollContentPresenter>
 
                     <customControls:IconButton
-                        Command="{Binding ScrollToTopCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                        Command="{Binding PageUp, RelativeSource={RelativeSource TemplatedParent}}"
                         Cursor="Hand"
                         Data="{StaticResource FilledArrowUpGeometry}"
                         Foreground="{TemplateBinding Foreground}"
@@ -235,7 +235,7 @@
                     </customControls:IconButton>
 
                     <customControls:IconButton
-                        Command="{Binding ScrollToBottomCommand, RelativeSource={RelativeSource TemplatedParent}}"
+                        Command="{Binding PageDown, RelativeSource={RelativeSource TemplatedParent}}"
                         Cursor="Hand"
                         Data="{StaticResource FilledArrowDownGeometry}"
                         Foreground="{TemplateBinding Foreground}"

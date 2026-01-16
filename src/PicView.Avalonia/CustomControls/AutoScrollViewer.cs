@@ -75,16 +75,6 @@ public class AutoScrollViewer : ScrollViewer
     }
 
     /// <summary>
-    /// Gets the command to scroll to the top.
-    /// </summary>
-    public ReactiveCommand ScrollToTopCommand { get; }
-
-    /// <summary>
-    /// Gets the command to scroll to the bottom.
-    /// </summary>
-    public ReactiveCommand ScrollToBottomCommand { get; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether auto-scrolling is active.
     /// </summary>
     public bool IsAutoScrolling
@@ -117,9 +107,6 @@ public class AutoScrollViewer : ScrollViewer
     /// </summary>
     public AutoScrollViewer()
     {
-        ScrollToTopCommand = new ReactiveCommand(_ => ScrollToHome());
-        ScrollToBottomCommand = new ReactiveCommand(_ => ScrollToEnd());
-
         AddHandler(
             PointerPressedEvent,
             PreviewPointerPressedEvent,

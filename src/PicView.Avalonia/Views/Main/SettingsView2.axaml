@@ -400,6 +400,7 @@
                     Margin="7,2,1,1"
                     SelectionMode="Single"
                     Theme="{StaticResource SlimListBox}"
+                    VerticalAlignment="Top"
                     x:Name="CategoriesListBox">
                     <ListBox.Styles>
                         <Style Selector="ListBoxItem">
