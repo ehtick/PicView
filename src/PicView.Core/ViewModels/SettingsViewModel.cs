@@ -65,6 +65,18 @@ public class SettingsViewModel : IDisposable
             "Boot",
             "Launch"
         ]);
+        FileManagementSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.Open!,
+            TranslationManager.Translation.OpenLastFile!,
+            TranslationManager.Translation.File!,
+            TranslationManager.Translation.DeleteFile!,
+            TranslationManager.Translation.DeleteFilePermanently!,
+            TranslationManager.Translation.FileHistoryEnabled!,
+            TranslationManager.Translation.SearchSubdirectory!,
+            TranslationManager.Translation.NavigateBackwards!,
+            TranslationManager.Translation.NavigateForwards!
+        ]);
         ThemeSearchTags = new BindableReactiveProperty<string[]>(
         [
             TranslationManager.Translation.Theme!,
@@ -85,37 +97,11 @@ public class SettingsViewModel : IDisposable
             if (hasText)
             {
                 IsOverviewVisible.Value = false;
-                PerformSearch(query);
-            }
-            else
-            {
-                // Reset search results visibility
             }
 
         }).AddTo(_disposables);
 
         UpdateNavigationProperties();
-    }
-
-    private void PerformSearch(string query)
-    {
-        if (string.IsNullOrWhiteSpace(query))
-        {
-            return;
-        }
-        
-        // Theme Search
-        if (ThemeSearchTags.Value != null)
-        {
-             foreach(var t in ThemeSearchTags.Value)
-             {
-                 if (t == null) continue;
-                 if (t.Contains(query, StringComparison.OrdinalIgnoreCase))
-                 {
-                     return;
-                 }
-             }
-        }
     }
     
     public void Initialize(IThemeService themeService, ILanguageService languageService, IImageSettingsService imageSettingsService)
@@ -230,6 +216,7 @@ public class SettingsViewModel : IDisposable
 
     // Search properties (Tags and Visibility)
     public BindableReactiveProperty<string[]> StartUpSearchTags { get; }
+    public BindableReactiveProperty<string[]> FileManagementSearchTags { get; }
     public BindableReactiveProperty<string[]> ThemeSearchTags { get; }
     
     

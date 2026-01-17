@@ -15,6 +15,7 @@
 
     <UserControl.Resources>
         <converters:IntToEnumBoolConverter x:Key="IntToEnumBoolConverter" />
+        <converters:SearchVisibilityConverter x:Key="SearchVisibilityConverter" />
     </UserControl.Resources>
 
     <StackPanel HorizontalAlignment="Center">
@@ -24,7 +25,14 @@
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.Theme.Value,
                                    Mode=OneWay}"
-            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}" />
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}">
+            <TextBlock.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </TextBlock.IsVisible>
+        </TextBlock>
 
         <ComboBox
             Classes="CStyle"
@@ -36,6 +44,12 @@
             Width="300"
             ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}"
             x:Name="ThemeBox">
+            <ComboBox.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </ComboBox.IsVisible>
             <ComboBoxItem
                 Content="{CompiledBinding Translation.DarkTheme.Value,
                                           Mode=OneWay}"
@@ -63,6 +77,7 @@
             Classes="errorHover"
             Command="{CompiledBinding MainWindows.ActiveWindow.Value.RestartCommand}"
             Margin="0,0,0,20"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}"
             x:Name="RestartButton">
             <TextBlock
                 Classes="txt"
@@ -70,19 +85,40 @@
                 Padding="5"
                 Text="{CompiledBinding Translation.ChangingThemeRequiresRestart.Value,
                                        Mode=OneWay}" />
+            <Button.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </Button.IsVisible>
         </Button>
 
         <TextBlock
             Classes="txt bold"
             Margin="0,5,0,20"
             Text="{CompiledBinding Translation.HighlightColor.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}">
+            <TextBlock.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </TextBlock.IsVisible>
+        </TextBlock>
 
         <WrapPanel
             HorizontalAlignment="Center"
             Margin="0,0,0,10"
             MaxWidth="300"
-            Orientation="Horizontal">
+            Orientation="Horizontal"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}">
+            <WrapPanel.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </WrapPanel.IsVisible>
             <WrapPanel.Styles>
                 <Styles>
                     <Style Selector="Button.colorBtn">
@@ -234,7 +270,14 @@
             HorizontalAlignment="Center"
             Margin="0,0,0,10"
             MaxWidth="300"
-            Orientation="Horizontal">
+            Orientation="Horizontal"
+            ui:SearchProperties.Terms="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}">
+            <WrapPanel.IsVisible>
+                <MultiBinding Converter="{StaticResource SearchVisibilityConverter}">
+                    <Binding Path="SettingsViewModel.SearchQuery.Value" />
+                    <Binding Path="(ui:SearchProperties.Terms)" RelativeSource="{RelativeSource Self}" />
+                </MultiBinding>
+            </WrapPanel.IsVisible>
             <WrapPanel.Styles>
                 <Styles>
                     <Style Selector="Button.colorBtn">
