@@ -99,6 +99,7 @@ public static class StartUpHelper2
             HandlePostWindowUpdates(vm, settingsExists, desktop, window);
         }
     }
+
     
     public static void StartUpBlank(CoreViewModel vm, bool settingsExists, bool setPos,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)

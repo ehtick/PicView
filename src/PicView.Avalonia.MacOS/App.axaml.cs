@@ -28,9 +28,8 @@ namespace PicView.Avalonia.MacOS;
 public class App : Application, IPlatformSpecificService
 {
     private MacMainWindow2? _mainWindow;
-    private static MainWindowViewModel? _mainWindowViewModel;
     private static CoreViewModel? _coreViewModel;
-
+    private static MainWindowViewModel? _mainWindowViewModel;
 
     public override void Initialize()
     {
@@ -47,21 +46,8 @@ public class App : Application, IPlatformSpecificService
         try
         {
             base.OnFrameworkInitializationCompleted();
-            
-            // --- CONTEXT & FIX EXPLANATION ---
-            // On macOS, when a file is double-clicked, the OS launches the app and then immediately fires the 'UrlsOpened' event.
-            // There is a race condition: The app might finish initializing (loading a "Blank" state or "Last File") 
-            // BEFORE the 'UrlsOpened' event arrives with the actual file the user clicked.
-            //
-            // This causes two issues:
-            // 1. Double Window: The app opens the "Last File" in Window 1, then receives the event and opens the "Clicked File" in Window 2.
-            // 2. Infinite Loop: If 'OpenInSameWindow' is false, the event handler spawns a new process, which repeats the cycle infinitely.
-            //
-            // SOLUTION: We capture the 'UrlsOpened' event early. If it fires during startup, we flag it as handled 
-            // and force the *current* window to display that file, overriding any default "Last File" or "Blank" state.
-            // ---------------------------------
 
-            // 1. Capture the startup file immediately if the event fires early
+            // Capture the startup file immediately if the event fires early
             string? startUpFilePath = null;
 
             // We use a flag to track if THIS instance has handled its "startup" file yet.
@@ -78,21 +64,18 @@ public class App : Application, IPlatformSpecificService
 
             var settingsExists = await Task.FromResult(LoadSettings()).ConfigureAwait(false);
             TranslationManager.Init();
-
-            _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
-            DataContext = _coreViewModel;
-
-            // 2. Initialize the Window
+            
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
+                _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
+                DataContext = _coreViewModel;
                 ThemeManager.DetermineTheme(Current, settingsExists);
-                _mainWindow = new MacMainWindow2();
-                desktop.MainWindow = _mainWindow;
-            }, DispatcherPriority.Send);
 
-            // 3. Decide Initial State
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
+                _mainWindow = new MacMainWindow2();
+                _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
+                _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
+                _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
+                
                 // If the event fired BEFORE we got here, start with that file.
                 if (startUpFilePath is not null)
                 {
@@ -107,8 +90,7 @@ public class App : Application, IPlatformSpecificService
                 else
                 {
                     // If no file yet, start normally (Last File / StartUpMenu)
-                    //StartUpHelper2.StartWithoutArguments(_vm, settingsExists, desktop, _mainWindow);
-                    StartUpHelper2.StartUpBlank(_coreViewModel, settingsExists,  true, desktop, _mainWindow);
+                    StartUpHelper2.RegularStartUp(_coreViewModel, settingsExists, desktop, _mainWindow);
                 }
             }, DispatcherPriority.Send);
 
@@ -116,7 +98,7 @@ public class App : Application, IPlatformSpecificService
             Current.UrlsOpened -= earlyHandler;
 
             // 5. Register the PERMANENT handler with Logic to prevent double-opening
-            Current.UrlsOpened += async (_, e) =>
+            Current.UrlsOpened += (_, e) =>
             {
                 var incomingUrl = e.Urls[0];
 
