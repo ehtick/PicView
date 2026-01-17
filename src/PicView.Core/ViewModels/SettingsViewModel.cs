@@ -102,6 +102,8 @@ public class SettingsViewModel : IDisposable
         sb.Append("File system");
         FileHistorySearchTags = new BindableReactiveProperty<string>(sb.ToString());
         
+        sb.Clear();
+        
         sb.Append(TranslationManager.Translation.DeletedFile);
         sb.Append(space);
         sb.Append(TranslationManager.Translation.DeleteFilePermanently);
@@ -114,6 +116,30 @@ public class SettingsViewModel : IDisposable
         sb.Append(space);
         sb.Append(TranslationManager.Translation.Navigation);
         WhenDeletingFileSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.InterfaceConfiguration);
+        sb.Append(space);
+        sb.Append("UI");
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Color);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Theme);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.HighlightColor);
+        ColorSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Append(TranslationManager.Translation.DarkTheme);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.GlassTheme);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.LightTheme);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Theme);
+        ThemeSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
         
         // InterfaceSearchTags = new BindableReactiveProperty<string[]>(
         // [
@@ -332,6 +358,8 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<string> SubDirectorySearchTags { get; }
     public BindableReactiveProperty<string> FileHistorySearchTags { get; }
     public BindableReactiveProperty<string> WhenDeletingFileSearchTags { get; }
+    public BindableReactiveProperty<string> ThemeSearchTags { get; }
+    public BindableReactiveProperty<string> ColorSearchTags { get; }
     public BindableReactiveProperty<string[]> NavigationSearchTags { get; }
     public BindableReactiveProperty<string[]> GallerySearchTags { get; }
     public BindableReactiveProperty<string[]> SlideshowSearchTags { get; }
