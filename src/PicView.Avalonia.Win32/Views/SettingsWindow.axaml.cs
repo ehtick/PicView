@@ -120,6 +120,7 @@ public partial class SettingsWindow : Window
         Loaded += delegate
         {
             Title = TranslationManager.GetTranslation("Settings") + " - PicView";
+            SettingsView.Focus();
             if (DataContext is not CoreViewModel vm)
             {
                 return;

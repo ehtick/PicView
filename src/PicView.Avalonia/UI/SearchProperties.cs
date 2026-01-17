@@ -5,16 +5,19 @@ namespace PicView.Avalonia.UI;
 
 public class SearchProperties : AvaloniaObject
 {
-    public static readonly AttachedProperty<IEnumerable<string>> TermsProperty =
-        AvaloniaProperty.RegisterAttached<SearchProperties, Control, IEnumerable<string>>("Terms");
+    public static readonly AttachedProperty<string?> KeywordsProperty =
+        AvaloniaProperty.RegisterAttached<SearchProperties, Control, string?>("Keywords");
 
-    public static IEnumerable<string> GetTerms(Control element)
-    {
-        return element.GetValue(TermsProperty);
-    }
+    public static string? GetKeywords(Control element) => element.GetValue(KeywordsProperty);
+    public static void SetKeywords(Control element, string? value) => element.SetValue(KeywordsProperty, value);
 
-    public static void SetTerms(Control element, IEnumerable<string> value)
-    {
-        element.SetValue(TermsProperty, value);
-    }
+    // IsMatch Property (Nullable Bool)
+    // null = Not searching (Default)
+    // true = Matched
+    // false = Not Matched
+    public static readonly AttachedProperty<bool?> IsMatchProperty =
+        AvaloniaProperty.RegisterAttached<SearchProperties, Control, bool?>("IsMatch");
+
+    public static bool? GetIsMatch(Control element) => element.GetValue(IsMatchProperty);
+    public static void SetIsMatch(Control element, bool? value) => element.SetValue(IsMatchProperty, value);
 }

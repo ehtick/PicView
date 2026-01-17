@@ -2,15 +2,19 @@
     x:Class="PicView.Avalonia.Views.Config.MouseView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <StackPanel HorizontalAlignment="Center">
 
         <TextBlock
             Classes="txt bold"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.DoubleClick.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}" />
 
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -23,6 +27,7 @@
             Padding="5,7,0,7"
             SelectedIndex="{CompiledBinding SettingsViewModel.MouseDoubleClickBehaviorIndex.Value}"
             Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}"
             x:Name="DoubleClickBox" />
 
         <TextBlock
@@ -32,7 +37,8 @@
             Foreground="{StaticResource SecondaryTextColor}"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.MouseSideButtons.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}" />
 
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -42,8 +48,10 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
-            SelectedIndex="{CompiledBinding SettingsViewModel.MouseSideButtonBehavior.Value, Mode=TwoWay}"
+            SelectedIndex="{CompiledBinding SettingsViewModel.MouseSideButtonBehavior.Value,
+                                            Mode=TwoWay}"
             Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}"
             x:Name="MouseSideButtonBox">
             <ComboBoxItem Content="{CompiledBinding Translation.NavigateFileHistory.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
             <ComboBoxItem Content="{CompiledBinding Translation.NavigateBetweenDirectories.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -57,7 +65,8 @@
             Foreground="{StaticResource SecondaryTextColor}"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.MouseWheel.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}" />
 
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
@@ -67,8 +76,10 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
-            SelectedIndex="{CompiledBinding SettingsViewModel.MouseWheelBehavior.Value, Mode=TwoWay}"
+            SelectedIndex="{CompiledBinding SettingsViewModel.MouseWheelBehavior.Value,
+                                            Mode=TwoWay}"
             Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}"
             x:Name="MouseWheelBox">
             <ComboBoxItem Content="{CompiledBinding Translation.CtrlToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
             <ComboBoxItem Content="{CompiledBinding Translation.ScrollToZoom.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -82,7 +93,8 @@
             Margin="0,10,0,10"
             MaxWidth="300"
             Text="{CompiledBinding Translation.ScrollDirection.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}" />
         <ComboBox
             Background="{DynamicResource SecondaryBackgroundColor}"
             BorderBrush="{DynamicResource MainBorderColor}"
@@ -91,8 +103,10 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,15"
             Padding="5,7,0,7"
-            SelectedIndex="{CompiledBinding SettingsViewModel.ScrollDirectionIndex.Value, Mode=TwoWay}"
+            SelectedIndex="{CompiledBinding SettingsViewModel.ScrollDirectionIndex.Value,
+                                            Mode=TwoWay}"
             Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}"
             x:Name="ScrollDirectionBox">
             <ComboBoxItem Content="{CompiledBinding Translation.Reverse.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
             <ComboBoxItem Content="{CompiledBinding Translation.Forward.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />
@@ -105,7 +119,8 @@
             Command="{CompiledBinding SettingsViewModel.ToggleUsingTouchpadCommand}"
             Margin="0,0,0,10"
             Padding="0,10,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseSearchTags.Value}">
             <StackPanel Orientation="Horizontal">
                 <Image
                     Height="18"
@@ -163,8 +178,6 @@
                                            Mode=OneWay}" />
             </StackPanel>
         </Button>
-
-
 
     </StackPanel>
 </UserControl>

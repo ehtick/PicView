@@ -1,6 +1,5 @@
 <Window
-    Height="32"
-    MinWidth="475"
+    MinWidth="600"
     WindowStartupLocation="CenterOwner"
     x:Class="PicView.Avalonia.Win32.Views.SettingsWindow"
     x:DataType="viewModels:CoreViewModel"

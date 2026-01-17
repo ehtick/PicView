@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -67,7 +67,7 @@
             <Image
                 Height="14"
                 HorizontalAlignment="Left"
-                Margin="15,0,0,0"
+                Margin="12,0,0,0"
                 Source="{StaticResource SearchImage}"
                 Width="14" />
 
@@ -78,8 +78,9 @@
                 CornerRadius="4"
                 FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
                 Foreground="{DynamicResource MainTextColor}"
-                Padding="50,7,4,7"
-                Text="{CompiledBinding SettingsViewModel.SearchQuery.Value, Mode=TwoWay}"
+                Padding="37,7,4,7"
+                Text="{CompiledBinding SettingsViewModel.SearchQuery.Value,
+                                       Mode=TwoWay}"
                 VerticalAlignment="Center"
                 Watermark="{CompiledBinding Translation.Search.Value,
                                             Mode=OneWay}"
@@ -106,7 +107,7 @@
             <customControls:AutoScrollViewer
                 Background="Transparent"
                 Focusable="True"
-                IsVisible="{Binding SettingsViewModel.IsOverviewVisible.Value, FallbackValue=True}"
+                IsVisible="{Binding SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}"
                 x:Name="OverViewScrollViewer">
                 <Panel>
 
@@ -390,9 +391,7 @@
             </customControls:AutoScrollViewer>
 
             <!--  Split View  -->
-            <DockPanel
-                IsVisible="{Binding !SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}"
-                x:Name="SplitViewGrid">
+            <DockPanel IsVisible="{Binding !SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}" x:Name="SplitViewGrid">
 
                 <!--  Categories  -->
                 <ListBox
@@ -401,7 +400,6 @@
                     BorderThickness="1"
                     CornerRadius="4"
                     DockPanel.Dock="Left"
-                    IsVisible="{CompiledBinding !SettingsViewModel.IsSearchVisible.Value}"
                     Margin="7,2,1,1"
                     SelectionMode="Single"
                     Theme="{StaticResource SlimListBox}"
@@ -579,81 +577,92 @@
                 </ListBox>
 
                 <!--  Content  -->
-                <customControls:AutoScrollViewer x:Name="ContentScrollViewer">
-                    <StackPanel Margin="20" Spacing="75">
+                <customControls:AutoScrollViewer Focusable="True" x:Name="ContentScrollViewer">
+                    <StackPanel>
 
                         <!--  General settings  -->
                         <config:GeneralSettingsView2
                             Background="Transparent"
                             Focusable="True"
-                            Margin="0,5,0,0"
+                            Margin="0,5,0,75"
                             x:Name="GeneralSection" />
 
                         <!--  Appearance  -->
                         <config:AppearanceView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="AppearanceSection" />
 
                         <!--  Interface config  -->
                         <config:InterfaceConfigurationView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="InterfaceSection" />
 
                         <!--  Image settings  -->
                         <config:ImageSettingsView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="ImageSection" />
 
                         <!--  Window settings  -->
                         <config:WindowSettingsView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="WindowSection" />
 
                         <!--  Gallery settings  -->
                         <config:GallerySettingsView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="GallerySection" />
 
                         <!--  Slideshow  -->
                         <config:SlideshowSettingsView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="SlideshowSection" />
 
                         <!--  Navigation  -->
                         <config:NavigationView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="NavigationSection" />
 
                         <!--  Zoom  -->
                         <config:ZoomSettingsView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="ZoomSection" />
 
                         <!--  Mouse  -->
                         <config:MouseView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="MouseSection" />
 
+                        <!--  Language  -->
                         <config:LanguageView2
                             Background="Transparent"
                             Focusable="True"
+                            Margin="0,0,0,75"
                             x:Name="LanguageSection" />
 
-                        <Border x:Name="FileAssociationsSection">
-                            <TextBlock
-                                Classes="txt bold"
-                                Text="{Binding Translation.FileAssociations.Value, Mode=OneWay}"
-                                VerticalAlignment="Top" />
-                        </Border>
+                        <!-- <Border x:Name="FileAssociationsSection"> -->
+                        <!--  <TextBlock  -->
+                        <!--  Classes="txt bold"  -->
+                        <!--  Text="{Binding Translation.FileAssociations.Value, Mode=OneWay}"  -->
+                        <!--  VerticalAlignment="Top" />  -->
+                        <!-- </Border> -->
                     </StackPanel>
                 </customControls:AutoScrollViewer>
             </DockPanel>

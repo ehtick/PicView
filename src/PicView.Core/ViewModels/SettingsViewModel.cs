@@ -1,3 +1,4 @@
+using Cysharp.Text;
 using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Core.ColorHandling;
@@ -54,37 +55,153 @@ public class SettingsViewModel : IDisposable
         IsFileHistoryEnabled.Subscribe(x => Settings.Navigation.IsFileHistoryEnabled = x).AddTo(_disposables);
         
         ToggleUsingTouchpadCommand = new ReactiveCommand(_ => IsUsingTouchpad.Value = !IsUsingTouchpad.Value).AddTo(_disposables);
-        
+
         // Search Initialization
-        StartUpSearchTags = new BindableReactiveProperty<string[]>(
+        const string space = " ";
+        var sb = ZString.CreateUtf8StringBuilder();
+        
+        sb.Append(TranslationManager.Translation.ApplicationStartup);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Start);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Open);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.OpenLastFile);
+        sb.Append(space);
+        sb.Append("Boot");
+        sb.Append(space);
+        sb.Append("Launch");
+        StartUpSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.DeletedFile);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.DeleteFilePermanently);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.PermanentlyDelete);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.ShowConfirmationDialogWhenMovingFileToRecycleBin);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.ShowConfirmationDialogWhenPermanentlyDeletingFile);
+        DeleteFileDialogSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.SearchSubdirectory);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Folder);
+        sb.Append(space);
+        sb.Append("File system");
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Navigation);
+        SubDirectorySearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Append(TranslationManager.Translation.OpenFileHistory);
+        sb.Append(space);
+        sb.Append("File system");
+        FileHistorySearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Append(TranslationManager.Translation.DeletedFile);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.DeleteFilePermanently);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.PermanentlyDelete);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.NavigateBackwards);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.NavigateForwards);
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Navigation);
+        WhenDeletingFileSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        // InterfaceSearchTags = new BindableReactiveProperty<string[]>(
+        // [
+        //     TranslationManager.Translation.InterfaceConfiguration!,
+        //     TranslationManager.Translation.ShowBottomToolbar!,
+        //     TranslationManager.Translation.ShowUI!,
+        //     TranslationManager.Translation.ShowFadeInButtonsOnHover!,
+        //     TranslationManager.Translation.ShowHoverNavigationBar!,
+        //     "UI", "Hidden", "Toolbar", "Buttons", "Hover"
+        // ]);
+
+        // ImageSearchTags = new BindableReactiveProperty<string[]>(
+        // [
+        //     TranslationManager.Translation.Image!,
+        //     TranslationManager.Translation.Stretch!,
+        //     TranslationManager.Translation.Scrolling!,
+        //     TranslationManager.Translation.SideBySide!,
+        //     TranslationManager.Translation.ImageAliasing!,
+        //     TranslationManager.Translation.HighQuality!,
+        //     "Scaling", "Pixelated", "Nearest Neighbor"
+        // ]);
+
+        NavigationSearchTags = new BindableReactiveProperty<string[]>(
         [
-            TranslationManager.Translation.ApplicationStartup!,
-            TranslationManager.Translation.Start!,
-            TranslationManager.Translation.Open!,
-            TranslationManager.Translation.OpenLastFile!,
-            "Boot",
-            "Launch"
-        ]);
-        FileManagementSearchTags = new BindableReactiveProperty<string[]>(
-        [
-            TranslationManager.Translation.Open!,
-            TranslationManager.Translation.OpenLastFile!,
-            TranslationManager.Translation.File!,
-            TranslationManager.Translation.DeleteFile!,
-            TranslationManager.Translation.DeleteFilePermanently!,
-            TranslationManager.Translation.FileHistoryEnabled!,
+            TranslationManager.Translation.Navigation!,
             TranslationManager.Translation.SearchSubdirectory!,
-            TranslationManager.Translation.NavigateBackwards!,
-            TranslationManager.Translation.NavigateForwards!
+            TranslationManager.Translation.ToggleLooping!,
+            TranslationManager.Translation.ToggleTaskbarProgress!,
+            TranslationManager.Translation.AdjustNavSpeed!,
+            "Speed", "Progress", "Loop"
         ]);
-        ThemeSearchTags = new BindableReactiveProperty<string[]>(
+
+        GallerySearchTags = new BindableReactiveProperty<string[]>(
         [
-            TranslationManager.Translation.Theme!,
-            TranslationManager.Translation.Appearance!,
-            TranslationManager.Translation.DarkTheme!,
-            TranslationManager.Translation.LightTheme!,
-            TranslationManager.Translation.Color!,
-            "Customization"
+            TranslationManager.Translation.GallerySettings!,
+            TranslationManager.Translation.ShowBottomGallery!,
+            TranslationManager.Translation.ShowBottomGalleryWhenUiIsHidden!,
+            TranslationManager.Translation.ExpandedGalleryItemSize!,
+            TranslationManager.Translation.BottomGalleryItemSize!,
+            TranslationManager.Translation.GalleryThumbnailStretch!,
+            "Thumbnail", "Size", "Height"
+        ]);
+
+        SlideshowSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.Slideshow!,
+            TranslationManager.Translation.AdjustTimingForSlideshow!,
+            "Timer", "Speed", "Presentation"
+        ]);
+
+        WindowSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.WindowScaling!,
+            TranslationManager.Translation.AutoFitWindow!,
+            TranslationManager.Translation.WindowMargin!,
+            TranslationManager.Translation.WindowManagement!,
+            TranslationManager.Translation.StayTopMost!,
+            TranslationManager.Translation.StayCentered!,
+            TranslationManager.Translation.OpenInSameWindow!,
+            TranslationManager.Translation.ShowConfirmationOnEsc!,
+            "Margin", "Fit", "TopMost", "Center", "Escape"
+        ]);
+
+        ZoomSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.Zoom!,
+            TranslationManager.Translation.ResetZoomOnChange!,
+            TranslationManager.Translation.AllowZoomOut!,
+            TranslationManager.Translation.UseAnimatedZoom!,
+            TranslationManager.Translation.ShowZoomPercentagePopup!,
+            TranslationManager.Translation.AdjustTimingForZoom!,
+            "Animation", "Speed", "Popup"
+        ]);
+
+        MouseSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.DoubleClick!,
+            TranslationManager.Translation.MouseSideButtons!,
+            TranslationManager.Translation.MouseWheel!,
+            TranslationManager.Translation.ScrollDirection!,
+            TranslationManager.Translation.UsingTouchpad!,
+            "Click", "Wheel", "Scroll", "Trackpad", "Touchpad"
+        ]);
+
+        LanguageSearchTags = new BindableReactiveProperty<string[]>(
+        [
+            TranslationManager.Translation.Language!,
+            "Translate", "Locale"
         ]);
         
         ClearSearchCommand = new ReactiveCommand(_ => SearchQuery.Value = string.Empty).AddTo(_disposables);
@@ -115,11 +232,6 @@ public class SettingsViewModel : IDisposable
         
         SubscriptionSettingsUpdate();
     }
-    
-    private async Task SaveSettingsAsync()
-    {
-        await SettingsManager.SaveSettingsAsync();
-    }
 
     public SettingsWindowConfig? SettingsWindowConfig { get; set; }
 
@@ -131,7 +243,7 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<int> DeletionIndex { get; } = new(Settings.Navigation.IsNavigatingBackwardsWhenDeleting ? 1 : 0);
 
     // Appearance
-    public BindableReactiveProperty<int> ThemeIndex { get; } = new(Settings.Theme.GlassTheme ? 2 : (Settings.Theme.Dark ? 0 : 1));
+    public BindableReactiveProperty<int> ThemeIndex { get; } = new(Settings.Theme.GlassTheme ? 2 : Settings.Theme.Dark ? 0 : 1);
     public BindableReactiveProperty<int> ColorThemeIndex { get; } = new(Settings.Theme.ColorTheme);
     public BindableReactiveProperty<int> BackgroundChoice { get; } = new(Settings.UIProperties.BgColorChoice);
     
@@ -147,7 +259,7 @@ public class SettingsViewModel : IDisposable
     // Mouse
     public BindableReactiveProperty<int> MouseSideButtonBehavior { get; } = new(
         Settings.Navigation.IsNavigatingFileHistory ? 0 : 
-        (Settings.Navigation.IsNavigatingBetweenDirectories ? 1 : 2));
+        Settings.Navigation.IsNavigatingBetweenDirectories ? 1 : 2);
     
     public BindableReactiveProperty<int> MouseWheelBehavior { get; } = new(Settings.Zoom.CtrlZoom ? 0 : 1);
 
@@ -155,7 +267,7 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<List<LanguageItem>> AvailableLanguages { get; } = new();
     public BindableReactiveProperty<string> UserLanguage { get; } = new(Settings.UIProperties.UserLanguage);
 
-    // Navigation (Missing ones)
+    // Navigation
     public BindableReactiveProperty<bool> IsIncludingSubdirectories { get; } = new(Settings.Sorting.IncludeSubDirectories);
     public BindableReactiveProperty<bool> IsLooping { get; } = new(Settings.UIProperties.Looping);
     public BindableReactiveProperty<bool> IsShowingTaskbarProgress { get; } = new(Settings.UIProperties.IsTaskbarProgressEnabled);
@@ -215,13 +327,22 @@ public class SettingsViewModel : IDisposable
     public ReactiveCommand ClearSearchCommand { get; }
 
     // Search properties (Tags and Visibility)
-    public BindableReactiveProperty<string[]> StartUpSearchTags { get; }
-    public BindableReactiveProperty<string[]> FileManagementSearchTags { get; }
-    public BindableReactiveProperty<string[]> ThemeSearchTags { get; }
+    public BindableReactiveProperty<string> StartUpSearchTags { get; }
+    public BindableReactiveProperty<string> DeleteFileDialogSearchTags { get; }
+    public BindableReactiveProperty<string> SubDirectorySearchTags { get; }
+    public BindableReactiveProperty<string> FileHistorySearchTags { get; }
+    public BindableReactiveProperty<string> WhenDeletingFileSearchTags { get; }
+    public BindableReactiveProperty<string[]> NavigationSearchTags { get; }
+    public BindableReactiveProperty<string[]> GallerySearchTags { get; }
+    public BindableReactiveProperty<string[]> SlideshowSearchTags { get; }
+    public BindableReactiveProperty<string[]> WindowSearchTags { get; }
+    public BindableReactiveProperty<string[]> ZoomSearchTags { get; }
+    public BindableReactiveProperty<string[]> MouseSearchTags { get; }
+    public BindableReactiveProperty<string[]> LanguageSearchTags { get; }
     
     
 
-    public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(true);
+    public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(false);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);
     public ReactiveCommand<SettingsCategory> NavigateToCategoryCommand { get; }
 
@@ -278,7 +399,16 @@ public class SettingsViewModel : IDisposable
             SearchQuery,
             IsSearchVisible,
             ClearSearchCommand,
-            ThemeSearchTags
+            SubDirectorySearchTags,
+            FileHistorySearchTags,
+            WhenDeletingFileSearchTags,
+            NavigationSearchTags,
+            GallerySearchTags,
+            SlideshowSearchTags,
+            WindowSearchTags,
+            ZoomSearchTags,
+            MouseSearchTags,
+            LanguageSearchTags
             );
     }
 

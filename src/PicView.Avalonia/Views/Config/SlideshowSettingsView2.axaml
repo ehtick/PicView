@@ -1,17 +1,21 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.SlideshowSettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
         <TextBlock
             Classes="txt bold"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.Slideshow.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SlideshowSearchTags.Value}" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -20,7 +24,8 @@
             Margin="0,10,0,10"
             MaxWidth="300"
             Text="{CompiledBinding Translation.AdjustTimingForSlideshow.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SlideshowSearchTags.Value}" />
         <customControls:CustomSlider
             Height="30"
             HorizontalAlignment="Center"
@@ -31,12 +36,14 @@
             TickFrequency="1"
             TickPlacement="BottomRight"
             Value="{CompiledBinding SettingsViewModel.SlideshowSpeed.Value}"
-            Width="300" />
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SlideshowSearchTags.Value}" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
             Foreground="{DynamicResource MainTextColorFaded}"
-            Margin="0,0,0,15">
+            Margin="0,0,0,15"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SlideshowSearchTags.Value}">
             <Run Text="{CompiledBinding SettingsViewModel.GetSlideshowSpeed.Value, Mode=OneWay}" />
             <Run Text="{CompiledBinding Translation.SecAbbreviation.Value, Mode=OneWay}" />
         </TextBlock>

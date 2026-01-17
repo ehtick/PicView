@@ -1,17 +1,21 @@
-﻿<UserControl
+<UserControl
     x:Class="PicView.Avalonia.Views.Config.WindowSettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <StackPanel HorizontalAlignment="Center">
 
         <TextBlock
             Classes="txt bold"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.WindowScaling.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}" />
 
         <ToggleButton
             Background="Transparent"
@@ -20,7 +24,8 @@
             Command="{CompiledBinding MainWindows.ActiveWindow.Value.AutoFitWindowCommand}"
             IsChecked="{CompiledBinding GlobalSettings.IsAutoFit.Value}"
             Margin="0,0,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}">
             <TextBlock
                 Classes="txt"
                 Margin="0"
@@ -36,7 +41,8 @@
             Margin="0,10,0,10"
             MaxWidth="300"
             Text="{CompiledBinding Translation.WindowMargin.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}" />
         <customControls:CustomSlider
             Height="30"
             HorizontalAlignment="Center"
@@ -48,7 +54,8 @@
             TickFrequency="1"
             TickPlacement="BottomRight"
             Value="{CompiledBinding SettingsViewModel.WindowMargin.Value}"
-            Width="300" />
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}" />
         <TextBlock
             Classes="txt"
             FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
@@ -56,13 +63,15 @@
             IsEnabled="{CompiledBinding GlobalSettings.IsAutoFit.Value}"
             Margin="0,0,0,15"
             Text="{CompiledBinding SettingsViewModel.WindowMargin.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}" />
 
         <TextBlock
             Classes="txt bold"
             Margin="0,20,0,20"
             Text="{CompiledBinding Translation.WindowManagement.Value,
-                                   Mode=OneWay}" />
+                                   Mode=OneWay}"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}" />
 
         <ToggleButton
             Background="Transparent"
@@ -71,7 +80,8 @@
             Command="{CompiledBinding MainWindows.ActiveWindow.Value.SetTopMostCommand}"
             IsChecked="{CompiledBinding GlobalSettings.IsTopMost.Value}"
             Margin="0,0,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}">
             <TextBlock
                 Classes="txt"
                 Foreground="{StaticResource SecondaryTextColor}"
@@ -89,7 +99,8 @@
             IsChecked="{CompiledBinding SettingsViewModel.IsStayingCentered.Value}"
             IsEnabled="{CompiledBinding GlobalSettings.IsAutoFit.Value}"
             Margin="0,0,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}">
             <TextBlock
                 Classes="txt"
                 Foreground="{StaticResource SecondaryTextColor}"
@@ -108,7 +119,8 @@
             Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleOpeningInSameWindowCommand}"
             IsChecked="{CompiledBinding SettingsViewModel.IsOpeningInSameWindow.Value}"
             Margin="0,0,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}">
             <TextBlock
                 Classes="txt"
                 Foreground="{StaticResource SecondaryTextColor}"
@@ -125,7 +137,8 @@
             Classes="altHover changeColor"
             IsChecked="{CompiledBinding SettingsViewModel.IsShowingConfirmationOnEsc.Value}"
             Margin="0,0,0,10"
-            Width="300">
+            Width="300"
+            ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSearchTags.Value}">
             <TextBlock
                 Classes="txt"
                 Margin="0"

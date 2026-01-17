@@ -2,8 +2,11 @@
     x:Class="PicView.Avalonia.Views.Config.ImageSettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
         <TextBlock
             Classes="txt bold"
@@ -22,7 +25,6 @@
             Width="300">
             <TextBlock
                 Classes="txt"
-                Foreground="{StaticResource SecondaryTextColor}"
                 Margin="0"
                 MaxWidth="240"
                 Padding="0,1,5,0"
@@ -40,7 +42,6 @@
             Width="300">
             <TextBlock
                 Classes="txt"
-                Foreground="{StaticResource SecondaryTextColor}"
                 Margin="0"
                 MaxWidth="240"
                 Padding="0,1,5,0"
@@ -79,7 +80,8 @@
             Foreground="{DynamicResource MainTextColor}"
             Margin="0,6,0,10"
             Padding="5,7,0,7"
-            SelectedIndex="{CompiledBinding SettingsViewModel.ImageScalingIndex.Value, Mode=TwoWay}"
+            SelectedIndex="{CompiledBinding SettingsViewModel.ImageScalingIndex.Value,
+                                            Mode=TwoWay}"
             Width="300"
             x:Name="ImageAliasingBox">
             <ComboBoxItem Content="{CompiledBinding Translation.HighQuality.Value, Mode=OneWay}" Foreground="{DynamicResource MainTextColor}" />

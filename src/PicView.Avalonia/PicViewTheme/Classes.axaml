@@ -121,6 +121,26 @@
         <Setter Property="Stroke" Value="#48000000" />
     </Style>
 
+    <Style Selector="Border.searchBorder">
+        <Setter Property="Padding" Value="10, 7" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Duration="0:0:0.4" Property="BorderBrush" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.searchMatch">
+        <Setter Property="Opacity" Value="1.0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+    </Style>
+
+    <Style Selector="Border.searchDim">
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
     <Style Selector="Path.OpenPath">
         <Setter Property="Data" Value="{StaticResource AltFolderGeometry}" />
         <Setter Property="Fill" Value="{DynamicResource MainTextColor}" />

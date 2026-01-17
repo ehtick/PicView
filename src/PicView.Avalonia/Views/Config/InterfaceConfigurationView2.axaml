@@ -5,17 +5,17 @@
     x:Class="PicView.Avalonia.Views.Config.InterfaceConfigurationView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
         <TextBlock
-            Classes="txt"
-            FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-            FontSize="14"
-            Foreground="{StaticResource SecondaryTextColor}"
+            Classes="txt bold"
             Margin="0,20,0,10"
             Text="{CompiledBinding Translation.InterfaceConfiguration.Value,
                                    Mode=OneWay}" />
@@ -23,7 +23,6 @@
             Background="Transparent"
             BorderThickness="0"
             Classes="altHover"
-            Foreground="{StaticResource SecondaryTextColor}"
             Margin="0,0,0,10"
             Padding="0,10,0,10"
             Width="300">
@@ -227,7 +226,6 @@
                     Width="18" />
                 <TextBlock
                     Classes="txt"
-                    Foreground="{StaticResource SecondaryTextColor}"
                     Margin="0"
                     MaxWidth="240"
                     Padding="0,1,5,0"

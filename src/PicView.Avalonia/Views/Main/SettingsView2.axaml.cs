@@ -5,12 +5,18 @@ using Avalonia.Threading;
 using PicView.Core.ViewModels;
 using R3;
 using System.Runtime.InteropServices;
+using Avalonia.Controls.Metadata;
 using Avalonia.Input;
+using Avalonia.VisualTree;
+using PicView.Avalonia.UI;
 
 namespace PicView.Avalonia.Views.Main;
 
 public partial class SettingsView2 : UserControl
 {
+    private const string SearchDim = "searchDim";
+    private const string SearchMatch = "searchMatch";
+    
     private bool _isScrollingProgrammatically;
     private bool _isUpdatingFromSpy;
     private Dictionary<SettingsCategory, Control>? _sections;
@@ -25,6 +31,7 @@ public partial class SettingsView2 : UserControl
         }
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
+        FilterBox.TextChanged += OnSearchTextChanged;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -49,6 +56,37 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
+        var isSearchFocused = FilterBox.IsFocused || FilterBox.IsKeyboardFocusWithin;
+
+        if (e.Key is Key.Escape)
+        {
+            if (isSearchFocused)
+            {
+                if (FilterBox.Text.Length <= 0)
+                {
+                    // Switch away focus
+                    ContentScrollViewer.Focus();
+                }
+                else
+                {
+                    FilterBox.Clear();
+                }
+                e.Handled = true;
+                return;
+            }
+        }
+
+        var isCtrl = RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+            ? e.KeyModifiers is KeyModifiers.Meta
+            : e.KeyModifiers is KeyModifiers.Control;
+
+        if (e.Key is Key.F && isCtrl ||!isSearchFocused && e.Key is Key.OemQuestion)
+        {
+            FilterBox.Focus();
+            e.Handled = true;
+            return;
+        }
+
         if (core.SettingsViewModel.IsOverviewVisible.CurrentValue)
         {
             // TODO: Use arrow keys to navigate overview categories
@@ -68,7 +106,95 @@ public partial class SettingsView2 : UserControl
         }
         
     }
+    
+    private void OnSearchTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        var searchText = FilterBox.Text;
 
+        // Logic: 
+        // Always keep the main view visible. 
+        // Just run the styling pass.
+    
+        // Ensure we are in the "Split View" mode (where settings are visible), 
+        // because searching in the "Overview" (grid of big buttons) might be confusing
+        // if we are highlighting individual controls inside the categories.
+        if (DataContext is CoreViewModel core && !string.IsNullOrWhiteSpace(searchText))
+        {
+            // Force switch to Split View so we can see the controls we are searching
+            if (core.SettingsViewModel.IsOverviewVisible.Value)
+            {
+                core.SettingsViewModel.IsOverviewVisible.Value = false;
+            }
+        }
+
+        PerformSearch(searchText);
+    
+        // Optional: Auto-scroll to the first match?
+        // You would need to track the 'firstMatch' control in the loop above 
+        // and call BringIntoView() on it.
+    }
+    
+private void PerformSearch(string query)
+{
+    if (_sections == null) return;
+
+    // 1. CLEAR: If query is empty, remove all search classes
+    if (string.IsNullOrWhiteSpace(query))
+    {
+        foreach (var child in _sections.Values.Select(sectionControl => sectionControl.GetVisualDescendants().OfType<Border>()).SelectMany(allControls => allControls))
+        {
+            child.Classes.Remove(SearchMatch);
+            child.Classes.Remove(SearchDim);
+        }
+
+        return;
+    }
+
+    // 2. SEARCH: Loop through all controls
+    foreach (var sectionControl in _sections.Values)
+    {
+        var children = sectionControl.GetVisualDescendants().OfType<Control>();
+
+        foreach (var child in children)
+        {
+            // Skip controls that aren't marked for search
+            if (child.Tag == null && SearchProperties.GetKeywords(child) == null)
+            {
+                continue;
+            }
+
+            // Determine if it matches
+            var isMatch = false;
+            
+            // Get keywords (Attached Property)
+            var keywordsString = SearchProperties.GetKeywords(child);
+            
+            // Fallback to Tag if Keywords are missing
+            if (string.IsNullOrEmpty(keywordsString) && child.Tag is string tag)
+            {
+                keywordsString = tag;
+            }
+
+            if (!string.IsNullOrEmpty(keywordsString))
+            {
+                var keywords = keywordsString.Split([' ', ','], StringSplitOptions.RemoveEmptyEntries);
+                isMatch = keywords.Any(k => k.Contains(query, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // 3. APPLY CLASSES
+            if (isMatch)
+            {
+                child.Classes.Remove(SearchDim);
+                child.Classes.Add(SearchMatch);
+            }
+            else
+            {
+                child.Classes.Remove(SearchMatch);
+                child.Classes.Add(SearchDim);
+            }
+        }
+    }
+}
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
         CategoriesListBox.SelectionChanged -= OnListBoxSelectionChanged;
