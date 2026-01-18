@@ -16,13 +16,9 @@ public class CoreViewModel
     public GlobalSettingsViewModel? GlobalSettings { get; } = new();
     public KeybindingsViewModel? Keybindings { get; set; }
     public SettingsViewModel? SettingsViewModel { get; set; } // Single settings window
-    
-    // --- Shared Navigation Services ---
-    public SharedNavigationViewModel SharedNavigation { get; } = new();
 
     // --- Overview models ---
     public MainWindowOverviewViewModel MainWindows { get; } = new();
-    public List<TabOverviewViewModel> TabsCollection { get; } = [];
     /// Bindable reactive properties that are Exif related
     public List<ExifViewModel> Exifs { get; } = []; 
     /// View models for the image info view
