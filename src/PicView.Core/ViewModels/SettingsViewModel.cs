@@ -224,14 +224,35 @@ public class SettingsViewModel : IDisposable
         sb.Append(space);
         sb.Append(TranslationManager.Translation.SearchSubdirectory);
         sb.Append(space);
+        sb.Append("Folder File system");
+        NavigationSubdirectorySearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.Navigation);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.ToggleLooping);
+        sb.Append(space);
+        sb.Append("Loop");
+        NavigationLoopSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.Navigation);
         sb.Append(space);
         sb.Append(TranslationManager.Translation.ToggleTaskbarProgress);
         sb.Append(space);
+        sb.Append("Taskbar Progress");
+        NavigationTaskbarSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.Navigation);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.AdjustNavSpeed);
         sb.Append(space);
-        sb.Append("Speed Progress Loop");
-        NavigationSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        sb.Append("Speed Time");
+        NavigationSpeedSearchTags = new BindableReactiveProperty<string>(sb.ToString());
         
         sb.Clear();
         
@@ -241,14 +262,30 @@ public class SettingsViewModel : IDisposable
         sb.Append(space);
         sb.Append(TranslationManager.Translation.ShowBottomGalleryWhenUiIsHidden);
         sb.Append(space);
+        sb.Append("Gallery Hide Show UI");
+        GalleryVisibilitySearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+
+        sb.Append(TranslationManager.Translation.GallerySettings);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.ExpandedGalleryItemSize);
         sb.Append(space);
         sb.Append(TranslationManager.Translation.BottomGalleryItemSize);
         sb.Append(space);
+        sb.Append("Size Height Thumbnail");
+        GallerySizeSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+
+        sb.Append(TranslationManager.Translation.GallerySettings);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.GalleryThumbnailStretch);
         sb.Append(space);
-        sb.Append("Thumbnail Size Height");
-        GallerySearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        sb.Append(TranslationManager.Translation.BottomGalleryThumbnailStretch);
+        sb.Append(space);
+        sb.Append("Stretch Fill Uniform");
+        GalleryStretchSearchTags = new BindableReactiveProperty<string>(sb.ToString());
         
         sb.Clear();
 
@@ -267,18 +304,44 @@ public class SettingsViewModel : IDisposable
         sb.Append(space);
         sb.Append(TranslationManager.Translation.WindowMargin);
         sb.Append(space);
+        sb.Append("Fit Margin");
+        WindowScalingSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+
         sb.Append(TranslationManager.Translation.WindowManagement);
         sb.Append(space);
         sb.Append(TranslationManager.Translation.StayTopMost);
         sb.Append(space);
+        sb.Append("TopOn");
+        WindowTopMostSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.WindowManagement);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.StayCentered);
+        sb.Append(space);
+        sb.Append("Center");
+        WindowCenteredSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.WindowManagement);
         sb.Append(space);
         sb.Append(TranslationManager.Translation.OpenInSameWindow);
         sb.Append(space);
+        sb.Append("New Window");
+        WindowSameWindowSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        
+        sb.Clear();
+        
+        sb.Append(TranslationManager.Translation.WindowManagement);
+        sb.Append(space);
         sb.Append(TranslationManager.Translation.ShowConfirmationOnEsc);
         sb.Append(space);
-        sb.Append("Margin Fit TopMost Center Escape");
-        WindowSearchTags = new BindableReactiveProperty<string>(sb.ToString());
+        sb.Append("Escape Exit");
+        WindowEscSearchTags = new BindableReactiveProperty<string>(sb.ToString());
         
         sb.Clear();
 
@@ -518,10 +581,19 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<string> ImageScrollingSearchTags { get; }
     public BindableReactiveProperty<string> ImageSideBySideSearchTags { get; }
     public BindableReactiveProperty<string> ImageScalingSearchTags { get; }
-    public BindableReactiveProperty<string> NavigationSearchTags { get; }
-    public BindableReactiveProperty<string> GallerySearchTags { get; }
+    public BindableReactiveProperty<string> NavigationSubdirectorySearchTags { get; }
+    public BindableReactiveProperty<string> NavigationLoopSearchTags { get; }
+    public BindableReactiveProperty<string> NavigationTaskbarSearchTags { get; }
+    public BindableReactiveProperty<string> NavigationSpeedSearchTags { get; }
+    public BindableReactiveProperty<string> GalleryVisibilitySearchTags { get; }
+    public BindableReactiveProperty<string> GallerySizeSearchTags { get; }
+    public BindableReactiveProperty<string> GalleryStretchSearchTags { get; }
     public BindableReactiveProperty<string> SlideshowSearchTags { get; }
-    public BindableReactiveProperty<string> WindowSearchTags { get; }
+    public BindableReactiveProperty<string> WindowScalingSearchTags { get; }
+    public BindableReactiveProperty<string> WindowTopMostSearchTags { get; }
+    public BindableReactiveProperty<string> WindowCenteredSearchTags { get; }
+    public BindableReactiveProperty<string> WindowSameWindowSearchTags { get; }
+    public BindableReactiveProperty<string> WindowEscSearchTags { get; }
     
     public BindableReactiveProperty<string> ZoomResetSearchTags { get; }
     public BindableReactiveProperty<string> ZoomOutSearchTags { get; }
@@ -608,10 +680,19 @@ public class SettingsViewModel : IDisposable
             ImageScrollingSearchTags,
             ImageSideBySideSearchTags,
             ImageScalingSearchTags,
-            NavigationSearchTags,
-            GallerySearchTags,
+            NavigationSubdirectorySearchTags,
+            NavigationLoopSearchTags,
+            NavigationTaskbarSearchTags,
+            NavigationSpeedSearchTags,
+            GalleryVisibilitySearchTags,
+            GallerySizeSearchTags,
+            GalleryStretchSearchTags,
             SlideshowSearchTags,
-            WindowSearchTags,
+            WindowScalingSearchTags,
+            WindowTopMostSearchTags,
+            WindowCenteredSearchTags,
+            WindowSameWindowSearchTags,
+            WindowEscSearchTags,
             ZoomResetSearchTags,
             ZoomOutSearchTags,
             ZoomAnimationSearchTags,
