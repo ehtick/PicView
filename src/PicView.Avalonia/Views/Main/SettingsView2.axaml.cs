@@ -15,9 +15,11 @@ public partial class SettingsView2 : UserControl
 {
     private const string SearchDim = "searchDim";
     private const string SearchMatch = "searchMatch";
+    private int _currentMatchIndex = -1;
 
     private bool _isScrollingProgrammatically;
     private bool _isUpdatingFromSpy;
+    private readonly List<Control> _searchMatches = [];
     private Dictionary<SettingsCategory, Control>? _sections;
     private IDisposable? _subscription;
 
@@ -41,6 +43,8 @@ public partial class SettingsView2 : UserControl
         ContentScrollViewer.ScrollChanged += OnScrollChanged;
 
         KeyDown += OnKeyDown;
+        // Add this line:
+        FilterBox.KeyDown += OnFilterBoxKeyDown;
 
         if (DataContext is not CoreViewModel core)
         {
@@ -48,6 +52,33 @@ public partial class SettingsView2 : UserControl
         }
 
         _subscription = core.SettingsViewModel.SelectedCategory.Subscribe(OnViewModelCategoryChanged);
+    }
+
+    private void OnFilterBoxKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            e.Handled = true;
+            CycleToNextMatch();
+        }
+    }
+
+    private void CycleToNextMatch()
+    {
+        if (_searchMatches.Count == 0)
+        {
+            return;
+        }
+
+        // Increment index and wrap around
+        _currentMatchIndex++;
+        if (_currentMatchIndex >= _searchMatches.Count)
+        {
+            _currentMatchIndex = 0;
+        }
+
+        var match = _searchMatches[_currentMatchIndex];
+        ScrollToControl(match);
     }
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
@@ -146,6 +177,10 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
+        // Reset State
+        _searchMatches.Clear();
+        _currentMatchIndex = -1;
+
         // 1. CLEAR: If query is empty, remove all search classes
         if (string.IsNullOrWhiteSpace(query))
         {
@@ -160,9 +195,15 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
-        // 2. SEARCH: Loop through all controls
-        foreach (var sectionControl in _sections.Values)
+        // 2. SEARCH: Loop through all controls in Order
+        // We use Enum.GetValues to ensure we iterate top-to-bottom
+        foreach (var category in Enum.GetValues<SettingsCategory>())
         {
+            if (!_sections.TryGetValue(category, out var sectionControl))
+            {
+                continue;
+            }
+
             var children = sectionControl.GetVisualDescendants().OfType<Control>();
 
             foreach (var child in children)
@@ -176,10 +217,8 @@ public partial class SettingsView2 : UserControl
                 // Determine if it matches
                 var isMatch = false;
 
-                // Get keywords (Attached Property)
+                // Get keywords (Attached Property) or Tag
                 var keywordsString = SearchProperties.GetKeywords(child);
-
-                // Fallback to Tag if Keywords are missing
                 if (string.IsNullOrEmpty(keywordsString) && child.Tag is string tag)
                 {
                     keywordsString = tag;
@@ -191,11 +230,12 @@ public partial class SettingsView2 : UserControl
                     isMatch = keywords.Any(k => k.Contains(query, StringComparison.OrdinalIgnoreCase));
                 }
 
-                // 3. APPLY CLASSES
+                // 3. APPLY CLASSES AND STORE MATCH
                 if (isMatch)
                 {
                     child.Classes.Remove(SearchDim);
                     child.Classes.Add(SearchMatch);
+                    _searchMatches.Add(child);
                 }
                 else
                 {
@@ -208,78 +248,113 @@ public partial class SettingsView2 : UserControl
 
     private void ScrollToNearestMatch()
     {
-        if (_sections == null)
+        if (_searchMatches.Count == 0)
         {
             return;
         }
 
         Control? bestMatch = null;
-        var bestDistance = double.MaxValue;
+        var bestDistanceToCenter = double.MaxValue;
+        var viewportCenter = ContentScrollViewer.Viewport.Height / 2;
 
-        // 1. Iterate through sections in visual order (Top to Bottom)
-        var sortedSections = _sections.OrderBy(x => x.Value.Bounds.Y);
-
-        foreach (var sectionKvp in sortedSections)
+        // Find the match closest to the center of the viewport
+        foreach (var match in _searchMatches)
         {
-            var section = sectionKvp.Value;
-
-            // Find all controls in this section that are highlighted matches
-            var matches = section.GetVisualDescendants()
-                .OfType<Control>()
-                .Where(c => c.Classes.Contains("searchMatch"));
-
-            foreach (var match in matches)
+            var relativePoint = match.TranslatePoint(new Point(0, 0), ContentScrollViewer);
+            if (!relativePoint.HasValue)
             {
-                // 2. Calculate position relative to the ScrollViewer's visible viewport
-                // A negative Y means it's above the viewport (scrolled past).
-                // A positive Y means it's inside or below the viewport.
-                var relativePoint = match.TranslatePoint(new Point(0, 0), ContentScrollViewer);
+                continue;
+            }
 
-                if (relativePoint.HasValue)
-                {
-                    var y = relativePoint.Value.Y;
+            // Calculate distance from the element's center to the viewport's center
+            var elementCenter = relativePoint.Value.Y + match.Bounds.Height / 2;
+            var distance = Math.Abs(elementCenter - viewportCenter);
 
-                    // 3. Check if this is the "closest downwards" match
-                    // We use -10 as a small tolerance so we catch items partially cut off at the top
-                    if (y >= -10 && y < bestDistance)
-                    {
-                        bestDistance = y;
-                        bestMatch = match;
-                    }
-                }
+            if (distance < bestDistanceToCenter)
+            {
+                bestDistanceToCenter = distance;
+                bestMatch = match;
             }
         }
 
-        // 4. Scroll to the match if found
-        if (bestMatch != null)
+        if (bestMatch == null)
         {
-            // Add current offset to the relative distance to get absolute position
-            // Subtract 50 for a nice visual padding (margin) at the top
-            var targetOffset = ContentScrollViewer.Offset.Y + bestDistance - 50;
+            return;
+        }
 
-            // Ensure we don't scroll past the limits
-            targetOffset = Math.Max(0, targetOffset);
+        _currentMatchIndex = _searchMatches.IndexOf(bestMatch);
+        ScrollToControl(bestMatch);
+    }
 
-            // Programmatic scroll
-            _isScrollingProgrammatically = true;
-            try
-            {
-                ContentScrollViewer.Offset = new Vector(0, targetOffset);
-            }
-            finally
-            {
-                // Reset flag after a short delay or immediately depending on preference
-                // (Using the existing pattern from your file)
-                Dispatcher.UIThread.Post(() => _isScrollingProgrammatically = false, DispatcherPriority.Input);
-            }
+    private void ScrollToControl(Control target)
+    {
+        var relativePoint = target.TranslatePoint(new Point(0, 0), ContentScrollViewer);
+        if (!relativePoint.HasValue)
+        {
+            return;
+        }
+
+        var currentOffset = ContentScrollViewer.Offset.Y;
+        var relativeY = relativePoint.Value.Y;
+        var viewportHalfHeight = ContentScrollViewer.Viewport.Height / 2;
+        var elementHalfHeight = target.Bounds.Height / 2;
+    
+        var targetOffset = currentOffset + relativeY - viewportHalfHeight + elementHalfHeight;
+
+        _isScrollingProgrammatically = true;
+        try
+        {
+            ContentScrollViewer.Offset = new Vector(0, targetOffset);
+
+            UpdateCategoryForMatch(target);
+        }
+        finally
+        {
+            Dispatcher.UIThread.Post(() => _isScrollingProgrammatically = false, DispatcherPriority.Input);
         }
     }
 
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
+        FilterBox.KeyDown -= OnFilterBoxKeyDown;
         CategoriesListBox.SelectionChanged -= OnListBoxSelectionChanged;
         ContentScrollViewer.ScrollChanged -= OnScrollChanged;
         _subscription?.Dispose();
+    }
+    
+    private void UpdateCategoryForMatch(Control target)
+    {
+        if (_sections == null || DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        foreach (var kvp in _sections)
+        {
+            var category = kvp.Key;
+            var section = kvp.Value;
+
+            // Check if the section contains the target control
+            if (section == target || section.IsVisualAncestorOf(target))
+            {
+                // Only update if the category is actually different
+                if (core.SettingsViewModel.SelectedCategory.Value != category)
+                {
+                    // Set this flag to prevent the ViewModel change from triggering 
+                    // a scroll back to the top of the category (loop prevention)
+                    _isUpdatingFromSpy = true;
+                    try
+                    {
+                        core.SettingsViewModel.SelectedCategory.Value = category;
+                    }
+                    finally
+                    {
+                        _isUpdatingFromSpy = false;
+                    }
+                }
+                return;
+            }
+        }
     }
 
     private void InitializeSectionsMap()

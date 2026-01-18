@@ -20,6 +20,7 @@ public partial class SettingsWindow : Window
 {
     private readonly SettingsWindowConfig _config;
     private readonly IDisposable? _disposable;
+    
     public SettingsWindow(SettingsWindowConfig config)
     {
         _config = config;
