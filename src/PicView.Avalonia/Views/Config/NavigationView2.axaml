@@ -18,7 +18,7 @@
             Text="{CompiledBinding Translation.Navigation.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.NavigationSubdirectorySearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSubdirectorySearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -38,7 +38,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.NavigationLoopSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationLoopSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -60,7 +60,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.NavigationTaskbarSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationTaskbarSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -81,7 +81,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.NavigationSpeedSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSpeedSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"

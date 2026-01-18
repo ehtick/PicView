@@ -14,7 +14,7 @@
             Text="{CompiledBinding Translation.Image.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ImageStretchSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageStretchSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -34,7 +34,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ImageScrollingSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageScrollingSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -53,7 +53,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ImageSideBySideSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageSideBySideSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -72,7 +72,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ImageScalingSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageScalingSearchTags.Value}">
             <StackPanel>
                 <TextBlock
             Classes="txt bold"

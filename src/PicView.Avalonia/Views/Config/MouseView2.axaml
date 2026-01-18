@@ -8,7 +8,7 @@
 
     <StackPanel HorizontalAlignment="Center">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseDoubleClickSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.MouseDoubleClickSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -31,7 +31,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseNavigationSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.MouseNavigationSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -58,7 +58,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseWheelBehaviorSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.MouseWheelBehaviorSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"
@@ -87,7 +87,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseScrollDirectionSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.MouseScrollDirectionSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"
@@ -116,7 +116,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.MouseTouchpadSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.MouseTouchpadSearchTags.Value}">
             <Button
                 Background="Transparent"
                 BorderThickness="0"

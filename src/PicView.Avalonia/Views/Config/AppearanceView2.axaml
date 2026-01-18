@@ -19,7 +19,7 @@
 
     <StackPanel HorizontalAlignment="Center">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ThemeSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ThemeSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -79,7 +79,7 @@
         </Border>
 
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ColorSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ColorSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -235,7 +235,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.BackgroundSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -394,7 +394,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.BackgroundConstrainSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundConstrainSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"

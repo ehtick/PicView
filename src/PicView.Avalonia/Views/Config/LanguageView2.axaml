@@ -9,7 +9,7 @@
 
     <StackPanel HorizontalAlignment="Center">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.LanguageSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.LanguageSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"

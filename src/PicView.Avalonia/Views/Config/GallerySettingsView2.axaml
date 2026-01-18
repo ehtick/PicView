@@ -10,7 +10,7 @@
 
     <StackPanel HorizontalAlignment="Center">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.GalleryVisibilitySearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryVisibilitySearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -52,7 +52,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.GallerySizeSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GallerySizeSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"
@@ -96,7 +96,7 @@
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.GalleryStretchSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryStretchSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"

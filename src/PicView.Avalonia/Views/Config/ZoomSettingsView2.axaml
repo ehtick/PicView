@@ -15,7 +15,7 @@
             Text="{CompiledBinding Translation.Zoom.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ZoomResetSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomResetSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -33,7 +33,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ZoomOutSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomOutSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -51,7 +51,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ZoomAnimationSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomAnimationSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -70,7 +70,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ZoomPopupSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomPopupSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -88,7 +88,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ZoomSpeedSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomSpeedSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt"

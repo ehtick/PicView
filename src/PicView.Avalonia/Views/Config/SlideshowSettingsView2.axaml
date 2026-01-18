@@ -10,7 +10,7 @@
 
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SlideshowSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.SlideshowSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"

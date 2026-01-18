@@ -20,7 +20,7 @@
             Text="{CompiledBinding Translation.InterfaceConfiguration.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ShowBottomToolbarSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowBottomToolbarSearchTags.Value}">
             <Button
                 Background="Transparent"
                 BorderThickness="0"
@@ -83,7 +83,7 @@
         </Border>
 
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ShowUISearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowUISearchTags.Value}">
             <Button
                 Background="Transparent"
                 BorderThickness="0"
@@ -182,7 +182,7 @@
             </Button>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ShowFadeInButtonsSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowFadeInButtonsSearchTags.Value}">
             <Button
                 Background="Transparent"
                 BorderThickness="0"
@@ -209,7 +209,7 @@
             </Button>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.ShowHoverNavigationBarSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowHoverNavigationBarSearchTags.Value}">
             <Button
                 Background="Transparent"
                 BorderThickness="0"

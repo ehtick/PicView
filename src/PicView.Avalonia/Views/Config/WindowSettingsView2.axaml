@@ -10,7 +10,7 @@
 
     <StackPanel HorizontalAlignment="Center">
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowScalingSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.WindowScalingSearchTags.Value}">
             <StackPanel>
                 <TextBlock
                     Classes="txt bold"
@@ -71,7 +71,7 @@
             Text="{CompiledBinding Translation.WindowManagement.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowTopMostSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.WindowTopMostSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -90,7 +90,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowCenteredSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.WindowCenteredSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -111,7 +111,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowSameWindowSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.WindowSameWindowSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
@@ -131,7 +131,7 @@
             </ToggleButton>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.WindowEscSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.WindowEscSearchTags.Value}">
             <ToggleButton
                 Background="Transparent"
                 BorderThickness="0"
