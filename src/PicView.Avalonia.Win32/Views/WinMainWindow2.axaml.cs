@@ -231,7 +231,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
-        await WindowFunctions.WindowClosingBehavior(this);
+        await WindowFunctions2.WindowClosingBehavior(this);
         base.OnClosing(e);
     }
 

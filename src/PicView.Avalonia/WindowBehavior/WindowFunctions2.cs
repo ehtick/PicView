@@ -34,16 +34,25 @@ public static class WindowFunctions2
     {
         WindowResizing.SaveSize(window);
 
-        if (Dispatcher.UIThread.CheckAccess())
+        CoreViewModel? core = null;
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             window.Hide();
-        }
-        else
-        {
-            await Dispatcher.UIThread.InvokeAsync(window.Hide);
-        }
 
-        var vm = window.DataContext as MainWindowViewModel;
+            if (Application.Current?.DataContext is not CoreViewModel coreViewModel)
+            {
+                return;
+            }
+
+            core = coreViewModel;
+            if (window.DataContext is not MainWindowViewModel mainWindowViewModel)
+            {
+                return;
+            }
+
+            core.MainWindows.MainWindows.Remove(mainWindowViewModel);
+        });
+        
         string? lastFile;
         // TODO: Reimplement or figure out refactor
         
@@ -70,21 +79,17 @@ public static class WindowFunctions2
         TempFileHelper.DeleteTempFiles();
         await FileHistoryManager.SaveToFileAsync();
         ArchiveExtraction.Cleanup();
+        
+        if (core?.SettingsViewModel.SettingsWindowConfig is not null)
+        {
+            await core.SettingsViewModel.SettingsWindowConfig.SaveAsync();
+        }
 
-        // if (vm?.Window?.SettingsWindowConfig is not null)
-        // {
-        //     await vm.Window.SettingsWindowConfig.SaveAsync();
-        // }
-        //
-        // if (vm?.Window?.ImageInfoWindowConfig is not null)
-        // {
-        //     await vm.Window.ImageInfoWindowConfig.SaveAsync();
-        // }
-        //
-        // if (vm?.Window?.BatchResizeWindowConfig is not null)
-        // {
-        //     await vm.Window.BatchResizeWindowConfig.SaveAsync();
-        // }
+        if (core.MainWindows.MainWindows.Count <= 0)
+        {
+            // No mainWindow, close it manually to not have it running in the background
+            Environment.Exit(0);
+        }
     }
 
     #region Window State
