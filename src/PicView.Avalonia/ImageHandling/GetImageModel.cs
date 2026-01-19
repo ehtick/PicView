@@ -5,6 +5,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
+using PicView.Core.Navigation.Tiff;
 
 namespace PicView.Avalonia.ImageHandling;
 
@@ -101,8 +102,6 @@ public static class GetImageModel
                 case MagickFormat.Jpeg:
                 case MagickFormat.Pjpeg:
                 case MagickFormat.Bmp:
-                case MagickFormat.Tif:
-                case MagickFormat.Tiff:
                 case MagickFormat.Ico:
                 case MagickFormat.Icon:
                 case MagickFormat.Wbmp:
@@ -114,6 +113,11 @@ public static class GetImageModel
                     {
                         await ProcessSkBitmapAsync(fileInfo, magickImage.Format, imageModel).ConfigureAwait(false);
                     }
+                    break;
+                
+                case MagickFormat.Tif:
+                case MagickFormat.Tiff:
+                    await ProcessTiff(fileInfo, imageModel, magickImage);
                     break;
 
                 case MagickFormat.Svg:
@@ -222,7 +226,22 @@ public static class GetImageModel
         SetBitmapProperties(bitmap, imageModel, magickImage.Format);
     }
     
-
+    private static async ValueTask ProcessTiff(FileInfo fileInfo, ImageModel imageModel, MagickImage magickImage)
+    {
+        var bitmap = await GetImage.GetNonStandardBitmapAsync(fileInfo, magickImage).ConfigureAwait(false);
+        SetBitmapProperties(bitmap, imageModel, magickImage.Format);
+        var pages = TiffManager.LoadTiffPages(fileInfo.FullName);
+        if (pages.Count > 0)
+        {
+            imageModel.TiffNavigation = new TiffNavigationInfo
+            {
+                CurrentPage = 0,
+                PageCount = pages.Count,
+                Pages = pages
+            };
+        }
+    }
+    
 
     #endregion
 }

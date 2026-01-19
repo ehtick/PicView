@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using Cysharp.Text;
 using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
@@ -42,6 +42,21 @@ public static class ImageTitleFormatter
         }
 
         var namePart = validatedFileInfo.Name;
+        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
+    }
+
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList, int? currentPage, int? pageCount)
+    {
+        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
+        {
+            return errorTitle;
+        }
+
+        var namePart = validatedFileInfo.Name;
+        if (currentPage.HasValue && pageCount.HasValue)
+        {
+            namePart = $"{validatedFileInfo.Name} [{currentPage + 1}/{pageCount}]";
+        }
         return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
     }
 

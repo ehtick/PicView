@@ -1,6 +1,7 @@
-﻿using ImageMagick;
+using ImageMagick;
 using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Navigation.Tiff;
 
 namespace PicView.Core.Models;
 
@@ -15,6 +16,8 @@ public class ImageModel
     public MagickFormat? Format { get; set; }
     public ushort DpiX { get; set; }
     public ushort DpiY { get; set; }
+    
+    public TiffNavigationInfo? TiffNavigation { get; set; }
 
     public int Rotation
     {

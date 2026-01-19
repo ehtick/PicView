@@ -124,11 +124,23 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         var width = Model.CurrentValue.PixelWidth;
         var height = Model.CurrentValue.PixelHeight;
         var index = ImageIterator.CurrentIndex;
-        var windowTitles = ImageTitleFormatter.GenerateTitleStrings(width, height,
-            index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files);
+        var windowTitles = GetTitles();
         WindowTitle.Value = windowTitles.TitleWithAppName;
         Title.Value = windowTitles.BaseTitle;
         TitleTooltip.Value = windowTitles.FilePathTitle;
+        return;
+        
+        WindowTitles GetTitles()
+        {
+            if (Model.CurrentValue.TiffNavigation is { } tiff)
+            {
+                return ImageTitleFormatter.GenerateTitleStrings(width, height,
+                    index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
+            }
+
+            return ImageTitleFormatter.GenerateTitleStrings(width, height,
+                index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files);
+        }
     }
 
     public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null)
