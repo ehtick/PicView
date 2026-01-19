@@ -1,6 +1,5 @@
 ﻿using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
-using PicView.Core.FileHandling;
 using PicView.Core.FileHandling.Interfaces;
 using PicView.Core.FileSorting;
 using PicView.Core.Http;
@@ -33,7 +32,7 @@ public class NavigationService(
 
             // Show image quickly to make it feel fast
             var model = await imageLoader.GetImageModelAsync(fileInfo, ct.Token).ConfigureAwait(false);
-            tab.Model.Value = model; // Image updated via reactive subscription
+            tab.Model = model; // Image updated via reactive subscription
             
             tab.ImageIterator.Files = files ?? FileListRetriever.RetrieveFiles(fileInfo, stringComparer);
             var index = FindIndex(fileInfo, tab);
@@ -171,8 +170,8 @@ public class NavigationService(
             }
 
             var model = await imageLoader.GetImageModelAsync(new FileInfo(destPath), ct.Token).ConfigureAwait(false);
-            tab.Model.Value = model;
-            tab.SecondaryModel.Value = null;
+            tab.Model = model;
+            tab.SecondaryModel = null;
             
             // Set titles to filename after successful load
             tab.TabTitle.Value = safeFileName;
@@ -245,7 +244,7 @@ public class NavigationService(
         try
         {
             // Get current file to maintain position
-            var currentFile = tab.Model.Value?.FileInfo;
+            var currentFile = tab.Model?.FileInfo;
             if (currentFile is null)
             {
                 return;

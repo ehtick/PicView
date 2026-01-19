@@ -147,7 +147,7 @@
                 Command="{CompiledBinding NextFolderCommand}"
                 Header="{CompiledBinding Translation.NextFolder.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -162,7 +162,7 @@
                 Command="{CompiledBinding PrevFolderCommand}"
                 Header="{CompiledBinding Translation.PrevFolder.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -179,7 +179,7 @@
                 Command="{CompiledBinding SlideshowCommand}"
                 Header="{CompiledBinding Translation.Slideshow.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}">
                 <MenuItem.Icon>
                     <Image
@@ -345,7 +345,7 @@
                 Icon="{StaticResource ZoomOutImage}"
                 IconHeight="16"
                 IconWidth="18"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
@@ -363,7 +363,7 @@
                 Icon="{StaticResource ZoomAltImage}"
                 IconHeight="16"
                 IconWidth="18"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
@@ -419,7 +419,7 @@
                 Icon="{StaticResource RefreshCcwDot}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
@@ -441,7 +441,7 @@
                 Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsRepeatEnabled="False"
                 Margin="0"
@@ -462,7 +462,7 @@
                 Height="25"
                 IconHeight="16"
                 IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.Image,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"

@@ -1,6 +1,8 @@
-﻿using PicView.Core.DebugTools;
+using PicView.Core.DebugTools;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
+using PicView.Core.Navigation.Tiff;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
 using R3;
@@ -11,7 +13,10 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
 {
     private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
-    private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
+
+    private readonly IThumbnailLoader _thumbnailLoader =
+        thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
+
     private System.Timers.Timer? _timer;
 
     public IReadOnlyList<FileInfo> Files { get; set; } = [];
@@ -45,7 +50,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
 
     public void UpdateNavigationProperties()
         => UpdateNavigationProperties(CurrentIndex, Files.Count);
-    
+
     public void UpdateNavigationProperties(int index, int count)
     {
         if (count <= 1)
@@ -60,7 +65,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
             _tab.CanNavigateBackwards.Value = isLooping || index > 0;
         }
     }
-    
+
     public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
     {
         if (_timer is null)
@@ -82,7 +87,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         var iteration = GetIteration(CurrentIndex, to, _tab.Id, SkipAmount.One);
         await IterateToIndexAsync(iteration, CancellationTokenSource.CreateLinkedTokenSource(ct));
     }
-    
+
     public void StopRepeatedNavigation()
     {
         _timer?.Stop();
@@ -97,74 +102,90 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
             return;
         }
 
+        // Handle internal TIFF navigation
+        var currentModel = _tab.Model;
+
+        if (tab.Model?.TiffNavigation is { } tiff)
+        {
+            var isTiffNavigated = ShouldNavigateTiffEntry(currentModel, IsReversed);
+            if (isTiffNavigated)
+            {
+                return;
+            }
+        }
+
         CurrentIndex = index;
         var targetFile = Files[index];
 
-        // 1. Load Primary Image
-        await LoadImageToModel(index, targetFile, _tab.Model, ct).ConfigureAwait(false);
-
-        // 2. Load Secondary Image (if Side-by-Side)
-        if (Settings.ImageScaling.ShowImageSideBySide)
+        var (status, model) = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
+        switch (status)
         {
-            var nextIndex = index + 1;
-            if (nextIndex < Files.Count)
+            case CacheStatus.Cancelled:
+                Cancel();
+                break;
+            case CacheStatus.IsInCache when model is not null:
+                _tab.Model = model;
+                await Update();
+                break;
+            case CacheStatus.NotInCache:
+            case CacheStatus.IsLoadingInCache:
+                var loadedModel = await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+                if (loadedModel is null)
+                {
+                    Cancel();
+                    return;
+                }
+                _tab.Model = loadedModel;
+                await Update();
+                break;
+            default:
+                Cancel();
+                break;
+        }
+        
+        return;
+
+        void Cancel()
+        {
+            _cache.Preload(_tab.Id, index, IsReversed, Files);
+        }
+
+        async ValueTask Update()
+        {
+            // 2. Load Secondary Image (if Side-by-Side)
+            if (Settings.ImageScaling.ShowImageSideBySide)
             {
-                 var secondaryFile = Files[nextIndex];
-                 await LoadImageToModel(nextIndex, secondaryFile, _tab.SecondaryModel, ct).ConfigureAwait(false);
+                var nextIndex = index + 1;
+                if (nextIndex < Files.Count)
+                {
+                    var loadedModel = await LoadManuallyAsync(nextIndex, ct).ConfigureAwait(false);
+                    if (loadedModel is null)
+                    {
+                        Cancel();
+                        return;
+                    }
+
+                    _tab.SecondaryModel = loadedModel;
+                }
+                else
+                {
+                    _tab.SecondaryModel = null;
+                }
             }
             else
             {
-                _tab.SecondaryModel.Value = null;
+                _tab.SecondaryModel = null;
             }
-        }
-        else
-        {
-            _tab.SecondaryModel.Value = null;
-        }
+            
+            // Update UI bound vales
+            _tab.NavigationIndex.Value = CurrentIndex;
+            _tab.MaxIndex.Value = Files.Count;
 
-        // Update UI bound vales
-        _tab.NavigationIndex.Value = CurrentIndex;
-        _tab.MaxIndex.Value = Files.Count;
-
-        // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
-        _cache.Preload(_tab.Id, index, IsReversed, Files);
-    }
-
-    private async ValueTask LoadImageToModel<T>(int index, FileInfo file, BindableReactiveProperty<T> property, CancellationTokenSource ct) where T : class?
-    {
-        var (status, model) = await TryLoadFromCacheAsync(index, file, ct).ConfigureAwait(false);
-        
-        if (property.Value != null && model == null && status == CacheStatus.Cancelled)
-        {
-             return;
-        }
-
-        switch (status)
-        {
-            case CacheStatus.NotInCache:
-            case CacheStatus.IsLoadingInCache:
-                if (model is T thumbnailModel) 
-                {
-                     property.Value = thumbnailModel; // Set thumbnail
-                }
-                var loadedModel = await LoadManuallyAsync(index, ct).ConfigureAwait(false);
-                if (loadedModel is T fullModel)
-                {
-                    property.Value = fullModel;
-                }
-                break;
-            case CacheStatus.IsInCache:
-                if (model is T cachedModel)
-                {
-                    property.Value = cachedModel;
-                }
-                break;
-            case CacheStatus.Cancelled:
-            default:
-                return;
+            // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
+            _cache.Preload(_tab.Id, index, IsReversed, Files);
         }
     }
-    
+
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
     {
         var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, _tab.Id, skipAmount);
@@ -249,6 +270,44 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     }
     
     #region Private Helpers
+    
+    private static bool ShouldNavigateTiffEntry(ImageModel model, bool isPrevious)
+    {
+        if (model.TiffNavigation is null)
+        {
+            return false;
+        }
+        if (isPrevious)
+        {
+            var prev = model.TiffNavigation.CurrentPage - 1;
+            if (prev < 0)
+            {
+                return false;
+            }
+            model.TiffNavigation.CurrentPage = prev;
+        }
+        else
+        {
+            var next = model.TiffNavigation.CurrentPage + 1;
+            if (next >= model.TiffNavigation.PageCount)
+            {
+                return false;
+            }
+            model.TiffNavigation.CurrentPage = next;
+        }
+
+        UpdateImageFromPage(model);
+        return true;
+    }
+
+    private static void UpdateImageFromPage(ImageModel model)
+    {
+        if (model.TiffNavigation is { Pages: not null, CurrentPage: >= 0 } && 
+            model.TiffNavigation.CurrentPage < model.TiffNavigation.Pages.Length)
+        {
+            model.Image = model.TiffNavigation.Pages[model.TiffNavigation.CurrentPage];
+        }
+    }
 
     private async ValueTask<(CacheStatus Status, ImageModel? Model)> TryLoadFromCacheAsync(int index, FileInfo file,
         CancellationTokenSource ct)
@@ -314,7 +373,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     {
         _timer?.Dispose();
         await _cache.RemoveOwner(_tab.Id);
-        _disposable.Dispose();
+        _disposable?.Dispose();
         GC.SuppressFinalize(this);
     }
 

@@ -70,7 +70,7 @@ public class FileWatcherServiceTests : IDisposable
         // Manually initialize tab with file
         var files = new List<FileInfo> { new FileInfo(filePath) };
         tab.InitializeImageIterator(files, _mockCache, new MockThumbnailLoader());
-        tab.Model.Value = new ImageModel { FileInfo = files[0] };
+        tab.Model = new ImageModel { FileInfo = files[0] };
         
         _service.Watch(tab);
 
@@ -94,7 +94,7 @@ public class FileWatcherServiceTests : IDisposable
         var tab = CreateTab(_testDirectory);
         var files = new List<FileInfo> { new FileInfo(oldPath) };
         tab.InitializeImageIterator(files, _mockCache, new MockThumbnailLoader());
-        tab.Model.Value = new ImageModel { FileInfo = files[0] };
+        tab.Model = new ImageModel { FileInfo = files[0] };
         
         _service.Watch(tab);
 
@@ -106,7 +106,7 @@ public class FileWatcherServiceTests : IDisposable
         Assert.Single(tab.ImageIterator.Files);
         Assert.Equal(newPath, tab.ImageIterator.Files[0].FullName);
         // Verify model update if it was current file
-        Assert.Equal(newPath, tab.Model.Value.FileInfo.FullName);
+        Assert.Equal(newPath, tab.Model.FileInfo.FullName);
         Assert.True(_mockCache.Resynchronized);
     }
 
@@ -118,7 +118,7 @@ public class FileWatcherServiceTests : IDisposable
         // If Model is null, Watch does nothing.
         // So let's fake a model with a file in that directory
         var dummyFile = new FileInfo(Path.Combine(directory, "placeholder.txt"));
-        tab.Model.Value = new ImageModel { FileInfo = dummyFile };
+        tab.Model = new ImageModel { FileInfo = dummyFile };
         
         tab.Initialize(_mockCache, new MockThumbnailLoader());
         return tab;

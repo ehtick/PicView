@@ -198,7 +198,7 @@ public class PicBox2 : Control
         }
 
         var tabs = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
-        var model = tabs.ActiveTab.CurrentValue.Model.CurrentValue;
+        var model = tabs.ActiveTab.CurrentValue.Model;
         
         if (model.FileInfo?.Exists != true)
         {

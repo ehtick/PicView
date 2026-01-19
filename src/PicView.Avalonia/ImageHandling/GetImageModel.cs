@@ -236,9 +236,14 @@ public static class GetImageModel
             imageModel.TiffNavigation = new TiffNavigationInfo
             {
                 CurrentPage = 0,
-                PageCount = pages.Count,
-                Pages = pages
+                PageCount = pages.Count
             };
+            var bitmapPages = new object[pages.Count];
+            for (var i = 0; i < pages.Count; i++)
+            {
+                bitmapPages[i] = pages[i].ToWriteableBitmap();
+            }
+            imageModel.TiffNavigation.Pages = bitmapPages;
         }
     }
     

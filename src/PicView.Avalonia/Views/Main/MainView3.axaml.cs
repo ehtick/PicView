@@ -72,7 +72,7 @@ public partial class MainView3 : UserControl
             return;
         }
 
-        if (tabViewModel.Model.CurrentValue.FileInfo is not null)
+        if (tabViewModel.Model.FileInfo is not null)
         {
             tabViewModel.CurrentView.Value = new ImageViewer2();
         }

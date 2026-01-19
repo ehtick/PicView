@@ -30,7 +30,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
     {
         if (string.IsNullOrEmpty(directory))
         {
-            var fileInfo = tab.Model.Value?.FileInfo;
+            var fileInfo = tab.Model?.FileInfo;
             if (fileInfo is null || string.IsNullOrEmpty(fileInfo.DirectoryName))
             {
                 return;
@@ -146,7 +146,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         {
             tab.ImageIterator.Files = files;
 
-            var currentFile = tab.Model.Value?.FileInfo;
+            var currentFile = tab.Model?.FileInfo;
             if (currentFile != null)
             {
                 var newIndex = files.FindIndex(x =>
@@ -174,7 +174,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         await HandleUpdateAsync(directory, async (tab, files) =>
         {
             var oldIndex = tab.ImageIterator.CurrentIndex;
-            var currentFile = tab.Model.Value?.FileInfo;
+            var currentFile = tab.Model?.FileInfo;
             var wasCurrentFileDeleted =
                 currentFile?.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -219,7 +219,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 
         await HandleUpdateAsync(directory, (tab, files) =>
         {
-            var currentFile = tab.Model.Value?.FileInfo;
+            var currentFile = tab.Model?.FileInfo;
             var wasCurrentFileRenamed = currentFile?.FullName.AsSpan()
                 .Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
@@ -228,7 +228,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             if (wasCurrentFileRenamed)
             {
                 var newFileInfo = new FileInfo(e.FullPath);
-                var currentModel = tab.Model.Value;
+                var currentModel = tab.Model;
                 if (currentModel != null)
                 {
                     var newModel = new ImageModel
@@ -238,7 +238,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                         Orientation = currentModel.Orientation,
                         ImageType = currentModel.ImageType
                     };
-                    tab.Model.Value = newModel;
+                    tab.Model = newModel;
                 }
             }
 

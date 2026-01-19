@@ -105,7 +105,7 @@ public class TabOverviewViewModel
         tab.ParentWindowContext = _parentVm;
         if (file is not null)
         {
-            tab.Model.Value.FileInfo = file;
+            tab.Model.FileInfo = file;
         }
         Tabs.Value.Add(tab);
         return tab;

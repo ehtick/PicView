@@ -2,36 +2,47 @@
     x:Class="PicView.Avalonia.Views.UC.ImageViewer2"
     x:DataType="viewModels1:TabViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:gallery="clr-namespace:PicView.Avalonia.Views.Gallery"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Panel x:Name="MainPanel">
-        <customControls:ZoomPanControl2 x:Name="ZoomPanControl">
-            <customControls:AutoScrollViewer
-                Focusable="False"
-                HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Disabled"
-                x:Name="ImageScrollViewer">
-                <Border x:Name="MainBorder">
-                    <UniformGrid Rows="1">
-                        <LayoutTransformControl x:Name="MainTransform">
-                            <customControls:PicBox2 Source="{CompiledBinding Model.Value.Image}" x:Name="MainImage" />
-                        </LayoutTransformControl>
-                        <LayoutTransformControl IsVisible="False" x:Name="SecondaryTransform">
-                            <customControls:PicBox2 Source="{CompiledBinding SecondaryModel.Value.Image}" x:Name="SecondaryImage" />
-                        </LayoutTransformControl>
-                    </UniformGrid>
-                </Border>
-            </customControls:AutoScrollViewer>
-        </customControls:ZoomPanControl2>
-        <uc:ZoomPreviewer2
-            HorizontalAlignment="Right"
-            IsVisible="False"
-            Margin="0,0,25,25"
-            VerticalAlignment="Bottom"
-            ZIndex="90"
-            x:Name="ZoomPreview" />
-        <uc:HoverBar2 VerticalAlignment="Bottom" x:Name="HoverBar" />
-    </Panel>
+    <DockPanel LastChildFill="True">
+        <!-- <gallery:GalleryAnimationControlView x:Name="GalleryView" /> -->
+        <Panel x:Name="MainPanel">
+            <customControls:ZoomPanControl2 x:Name="ZoomPanControl">
+                <customControls:AutoScrollViewer
+                    Focusable="False"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Disabled"
+                    x:Name="ImageScrollViewer">
+                    <Border x:Name="MainBorder">
+                        <UniformGrid Rows="1">
+                            <LayoutTransformControl x:Name="MainTransform">
+                                <customControls:PicBox2 Source="{CompiledBinding Image.Value}" x:Name="MainImage" />
+                            </LayoutTransformControl>
+                            <LayoutTransformControl IsVisible="False" x:Name="SecondaryTransform">
+                                <customControls:PicBox2 Source="{CompiledBinding SecondaryImage.Value}" x:Name="SecondaryImage" />
+                            </LayoutTransformControl>
+                        </UniformGrid>
+                    </Border>
+                </customControls:AutoScrollViewer>
+            </customControls:ZoomPanControl2>
+            <uc:ZoomPreviewer2
+                HorizontalAlignment="Right"
+                IsVisible="False"
+                Margin="0,0,25,25"
+                VerticalAlignment="Bottom"
+                ZIndex="90"
+                x:Name="ZoomPreview" />
+            <uc:HoverBar2 VerticalAlignment="Bottom" x:Name="HoverBar" />
+            <buttons:GalleryShortcut2
+                HorizontalAlignment="Right"
+                Opacity="0"
+                VerticalAlignment="Bottom"
+                ZIndex="9"
+                x:Name="GalleryShortcut" />
+        </Panel>
+    </DockPanel>
 </UserControl>

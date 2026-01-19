@@ -75,7 +75,7 @@ public static class QuickLoad2
     
     private static void SetPicViewerValues(CoreViewModel vm, ImageModel imageModel, FileInfo fileInfo)
     {
-       vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model.Value = imageModel;
+       vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model = imageModel;
        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Initialize();
         
         Settings.StartUp.LastFile = fileInfo.FullName;

@@ -28,8 +28,13 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public string Id { get; } = id;
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
-    public BindableReactiveProperty<ImageModel> Model { get; } = new(new ImageModel());
-    public BindableReactiveProperty<ImageModel?> SecondaryModel { get; } = new();
+    public BindableReactiveProperty<object?> Image { get; } = new();
+    public BindableReactiveProperty<object?> ImageType { get; } = new();
+    public BindableReactiveProperty<object?> FileInfo { get; } = new();
+    public BindableReactiveProperty<object?> SecondaryImage { get; } = new();
+    public BindableReactiveProperty<object?> SecondaryFileInfo { get; } = new();
+    public ImageModel Model { get; set; } = new();
+    public ImageModel? SecondaryModel { get; set; }
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }
@@ -89,10 +94,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 
     private void ModelSubscription()
     {
-        Model
-            .Select(model => model.FileInfo) 
-            .Subscribe(file => 
+        Observable.EveryValueChanged(this, tab => tab.Model.FileInfo)
+            .Subscribe(file =>
             {
+                FileInfo.Value = file;
                 if (file is null)
                 {
                     var noImage = TranslationManager.Translation?.NoImage;
@@ -100,17 +105,31 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
                     {
                         return;
                     }
+
                     TabTitle.Value = noImage;
                     TabTooltip.Value = noImage;
                     return;
                 }
+
                 TabTitle.Value = file.Name;
                 TabTooltip.Value = file.FullName;
                 UpdateTabTitle();
             })
             .AddTo(Disposables);
+        Observable.EveryValueChanged(this, tab => tab.Model.Image)
+            .Subscribe(image =>
+            {
+                Image.Value = image;
+                if (Model.TiffNavigation is null)
+                {
+                    return;
+                }
+
+                UpdateTabTitle();
+            })
+            .AddTo(Disposables);
     }
-    
+
     /// <summary>
     /// Updates the window title and tab title based on the current image model.
     /// </summary>
@@ -121,8 +140,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
             return;
         }
             
-        var width = Model.CurrentValue.PixelWidth;
-        var height = Model.CurrentValue.PixelHeight;
+        var width = Model.PixelWidth;
+        var height = Model.PixelHeight;
         var index = ImageIterator.CurrentIndex;
         var windowTitles = GetTitles();
         WindowTitle.Value = windowTitles.TitleWithAppName;
@@ -132,14 +151,14 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         
         WindowTitles GetTitles()
         {
-            if (Model.CurrentValue.TiffNavigation is { } tiff)
+            if (Model.TiffNavigation is { } tiff)
             {
                 return ImageTitleFormatter.GenerateTitleStrings(width, height,
-                    index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
+                    index, Model.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
             }
 
             return ImageTitleFormatter.GenerateTitleStrings(width, height,
-                index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files);
+                index, Model.FileInfo, 100, ImageIterator.Files);
         }
     }
 
@@ -160,7 +179,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
             _fileWatcherService = fileWatcherService;
         }
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
-        var index = files.FindIndex(x => x.FullName.Equals(Model.Value?.FileInfo.FullName));
+        var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
         
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
@@ -199,7 +218,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     #if DEBUG
     public override string ToString()
     {
-        return $"{Id}: {Model.Value?.FileInfo?.FullName}";
+        return $"{Id}: {Model?.FileInfo?.FullName}";
     }
     #endif
 }

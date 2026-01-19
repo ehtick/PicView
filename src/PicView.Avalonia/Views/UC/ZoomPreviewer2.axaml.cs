@@ -248,7 +248,7 @@ public partial class ZoomPreviewer2 : UserControl
     {
         const int defaultHeight = 150;
         OverlayImage.Height = defaultHeight;
-        if (vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue is not {} model)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.Model is not {} model)
         {
             return;
         }
