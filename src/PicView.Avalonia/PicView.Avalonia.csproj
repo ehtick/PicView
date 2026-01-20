@@ -212,6 +212,14 @@
           <DependentUpon>LanguageView2.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\UC\Buttons\GalleryShortcut2.axaml.cs">
+          <DependentUpon>GalleryShortcut2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
+        <Compile Update="Views\Gallery\GalleryView2.axaml.cs">
+          <DependentUpon>GalleryView2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

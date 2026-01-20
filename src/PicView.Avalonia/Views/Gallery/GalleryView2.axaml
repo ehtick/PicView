@@ -1,0 +1,144 @@
+<customControls:GalleryAnimationControl
+    x:Class="PicView.Avalonia.Views.Gallery.GalleryView2"
+    x:DataType="viewModels:TabViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
+    xmlns:gallery="clr-namespace:PicView.Avalonia.Views.Gallery"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Panel>
+
+        <Panel.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Stretch.Value, Mode=OneWay}">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource Image}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                    <MenuItem
+                        CommandParameter="Uniform"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Uniform.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                    <MenuItem
+                        CommandParameter="UniformToFill"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.UniformToFill.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                    <MenuItem
+                        CommandParameter="Fill"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Fill.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                    <MenuItem
+                        CommandParameter="None"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.None.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                    <MenuItem
+                        CommandParameter="Square"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Square.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                    <MenuItem
+                        CommandParameter="FillSquare"
+                        Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.FillSquare.Value,
+                                                 Mode=OneWay}"
+                        ToggleType="Radio" />
+                </MenuItem>
+                <MenuItem Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.ExpandedGalleryItemSize.Value, Mode=OneWay}" StaysOpenOnClick="True">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource Image}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                    <FlyoutBase.AttachedFlyout>
+                        <Flyout>
+                            <Border
+                                Background="{DynamicResource MainButtonBackgroundColor}"
+                                BorderBrush="{DynamicResource MainBorderColor}"
+                                BorderThickness="2"
+                                CornerRadius="4"
+                                Padding="10,3">
+                                <gallery:GalleryItemSizeSlider x:Name="GalleryItemSizeSlider" />
+                            </Border>
+                        </Flyout>
+                    </FlyoutBase.AttachedFlyout>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.HideBottomGallery.Value, Mode=OneWay}" IsVisible="{CompiledBinding !$parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.IsGalleryExpanded.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Data="{StaticResource CloseGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Height="12"
+                            Stretch="Fill"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.CloseGallery.Value, Mode=OneWay}" IsVisible="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.IsGalleryExpanded.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Data="{StaticResource CloseGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Height="12"
+                            Stretch="Fill"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+        </Panel.ContextMenu>
+
+        <Button
+            BorderThickness="1,0,0,0"
+            Classes="ButtonBorder hover"
+            CornerRadius="0,0,0,45"
+            DockPanel.Dock="Right"
+            Height="60"
+            HorizontalAlignment="Right"
+            IsVisible="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.IsGalleryExpanded.Value}"
+            VerticalAlignment="Top"
+            Width="50"
+            ZIndex="99">
+            <Path
+                Data="{StaticResource CloseGeometry}"
+                Fill="{DynamicResource MainTextColor}"
+                Height="23"
+                Margin="7,0,0,11"
+                Stretch="Fill"
+                Width="23" />
+        </Button>
+
+        <customControls:GalleryListBox
+            AutoScrollToSelectedItem="False"
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            BorderBrush="{DynamicResource TertiaryBorderColor}"
+            BorderThickness="0,1,0,0"
+            Focusable="False"
+            Padding="0"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.IsScrollInertiaEnabled="True"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            VerticalAlignment="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.GalleryVerticalAlignment.Value}"
+            x:Name="GalleryListBox">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel
+                        HorizontalAlignment="Left"
+                        Orientation="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.GalleryOrientation.Value,
+                                                      Mode=OneWay}"
+                        VerticalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Margin" Value="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Gallery.GalleryItem.ItemMargin.Value}" />
+                    <Setter Property="BorderThickness" Value="3" />
+                </Style>
+            </ListBox.Styles>
+        </customControls:GalleryListBox>
+    </Panel>
+</customControls:GalleryAnimationControl>
