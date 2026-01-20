@@ -1,8 +1,6 @@
 using PicView.Core.DebugTools;
-using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
-using PicView.Core.Navigation.Tiff;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
 using R3;
@@ -105,7 +103,7 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
         // Handle internal TIFF navigation
         var currentModel = _tab.Model;
 
-        if (tab.Model?.TiffNavigation is { } tiff)
+        if (tab.Model?.TiffNavigation is not null)
         {
             var isTiffNavigated = ShouldNavigateTiffEntry(currentModel, IsReversed);
             if (isTiffNavigated)

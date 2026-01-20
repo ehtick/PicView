@@ -3,6 +3,7 @@ using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
+using PicView.Core.Preloading;
 using PicView.Core.Titles;
 using R3;
 
@@ -97,7 +98,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         Observable.EveryValueChanged(this, tab => tab.Model.FileInfo)
             .Subscribe(file =>
             {
+                // Trigger file changes to UI
                 FileInfo.Value = file;
+                
+                // Update title to reflect file changes
                 if (file is null)
                 {
                     var noImage = TranslationManager.Translation?.NoImage;
@@ -119,7 +123,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         Observable.EveryValueChanged(this, tab => tab.Model.Image)
             .Subscribe(image =>
             {
+                // Trigger image change to UI
                 Image.Value = image;
+                
+                // Update tiff title if appropriate (there are no file changes in this instance
                 if (Model.TiffNavigation is null)
                 {
                     return;
@@ -181,7 +188,9 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
-        
+
+        cache.TryAdd(id, index, new PreLoadValue(Model), files.Count, false, out _);
+
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
     }

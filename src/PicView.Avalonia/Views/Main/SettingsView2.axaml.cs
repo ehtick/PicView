@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using PicView.Avalonia.UI;
+using PicView.Core.Search;
 using PicView.Core.ViewModels;
 using R3;
 
@@ -23,6 +24,7 @@ public partial class SettingsView2 : UserControl
     private int _currentMatchIndex = -1;
     private bool _isScrollingProgrammatically;
     private bool _isUpdatingFromSpy;
+    private bool _isNavigatingSuggestionsViaKeys;
     private List<KeyValuePair<SettingsCategory, Control>>? _orderedSections;
     private Dictionary<SettingsCategory, Control>? _sectionsMap;
 
@@ -43,6 +45,7 @@ public partial class SettingsView2 : UserControl
         IndexSearchableControls(); // Pre-calculate search targets
 
         CategoriesListBox.SelectionChanged += OnListBoxSelectionChanged;
+        SuggestionsListBox.SelectionChanged += OnSuggestionsSelectionChanged;
         ContentScrollViewer.ScrollChanged += OnScrollChanged;
         KeyDown += OnKeyDown;
 
@@ -55,6 +58,7 @@ public partial class SettingsView2 : UserControl
     private void OnUnloaded(object? sender, RoutedEventArgs e)
     {
         CategoriesListBox.SelectionChanged -= OnListBoxSelectionChanged;
+        SuggestionsListBox.SelectionChanged -= OnSuggestionsSelectionChanged;
         ContentScrollViewer.ScrollChanged -= OnScrollChanged;
         KeyDown -= OnKeyDown;
         _subscription?.Dispose();
@@ -116,10 +120,82 @@ public partial class SettingsView2 : UserControl
 
     private void OnFilterBoxKeyDown(object? sender, KeyEventArgs e)
     {
+        if (FilterBox.Text.Length > 0 && SuggestionsListBox.ItemCount > 0)
+        {
+            SuggestionsPopup.IsOpen = true;
+        }
+        
+        // Navigate through suggestions if they exist
+        if (SuggestionsListBox.ItemCount > 0 && (e.Key == Key.Down || e.Key == Key.Up))
+        {
+            _isNavigatingSuggestionsViaKeys = true;
+            try
+            {
+                var current = SuggestionsListBox.SelectedIndex;
+                var count = SuggestionsListBox.ItemCount;
+
+                if (e.Key == Key.Down)
+                {
+                    // Move down, or wrap to top if at bottom (or if nothing selected)
+                    if (current < count - 1)
+                        SuggestionsListBox.SelectedIndex++;
+                    else
+                        SuggestionsListBox.SelectedIndex = 0;
+                }
+                else // Key.Up
+                {
+                    // Move up, or wrap to bottom if at top (or if nothing selected)
+                    if (current > 0)
+                        SuggestionsListBox.SelectedIndex--;
+                    else
+                        SuggestionsListBox.SelectedIndex = count - 1;
+                }
+                
+                SuggestionsListBox.ScrollIntoView(SuggestionsListBox.SelectedItem);
+            }
+            finally
+            {
+                _isNavigatingSuggestionsViaKeys = false;
+            }
+
+            e.Handled = true;
+            return;
+        }
+        
         if (e.Key == Key.Enter)
         {
             e.Handled = true;
-            CycleToNextMatch();
+            
+            // If popup is open and has selection, commit it
+            if (SuggestionsPopup.IsOpen && SuggestionsListBox.SelectedItem != null)
+            {
+                CommitSuggestion();
+            }
+            else
+            {
+                CycleToNextMatch();
+            }
+        }
+    }
+    
+    private void OnSuggestionsSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        // Ignore if change was triggered by arrow keys in TextBox
+        if (_isNavigatingSuggestionsViaKeys)
+        {
+            return;
+        }
+        
+        CommitSuggestion();
+    }
+
+    private void CommitSuggestion()
+    {
+        if (SuggestionsListBox.SelectedItem is SettingsSearchItem item &&
+            DataContext is CoreViewModel { SettingsViewModel: not null } core)
+        {
+            // Manually trigger the selection update on the ViewModel
+            core.SettingsViewModel.SelectedSuggestion.Value = item;
         }
     }
 

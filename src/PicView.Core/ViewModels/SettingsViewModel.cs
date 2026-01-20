@@ -58,6 +58,7 @@ public class SettingsViewModel : IDisposable
 
         // Search Initialization
         SearchData = new SettingsSearchData();
+        _allSuggestions = SettingsSearchIndex.Build(SearchData);
         
         ClearSearchCommand = new ReactiveCommand(_ => SearchQuery.Value = string.Empty).AddTo(_disposables);
 
@@ -69,8 +70,27 @@ public class SettingsViewModel : IDisposable
             if (hasText)
             {
                 IsOverviewVisible.Value = false;
+                Suggestions.Value = _allSuggestions
+                    .Where(x => x.Name.Contains(query, StringComparison.InvariantCultureIgnoreCase) ||
+                                x.Tags.Contains(query, StringComparison.InvariantCultureIgnoreCase))
+                    .ToList();
+            }
+            else
+            {
+                Suggestions.Value = [];
             }
 
+        }).AddTo(_disposables);
+
+        SelectedSuggestion.Subscribe(item =>
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            SearchQuery.Value = item.Name;
+            Suggestions.Value = [];
         }).AddTo(_disposables);
 
         UpdateNavigationProperties();
@@ -183,6 +203,9 @@ public class SettingsViewModel : IDisposable
 
     // Search properties (Tags and Visibility)
     public SettingsSearchData SearchData { get; }
+    public BindableReactiveProperty<List<SettingsSearchItem>> Suggestions { get; } = new();
+    public BindableReactiveProperty<SettingsSearchItem?> SelectedSuggestion { get; } = new();
+    private readonly List<SettingsSearchItem> _allSuggestions;
     
     public BindableReactiveProperty<bool> IsOverviewVisible { get; } = new(false);
     public BindableReactiveProperty<SettingsCategory> SelectedCategory { get; } = new(SettingsCategory.General);

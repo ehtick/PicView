@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -6,11 +6,13 @@
     x:DataType="viewModels1:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:config="clr-namespace:PicView.Avalonia.Views.Config"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ContextMenu">
             <MenuItem
@@ -59,7 +61,6 @@
 
     <DockPanel>
 
-        <!--  Search box  -->
         <Panel
             Background="{DynamicResource MainBackgroundColor}"
             DockPanel.Dock="Top"
@@ -86,7 +87,36 @@
                                             Mode=OneWay}"
                 x:Name="FilterBox" />
 
-            <!--  clear  -->
+            <Popup
+                IsLightDismissEnabled="True"
+                MaxHeight="300"
+                MinWidth="{Binding Bounds.Width, ElementName=FilterBox}"
+                PlacementTarget="{Binding ElementName=FilterBox}"
+                x:Name="SuggestionsPopup">
+                <Border
+                    Background="{DynamicResource MainBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4">
+                    <ListBox
+                        Background="Transparent"
+                        ItemsSource="{CompiledBinding SettingsViewModel.Suggestions.Value}"
+                        Margin="0"
+                        SelectedItem="{CompiledBinding SettingsViewModel.SelectedSuggestion.Value,
+                                                       Mode=OneWay}"
+                        x:Name="SuggestionsListBox">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    Classes="txt"
+                                    Padding="8"
+                                    Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </Popup>
+
             <customControls:IconButton
                 Classes="altHover"
                 Command="{CompiledBinding SettingsViewModel.ClearSearchCommand}"
@@ -100,10 +130,8 @@
                 x:Name="ClearButton" />
         </Panel>
 
-        <!--  Main content  -->
         <Panel DockPanel.Dock="Top">
 
-            <!--  Overview Panel  -->
             <customControls:AutoScrollViewer
                 Background="Transparent"
                 Focusable="True"
@@ -120,7 +148,6 @@
                         Margin="15"
                         VerticalAlignment="Center">
 
-                        <!--  General Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -142,7 +169,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Appearance Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -164,7 +190,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  UI Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -186,7 +211,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Image Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -208,7 +232,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Navigation Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -230,7 +253,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Gallery Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -252,7 +274,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Slideshow Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -274,7 +295,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Window Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -296,7 +316,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Zoom Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -318,7 +337,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Mouse Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -340,7 +358,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  Language Settings  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -362,7 +379,6 @@
                             </StackPanel>
                         </Button>
 
-                        <!--  File association  -->
                         <Button
                             Background="{DynamicResource MainBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -390,10 +406,8 @@
                 </Panel>
             </customControls:AutoScrollViewer>
 
-            <!--  Split View  -->
             <DockPanel IsVisible="{Binding !SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}" x:Name="SplitViewGrid">
 
-                <!--  Categories  -->
                 <ListBox
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
@@ -419,7 +433,6 @@
                         </Style>
                     </ListBox.Styles>
 
-                    <!--  General  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.General}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -432,7 +445,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Appearance  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Appearance}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -445,7 +457,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Interface config  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Interface}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -458,7 +469,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Image  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Image}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -471,7 +481,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Window  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Window}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -484,7 +493,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Gallery settings  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Gallery}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -497,7 +505,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Slideshow  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Slideshow}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -510,7 +517,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Navigation  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Navigation}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -523,7 +529,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Zoom  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Zoom}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -536,7 +541,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Mouse  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Mouse}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -549,7 +553,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  Language  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.Language}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -562,7 +565,6 @@
                         </ListBoxItem.Content>
                     </ListBoxItem>
 
-                    <!--  File associations  -->
                     <ListBoxItem Tag="{x:Static viewModels1:SettingsCategory.FileAssociations}">
                         <ListBoxItem.Content>
                             <StackPanel Orientation="Horizontal" Spacing="8">
@@ -576,93 +578,75 @@
                     </ListBoxItem>
                 </ListBox>
 
-                <!--  Content  -->
                 <customControls:AutoScrollViewer Focusable="True" x:Name="ContentScrollViewer">
                     <StackPanel>
 
-                        <!--  General settings  -->
                         <config:GeneralSettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,5,0,75"
                             x:Name="GeneralSection" />
 
-                        <!--  Appearance  -->
                         <config:AppearanceView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="AppearanceSection" />
 
-                        <!--  Interface config  -->
                         <config:InterfaceConfigurationView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="InterfaceSection" />
 
-                        <!--  Image settings  -->
                         <config:ImageSettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="ImageSection" />
 
-                        <!--  Window settings  -->
                         <config:WindowSettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="WindowSection" />
 
-                        <!--  Gallery settings  -->
                         <config:GallerySettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="GallerySection" />
 
-                        <!--  Slideshow  -->
                         <config:SlideshowSettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="SlideshowSection" />
 
-                        <!--  Navigation  -->
                         <config:NavigationView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="NavigationSection" />
 
-                        <!--  Zoom  -->
                         <config:ZoomSettingsView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="ZoomSection" />
 
-                        <!--  Mouse  -->
                         <config:MouseView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="MouseSection" />
 
-                        <!--  Language  -->
                         <config:LanguageView2
                             Background="Transparent"
                             Focusable="True"
                             Margin="0,0,0,75"
                             x:Name="LanguageSection" />
 
-                        <!-- <Border x:Name="FileAssociationsSection"> -->
-                        <!--  <TextBlock  -->
-                        <!--  Classes="txt bold"  -->
-                        <!--  Text="{Binding Translation.FileAssociations.Value, Mode=OneWay}"  -->
-                        <!--  VerticalAlignment="Top" />  -->
-                        <!-- </Border> -->
                     </StackPanel>
                 </customControls:AutoScrollViewer>
             </DockPanel>
