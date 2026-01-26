@@ -87,7 +87,7 @@
                 x:Name="FilterBox" />
 
             <Popup
-                IsLightDismissEnabled="True"
+                IsLightDismissEnabled="False"
                 MaxHeight="300"
                 MinWidth="{Binding Bounds.Width, ElementName=FilterBox}"
                 PlacementTarget="{Binding ElementName=FilterBox}"
@@ -131,6 +131,7 @@
             </Popup>
 
             <customControls:IconButton
+                Background="Transparent"
                 Classes="altHover"
                 Command="{CompiledBinding SettingsViewModel.ClearSearchCommand}"
                 Data="{StaticResource CloseGeometry}"
