@@ -19,10 +19,11 @@ public partial class SettingsView2 : UserControl
 
     // Cache for performance
     private readonly List<Control> _searchMatches = [];
-    private List<Control>? _allSearchableControls;
+    private List<(Control Control, SettingsCategory Category)>? _allSearchableControls;
 
     private int _currentMatchIndex = -1;
     private bool _isScrollingProgrammatically;
+    private bool _areCategoriesFiltered;
     private bool _isUpdatingFromSpy;
     private bool _isNavigatingSuggestionsViaKeys;
     private List<KeyValuePair<SettingsCategory, Control>>? _orderedSections;
@@ -102,7 +103,7 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
-        foreach (var (_, sectionControl) in _orderedSections)
+        foreach (var (category, sectionControl) in _orderedSections)
         {
             var children = sectionControl.GetVisualDescendants().OfType<Control>();
             foreach (var child in children)
@@ -110,7 +111,7 @@ public partial class SettingsView2 : UserControl
                 // Only index controls that have search keywords or tags
                 if (child.Tag != null || !string.IsNullOrEmpty(SearchProperties.GetKeywords(child)))
                 {
-                    _allSearchableControls.Add(child);
+                    _allSearchableControls.Add((child, category));
                 }
             }
         }
@@ -292,6 +293,15 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
+        if (_areCategoriesFiltered)
+        {
+            _areCategoriesFiltered = false;
+            foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+            {
+                item.IsVisible = true;
+            }
+        }
+
         var offset = ContentScrollViewer.Offset.Y;
         SettingsCategory? bestMatch = null;
 
@@ -384,17 +394,27 @@ public partial class SettingsView2 : UserControl
                 return;
             }
 
-            foreach (var child in _allSearchableControls)
+            foreach (var (child, _) in _allSearchableControls)
             {
                 child.Classes.Remove(ClassSearchMatch);
                 child.Classes.Remove(ClassSearchDim);
             }
 
+            // Show all categories
+            foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+            {
+                item.IsVisible = true;
+            }
+
+            _areCategoriesFiltered = false;
             return;
         }
 
+        _areCategoriesFiltered = true;
+        var matchingCategories = new HashSet<SettingsCategory>();
+
         // Optimized Search Path
-        foreach (var child in _allSearchableControls!)
+        foreach (var (child, category) in _allSearchableControls!)
         {
             var isMatch = IsControlMatch(child, query!);
 
@@ -403,11 +423,21 @@ public partial class SettingsView2 : UserControl
                 child.Classes.Remove(ClassSearchDim);
                 child.Classes.Add(ClassSearchMatch);
                 _searchMatches.Add(child);
+                matchingCategories.Add(category);
             }
             else
             {
                 child.Classes.Remove(ClassSearchMatch);
                 child.Classes.Add(ClassSearchDim);
+            }
+        }
+
+        // Update Sidebar Visibility
+        foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+        {
+            if (item.Tag is SettingsCategory category)
+            {
+                item.IsVisible = matchingCategories.Contains(category);
             }
         }
     }
