@@ -220,6 +220,10 @@
           <DependentUpon>GalleryView2.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Gallery\GalleryItem2.axaml.cs">
+          <DependentUpon>GalleryItem2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

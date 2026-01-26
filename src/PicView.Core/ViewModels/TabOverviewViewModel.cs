@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using PicView.Core.FileSorting;
-using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 using R3;
@@ -29,7 +28,6 @@ public class TabOverviewViewModel
     
     public INavigationService? SharedNavigation { get; private set; }
     public IImageCache? SharedCache { get; private set; }
-    public IGalleryService? SharedGallery { get; private set; }
     public IThumbnailLoader? SharedThumbnailLoader { get; private set; }
     public IFileWatcherService? SharedFileWatcher { get; private set; }
 
@@ -54,34 +52,31 @@ public class TabOverviewViewModel
     /// Initialize the navigation service. Must be called before any other methods.
     /// </summary>
     /// <remarks>This is separated from constructor to improve initial startup time</remarks>
-    /// <param name="gallery">The Gallery service shared between tabs in the same directory,
-    /// to reduce application memory and switch between tabs, if the selected gallery item is within another tab</param>
     /// <param name="navigationService">The navigation service responsible for navigating within the tabs</param>
     /// <param name="cache">The bitmap cache shared between tabs to reduce application memory usage</param>
     /// <param name="thumbnailLoader">The thumbnail loader to use for preloading images</param>
     /// <param name="fileWatcherService">The service that watches for file changes in the directory</param>
-    private void Initialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
+    private void Initialize(INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
         SharedCache = cache;
-        SharedGallery = gallery;
         SharedNavigation = navigationService;
         SharedThumbnailLoader = thumbnailLoader;
         SharedFileWatcher = fileWatcherService;
         SharedCache.RegisterOwner(ActiveTab.Value.Id);
     }
     
-    /// <inheritdoc cref="Initialize(IGalleryService, INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
-    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
+    /// <inheritdoc cref="Initialize(INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
+    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(gallery, navigationService, cache, thumbnailLoader, fileWatcherService);
+        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService);
         ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader, fileWatcherService);
         SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
-    /// <inheritdoc cref="Initialize(IGalleryService, INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
-    public void LoadAndInitialize(IGalleryService gallery, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
+    /// <inheritdoc cref="Initialize(INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService)"/>>
+    public void LoadAndInitialize(INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(gallery, navigationService, cache, thumbnailLoader, fileWatcherService);
+        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService);
         ActiveTab.Value.InitializeImageIterator([], cache, thumbnailLoader, fileWatcherService);
         ActiveTab.Value.Initialize(cache, thumbnailLoader, fileWatcherService);
     }

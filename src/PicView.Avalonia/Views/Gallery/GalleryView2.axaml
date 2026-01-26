@@ -112,33 +112,17 @@
                 Width="23" />
         </Button>
 
-        <customControls:GalleryListBox
-            AutoScrollToSelectedItem="False"
+        <Border
             Background="{DynamicResource SecondaryBackgroundColor}"
             BorderBrush="{DynamicResource TertiaryBorderColor}"
-            BorderThickness="0,1,0,0"
-            Focusable="False"
-            Padding="0"
-            ScrollViewer.HorizontalScrollBarVisibility="Visible"
-            ScrollViewer.IsScrollInertiaEnabled="True"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-            VerticalAlignment="{CompiledBinding Gallery.GalleryVerticalAlignment.Value}"
-            x:Name="GalleryListBox">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel
-                        HorizontalAlignment="Left"
-                        Orientation="{CompiledBinding Gallery.GalleryOrientation.Value,
-                                                      Mode=OneWay}"
-                        VerticalAlignment="Center" />
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-            <ListBox.Styles>
-                <Style Selector="ListBoxItem">
-                    <Setter Property="Margin" Value="{CompiledBinding Gallery.GalleryItem.ItemMargin.Value}" />
-                    <Setter Property="BorderThickness" Value="3" />
-                </Style>
-            </ListBox.Styles>
-        </customControls:GalleryListBox>
+            BorderThickness="0,1,0,0">
+            <ItemsControl ItemsSource="{CompiledBinding Gallery.GalleryItems.Value}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <gallery:GalleryItem2 />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
     </Panel>
 </customControls:GalleryAnimationControl>

@@ -1,11 +1,12 @@
-﻿using PicView.Core.Gallery;
+﻿using System.Collections.ObjectModel;
+using PicView.Core.Gallery;
 using R3;
 
 namespace PicView.Core.ViewModels;
 
 public class GalleryViewModel : IDisposable
 {
-    public GalleryItemViewModel GalleryItem { get; } = new();
+    public BindableReactiveProperty <ObservableCollection<GalleryItemViewModel>> GalleryItems { get; } = new([]);
 
     public BindableReactiveProperty<object> GalleryDockPosition { get; } = new();
 
@@ -23,7 +24,7 @@ public class GalleryViewModel : IDisposable
 
     public void Dispose()
     {
-        Disposable.Dispose(GalleryItem,
+        Disposable.Dispose(GalleryItems,
             GalleryDockPosition,
             IsDockedGalleryVisible,
             IsDockedGalleryHiddenUI,

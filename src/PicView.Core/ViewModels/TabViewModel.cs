@@ -191,7 +191,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
 
-        cache.TryAdd(id, index, new PreLoadValue(Model), files.Count, false, out _);
+        cache.TryAdd(Id, index, new PreLoadValue(Model), files.Count, false, out _);
 
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);

@@ -16,7 +16,6 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
-        var galleryService = new AvaloniaGalleryService(null);
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
@@ -31,7 +30,7 @@ public static class TabNavigationInitializer
         var thumbnailService = new AvaloniaThumbnailLoader();
 
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(galleryService, navService, sharedCache, thumbnailService, fileWatcher);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache, thumbnailService, fileWatcher);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -45,7 +44,6 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
-        var galleryService = new AvaloniaGalleryService(null);
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
@@ -61,7 +59,7 @@ public static class TabNavigationInitializer
 
         var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, galleryService, navService, sharedCache, thumbnailService, fileWatcher);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailService, fileWatcher);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -75,13 +73,12 @@ public static class TabNavigationInitializer
         if (parentVm.WindowTabs.SharedCache is not { } cache ||
             parentVm.WindowTabs.SharedNavigation is not { } nav ||
             parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
-            parentVm.WindowTabs.SharedGallery is not { } gallery ||
             parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
         {
             return;
         }
         
-        newVm.WindowTabs.LoadAndInitialize(gallery, nav, cache, thumb, fileWatcher);
+        newVm.WindowTabs.LoadAndInitialize(nav, cache, thumb, fileWatcher);
         newVm.WindowTabs.SetParentContext(newVm);
         newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
         newVm.WindowTabs.SelectTab(tab);

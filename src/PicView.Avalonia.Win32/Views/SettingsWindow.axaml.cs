@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using Avalonia.Threading;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
@@ -25,31 +24,6 @@ public partial class SettingsWindow : Window
     {
         _config = config;
         InitializeComponent();
-        Task.Run(async () =>
-        {
-            await _config.LoadAsync();
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (DataContext is CoreViewModel vm)
-                {
-                    vm.SettingsViewModel.RestoreLastTab(_config.WindowProperties.LastTab);
-                }
-
-                if (_config.WindowProperties.Maximized)
-                {
-                    WindowState = WindowState.Maximized;
-                }
-                else
-                {
-                    var left = _config.WindowProperties.Left;
-                    var top = _config.WindowProperties.Top;
-                    if (left.HasValue && top.HasValue)
-                    {
-                        Position = new PixelPoint(left.Value, top.Value);
-                    }
-                }
-            });
-        });
         if (Settings.Theme.GlassTheme)
         {
             SettingsView.Background = Brushes.Transparent;
@@ -122,14 +96,29 @@ public partial class SettingsWindow : Window
         {
             Title = TranslationManager.GetTranslation("Settings") + " - PicView";
             SettingsView.Focus();
-            if (DataContext is not CoreViewModel vm)
+            if (DataContext is not CoreViewModel core)
             {
                 return;
             }
+            
+            core.SettingsViewModel.RestoreLastTab(_config.WindowProperties.LastTab);
+            if (_config.WindowProperties.Maximized)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                var left = _config.WindowProperties.Left;
+                var top = _config.WindowProperties.Top;
+                if (left.HasValue && top.HasValue)
+                {
+                    Position = new PixelPoint(left.Value, top.Value);
+                }
+            }
 
-            GoForwardButton.Command = vm.SettingsViewModel?.GoForwardCommand;
-            GoBackButton.Command = vm.SettingsViewModel?.GoBackCommand;
-            HomeButton.Command = vm.SettingsViewModel?.GoHomeCommand;
+            GoForwardButton.Command = core.SettingsViewModel?.GoForwardCommand;
+            GoBackButton.Command = core.SettingsViewModel?.GoBackCommand;
+            HomeButton.Command = core.SettingsViewModel?.GoHomeCommand;
         };
         KeyDown += (_, e) =>
         {
