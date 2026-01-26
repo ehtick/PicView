@@ -93,14 +93,14 @@
                 PlacementTarget="{Binding ElementName=FilterBox}"
                 x:Name="SuggestionsPopup">
                 <Border
-                    Background="{DynamicResource MainBackgroundColor}"
+                    Background="{DynamicResource MenuBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1"
                     CornerRadius="4">
                     <ListBox
                         Background="Transparent"
                         ItemsSource="{CompiledBinding SettingsViewModel.Suggestions.Value}"
-                        Margin="0"
+                        Margin="0,5"
                         SelectedItem="{CompiledBinding SettingsViewModel.SelectedSuggestion.Value,
                                                        Mode=OneWay}"
                         x:Name="SuggestionsListBox">
@@ -112,6 +112,19 @@
                                     Text="{Binding Name}" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="27,7,27,7" />
+                                <Setter Property="Margin" Value="10,2" />
+                                <Setter Property="Background" Value="Transparent" />
+                            </Style>
+                        </ListBox.Styles>
                     </ListBox>
                 </Border>
             </Popup>
@@ -129,7 +142,11 @@
                 x:Name="ClearButton" />
         </Panel>
 
-        <Panel DockPanel.Dock="Top">
+        <Panel
+            Background="Transparent"
+            DockPanel.Dock="Top"
+            Focusable="True"
+            x:Name="MainPanel">
 
             <customControls:AutoScrollViewer
                 Background="Transparent"

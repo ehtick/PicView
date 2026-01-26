@@ -51,10 +51,24 @@ public partial class SettingsView2 : UserControl
         SuggestionsListBox.SelectionChanged += OnSuggestionsSelectionChanged;
         ContentScrollViewer.ScrollChanged += OnScrollChanged;
         KeyDown += OnKeyDown;
+        MainPanel.PointerPressed += MainPanelOnPointerPressed;
+        ContentScrollViewer.PointerPressed += MainPanelOnPointerPressed;
 
         if (DataContext is CoreViewModel core)
         {
             _subscription = core.SettingsViewModel.SelectedCategory.Subscribe(OnViewModelCategoryChanged);
+        }
+    }
+
+    private void MainPanelOnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (_areCategoriesFiltered)
+        {
+            _areCategoriesFiltered = false;
+            foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+            {
+                item.IsVisible = true;
+            }
         }
     }
 
