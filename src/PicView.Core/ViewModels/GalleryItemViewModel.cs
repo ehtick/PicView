@@ -1,4 +1,4 @@
-﻿using PicView.Core.Gallery;
+using PicView.Core.Gallery;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -13,9 +13,15 @@ public class GalleryItemViewModel : IDisposable
             ExpandedGalleryItemWidth,
             ExpandedGalleryItemHeight,
             BottomGalleryItemWidth,
-            BottomGalleryItemHeight);
+            BottomGalleryItemHeight,
+            Image,
+            FileName,
+            FileLocation,
+            FileSize,
+            FileDate);
     }
 
+    // Layout Properties
     public BindableReactiveProperty<double> ItemWidth { get; } = new(0);
     public BindableReactiveProperty<double> ItemHeight { get; } = new(0);
 
@@ -26,6 +32,15 @@ public class GalleryItemViewModel : IDisposable
     
     public BindableReactiveProperty<double> BottomGalleryItemWidth { get; } = new(0);
     public BindableReactiveProperty<double> BottomGalleryItemHeight { get; } = new(0);
+
+    // Data Properties
+    public BindableReactiveProperty<object?> Image { get; } = new();
+    public BindableReactiveProperty<string> FileName { get; } = new();
+    public BindableReactiveProperty<string> FileLocation { get; } = new();
+    public BindableReactiveProperty<string> FileSize { get; } = new();
+    public BindableReactiveProperty<string> FileDate { get; } = new();
+    
+    public FileInfo? FileInfo { get; set; }
 
     public double MaxExpandedGalleryItemHeight => GalleryDefaults.MaxFullGalleryItemHeight;
     public double MinExpandedGalleryItemHeight => GalleryDefaults.MinFullGalleryItemHeight;

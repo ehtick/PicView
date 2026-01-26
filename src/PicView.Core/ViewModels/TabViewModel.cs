@@ -1,4 +1,5 @@
-﻿using PicView.Core.Extensions;
+using PicView.Core.Extensions;
+using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -42,6 +43,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }
 
+    private readonly GalleryLoaderService _galleryLoader = new();
     private IFileWatcherService? _fileWatcherService = fileWatcherService;
     
     public BindableReactiveProperty<int> NavigationIndex { get; } = new(0);
@@ -195,6 +197,8 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
+        
+        _ = _galleryLoader.LoadGalleryAsync(this, files, thumbnailLoader, GetTabCancellation().Token);
     }
 
     public async ValueTask CloseTab()
