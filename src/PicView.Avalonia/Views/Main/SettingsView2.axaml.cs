@@ -16,6 +16,8 @@ public partial class SettingsView2 : UserControl
 {
     private const string ClassSearchDim = "searchDim";
     private const string ClassSearchMatch = "searchMatch";
+    private const string ClassSearchHeader = "searchHeader";
+    private const string ClassSearchHeaderDim = "searchHeaderDim";
 
     // Cache for performance
     private readonly List<Control> _searchMatches = [];
@@ -400,6 +402,8 @@ public partial class SettingsView2 : UserControl
                 child.Classes.Remove(ClassSearchDim);
             }
 
+            UpdateSectionHeaders(false);
+
             // Show all categories
             foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
             {
@@ -432,6 +436,8 @@ public partial class SettingsView2 : UserControl
             }
         }
 
+        UpdateSectionHeaders(true);
+
         // Update Sidebar Visibility
         foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
         {
@@ -459,6 +465,112 @@ public partial class SettingsView2 : UserControl
 
         // Simple contains check (case-insensitive)
         return keywordsString.Contains(query, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void UpdateSectionHeaders(bool isSearchActive)
+    {
+        if (_orderedSections == null)
+        {
+            return;
+        }
+
+        foreach (var section in _orderedSections.Select(kvp => kvp.Value))
+        {
+            if (section is UserControl { Content: Panel panel })
+            {
+                ProcessSectionPanel(panel, isSearchActive);
+            }
+        }
+    }
+
+    private void ProcessSectionPanel(Panel panel, bool isSearchActive)
+    {
+        if (!isSearchActive)
+        {
+            // Reset all headers
+            foreach (var child in panel.Children.Where(IsHeader))
+            {
+                child.Classes.Remove(ClassSearchHeaderDim);
+                if (!child.Classes.Contains(ClassSearchHeader))
+                {
+                    child.Classes.Add(ClassSearchHeader);
+                }
+            }
+
+            return;
+        }
+
+        // Search Active Logic
+        Control? currentHeader = null;
+        var currentHeaderHasMatches = false;
+
+        foreach (var child in panel.Children)
+        {
+            if (IsHeader(child))
+            {
+                // Finalize previous header
+                if (currentHeader != null)
+                {
+                    ApplyHeaderState(currentHeader, currentHeaderHasMatches);
+                }
+
+                // Start new header
+                currentHeader = child;
+                currentHeaderHasMatches = false;
+            }
+            else
+            {
+                // Check for matches in this child (or its descendants)
+                if (HasMatch(child))
+                {
+                    currentHeaderHasMatches = true;
+                }
+            }
+        }
+
+        // Finalize last header
+        if (currentHeader != null)
+        {
+            ApplyHeaderState(currentHeader, currentHeaderHasMatches);
+        }
+    }
+
+    private static bool IsHeader(Control control)
+    {
+        return control.Classes.Contains(ClassSearchHeader) || control.Classes.Contains(ClassSearchHeaderDim);
+    }
+
+    private static void ApplyHeaderState(Control header, bool hasMatches)
+    {
+        if (hasMatches)
+        {
+            header.Classes.Remove(ClassSearchHeaderDim);
+            if (!header.Classes.Contains(ClassSearchHeader))
+            {
+                header.Classes.Add(ClassSearchHeader);
+            }
+        }
+        else
+        {
+            header.Classes.Remove(ClassSearchHeader);
+            if (!header.Classes.Contains(ClassSearchHeaderDim))
+            {
+                header.Classes.Add(ClassSearchHeaderDim);
+            }
+        }
+    }
+
+    private static bool HasMatch(Control control)
+    {
+        if (control.Classes.Contains(ClassSearchMatch))
+        {
+            return true;
+        }
+
+        // Use GetVisualDescendants to find deep matches (e.g. inside Borders/Grids)
+        return control.GetVisualDescendants()
+            .OfType<Control>()
+            .Any(c => c.Classes.Contains(ClassSearchMatch));
     }
 
     #endregion

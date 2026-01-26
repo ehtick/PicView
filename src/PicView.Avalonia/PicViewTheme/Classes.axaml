@@ -137,7 +137,7 @@
         <Setter Property="Opacity" Value="1.0" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Duration="0:0:0.4" Property="Opacity" />
+                <DoubleTransition Duration="0:0:0.4" Property="Opacity" />
             </Transitions>
         </Setter>
     </Style>
