@@ -26,6 +26,7 @@ public partial class SettingsView2 : UserControl
     private int _currentMatchIndex = -1;
     private bool _isScrollingProgrammatically;
     private bool _areCategoriesFiltered;
+    private bool _suppressSidebarFilter;
     private bool _isUpdatingFromSpy;
     private bool _isNavigatingSuggestionsViaKeys;
     private List<KeyValuePair<SettingsCategory, Control>>? _orderedSections;
@@ -49,6 +50,7 @@ public partial class SettingsView2 : UserControl
 
         CategoriesListBox.SelectionChanged += OnListBoxSelectionChanged;
         SuggestionsListBox.SelectionChanged += OnSuggestionsSelectionChanged;
+        SuggestionsPopup.Closed += OnPopupClosed;
         ContentScrollViewer.ScrollChanged += OnScrollChanged;
         KeyDown += OnKeyDown;
         MainPanel.PointerPressed += MainPanelOnPointerPressed;
@@ -60,15 +62,31 @@ public partial class SettingsView2 : UserControl
         }
     }
 
+    private void OnPopupClosed(object? sender, EventArgs e)
+    {
+        if (!_areCategoriesFiltered)
+        {
+            return;
+        }
+
+        _areCategoriesFiltered = false;
+        foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+        {
+            item.IsVisible = true;
+        }
+    }
+
     private void MainPanelOnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (_areCategoriesFiltered)
+        if (!_areCategoriesFiltered)
         {
-            _areCategoriesFiltered = false;
-            foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
-            {
-                item.IsVisible = true;
-            }
+            return;
+        }
+
+        _areCategoriesFiltered = false;
+        foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
+        {
+            item.IsVisible = true;
         }
     }
 
@@ -76,6 +94,7 @@ public partial class SettingsView2 : UserControl
     {
         CategoriesListBox.SelectionChanged -= OnListBoxSelectionChanged;
         SuggestionsListBox.SelectionChanged -= OnSuggestionsSelectionChanged;
+        SuggestionsPopup.Closed -= OnPopupClosed;
         ContentScrollViewer.ScrollChanged -= OnScrollChanged;
         KeyDown -= OnKeyDown;
         _subscription?.Dispose();
@@ -208,12 +227,26 @@ public partial class SettingsView2 : UserControl
 
     private void CommitSuggestion()
     {
-        if (SuggestionsListBox.SelectedItem is SettingsSearchItem item &&
-            DataContext is CoreViewModel { SettingsViewModel: not null } core)
+        if (SuggestionsListBox.SelectedItem is not SettingsSearchItem item ||
+            DataContext is not CoreViewModel { SettingsViewModel: not null } core)
         {
-            // Manually trigger the selection update on the ViewModel
-            core.SettingsViewModel.SelectedSuggestion.Value = item;
+            return;
         }
+
+        _suppressSidebarFilter = true;
+            
+        // Manually trigger the selection update on the ViewModel
+        core.SettingsViewModel.SelectedSuggestion.Value = item;
+        SuggestionsPopup.IsOpen = false;
+            
+        // Move caret to end
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (FilterBox.Text != null)
+            {
+                FilterBox.CaretIndex = FilterBox.Text.Length;
+            }
+        }, DispatcherPriority.Input);
     }
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
@@ -428,7 +461,6 @@ public partial class SettingsView2 : UserControl
             return;
         }
 
-        _areCategoriesFiltered = true;
         var matchingCategories = new HashSet<SettingsCategory>();
 
         // Optimized Search Path
@@ -451,11 +483,27 @@ public partial class SettingsView2 : UserControl
         }
 
         UpdateSectionHeaders(true);
-
+        
         // Update Sidebar Visibility
+        var shouldShowAll = _suppressSidebarFilter;
+        if (shouldShowAll)
+        {
+            _suppressSidebarFilter = false;
+            _areCategoriesFiltered = false;
+        }
+        else
+        {
+            // Only set this if we are actually filtering
+            _areCategoriesFiltered = true;
+        }
+
         foreach (var item in CategoriesListBox.Items.OfType<ListBoxItem>())
         {
-            if (item.Tag is SettingsCategory category)
+            if (shouldShowAll)
+            {
+                item.IsVisible = true;
+            }
+            else if (item.Tag is SettingsCategory category)
             {
                 item.IsVisible = matchingCategories.Contains(category);
             }
