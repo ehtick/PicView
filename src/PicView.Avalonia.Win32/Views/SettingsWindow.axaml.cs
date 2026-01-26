@@ -167,8 +167,7 @@ public partial class SettingsWindow : Window
 
     private void FocusFilterBox()
     {
-        var fileAssociationsView = SettingsView.FindControl<Control>("FileAssociationsView");
-        var filterBox = fileAssociationsView?.FindControl<Control>("FilterBox");
+        var filterBox = SettingsView.FindControl<Control>("FilterBox");
         var isFilterBoxEffectivelyVisible = filterBox?.Bounds is { Width: > 0, Height: > 0 };
         if (isFilterBoxEffectivelyVisible)
         {
