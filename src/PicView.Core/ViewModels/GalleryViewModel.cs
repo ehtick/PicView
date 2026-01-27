@@ -20,7 +20,7 @@ public class GalleryViewModel : IDisposable
     public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
     
     public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
-    public BindableReactiveProperty<bool> IsDockedGalleryHiddenUI { get; } =
+    public BindableReactiveProperty<bool> IsDockedGalleryShownInHiddenUI { get; } =
         new(Settings.Gallery.ShowBottomGalleryInHiddenUI);
 
     public void Dispose()
@@ -28,7 +28,7 @@ public class GalleryViewModel : IDisposable
         Disposable.Dispose(GalleryItems,
             GalleryDockPosition,
             IsDockedGalleryVisible,
-            IsDockedGalleryHiddenUI,
+            IsDockedGalleryShownInHiddenUI,
             GalleryMode,
             GalleryStretch,
             GalleryVerticalAlignment,
