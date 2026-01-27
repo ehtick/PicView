@@ -1,11 +1,8 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 using PicView.Avalonia.UI;
 
 namespace PicView.Avalonia.Views.Gallery;
