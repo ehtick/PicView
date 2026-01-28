@@ -19,6 +19,7 @@ using PicView.Core.IPlatform;
 using PicView.Core.Navigation;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.Functions;
 
@@ -420,8 +421,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="GalleryFunctions.ToggleGallery(MainViewModel)" />
     public async ValueTask ToggleGallery()
     {
-        // await Task.Run(() => GalleryFunctions.ToggleGallery(vm));
-        return;
+        vm.WindowTabs.ActiveTab.CurrentValue.Gallery.ToggleGalleryCommand.Execute(Unit.Default);
     }
 
     /// <inheritdoc cref="GalleryFunctions.OpenCloseBottomGallery(MainViewModel)" />

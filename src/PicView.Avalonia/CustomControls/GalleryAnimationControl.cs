@@ -336,9 +336,6 @@ public class GalleryAnimationControl : UserControl
         if (ViewModel == null || Parent is not Control parent) return;
         var dock = ViewModel.Gallery.GalleryDockPosition.Value;
         
-        // We are going to docked state properties
-        SetDockedLayout(dock); 
-        
         // Animate from Full
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
@@ -363,6 +360,8 @@ public class GalleryAnimationControl : UserControl
             await anim.RunAsync(this);
             Width = targetWidth;
         }
+        
+        SetDockedLayout(dock); 
     }
 
     private async Task ClosedToExpanded()
