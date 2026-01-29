@@ -1145,9 +1145,9 @@
                     <Path
                         Data="{StaticResource FilledArrowDownGeometry}"
                         Fill="{DynamicResource MainTextColor}"
-                        Height="11"
+                        Height="17"
                         Stretch="Fill"
-                        Width="11" />
+                        Width="17" />
                 </Button>
 
                 <Button

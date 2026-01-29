@@ -244,8 +244,10 @@
         <Style Selector="^:vertical">
             <Setter Property="Template">
                 <ControlTemplate>
+                    <!--  Setting reversed direction to true fixes the scrollbar starting at the bottom  -->
                     <Track
                         DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                        IsDirectionReversed="True"
                         Maximum="{TemplateBinding Maximum}"
                         Minimum="{TemplateBinding Minimum}"
                         Orientation="{TemplateBinding Orientation}"
