@@ -33,4 +33,16 @@ public partial class DropDownMenu : AnimatedMenu
         base.OnDetachedFromLogicalTree(e);
         Loaded -= OnLoaded;
     }
+
+    private void Close_OnClick(object? sender, RoutedEventArgs e)
+    {
+        // Trigger closing animation
+        IsOpen = false;
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        // Let view model know it is closed
+        vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
+    }
 }

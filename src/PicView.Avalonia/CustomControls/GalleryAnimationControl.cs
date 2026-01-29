@@ -8,7 +8,6 @@ using PicView.Avalonia.Animations;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
-using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 using R3;
 
@@ -46,6 +45,7 @@ public class GalleryAnimationControl : UserControl
 
     private CompositeDisposable? _disposables;
     private AutoScrollViewer? _scrollViewer;
+    private WrapPanel? _itemsPanel;
 
     // Tracks the previous mode to determine the animation transition
     private GalleryMode2 _previousMode = GalleryMode2.Closed;
@@ -73,6 +73,14 @@ public class GalleryAnimationControl : UserControl
         _disposables = new CompositeDisposable();
 
         _scrollViewer = this.FindControl<AutoScrollViewer>("GalleryScrollViewer");
+        if (_scrollViewer.Content is ItemsControl itemsControl)
+        {
+            _itemsPanel = itemsControl.ItemsPanelRoot as WrapPanel;
+        }
+        else
+        {
+            DebugHelper.LogDebug(nameof(GalleryAnimationControl), nameof(OnControlLoaded), "Could not find ItemsControl.ItemsPanelRoot");
+        }
 
         if (ViewModel == null)
         {
@@ -194,18 +202,21 @@ public class GalleryAnimationControl : UserControl
             _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
         }
         ViewModel.Gallery.GalleryVerticalAlignment.Value = VerticalAlignment.Stretch;
+        _itemsPanel?.Orientation = Orientation.Horizontal;
     }
 
     private void SetDockedLayout(GalleryDockPosition dock)
     {
-        var size = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+        var size = Settings.Gallery.BottomGalleryItemSize;
 
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
             Width = double.NaN;
             Height = size;
             
-            ViewModel.Gallery.GalleryVerticalAlignment.Value = dock == GalleryDockPosition.Top ? VerticalAlignment.Top : VerticalAlignment.Bottom;
+            _itemsPanel?.Orientation = Orientation.Horizontal;
+            ViewModel.Gallery.GalleryVerticalAlignment.Value = dock is GalleryDockPosition.Top
+                ? VerticalAlignment.Top : VerticalAlignment.Bottom;
 
             if (_scrollViewer == null)
             {
@@ -220,9 +231,7 @@ public class GalleryAnimationControl : UserControl
             Width = size;
             Height = double.NaN;
             
-            // For side docking, typically we want vertical list? Or horizontal wrap in narrow col?
-            // Usually side docked gallery is a vertical strip.
-            //ViewModel.Gallery.GalleryOrientation.Value = Orientation.Vertical; // Assuming vertical strip for side dock
+            _itemsPanel?.Orientation = Orientation.Vertical;
             ViewModel.Gallery.GalleryVerticalAlignment.Value = VerticalAlignment.Stretch;
 
             if (_scrollViewer == null)
@@ -281,7 +290,7 @@ public class GalleryAnimationControl : UserControl
         
         SetDockedLayout(dock); // Set internal props (orientation etc)
         // Reset size back to 0 for animation start after SetDockedLayout might have set it
-        var targetSize = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+        var targetSize = Settings.Gallery.BottomGalleryItemSize;
         
          if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
          {
@@ -304,7 +313,7 @@ public class GalleryAnimationControl : UserControl
          if (ViewModel == null) return;        
          var dock = Settings.Gallery.DockPosition;
          
-         var currentSize = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+         var currentSize = Settings.Gallery.BottomGalleryItemSize;
          
          if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
          {
@@ -329,7 +338,7 @@ public class GalleryAnimationControl : UserControl
         
         SetExpandedLayout(dock); // Set props
         
-        var startSize = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+        var startSize = Settings.Gallery.BottomGalleryItemSize;
         
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
@@ -356,7 +365,7 @@ public class GalleryAnimationControl : UserControl
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
             var startHeight = parent.Bounds.Height;
-            var targetHeight = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+            var targetHeight = Settings.Gallery.BottomGalleryItemSize;
             
             // Override height for animation start
             Height = startHeight;
@@ -368,7 +377,7 @@ public class GalleryAnimationControl : UserControl
         else
         {
             var startWidth = parent.Bounds.Width;
-            var targetWidth = Settings.Gallery.BottomGalleryItemSize + SizeDefaults.ScrollbarSize;
+            var targetWidth = Settings.Gallery.BottomGalleryItemSize;
             
             Width = startWidth;
             

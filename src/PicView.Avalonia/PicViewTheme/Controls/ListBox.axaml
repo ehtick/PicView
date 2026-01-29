@@ -59,7 +59,7 @@
                         IsDeferredScrollingEnabled="{TemplateBinding (ScrollViewer.IsDeferredScrollingEnabled)}"
                         IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
                         Name="PART_ScrollViewer"
-                        Theme="{StaticResource OverlayButton}"
+                        Theme="{StaticResource MenuScrollerOverlay}"
                         VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}"
                         VerticalSnapPointsType="{TemplateBinding (ScrollViewer.VerticalSnapPointsType)}">
                         <ItemsPresenter

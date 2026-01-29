@@ -112,24 +112,24 @@
                 Width="23" />
         </Button>
 
-        <Border
+        <customControls:AutoScrollViewer
             Background="{DynamicResource SecondaryBackgroundColor}"
-            BorderBrush="{DynamicResource TertiaryBorderColor}"
-            BorderThickness="0,1,0,0">
-            <customControls:AutoScrollViewer PointerWheelChanged="GalleryScrollViewer_OnPointerWheelChanged" x:Name="GalleryScrollViewer">
-                <ItemsControl ItemsSource="{CompiledBinding Gallery.GalleryItems.Value}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <gallery:GalleryItem2 />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </customControls:AutoScrollViewer>
-        </Border>
+            PointerWheelChanged="GalleryScrollViewer_OnPointerWheelChanged"
+            Theme="{StaticResource OverlayScroller}"
+            x:Name="GalleryScrollViewer">
+            <ItemsControl ItemsSource="{CompiledBinding Gallery.GalleryItems.Value}" x:Name="GalleryItemsControl">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <gallery:GalleryItem2 />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemsAlignment="Center" x:Name="GalleryItemsPanel" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </customControls:AutoScrollViewer>
+
     </Panel>
 </customControls:GalleryAnimationControl>

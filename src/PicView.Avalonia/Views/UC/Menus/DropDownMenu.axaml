@@ -46,6 +46,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
+                            Click="Close_OnClick"
                             Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
