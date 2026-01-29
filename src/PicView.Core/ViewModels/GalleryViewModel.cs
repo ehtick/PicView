@@ -63,7 +63,6 @@ public class GalleryViewModel : IDisposable
 
     public BindableReactiveProperty<object> GalleryStretch { get; } = new();
     public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
-    public BindableReactiveProperty<object> GalleryOrientation { get; } = new();
 
     public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
     public BindableReactiveProperty<bool> IsTopDocked { get; } = new();
@@ -84,7 +83,6 @@ public class GalleryViewModel : IDisposable
             GalleryMode,
             GalleryStretch,
             GalleryVerticalAlignment,
-            GalleryOrientation,
             IsGalleryExpanded,
             GalleryMode
             );

@@ -2,7 +2,6 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using PicView.Avalonia.Animations;
@@ -29,7 +28,6 @@ public class GalleryAnimationControl : UserControl
         }
 
         Loaded -= OnControlLoaded;
-        RemoveHandler(PointerPressedEvent, PreviewPointerPressedEvent);
         _disposables?.Dispose();
     }
 
@@ -73,8 +71,6 @@ public class GalleryAnimationControl : UserControl
     private void OnControlLoaded(object? sender, RoutedEventArgs e)
     {
         _disposables = new CompositeDisposable();
-
-        AddHandler(PointerPressedEvent, PreviewPointerPressedEvent, RoutingStrategies.Tunnel);
 
         _scrollViewer = this.FindControl<AutoScrollViewer>("GalleryScrollViewer");
 
@@ -183,13 +179,11 @@ public class GalleryAnimationControl : UserControl
             {
                 Width = double.NaN; 
                 Height = parent.Bounds.Height;
-                ViewModel.Gallery.GalleryOrientation.Value = Orientation.Vertical; 
             }
             else
             {
                 Width = parent.Bounds.Width;
-                Height = double.NaN;
-                ViewModel.Gallery.GalleryOrientation.Value = Orientation.Horizontal; 
+                Height = double.NaN; 
             }
         }
         
@@ -211,7 +205,6 @@ public class GalleryAnimationControl : UserControl
             Width = double.NaN;
             Height = size;
             
-            ViewModel!.Gallery.GalleryOrientation.Value = Orientation.Horizontal;
             ViewModel.Gallery.GalleryVerticalAlignment.Value = dock == GalleryDockPosition.Top ? VerticalAlignment.Top : VerticalAlignment.Bottom;
 
             if (_scrollViewer == null)
@@ -229,7 +222,7 @@ public class GalleryAnimationControl : UserControl
             
             // For side docking, typically we want vertical list? Or horizontal wrap in narrow col?
             // Usually side docked gallery is a vertical strip.
-            ViewModel.Gallery.GalleryOrientation.Value = Orientation.Vertical; // Assuming vertical strip for side dock
+            //ViewModel.Gallery.GalleryOrientation.Value = Orientation.Vertical; // Assuming vertical strip for side dock
             ViewModel.Gallery.GalleryVerticalAlignment.Value = VerticalAlignment.Stretch;
 
             if (_scrollViewer == null)
@@ -427,17 +420,6 @@ public class GalleryAnimationControl : UserControl
         {
             UpdateLayoutForCurrentState();
         }
-    }
-
-    private void PreviewPointerPressedEvent(object? sender, PointerPressedEventArgs e)
-    {
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-        {
-            return;
-        }
-
-        // Disable right click selection, to not interfere with context menu
-        e.Handled = true;
     }
 
     #endregion
