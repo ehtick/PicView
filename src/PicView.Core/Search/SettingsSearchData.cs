@@ -292,7 +292,7 @@ public class SettingsSearchData : IDisposable
         sb.Append(space);
         sb.Append(TranslationManager.Translation.DockedGalleryItemSize);
         sb.Append(space);
-        sb.Append("Size Height Thumbnail");
+        sb.Append("Size Height Thumbnail Spacing Item Line Margin Padding");
         GallerySizeSearchTags = new BindableReactiveProperty<string>(sb.ToString());
         
         sb.Clear();

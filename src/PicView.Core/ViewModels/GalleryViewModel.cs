@@ -22,6 +22,14 @@ public class GalleryViewModel : IDisposable
         // Initial set
         GalleryStretchService.SetStretch(this, Settings.Gallery.BottomGalleryStretchMode);
 
+        Observable.EveryValueChanged(Settings.Gallery, g => g.ItemSpacing)
+            .Subscribe(x => ItemSpacing.Value = x)
+            .AddTo(_disposables);
+
+        Observable.EveryValueChanged(Settings.Gallery, g => g.LineSpacing)
+            .Subscribe(x => LineSpacing.Value = x)
+            .AddTo(_disposables);
+
         GalleryMode = new BindableReactiveProperty<GalleryMode2>(GalleryMode2.Closed);
 
         // Sync old properties with new Mode for backward compatibility/UI binding
@@ -63,6 +71,9 @@ public class GalleryViewModel : IDisposable
 
     public BindableReactiveProperty<object> GalleryStretch { get; } = new();
     public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
+
+    public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
+    public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
 
     public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
     public BindableReactiveProperty<bool> IsTopDocked { get; } = new();

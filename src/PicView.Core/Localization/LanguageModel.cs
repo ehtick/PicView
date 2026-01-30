@@ -199,6 +199,7 @@ public class LanguageModel
     public string? InfoWindowTitle { get; set; }
     public string? InterfaceConfiguration { get; set; }
     public string? ISOSpeed { get; set; }
+    public string? ItemSpacing { get; set; }
     public string? Landscape { get; set; }
     public string? Language { get; set; }
     public string? LastAccessTime { get; set; }
@@ -211,6 +212,7 @@ public class LanguageModel
     public string? Lighting { get; set; }
     public string? LightSource { get; set; }
     public string? LightTheme { get; set; }
+    public string? LineSpacing { get; set; }
     public string? Loading { get; set; }
     public string? Longitude { get; set; }
     public string? Looping { get; set; }

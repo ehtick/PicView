@@ -126,7 +126,10 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel ItemsAlignment="Center" x:Name="GalleryItemsPanel" />
+                        <WrapPanel ItemsAlignment="Center"
+                                   ItemSpacing="{CompiledBinding Gallery.ItemSpacing.Value}"
+                                   LineSpacing="{CompiledBinding Gallery.LineSpacing.Value}"
+                                   x:Name="GalleryItemsPanel" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

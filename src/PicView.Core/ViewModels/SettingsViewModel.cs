@@ -168,6 +168,8 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<int> DockPositionIndex { get; } = new((int)Settings.Gallery.DockPosition);
     public BindableReactiveProperty<double> DockedGalleryItemSize { get; } = new(Settings.Gallery.BottomGalleryItemSize);
     public BindableReactiveProperty<double> ExpandedGalleryItemSize { get; } = new(Settings.Gallery.ExpandedGalleryItemSize);
+    public BindableReactiveProperty<double> GalleryItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
+    public BindableReactiveProperty<double> GalleryLineSpacing { get; } = new(Settings.Gallery.LineSpacing);
     public BindableReactiveProperty<int> DockedGalleryStretchIndex { get; } = new(GetStretchIndex(Settings.Gallery.BottomGalleryStretchMode));
     public BindableReactiveProperty<int> FullGalleryStretchIndex { get; } = new(GetStretchIndex(Settings.Gallery.FullGalleryStretchMode));
 
@@ -356,6 +358,20 @@ public class SettingsViewModel : IDisposable
             .SubscribeAwait(async (x, _) =>
             {
                 Settings.Gallery.ExpandedGalleryItemSize = x;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.GalleryItemSpacing.CurrentValue)
+            .SubscribeAwait(async (x, _) =>
+            {
+                Settings.Gallery.ItemSpacing = x;
+                await SaveSettingsAsync();
+            }).AddTo(_disposables);
+
+        Observable.EveryValueChanged(this, x => x.GalleryLineSpacing.CurrentValue)
+            .SubscribeAwait(async (x, _) =>
+            {
+                Settings.Gallery.LineSpacing = x;
                 await SaveSettingsAsync();
             }).AddTo(_disposables);
 

@@ -150,6 +150,7 @@ public class TranslationViewModel : IDisposable
         Inches.Value = t.Inches;
         InterfaceConfiguration.Value = t.InterfaceConfiguration;
         ISOSpeed.Value = t.ISOSpeed;
+        ItemSpacing.Value = t.ItemSpacing ?? "Item Spacing";
         Language.Value = t.Language;
         LastAccessTime.Value = t.LastAccessTime;
         LastImage.Value = t.LastImage;
@@ -160,6 +161,7 @@ public class TranslationViewModel : IDisposable
         Lighting.Value = t.Lighting;
         LightSource.Value = t.LightSource;
         LightTheme.Value = t.LightTheme;
+        LineSpacing.Value = t.LineSpacing ?? "Line Spacing";
         Longitude.Value = t.Longitude;
         Lossless.Value = t.Lossless;
         Lossy.Value = t.Lossy;
@@ -466,6 +468,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Inches { get; } = new();
     public BindableReactiveProperty<string?> InterfaceConfiguration { get; } = new();
     public BindableReactiveProperty<string?> ISOSpeed { get; } = new();
+    public BindableReactiveProperty<string?> ItemSpacing { get; } = new();
     public BindableReactiveProperty<string?> Language { get; } = new();
     public BindableReactiveProperty<string?> LastAccessTime { get; } = new();
     public BindableReactiveProperty<string?> LastImage { get; } = new();
@@ -475,6 +478,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Lighting { get; } = new();
     public BindableReactiveProperty<string?> LightSource { get; } = new();
     public BindableReactiveProperty<string?> LightTheme { get; } = new();
+    public BindableReactiveProperty<string?> LineSpacing { get; } = new();
     public BindableReactiveProperty<string?> Longitude { get; } = new();
     public BindableReactiveProperty<string?> Lossless { get; } = new();
     public BindableReactiveProperty<string?> Lossy { get; } = new();

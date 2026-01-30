@@ -267,6 +267,10 @@ public class Gallery
     /// Determines how images will be stretched or scaled.
     /// </summary>
     public string BottomGalleryStretchMode { get; set; } = "Uniform";
+
+    public double ItemSpacing { get; set; } = 25;
+
+    public double LineSpacing { get; set; } = 20;
 }
 
 public class ImageScaling
