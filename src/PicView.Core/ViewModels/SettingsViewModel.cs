@@ -2,6 +2,7 @@ using System.Diagnostics;
 using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Core.ColorHandling;
+using PicView.Core.Gallery;
 using PicView.Core.ISettings;
 using PicView.Core.Search;
 using R3;
@@ -167,7 +168,11 @@ public class SettingsViewModel : IDisposable
 
     public BindableReactiveProperty<int> DockPositionIndex { get; } = new((int)Settings.Gallery.DockPosition);
     public BindableReactiveProperty<double> DockedGalleryItemSize { get; } = new(Settings.Gallery.BottomGalleryItemSize);
+    public BindableReactiveProperty<double> DockedGalleryMaxItemSize { get; } = new(GalleryDefaults.MaxBottomGalleryItemHeight);
+    public BindableReactiveProperty<double> DockedGalleryMinItemSize { get; } = new(GalleryDefaults.MinBottomGalleryItemHeight);
     public BindableReactiveProperty<double> ExpandedGalleryItemSize { get; } = new(Settings.Gallery.ExpandedGalleryItemSize);
+    public BindableReactiveProperty<double> ExpandedGalleryMaxItemSize { get; } = new(GalleryDefaults.MaxFullGalleryItemHeight);
+    public BindableReactiveProperty<double> ExpandedGalleryMinItemSize { get; } = new(GalleryDefaults.MinFullGalleryItemHeight);
     public BindableReactiveProperty<double> GalleryItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
     public BindableReactiveProperty<double> GalleryLineSpacing { get; } = new(Settings.Gallery.LineSpacing);
     public BindableReactiveProperty<int> DockedGalleryStretchIndex { get; } = new(GetStretchIndex(Settings.Gallery.BottomGalleryStretchMode));

@@ -9,5 +9,5 @@ public static class GalleryDefaults
     public const int MinFullGalleryItemHeight = 45;
     
     public const int MaxBottomGalleryItemHeight = 125;
-    public const int MinBottomGalleryItemHeight = 25;
+    public const int MinBottomGalleryItemHeight = 30;
 }
