@@ -13,52 +13,26 @@ public partial class GalleryView2 : GalleryAnimationControl
 
     private void GalleryScrollViewer_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
-        if (DataContext is not TabViewModel vm)
+        if (Settings.Zoom.HorizontalReverseScroll)
         {
-            return;
-        }
-
-        var gallery = vm.Gallery;
-        var isHorizontal = (gallery.IsTopDocked.Value || gallery.IsBottomDocked.Value) && !gallery.IsGalleryExpanded.Value;
-
-        if (isHorizontal)
-        {
-            if (Settings.Zoom.HorizontalReverseScroll)
+            if (e.Delta.Y < 0)
             {
-                if (e.Delta.Y < 0)
-                {
-                    GalleryScrollViewer.LineRight();
-                }
-                else
-                {
-                    GalleryScrollViewer.LineLeft();
-                }
+                GalleryScrollViewer.LineRight();
             }
             else
             {
-                if (e.Delta.Y > 0)
-                {
-                    GalleryScrollViewer.LineRight();
-                }
-                else
-                {
-                    GalleryScrollViewer.LineLeft();
-                }
+                GalleryScrollViewer.LineLeft();
             }
         }
         else
         {
-            if (Settings.Zoom.HorizontalReverseScroll)
+            if (e.Delta.Y > 0)
             {
-                if (e.Delta.Y < 0)
-                {
-                    GalleryScrollViewer.LineUp();
-                }
-                else
-                {
-                    GalleryScrollViewer.LineDown();
-                }
-                e.Handled = true;
+                GalleryScrollViewer.LineRight();
+            }
+            else
+            {
+                GalleryScrollViewer.LineLeft();
             }
         }
     }

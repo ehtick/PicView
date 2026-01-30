@@ -95,6 +95,7 @@
         <Button
             BorderThickness="1,0,0,0"
             Classes="ButtonBorder hover"
+            Command="{CompiledBinding Gallery.ToggleGalleryCommand}"
             CornerRadius="0,0,0,45"
             DockPanel.Dock="Right"
             Height="60"
