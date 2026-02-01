@@ -174,7 +174,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         }
     }
 
-    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
+    public void Initialize(IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {
         Initialize();
         if (fileWatcherService != null)
@@ -185,10 +185,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         {
             ThumbnailCache = thumbnailCache;
         }
-        ImageIterator = new ImageIterator(cache, thumbnailLoader, this);
+        ImageIterator = new ImageIterator(cache, thumbCache, thumbnailLoader, this);
     }
 
-    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
+    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailCache thumbCache,  IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {
         if (fileWatcherService != null)
         {
@@ -199,7 +199,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
             ThumbnailCache = thumbnailCache;
             ThumbnailCache.RemoveOwner(Id);
         }
-        ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
+        ImageIterator ??= new ImageIterator(cache, thumbCache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
 

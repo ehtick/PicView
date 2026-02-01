@@ -61,19 +61,19 @@ public class TabOverviewViewModel
     }
     
     /// <inheritdoc cref="Initialize(INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService, IThumbnailCache)"/>>
-    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService, IThumbnailCache thumbnailCache)
+    public void LoadAndInitializeFromPath(IReadOnlyList<FileInfo> files, INavigationService navigationService, IImageCache cache, IThumbnailCache thumbCache,  IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService, thumbnailCache);
-        ActiveTab.Value.InitializeImageIterator(files, cache, thumbnailLoader, fileWatcherService, thumbnailCache);
+        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService, thumbCache);
+        ActiveTab.Value.InitializeImageIterator(files, cache, thumbCache, thumbnailLoader, fileWatcherService, thumbCache);
         SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
     /// <inheritdoc cref="Initialize(INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService, IThumbnailCache)"/>>
-    public void LoadAndInitialize(INavigationService navigationService, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService, IThumbnailCache thumbnailCache)
+    public void LoadAndInitialize(INavigationService navigationService, IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, IFileWatcherService fileWatcherService)
     {
-        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService, thumbnailCache);
-        ActiveTab.Value.InitializeImageIterator([], cache, thumbnailLoader, fileWatcherService, thumbnailCache);
-        ActiveTab.Value.Initialize(cache, thumbnailLoader, fileWatcherService, thumbnailCache);
+        Initialize(navigationService, cache, thumbnailLoader, fileWatcherService, thumbCache);
+        ActiveTab.Value.InitializeImageIterator([], cache, thumbCache, thumbnailLoader, fileWatcherService, thumbCache);
+        ActiveTab.Value.Initialize(cache, thumbCache, thumbnailLoader, fileWatcherService, thumbCache);
     }
     
     /// <summary>
@@ -106,7 +106,7 @@ public class TabOverviewViewModel
         var tab = CreateTabInternal(file);
         if (SharedCache != null && SharedThumbnailLoader != null && SharedThumbnailCache != null)
         {
-            tab.Initialize(SharedCache, SharedThumbnailLoader, SharedFileWatcher, SharedThumbnailCache);
+            tab.Initialize(SharedCache, SharedThumbnailCache, SharedThumbnailLoader, SharedFileWatcher, SharedThumbnailCache);
         }
         SharedCache!.RegisterOwner(tab.Id);
         SelectTab(tab);

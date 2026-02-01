@@ -31,7 +31,7 @@ public static class TabNavigationInitializer
         var thumbnailService = new AvaloniaThumbnailLoader();
 
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache, thumbnailService, fileWatcher, thumbnailCache);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache,thumbnailCache, thumbnailService, fileWatcher);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -61,7 +61,7 @@ public static class TabNavigationInitializer
 
         var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailService, fileWatcher, thumbnailCache);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -73,17 +73,15 @@ public static class TabNavigationInitializer
         // Initialize the NEW window's tabs with the OLD window's services
         // This ensures both windows share the same memory cache
         if (parentVm.WindowTabs.SharedCache is not { } cache ||
+            parentVm.WindowTabs.SharedThumbnailCache is not { } thumbCache || 
             parentVm.WindowTabs.SharedNavigation is not { } nav ||
-            parentVm.WindowTabs.SharedThumbnailLoader is not { } thumb ||
+            parentVm.WindowTabs.SharedThumbnailLoader is not { } thumbLoader ||
             parentVm.WindowTabs.SharedFileWatcher is not { } fileWatcher)
         {
             return;
         }
         
-        var thumbnailCache = parentVm.WindowTabs.SharedThumbnailCache;
-        if (thumbnailCache is null) return;
-        
-        newVm.WindowTabs.LoadAndInitialize(nav, cache, thumb, fileWatcher, thumbnailCache);
+        newVm.WindowTabs.LoadAndInitialize(nav, cache, thumbCache, thumbLoader, fileWatcher);
         newVm.WindowTabs.SetParentContext(newVm);
         newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
         newVm.WindowTabs.SelectTab(tab);

@@ -48,17 +48,19 @@ public class ThumbnailCache : IThumbnailCache
         {
             _thumbnails.TryRemove(path, out _);
 
-            if (_ownersByFile.TryGetValue(path, out var owners))
+            if (!_ownersByFile.TryGetValue(path, out var owners))
             {
-                foreach (var owner in owners)
-                {
-                    if (_filesByOwner.TryGetValue(owner, out var files))
-                    {
-                        files.Remove(path);
-                    }
-                }
-                _ownersByFile.Remove(path);
+                return;
             }
+
+            foreach (var owner in owners)
+            {
+                if (_filesByOwner.TryGetValue(owner, out var files))
+                {
+                    files.Remove(path);
+                }
+            }
+            _ownersByFile.Remove(path);
         }
     }
 
@@ -73,15 +75,19 @@ public class ThumbnailCache : IThumbnailCache
 
             foreach (var path in files)
             {
-                if (_ownersByFile.TryGetValue(path, out var owners))
+                if (!_ownersByFile.TryGetValue(path, out var owners))
                 {
-                    owners.Remove(ownerId);
-                    if (owners.Count == 0)
-                    {
-                        _ownersByFile.Remove(path);
-                        _thumbnails.TryRemove(path, out _);
-                    }
+                    continue;
                 }
+
+                owners.Remove(ownerId);
+                if (owners.Count != 0)
+                {
+                    continue;
+                }
+
+                _ownersByFile.Remove(path);
+                _thumbnails.TryRemove(path, out _);
             }
             
             _filesByOwner.Remove(ownerId);

@@ -7,9 +7,10 @@ using R3;
 
 namespace PicView.Core.Navigation;
 
-public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, TabViewModel tab) : IImageIterator
+public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, TabViewModel tab) : IImageIterator
 {
     private readonly IImageCache _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+    private readonly IThumbnailCache _thumbCache = thumbCache ?? throw new ArgumentNullException(nameof(thumbCache));
     private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
 
     private readonly IThumbnailLoader _thumbnailLoader =
@@ -331,6 +332,11 @@ public class ImageIterator(IImageCache cache, IThumbnailLoader thumbnailLoader, 
     private async ValueTask<(CacheStatus Status, ImageModel? Model)> LoadThumbnailInternalAsync(int index,
         FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
     {
+        if (_thumbCache.TryGet(file.FullName, out var cachedThumb))
+        {
+            return (statusToReturn, new ImageModel {Image = cachedThumb, FileInfo = file});
+        }
+        
         var thumb = await _thumbnailLoader.GetThumbnailAsync(file).ConfigureAwait(false);
 
         // Check for cancellation or navigation change before updating UI
