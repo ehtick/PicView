@@ -187,6 +187,12 @@ public class GalleryAnimationControl : UserControl
     
     private void SetExpandedLayout(GalleryDockPosition dock)
     {
+        SetExpandedLayoutCore(dock);
+        SetExpandedThumbs();
+    }
+    
+    private void SetExpandedLayoutCore(GalleryDockPosition dock)
+    {
         if (Parent is Control parent)
         {
             // Full size relative to parent
@@ -210,7 +216,10 @@ public class GalleryAnimationControl : UserControl
         }
         _itemsPanel?.Orientation = Orientation.Vertical;
         ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
-        
+    }
+
+    private void SetExpandedThumbs()
+    {
         if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
@@ -248,6 +257,13 @@ public class GalleryAnimationControl : UserControl
 
     private void SetDockedLayout(GalleryDockPosition dock)
     {
+        SetDockLayoutCore(dock);
+        
+        SetDockedThumbs(dock);
+    }
+
+    private void SetDockLayoutCore(GalleryDockPosition dock)
+    {
         var size = GetDockedHeight;
 
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
@@ -283,7 +299,10 @@ public class GalleryAnimationControl : UserControl
             _scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
         }
+    }
 
+    private void SetDockedThumbs(GalleryDockPosition dock)
+    {
         if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
@@ -364,7 +383,7 @@ public class GalleryAnimationControl : UserControl
             Height = double.NaN;
         }
         
-        SetDockedLayout(dock); // Set internal props (orientation etc)
+        SetDockLayoutCore(dock);
         // Reset size back to 0 for animation start after SetDockedLayout might have set it
         var targetSize = GetDockedHeight;
         
@@ -382,6 +401,7 @@ public class GalleryAnimationControl : UserControl
              await anim.RunAsync(this);
              Width = targetSize;
          }
+         SetDockedThumbs(dock);
     }
 
     private async Task DockedToClosed()
@@ -412,7 +432,7 @@ public class GalleryAnimationControl : UserControl
         if (ViewModel == null || Parent is not Control parent) return;
         var dock = Settings.Gallery.DockPosition;
         
-        SetExpandedLayout(dock); // Set props
+        SetExpandedLayoutCore(dock); // Set props
 
         var startSize = GetDockedHeight;
         
@@ -430,6 +450,7 @@ public class GalleryAnimationControl : UserControl
             await anim.RunAsync(this);
             Width = targetWidth;
         }
+        SetExpandedThumbs();
     }
 
     private async Task ExpandedToDocked()
