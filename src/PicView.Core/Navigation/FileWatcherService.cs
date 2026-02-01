@@ -12,6 +12,7 @@ namespace PicView.Core.Navigation;
 public class FileWatcherService : IFileWatcherService, IDisposable
 {
     private readonly IImageCache _cache;
+    private readonly IThumbnailCache? _thumbnailCache;
     private readonly Lock _lock = new();
     private readonly Func<string, string, int> _stringComparer;
 
@@ -20,10 +21,11 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         ConcurrentDictionary<string, (FileSystemWatcher Watcher, IDisposable Subscription,
             List<WeakReference<TabViewModel>> Subscribers)> _watchers = new();
 
-    public FileWatcherService(Func<string, string, int> stringComparer, IImageCache cache)
+    public FileWatcherService(Func<string, string, int> stringComparer, IImageCache cache, IThumbnailCache? thumbnailCache = null)
     {
         _stringComparer = stringComparer ?? throw new ArgumentNullException(nameof(stringComparer));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
+        _thumbnailCache = thumbnailCache;
     }
 
     public void Watch(TabViewModel tab, string? directory = null)
@@ -171,6 +173,8 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             return;
         }
 
+        _thumbnailCache?.Remove(e.FullPath);
+
         await HandleUpdateAsync(directory, async (tab, files) =>
         {
             var oldIndex = tab.ImageIterator.CurrentIndex;
@@ -216,6 +220,8 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         {
             return;
         }
+
+        _thumbnailCache?.Remove(e.OldFullPath);
 
         await HandleUpdateAsync(directory, (tab, files) =>
         {

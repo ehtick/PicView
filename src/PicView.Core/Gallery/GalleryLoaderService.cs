@@ -5,7 +5,7 @@ namespace PicView.Core.Gallery;
 
 public class GalleryLoaderService
 {
-    public static async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, CancellationToken ct)
+    public static async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, IThumbnailCache thumbnailCache, CancellationToken ct)
     {
         var dockedHeight = Settings.Gallery.BottomGalleryItemSize;
         var expandedHeight = Settings.Gallery.ExpandedGalleryItemSize;
@@ -34,10 +34,8 @@ public class GalleryLoaderService
             item.FileDate.Value = thumbData.FileDate;
             item.FileLocation.Value = thumbData.FileLocation;
             
-            // Add to batch instead of direct collection
             batchList.Add(item);
 
-            // Check if batch is full
             if (batchList.Count >= batchSize)
             {
                 tab.Gallery.GalleryItems.Value.AddRange(batchList);
@@ -64,9 +62,22 @@ public class GalleryLoaderService
             {
                 if (item.FileInfo is null) return;
                 
-                try 
+                try
                 {
-                    var thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
+                    object? thumb;
+                    if (thumbnailCache.TryGet(item.FileInfo.FullName, out var cached))
+                    {
+                        thumb = cached;
+                    }
+                    else
+                    {
+                        thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
+                    }
+
+                    if (thumb != null)
+                    {
+                        thumbnailCache.Add(tab.Id, item.FileInfo.FullName, thumb);
+                    }
                     item.Image.Value = thumb;
                 }
                 catch

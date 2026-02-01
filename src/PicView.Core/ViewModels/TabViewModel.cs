@@ -42,6 +42,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }
+    public IThumbnailCache? ThumbnailCache { get; private set; }
 
     private readonly GalleryLoaderService _galleryLoader = new();
     private IFileWatcherService? _fileWatcherService = fileWatcherService;
@@ -173,21 +174,30 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         }
     }
 
-    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null)
+    public void Initialize(IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {
         Initialize();
         if (fileWatcherService != null)
         {
             _fileWatcherService = fileWatcherService;
         }
+        if (thumbnailCache != null)
+        {
+            ThumbnailCache = thumbnailCache;
+        }
         ImageIterator = new ImageIterator(cache, thumbnailLoader, this);
     }
 
-    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null)
+    public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {
         if (fileWatcherService != null)
         {
             _fileWatcherService = fileWatcherService;
+        }
+        if (thumbnailCache != null)
+        {
+            ThumbnailCache = thumbnailCache;
+            ThumbnailCache.RemoveOwner(Id);
         }
         ImageIterator ??= new ImageIterator(cache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
@@ -201,7 +211,10 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
         
-        //_ = _galleryLoader.LoadGalleryAsync(this, files, thumbnailLoader, GetTabCancellation().Token);
+        if (ThumbnailCache != null)
+        { 
+            _ = GalleryLoaderService.LoadGalleryAsync(this, files, thumbnailLoader, ThumbnailCache, GetTabCancellation().Token);
+        }
     }
     
     public async ValueTask Next()
@@ -245,6 +258,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public async ValueTask DisposeAsync()
     {
         _fileWatcherService?.Unwatch(this);
+        ThumbnailCache?.RemoveOwner(Id);
         if (ImageIterator is not null)
         {
             await ImageIterator.DisposeAsync();

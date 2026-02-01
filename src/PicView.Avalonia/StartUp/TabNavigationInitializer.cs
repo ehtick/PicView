@@ -20,8 +20,9 @@ public static class TabNavigationInitializer
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
+        var thumbnailCache = core.SharedThumbnailCache;
         
-        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache);
+        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache);
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
@@ -30,7 +31,7 @@ public static class TabNavigationInitializer
         var thumbnailService = new AvaloniaThumbnailLoader();
 
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache, thumbnailService, fileWatcher);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache, thumbnailService, fileWatcher, thumbnailCache);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -48,8 +49,9 @@ public static class TabNavigationInitializer
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
+        var thumbnailCache = core.SharedThumbnailCache;
         
-        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache);
+        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache);
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
@@ -59,7 +61,7 @@ public static class TabNavigationInitializer
 
         var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailService, fileWatcher);
+        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailService, fileWatcher, thumbnailCache);
         core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
     }
@@ -78,7 +80,10 @@ public static class TabNavigationInitializer
             return;
         }
         
-        newVm.WindowTabs.LoadAndInitialize(nav, cache, thumb, fileWatcher);
+        var thumbnailCache = parentVm.WindowTabs.SharedThumbnailCache;
+        if (thumbnailCache is null) return;
+        
+        newVm.WindowTabs.LoadAndInitialize(nav, cache, thumb, fileWatcher, thumbnailCache);
         newVm.WindowTabs.SetParentContext(newVm);
         newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
         newVm.WindowTabs.SelectTab(tab);

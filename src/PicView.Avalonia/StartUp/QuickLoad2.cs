@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
@@ -79,7 +79,7 @@ public static class QuickLoad2
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
             await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files, new AvaloniaThumbnailLoader(),
-                vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token);
+                vm.SharedThumbnailCache, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token);
         }
     }
 }
