@@ -26,7 +26,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 
     public HoverbarViewModel Hoverbar { get; } = new();
     
-    public GalleryViewModel Gallery  { get; } = new();
+    public GalleryViewModel Gallery { get; } = new();
 
     /// Unique identifier for this tab.
     public string Id { get; } = id;
@@ -201,7 +201,7 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
         
-        _ = _galleryLoader.LoadGalleryAsync(this, files, thumbnailLoader, GetTabCancellation().Token);
+        //_ = _galleryLoader.LoadGalleryAsync(this, files, thumbnailLoader, GetTabCancellation().Token);
     }
     
     public async ValueTask Next()

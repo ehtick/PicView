@@ -81,7 +81,7 @@ public static class StartUpHelper2
         
         void ImageStartUp(string filePath)
         {
-            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
+            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
             HandleWindowScalingMode(vm, window);
 
@@ -92,7 +92,7 @@ public static class StartUpHelper2
 
         void BlankStartUp()
         {
-            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
+            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
             HandleWindowScalingMode(vm, window);
 
@@ -104,7 +104,7 @@ public static class StartUpHelper2
     public static void StartUpBlank(CoreViewModel vm, bool settingsExists, bool setPos,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
-        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
+        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
         
         HandleWindowScalingMode(vm, window, setPos);
 
@@ -118,7 +118,7 @@ public static class StartUpHelper2
         Window window)
     {
         TranslationManager.Init();
-        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue);
+        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
         HandleWindowScalingMode(vm, window);
 
@@ -153,8 +153,7 @@ public static class StartUpHelper2
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         SetMemorySettings();
-
-        Task.Run(() => LanguageUpdater2.UpdateLanguageAsync(vm.Translation, settingsExists));
+        
         if (settingsExists)
         {
             Task.Run(async () =>

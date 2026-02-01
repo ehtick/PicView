@@ -10,6 +10,7 @@ public class MainWindowViewModel : IDisposable
     public IPlatformWindowService? PlatformWindowService { get; set; }
     
     public TranslationViewModel Translation { get;  } 
+    public GallerySharedSettingsViewModel GallerySettings { get; }
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     public TabOverviewViewModel WindowTabs { get; } = new();
     
@@ -484,10 +485,11 @@ public class MainWindowViewModel : IDisposable
 
     #endregion
 
-    public MainWindowViewModel(TranslationViewModel translations, IPlatformWindowService windowService)
+    public MainWindowViewModel(TranslationViewModel translations, IPlatformWindowService windowService, GallerySharedSettingsViewModel gallerySettings)
     {
         Translation = translations;
         PlatformWindowService = windowService;
+        GallerySettings = gallerySettings;
         
         // Navigation
         NextCommand = new ReactiveCommand(Next);

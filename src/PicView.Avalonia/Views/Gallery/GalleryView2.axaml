@@ -1,4 +1,6 @@
 <customControls:GalleryAnimationControl
+    BorderBrush="{DynamicResource MainBorderColor}"
+    BorderThickness="1"
     x:Class="PicView.Avalonia.Views.Gallery.GalleryView2"
     x:DataType="viewModels:TabViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -116,9 +118,8 @@
         <customControls:AutoScrollViewer
             Background="{DynamicResource SecondaryBackgroundColor}"
             PointerWheelChanged="GalleryScrollViewer_OnPointerWheelChanged"
-            Theme="{StaticResource OverlayScroller}"
             x:Name="GalleryScrollViewer">
-            <ItemsControl ItemsSource="{CompiledBinding Gallery.GalleryItems.Value}" x:Name="GalleryItemsControl">
+            <ItemsControl x:Name="GalleryItemsControl">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <gallery:GalleryItem2 />
@@ -126,10 +127,11 @@
                 </ItemsControl.ItemTemplate>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel ItemsAlignment="Center"
-                                   ItemSpacing="{CompiledBinding Gallery.ItemSpacing.Value}"
-                                   LineSpacing="{CompiledBinding Gallery.LineSpacing.Value}"
-                                   x:Name="GalleryItemsPanel" />
+                        <WrapPanel
+                            ItemSpacing="{CompiledBinding Gallery.ItemSpacing.Value}"
+                            ItemsAlignment="Center"
+                            LineSpacing="{CompiledBinding Gallery.LineSpacing.Value}"
+                            x:Name="GalleryItemsPanel" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
             </ItemsControl>

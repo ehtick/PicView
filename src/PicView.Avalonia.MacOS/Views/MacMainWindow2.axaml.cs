@@ -26,7 +26,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
         {
             return;
         }
-        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this);
+        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GallerySettings);
         DataContext = mainWindowViewModel;
         InitializeComponent();
 

@@ -8,6 +8,7 @@ using PicView.Avalonia.Animations;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
+using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 using R3;
 
@@ -44,8 +45,10 @@ public class GalleryAnimationControl : UserControl
     private TabViewModel? ViewModel => DataContext as TabViewModel;
 
     private CompositeDisposable? _disposables;
+    
     private AutoScrollViewer? _scrollViewer;
     private WrapPanel? _itemsPanel;
+    
     private const int BorderTopAndBottomThickness = 2;
 
     // Tracks the previous mode to determine the animation transition
@@ -108,6 +111,9 @@ public class GalleryAnimationControl : UserControl
     #endregion
 
     #region Logic
+    
+    private static double GetDockedHeight =>
+        Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness + SizeDefaults.ScrollbarSize;
 
     private async ValueTask OnGalleryModeChanged(GalleryMode2 newMode)
     {
@@ -202,14 +208,47 @@ public class GalleryAnimationControl : UserControl
             _scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
         }
-        ViewModel.Gallery.GalleryVerticalAlignment.Value = VerticalAlignment.Stretch;
         _itemsPanel?.Orientation = Orientation.Vertical;
         ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
+        
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        var gallerySettings = core.GallerySettings;
+
+        // Set the height based on Expanded configuration
+        gallerySettings.ItemHeight.Value = Settings.Gallery.ExpandedGalleryItemSize;
+
+        string stretchValue;
+        var isSquare = false;
+        var mode = Settings.Gallery.FullGalleryStretchMode;
+
+        // Determine stretch mode and squareness
+        if (string.Equals(mode, "Square", StringComparison.OrdinalIgnoreCase))
+        {
+            stretchValue = "Uniform";
+            isSquare = true;
+        }
+        else if (string.Equals(mode, "FillSquare", StringComparison.OrdinalIgnoreCase))
+        {
+            stretchValue = "Fill";
+            isSquare = true;
+        }
+        else
+        {
+            stretchValue = mode;
+        }
+
+        // Apply final settings
+        gallerySettings.GalleryStretch.Value = stretchValue;
+        gallerySettings.ItemWidth.Value = isSquare ? gallerySettings.ItemHeight.CurrentValue : double.NaN;
     }
 
     private void SetDockedLayout(GalleryDockPosition dock)
     {
-        var size = Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness;
+        var size = GetDockedHeight;
 
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
@@ -244,28 +283,61 @@ public class GalleryAnimationControl : UserControl
             _scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
             _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
         }
+
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        var gallerySettings = core.GallerySettings;
         
-        ViewModel.Gallery.IsLeftDocked.Value = ViewModel.Gallery.IsRightDocked.Value = ViewModel.Gallery.IsBottomDocked.Value = ViewModel.Gallery.IsTopDocked.Value = false;
+        gallerySettings.IsLeftDocked.Value =
+            gallerySettings.IsRightDocked.Value =
+                gallerySettings.IsBottomDocked.Value =
+                    gallerySettings.IsTopDocked.Value = false;
         switch (dock)
         {
             case GalleryDockPosition.Top:
                 DockPanel.SetDock(this, Dock.Top);
-                ViewModel.Gallery.IsTopDocked.Value = true;
+                gallerySettings.IsTopDocked.Value = true;
                 break;
             case GalleryDockPosition.Left:
                 DockPanel.SetDock(this, Dock.Left);
-                ViewModel.Gallery.IsLeftDocked.Value = true;
+                gallerySettings.IsLeftDocked.Value = true;
                 break;
             case GalleryDockPosition.Right:
                 DockPanel.SetDock(this, Dock.Right);
-                ViewModel.Gallery.IsRightDocked.Value = true;
+                gallerySettings.IsRightDocked.Value = true;
                 break;
             case GalleryDockPosition.Bottom:
             default:
                 DockPanel.SetDock(this, Dock.Bottom);
-                ViewModel.Gallery.IsBottomDocked.Value = true;
+                gallerySettings.IsBottomDocked.Value = true;
                 break;
         }
+
+        gallerySettings.ItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
+        string stretchValue;
+        var isSquare = false;
+        var mode = Settings.Gallery.BottomGalleryStretchMode;
+
+        if (string.Equals(mode, "Square", StringComparison.OrdinalIgnoreCase))
+        {
+            stretchValue = "Uniform";
+            isSquare = true;
+        }
+        else if (string.Equals(mode, "FillSquare", StringComparison.OrdinalIgnoreCase))
+        {
+            stretchValue = "Fill";
+            isSquare = true;
+        }
+        else
+        {
+            stretchValue = mode;
+        }
+
+        gallerySettings.GalleryStretch.Value = stretchValue;
+        gallerySettings.ItemWidth.Value = isSquare ? gallerySettings.ItemHeight.CurrentValue : double.NaN; 
 
         ViewModel.Gallery.ItemSpacing.Value = 2;
     }
@@ -294,7 +366,7 @@ public class GalleryAnimationControl : UserControl
         
         SetDockedLayout(dock); // Set internal props (orientation etc)
         // Reset size back to 0 for animation start after SetDockedLayout might have set it
-        var targetSize = Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness;
+        var targetSize = GetDockedHeight;
         
          if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
          {
@@ -316,8 +388,8 @@ public class GalleryAnimationControl : UserControl
     {
          if (ViewModel == null) return;        
          var dock = Settings.Gallery.DockPosition;
-         
-         var currentSize = Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness;
+
+         var currentSize = GetDockedHeight;
          
          if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
          {
@@ -341,8 +413,8 @@ public class GalleryAnimationControl : UserControl
         var dock = Settings.Gallery.DockPosition;
         
         SetExpandedLayout(dock); // Set props
-        
-        var startSize = Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness;
+
+        var startSize = GetDockedHeight;
         
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
@@ -369,7 +441,7 @@ public class GalleryAnimationControl : UserControl
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
             var startHeight = parent.Bounds.Height;
-            var targetHeight = Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness;
+            var targetHeight = GetDockedHeight;
             
             // Override height for animation start
             Height = startHeight;

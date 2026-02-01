@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+using ObservableCollections;
 using PicView.Core.Config;
 using PicView.Core.Gallery;
 using R3;
@@ -12,16 +12,7 @@ public class GalleryViewModel : IDisposable
     public GalleryViewModel()
     {
         SetStretchModeCommand = new ReactiveCommand<string>();
-        SetStretchModeCommand.Subscribe(mode => GalleryStretchService.SetStretch(this, mode)).AddTo(_disposables);
-
-        GalleryItems.Subscribe(_ =>
-        {
-            GalleryStretchService.SetStretch(this, Settings.Gallery.BottomGalleryStretchMode);
-        }).AddTo(_disposables);
         
-        // Initial set
-        GalleryStretchService.SetStretch(this, Settings.Gallery.BottomGalleryStretchMode);
-
         Observable.EveryValueChanged(Settings.Gallery, g => g.ItemSpacing)
             .Subscribe(x =>
             {
@@ -52,6 +43,7 @@ public class GalleryViewModel : IDisposable
         }).AddTo(_disposables);
 
         // Commands
+        
         SetGalleryModeCommand = new ReactiveCommand<GalleryMode2>();
         SetGalleryModeCommand.Subscribe(mode => GalleryMode.Value = mode).AddTo(_disposables);
         
@@ -71,43 +63,35 @@ public class GalleryViewModel : IDisposable
         CloseGalleryCommand = new ReactiveCommand<Unit>();
         CloseGalleryCommand.Subscribe(_ => GalleryMode.Value = GalleryMode2.Closed).AddTo(_disposables);
     }
-
+    
     public ReactiveCommand<string> SetStretchModeCommand { get; }
+    public BindableReactiveProperty<object> GalleryStretch { get; } = new();
+    
     public ReactiveCommand<GalleryMode2> SetGalleryModeCommand { get; }
     public ReactiveCommand<GalleryDockPosition> SetDockPositionCommand { get; }
     public ReactiveCommand<Unit> ToggleGalleryCommand { get; }
     public ReactiveCommand<Unit> CloseGalleryCommand { get; }
 
-    public BindableReactiveProperty <ObservableCollection<GalleryItemViewModel>> GalleryItems { get; } = new([]);
+    public BindableReactiveProperty <ObservableList<GalleryItemViewModel>> GalleryItems { get; } = new([]);
     public BindableReactiveProperty<GalleryMode2> GalleryMode { get; }
-
-    public BindableReactiveProperty<object> GalleryStretch { get; } = new();
     public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
-
+    
+    public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
+    public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
     public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
     public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
-
-    public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
-    public BindableReactiveProperty<bool> IsTopDocked { get; } = new();
-    public BindableReactiveProperty<bool> IsBottomDocked { get; } = new();
-    public BindableReactiveProperty<bool> IsLeftDocked { get; } = new();
-    public BindableReactiveProperty<bool> IsRightDocked { get; } = new();
     
-    public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
-    public BindableReactiveProperty<bool> IsDockedGalleryShownInHiddenUI { get; } =
-        new(Settings.Gallery.ShowBottomGalleryInHiddenUI);
+
 
     public void Dispose()
     {
         _disposables.Dispose();
-        Disposable.Dispose(GalleryItems,
-            IsDockedGalleryVisible,
-            IsDockedGalleryShownInHiddenUI,
+        Disposable.Dispose(
+            GalleryItems,
             GalleryMode,
-            GalleryStretch,
             GalleryVerticalAlignment,
             IsGalleryExpanded,
             GalleryMode
-            );
+        );
     }
 }

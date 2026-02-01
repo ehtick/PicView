@@ -39,14 +39,6 @@ public class TabOverviewViewModel
         ActiveTab = new BindableReactiveProperty<TabViewModel>(CreateInitialTab());
         ActiveTab.Value.IsSelected = true;
     }
-    
-    public TabOverviewViewModel(TabViewModel initialTab)
-    {
-        Tabs.Value.Add(initialTab);
-        ActiveTab = new BindableReactiveProperty<TabViewModel>(initialTab);
-        ActiveTab.Value.IsSelected = true;
-        ActiveTabIndex.Value = 0;
-    }
 
     /// <summary>
     /// Initialize the navigation service. Must be called before any other methods.

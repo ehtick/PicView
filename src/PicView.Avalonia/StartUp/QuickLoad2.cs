@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
@@ -69,5 +70,11 @@ public static class QuickLoad2
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model = imageModel;
         TabNavigationInitializer.Initialize(vm, fileInfo);
         vm.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
+
+        if (Settings.Gallery.IsGalleryDocked)
+        {
+            await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files, new AvaloniaThumbnailLoader(),
+                vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token);
+        }
     }
 }

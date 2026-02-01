@@ -6,16 +6,18 @@ namespace PicView.Core.Gallery;
 
 public class GalleryLoaderService
 {
-    public async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, CancellationToken ct)
+    public static async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, CancellationToken ct)
     {
-        // Create new collection
-        var newItems = new ObservableCollection<GalleryItemViewModel>();
-
-        var currentHeight = Settings.Gallery.BottomGalleryItemSize;
-        if (currentHeight <= 0)
+        var dockedHeight = Settings.Gallery.BottomGalleryItemSize;
+        var expandedHeight = Settings.Gallery.ExpandedGalleryItemSize;
+        var maxHeight = Math.Max(dockedHeight, expandedHeight);
+        if (maxHeight <= 0)
         {
-            currentHeight = GalleryDefaults.DefaultBottomGalleryHeight;
+            maxHeight = GalleryDefaults.DefaultBottomGalleryHeight;
         }
+
+        const int batchSize = 20;
+        var batchList = new List<GalleryItemViewModel>(batchSize);
 
         // Populate items with metadata
         foreach (var file in files)
@@ -32,16 +34,23 @@ public class GalleryLoaderService
             item.FileSize.Value = thumbData.FileSize;
             item.FileDate.Value = thumbData.FileDate;
             item.FileLocation.Value = thumbData.FileLocation;
-
-            // Set initial size
-            item.ItemHeight.Value = currentHeight;
-            // Width is usually auto or based on aspect ratio, handled by UI or loaded image
             
-            newItems.Add(item);
+            // Add to batch instead of direct collection
+            batchList.Add(item);
+
+            // Check if batch is full
+            if (batchList.Count >= batchSize)
+            {
+                tab.Gallery.GalleryItems.Value.AddRange(batchList);
+                batchList.Clear();
+            }
         }
 
-        // Update the collection in the VM to show items immediately
-        tab.Gallery.GalleryItems.Value = newItems;
+        // Add any remaining items in the final batch
+        if (batchList.Count > 0)
+        {
+            tab.Gallery.GalleryItems.Value.AddRange(batchList);
+        }
 
         // Load thumbnails asynchronously
         var parallelOptions = new ParallelOptions 
@@ -52,17 +61,13 @@ public class GalleryLoaderService
         
         try 
         {
-            await Parallel.ForEachAsync(newItems, parallelOptions, async (item, token) =>
+            await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
             {
                 if (item.FileInfo is null) return;
                 
                 try 
                 {
-                    // Use a reasonable size for thumbnail loading
-                    // We can check GalleryDefaults or use the current height
-                    var size = (uint)Math.Max(currentHeight, GalleryDefaults.MaxFullGalleryItemHeight);
-                    
-                    var thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, size).ConfigureAwait(false);
+                    var thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
                     item.Image.Value = thumb;
                 }
                 catch

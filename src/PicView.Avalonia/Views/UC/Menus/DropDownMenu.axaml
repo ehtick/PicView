@@ -93,7 +93,7 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            IsEnabled="{CompiledBinding !WindowTabs.ActiveTab.Value.Gallery.IsBottomDocked.Value}"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsBottomDocked.Value}"
                             Padding="15,7,15,7"
                             Text="Show docked gallery at bottom" />
                         <customControls:TextIconButton
@@ -106,7 +106,7 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            IsEnabled="{CompiledBinding !WindowTabs.ActiveTab.Value.Gallery.IsLeftDocked.Value}"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
                             Padding="15,7,15,7"
                             Text="Show docked gallery to the left" />
                         <customControls:TextIconButton
@@ -119,7 +119,7 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            IsEnabled="{CompiledBinding !WindowTabs.ActiveTab.Value.Gallery.IsRightDocked.Value}"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
                             Padding="15,7,15,7"
                             Text="Show docked gallery to the right" />
                         <customControls:TextIconButton
@@ -132,7 +132,7 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            IsEnabled="{CompiledBinding !WindowTabs.ActiveTab.Value.Gallery.IsTopDocked.Value}"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsTopDocked.Value}"
                             Padding="15,7,15,7"
                             Text="Show docked gallery at top" />
                         <customControls:TextIconButton

@@ -1,4 +1,3 @@
-using PicView.Core.Gallery;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -7,19 +6,14 @@ public class GalleryItemViewModel : IDisposable
 {
     public void Dispose()
     {
-        Disposable.Dispose(ItemWidth,
-            ItemHeight,
+        Disposable.Dispose(
             Image,
             FileName,
             FileLocation,
             FileSize,
             FileDate);
     }
-
-    // Layout Properties
-    public BindableReactiveProperty<double> ItemWidth { get; } = new(0);
-    public BindableReactiveProperty<double> ItemHeight { get; } = new(0);
-
+    
     // Data Properties
     public BindableReactiveProperty<object?> Image { get; } = new();
     public BindableReactiveProperty<string> FileName { get; } = new();

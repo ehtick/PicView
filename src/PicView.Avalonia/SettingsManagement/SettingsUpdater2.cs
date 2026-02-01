@@ -64,8 +64,10 @@ public static class SettingsUpdater2
 
 
 
-    public static void InitializeSettings(MainWindowViewModel vm)
+    public static void InitializeSettings(MainWindowViewModel vm, bool settingsExists)
     {
+        Task.Run(() => LanguageUpdater2.UpdateLanguageAsync(vm.Translation, settingsExists));
+        
         //MainWindowViewModel.GetAndSetWindowMinSize(vm);
         
         // Set corner radius on macOS
