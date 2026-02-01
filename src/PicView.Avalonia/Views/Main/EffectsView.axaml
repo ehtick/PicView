@@ -512,6 +512,7 @@
                 <SplitButton
                     Background="{DynamicResource AccentColor}"
                     Classes="BorderStyle accentHover mainBtn"
+                    Command="{CompiledBinding Tools.SaveFileCommand}"
                     CornerRadius="4"
                     Width="195"
                     x:Name="SaveButton">
@@ -524,6 +525,7 @@
                     <SplitButton.Flyout>
                         <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
                             <MenuItem
+                                Command="{CompiledBinding Tools.SaveFileAsCommand}"
                                 Header="{CompiledBinding Translation.SaveAs.Value,
                                                          Mode=OneWay}"
                                 HorizontalAlignment="Center"

@@ -26,7 +26,17 @@ public partial class ZoomPreviewer : UserControl
     {
         InitializeComponent();
 
-        CloseButton.Click += delegate { SetInvisible(); };
+        CloseButton.Click += delegate
+        {
+            SetInvisible();
+            Settings.Zoom.IsShowingZoomPreviewer = false;
+            if (DataContext is not MainViewModel vm)
+            {
+                return;
+            }
+
+            vm.MainWindow.IsZoomPreviewerVisible.Value = false;
+        };
 
         // Add pointer event handlers for dragging
         AddHandler(PointerPressedEvent, OnPointerPressed, RoutingStrategies.Tunnel);
@@ -285,7 +295,7 @@ public partial class ZoomPreviewer : UserControl
                 {
                     var opacityAnim = AnimationsHelper.OpacityAnimation(1, 0, TimeSpan.FromSeconds(0.5));
                     await opacityAnim.RunAsync(this);
-                    IsVisible = false;
+                    IsHitTestVisible = false;
                 }
             });
         }, null, TimeSpan.FromSeconds(2.5), Timeout.InfiniteTimeSpan);
@@ -294,13 +304,12 @@ public partial class ZoomPreviewer : UserControl
     public void SetVisible()
     {
         Opacity = 1;
-        IsVisible = true;
+        IsHitTestVisible = true;
     }
 
     public void SetInvisible()
     {
-        Opacity = 1;
-        IsVisible = false;
+        IsHitTestVisible = false;
     }
 
     internal void UpdateViewportRect()

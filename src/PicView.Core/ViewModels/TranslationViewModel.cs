@@ -284,6 +284,7 @@ public class TranslationViewModel : IDisposable
         ShowInFolder.Value = t.ShowInFolder;
         ShowUI.Value = t.ShowUI;
         ShowZoomPercentagePopup.Value = t.ShowZoomPercentagePopup;
+        ShowZoomPreviewer.Value = t.ShowZoomPreviewer;
         SideBySide.Value = t.SideBySide;
         SideBySideTooltip.Value = t.SideBySideTooltip;
         SizeMp.Value = t.SizeMp;
@@ -596,6 +597,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ShowInFolder { get; } = new();
     public BindableReactiveProperty<string?> ShowUI { get; } = new();
     public BindableReactiveProperty<string?> ShowZoomPercentagePopup { get; } = new();
+    public BindableReactiveProperty<string?> ShowZoomPreviewer { get; } = new();
     public BindableReactiveProperty<string?> SideBySide { get; } = new();
     public BindableReactiveProperty<string?> SideBySideTooltip { get; } = new();
     public BindableReactiveProperty<string?> SizeMp { get; } = new();
