@@ -1,8 +1,8 @@
-using Avalonia.Threading;
+using Avalonia;
 using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.Gallery;
 using PicView.Core.Navigation.Interfaces;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Navigation.Services;
 
@@ -10,10 +10,16 @@ public class AvaloniaThumbnailLoader : IThumbnailLoader
 {
     public async ValueTask<object?> GetThumbnailAsync(FileInfo file)
     {
-        return null;
-        var vm = await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return null;
+        }
+
+        var defaultItemHeight = core.GallerySettings.ItemHeight.Value > 0
+            ? core.GallerySettings.ItemHeight.Value
+            : GalleryDefaults.DefaultFullGalleryHeight;
         
-        return await GetThumbnails.GetThumbAsync(file, (uint)vm.Gallery.GalleryItem.ItemHeight.Value).ConfigureAwait(false);
+        return await GetThumbnails.GetThumbAsync(file, (uint)defaultItemHeight).ConfigureAwait(false);
     }
 
     public async ValueTask<object?> GetThumbnailAsync(FileInfo file, uint size)

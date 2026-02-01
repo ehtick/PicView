@@ -1,3 +1,4 @@
+using PicView.Core.DebugTools;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.ViewModels;
 
@@ -56,39 +57,70 @@ public class GalleryLoaderService
             MaxDegreeOfParallelism = Environment.ProcessorCount - 2
         };
         
+        
         try 
         {
-            await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
+            if (thumbnailCache.IsEmpty())
             {
-                if (item.FileInfo is null) return;
-                
-                try
+                await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
                 {
-                    object? thumb;
-                    if (thumbnailCache.TryGet(item.FileInfo.FullName, out var cached))
-                    {
-                        thumb = cached;
-                    }
-                    else
-                    {
-                        thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
-                    }
+                    await LoadItem(item).ConfigureAwait(false);
+                });
+            }
+            else
+            {
+                await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
+                {
+                    await CheckAndLoad(item).ConfigureAwait(false);
+                });
+            }
 
-                    if (thumb != null)
-                    {
-                        thumbnailCache.Add(tab.Id, item.FileInfo.FullName, thumb);
-                    }
-                    item.Image.Value = thumb;
-                }
-                catch
-                {
-                    // Ignore errors during thumbnail loading
-                }
-            });
         }
         catch (OperationCanceledException)
         {
             // Allowed
+        }
+        return;
+
+        async ValueTask CheckAndLoad(GalleryItemViewModel item)
+        {
+            if (item.FileInfo is null)
+            {
+                DebugHelper.LogDebug(nameof(GalleryLoaderService), nameof(LoadGalleryAsync), "Invalid file");
+                return;
+            }
+            
+            object? thumb;
+            if (thumbnailCache.TryGet(item.FileInfo.FullName, out var cached))
+            {
+                thumb = cached;
+            }
+            else
+            {
+                thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
+            }
+
+            if (thumb != null)
+            {
+                thumbnailCache.Add(tab.Id, item.FileInfo.FullName, thumb);
+            }
+            item.Image.Value = thumb;
+        }
+        
+        async ValueTask LoadItem(GalleryItemViewModel item)
+        {
+            if (item.FileInfo is null)
+            {
+                DebugHelper.LogDebug(nameof(GalleryLoaderService), nameof(LoadGalleryAsync), "Invalid file");
+                return;
+            }
+            
+            var thumb = await thumbnailLoader.GetThumbnailAsync(item.FileInfo, (uint)maxHeight).ConfigureAwait(false);
+            if (thumb != null)
+            {
+                thumbnailCache.Add(tab.Id, item.FileInfo.FullName, thumb);
+            }
+            item.Image.Value = thumb;
         }
     }
 }

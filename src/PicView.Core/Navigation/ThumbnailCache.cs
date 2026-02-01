@@ -37,10 +37,8 @@ public class ThumbnailCache : IThumbnailCache
         }
     }
 
-    public bool TryGet(string path, out object? thumbnail)
-    {
-        return _thumbnails.TryGetValue(path, out thumbnail);
-    }
+    public bool TryGet(string path, out object? thumbnail) =>
+        _thumbnails.TryGetValue(path, out thumbnail);
 
     public void Remove(string path)
     {
@@ -103,4 +101,7 @@ public class ThumbnailCache : IThumbnailCache
             _filesByOwner.Clear();
         }
     }
+
+    public bool IsEmpty() =>
+        _thumbnails.IsEmpty;
 }

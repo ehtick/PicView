@@ -27,4 +27,6 @@ public interface IThumbnailCache
     /// Clears the entire cache.
     /// </summary>
     void Clear();
+
+    bool IsEmpty();
 }
