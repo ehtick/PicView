@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.ViewModels;
 

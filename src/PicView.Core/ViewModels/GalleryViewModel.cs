@@ -57,11 +57,28 @@ public class GalleryViewModel : IDisposable
         ToggleGalleryCommand = new ReactiveCommand<Unit>();
         ToggleGalleryCommand.Subscribe(_ =>
         {
-            GalleryMode.Value = GalleryMode.Value == GalleryMode2.Expanded ? GalleryMode2.Docked : GalleryMode2.Expanded;
+            if (Settings.Gallery.IsGalleryDocked && IsGalleryExpanded.CurrentValue)
+            {
+                GalleryMode.Value = GalleryMode2.Docked;
+            }
+            else if (IsGalleryExpanded.CurrentValue)
+            {
+                GalleryMode.Value = GalleryMode2.Closed;
+            }
+            else
+            {
+                GalleryMode.Value = GalleryMode2.Expanded;
+            }
+            //GalleryMode.Value = GalleryMode.Value == GalleryMode2.Expanded ? GalleryMode2.Docked : GalleryMode2.Expanded;
         }).AddTo(_disposables);
         
         CloseGalleryCommand = new ReactiveCommand<Unit>();
-        CloseGalleryCommand.Subscribe(_ => GalleryMode.Value = GalleryMode2.Closed).AddTo(_disposables);
+        CloseGalleryCommand.Subscribe(_ =>
+        {
+            Settings.Gallery.IsGalleryDocked = false;
+            Settings.Gallery.DockPosition = GalleryDockPosition.Closed;
+            GalleryMode.Value = GalleryMode2.Closed;
+        }).AddTo(_disposables);
     }
     
     public ReactiveCommand<string> SetStretchModeCommand { get; }

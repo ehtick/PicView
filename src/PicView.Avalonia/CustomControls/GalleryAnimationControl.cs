@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using PicView.Avalonia.Animations;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
@@ -35,11 +36,9 @@ public class GalleryAnimationControl : UserControl
 
     #region Fields and Properties
 
-    private const double FastAnimationSpeed = 0.3;
+    private const double FastAnimationSpeed = 0.35;
     private const double MediumAnimationSpeed = 0.5;
     private const double SlowAnimationSpeed = 0.6;
-    private const double FullOpacity = 1.0;
-    private const double NoOpacity = 0.0;
     private const int ZeroSize = 0;
 
     private TabViewModel? ViewModel => DataContext as TabViewModel;
@@ -99,6 +98,7 @@ public class GalleryAnimationControl : UserControl
         Debug.Assert(Settings.Gallery is not null);
         // Also subscribe to DockPosition, as changing it while Docked might need layout updates
         Observable.EveryValueChanged(Settings.Gallery, gallery =>  gallery.DockPosition)
+            .Skip(1)
             .Subscribe(SetDockedLayout)
             .AddTo(_disposables);
 
@@ -167,7 +167,6 @@ public class GalleryAnimationControl : UserControl
         var dock = Settings.Gallery.DockPosition;
 
         IsVisible = mode != GalleryMode2.Closed;
-        Opacity = IsVisible ? FullOpacity : NoOpacity;
 
         switch (mode)
         {
@@ -309,30 +308,48 @@ public class GalleryAnimationControl : UserControl
         }
 
         var gallerySettings = core.GallerySettings;
-        
-        gallerySettings.IsLeftDocked.Value =
-            gallerySettings.IsRightDocked.Value =
-                gallerySettings.IsBottomDocked.Value =
-                    gallerySettings.IsTopDocked.Value = false;
         switch (dock)
         {
             case GalleryDockPosition.Top:
                 DockPanel.SetDock(this, Dock.Top);
                 gallerySettings.IsTopDocked.Value = true;
+                gallerySettings.IsBottomDocked.Value = false;
+                gallerySettings.IsLeftDocked.Value = false;
+                gallerySettings.IsRightDocked.Value = false;
                 break;
             case GalleryDockPosition.Left:
                 DockPanel.SetDock(this, Dock.Left);
+                gallerySettings.IsTopDocked.Value = false;
+                gallerySettings.IsBottomDocked.Value = false;
                 gallerySettings.IsLeftDocked.Value = true;
+                gallerySettings.IsRightDocked.Value = false;
                 break;
             case GalleryDockPosition.Right:
                 DockPanel.SetDock(this, Dock.Right);
+                gallerySettings.IsTopDocked.Value = false;
+                gallerySettings.IsBottomDocked.Value = false;
+                gallerySettings.IsLeftDocked.Value = false;
                 gallerySettings.IsRightDocked.Value = true;
                 break;
             case GalleryDockPosition.Bottom:
-            default:
                 DockPanel.SetDock(this, Dock.Bottom);
+                gallerySettings.IsTopDocked.Value = false;
                 gallerySettings.IsBottomDocked.Value = true;
+                gallerySettings.IsLeftDocked.Value = false;
+                gallerySettings.IsRightDocked.Value = false;
                 break;
+            case GalleryDockPosition.Closed:
+            default:
+                if (Settings.Gallery.IsGalleryDocked)
+                {
+                    goto case GalleryDockPosition.Bottom;
+                }
+                gallerySettings.IsLeftDocked.Value =
+                    gallerySettings.IsRightDocked.Value =
+                        gallerySettings.IsBottomDocked.Value =
+                            gallerySettings.IsTopDocked.Value = false;
+                IsVisible = false;
+                return;
         }
 
         gallerySettings.ItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
@@ -369,7 +386,6 @@ public class GalleryAnimationControl : UserControl
         var dock = Settings.Gallery.DockPosition;
         
         IsVisible = true;
-        Opacity = FullOpacity;
         
         // Reset dimensions
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
@@ -405,13 +421,12 @@ public class GalleryAnimationControl : UserControl
     }
 
     private async Task DockedToClosed()
-    {
-         if (ViewModel == null) return;        
-         var dock = Settings.Gallery.DockPosition;
+    { 
+         var dock = DockPanel.GetDock(this);
 
          var currentSize = GetDockedHeight;
          
-         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
+         if (dock is Dock.Bottom or Dock.Top)
          {
              var anim = AnimationsHelper.HeightAnimation(currentSize, ZeroSize, FastAnimationSpeed);
              await anim.RunAsync(this);
@@ -488,32 +503,50 @@ public class GalleryAnimationControl : UserControl
 
     private async Task ClosedToExpanded()
     {
-        var dock = Settings.Gallery.DockPosition;
-
         IsVisible = true;
-        Opacity = NoOpacity;
+        Width = Height = ZeroSize;
+        double targetWidth, targetHeight;
+        if (Parent is Control parent)
+        {
+            targetHeight = parent.Bounds.Height;
+            targetWidth = parent.Bounds.Width;
+        }
+        else
+        {
+            return;
+        }
         
-        SetExpandedLayout(dock);
+        var widthAnim = AnimationsHelper.WidthAnimation(Width, targetWidth, MediumAnimationSpeed);
+        var heightAnim = AnimationsHelper.HeightAnimation(Height, targetHeight, MediumAnimationSpeed);
         
-        var anim = AnimationsHelper.OpacityAnimation(NoOpacity, FullOpacity, MediumAnimationSpeed);
-        await anim.RunAsync(this);
+        await Task.WhenAll(
+            widthAnim.RunAsync(this),
+            heightAnim.RunAsync(this)
+        );
         
-        Opacity = FullOpacity;
+        // Configure ScrollViewer
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+            _scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+        }
+        _itemsPanel?.Orientation = Orientation.Vertical;
+        ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
+        
+        SetExpandedThumbs();
     }
 
     private async Task ExpandedToClosed()
     {
-        if (ViewModel == null) return;
+        var widthAnim = AnimationsHelper.WidthAnimation(Bounds.Width, ZeroSize, FastAnimationSpeed);
+        var heightAnim = AnimationsHelper.HeightAnimation(Bounds.Height, ZeroSize, FastAnimationSpeed);
         
-        var anim = AnimationsHelper.OpacityAnimation(FullOpacity, NoOpacity, FastAnimationSpeed);
-        await anim.RunAsync(this);
+        await Task.WhenAll(
+            widthAnim.RunAsync(this),
+            heightAnim.RunAsync(this)
+        );
         
-        Opacity = NoOpacity;
         IsVisible = false;
-        
-        // Reset sizes
-        Width = ZeroSize;
-        Height = ZeroSize;
     }
 
     #endregion

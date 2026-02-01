@@ -4,6 +4,7 @@ using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
+using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
@@ -73,6 +74,10 @@ public static class QuickLoad2
 
         if (Settings.Gallery.IsGalleryDocked)
         {
+            if (Settings.Gallery.DockPosition is GalleryDockPosition.Closed)
+            {
+                Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
+            }
             await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files, new AvaloniaThumbnailLoader(),
                 vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token);
         }
