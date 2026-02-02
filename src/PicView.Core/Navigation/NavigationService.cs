@@ -41,7 +41,7 @@ public class NavigationService(
             tab.UpdateTabTitle();
             cache.Clear(tab.Id);
             cache.Add(tab.Id, index, new PreLoadValue(model), tab.ImageIterator.Files.Count, false);
-            cache.Preload(tab.Id, index, false, tab.ImageIterator.Files);
+            cache.Preload(tab.Id, index, false, tab.ImageIterator.Files, tab.GetTabCancellation().Token);
         }
         catch (Exception e)
         {
@@ -131,10 +131,7 @@ public class NavigationService(
 
     private async ValueTask LoadFromUrlAsync(string url, TabViewModel tab, CancellationTokenSource ct)
     {
-        if (tab.ImageIterator is not null)
-        {
-            await tab.ImageIterator.DisposeAsync().ConfigureAwait(false);
-        }
+        tab.ImageIterator?.Dispose();
 
         platformService.StopTaskbarProgress();
         var safeFileName = HttpManager.GetSafeFileName(url);

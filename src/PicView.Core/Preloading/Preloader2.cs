@@ -10,41 +10,55 @@ public class Preloader2 : IPreloader
 {
     private readonly IImageCache _cache;
     private readonly Func<FileInfo, ValueTask<ImageModel>> _imageModelLoader;
-
-    // One worker per Tab (OwnerId)
-    private readonly ConcurrentDictionary<string, PreloadWorker> _workers = new();
-
+    private int _isRunningFlag; // 0 = idle, 1 = running
+    private Dictionary<string , string> Owners = new();
+    private string _currentOwner;
+    private readonly Lock _lock = new();
+    
     public Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache)
     {
         _imageModelLoader = imageModelLoader ?? throw new ArgumentNullException(nameof(imageModelLoader));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
     }
 
-    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files)
+    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token)
     {
         if (files is null || files.Count == 0)
         {
             DebugHelper.LogDebug(nameof(Preloader2), nameof(Preload), "No files to preload");
             return;
         }
-
-        var worker = _workers.GetOrAdd(ownerId, CreateWorker);
-        var job = new PreloadJob(currentIndex, reversed, files);
-
-        // Non-blocking write
-        worker.Writer.TryWrite(job);
+        if (Interlocked.CompareExchange(ref _isRunningFlag, 1, 0) != 0)
+        {
+            if (ownerId != _currentOwner)
+            {
+                return; // Already running
+            }
+            // Allow other tab s to preload
+        }
+        
+        Task.Run(() => PreLoadInternalAsync(ownerId, currentIndex, files, reversed, token), token);
+        lock (_lock)
+        {
+            _currentOwner = ownerId;
+        }
     }
 
     public void RegisterOwner(string ownerId)
     {
-        _workers.GetOrAdd(ownerId, CreateWorker);
+        lock (_lock)
+        {
+            Owners.Add(ownerId, ownerId);
+        }
+
     }
 
-    public async ValueTask CancelOwnerInstanceAsync(string ownerId)
+    public void RemoveOwner(string ownerId)
     {
-        if (_workers.TryRemove(ownerId, out var worker))
+        lock (_lock)
         {
-            await worker.DisposeAsync().ConfigureAwait(false);
+            var foundKey = Owners.FirstOrDefault(x => x.Value.Equals(ownerId)).Key;
+            Owners.Remove(foundKey);
         }
     }
 
@@ -145,117 +159,73 @@ public class Preloader2 : IPreloader
     {
         _cache.Resynchronize(ownerId, files);
     }
-
-    private PreloadWorker CreateWorker(string ownerId)
+    
+    private async Task PreLoadInternalAsync(string ownerId, int currentIndex, IReadOnlyList<FileInfo> list, bool reversed, CancellationToken token)
     {
-        // Pass the method that performs the actual heavy lifting
-        return new PreloadWorker((job, token) => ExecuteBatchLoadAsync(ownerId, job, token));
-    }
+        var count = list.Count;
+        var nextStartingIndex = (currentIndex + 1) % count;
+        var prevStartingIndex = (currentIndex - 1 + count) % count;
 
-    /// <summary>
-    /// The core logic for calculating indices and loading them concurrently.
-    /// </summary>
-    private async Task ExecuteBatchLoadAsync(string ownerId, PreloadJob job, CancellationToken token)
-    {
-        // 1. Calculate the indices we want to load
-        var indicesToLoad = GetLookaheadIndices(job);
-
-        // 2. Setup concurrency limits
-        using var semaphore = new SemaphoreSlim(PreLoaderConfig.MaxParallelism);
-        var tasks = new List<Task>(indicesToLoad.Count);
-
-        foreach (var index in indicesToLoad)
+        var options = new ParallelOptions
         {
-            if (token.IsCancellationRequested)
-            {
-                break;
-            }
+            MaxDegreeOfParallelism = PreLoaderConfig.MaxParallelism,
+            CancellationToken = token
+        };
 
-            // 3. Queue the tasks. 
-            // Note: We do NOT await here. We add the task to the list.
-            // The semaphore inside LoadItemInternal ensures we don't flood the system.
-            tasks.Add(LoadItemInternal(ownerId, index, job.Files, job.Reversed, semaphore, token));
-        }
-
-        // 4. Wait for this batch to finish (or be cancelled)
-        await Task.WhenAll(tasks).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Wraps the AddAsync call with Semaphore throttling.
-    /// </summary>
-    private async Task LoadItemInternal(string ownerId, int index, IReadOnlyList<FileInfo> list, bool reversed,
-        SemaphoreSlim semaphore, CancellationToken token)
-    {
-        // Wait for a slot to open up
-        await semaphore.WaitAsync(token).ConfigureAwait(false);
         try
         {
+            if (reversed)
+            {
+                await LoopAsync(options, false);
+                await LoopAsync(options, true);
+            }
+            else
+            {
+                await LoopAsync(options, true);
+                await LoopAsync(options, false);
+            }
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(Preloader2), nameof(PreLoadInternalAsync), ex);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _isRunningFlag, 0);
+        }
+        
+        return;
+
+
+        async Task LoopAsync(ParallelOptions parallelOptions, bool positive)
+        {
+            if (positive)
+            {
+                await Parallel.ForAsync(0, PreLoaderConfig.PositiveIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((nextStartingIndex + i) % count); });
+            }
+            else
+            {
+                await Parallel.ForAsync(0, PreLoaderConfig.NegativeIterations, parallelOptions,
+                    async (i, _) => { await AddAddition((prevStartingIndex - i + count) % count); });
+            }
+        }
+
+        async Task AddAddition(int index)
+        {
+            token.ThrowIfCancellationRequested();
             // Double check cancellation after waiting
             if (token.IsCancellationRequested)
             {
                 return;
             }
-
-            await AddAsync(ownerId, index, list, reversed, token).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException)
-        {
-            // Ignore
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(Preloader2), nameof(LoadItemInternal), ex);
-        }
-        finally
-        {
-            semaphore.Release();
-        }
-    }
-
-    /// <summary>
-    /// Generates the list of indices to preload based on direction.
-    /// </summary>
-    private static List<int> GetLookaheadIndices(PreloadJob job)
-    {
-        var results = new List<int>();
-        var count = job.Files.Count;
-        var start = job.Index;
-
-        // Prioritize based on direction (reversed = user going left/up)
-        if (job.Reversed)
-        {
-            AddBackward(PreLoaderConfig.NegativeIterations); // e.g. Look behind 5
-            AddForward(PreLoaderConfig.PositiveIterations); // e.g. Look ahead 2
-        }
-        else
-        {
-            AddForward(PreLoaderConfig.PositiveIterations); // e.g. Look ahead 5
-            AddBackward(PreLoaderConfig.NegativeIterations); // e.g. Look behind 2
-        }
-
-        return results;
-
-        void AddForward(int iterations)
-        {
-            for (var i = 1; i <= iterations; i++)
+        
+            if (_cache.TryGet(ownerId, index, out _))
             {
-                results.Add(Wrap(start + i));
+                // Return early if cached
+                return;
             }
-        }
-
-        void AddBackward(int iterations)
-        {
-            for (var i = 1; i <= iterations; i++)
-            {
-                results.Add(Wrap(start - i));
-            }
-        }
-
-        // Helper for wrap-around math
-        int Wrap(int i)
-        {
-            return (i % count + count) % count;
+            await AddAsync(ownerId, index, list, reversed, token);
         }
     }
 }

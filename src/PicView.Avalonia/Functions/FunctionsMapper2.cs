@@ -1027,9 +1027,10 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
         return ValueTask.CompletedTask;
     }
     
-    public async ValueTask CloseTab()
+    public ValueTask CloseTab()
     {
-        await vm.WindowTabs.CloseTabAsync();
+        vm.WindowTabs.CloseTab();
+        return ValueTask.CompletedTask;
     }
     
     public ValueTask StopRepeatedNavigation()

@@ -17,7 +17,7 @@ namespace PicView.Core.ViewModels;
 /// lifecycle of resources specific to this tab instance.
 /// </para>
 /// </summary>
-public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatcherService? fileWatcherService = null) : IAsyncDisposable
+public class TabViewModel(string id, Action<string> closeTab, IFileWatcherService? fileWatcherService = null) : IDisposable
 {
     /// The MainViewModel that currently "owns" this tab
     public object? ParentWindowContext { get; set; }
@@ -167,11 +167,11 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         await ImageIterator.IterateToIndexAsync(prev, NavigationCts).ConfigureAwait(false);
     }
 
-    public async ValueTask CloseTab()
+    public void CloseTab()
     {
         IsClosing = true; // Signal it to be removed from the UI
-        await closeTab(Id);
-        await DisposeAsync();
+        closeTab(Id);
+        Dispose();
     }
 
     public CancellationTokenSource GetTabCancellation()
@@ -183,14 +183,11 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         return NavigationCts;
     }
     
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
         _fileWatcherService?.Unwatch(this);
         ThumbnailCache?.RemoveOwner(Id);
-        if (ImageIterator is not null)
-        {
-            await ImageIterator.DisposeAsync();
-        }
+        ImageIterator?.Dispose();
         NavigationCts.Dispose();
         
         GC.SuppressFinalize(this);

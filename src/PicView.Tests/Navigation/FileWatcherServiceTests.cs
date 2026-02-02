@@ -119,7 +119,7 @@ public class FileWatcherServiceTests : IDisposable
 
     private TabViewModel CreateTab(string directory)
     {
-        var tab = new TabViewModel("test", _ => ValueTask.CompletedTask);
+        var tab = new TabViewModel("test", null);
         // We need to set a model so Watcher can find directory
         // But usually Watch() is called after InitializeImageIterator which likely has files.
         // If Model is null, Watch does nothing.
@@ -153,7 +153,7 @@ public class FileWatcherServiceTests : IDisposable
         // Stub other methods
         public Task<ImageModel?> LoadAsync(string ownerId, int index, IReadOnlyList<FileInfo> list, CancellationToken ct = default) => Task.FromResult<ImageModel?>(null);
         public void RegisterOwner(string ownerId) { }
-        public ValueTask RemoveOwner(string ownerId) => ValueTask.CompletedTask;
+        public void RemoveOwner(string ownerId) { }
         public bool TryGet(FileInfo f, out PreLoadValue? value) { value = null; return false; }
         public bool TryGet(string ownerId, int index, out PreLoadValue? value) { value = null; return false; }
         public bool TryGet(ReadOnlySpan<char> f, out PreLoadValue? value) { value = null; return false; }
@@ -163,8 +163,8 @@ public class FileWatcherServiceTests : IDisposable
         public bool Contains(PreLoadValue value) => false;
         public bool Add(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse) => false;
         public bool TryAdd(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse, out PreLoadValue? value) { value = null; return false; }
-        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files) { }
-        public ValueTask Clear(TabViewModel tab) => ValueTask.CompletedTask;
+        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) { }
+        public void Clear(TabViewModel tab) { }
         public void TryRemove(string ownerId, int index) { }
     }
 

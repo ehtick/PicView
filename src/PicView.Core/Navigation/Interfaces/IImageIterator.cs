@@ -7,7 +7,7 @@
 /// logic for looping, skipping (next/previous), and resolving the next target index.
 /// </para>
 /// </summary>
-public interface IImageIterator : IAsyncDisposable
+public interface IImageIterator : IDisposable
 {
     /// <summary>
     /// The list of files currently being iterated.

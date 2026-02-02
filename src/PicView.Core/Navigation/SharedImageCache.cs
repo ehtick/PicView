@@ -43,10 +43,10 @@ public class SharedImageCache : IImageCache
         _preLoader.RegisterOwner(ownerId);
     }
 
-    public async ValueTask RemoveOwner(string ownerId)
+    public void RemoveOwner(string ownerId)
     {
         _items.DecreaseCapacity(ownerId);
-        await _preLoader.CancelOwnerInstanceAsync(ownerId).ConfigureAwait(false);
+        _preLoader.RemoveOwner(ownerId);
     }
 
     public bool TryGet(FileInfo f, out PreLoadValue? value) =>
@@ -80,11 +80,15 @@ public class SharedImageCache : IImageCache
         return evicted;
     }
 
-    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files) 
-        => _preLoader.Preload(ownerId, currentIndex, reversed, files);
-    
-    public async ValueTask Clear(TabViewModel tab) =>
-        await RemoveOwner(tab.Id);
+    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) 
+        => _preLoader.Preload(ownerId, currentIndex, reversed, files, token);
+
+    public void Clear(TabViewModel tab)
+    {
+        var id = tab.Id;
+        RemoveOwner(id);
+        _items.Clear(id);
+    }
 
     public void TryRemove(string ownerId, int index)
     {

@@ -65,7 +65,7 @@ public class TabOverviewViewModel
     {
         Initialize(navigationService, cache, thumbnailLoader, fileWatcherService, thumbCache);
         ActiveTab.Value.InitializeImageIterator(files, cache, thumbCache, thumbnailLoader, fileWatcherService, thumbCache);
-        SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files);
+        SharedCache.Preload(ActiveTab.Value.Id, ActiveTab.Value.ImageIterator.CurrentIndex, false, files, ActiveTab.CurrentValue.GetTabCancellation().Token);
         CanActiveTabNavigate.Value = files.Count > 1;
     }
     /// <inheritdoc cref="Initialize(INavigationService, IImageCache, IThumbnailLoader, IFileWatcherService, IThumbnailCache)"/>>
@@ -91,7 +91,7 @@ public class TabOverviewViewModel
     private TabViewModel CreateTabInternal(FileInfo? file = null)
     {
         var id = Guid.NewGuid().ToString("N");
-        var tab = new TabViewModel(id, CloseTabAsync, SharedFileWatcher);
+        var tab = new TabViewModel(id, CloseTab, SharedFileWatcher);
         tab.ParentWindowContext = _parentVm;
         if (file is not null)
         {
@@ -152,23 +152,24 @@ public class TabOverviewViewModel
         CanActiveTabNavigate.Value = ActiveTab.Value.ImageIterator?.Files?.Count > 1;
     }
     
-    public async ValueTask CloseTabAsync()
+    public void CloseTab()
     {
         var tab = ActiveTab.Value;
-        await CloseTabAsync(tab);
+        CloseTab(tab);
     }
     
-    public async ValueTask CloseTabAsync(string tabId)
+    public void CloseTab(string tabId)
     {
         var tab = Tabs.Value.FirstOrDefault(t => t.Id == tabId);
-        if (tab is not null)
+        if (tab is null)
         {
-            await CloseTabAsync(tab);
+            return;
         }
+        CloseTab(tab);
     }
 
 
-    public async ValueTask CloseTabAsync(TabViewModel tab)
+    public void CloseTab(TabViewModel tab)
     {
         // 1. Guard Clause: Prevent closing if this is the last tab.
         if (Tabs.Value.Count <= 1)
@@ -196,17 +197,9 @@ public class TabOverviewViewModel
             SelectTab(Tabs.Value[newIndex]);
         }
 
-        if (SharedCache is not null)
-        {
-            await SharedCache.RemoveOwner(tab.Id);
-        }
-        
+        SharedCache?.RemoveOwner(tab.Id);
         SharedThumbnailCache?.RemoveOwner(tab.Id);
-    
-        if (tab is not null)
-        {
-            await tab.DisposeAsync();
-        }
+        tab.Dispose();
     }
 
     // Used when detaching the tab

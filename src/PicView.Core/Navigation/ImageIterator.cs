@@ -146,7 +146,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
         void Cancel()
         {
-            _cache.Preload(_tab.Id, index, IsReversed, Files);
+            _cache.Preload(_tab.Id, index, IsReversed, Files, _tab.GetTabCancellation().Token);
         }
 
         async ValueTask Update()
@@ -181,7 +181,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             _tab.MaxIndex.Value = Files.Count;
 
             // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
-            _cache.Preload(_tab.Id, index, IsReversed, Files);
+            _cache.Preload(_tab.Id, index, IsReversed, Files, _tab.GetTabCancellation().Token);
         }
     }
 
@@ -373,10 +373,10 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     #region IDispose
 
-    public async ValueTask DisposeAsync()
+    public void Dispose()
     {
         _timer?.Dispose();
-        await _cache.RemoveOwner(_tab.Id);
+        _cache.RemoveOwner(_tab.Id);
         _disposable?.Dispose();
         GC.SuppressFinalize(this);
     }

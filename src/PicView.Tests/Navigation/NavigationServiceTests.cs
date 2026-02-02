@@ -61,7 +61,7 @@ public class NavigationServiceTests
 
     private TabViewModel CreateTab(string directory)
     {
-        var tab = new TabViewModel("test", _ => ValueTask.CompletedTask);
+        var tab = new TabViewModel("test", null);
         // Initialize with mocks to avoid null refs
         tab.Initialize(_mockCache, new MockThumbnailCache(), new MockThumbnailLoader());
         tab.ImageIterator.Files = new List<FileInfo>();
@@ -116,10 +116,10 @@ public class NavigationServiceTests
         public bool Contains(PreLoadValue value) => false;
         public bool Add(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse) => false;
         public bool TryAdd(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse, out PreLoadValue? value) { value = null; return false; }
-        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files) { }
-        public ValueTask RemoveOwner(string ownerId) => ValueTask.CompletedTask;
+        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) { }
+        public void RemoveOwner(string ownerId) { }
         public void RegisterOwner(string ownerId) { }
-        public ValueTask Clear(TabViewModel tab) => ValueTask.CompletedTask;
+        public void Clear(TabViewModel tab) { }
         public void TryRemove(string ownerId, int index) { }
         public void Resynchronize(string ownerId, IReadOnlyList<FileInfo> files) { }
     }

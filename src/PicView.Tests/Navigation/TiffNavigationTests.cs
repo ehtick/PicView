@@ -28,7 +28,7 @@ public class TiffNavigationTests : IDisposable
 
         _cache = new MockImageCache();
         _mockThumbnailCache = new MockThumbnailCache();
-        _tab = new TabViewModel("test", _ => ValueTask.CompletedTask);
+        _tab = new TabViewModel("test", null);
         _tab.Initialize(_cache, _mockThumbnailCache, new MockThumbnailLoader());
         
         // Setup 3 files
@@ -188,7 +188,7 @@ public class TiffNavigationTests : IDisposable
 
     public void Dispose()
     {
-        _iterator.DisposeAsync().AsTask().Wait();
+        _iterator.Dispose();
     }
 
     // Mocks
@@ -213,10 +213,10 @@ public class TiffNavigationTests : IDisposable
         public bool Contains(PreLoadValue value) => false;
         public bool Add(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse) => false;
         public bool TryAdd(string ownerId, int index, PreLoadValue preLoadValue, int listCount, bool isReverse, out PreLoadValue? value) { value = null; return false; }
-        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files) { }
-        public ValueTask RemoveOwner(string ownerId) => ValueTask.CompletedTask;
+        public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) { }
+        public void RemoveOwner(string ownerId) { }
         public void RegisterOwner(string ownerId) { }
-        public ValueTask Clear(TabViewModel tab) => ValueTask.CompletedTask;
+        public void Clear(TabViewModel tab) { }
         public void TryRemove(string ownerId, int index) { }
         public void Resynchronize(string ownerId, IReadOnlyList<FileInfo> files) { }
     }

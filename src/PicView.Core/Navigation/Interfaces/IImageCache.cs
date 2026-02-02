@@ -63,13 +63,13 @@ public interface IImageCache
     /// <summary>
     /// Initiates the background predictive loading (pre-fetching) process.
     /// </summary>
-    void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files);
+    void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token);
     
     /// <summary>
     /// Removes an owner from the cache tracking. 
     /// Should be called when a Tab is closed to free up reserved capacity.
     /// </summary>
-    ValueTask RemoveOwner(string ownerId);
+    void RemoveOwner(string ownerId);
 
     /// <summary>
     /// Registers a new owner (tab) to allow it to reserve capacity in the cache.
@@ -79,7 +79,7 @@ public interface IImageCache
     /// <summary>
     /// Helper to clear resources specifically for a <see cref="TabViewModel"/>.
     /// </summary>
-    ValueTask Clear(TabViewModel tab);
+    void Clear(TabViewModel tab);
 
     void TryRemove(string ownerId, int index);
 
