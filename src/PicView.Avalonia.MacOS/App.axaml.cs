@@ -79,7 +79,7 @@ public class App : Application, IPlatformSpecificService
                 // If the event fired BEFORE we got here, start with that file.
                 if (startUpFilePath is not null)
                 {
-                    StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow);
+                    StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow, _mainWindow.Disposables);
                     hasHandledInitialFile = true;
 
                     if (Settings.WindowProperties.AutoFit)
@@ -90,7 +90,7 @@ public class App : Application, IPlatformSpecificService
                 else
                 {
                     // If no file yet, start normally (Last File / StartUpMenu)
-                    StartUpHelper2.RegularStartUp(_coreViewModel, settingsExists, desktop, _mainWindow);
+                    StartUpHelper2.RegularStartUp(_coreViewModel, settingsExists, desktop, _mainWindow, _mainWindow.Disposables);
                 }
             }, DispatcherPriority.Send);
 

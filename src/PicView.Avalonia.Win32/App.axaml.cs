@@ -59,7 +59,7 @@ public class App : Application, IPlatformSpecificService
         _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
         _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
         _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
-        StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow);
+        StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow, _mainWindow.Disposables);
 
         desktop.MainWindow = _mainWindow;
     }

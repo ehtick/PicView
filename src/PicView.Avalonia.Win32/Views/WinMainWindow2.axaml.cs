@@ -19,6 +19,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
 {
     private readonly AvaloniaRenderingFrameProvider? _frameProvider;
     private static WindowInitializer? _windowInitializer;
+    public readonly CompositeDisposable Disposables = new();
 
     public WinMainWindow2()
     {
@@ -43,7 +44,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
         Loaded += delegate
         {
             _windowInitializer = new WindowInitializer();
-            if (Application.Current.DataContext is not CoreViewModel coreViewModel || DataContext is not MainWindowViewModel windowViewModel)
+            if (Application.Current.DataContext is not CoreViewModel || DataContext is not MainWindowViewModel windowViewModel)
             {
                 return;
             }
@@ -225,7 +226,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
                 desktop.MainWindow = newWindow;
             }, DispatcherPriority.Send);
 
-            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
+            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab, Disposables);
         });
     }
 
@@ -263,6 +264,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
     protected override void OnClosed(EventArgs e)
     {
         _frameProvider?.Dispose();
+        Disposables.Dispose();
         base.OnClosed(e);
     }
     

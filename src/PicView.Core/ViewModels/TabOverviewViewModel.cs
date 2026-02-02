@@ -286,11 +286,6 @@ public class TabOverviewViewModel
     private async ValueTask NextFileCore(NavigateTo navigateTo)
     {
         var tab = ActiveTab.Value;
-
-        if (!CanActiveTabNavigate.Value || SharedNavigation is null)
-        {
-            return;
-        }
         var ct = tab.GetTabCancellation();
         await SharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
     }

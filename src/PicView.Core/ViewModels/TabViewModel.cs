@@ -1,6 +1,5 @@
 using PicView.Core.Extensions;
 using PicView.Core.Gallery;
-using PicView.Core.Localization;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -22,7 +21,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 {
     /// The MainViewModel that currently "owns" this tab
     public object? ParentWindowContext { get; set; }
-    private CompositeDisposable? Disposables { get; set; }
 
     public HoverbarViewModel Hoverbar { get; } = new();
     
@@ -79,70 +77,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
     public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
 
     /// <summary>
-    /// Initializes the TabViewModel instance by setting up necessary disposables
-    /// and subscribing to model changes. If the instance is already initialized,
-    /// this method returns without performing any further action.
-    /// </summary>
-    public void Initialize()
-    {
-        if (Disposables is null)
-        {
-            Disposables = new CompositeDisposable();
-        }
-        else
-        {
-            // Already initialized
-            return;
-        }
-
-        ModelSubscription();
-    }
-
-    private void ModelSubscription()
-    {
-        Observable.EveryValueChanged(this, tab => tab.Model.FileInfo)
-            .Subscribe(file =>
-            {
-                // Trigger file changes to UI
-                FileInfo.Value = file;
-                
-                // Update title to reflect file changes
-                if (file is null)
-                {
-                    var noImage = TranslationManager.Translation?.NoImage;
-                    if (string.IsNullOrEmpty(noImage))
-                    {
-                        return;
-                    }
-
-                    TabTitle.Value = noImage;
-                    TabTooltip.Value = noImage;
-                    return;
-                }
-
-                TabTitle.Value = file.Name;
-                TabTooltip.Value = file.FullName;
-                UpdateTabTitle();
-            })
-            .AddTo(Disposables);
-        Observable.EveryValueChanged(this, tab => tab.Model.Image)
-            .Subscribe(image =>
-            {
-                // Trigger image change to UI
-                Image.Value = image;
-                
-                // Update tiff title if appropriate (there are no file changes in this instance
-                if (Model.TiffNavigation is null)
-                {
-                    return;
-                }
-
-                UpdateTabTitle();
-            })
-            .AddTo(Disposables);
-    }
-
-    /// <summary>
     /// Updates the window title and tab title based on the current image model.
     /// </summary>
     public void UpdateTabTitle()
@@ -176,7 +110,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
 
     public void Initialize(IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {
-        Initialize();
         if (fileWatcherService != null)
         {
             _fileWatcherService = fileWatcherService;
@@ -210,11 +143,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
-        
-        if (ThumbnailCache != null)
-        { 
-            _ = GalleryLoaderService.LoadGalleryAsync(this, files, thumbnailLoader, ThumbnailCache, GetTabCancellation().Token);
-        }
     }
     
     public async ValueTask Next()
@@ -263,7 +191,6 @@ public class TabViewModel(string id, Func<string, ValueTask> closeTab, IFileWatc
         {
             await ImageIterator.DisposeAsync();
         }
-        Disposables?.Dispose();
         NavigationCts.Dispose();
         
         GC.SuppressFinalize(this);

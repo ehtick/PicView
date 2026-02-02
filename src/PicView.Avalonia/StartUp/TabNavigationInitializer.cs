@@ -1,13 +1,18 @@
+using Avalonia.Threading;
 using PicView.Avalonia.Navigation.Services;
+using PicView.Avalonia.UI;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using PicView.Core.Localization;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.StartUp;
 
 public static class TabNavigationInitializer
 {
-    public static void Initialize(CoreViewModel core)
+    public static void Initialize(CoreViewModel core, CompositeDisposable disposable)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -29,14 +34,17 @@ public static class TabNavigationInitializer
         var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, core.PlatformService.CompareStrings);
 
         var thumbnailService = new AvaloniaThumbnailLoader();
+        var tabOverView = core.MainWindows.ActiveWindow.Value.WindowTabs;
+        var tab = tabOverView.ActiveTab.CurrentValue;
 
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitialize(navService, sharedCache,thumbnailCache, thumbnailService, fileWatcher);
-        core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
-        core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
+        tabOverView.LoadAndInitialize(navService, sharedCache,thumbnailCache, thumbnailService, fileWatcher);
+        tabOverView.SetParentContext(core);
+        tab.UpdateTabTitle();
+        ModelSubscription(tab, disposable);
     }
     
-    public static void Initialize(CoreViewModel core, FileInfo fileInfo)
+    public static void Initialize(CoreViewModel core, FileInfo fileInfo, CompositeDisposable disposable)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -61,12 +69,15 @@ public static class TabNavigationInitializer
 
         var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
-        core.MainWindows.ActiveWindow.Value.WindowTabs.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
-        core.MainWindows.ActiveWindow.Value.WindowTabs.SetParentContext(core);
-        core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.UpdateTabTitle();
+        var tabOverView = core.MainWindows.ActiveWindow.Value.WindowTabs;
+        var tab = tabOverView.ActiveTab.CurrentValue;
+        tabOverView.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
+        tabOverView.SetParentContext(core);
+        tab.UpdateTabTitle();
+        ModelSubscription(tab, disposable);
     }
     
-    public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab)
+    public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab, CompositeDisposable disposable)
     {
         newVm.WindowTabs.Tabs.Value[0] = tab;
         
@@ -90,5 +101,59 @@ public static class TabNavigationInitializer
         // Need to properly remove it from the previous location
         parentVm.WindowTabs.RemoveTab(tab);
         parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
+        ModelSubscription(tab, disposable);
+    }
+    
+    private static void ModelSubscription(TabViewModel tabViewModel, CompositeDisposable disposable)
+    {
+        // Subscribing with AvaloniaRenderingFrameProvider is faster and fixes not being able to navigate while gallery is loading
+        try
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Observable.EveryValueChanged(tabViewModel, tab => tab.Model.FileInfo, UIHelper2.GetFrameProvider)
+                    .Subscribe(file =>
+                    {
+                        // Trigger file changes to UI
+                        tabViewModel.FileInfo.Value = file;
+
+                        // Update title to reflect file changes
+                        if (file is null)
+                        {
+                            var noImage = TranslationManager.Translation?.NoImage;
+                            if (string.IsNullOrEmpty(noImage))
+                            {
+                                return;
+                            }
+
+                            tabViewModel.TabTitle.Value = noImage;
+                            tabViewModel.TabTooltip.Value = noImage;
+                            return;
+                        }
+
+                        tabViewModel.TabTitle.Value = file.Name;
+                        tabViewModel.TabTooltip.Value = file.FullName;
+                        tabViewModel.UpdateTabTitle();
+                    }).AddTo(disposable);
+                Observable.EveryValueChanged(tabViewModel, tab => tab.Model.Image, UIHelper2.GetFrameProvider)
+                    .Subscribe(image =>
+                    {
+                        // Trigger image change to UI
+                        tabViewModel.Image.Value = image;
+
+                        // Update tiff title if appropriate (there are no file changes in this instance
+                        if (tabViewModel.Model.TiffNavigation is null)
+                        {
+                            return;
+                        }
+
+                        tabViewModel.UpdateTabTitle();
+                    }).AddTo(disposable);
+            });
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(ModelSubscription), e);
+        }
     }
 }

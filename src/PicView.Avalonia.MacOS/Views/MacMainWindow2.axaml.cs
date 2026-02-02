@@ -17,7 +17,7 @@ namespace PicView.Avalonia.MacOS.Views;
 public partial class MacMainWindow2 : Window, IPlatformWindowService
 {
     private readonly AvaloniaRenderingFrameProvider? _frameProvider;
-    private readonly CompositeDisposable _disposables = new();
+    public readonly CompositeDisposable Disposables = new();
     private static WindowInitializer? _windowInitializer;
 
     public MacMainWindow2()
@@ -46,7 +46,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                     }
 
                     WindowResizing.HandleWindowResize(this, size);
-                }).AddTo(_disposables);
+                }).AddTo(Disposables);
             if (DataContext is not MainWindowViewModel vm)
             {
                 return;
@@ -78,7 +78,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                         }
                         break;
                 }
-            }).AddTo(_disposables);
+            }).AddTo(Disposables);
             
             // Hide macOS buttons when interface is hidden
             Observable.EveryValueChanged(vm, x => x.IsTopToolbarShown.CurrentValue, _frameProvider).Subscribe(shown =>
@@ -214,7 +214,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                 }
             }, DispatcherPriority.Send);
 
-            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
+            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab, Disposables);
         });
     }
 
@@ -242,7 +242,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
     protected override void OnClosed(EventArgs e)
     {
         _frameProvider?.Dispose();
-        _disposables.Dispose();
+        Disposables.Dispose();
         base.OnClosed(e);
     }
     

@@ -10,6 +10,7 @@ using PicView.Core.FileHandling;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.StartUp;
 
@@ -26,7 +27,7 @@ public static class QuickLoad2
     /// <param name="file">The file, URL, or directory path to be loaded.</param>
     /// <param name="window">The main window used to optimize when it is shown, to avoid flickering from quick resizing.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async ValueTask QuickLoadAsync(CoreViewModel vm, string file, Window window, bool continueFromLeftOff)
+    public static async ValueTask QuickLoadAsync(CoreViewModel vm, string file, Window window, CompositeDisposable disposable, bool continueFromLeftOff)
     {
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.CurrentValue.WindowTitle.Value = vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.CurrentValue.Title.Value =
             TranslationManager.Translation.Loading ?? "Loading...";
@@ -64,12 +65,11 @@ public static class QuickLoad2
             DebugHelper.LogDebug(nameof(QuickLoad), nameof(QuickLoadAsync), e);
         }
 
-        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Initialize();
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.GalleryMode.Value = GalleryMode2.Docked;
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
 
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model = imageModel;
-        TabNavigationInitializer.Initialize(vm, fileInfo);
+        TabNavigationInitializer.Initialize(vm, fileInfo, disposable);
         vm.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
 
         if (Settings.Gallery.IsGalleryDocked)
@@ -78,8 +78,13 @@ public static class QuickLoad2
             {
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
-            await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files, new AvaloniaThumbnailLoader(),
-                vm.SharedThumbnailCache, vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token);
+
+            await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+                    vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
+                    new AvaloniaThumbnailLoader(),
+                    vm.SharedThumbnailCache,
+                    vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
+                .ConfigureAwait(false);
         }
     }
 }

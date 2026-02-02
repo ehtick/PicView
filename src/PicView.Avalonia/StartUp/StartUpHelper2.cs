@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -15,7 +14,6 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
@@ -23,6 +21,7 @@ using PicView.Core.FileHistory;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
+using R3;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.StartUp;
@@ -31,7 +30,7 @@ public static class StartUpHelper2
 {
     public static void StartWithArguments(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
-        Window window)
+        Window window, CompositeDisposable disposable)
     {
         var args = Environment.GetCommandLineArgs();
         if (args.Length > 1)
@@ -74,7 +73,7 @@ public static class StartUpHelper2
         }
         else
         {
-            RegularStartUp(vm, settingsExists, desktop, window);
+            RegularStartUp(vm, settingsExists, desktop, window, disposable);
         }
             
         return;
@@ -85,7 +84,7 @@ public static class StartUpHelper2
 
             HandleWindowScalingMode(vm, window);
 
-            HandleStartImage(vm, window, filePath);
+            HandleStartImage(vm, window, filePath, disposable);
 
             HandlePostWindowUpdates(vm, settingsExists, desktop, window);
         }
@@ -115,14 +114,14 @@ public static class StartUpHelper2
     
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
-        Window window)
+        Window window, CompositeDisposable disposable)
     {
         TranslationManager.Init();
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
         HandleWindowScalingMode(vm, window);
 
-        StartUpMenuOrLastFile(vm, window);
+        StartUpMenuOrLastFile(vm, window, disposable);
         window.Show();
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
@@ -264,12 +263,12 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleStartImage(CoreViewModel vm, Window window, string arg)
+    private static void HandleStartImage(CoreViewModel vm, Window window, string arg, CompositeDisposable disposable)
     {
-        Task.Run(() => QuickLoad2.QuickLoadAsync(vm, arg, window, false));
+        Task.Run(() => QuickLoad2.QuickLoadAsync(vm, arg, window, disposable, false));
     }
 
-    private static void StartUpMenuOrLastFile(CoreViewModel vm, Window window)
+    private static void StartUpMenuOrLastFile(CoreViewModel vm, Window window, CompositeDisposable disposable)
     {
         if (Settings.StartUp.OpenLastFile)
         {
@@ -279,7 +278,7 @@ public static class StartUpHelper2
             }
             else
             {
-                Task.Run(() => QuickLoad2.QuickLoadAsync(vm, Settings.StartUp.LastFile, window, true));
+                Task.Run(() => QuickLoad2.QuickLoadAsync(vm, Settings.StartUp.LastFile, window,  disposable, true));
             }
         }
         else
@@ -300,7 +299,7 @@ public static class StartUpHelper2
                 }
             };
            // vm.Tabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
-            TabNavigationInitializer.Initialize(vm);
+            TabNavigationInitializer.Initialize(vm, disposable);
         }
     }
 
