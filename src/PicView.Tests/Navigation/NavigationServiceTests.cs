@@ -1,10 +1,11 @@
-﻿using PicView.Core.FileHandling.Interfaces;
+using PicView.Core.FileHandling.Interfaces;
 using PicView.Core.IPlatform;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Tests.Navigation;
 
@@ -19,6 +20,8 @@ public class NavigationServiceTests
 
     public NavigationServiceTests()
     {
+        ObservableSystem.DefaultFrameProvider = new MockFrameProvider();
+
         _testDirectory = Path.Combine(Path.GetTempPath(), "PicViewNavTests_" + Guid.NewGuid());
         Directory.CreateDirectory(_testDirectory);
 
@@ -60,7 +63,7 @@ public class NavigationServiceTests
     {
         var tab = new TabViewModel("test", _ => ValueTask.CompletedTask);
         // Initialize with mocks to avoid null refs
-        tab.Initialize(_mockCache, new MockThumbnailLoader());
+        tab.Initialize(_mockCache, new MockThumbnailCache(), new MockThumbnailLoader());
         tab.ImageIterator.Files = new List<FileInfo>();
         return tab;
     }
@@ -133,6 +136,16 @@ public class NavigationServiceTests
 
         public void Cleanup() { }
     }
+    
+    private class MockThumbnailCache : IThumbnailCache
+    {
+        public void Add(string ownerId, string path, object thumbnail) { }
+        public bool TryGet(string path, out object? thumbnail) { thumbnail = null; return false; }
+        public void Remove(string path) { }
+        public void RemoveOwner(string ownerId) { }
+        public void Clear() { }
+        public bool IsEmpty() => true;
+    }
 
     private class MockPlatformSpecificService : IPlatformSpecificService
     {
@@ -157,5 +170,11 @@ public class NavigationServiceTests
         public string DefaultJsonKeyMap() => "{}";
         public void InitiateFileAssociationService() { }
         public Task<bool> DeleteFile(string path, bool recycle) => Task.FromResult(false);
+    }
+
+    private class MockFrameProvider : FrameProvider
+    {
+        public override long GetFrameCount() => 0;
+        public override void Register(IFrameRunnerWorkItem callback) => callback.MoveNext(0);
     }
 }

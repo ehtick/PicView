@@ -7,6 +7,7 @@ using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Tests.Navigation;
 
@@ -16,15 +17,19 @@ public class TiffNavigationTests : IDisposable
     private readonly MockImageCache _cache;
     private readonly TabViewModel _tab;
     private readonly List<FileInfo> _files;
+    private readonly MockThumbnailCache _mockThumbnailCache;
 
     public TiffNavigationTests()
     {
+        ObservableSystem.DefaultFrameProvider = new MockFrameProvider();
+
         SettingsManager.SetDefaults();
         TranslationManager.Init();
 
         _cache = new MockImageCache();
+        _mockThumbnailCache = new MockThumbnailCache();
         _tab = new TabViewModel("test", _ => ValueTask.CompletedTask);
-        _tab.Initialize(_cache, new MockThumbnailLoader());
+        _tab.Initialize(_cache, _mockThumbnailCache, new MockThumbnailLoader());
         
         // Setup 3 files
         _files = new List<FileInfo>
@@ -34,7 +39,7 @@ public class TiffNavigationTests : IDisposable
             new("file2.jpg")
         };
 
-        _iterator = new ImageIterator(_cache, new MockThumbnailLoader(), _tab);
+        _iterator = new ImageIterator(_cache, _mockThumbnailCache, new MockThumbnailLoader(), _tab);
         // Avoid Initialize to prevent R3 Polling (EveryValueChanged) which requires FrameProvider
         _iterator.Files = _files;
         _iterator.SetCurrentIndex(0);
@@ -220,5 +225,21 @@ public class TiffNavigationTests : IDisposable
     {
         public ValueTask<object?> GetThumbnailAsync(FileInfo file) => ValueTask.FromResult<object?>(null);
         public ValueTask<object?> GetThumbnailAsync(FileInfo file, uint size) => ValueTask.FromResult<object?>(null);
+    }
+    
+    private class MockThumbnailCache : IThumbnailCache
+    {
+        public void Add(string ownerId, string path, object thumbnail) { }
+        public bool TryGet(string path, out object? thumbnail) { thumbnail = null; return false; }
+        public void Remove(string path) { }
+        public void RemoveOwner(string ownerId) { }
+        public void Clear() { }
+        public bool IsEmpty() => true;
+    }
+
+    private class MockFrameProvider : FrameProvider
+    {
+        public override long GetFrameCount() => 0;
+        public override void Register(IFrameRunnerWorkItem callback) => callback.MoveNext(0);
     }
 }

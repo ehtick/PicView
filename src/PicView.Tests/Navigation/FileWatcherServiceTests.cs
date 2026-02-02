@@ -4,6 +4,7 @@ using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Tests.Navigation;
 
@@ -11,10 +12,13 @@ public class FileWatcherServiceTests : IDisposable
 {
     private readonly FileWatcherService _service;
     private readonly MockImageCache _mockCache;
+    private readonly MockThumbnailCache _mockThumbnailCache;
     private readonly string _testDirectory;
 
     public FileWatcherServiceTests()
     {
+        ObservableSystem.DefaultFrameProvider = new MockFrameProvider();
+
         // Ensure Settings are initialized for FileWatcherService usage
         SettingsManager.SetDefaults();
 
@@ -22,8 +26,9 @@ public class FileWatcherServiceTests : IDisposable
         Directory.CreateDirectory(_testDirectory);
 
         _mockCache = new MockImageCache();
+        _mockThumbnailCache = new MockThumbnailCache();
         // Use default ordinal comparison for tests
-        _service = new FileWatcherService((s1, s2) => string.CompareOrdinal(s1, s2), _mockCache);
+        _service = new FileWatcherService((s1, s2) => string.CompareOrdinal(s1, s2), _mockCache, _mockThumbnailCache);
     }
 
     [Fact]
@@ -69,7 +74,7 @@ public class FileWatcherServiceTests : IDisposable
         
         // Manually initialize tab with file
         var files = new List<FileInfo> { new FileInfo(filePath) };
-        tab.InitializeImageIterator(files, _mockCache, new MockThumbnailLoader());
+        tab.InitializeImageIterator(files, _mockCache, _mockThumbnailCache, new MockThumbnailLoader(), null, _mockThumbnailCache);
         tab.Model = new ImageModel { FileInfo = files[0] };
         
         _service.Watch(tab);
@@ -81,6 +86,7 @@ public class FileWatcherServiceTests : IDisposable
         // Assert
         Assert.Empty(tab.ImageIterator.Files);
         Assert.True(_mockCache.Resynchronized);
+        Assert.Contains(filePath, _mockThumbnailCache.RemovedPaths);
     }
     
     [Fact]
@@ -93,7 +99,7 @@ public class FileWatcherServiceTests : IDisposable
         
         var tab = CreateTab(_testDirectory);
         var files = new List<FileInfo> { new FileInfo(oldPath) };
-        tab.InitializeImageIterator(files, _mockCache, new MockThumbnailLoader());
+        tab.InitializeImageIterator(files, _mockCache, _mockThumbnailCache, new MockThumbnailLoader(), null, _mockThumbnailCache);
         tab.Model = new ImageModel { FileInfo = files[0] };
         
         _service.Watch(tab);
@@ -108,6 +114,7 @@ public class FileWatcherServiceTests : IDisposable
         // Verify model update if it was current file
         Assert.Equal(newPath, tab.Model.FileInfo.FullName);
         Assert.True(_mockCache.Resynchronized);
+        Assert.Contains(oldPath, _mockThumbnailCache.RemovedPaths);
     }
 
     private TabViewModel CreateTab(string directory)
@@ -120,7 +127,7 @@ public class FileWatcherServiceTests : IDisposable
         var dummyFile = new FileInfo(Path.Combine(directory, "placeholder.txt"));
         tab.Model = new ImageModel { FileInfo = dummyFile };
         
-        tab.Initialize(_mockCache, new MockThumbnailLoader());
+        tab.Initialize(_mockCache, _mockThumbnailCache, new MockThumbnailLoader(), null, _mockThumbnailCache);
         return tab;
     }
 
@@ -165,5 +172,23 @@ public class FileWatcherServiceTests : IDisposable
     {
         public ValueTask<object?> GetThumbnailAsync(FileInfo file) => ValueTask.FromResult<object?>(null);
         public ValueTask<object?> GetThumbnailAsync(FileInfo file, uint size) => ValueTask.FromResult<object?>(null);
+    }
+    
+    private class MockThumbnailCache : IThumbnailCache
+    {
+        public List<string> RemovedPaths { get; } = new();
+
+        public void Add(string ownerId, string path, object thumbnail) { }
+        public bool TryGet(string path, out object? thumbnail) { thumbnail = null; return false; }
+        public void Remove(string path) => RemovedPaths.Add(path);
+        public void RemoveOwner(string ownerId) { }
+        public void Clear() { }
+        public bool IsEmpty() => true;
+    }
+
+    private class MockFrameProvider : FrameProvider
+    {
+        public override long GetFrameCount() => 0;
+        public override void Register(IFrameRunnerWorkItem callback) => callback.MoveNext(0);
     }
 }
