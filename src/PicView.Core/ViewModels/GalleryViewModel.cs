@@ -50,6 +50,7 @@ public class GalleryViewModel : IDisposable
         SetDockPositionCommand = new ReactiveCommand<GalleryDockPosition>();
         SetDockPositionCommand.Subscribe(pos =>
         {
+            Settings.Gallery.IsGalleryDocked = true;
             Settings.Gallery.DockPosition = pos;
             GalleryMode.Value = GalleryMode2.Docked;
         }).AddTo(_disposables);

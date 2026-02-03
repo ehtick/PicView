@@ -92,13 +92,14 @@ public class GalleryAnimationControl : UserControl
 
         // Subscribe to Mode changes
         ViewModel.Gallery.GalleryMode
+            .Skip(1) // Skip startup
             .SubscribeAwait(async (mode, _) => await OnGalleryModeChanged(mode))
             .AddTo(_disposables);
         
         Debug.Assert(Settings.Gallery is not null);
         // Also subscribe to DockPosition, as changing it while Docked might need layout updates
         Observable.EveryValueChanged(Settings.Gallery, gallery =>  gallery.DockPosition)
-            .Skip(1)
+            .Skip(1) // Skip startup
             .Subscribe(SetDockedLayout)
             .AddTo(_disposables);
 
@@ -382,7 +383,11 @@ public class GalleryAnimationControl : UserControl
 
     private async Task ClosedToDocked()
     {
-        if (ViewModel == null) return;
+        if (!Settings.Gallery.IsGalleryDocked)
+        {
+            // Don't enter if not intended. We should be able to store position in settings.
+            return;
+        }
         var dock = Settings.Gallery.DockPosition;
         
         IsVisible = true;

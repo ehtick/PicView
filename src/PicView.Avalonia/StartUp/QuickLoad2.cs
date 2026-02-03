@@ -65,7 +65,6 @@ public static class QuickLoad2
             DebugHelper.LogDebug(nameof(QuickLoad), nameof(QuickLoadAsync), e);
         }
 
-        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.GalleryMode.Value = GalleryMode2.Docked;
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
 
         vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model = imageModel;
@@ -86,5 +85,6 @@ public static class QuickLoad2
                     vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
                 .ConfigureAwait(false);
         }
+        
     }
 }
