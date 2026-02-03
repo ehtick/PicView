@@ -1,8 +1,10 @@
+using Avalonia;
 using Avalonia.Threading;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.UI;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
@@ -148,6 +150,27 @@ public static class TabNavigationInitializer
                         }
 
                         tabViewModel.UpdateTabTitle();
+                    }).AddTo(disposable);
+                Observable.EveryValueChanged(tabViewModel, tab => tab.Gallery.GalleryMode.Value, UIHelper2.GetFrameProvider)
+                    .Skip(1)
+                    .SubscribeAwait(async (mode, _) =>
+                    {
+                        if (mode is GalleryMode2.Docked or GalleryMode2.Expanded)
+                        {
+                            if (tabViewModel.Gallery.LoadingState is GalleryLoadingState.NotLoaded)
+                            {
+                                if (Application.Current.DataContext is not CoreViewModel core)
+                                {
+                                    return;
+                                }
+                                await GalleryLoaderService.LoadGalleryAsync(tabViewModel,
+                                        tabViewModel.ImageIterator.Files,
+                                        new AvaloniaThumbnailLoader(),
+                                        core.SharedThumbnailCache,
+                                        tabViewModel.GetTabCancellation().Token)
+                                    .ConfigureAwait(false);
+                            }
+                        }
                     }).AddTo(disposable);
             });
         }

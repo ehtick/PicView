@@ -83,7 +83,6 @@ public class GalleryViewModel : IDisposable
     }
     
     public ReactiveCommand<string> SetStretchModeCommand { get; }
-    public BindableReactiveProperty<object> GalleryStretch { get; } = new();
     
     public ReactiveCommand<GalleryMode2> SetGalleryModeCommand { get; }
     public ReactiveCommand<GalleryDockPosition> SetDockPositionCommand { get; }
@@ -99,7 +98,7 @@ public class GalleryViewModel : IDisposable
     public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
     public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
     
-
+    public GalleryLoadingState LoadingState { get; set; }
 
     public void Dispose()
     {

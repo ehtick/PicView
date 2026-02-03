@@ -8,6 +8,14 @@ public class GalleryLoaderService
 {
     public static async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, IThumbnailCache thumbnailCache, CancellationToken ct)
     {
+        if (tab.Gallery.LoadingState != GalleryLoadingState.NotLoaded)
+        {
+            return;
+        }
+
+        tab.Gallery.LoadingState = GalleryLoadingState.Loading;
+        tab.Gallery.GalleryItems.Value.Clear();
+
         var dockedHeight = Settings.Gallery.BottomGalleryItemSize;
         var expandedHeight = Settings.Gallery.ExpandedGalleryItemSize;
         var maxHeight = Math.Max(dockedHeight, expandedHeight);
@@ -78,8 +86,11 @@ public class GalleryLoaderService
         }
         catch (OperationCanceledException)
         {
-            // Allowed
+            tab.Gallery.LoadingState = GalleryLoadingState.NotLoaded;
+            return;
         }
+        
+        tab.Gallery.LoadingState = GalleryLoadingState.Loaded;
         return;
 
         async ValueTask CheckAndLoad(GalleryItemViewModel item)
