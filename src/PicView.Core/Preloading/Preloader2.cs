@@ -1,34 +1,27 @@
-﻿using System.Collections.Concurrent;
-using PicView.Core.DebugTools;
+﻿using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 
 namespace PicView.Core.Preloading;
 
-public class Preloader2 : IPreloader
+public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache) : IPreloader
 {
-    private readonly IImageCache _cache;
-    private readonly Func<FileInfo, ValueTask<ImageModel>> _imageModelLoader;
-    private int _isRunningFlag; // 0 = idle, 1 = running
-    private Dictionary<string , string> Owners = new();
-    private string _currentOwner;
     private readonly Lock _lock = new();
-    
-    public Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, IImageCache cache)
-    {
-        _imageModelLoader = imageModelLoader ?? throw new ArgumentNullException(nameof(imageModelLoader));
-        _cache = cache ?? throw new ArgumentNullException(nameof(cache));
-    }
+    private readonly Dictionary<string, string> _owners = new();
+    private string? _currentOwner;
+    private bool _isRunning;
 
-    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token)
+    public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files,
+        CancellationToken token)
     {
         if (files is null || files.Count == 0)
         {
             DebugHelper.LogDebug(nameof(Preloader2), nameof(Preload), "No files to preload");
             return;
         }
-        if (Interlocked.CompareExchange(ref _isRunningFlag, 1, 0) != 0)
+
+        if (_isRunning)
         {
             if (ownerId != _currentOwner)
             {
@@ -36,7 +29,7 @@ public class Preloader2 : IPreloader
             }
             // Allow other tab s to preload
         }
-        
+
         Task.Run(() => PreLoadInternalAsync(ownerId, currentIndex, files, reversed, token), token);
         lock (_lock)
         {
@@ -48,17 +41,16 @@ public class Preloader2 : IPreloader
     {
         lock (_lock)
         {
-            Owners.Add(ownerId, ownerId);
+            _owners.Add(ownerId, ownerId);
         }
-
     }
 
     public void RemoveOwner(string ownerId)
     {
         lock (_lock)
         {
-            var foundKey = Owners.FirstOrDefault(x => x.Value.Equals(ownerId)).Key;
-            Owners.Remove(foundKey);
+            var foundKey = _owners.FirstOrDefault(x => x.Value.Equals(ownerId)).Key;
+            _owners.Remove(foundKey);
         }
     }
 
@@ -75,10 +67,10 @@ public class Preloader2 : IPreloader
         var fileInfo = list[index];
 
         // 1. Fast Path: Already cached?
-        if (_cache.TryGet(fileInfo, out var cachedValue) && cachedValue is not null)
+        if (cache.TryGet(fileInfo, out var cachedValue) && cachedValue is not null)
         {
             // Refresh LRU position
-            _cache.Add(ownerId, index, cachedValue, list.Count, isReverse);
+            cache.Add(ownerId, index, cachedValue, list.Count, isReverse);
 
             if (cachedValue.IsLoading)
             {
@@ -99,14 +91,14 @@ public class Preloader2 : IPreloader
 
         // 'evicted' tells us if we bumped someone out. 
         // Note: The logic for SharedImageCache disposal is preserved here.
-        var evicted = _cache.TryAdd(ownerId, index, placeholder, list.Count, isReverse, out var evictedValue);
-        if (evicted && _cache is SharedImageCache shared)
+        var evicted = cache.TryAdd(ownerId, index, placeholder, list.Count, isReverse, out var evictedValue);
+        if (evicted && cache is SharedImageCache shared)
         {
             shared.DisposeHelper(evictedValue);
         }
 
         // 3. Re-check: Did someone beat us to it?
-        _cache.TryGet(ownerId, index, out var slotValue);
+        cache.TryGet(ownerId, index, out var slotValue);
         slotValue ??= placeholder;
 
         if (!ReferenceEquals(slotValue, placeholder))
@@ -126,18 +118,18 @@ public class Preloader2 : IPreloader
             // Check cancel before IO
             if (ct.IsCancellationRequested)
             {
-                _cache.TryRemove(ownerId, index);
+                cache.TryRemove(ownerId, index);
                 return null;
             }
 
-            var imageModel = await _imageModelLoader(fileInfo).ConfigureAwait(false);
+            var imageModel = await imageModelLoader(fileInfo).ConfigureAwait(false);
             slotValue.ImageModel = imageModel;
             return imageModel;
         }
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(Preloader2), nameof(AddAsync), ex);
-            _cache.TryRemove(ownerId, index); // Clean up failed load
+            cache.TryRemove(ownerId, index); // Clean up failed load
             return null;
         }
         finally
@@ -145,11 +137,11 @@ public class Preloader2 : IPreloader
             slotValue.IsLoading = false;
         }
     }
-    
+
     public void Add(string ownerId, int index, ImageModel model, IReadOnlyList<FileInfo> list)
     {
-        var evicted = _cache.TryAdd(ownerId, index, new PreLoadValue(model), list.Count, false, out var evictedValue);
-        if (evicted && _cache is SharedImageCache shared)
+        var evicted = cache.TryAdd(ownerId, index, new PreLoadValue(model), list.Count, false, out var evictedValue);
+        if (evicted && cache is SharedImageCache shared)
         {
             shared.DisposeHelper(evictedValue);
         }
@@ -157,10 +149,11 @@ public class Preloader2 : IPreloader
 
     public void Resynchronize(string ownerId, IReadOnlyList<FileInfo> files)
     {
-        _cache.Resynchronize(ownerId, files);
+        cache.Resynchronize(ownerId, files);
     }
-    
-    private async Task PreLoadInternalAsync(string ownerId, int currentIndex, IReadOnlyList<FileInfo> list, bool reversed, CancellationToken token)
+
+    private async Task PreLoadInternalAsync(string ownerId, int currentIndex, IReadOnlyList<FileInfo> list,
+        bool reversed, CancellationToken token)
     {
         var count = list.Count;
         var nextStartingIndex = (currentIndex + 1) % count;
@@ -191,9 +184,9 @@ public class Preloader2 : IPreloader
         }
         finally
         {
-            Interlocked.Exchange(ref _isRunningFlag, 0);
+            _isRunning = false;
         }
-        
+
         return;
 
 
@@ -219,12 +212,13 @@ public class Preloader2 : IPreloader
             {
                 return;
             }
-        
-            if (_cache.TryGet(ownerId, index, out _))
+
+            if (cache.TryGet(ownerId, index, out _))
             {
                 // Return early if cached
                 return;
             }
+
             await AddAsync(ownerId, index, list, reversed, token);
         }
     }
