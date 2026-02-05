@@ -285,6 +285,10 @@ public partial class ZoomPreviewer : UserControl
 
     private void RestartHideTimer()
     {
+        if (Opacity is 0)
+        {
+            return;
+        }
         _hideTimer?.Dispose();
         _hideTimer = new Timer(_ =>
         {

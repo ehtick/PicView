@@ -225,6 +225,9 @@ public class ZoomPanControl : Decorator
         TranslateY = translateY;
         ConstrainTranslationToBounds();
         UpdateChildTransform();
+
+        // Update preview window after transform change
+        UpdatePreviewWindow();
     }
 
     #endregion
@@ -294,6 +297,9 @@ public class ZoomPanControl : Decorator
 
         ConstrainTranslationToBounds();
         UpdateChildTransform();
+
+        // Update preview window after transform change
+        UpdatePreviewWindow();
     }
 
     private void StopPanning(object? sender, PointerReleasedEventArgs e)
@@ -347,6 +353,9 @@ public class ZoomPanControl : Decorator
         {
             ResetZoom(animated);
         }
+
+        // Update preview window after transform change
+        UpdatePreviewWindow();
     }
 
     private void ApplyZoomAndTitle(double targetScale, Point center, bool animated)
@@ -434,9 +443,6 @@ public class ZoomPanControl : Decorator
         _scaleTransform.ScaleY = Scale;
         _translateTransform.X = TranslateX;
         _translateTransform.Y = TranslateY;
-
-        // Update preview window after transform change
-        UpdatePreviewWindow();
     }
 
     private void SetTransitions(bool isAnimated)
