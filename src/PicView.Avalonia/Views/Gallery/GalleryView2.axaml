@@ -115,27 +115,22 @@
                 Width="23" />
         </Button>
 
-        <customControls:AutoScrollViewer
-            Background="{DynamicResource SecondaryBackgroundColor}"
-            PointerWheelChanged="GalleryScrollViewer_OnPointerWheelChanged"
-            x:Name="GalleryScrollViewer">
-            <ItemsControl x:Name="GalleryItemsControl">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <gallery:GalleryItem2 />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel
-                            ItemSpacing="{CompiledBinding Gallery.ItemSpacing.Value}"
-                            ItemsAlignment="Center"
-                            LineSpacing="{CompiledBinding Gallery.LineSpacing.Value}"
-                            x:Name="GalleryItemsPanel" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>
-        </customControls:AutoScrollViewer>
+        <customControls:NavigateAbleItemsViewer Background="{DynamicResource SecondaryBackgroundColor}" x:Name="GalleryItemsControl">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <gallery:GalleryItem2 />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel
+                        ItemSpacing="{CompiledBinding Gallery.ItemSpacing.Value}"
+                        ItemsAlignment="Center"
+                        LineSpacing="{CompiledBinding Gallery.LineSpacing.Value}"
+                        x:Name="GalleryItemsPanel" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </customControls:NavigateAbleItemsViewer>
 
     </Panel>
 </customControls:GalleryAnimationControl>

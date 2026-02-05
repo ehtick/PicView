@@ -1,6 +1,5 @@
 using System.Collections.Specialized;
 using Avalonia;
-using Avalonia.Input;
 using Avalonia.Threading;
 using ObservableCollections;
 using PicView.Avalonia.CustomControls;
@@ -56,32 +55,6 @@ public partial class GalleryView2 : GalleryAnimationControl
             // Remove, Replace, Move, Reset
             default:
                 break;
-        }
-    }
-
-    private void GalleryScrollViewer_OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
-    {
-        if (Settings.Zoom.HorizontalReverseScroll)
-        {
-            if (e.Delta.Y < 0)
-            {
-                GalleryScrollViewer.LineRight();
-            }
-            else
-            {
-                GalleryScrollViewer.LineLeft();
-            }
-        }
-        else
-        {
-            if (e.Delta.Y > 0)
-            {
-                GalleryScrollViewer.LineRight();
-            }
-            else
-            {
-                GalleryScrollViewer.LineLeft();
-            }
         }
     }
 }

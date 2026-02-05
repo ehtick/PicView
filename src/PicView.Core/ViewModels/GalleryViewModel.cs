@@ -98,6 +98,9 @@ public class GalleryViewModel : IDisposable
     public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
     public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
     
+    public BindableReactiveProperty<GalleryItemViewModel?> CurrentGalleryItem { get; } = new();
+    public BindableReactiveProperty<GalleryItemViewModel?> SelectedGalleryItem { get; } = new();
+
     public GalleryLoadingState LoadingState { get; set; }
 
     public void Dispose()
@@ -108,7 +111,9 @@ public class GalleryViewModel : IDisposable
             GalleryMode,
             GalleryVerticalAlignment,
             IsGalleryExpanded,
-            GalleryMode
+            GalleryMode,
+            CurrentGalleryItem,
+            SelectedGalleryItem
         );
     }
 }

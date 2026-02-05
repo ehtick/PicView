@@ -37,6 +37,7 @@
                 <ResourceInclude Source="Controls/Menu.axaml" />
                 <ResourceInclude Source="Controls/MenuFlyoutPresenter.axaml" />
                 <ResourceInclude Source="Controls/MenuItem.axaml" />
+                <ResourceInclude Source="Controls/NavigateAbleItemsViewer.axaml" />
                 <ResourceInclude Source="Controls/NumericUpDown.axaml" />
                 <ResourceInclude Source="Controls/PathIcon.axaml" />
                 <ResourceInclude Source="Controls/PopupRoot.axaml" />
