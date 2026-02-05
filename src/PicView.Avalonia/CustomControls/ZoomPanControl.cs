@@ -192,6 +192,8 @@ public class ZoomPanControl : Decorator
         SetScaleImmediate(1.0, CenterPoint());
 
         SetZoomValue(100);
+
+        _zoomPreviewer?.SetInvisible();
     }
 
     /// <summary>

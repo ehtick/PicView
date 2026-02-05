@@ -295,7 +295,7 @@ public partial class ZoomPreviewer : UserControl
             Dispatcher.UIThread.Invoke(async () =>
             {
                 // Only hide if we're not dragging
-                if (!_isDragging && !IsPointerOver)
+                if (!_isDragging && !IsPointerOver && _zoomPanControl.Scale is not 1.0)
                 {
                     var opacityAnim = AnimationsHelper.OpacityAnimation(1, 0, TimeSpan.FromSeconds(0.5));
                     await opacityAnim.RunAsync(this);
