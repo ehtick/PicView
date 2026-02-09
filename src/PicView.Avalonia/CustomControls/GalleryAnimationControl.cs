@@ -430,6 +430,7 @@ public class GalleryAnimationControl : UserControl
         }
 
         SetDockedThumbs(dock);
+        _viewer?.ScrollToCenterOfCurrentItem();
     }
 
     private async Task DockedToClosed()
@@ -479,6 +480,7 @@ public class GalleryAnimationControl : UserControl
         }
 
         SetExpandedThumbs();
+        _viewer?.ScrollToCenterOfCurrentItem();
     }
 
     private async Task ExpandedToDocked()
@@ -512,6 +514,7 @@ public class GalleryAnimationControl : UserControl
         }
 
         SetDockedLayout(dock);
+        _viewer?.ScrollToCenterOfCurrentItem();
     }
 
     private async Task ClosedToExpanded()
@@ -541,6 +544,7 @@ public class GalleryAnimationControl : UserControl
         ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
 
         SetExpandedThumbs();
+        _viewer?.ScrollToCenterOfCurrentItem();
     }
 
     private async Task ExpandedToClosed()

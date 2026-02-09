@@ -4,6 +4,7 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Threading;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -55,10 +56,61 @@ public class NavigateAbleItemsViewer : ItemsControl
             presenter.ApplyTemplate();
             if (presenter.Child is NavigateAbleItem navItem)
             {
-                if (index == CurrentItemIndex) navItem.SetCurrent(true);
+                if (index == CurrentItemIndex)
+                {
+                    navItem.SetCurrent(true);
+                    navItem.BringIntoView();
+                }
+
                 if (index == SelectedItemIndex) navItem.SetSelected(true);
             }
         }
+    }
+    
+    public void ScrollToCenterOfCurrentItem()
+    {
+        // Need to use Post to have calculations take place after render
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (_scrollViewer is null || CurrentItemIndex < 0 || CurrentItemIndex >= ItemCount)
+            {
+                return;
+            }
+
+            var container = ContainerFromIndex(CurrentItemIndex);
+
+            // Get item position relative to the ScrollViewer's viewport
+            var vector = container?.TranslatePoint(new Point(0, 0), _scrollViewer);
+            if (vector is null)
+            {
+                return;
+            }
+
+            var pos = vector.Value;
+            var offset = _scrollViewer.Offset;
+            var newX = offset.X;
+            var newY = offset.Y;
+
+            // Center Horizontally if scrolling is possible
+            if (_scrollViewer.Extent.Width > _scrollViewer.Viewport.Width)
+            {
+                var itemCenter = pos.X + container.Bounds.Width / 2;
+                var viewportCenter = _scrollViewer.Viewport.Width / 2;
+                var diff = itemCenter - viewportCenter;
+                newX = offset.X + diff;
+            }
+
+            // Center Vertically if scrolling is possible
+            if (_scrollViewer.Extent.Height > _scrollViewer.Viewport.Height)
+            {
+                var itemCenter = pos.Y + container.Bounds.Height / 2;
+                var viewportCenter = _scrollViewer.Viewport.Height / 2;
+                var diff = itemCenter - viewportCenter;
+                newY = offset.Y + diff;
+            }
+
+            _scrollViewer.Offset = new Vector(newX, newY);
+        });
     }
 
     private void SetCurrentItem(int index, int prevIndex)
