@@ -18,12 +18,12 @@ public partial class GalleryItem2 : NavigateAbleItem
 
     private void GalleryContextMenuOnClosed(object? sender, RoutedEventArgs e)
     {
-        SetSelected(false);
+        SetContextMenuOpen(false);
     }
 
     private void GalleryContextMenuOnOpened(object? sender, RoutedEventArgs e)
     {
-        SetSelected(true);
+        SetContextMenuOpen(true);
     }
 
     private void Flyout_OnPointerPressed(object? sender, PointerPressedEventArgs e)
