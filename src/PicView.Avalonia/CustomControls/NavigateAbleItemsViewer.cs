@@ -4,7 +4,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Data;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -16,21 +15,8 @@ public class NavigateAbleItemsViewer : ItemsControl
     protected override Type StyleKeyOverride => typeof(NavigateAbleItemsViewer);
 
     private AutoScrollViewer? _scrollViewer;
-    private int _internalSelectedIndex = -1;
-
-    public static readonly StyledProperty<int> CurrentItemIndexProperty =
-        AvaloniaProperty.Register<NavigateAbleItemsViewer, int>(nameof(CurrentItemIndex), defaultValue: -1, defaultBindingMode: BindingMode.TwoWay);
-
-    public int CurrentItemIndex
-    {
-        get => GetValue(CurrentItemIndexProperty);
-        set => SetValue(CurrentItemIndexProperty, value);
-    }
-
-    static NavigateAbleItemsViewer()
-    {
-        CurrentItemIndexProperty.Changed.AddClassHandler<NavigateAbleItemsViewer>((x, e) => x.OnCurrentItemIndexChanged(e));
-    }
+    
+    public int SelectedItemIndex { get; private set; } 
 
     public NavigateAbleItemsViewer()
     {
@@ -77,7 +63,7 @@ public class NavigateAbleItemsViewer : ItemsControl
         }
             
         // Sync internal selection if changed externally (and valid)
-        if (newIndex != _internalSelectedIndex && newIndex >= 0 && newIndex < ItemCount)
+        if (newIndex != SelectedItemIndex && newIndex >= 0 && newIndex < ItemCount)
         {
             SetInternalSelection(newIndex);
         }
@@ -85,8 +71,8 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     private void SetInternalSelection(int index)
     {
-        var oldIndex = _internalSelectedIndex;
-        _internalSelectedIndex = index;
+        var oldIndex = SelectedItemIndex;
+        SelectedItemIndex = index;
         
         if (index >= 0)
         {
@@ -141,8 +127,8 @@ public class NavigateAbleItemsViewer : ItemsControl
             return;
         }
 
-        var startIndex = _internalSelectedIndex;
-        if (startIndex < 0) startIndex = CurrentItemIndex;
+        var startIndex = SelectedItemIndex;
+        if (startIndex < 0) startIndex = SelectedItemIndex;
         if (startIndex < 0) startIndex = 0;
         if (startIndex >= ItemCount) startIndex = ItemCount - 1;
 
