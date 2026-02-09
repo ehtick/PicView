@@ -4,7 +4,7 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Core.Gallery;
 
-public class GalleryLoaderService
+public static class GalleryLoader
 {
     public static async Task LoadGalleryAsync(TabViewModel tab, IReadOnlyList<FileInfo> files, IThumbnailLoader thumbnailLoader, IThumbnailCache thumbnailCache, CancellationToken ct)
     {
@@ -97,7 +97,7 @@ public class GalleryLoaderService
         {
             if (item.FileInfo is null)
             {
-                DebugHelper.LogDebug(nameof(GalleryLoaderService), nameof(LoadGalleryAsync), "Invalid file");
+                DebugHelper.LogDebug(nameof(GalleryLoader), nameof(LoadGalleryAsync), "Invalid file");
                 return;
             }
             
@@ -122,7 +122,7 @@ public class GalleryLoaderService
         {
             if (item.FileInfo is null)
             {
-                DebugHelper.LogDebug(nameof(GalleryLoaderService), nameof(LoadGalleryAsync), "Invalid file");
+                DebugHelper.LogDebug(nameof(GalleryLoader), nameof(LoadGalleryAsync), "Invalid file");
                 return;
             }
             

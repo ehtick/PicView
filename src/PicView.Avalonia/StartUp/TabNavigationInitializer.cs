@@ -163,7 +163,7 @@ public static class TabNavigationInitializer
                                 {
                                     return;
                                 }
-                                await GalleryLoaderService.LoadGalleryAsync(tabViewModel,
+                                await GalleryLoader.LoadGalleryAsync(tabViewModel,
                                         tabViewModel.ImageIterator.Files,
                                         new AvaloniaThumbnailLoader(),
                                         core.SharedThumbnailCache,

@@ -78,7 +78,7 @@ public static class QuickLoad2
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
 
-            await GalleryLoaderService.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+            await GalleryLoader.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
                     vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
                     new AvaloniaThumbnailLoader(),
                     vm.SharedThumbnailCache,
