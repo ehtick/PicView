@@ -213,8 +213,6 @@ public class GalleryAnimationControl : UserControl
 
     private void SetExpandedLayoutCore(GalleryDockPosition dock)
     {
-        _itemsPanel.Margin = GetExpandedMargin;
-        
         if (Parent is Control parent)
         {
             // Full size relative to parent
@@ -269,6 +267,8 @@ public class GalleryAnimationControl : UserControl
         // Apply final settings
         gallerySettings.GalleryStretch.Value = stretchValue;
         gallerySettings.ItemWidth.Value = isSquare ? gallerySettings.ItemHeight.CurrentValue : double.NaN;
+        
+        _itemsPanel.Margin = GetExpandedMargin;
     }
 
     private void SetDockedLayout(GalleryDockPosition dock)
@@ -280,7 +280,6 @@ public class GalleryAnimationControl : UserControl
 
     private void SetDockLayoutCore(GalleryDockPosition dock)
     {
-        _itemsPanel.Margin = GetDockedMargin;
         var size = GetDockedHeight;
 
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
@@ -380,6 +379,7 @@ public class GalleryAnimationControl : UserControl
         gallerySettings.ItemWidth.Value = isSquare ? gallerySettings.ItemHeight.CurrentValue : double.NaN;
 
         ViewModel.Gallery.ItemSpacing.Value = 2;
+        _itemsPanel.Margin = GetDockedMargin;
     }
 
     // Animations

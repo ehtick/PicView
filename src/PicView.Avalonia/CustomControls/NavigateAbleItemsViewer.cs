@@ -5,8 +5,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Data;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.Views.Gallery;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -96,35 +94,35 @@ public class NavigateAbleItemsViewer : ItemsControl
         }
     }
 
-    private void SetSelectedItemAndScrollIntoView(int index, int oldIndex)
+    private void SetSelectedItemAndScrollIntoView(int index, int prevIndex)
     {
-        if (_scrollViewer == null || index < 0 || index >= ItemCount)
+        if (_scrollViewer == null || index < 0 || index >= ItemCount 
+            || ContainerFromIndex(index) is not ContentPresenter presenter)
+        {
+            return;
+        }
+
+        if (presenter.Child is not NavigateAbleItem item)
         {
             return;
         }
     
-        var newItem = ContainerFromIndex(index);
-    
-        if (newItem is ContentPresenter newPresenter)
-        {
-            newPresenter.BringIntoView();
-            if (newPresenter.Child is GalleryItem2 galleryItem)
-            {
-                galleryItem.OuterBorder.BorderBrush = UIHelper2.GetSolidColorBrush("SecondaryAccentColor");
-            }
-        }
+        item.BringIntoView();
+        item.SetSelected(true);
 
         // Only clear the old item if we actually moved to a different index
-        if (oldIndex == index || oldIndex < 0 || oldIndex >= ItemCount)
+        if (prevIndex == index || prevIndex < 0 || prevIndex >= ItemCount 
+            || ContainerFromIndex(prevIndex) is not ContentPresenter prevPresenter)
         {
             return;
         }
-
-        var oldItem = ContainerFromIndex(oldIndex);
-        if (oldItem is ContentPresenter { Child: GalleryItem2 galleryItem2 })
+        
+        if (prevPresenter.Child is not NavigateAbleItem prevItem)
         {
-            galleryItem2.OuterBorder.BorderBrush = UIHelper2.GetSolidColorBrush("MainBorderColor");
+            return;
         }
+        
+        prevItem.SetSelected(false);
     }
 
     public void Navigate(NavigationDirection direction)
