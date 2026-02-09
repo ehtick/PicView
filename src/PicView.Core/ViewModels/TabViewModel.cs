@@ -1,5 +1,4 @@
 using PicView.Core.Extensions;
-using PicView.Core.Gallery;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -42,7 +41,6 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     public IImageIterator? ImageIterator { get; private set; }
     public IThumbnailCache? ThumbnailCache { get; private set; }
 
-    private readonly GalleryLoaderService _galleryLoader = new();
     private IFileWatcherService? _fileWatcherService = fileWatcherService;
     
     public BindableReactiveProperty<int> NavigationIndex { get; } = new(0);

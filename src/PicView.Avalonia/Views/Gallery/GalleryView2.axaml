@@ -115,7 +115,10 @@
                 Width="23" />
         </Button>
 
-        <customControls:NavigateAbleItemsViewer Background="{DynamicResource SecondaryBackgroundColor}" x:Name="GalleryItemsControl">
+        <customControls:NavigateAbleItemsViewer
+            Background="{DynamicResource SecondaryBackgroundColor}"
+            CurrentItemIndex="{CompiledBinding NavigationIndex.Value, Mode=OneWay}"
+            x:Name="GalleryItemsControl">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <gallery:GalleryItem2 />

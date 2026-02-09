@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
@@ -32,6 +32,9 @@
         </Style>
         <Style Selector="^:selectedItem  /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+        <Style Selector="^:currentItem  /template/ Border#border">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />

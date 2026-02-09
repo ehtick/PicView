@@ -15,12 +15,78 @@ public class NavigateAbleItemsViewer : ItemsControl
     protected override Type StyleKeyOverride => typeof(NavigateAbleItemsViewer);
 
     private AutoScrollViewer? _scrollViewer;
-    
-    public int SelectedItemIndex { get; private set; } 
+
+    public int SelectedItemIndex { get; private set; } = -1;
+
+    public static readonly StyledProperty<int> CurrentItemIndexProperty =
+        AvaloniaProperty.Register<NavigateAbleItemsViewer, int>(nameof(CurrentItemIndex), defaultValue: -1);
+
+    public int CurrentItemIndex
+    {
+        get => GetValue(CurrentItemIndexProperty);
+        set => SetValue(CurrentItemIndexProperty, value);
+    }
 
     public NavigateAbleItemsViewer()
     {
         PointerWheelChanged += OnPointerWheelChanged;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property != CurrentItemIndexProperty)
+        {
+            return;
+        }
+
+        if (change is { OldValue: int oldIndex, NewValue: int newIndex })
+        {
+            SetCurrentItem(newIndex, oldIndex);
+        }
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is ContentPresenter presenter)
+        {
+            presenter.ApplyTemplate();
+            if (presenter.Child is NavigateAbleItem navItem)
+            {
+                if (index == CurrentItemIndex) navItem.SetCurrent(true);
+                if (index == SelectedItemIndex) navItem.SetSelected(true);
+            }
+        }
+    }
+
+    private void SetCurrentItem(int index, int prevIndex)
+    {
+        if (_scrollViewer == null || index < 0 || index >= ItemCount
+            || ContainerFromIndex(index) is not ContentPresenter presenter)
+        {
+            return;
+        }
+
+        if (presenter.Child is NavigateAbleItem item)
+        {
+            item.BringIntoView();
+            item.SetCurrent(true);
+        }
+
+        if (prevIndex == index || prevIndex < 0 || prevIndex >= ItemCount
+            || ContainerFromIndex(prevIndex) is not ContentPresenter prevPresenter)
+        {
+            return;
+        }
+
+        if (prevPresenter.Child is not NavigateAbleItem prevItem)
+        {
+            return;
+        }
+
+        prevItem.SetCurrent(false);
     }
 
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
@@ -55,28 +121,14 @@ public class NavigateAbleItemsViewer : ItemsControl
         _scrollViewer = e.NameScope.Find<AutoScrollViewer>("PART_ScrollViewer");
     }
 
-    private void OnCurrentItemIndexChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.NewValue is not int newIndex)
-        {
-            return;
-        }
-            
-        // Sync internal selection if changed externally (and valid)
-        if (newIndex != SelectedItemIndex && newIndex >= 0 && newIndex < ItemCount)
-        {
-            SetInternalSelection(newIndex);
-        }
-    }
-
     private void SetInternalSelection(int index)
     {
-        var oldIndex = SelectedItemIndex;
+        var prevIndex = SelectedItemIndex;
         SelectedItemIndex = index;
         
         if (index >= 0)
         {
-            SetSelectedItemAndScrollIntoView(index, oldIndex);
+            SetSelectedItemAndScrollIntoView(index, prevIndex);
         }
     }
 
@@ -127,7 +179,7 @@ public class NavigateAbleItemsViewer : ItemsControl
             return;
         }
 
-        var startIndex = SelectedItemIndex;
+        var startIndex = SelectedItemIndex == -1 ? CurrentItemIndex : SelectedItemIndex;
         if (startIndex < 0) startIndex = SelectedItemIndex;
         if (startIndex < 0) startIndex = 0;
         if (startIndex >= ItemCount) startIndex = ItemCount - 1;
