@@ -38,7 +38,6 @@ public class MainWindowViewModel : IDisposable
     public BindableReactiveProperty<object?> ImageBackground { get; } = new();
 
     public BindableReactiveProperty<object?> ConstrainedImageBackground { get; } = new();
-    public BindableReactiveProperty<object> RightControlOffSetMargin { get; } = new(0);
     public BindableReactiveProperty<object> TopScreenMargin { get; } = new(0);
 
     public BindableReactiveProperty<bool> CanResize { get; } = new();

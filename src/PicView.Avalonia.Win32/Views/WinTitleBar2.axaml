@@ -58,7 +58,8 @@
                         Header="{CompiledBinding Translation.Save.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="SavePath" />
@@ -71,7 +72,8 @@
                         Header="{CompiledBinding Translation.SaveAs.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="SavePath" />
@@ -83,8 +85,9 @@
                         Command="{CompiledBinding PrintCommand}"
                         Header="{CompiledBinding Translation.Print.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}"
                         x:Name="PrintMenuItem">
                         <MenuItem.Icon>
@@ -98,7 +101,8 @@
                         Header="{CompiledBinding Translation.OpenWith.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}"
                         x:Name="OpenWithMenuItem">
                         <MenuItem.Icon>
@@ -149,7 +153,8 @@
                         Header="{CompiledBinding Translation.ShowInFolder.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="ShowInFolderPath" />
@@ -195,7 +200,8 @@
                         Command="{CompiledBinding CopyFileCommand}"
                         Header="{Binding Translation.CopyFile.Value, Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="CopyPath" />
@@ -207,7 +213,8 @@
                         Command="{CompiledBinding CopyFilePathCommand}"
                         Header="{Binding Translation.FileCopyPath.Value, Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="CopyPath" />

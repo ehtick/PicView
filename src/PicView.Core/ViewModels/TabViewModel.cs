@@ -1,4 +1,5 @@
 using PicView.Core.Extensions;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -30,7 +31,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
     public BindableReactiveProperty<object?> Image { get; } = new();
-    public BindableReactiveProperty<object?> ImageType { get; } = new();
+    public BindableReactiveProperty<ImageType> ImageType { get; } = new(ImageDecoding.ImageType.Invalid);
     public BindableReactiveProperty<object?> FileInfo { get; } = new();
     public BindableReactiveProperty<object?> SecondaryImage { get; } = new();
     public BindableReactiveProperty<object?> SecondaryFileInfo { get; } = new();

@@ -148,7 +148,8 @@
                 Header="{CompiledBinding Translation.NextFolder.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -163,7 +164,8 @@
                 Header="{CompiledBinding Translation.PrevFolder.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -180,7 +182,8 @@
                 Header="{CompiledBinding Translation.Slideshow.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"

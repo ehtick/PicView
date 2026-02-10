@@ -34,7 +34,8 @@
                 Header="{CompiledBinding Translation.Save.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}">
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False}">
                 <MenuItem.Icon>
                     <Path Classes="SavePath" />
                 </MenuItem.Icon>
@@ -75,7 +76,8 @@
                 Header="{CompiledBinding Translation.OpenWith.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False}"
                 x:Name="OpenWithMenuItem">
                 <MenuItem.Icon>
                     <Image Height="12" Width="12">
@@ -383,7 +385,8 @@
                     Header="{CompiledBinding Translation.NextImage.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
                     StaysOpenOnClick="True">
                     <MenuItem.Icon>
                         <Image
@@ -899,7 +902,6 @@
             Height="150"
             HorizontalAlignment="Right"
             IsVisible="{CompiledBinding !IsUIShown.Value}"
-            Margin="{CompiledBinding RightControlOffSetMargin.Value}"
             Opacity="0"
             Orientation="Horizontal"
             VerticalAlignment="Top"

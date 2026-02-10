@@ -53,7 +53,8 @@
                 <Panel>
                     <customControls:PicBox
                         ImageType="{CompiledBinding ImageType.Value,
-                                                    Mode=OneWay}"
+                                                    Mode=OneWay,
+                                                    FallbackValue=0}"
                         Source="{CompiledBinding Image.Value}"
                         x:Name="OverlayImage" />
                     <Canvas x:Name="OverlayCanvas">

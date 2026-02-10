@@ -48,7 +48,6 @@
             <uc:HoverBar2 VerticalAlignment="Bottom" x:Name="HoverBar" />
             <buttons:ClickArrowRight2
                 HorizontalAlignment="Right"
-                Margin="{CompiledBinding $parent[Window].((viewModels1:MainWindowViewModel)DataContext).RightControlOffSetMargin.Value}"
                 Opacity="0"
                 VerticalAlignment="Center"
                 ZIndex="2"
