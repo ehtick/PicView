@@ -136,7 +136,16 @@ public static class TabNavigationInitializer
                         tabViewModel.TabTitle.Value = file.Name;
                         tabViewModel.TabTooltip.Value = file.FullName;
                         tabViewModel.UpdateTabTitle();
-                    }).AddTo(disposable);
+                    }, result =>
+                    {
+#if DEBUG
+                        if (result is { IsFailure: true, Exception: not null })
+                        {
+                            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(ModelSubscription), result.Exception);
+                        }
+#endif
+                    })
+                    .AddTo(disposable);
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Model.Image, UIHelper2.GetFrameProvider)
                     .Subscribe(image =>
                     {
@@ -150,7 +159,16 @@ public static class TabNavigationInitializer
                         }
 
                         tabViewModel.UpdateTabTitle();
-                    }).AddTo(disposable);
+                    }, result =>
+                    {
+#if DEBUG
+                        if (result is { IsFailure: true, Exception: not null })
+                        {
+                            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(ModelSubscription), result.Exception);
+                        }
+#endif
+                    })
+                    .AddTo(disposable);
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Gallery.GalleryMode.Value, UIHelper2.GetFrameProvider)
                     .Skip(1)
                     .SubscribeAwait(async (mode, _) =>
@@ -171,7 +189,16 @@ public static class TabNavigationInitializer
                                     .ConfigureAwait(false);
                             }
                         }
-                    }).AddTo(disposable);
+                    }, result =>
+                    {
+#if DEBUG
+                        if (result is { IsFailure: true, Exception: not null })
+                        {
+                            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(ModelSubscription), result.Exception);
+                        }
+#endif
+                    })
+                    .AddTo(disposable);
                 tabViewModel.Gallery.OpenSelectedItemCommand
                     .SubscribeAwait(async (index, _) =>
                     {
@@ -185,7 +212,16 @@ public static class TabNavigationInitializer
                         }
             
                         await tabViewModel.ImageIterator.SkipToIndexAsync(index, tabViewModel.GetTabCancellation()).ConfigureAwait(false);
-                    }).AddTo(disposable);
+                    }, result =>
+                    {
+#if DEBUG
+                        if (result is { IsFailure: true, Exception: not null })
+                        {
+                            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(ModelSubscription), result.Exception);
+                        }
+#endif
+                    })
+                    .AddTo(disposable);
             });
         }
         catch (Exception e)

@@ -36,13 +36,29 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             {
                 _tab.NavigationIndex.Value = i;
                 UpdateNavigationProperties(i, Files.Count);
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                     DebugHelper.LogDebug(nameof(ImageIterator), nameof(Initialize), result.Exception);
+                }
+#endif
             })
             .AddTo(_disposable);
         Observable.EveryValueChanged(Files, i => i.Count)
-            .Subscribe(i =>
+            .Subscribe( i =>
             {
                 _tab.MaxIndex.Value = i;
                 UpdateNavigationProperties(CurrentIndex, i);
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(ImageIterator), nameof(Initialize), result.Exception);
+                }
+#endif
             })
             .AddTo(_disposable);
     }
