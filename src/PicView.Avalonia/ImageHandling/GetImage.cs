@@ -103,6 +103,9 @@ public static class GetImage
         }
         magickImage = await MagickPerformanceReader.ReadMagickImageWithSpanAsync(fileInfo, magickImage);
 
+        // Rotate image according to EXIF orientation
+        magickImage.AutoOrient();
+
         var bitmap = magickImage.ToWriteableBitmap();
         if (shouldDisposeMagickImage)
         {
@@ -120,7 +123,11 @@ public static class GetImage
         }
         // Raw images needs to be loaded by file path, else it just loads thumbnail 
         // https://github.com/Ruben2776/PicView/issues/221
-        await magickImage.ReadAsync(fileInfo).ConfigureAwait(false); 
+        await magickImage.ReadAsync(fileInfo).ConfigureAwait(false);
+
+        // Rotate image according to EXIF orientation
+        magickImage.AutoOrient();
+
         var bitmap = magickImage.ToWriteableBitmap();
         if (shouldDisposeMagickImage)
         {
