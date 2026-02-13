@@ -57,7 +57,7 @@
             <MenuItem
                 Command="{CompiledBinding PrintCommand}"
                 CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                   FallbackValue=''}"
+                                                   FallbackValue=False}"
                 Header="{CompiledBinding Translation.Print.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
@@ -72,7 +72,7 @@
             <MenuItem
                 Command="{CompiledBinding OpenWithCommand}"
                 CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                   FallbackValue=''}"
+                                                   FallbackValue=False}"
                 Header="{CompiledBinding Translation.OpenWith.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
@@ -584,7 +584,7 @@
                 <MenuItem
                     Command="{CompiledBinding ShowFilePropertiesCommand}"
                     CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                       FallbackValue=''}"
+                                                       FallbackValue=False}"
                     Header="{CompiledBinding Translation.FileProperties.Value,
                                              Mode=OneWay}"
                     IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
@@ -781,7 +781,7 @@
                 Header="{CompiledBinding Translation.CopyFile.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            FallbackValue=''}">
+                                            FallbackValue=False}">
                 <MenuItem.Icon>
                     <Path Classes="CopyPath" />
                 </MenuItem.Icon>

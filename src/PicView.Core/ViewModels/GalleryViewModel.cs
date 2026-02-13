@@ -12,7 +12,39 @@ public class GalleryViewModel : IDisposable
 
     public GalleryViewModel()
     {
+        GalleryMode = new BindableReactiveProperty<GalleryMode2>(GalleryMode2.Closed);
+        
         SetStretchModeCommand = new ReactiveCommand<string>();
+
+        Observable.EveryValueChanged(Settings.Gallery, g => g.IsGalleryDocked)
+            .Subscribe(isDocked =>
+            {
+                if (isDocked && GalleryMode.Value == GalleryMode2.Closed)
+                {
+                    GalleryMode.Value = GalleryMode2.Docked;
+                }
+                else if (!isDocked && GalleryMode.Value == GalleryMode2.Docked)
+                {
+                    GalleryMode.Value = GalleryMode2.Closed;
+                }
+            })
+            .AddTo(_disposables);
+
+        Observable.EveryValueChanged(Settings.Gallery, g => g.DockPosition)
+            .Skip(1)
+            .Subscribe(_ =>
+            {
+                if (GalleryMode.Value != GalleryMode2.Docked)
+                {
+                    GalleryMode.Value = GalleryMode2.Docked;
+                }
+
+                if (!Settings.Gallery.IsGalleryDocked)
+                {
+                    Settings.Gallery.IsGalleryDocked = true;
+                }
+            })
+            .AddTo(_disposables);
         
         Observable.EveryValueChanged(Settings.Gallery, g => g.ItemSpacing)
             .Subscribe(x =>
@@ -33,8 +65,6 @@ public class GalleryViewModel : IDisposable
                 }
             })
             .AddTo(_disposables);
-
-        GalleryMode = new BindableReactiveProperty<GalleryMode2>(GalleryMode2.Closed);
 
         // Sync old properties with new Mode for backward compatibility/UI binding
         GalleryMode.Subscribe(mode =>

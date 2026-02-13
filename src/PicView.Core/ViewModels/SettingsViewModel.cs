@@ -101,6 +101,10 @@ public class SettingsViewModel : IDisposable
         Observable.EveryValueChanged(Settings.Gallery, gallery =>  gallery.DockPosition)
             .Subscribe(position => DockPositionIndex.Value = (int)position)
             .AddTo(_disposables);
+
+        Observable.EveryValueChanged(Settings.Gallery, gallery => gallery.IsGalleryDocked)
+            .Subscribe(isDocked => IsGalleryDocked.Value = isDocked)
+            .AddTo(_disposables);
     }
     
     public void Initialize(IThemeService themeService, ILanguageService languageService, IImageSettingsService imageSettingsService)

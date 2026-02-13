@@ -8,8 +8,12 @@ namespace PicView.Tests;
 
 public class SettingsViewModelTests
 {
+    private readonly ManualFrameProvider _frameProvider;
+
     public SettingsViewModelTests()
     {
+        _frameProvider = new ManualFrameProvider();
+        ObservableSystem.DefaultFrameProvider = _frameProvider;
         SettingsManager.SetDefaults();
         TranslationManager.Init();
     }
@@ -60,5 +64,45 @@ public class SettingsViewModelTests
         vm.GoForwardCommand.Execute(Unit.Default);
         Assert.False(vm.IsOverviewVisible.Value, "Should be forward at General");
         Assert.Equal(SettingsCategory.General, vm.SelectedCategory.Value);
+    }
+
+    [Fact]
+    public void IsGalleryDocked_ExternalChange_UpdatesProperty()
+    {
+        using var vm = new SettingsViewModel();
+        
+        // Initial state
+        Settings.Gallery.IsGalleryDocked = false;
+
+        // Change Setting externally
+        Settings.Gallery.IsGalleryDocked = true;
+        _frameProvider.Tick();
+        
+        // Assert
+        Assert.True(vm.IsGalleryDocked.Value);
+    }
+    
+    private class ManualFrameProvider : FrameProvider
+    {
+        private readonly List<IFrameRunnerWorkItem> _items = new();
+
+        public override long GetFrameCount() => 0;
+
+        public override void Register(IFrameRunnerWorkItem callback)
+        {
+            _items.Add(callback);
+        }
+
+        public void Tick()
+        {
+            for (int i = _items.Count - 1; i >= 0; i--)
+            {
+                var item = _items[i];
+                if (!item.MoveNext(0))
+                {
+                    _items.RemoveAt(i);
+                }
+            }
+        }
     }
 }

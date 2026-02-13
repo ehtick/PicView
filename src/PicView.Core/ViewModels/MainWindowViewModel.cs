@@ -59,7 +59,7 @@ public class MainWindowViewModel : IDisposable
     public BindableReactiveProperty<bool> IsUIShown { get; } = new();
     public BindableReactiveProperty<bool> IsTopToolbarShown { get; } = new();
 
-    public BindableReactiveProperty<bool> IsBottomToolbarShown { get; } = new();
+    public BindableReactiveProperty<bool> IsBottomToolbarShown { get; } = new(Settings.UIProperties.ShowBottomNavBar);
     public BindableReactiveProperty<object> BottomScreenMargin { get; } = new(0);
     public BindableReactiveProperty<object> BottomCornerRadius { get; } = new();
 

@@ -130,9 +130,9 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         }
 
         CurrentIndex = index;
-        var targetFile = Files[index];
+        var targetFile = Files[CurrentIndex];
 
-        var (status, model) = await TryLoadFromCacheAsync(index, targetFile, ct).ConfigureAwait(false);
+        var (status, model) = await TryLoadFromCacheAsync(CurrentIndex, targetFile, ct).ConfigureAwait(false);
         if (index != CurrentIndex)
         {
             // User skipped
@@ -149,7 +149,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                 break;
             case CacheStatus.NotInCache:
             case CacheStatus.IsLoadingInCache:
-                var loadedModel = await LoadManuallyAsync(index, ct).ConfigureAwait(false);
+                var loadedModel = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
                 if (loadedModel is null)
                 {
                     Cancel();
@@ -167,7 +167,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
         void Cancel()
         {
-            _cache.Preload(_tab.Id, index, IsReversed, Files, _tab.GetTabCancellation().Token);
+            _cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
         }
 
         async ValueTask Update()
@@ -175,7 +175,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             // 2. Load Secondary Image (if Side-by-Side)
             if (Settings.ImageScaling.ShowImageSideBySide)
             {
-                var nextIndex = index + 1;
+                var nextIndex = CurrentIndex + 1;
                 if (nextIndex < Files.Count)
                 {
                     var loadedModel = await LoadManuallyAsync(nextIndex, ct).ConfigureAwait(false);
@@ -202,7 +202,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             _tab.MaxIndex.Value = Files.Count;
 
             // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
-            _cache.Preload(_tab.Id, index, IsReversed, Files, _tab.GetTabCancellation().Token);
+            _cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
         }
     }
 

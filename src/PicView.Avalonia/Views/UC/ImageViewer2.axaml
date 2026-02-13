@@ -60,6 +60,7 @@
                 x:Name="ClickArrowLeft" />
             <buttons:GalleryShortcut2
                 HorizontalAlignment="Right"
+                IsVisible="{CompiledBinding !$parent[Window].((viewModels1:MainWindowViewModel)DataContext).IsUIShown.Value}"
                 Opacity="0"
                 VerticalAlignment="Bottom"
                 ZIndex="9"

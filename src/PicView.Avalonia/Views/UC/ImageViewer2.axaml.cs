@@ -134,7 +134,7 @@ public partial class ImageViewer2 : UserControl
                 handler => HoverBar.ProgressBar.ClickedOnTrack -= handler)
             .SubscribeAwait(async (x, _) =>
             {
-                await tab.ImageIterator.IterateToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+                await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
             }, AwaitOperation.Drop)
             .AddTo(_disposables);
         // Correspond to change when index dragged on track
@@ -146,7 +146,7 @@ public partial class ImageViewer2 : UserControl
             .Debounce(TimeSpan.FromMilliseconds(25)) // Debounce handles rapid events during drag
             .SubscribeAwait(async (x, _) =>
             {
-                await tab.ImageIterator.IterateToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+                await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
             }, AwaitOperation.Drop)
             .AddTo(_disposables);
     }
