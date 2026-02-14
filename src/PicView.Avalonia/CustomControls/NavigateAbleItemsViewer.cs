@@ -219,7 +219,18 @@ public class NavigateAbleItemsViewer : ItemsControl
     
         if (CenterCurrentItem)
         {
-            ScrollToCenterOfCurrentItem();
+            var container = ContainerFromIndex(CurrentItemIndex);
+            var vector = container?.TranslatePoint(new Point(0, 0), _scrollViewer);
+            if (vector is null)
+            {
+                return;
+            }
+            var pos = vector.Value;
+            var offset = _scrollViewer.Offset;
+            var itemCenter = pos.X + container.Bounds.Width / 2;
+            var viewportCenter = _scrollViewer.Viewport.Width / 2;
+            var diff = itemCenter - viewportCenter;
+            _scrollViewer.Offset = new Vector(offset.X + diff, offset.Y);
         }
         else
         {
@@ -346,7 +357,7 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     private List<ItemPosition> GetItemPositions()
     {
-        var list = new List<ItemPosition>();
+        var list = new List<ItemPosition>(ItemCount);
         
         for (var i = 0; i < ItemCount; i++)
         {

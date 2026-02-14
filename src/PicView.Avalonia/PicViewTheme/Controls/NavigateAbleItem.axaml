@@ -15,8 +15,11 @@
                     BorderThickness="{TemplateBinding BorderThickness}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     Name="border"
+                    Opacity="0.96"
                     Padding="{TemplateBinding Padding}">
                     <ContentPresenter
+                        BorderBrush="Transparent"
+                        BorderThickness="1"
                         Content="{TemplateBinding Content}"
                         ContentTemplate="{TemplateBinding ContentTemplate}"
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -29,16 +32,22 @@
 
         <Style Selector="^:pointerover /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
+            <Setter Property="Opacity" Value="1" />
         </Style>
         <Style Selector="^:selectedItem  /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
+            <Setter Property="Opacity" Value="1" />
         </Style>
         <Style Selector="^:currentItem  /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+            <Setter Property="Opacity" Value="1" />
         </Style>
         <Style Selector="^:contextMenuOpen  /template/ Border#border">
             <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
-            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
+        <Style Selector="^:contextMenuOpen  /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource SecondaryAccentColor}" />
         </Style>
         <Style Selector="^:disabled">
             <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
