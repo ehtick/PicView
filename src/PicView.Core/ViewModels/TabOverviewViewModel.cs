@@ -123,13 +123,6 @@ public class TabOverviewViewModel
             .ConfigureAwait(false);
     }
     
-    public async ValueTask CreateNewTabFromStringAsync(string source)
-    {
-        var tab = CreateTab();
-        await SharedNavigation.LoadFromStringAsync(source, tab, tab.GetTabCancellation())
-            .ConfigureAwait(false);
-    }
-    
     public void SetParentContext(object parent)
     {
         _parentVm = parent;
@@ -143,9 +136,6 @@ public class TabOverviewViewModel
     public void SelectTab(TabViewModel tab)
     {
         ActiveTab.Value = tab;
-        
-        // If the tab is detached, IndexOf will be -1. 
-        // This effectively "deselects" the tab in the Main Window's TabControl, which is correct behavior.
         ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
         
         ActiveTab.Value.IsSelected = true;
