@@ -1,5 +1,7 @@
+using System.Diagnostics;
 using ObservableCollections;
 using PicView.Core.Config;
+using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Navigation;
 using R3;
@@ -9,13 +11,32 @@ namespace PicView.Core.ViewModels;
 public class GalleryViewModel : IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
+    public ReactiveCommand<string> SetStretchModeCommand { get; } = new();
+    public ReactiveCommand<GalleryMode2> SetGalleryModeCommand { get; } = new();
+    public ReactiveCommand<GalleryDockPosition> SetDockPositionCommand { get; } = new();
+    public ReactiveCommand<Unit> ToggleGalleryCommand { get; } = new();
+    public ReactiveCommand<Unit> CloseGalleryCommand { get; } = new();
+    public ReactiveCommand<NavigateTo> NavigateGalleryCommand { get; } = new();
+    public ReactiveCommand<int> OpenSelectedItemCommand { get; } = new();
 
-    public GalleryViewModel()
+    public BindableReactiveProperty<ObservableList<GalleryItemViewModel>> GalleryItems { get; } = new([]);
+    public BindableReactiveProperty<GalleryMode2> GalleryMode { get; } = new(GalleryMode2.Closed);
+    public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
+
+    public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
+    public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
+    public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
+    public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
+
+    public BindableReactiveProperty<GalleryItemViewModel?> CurrentGalleryItem { get; } = new();
+    public BindableReactiveProperty<GalleryItemViewModel?> SelectedGalleryItem { get; } = new();
+    public BindableReactiveProperty<int> SelectedGalleryItemIndex { get; } = new(-1);
+
+    public GalleryLoadingState LoadingState { get; set; }
+
+    public void Initialize()
     {
-        GalleryMode = new BindableReactiveProperty<GalleryMode2>(GalleryMode2.Closed);
-        
-        SetStretchModeCommand = new ReactiveCommand<string>();
-
+        Debug.Assert(Settings.Gallery is not null);
         Observable.EveryValueChanged(Settings.Gallery, g => g.IsGalleryDocked)
             .Subscribe(isDocked =>
             {
@@ -27,25 +48,17 @@ public class GalleryViewModel : IDisposable
                 {
                     GalleryMode.Value = GalleryMode2.Closed;
                 }
-            })
-            .AddTo(_disposables);
-
-        Observable.EveryValueChanged(Settings.Gallery, g => g.DockPosition)
-            .Skip(1)
-            .Subscribe(_ =>
+            }, result =>
             {
-                if (GalleryMode.Value != GalleryMode2.Docked)
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
                 {
-                    GalleryMode.Value = GalleryMode2.Docked;
+                    DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
                 }
-
-                if (!Settings.Gallery.IsGalleryDocked)
-                {
-                    Settings.Gallery.IsGalleryDocked = true;
-                }
+#endif
             })
             .AddTo(_disposables);
-        
+
         Observable.EveryValueChanged(Settings.Gallery, g => g.ItemSpacing)
             .Subscribe(x =>
             {
@@ -53,6 +66,14 @@ public class GalleryViewModel : IDisposable
                 {
                     ItemSpacing.Value = x;
                 }
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+                }
+#endif
             })
             .AddTo(_disposables);
 
@@ -63,30 +84,62 @@ public class GalleryViewModel : IDisposable
                 {
                     LineSpacing.Value = x;
                 }
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+                }
+#endif
             })
             .AddTo(_disposables);
 
-        // Sync old properties with new Mode for backward compatibility/UI binding
         GalleryMode.Subscribe(mode =>
-        {
-            IsGalleryExpanded.Value = mode == GalleryMode2.Expanded;
-            IsDockedGalleryVisible.Value = mode == GalleryMode2.Docked;
-        }).AddTo(_disposables);
-
-        // Commands
+            {
+                IsGalleryExpanded.Value = mode == GalleryMode2.Expanded;
+                IsDockedGalleryVisible.Value = mode == GalleryMode2.Docked;
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+                }
+#endif
+            })
+            .AddTo(_disposables);
         
-        SetGalleryModeCommand = new ReactiveCommand<GalleryMode2>();
-        SetGalleryModeCommand.Subscribe(mode => GalleryMode.Value = mode).AddTo(_disposables);
+        SetGalleryModeCommand.Subscribe(mode =>
+            {
+                GalleryMode.Value = mode;
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+                }
+#endif
+            })
+            .AddTo(_disposables);
         
-        SetDockPositionCommand = new ReactiveCommand<GalleryDockPosition>();
         SetDockPositionCommand.Subscribe(pos =>
         {
             Settings.Gallery.IsGalleryDocked = true;
             Settings.Gallery.DockPosition = pos;
             GalleryMode.Value = GalleryMode2.Docked;
-        }).AddTo(_disposables);
-
-        ToggleGalleryCommand = new ReactiveCommand<Unit>();
+        }, result =>
+        {
+#if DEBUG
+            if (result is { IsFailure: true, Exception: not null })
+            {
+                DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+            }
+#endif
+        })
+        .AddTo(_disposables);
+        
         ToggleGalleryCommand.Subscribe(_ =>
         {
             if (Settings.Gallery.IsGalleryDocked && IsGalleryExpanded.CurrentValue)
@@ -101,19 +154,30 @@ public class GalleryViewModel : IDisposable
             {
                 GalleryMode.Value = GalleryMode2.Expanded;
             }
-            //GalleryMode.Value = GalleryMode.Value == GalleryMode2.Expanded ? GalleryMode2.Docked : GalleryMode2.Expanded;
-        }).AddTo(_disposables);
-        
-        CloseGalleryCommand = new ReactiveCommand<Unit>();
-        CloseGalleryCommand.Subscribe(_ =>
+        }, result =>
         {
-            Settings.Gallery.IsGalleryDocked = false;
-            Settings.Gallery.DockPosition = GalleryDockPosition.Closed;
-            GalleryMode.Value = GalleryMode2.Closed;
-        }).AddTo(_disposables);
-
-        NavigateGalleryCommand = new ReactiveCommand<NavigateTo>();
-        OpenSelectedItemCommand = new ReactiveCommand<int>();
+#if DEBUG
+            if (result is { IsFailure: true, Exception: not null })
+            {
+                DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+            }
+#endif
+        })
+        .AddTo(_disposables);
+        
+        CloseGalleryCommand.SubscribeAwait(async (_, ct) =>
+        {
+            await GalleryManager.UpdateGalleryDockedStatusAsync(isDocked: false, ct);
+        }, result =>
+        {
+#if DEBUG
+            if (result is { IsFailure: true, Exception: not null })
+            {
+                DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
+            }
+#endif
+        })
+        .AddTo(_disposables);
     }
 
     public void Navigate(NavigateTo direction)
@@ -121,30 +185,6 @@ public class GalleryViewModel : IDisposable
         NavigateGalleryCommand.Execute(direction);
     }
     
-    public ReactiveCommand<string> SetStretchModeCommand { get; }
-    
-    public ReactiveCommand<GalleryMode2> SetGalleryModeCommand { get; }
-    public ReactiveCommand<GalleryDockPosition> SetDockPositionCommand { get; }
-    public ReactiveCommand<Unit> ToggleGalleryCommand { get; }
-    public ReactiveCommand<Unit> CloseGalleryCommand { get; }
-    public ReactiveCommand<NavigateTo> NavigateGalleryCommand { get; }
-    public ReactiveCommand<int> OpenSelectedItemCommand { get; }
-
-    public BindableReactiveProperty <ObservableList<GalleryItemViewModel>> GalleryItems { get; } = new([]);
-    public BindableReactiveProperty<GalleryMode2> GalleryMode { get; }
-    public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
-    
-    public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
-    public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
-    public BindableReactiveProperty<double> ItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
-    public BindableReactiveProperty<double> LineSpacing { get; } = new(Settings.Gallery.LineSpacing);
-    
-    public BindableReactiveProperty<GalleryItemViewModel?> CurrentGalleryItem { get; } = new();
-    public BindableReactiveProperty<GalleryItemViewModel?> SelectedGalleryItem { get; } = new();
-    public BindableReactiveProperty<int> SelectedGalleryItemIndex { get; } = new(-1);
-
-    public GalleryLoadingState LoadingState { get; set; }
-
     public void Dispose()
     {
         _disposables.Dispose();

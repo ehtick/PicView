@@ -44,6 +44,7 @@ public static class TabNavigationInitializer
         tabOverView.SetParentContext(core);
         tab.UpdateTabTitle();
         ModelSubscription(tab, disposable);
+        tab.Gallery.Initialize();
     }
     
     public static void Initialize(CoreViewModel core, FileInfo fileInfo, CompositeDisposable disposable)
@@ -77,6 +78,7 @@ public static class TabNavigationInitializer
         tabOverView.SetParentContext(core);
         tab.UpdateTabTitle();
         ModelSubscription(tab, disposable);
+        tab.Gallery.Initialize();
     }
     
     public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab, CompositeDisposable disposable)
@@ -103,7 +105,6 @@ public static class TabNavigationInitializer
         // Need to properly remove it from the previous location
         parentVm.WindowTabs.RemoveTab(tab);
         parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
-        ModelSubscription(tab, disposable);
     }
     
     private static void ModelSubscription(TabViewModel tabViewModel, CompositeDisposable disposable)

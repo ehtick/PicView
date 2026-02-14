@@ -345,10 +345,9 @@ public class SettingsViewModel : IDisposable
             }).AddTo(_disposables);
 
         Observable.EveryValueChanged(this, x => x.IsGalleryDocked.CurrentValue)
-            .SubscribeAwait(async (x, _) =>
+            .SubscribeAwait(async (isDocked, ct) =>
             {
-                Settings.Gallery.IsGalleryDocked = x;
-                await SaveSettingsAsync();
+                await GalleryManager.UpdateGalleryDockedStatusAsync(isDocked, ct);
             }).AddTo(_disposables);
 
         Observable.EveryValueChanged(this, x => x.DockPositionIndex.CurrentValue)

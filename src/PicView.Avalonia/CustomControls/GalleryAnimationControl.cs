@@ -45,10 +45,7 @@ public class GalleryAnimationControl : UserControl
     #endregion
 
     #region Fields and Properties
-
-    private const double FastAnimationSpeed = 0.35;
-    private const double MediumAnimationSpeed = 0.5;
-    private const double SlowAnimationSpeed = 0.6;
+    
     private const int ZeroSize = 0;
 
     private TabViewModel? ViewModel => DataContext as TabViewModel;
@@ -117,7 +114,15 @@ public class GalleryAnimationControl : UserControl
         // Also subscribe to DockPosition, as changing it while Docked might need layout updates
         Observable.EveryValueChanged(Settings.Gallery, gallery => gallery.DockPosition)
             .Skip(1) // Skip startup
-            .Subscribe(SetDockedLayout)
+            .Subscribe(SetDockedLayout, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(GalleryAnimationControl), nameof(OnControlLoaded), result.Exception);
+                }
+#endif
+            })
             .AddTo(_disposables);
 
         if (Parent is Control parent)
@@ -395,8 +400,6 @@ public class GalleryAnimationControl : UserControl
         var dock = Settings.Gallery.DockPosition;
 
         IsVisible = true;
-        
-        
 
         // Reset dimensions
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
@@ -417,14 +420,14 @@ public class GalleryAnimationControl : UserControl
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
             Height = ZeroSize;
-            var anim = AnimationsHelper.HeightAnimation(ZeroSize, targetSize, FastAnimationSpeed);
+            var anim = AnimationsHelper.HeightAnimation(ZeroSize, targetSize, GalleryDefaults.VeryFastAnimationSpeed);
             await anim.RunAsync(this);
             Height = targetSize;
         }
         else
         {
             Width = ZeroSize;
-            var anim = AnimationsHelper.WidthAnimation(ZeroSize, targetSize, FastAnimationSpeed);
+            var anim = AnimationsHelper.WidthAnimation(ZeroSize, targetSize, GalleryDefaults.VeryFastAnimationSpeed);
             await anim.RunAsync(this);
             Width = targetSize;
         }
@@ -441,13 +444,13 @@ public class GalleryAnimationControl : UserControl
 
         if (dock is Dock.Bottom or Dock.Top)
         {
-            var anim = AnimationsHelper.HeightAnimation(currentSize, ZeroSize, FastAnimationSpeed);
+            var anim = AnimationsHelper.HeightAnimation(currentSize, ZeroSize, GalleryDefaults.MediumAnimationSpeed);
             await anim.RunAsync(this);
             Height = ZeroSize;
         }
         else
         {
-            var anim = AnimationsHelper.WidthAnimation(currentSize, ZeroSize, FastAnimationSpeed);
+            var anim = AnimationsHelper.WidthAnimation(currentSize, ZeroSize, GalleryDefaults.MediumAnimationSpeed);
             await anim.RunAsync(this);
             Width = ZeroSize;
         }
@@ -467,14 +470,14 @@ public class GalleryAnimationControl : UserControl
         if (dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom)
         {
             var targetHeight = parent.Bounds.Height;
-            var anim = AnimationsHelper.HeightAnimation(startSize, targetHeight, MediumAnimationSpeed);
+            var anim = AnimationsHelper.HeightAnimation(startSize, targetHeight, GalleryDefaults.MediumAnimationSpeed);
             await anim.RunAsync(this);
             Height = targetHeight;
         }
         else
         {
             var targetWidth = parent.Bounds.Width;
-            var anim = AnimationsHelper.WidthAnimation(startSize, targetWidth, MediumAnimationSpeed);
+            var anim = AnimationsHelper.WidthAnimation(startSize, targetWidth, GalleryDefaults.MediumAnimationSpeed);
             await anim.RunAsync(this);
             Width = targetWidth;
         }
@@ -497,7 +500,7 @@ public class GalleryAnimationControl : UserControl
             // Override height for animation start
             Height = startHeight;
 
-            var anim = AnimationsHelper.HeightAnimation(startHeight, targetHeight, SlowAnimationSpeed);
+            var anim = AnimationsHelper.HeightAnimation(startHeight, targetHeight, GalleryDefaults.SlowAnimationSpeed);
             await anim.RunAsync(this);
             Height = targetHeight;
         }
@@ -508,7 +511,7 @@ public class GalleryAnimationControl : UserControl
 
             Width = startWidth;
 
-            var anim = AnimationsHelper.WidthAnimation(startWidth, targetWidth, SlowAnimationSpeed);
+            var anim = AnimationsHelper.WidthAnimation(startWidth, targetWidth, GalleryDefaults.SlowAnimationSpeed);
             await anim.RunAsync(this);
             Width = targetWidth;
         }
@@ -532,8 +535,8 @@ public class GalleryAnimationControl : UserControl
             return;
         }
 
-        var widthAnim = AnimationsHelper.WidthAnimation(Width, targetWidth, MediumAnimationSpeed);
-        var heightAnim = AnimationsHelper.HeightAnimation(Height, targetHeight, MediumAnimationSpeed);
+        var widthAnim = AnimationsHelper.WidthAnimation(Width, targetWidth, GalleryDefaults.MediumAnimationSpeed);
+        var heightAnim = AnimationsHelper.HeightAnimation(Height, targetHeight, GalleryDefaults.MediumAnimationSpeed);
 
         await Task.WhenAll(
             widthAnim.RunAsync(this),
@@ -549,8 +552,8 @@ public class GalleryAnimationControl : UserControl
 
     private async Task ExpandedToClosed()
     {
-        var widthAnim = AnimationsHelper.WidthAnimation(Bounds.Width, ZeroSize, FastAnimationSpeed);
-        var heightAnim = AnimationsHelper.HeightAnimation(Bounds.Height, ZeroSize, FastAnimationSpeed);
+        var widthAnim = AnimationsHelper.WidthAnimation(Bounds.Width, ZeroSize, GalleryDefaults.FastAnimationSpeed);
+        var heightAnim = AnimationsHelper.HeightAnimation(Bounds.Height, ZeroSize, GalleryDefaults.FastAnimationSpeed);
 
         await Task.WhenAll(
             widthAnim.RunAsync(this),
