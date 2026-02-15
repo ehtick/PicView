@@ -1,4 +1,6 @@
 <customControls:NavigateAbleItem
+    Background="{DynamicResource MenuBackgroundColor}"
+    CornerRadius="4"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -11,9 +13,7 @@
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border
-        Background="Transparent"
-        BorderBrush="{DynamicResource MainBorderColor}"
-        BorderThickness="1"
+        CornerRadius="4"
         Height="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).GallerySettings.ItemHeight.Value,
                                  Mode=OneWay}"
         MinWidth="25"
@@ -21,8 +21,7 @@
         ToolTip.Placement="TopEdgeAlignedLeft"
         ToolTip.VerticalOffset="0"
         Width="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).GallerySettings.ItemWidth.Value,
-                                Mode=OneWay}"
-        x:Name="InnerBorder">
+                                Mode=OneWay}">
         <customControls:ThumbImage
             Source="{CompiledBinding Image.Value}"
             Stretch="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).GallerySettings.GalleryStretch.Value}"

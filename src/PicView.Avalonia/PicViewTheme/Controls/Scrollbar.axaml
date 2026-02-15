@@ -10,7 +10,10 @@
             <Setter Property="Focusable" Value="False" />
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Background="Transparent" UseLayoutRounding="False">
+                    <Border 
+                        Background="Transparent"
+                        CornerRadius="4"
+                        UseLayoutRounding="False">
                         <Grid ColumnDefinitions="Auto,*,Auto">
                             <RepeatButton
                                 Background="Transparent"
@@ -25,12 +28,10 @@
                                 VerticalAlignment="Center"
                                 Width="16">
                                 <Path
-                                    Data="{StaticResource FilledArrowLeftGeometry}"
+                                    Data="{StaticResource FilledChevronLeftGeometry}"
                                     Fill="{TemplateBinding Foreground}"
                                     Height="12"
-                                    HorizontalAlignment="Center"
                                     Stretch="Fill"
-                                    VerticalAlignment="Center"
                                     Width="12" />
                             </RepeatButton>
                             <Track
@@ -73,12 +74,10 @@
                                 VerticalAlignment="Center"
                                 Width="16">
                                 <Path
-                                    Data="{StaticResource FilledArrowRightGeometry}"
+                                    Data="{StaticResource FilledChevronRightGeometry}"
                                     Fill="{TemplateBinding Foreground}"
                                     Height="12"
-                                    HorizontalAlignment="Center"
                                     Stretch="Fill"
-                                    VerticalAlignment="Center"
                                     Width="12" />
                             </RepeatButton>
                         </Grid>
@@ -171,13 +170,16 @@
         <Style Selector="^ /template/ Thumb#thumb">
             <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
+            <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Border
                             Background="{TemplateBinding Background}"
-                            BorderBrush="{DynamicResource TertiaryBorderColor}"
-                            BorderThickness="1" />
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            CornerRadius="{TemplateBinding CornerRadius}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -209,11 +211,11 @@
             </Setter>
         </Style>
 
-        <Style Selector="^ /template/ RepeatButton &gt; Path">
+        <Style Selector="^ /template/ RepeatButton > Path">
             <Setter Property="Fill" Value="{TemplateBinding Foreground}" />
         </Style>
 
-        <Style Selector="^ /template/ RepeatButton:pointerover &gt; Path">
+        <Style Selector="^ /template/ RepeatButton:pointerover > Path">
             <Setter Property="Fill" Value="{DynamicResource AccentColor}" />
         </Style>
 
@@ -259,35 +261,39 @@
                 </ControlTemplate>
             </Setter>
         </Style>
+        
         <Style Selector="^ /template/ Thumb#thumb">
             <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Border
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" />
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style Selector="^ /template/ Thumb#thumb:pointerover">
-            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
-        </Style>
-        <Style Selector="^ /template/ Thumb#thumb:pressed">
-            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
-        </Style>
-        <Style Selector="^:horizontal /template/ Thumb#thumb">
-            <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
-            <Setter Property="Height" Value="16" />
-        </Style>
-        <Style Selector="^:vertical /template/ Thumb#thumb">
-            <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}" />
-            <Setter Property="Width" Value="12" />
-        </Style>
+        
+            <Style Selector="^ /template/ Thumb#thumb:pointerover">
+                <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+            </Style>
+            <Style Selector="^ /template/ Thumb#thumb:pressed">
+                <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+            </Style>
+            <Style Selector="^:horizontal /template/ Thumb#thumb">
+                <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
+                <Setter Property="Height" Value="16" />
+            </Style>
+            <Style Selector="^:vertical /template/ Thumb#thumb">
+                <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}" />
+                <Setter Property="Width" Value="12" />
+            </Style>
 
     </ControlTheme>
 
@@ -334,13 +340,15 @@
             <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
             <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="4" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
                         <Border
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" />
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"/>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

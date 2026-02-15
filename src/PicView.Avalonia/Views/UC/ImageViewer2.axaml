@@ -9,11 +9,7 @@
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel LastChildFill="True">
-        <gallery:GalleryView2
-            Background="{DynamicResource MenuBackgroundColor}"
-            DockPanel.Dock="Bottom"
-            ZIndex="1"
-            x:Name="GalleryView" />
+        <gallery:GalleryView2 ZIndex="1" x:Name="GalleryView" />
         <Panel Background="{CompiledBinding $parent[Window].((viewModels1:MainWindowViewModel)DataContext).ImageBackground.Value, Mode=OneWay}" x:Name="MainPanel">
             <customControls:ZoomPanControl2 x:Name="ZoomPanControl">
                 <customControls:AutoScrollViewer
