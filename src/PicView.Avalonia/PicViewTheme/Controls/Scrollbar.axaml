@@ -10,7 +10,7 @@
             <Setter Property="Focusable" Value="False" />
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border 
+                    <Border
                         Background="Transparent"
                         CornerRadius="4"
                         UseLayoutRounding="False">
@@ -27,11 +27,10 @@
                                 Name="PART_LineUpButton"
                                 VerticalAlignment="Center"
                                 Width="16">
-                                <Path
+                                <PathIcon
                                     Data="{StaticResource FilledChevronLeftGeometry}"
-                                    Fill="{TemplateBinding Foreground}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Height="12"
-                                    Stretch="Fill"
                                     Width="12" />
                             </RepeatButton>
                             <Track
@@ -73,11 +72,10 @@
                                 Name="PART_LineDownButton"
                                 VerticalAlignment="Center"
                                 Width="16">
-                                <Path
+                                <PathIcon
                                     Data="{StaticResource FilledChevronRightGeometry}"
-                                    Fill="{TemplateBinding Foreground}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Height="12"
-                                    Stretch="Fill"
                                     Width="12" />
                             </RepeatButton>
                         </Grid>
@@ -104,12 +102,11 @@
                                 Interval="55"
                                 MinHeight="{StaticResource ScrollBarThickness}"
                                 Name="PART_LineUpButton">
-                                <Path
+                                <PathIcon
                                     Data="{StaticResource FilledArrowUpGeometry}"
-                                    Fill="{TemplateBinding Foreground}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Height="16"
                                     HorizontalAlignment="Center"
-                                    Stretch="Fill"
                                     VerticalAlignment="Center"
                                     Width="16" />
                             </RepeatButton>
@@ -152,12 +149,11 @@
                                 Interval="55"
                                 MinHeight="{StaticResource ScrollBarThickness}"
                                 Name="PART_LineDownButton">
-                                <Path
+                                <PathIcon
                                     Data="{StaticResource FilledArrowDownGeometry}"
-                                    Fill="{TemplateBinding Foreground}"
+                                    Foreground="{TemplateBinding Foreground}"
                                     Height="16"
                                     HorizontalAlignment="Center"
-                                    Stretch="Fill"
                                     VerticalAlignment="Center"
                                     Width="16" />
                             </RepeatButton>
@@ -178,7 +174,7 @@
                         <Border
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{TemplateBinding CornerRadius}" />
                     </ControlTemplate>
                 </Setter.Value>
@@ -211,12 +207,8 @@
             </Setter>
         </Style>
 
-        <Style Selector="^ /template/ RepeatButton > Path">
-            <Setter Property="Fill" Value="{TemplateBinding Foreground}" />
-        </Style>
-
-        <Style Selector="^ /template/ RepeatButton:pointerover > Path">
-            <Setter Property="Fill" Value="{DynamicResource AccentColor}" />
+        <Style Selector="^ /template/ RepeatButton:pointerover &gt; PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource AccentColor}" />
         </Style>
 
     </ControlTheme>
@@ -261,7 +253,7 @@
                 </ControlTemplate>
             </Setter>
         </Style>
-        
+
         <Style Selector="^ /template/ Thumb#thumb">
             <Setter Property="Background" Value="{DynamicResource MainBackgroundColor}" />
             <Setter Property="BorderBrush" Value="{DynamicResource TertiaryBorderColor}" />
@@ -279,21 +271,21 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-            <Style Selector="^ /template/ Thumb#thumb:pointerover">
-                <Setter Property="Background" Value="{DynamicResource AccentColor}" />
-            </Style>
-            <Style Selector="^ /template/ Thumb#thumb:pressed">
-                <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
-            </Style>
-            <Style Selector="^:horizontal /template/ Thumb#thumb">
-                <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
-                <Setter Property="Height" Value="16" />
-            </Style>
-            <Style Selector="^:vertical /template/ Thumb#thumb">
-                <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}" />
-                <Setter Property="Width" Value="12" />
-            </Style>
+
+        <Style Selector="^ /template/ Thumb#thumb:pointerover">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        </Style>
+        <Style Selector="^ /template/ Thumb#thumb:pressed">
+            <Setter Property="Background" Value="{DynamicResource SecondaryAccentColor}" />
+        </Style>
+        <Style Selector="^:horizontal /template/ Thumb#thumb">
+            <Setter Property="MinWidth" Value="{StaticResource ScrollBarThickness}" />
+            <Setter Property="Height" Value="16" />
+        </Style>
+        <Style Selector="^:vertical /template/ Thumb#thumb">
+            <Setter Property="MinHeight" Value="{DynamicResource ScrollBarThickness}" />
+            <Setter Property="Width" Value="12" />
+        </Style>
 
     </ControlTheme>
 
@@ -348,7 +340,7 @@
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}"/>
+                            CornerRadius="{TemplateBinding CornerRadius}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>

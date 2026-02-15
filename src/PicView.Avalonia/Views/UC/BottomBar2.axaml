@@ -165,7 +165,8 @@
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False}">
+                                            FallbackValue=False,
+                                            Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -183,7 +184,8 @@
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False}">
+                                            FallbackValue=False,
+                                            Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Height="14"
@@ -349,7 +351,9 @@
                 IconHeight="16"
                 IconWidth="18"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
                 ToolTip.Tip="{CompiledBinding Translation.ZoomOut.Value}"
@@ -367,7 +371,9 @@
                 IconHeight="16"
                 IconWidth="18"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
                 ToolTip.Tip="{CompiledBinding Translation.ZoomIn.Value}"
@@ -423,7 +429,9 @@
                 IconHeight="16"
                 IconWidth="16"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
                 IsRepeatEnabled="False"
                 Margin="0"
                 ToolTip.HorizontalOffset="15"
@@ -445,7 +453,9 @@
                 IconHeight="16"
                 IconWidth="16"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
                 IsRepeatEnabled="False"
                 Margin="0"
                 ToolTip.HorizontalOffset="15"
@@ -466,7 +476,9 @@
                 IconHeight="16"
                 IconWidth="16"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull}}"
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
                 IsTabStop="False"
                 ToolTip.HorizontalOffset="15"
                 ToolTip.Tip="{CompiledBinding Translation.Crop.Value}"

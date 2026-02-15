@@ -25,63 +25,67 @@ public static class DragAndDropHelper
 
     public static async Task Drop(DragEventArgs e, MainViewModel vm)
     {
-        RemoveDragDropView();
-
-        var files = e.Data.GetFiles();
-        if (files == null)
-        {
-            await HandleDropFromUrl(e, vm);
-            return;
-        }
-
-        var storageItems = files as IStorageItem[] ?? files.ToArray();
-        var firstFile = storageItems.FirstOrDefault();
-        if (firstFile == null)
-        {
-            return;
-        }
-        
-        // Handle opening additional files in new windows if needed
-        if (storageItems.Length > 1)
-        {
-            _ = Task.Run(() => HandleAdditionalFiles(storageItems.Skip(1)));
-        }
-
-        var path = firstFile.Path.LocalPath;
-
-        if (e.Data.Contains("text/x-moz-url"))
-        {
-            await HandleDropFromUrl(e, vm);
-            await EnsureImageViewerDisplayed(vm);
-        }
-        else if (path.IsSupported())
-        {
-            await EnsureImageViewerDisplayed(vm);
-            await LoadSupportedFile(path, vm);
-        }
-        else if (Directory.Exists(path))
-        {
-            await EnsureImageViewerDisplayed(vm);
-            await NavigationManager.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
-        }
-        else if (path.IsArchive())
-        {
-            await EnsureImageViewerDisplayed(vm);
-            await NavigationManager.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
-        }
+        // RemoveDragDropView();
+        //
+        // var files = e.DataTransfer.TryGetFiles();
+        // if (files == null)
+        // {
+        //     await HandleDropFromUrl(e, vm);
+        //     return;
+        // }
+        //
+        // var storageItems = files as IStorageItem[] ?? files.ToArray();
+        // var firstFile = storageItems.FirstOrDefault();
+        // if (firstFile == null)
+        // {
+        //     return;
+        // }
+        //
+        // // Handle opening additional files in new windows if needed
+        // if (storageItems.Length > 1)
+        // {
+        //     _ = Task.Run(() => HandleAdditionalFiles(storageItems.Skip(1)));
+        // }
+        //
+        // var path = firstFile.Path.LocalPath;
+        //
+        // if (e.DataTransfer.TryGetText() is { } text)
+        // {
+        //     if (text.Contains("text/x-moz-url"))
+        //     {
+        //         await HandleDropFromUrl(e, vm);
+        //         await EnsureImageViewerDisplayed(vm);
+        //     }
+        // }
+        // else if (path.IsSupported())
+        // {
+        //     await EnsureImageViewerDisplayed(vm);
+        //     await LoadSupportedFile(path, vm);
+        // }
+        // else if (Directory.Exists(path))
+        // {
+        //     await EnsureImageViewerDisplayed(vm);
+        //     await NavigationManager.LoadPicFromDirectoryAsync(path, vm).ConfigureAwait(false);
+        // }
+        // else if (path.IsArchive())
+        // {
+        //     await EnsureImageViewerDisplayed(vm);
+        //     await NavigationManager.LoadPicFromArchiveAsync(path, vm).ConfigureAwait(false);
+        // }
     }
 
     public static async Task DragEnter(DragEventArgs e, MainViewModel vm, Control control)
     {
-        var files = e.Data.GetFiles();
+        var files = e.DataTransfer.TryGetFiles();
         if (files != null)
         {
             await HandleDragEnterWithFiles(files, vm, control);
         }
         else
         {
+            var text = e.DataTransfer.TryGetText();
             // Try handling as URL
-            var handled = await HandleDragEnterFromUrl(e.Data.Get("text/x-moz-url"), vm);
+            var handled = await HandleDragEnterFromUrl(e, vm);
             if (!handled)
             {
                 RemoveDragDropView();
@@ -129,16 +133,16 @@ public static class DragAndDropHelper
 
     private static async Task HandleDropFromUrl(DragEventArgs e, MainViewModel vm)
     {
-        var urlObject = e.Data.Get("text/x-moz-url");
-        if (urlObject is byte[] bytes)
-        {
-            var dataStr = Encoding.Unicode.GetString(bytes);
-            var url = dataStr.Split((char)10).FirstOrDefault();
-            if (url != null)
-            {
-                await LoadFromUrl(url, vm);
-            }
-        }
+        // var urlObject = e.Data.Get("text/x-moz-url");
+        // if (urlObject is byte[] bytes)
+        // {
+        //     var dataStr = Encoding.Unicode.GetString(bytes);
+        //     var url = dataStr.Split((char)10).FirstOrDefault();
+        //     if (url != null)
+        //     {
+        //         await LoadFromUrl(url, vm);
+        //     }
+        // }
     }
 
     private static async Task LoadFromUrl(string url, MainViewModel vm)

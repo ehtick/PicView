@@ -65,24 +65,26 @@ public static class GalleryLoader
             MaxDegreeOfParallelism = Environment.ProcessorCount - 2
         };
         
-        
         try 
         {
             if (thumbnailCache.IsEmpty())
             {
-                await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
+                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Value.Count, parallelOptions,
+                async (i, _) =>
                 {
+                    var item = tab.Gallery.GalleryItems.Value[i];
                     await LoadItem(item).ConfigureAwait(false);
                 });
             }
             else
             {
-                await Parallel.ForEachAsync(tab.Gallery.GalleryItems.Value, parallelOptions, async (item, token) =>
+                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Value.Count, parallelOptions,
+                async (i, _) =>
                 {
+                    var item = tab.Gallery.GalleryItems.Value[i];
                     await CheckAndLoad(item).ConfigureAwait(false);
                 });
             }
-
         }
         catch (OperationCanceledException)
         {

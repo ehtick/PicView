@@ -181,7 +181,7 @@ public static class StartUpHelper2
    //         vm.Tabs.SetParentContext(vm);
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
-     //       SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
+     //     SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
 
             // vm.MainWindow.LayoutButtonSubscription(vm);
             // vm.Gallery.GalleryItemSizeUpdateSubscription(vm);
