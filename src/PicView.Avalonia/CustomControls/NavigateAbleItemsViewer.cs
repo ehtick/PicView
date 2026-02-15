@@ -216,42 +216,52 @@ public class NavigateAbleItemsViewer : ItemsControl
         {
             return;
         }
-    
+        
         if (CenterCurrentItem)
         {
-            var container = ContainerFromIndex(CurrentItemIndex);
+            var container = ContainerFromIndex(index); 
+
             var vector = container?.TranslatePoint(new Point(0, 0), _scrollViewer);
-            if (vector is null)
+            
+            if (vector != null)
             {
-                return;
+                var pos = vector.Value;
+                var currentOffset = _scrollViewer.Offset;
+                
+                // Calculate the center of the item vs the center of the viewport
+                var itemCenter = pos.X + container!.Bounds.Width / 2;
+                var viewportCenter = _scrollViewer.Viewport.Width / 2;
+                
+                // Calculate the difference needed to align them
+                var diff = itemCenter - viewportCenter;
+                
+                // Apply the new offset
+                // This math works regardless of where the user has manually scrolled.
+                _scrollViewer.Offset = new Vector(currentOffset.X + diff, currentOffset.Y);
             }
-            var pos = vector.Value;
-            var offset = _scrollViewer.Offset;
-            var itemCenter = pos.X + container.Bounds.Width / 2;
-            var viewportCenter = _scrollViewer.Viewport.Width / 2;
-            var diff = itemCenter - viewportCenter;
-            _scrollViewer.Offset = new Vector(offset.X + diff, offset.Y);
+            else
+            {
+                item.BringIntoView();
+            }
         }
-        else
+        else if (item.IsEffectivelyVisible)
         {
             item.BringIntoView();
         }
 
         item.SetSelected(true);
 
-        // Only clear the old item if we actually moved to a different index
+        // Handle deselecting the previous item
         if (prevIndex == index || prevIndex < 0 || prevIndex >= ItemCount 
             || ContainerFromIndex(prevIndex) is not ContentPresenter prevPresenter)
         {
             return;
         }
         
-        if (prevPresenter.Child is not NavigateAbleItem prevItem)
+        if (prevPresenter.Child is NavigateAbleItem prevItem)
         {
-            return;
+            prevItem.SetSelected(false);
         }
-        
-        prevItem.SetSelected(false);
     }
 
     public void Navigate(NavigationDirection direction)
