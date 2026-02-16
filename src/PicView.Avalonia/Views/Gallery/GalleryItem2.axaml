@@ -332,7 +332,7 @@
                     </FlyoutBase.AttachedFlyout>
                 </MenuItem>
                 <Separator />
-                <MenuItem Command="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).WindowTabs.ActiveTab.Value.Gallery.CloseGalleryCommand}" Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.CloseGallery.Value, Mode=OneWay}">
+                <MenuItem Command="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).GallerySettings.CloseGalleryCommand}" Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.CloseGallery.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path
                             Data="{StaticResource CloseGeometry}"

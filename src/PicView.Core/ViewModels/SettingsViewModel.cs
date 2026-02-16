@@ -156,21 +156,6 @@ public class SettingsViewModel : IDisposable
     public BindableReactiveProperty<bool> IsShowingPermanentDeletionDialog { get; } =
         new(Settings.UIProperties.ShowPermanentDeletionConfirmation);
 
-    public BindableReactiveProperty<bool> IsDockedGalleryShownInHiddenUI { get; } =
-        new(Settings.Gallery.ShowBottomGalleryInHiddenUI);
-
-    public BindableReactiveProperty<bool> IsGalleryDocked { get; } = new(Settings.Gallery.IsGalleryDocked);
-    public BindableReactiveProperty<double> DockedGalleryItemSize { get; } = new(Settings.Gallery.BottomGalleryItemSize);
-    public BindableReactiveProperty<double> DockedGalleryMaxItemSize { get; } = new(GalleryDefaults.MaxBottomGalleryItemHeight);
-    public BindableReactiveProperty<double> DockedGalleryMinItemSize { get; } = new(GalleryDefaults.MinBottomGalleryItemHeight);
-    public BindableReactiveProperty<double> ExpandedGalleryItemSize { get; } = new(Settings.Gallery.ExpandedGalleryItemSize);
-    public BindableReactiveProperty<double> ExpandedGalleryMaxItemSize { get; } = new(GalleryDefaults.MaxFullGalleryItemHeight);
-    public BindableReactiveProperty<double> ExpandedGalleryMinItemSize { get; } = new(GalleryDefaults.MinFullGalleryItemHeight);
-    public BindableReactiveProperty<double> GalleryItemSpacing { get; } = new(Settings.Gallery.ItemSpacing);
-    public BindableReactiveProperty<double> GalleryLineSpacing { get; } = new(Settings.Gallery.LineSpacing);
-    public BindableReactiveProperty<int> DockedGalleryStretchIndex { get; } = new(GetStretchIndex(Settings.Gallery.BottomGalleryStretchMode));
-    public BindableReactiveProperty<int> FullGalleryStretchIndex { get; } = new(GetStretchIndex(Settings.Gallery.FullGalleryStretchMode));
-
     public BindableReactiveProperty<bool> IsOpeningInSameWindow { get; } = new(Settings.UIProperties.OpenInSameWindow);
 
     public BindableReactiveProperty<bool> IsShowingConfirmationOnEsc { get; } =
@@ -238,7 +223,6 @@ public class SettingsViewModel : IDisposable
             GoForwardCommand,
             IsAvoidingZoomingOut,
             IsBackButtonEnabled,
-            IsDockedGalleryShownInHiddenUI,
             IsConstrainingBackgroundColor,
             IsForwardButtonEnabled,
             IsOpeningInSameWindow,
@@ -327,79 +311,6 @@ public class SettingsViewModel : IDisposable
             .SubscribeAwait(async (x, _) =>
             {
                 Settings.UIProperties.ShowRecycleConfirmation = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.IsDockedGalleryShownInHiddenUI.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                Settings.Gallery.ShowBottomGalleryInHiddenUI = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.IsGalleryDocked.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (isDocked, ct) =>
-            {
-                await GalleryManager.UpdateGalleryDockedStatusAsync(isDocked, ct);
-            }).AddTo(_disposables);
-
-        // Observable.EveryValueChanged(this, x => x.DockPositionIndex.CurrentValue)
-        //     .Skip(1) // Skip initial
-        //     .SubscribeAwait(async (x, _) =>
-        //     {
-        //         Settings.Gallery.DockPosition = (GalleryDockPosition)x;
-        //         await SaveSettingsAsync();
-        //     }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.DockedGalleryItemSize.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                Settings.Gallery.BottomGalleryItemSize = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.ExpandedGalleryItemSize.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                Settings.Gallery.ExpandedGalleryItemSize = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.GalleryItemSpacing.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                Settings.Gallery.ItemSpacing = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.GalleryLineSpacing.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                Settings.Gallery.LineSpacing = x;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.DockedGalleryStretchIndex.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                var mode = GetStretchString(x);
-                Settings.Gallery.BottomGalleryStretchMode = mode;
-                await SaveSettingsAsync();
-            }).AddTo(_disposables);
-
-        Observable.EveryValueChanged(this, x => x.FullGalleryStretchIndex.CurrentValue)
-            .Skip(1) // Skip initial
-            .SubscribeAwait(async (x, _) =>
-            {
-                var mode = GetStretchString(x);
-                Settings.Gallery.FullGalleryStretchMode = mode;
                 await SaveSettingsAsync();
             }).AddTo(_disposables);
 
@@ -695,34 +606,6 @@ public class SettingsViewModel : IDisposable
         IsBackButtonEnabled.Value = _backStack.Count > 0;
         IsForwardButtonEnabled.Value = _forwardStack.Count > 0;
         IsHome.Value = !IsOverviewVisible.Value;
-    }
-
-    private static int GetStretchIndex(string mode)
-    {
-        return mode switch
-        {
-            "Uniform" => 0,
-            "UniformToFill" => 1,
-            "Fill" => 2,
-            "None" => 3,
-            "Square" => 4,
-            "FillSquare" => 5,
-            _ => 0
-        };
-    }
-
-    private static string GetStretchString(int index)
-    {
-        return index switch
-        {
-            0 => "Uniform",
-            1 => "UniformToFill",
-            2 => "Fill",
-            3 => "None",
-            4 => "Square",
-            5 => "FillSquare",
-            _ => "Uniform"
-        };
     }
 
     #endregion

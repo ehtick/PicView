@@ -184,7 +184,7 @@ public static class MouseShortcuts2
         }
     }
     
-    public static async Task MainWindow_PointerPressed(PointerPressedEventArgs e)
+    public static async Task MainWindow_PointerPressed(PointerPressedEventArgs e, Window window)
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -193,26 +193,31 @@ public static class MouseShortcuts2
         var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
         var prop = e.GetCurrentPoint(topLevel).Properties;
 
+        if (window.DataContext is not MainWindowViewModel windowViewModel)
+        {
+            return;
+        }
+
         if (prop.IsXButton1Pressed)
         {
             if (Settings.Navigation.IsNavigatingFileHistory)
             {
-                await FunctionsMapper.OpenPreviousFileHistoryEntry().ConfigureAwait(false);
+                await windowViewModel.Mapper.OpenPreviousFileHistoryEntry().ConfigureAwait(false);
             }
             else if (Settings.Navigation.IsNavigatingBetweenDirectories)
             {
-                await FunctionsMapper.PrevFolder().ConfigureAwait(false);
+                await windowViewModel.Mapper.PrevFolder().ConfigureAwait(false);
             }
         }
         else if (prop.IsXButton2Pressed)
         {
             if (Settings.Navigation.IsNavigatingFileHistory)
             {
-                await FunctionsMapper.OpenNextFileHistoryEntry().ConfigureAwait(false);
+                await windowViewModel.Mapper.OpenNextFileHistoryEntry().ConfigureAwait(false);
             }
             else if (Settings.Navigation.IsNavigatingBetweenDirectories)
             {
-                await FunctionsMapper.NextFolder().ConfigureAwait(false);
+                await windowViewModel.Mapper.NextFolder().ConfigureAwait(false);
             }
         }
     }

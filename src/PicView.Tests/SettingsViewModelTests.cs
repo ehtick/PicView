@@ -69,7 +69,7 @@ public class SettingsViewModelTests
     [Fact]
     public void IsGalleryDocked_ExternalChange_UpdatesProperty()
     {
-        using var vm = new SettingsViewModel();
+        var vm = new GallerySharedSettingsViewModel();
         
         // Initial state
         Settings.Gallery.IsGalleryDocked = false;

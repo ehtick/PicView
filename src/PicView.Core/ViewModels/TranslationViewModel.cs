@@ -1,15 +1,14 @@
+using System.Diagnostics;
+using PicView.Core.Config;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class TranslationViewModel : IDisposable
+public class TranslationViewModel
 {
-    public void Dispose()
-    {
-        Disposable.Dispose(File, SelectFile, OpenLastFile);
-    }
-
+    private bool _isSubscribed;
     public void UpdateLanguage()
     {
         var t = TranslationManager.Translation;
@@ -336,6 +335,35 @@ public class TranslationViewModel : IDisposable
         Zoom.Value = t.Zoom;
         ZoomIn.Value = t.ZoomIn;
         ZoomOut.Value = t.ZoomOut;
+    }
+
+    public void SubscribeToDynamicTranslationUpdates()
+    {
+        if (_isSubscribed)
+        {
+            return;
+        }
+
+        _isSubscribed = true;
+#if DEBUG
+        Debug.Assert(SettingsManager.Settings?.Gallery is not null);
+#endif
+        Observable.EveryValueChanged(SettingsManager.Settings.Gallery, gallery => gallery.IsGalleryDocked)
+            .Subscribe(isDocked =>
+            {
+                IsShowingDockedGallery.Value = isDocked
+                    ? TranslationManager.Translation.HideDockedGallery
+                    : TranslationManager.Translation.ShowDockedGallery;
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(TranslationViewModel), nameof(SubscribeToDynamicTranslationUpdates),
+                        result.Exception);
+                }
+#endif
+            });
     }
 
     #region Static Translation Strings

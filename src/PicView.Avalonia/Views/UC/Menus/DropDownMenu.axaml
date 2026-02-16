@@ -86,7 +86,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
+                            Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
                             CommandParameter="{x:Static config:GalleryDockPosition.Bottom}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
@@ -99,33 +99,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
-                            CommandParameter="{x:Static config:GalleryDockPosition.Left}"
-                            CornerRadius="8,0,0,0"
-                            Icon="{StaticResource GalleryImage}"
-                            IconHeight="12"
-                            IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value}" />
-                        <customControls:TextIconButton
-                            Background="Transparent"
-                            Classes="altHover"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
-                            CommandParameter="{x:Static config:GalleryDockPosition.Right}"
-                            CornerRadius="8,0,0,0"
-                            Icon="{StaticResource GalleryImage}"
-                            IconHeight="12"
-                            IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value}" />
-                        <customControls:TextIconButton
-                            Background="Transparent"
-                            Classes="altHover"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
+                            Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
                             CommandParameter="{x:Static config:GalleryDockPosition.Top}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
@@ -138,14 +112,29 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.CloseGalleryCommand}"
+                            Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                            CommandParameter="{x:Static config:GalleryDockPosition.Right}"
                             CornerRadius="8,0,0,0"
-                            Data="{StaticResource CloseGeometry}"
+                            Icon="{StaticResource GalleryImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
                             Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.HideDockedGallery.Value}" />
+                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value}" />
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                            CommandParameter="{x:Static config:GalleryDockPosition.Left}"
+                            CornerRadius="8,0,0,0"
+                            Icon="{StaticResource GalleryImage}"
+                            IconHeight="12"
+                            IconMargin="0,0,7,0"
+                            IconWidth="12"
+                            IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
+                            Padding="15,7,15,7"
+                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value}" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>

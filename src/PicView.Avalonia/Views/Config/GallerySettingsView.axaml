@@ -49,7 +49,6 @@
             BorderThickness="0"
             Classes="altHover changeColor"
             Command="{CompiledBinding Tools.ToggleBottomGalleryShownInHiddenUICommand}"
-            IsChecked="{CompiledBinding SettingsViewModel.IsDockedGalleryShownInHiddenUI.Value}"
             Margin="0,0,0,10"
             Width="300">
             <TextBlock

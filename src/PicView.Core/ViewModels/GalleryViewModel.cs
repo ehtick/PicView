@@ -13,9 +13,8 @@ public class GalleryViewModel : IDisposable
     private readonly CompositeDisposable _disposables = new();
     public ReactiveCommand<string> SetStretchModeCommand { get; } = new();
     public ReactiveCommand<GalleryMode2> SetGalleryModeCommand { get; } = new();
-    public ReactiveCommand<GalleryDockPosition> SetDockPositionCommand { get; } = new();
+
     public ReactiveCommand<Unit> ToggleGalleryCommand { get; } = new();
-    public ReactiveCommand<Unit> CloseGalleryCommand { get; } = new();
     public ReactiveCommand<NavigateTo> NavigateGalleryCommand { get; } = new();
     public ReactiveCommand<int> OpenSelectedItemCommand { get; } = new();
 
@@ -124,22 +123,6 @@ public class GalleryViewModel : IDisposable
             })
             .AddTo(_disposables);
         
-        SetDockPositionCommand.Subscribe(pos =>
-        {
-            Settings.Gallery.IsGalleryDocked = true;
-            Settings.Gallery.DockPosition = pos;
-            GalleryMode.Value = GalleryMode2.Docked;
-        }, result =>
-        {
-#if DEBUG
-            if (result is { IsFailure: true, Exception: not null })
-            {
-                DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
-            }
-#endif
-        })
-        .AddTo(_disposables);
-        
         ToggleGalleryCommand.Subscribe(_ =>
         {
             if (Settings.Gallery.IsGalleryDocked && IsGalleryExpanded.CurrentValue)
@@ -154,20 +137,6 @@ public class GalleryViewModel : IDisposable
             {
                 GalleryMode.Value = GalleryMode2.Expanded;
             }
-        }, result =>
-        {
-#if DEBUG
-            if (result is { IsFailure: true, Exception: not null })
-            {
-                DebugHelper.LogDebug(nameof(GalleryViewModel), nameof(Initialize), result.Exception);
-            }
-#endif
-        })
-        .AddTo(_disposables);
-        
-        CloseGalleryCommand.SubscribeAwait(async (_, ct) =>
-        {
-            await GalleryManager.UpdateGalleryDockedStatusAsync(isDocked: false, ct);
         }, result =>
         {
 #if DEBUG

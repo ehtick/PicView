@@ -45,6 +45,7 @@ public static class TabNavigationInitializer
         tab.UpdateTabTitle();
         ModelSubscription(tab, disposable);
         tab.Gallery.Initialize();
+        core.GallerySettings.Initialize();
     }
     
     public static void Initialize(CoreViewModel core, FileInfo fileInfo, CompositeDisposable disposable)
@@ -79,6 +80,7 @@ public static class TabNavigationInitializer
         tab.UpdateTabTitle();
         ModelSubscription(tab, disposable);
         tab.Gallery.Initialize();
+        core.GallerySettings.Initialize();
     }
     
     public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab, CompositeDisposable disposable)

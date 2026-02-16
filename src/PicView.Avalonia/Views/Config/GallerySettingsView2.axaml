@@ -2,6 +2,7 @@
     x:Class="PicView.Avalonia.Views.Config.GallerySettingsView2"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:config="clr-namespace:PicView.Core.Config;assembly=PicView.Core"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
@@ -15,66 +16,131 @@
             Text="{CompiledBinding Translation.GallerySettings.Value,
                                    Mode=OneWay}" />
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryVisibilitySearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryDockSearchTags.Value}">
             <StackPanel>
-                <ToggleButton
+                <customControls:TextIconButton
                     Background="Transparent"
                     BorderThickness="0"
-                    Classes="altHover changeColor"
-                    IsChecked="{CompiledBinding SettingsViewModel.IsGalleryDocked.Value}"
+                    Classes="altHover"
+                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    CommandParameter="{x:Static config:GalleryDockPosition.Bottom}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Icon="{StaticResource GalleryImage}"
+                    IconHeight="16"
+                    IconMargin="0,0,7,0"
+                    IconWidth="16"
+                    IsEnabled="{CompiledBinding !GallerySettings.IsBottomDocked.Value}"
                     Margin="0,0,0,10"
+                    Padding="9,8,8,8"
+                    Text="{CompiledBinding Translation.ShowDockedGalleryAtBottom.Value,
+                                           Mode=OneWay}"
+                    TextMargin="5,0,5,0"
+                    TextMaxWidth="240"
                     Width="300"
-                    x:Name="ToggleDockedGalleryButton">
-                    <TextBlock
-                        Classes="txt"
-                        Margin="0"
-                        MaxWidth="240"
-                        Padding="0,1,5,0"
-                        Text="{CompiledBinding Translation.IsShowingDockedGallery.Value,
-                                               Mode=OneWay}" />
-                </ToggleButton>
+                    x:Name="ShowBottomDockedGalleryButton" />
 
-                <ToggleButton
+                <customControls:TextIconButton
                     Background="Transparent"
                     BorderThickness="0"
-                    Classes="altHover changeColor"
-                    IsChecked="{CompiledBinding SettingsViewModel.IsDockedGalleryShownInHiddenUI.Value}"
+                    Classes="altHover"
+                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    CommandParameter="{x:Static config:GalleryDockPosition.Top}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Icon="{StaticResource GalleryImage}"
+                    IconHeight="16"
+                    IconMargin="0,0,7,0"
+                    IconWidth="16"
+                    IsEnabled="{CompiledBinding !GallerySettings.IsTopDocked.Value}"
                     Margin="0,0,0,10"
-                    Width="300">
-                    <TextBlock
-                        Classes="txt"
-                        Margin="0"
-                        MaxWidth="240"
-                        Padding="0,1,5,0"
-                        Text="{CompiledBinding Translation.ShowDockedGalleryWhenUiIsHidden.Value,
-                                               Mode=OneWay}" />
-                </ToggleButton>
+                    Padding="9,8,8,8"
+                    Text="{CompiledBinding Translation.ShowDockedGalleryAtTop.Value,
+                                           Mode=OneWay}"
+                    TextMargin="5,0,5,0"
+                    TextMaxWidth="240"
+                    Width="300"
+                    x:Name="ShowTopDockedGalleryButton" />
+
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Classes="altHover"
+                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    CommandParameter="{x:Static config:GalleryDockPosition.Right}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Icon="{StaticResource GalleryImage}"
+                    IconHeight="16"
+                    IconMargin="0,0,7,0"
+                    IconWidth="16"
+                    IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
+                    Margin="0,0,0,10"
+                    Padding="9,8,8,8"
+                    Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value,
+                                           Mode=OneWay}"
+                    TextMargin="5,0,5,0"
+                    TextMaxWidth="240"
+                    Width="300"
+                    x:Name="ShowRightDockedGalleryButton" />
+
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Classes="altHover"
+                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    CommandParameter="{x:Static config:GalleryDockPosition.Left}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Icon="{StaticResource GalleryImage}"
+                    IconHeight="16"
+                    IconMargin="0,0,7,0"
+                    IconWidth="16"
+                    IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
+                    Margin="0,0,0,10"
+                    Padding="9,8,8,8"
+                    Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value,
+                                           Mode=OneWay}"
+                    TextMargin="5,0,5,0"
+                    TextMaxWidth="240"
+                    Width="300"
+                    x:Name="ShowLeftDockedGalleryButton" />
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryDockSearchTags.Value}">
+        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.GalleryVisibilitySearchTags.Value}">
             <StackPanel>
-                <TextBlock
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    Margin="0,10,0,15"
-                    MaxWidth="300"
-                    Text="{CompiledBinding Translation.Orientation.Value,
-                                           Mode=OneWay}" />
-                <ComboBox
-                    Background="{DynamicResource SecondaryBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1"
-                    FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
+                <customControls:TextIconButton
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Classes="altHover"
+                    Command="{CompiledBinding GallerySettings.CloseGalleryCommand}"
+                    Data="{StaticResource CloseGeometry}"
                     Foreground="{DynamicResource MainTextColor}"
-                    Margin="0,5,0,15"
-                    Padding="5,7,0,7"
+                    IconHeight="12"
+                    IconMargin="0,0,7,0"
+                    IconWidth="12"
+                    IsEnabled="{CompiledBinding GallerySettings.IsGalleryDocked.Value}"
+                    Margin="0,0,0,10"
+                    Padding="9,8,8,8"
+                    Text="{CompiledBinding Translation.HideDockedGallery.Value,
+                                           Mode=OneWay}"
+                    TextMargin="5,0,5,0"
+                    TextMaxWidth="240"
+                    Width="300"
+                    x:Name="CloseDockedGalleryButton" />
+
+                <ToggleButton
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Classes="altHover changeColor"
+                    IsChecked="{CompiledBinding GallerySettings.IsDockedGalleryShownInHiddenUI.Value}"
+                    Margin="0,0,0,10"
                     Width="300">
-                    <ComboBoxItem Content="{CompiledBinding Translation.Bottom.Value, Mode=OneWay}" IsSelected="{CompiledBinding GallerySettings.IsBottomDocked.Value}" />
-                    <ComboBoxItem Content="{CompiledBinding Translation.Top.Value, Mode=OneWay}" IsSelected="{CompiledBinding GallerySettings.IsTopDocked.Value}" />
-                    <ComboBoxItem Content="{CompiledBinding Translation.Left.Value, Mode=OneWay}" IsSelected="{CompiledBinding GallerySettings.IsLeftDocked.Value}" />
-                    <ComboBoxItem Content="{CompiledBinding Translation.Right.Value, Mode=OneWay}" IsSelected="{CompiledBinding GallerySettings.IsRightDocked.Value}" />
-                </ComboBox>
+                    <TextBlock
+                        Classes="txt"
+                        Margin="0"
+                        MaxWidth="240"
+                        Padding="0,0,5,2"
+                        Text="{CompiledBinding Translation.ShowDockedGalleryWhenUiIsHidden.Value,
+                                               Mode=OneWay}" />
+                </ToggleButton>
             </StackPanel>
         </Border>
 
@@ -92,18 +158,18 @@
                     HorizontalAlignment="Center"
                     IsSnapToTickEnabled="True"
                     Margin="0,1,0,1"
-                    Maximum="{CompiledBinding SettingsViewModel.ExpandedGalleryMaxItemSize.Value}"
-                    Minimum="{CompiledBinding SettingsViewModel.ExpandedGalleryMinItemSize.Value}"
+                    Maximum="{CompiledBinding GallerySettings.ExpandedGalleryMaxItemSize.Value}"
+                    Minimum="{CompiledBinding GallerySettings.ExpandedGalleryMinItemSize.Value}"
                     TickFrequency="1"
                     TickPlacement="BottomRight"
-                    Value="{CompiledBinding SettingsViewModel.ExpandedGalleryItemSize.Value}"
+                    Value="{CompiledBinding GallerySettings.ExpandedGalleryItemSize.Value}"
                     Width="300"
                     x:Name="ExpandedGallerySlider" />
 
                 <TextBlock
                     Classes="txt"
                     Margin="0,0,0,15"
-                    Text="{CompiledBinding SettingsViewModel.ExpandedGalleryItemSize.Value,
+                    Text="{CompiledBinding GallerySettings.ExpandedGalleryItemSize.Value,
                                            Mode=OneWay}" />
 
                 <TextBlock
@@ -117,18 +183,18 @@
                     HorizontalAlignment="Center"
                     IsSnapToTickEnabled="True"
                     Margin="0,1,0,1"
-                    Maximum="{CompiledBinding SettingsViewModel.DockedGalleryMaxItemSize.Value}"
-                    Minimum="{CompiledBinding SettingsViewModel.DockedGalleryMinItemSize.Value}"
+                    Maximum="{CompiledBinding GallerySettings.DockedGalleryMaxItemSize.Value}"
+                    Minimum="{CompiledBinding GallerySettings.DockedGalleryMinItemSize.Value}"
                     TickFrequency="1"
                     TickPlacement="BottomRight"
-                    Value="{CompiledBinding SettingsViewModel.DockedGalleryItemSize.Value}"
+                    Value="{CompiledBinding GallerySettings.DockedGalleryItemSize.Value}"
                     Width="300"
                     x:Name="DockedGallerySlider" />
 
                 <TextBlock
                     Classes="txt"
                     Margin="0,0,0,15"
-                    Text="{CompiledBinding SettingsViewModel.DockedGalleryItemSize.Value,
+                    Text="{CompiledBinding GallerySettings.DockedGalleryItemSize.Value,
                                            Mode=OneWay}" />
 
                 <TextBlock
@@ -146,13 +212,13 @@
                     Minimum="0"
                     TickFrequency="1"
                     TickPlacement="BottomRight"
-                    Value="{CompiledBinding SettingsViewModel.GalleryItemSpacing.Value}"
+                    Value="{CompiledBinding GallerySettings.GalleryItemSpacing.Value}"
                     Width="300" />
 
                 <TextBlock
                     Classes="txt"
                     Margin="0,0,0,15"
-                    Text="{CompiledBinding SettingsViewModel.GalleryItemSpacing.Value,
+                    Text="{CompiledBinding GallerySettings.GalleryItemSpacing.Value,
                                            Mode=OneWay}" />
 
                 <TextBlock
@@ -170,13 +236,13 @@
                     Minimum="0"
                     TickFrequency="1"
                     TickPlacement="BottomRight"
-                    Value="{CompiledBinding SettingsViewModel.GalleryLineSpacing.Value}"
+                    Value="{CompiledBinding GallerySettings.GalleryLineSpacing.Value}"
                     Width="300" />
 
                 <TextBlock
                     Classes="txt"
                     Margin="0,0,0,15"
-                    Text="{CompiledBinding SettingsViewModel.GalleryLineSpacing.Value,
+                    Text="{CompiledBinding GallerySettings.GalleryLineSpacing.Value,
                                            Mode=OneWay}" />
             </StackPanel>
         </Border>
@@ -198,7 +264,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Margin="0,5,0,15"
                     Padding="5,7,0,7"
-                    SelectedIndex="{CompiledBinding SettingsViewModel.FullGalleryStretchIndex.Value}"
+                    SelectedIndex="{CompiledBinding GallerySettings.FullGalleryStretchIndex.Value}"
                     Width="300"
                     x:Name="FullGalleryComboBox">
                     <ComboBoxItem
@@ -248,7 +314,7 @@
                     Foreground="{DynamicResource MainTextColor}"
                     Margin="0,5,0,15"
                     Padding="5,7,0,7"
-                    SelectedIndex="{CompiledBinding SettingsViewModel.DockedGalleryStretchIndex.Value}"
+                    SelectedIndex="{CompiledBinding GallerySettings.DockedGalleryStretchIndex.Value}"
                     Width="300"
                     x:Name="DockedGalleryComboBox">
                     <ComboBoxItem

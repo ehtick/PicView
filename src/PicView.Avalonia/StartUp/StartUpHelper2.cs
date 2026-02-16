@@ -346,7 +346,7 @@ public static class StartUpHelper2
         // Using AddHandler fixes the first keydown event not firing properly
         w.AddHandler(InputElement.KeyDownEvent, MainWindow_KeysDownAsync, RoutingStrategies.Tunnel);
         w.AddHandler(InputElement.KeyUpEvent, MainWindow_KeyUp, RoutingStrategies.Tunnel);
-        w.PointerPressed += async (_, e) => await MouseShortcuts2.MainWindow_PointerPressed(e).ConfigureAwait(false);
+        w.PointerPressed += async (_, e) => await MouseShortcuts2.MainWindow_PointerPressed(e, w).ConfigureAwait(false);
 
         w.Deactivated += delegate
         {
