@@ -231,15 +231,7 @@ public class NavigateAbleItemsViewer : ItemsControl
 
                 if (_isVerticalScrolling)
                 {
-                    // --- Vertical Centering Logic ---
-                    var itemCenterY = pos.Y + (container!.Bounds.Height / 2);
-                    var viewportCenterY = _scrollViewer.Viewport.Height / 2;
-                
-                    // Calculate difference
-                    var diff = itemCenterY - viewportCenterY;
-
-                    // Apply to Y offset, keep X same
-                    _scrollViewer.Offset = new Vector(currentOffset.X, currentOffset.Y + diff);
+                    item.BringIntoView();
                 }
                 else
                 {

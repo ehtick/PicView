@@ -20,7 +20,6 @@ public class GalleryViewModel : IDisposable
 
     public BindableReactiveProperty<ObservableList<GalleryItemViewModel>> GalleryItems { get; } = new([]);
     public BindableReactiveProperty<GalleryMode2> GalleryMode { get; } = new(GalleryMode2.Closed);
-    public BindableReactiveProperty<object> GalleryVerticalAlignment { get; } = new();
 
     public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
     public BindableReactiveProperty<bool> IsDockedGalleryVisible { get; } = new(Settings.Gallery.IsGalleryDocked);
@@ -160,7 +159,6 @@ public class GalleryViewModel : IDisposable
         Disposable.Dispose(
             GalleryItems,
             GalleryMode,
-            GalleryVerticalAlignment,
             IsGalleryExpanded,
             GalleryMode,
             CurrentGalleryItem,
