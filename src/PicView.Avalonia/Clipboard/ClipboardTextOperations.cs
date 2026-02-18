@@ -1,3 +1,5 @@
+using Avalonia.Input.Platform;
+
 namespace PicView.Avalonia.Clipboard;
 
 /// <summary>

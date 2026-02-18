@@ -1,11 +1,8 @@
 using System.Runtime.InteropServices;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
-using ImageMagick;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
@@ -170,22 +167,22 @@ public static class ClipboardImageOperations
 
         foreach (var format in formats)
         {
-            try
-            {
-                var data = await clipboard.GetDataAsync(format);
-                if (data is not byte[] dataBytes)
-                {
-                    continue;
-                }
-
-                using var memoryStream = new MemoryStream(dataBytes);
-                return new Bitmap(memoryStream);
-            }
-            catch (Exception ex)
-            {
-                // Ignore format errors and try next format
-                DebugHelper.LogDebug(nameof(ClipboardImageOperations), nameof(TryGetBitmapFromClipboard), ex);
-            }
+            // try
+            // {
+            //     var data = await clipboard.GetDataAsync(format);
+            //     if (data is not byte[] dataBytes)
+            //     {
+            //         continue;
+            //     }
+            //
+            //     using var memoryStream = new MemoryStream(dataBytes);
+            //     return new Bitmap(memoryStream);
+            // }
+            // catch (Exception ex)
+            // {
+            //     // Ignore format errors and try next format
+            //     DebugHelper.LogDebug(nameof(ClipboardImageOperations), nameof(TryGetBitmapFromClipboard), ex);
+            // }
         }
 
         return null;

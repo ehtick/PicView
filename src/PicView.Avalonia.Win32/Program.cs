@@ -27,6 +27,7 @@ internal class Program
                 UseOpacitySaveLayer = true
             })
             .UseWin32()
+            .UseHarfBuzz()
             .UseSkia();
     }
 }
