@@ -3,6 +3,7 @@
     x:DataType="viewModels:TabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <SolidColorBrush Color="{StaticResource SecondaryTextColor}" x:Key="SelectFileBrush" />
@@ -32,7 +33,7 @@
             VerticalAlignment="Bottom"
             x:Name="Buttons">
 
-            <Button x:Name="SelectFileButton">
+            <Button Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenCommand}" x:Name="SelectFileButton">
                 <StackPanel Orientation="Horizontal">
                     <Image Height="20.091">
                         <Image.Source>

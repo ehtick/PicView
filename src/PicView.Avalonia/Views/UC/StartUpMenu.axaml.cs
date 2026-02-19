@@ -7,7 +7,6 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.FileSystem;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHistory;
@@ -20,12 +19,9 @@ namespace PicView.Avalonia.Views.UC;
 
 public partial class StartUpMenu : UserControl
 {
-    private MainWindowViewModel? ParentContext => 
-        (DataContext as TabViewModel)?.ParentWindowContext as MainWindowViewModel;
-    
     public StartUpMenu()
     {
-        MinHeight= SizeDefaults.WindowMinSize;
+        MinHeight = SizeDefaults.WindowMinSize;
         MinWidth = SizeDefaults.WindowMinSize;
         InitializeComponent();
 
@@ -33,12 +29,15 @@ public partial class StartUpMenu : UserControl
         Loaded += StartUpMenu_Loaded;
     }
 
+    private MainWindowViewModel? ParentContext =>
+        (DataContext as TabViewModel)?.ParentWindowContext as MainWindowViewModel;
+
     private void StartUpMenu_Loaded(object? sender, RoutedEventArgs e)
     {
         FilePasteLabel.Content = TranslationManager.Translation.FilePaste ?? "Paste";
         OpenFileDialogLabel.Content = TranslationManager.Translation.OpenFileDialog ?? "Open File";
         OpenLastFileLabel.Content = TranslationManager.Translation.OpenLastFile ?? "Open Last File";
-        
+
         SelectFileButton.PointerEntered += (_, _) =>
         {
             if (!this.TryFindResource("SelectFileBrush", Application.Current.RequestedThemeVariant, out var brush))
@@ -94,10 +93,10 @@ public partial class StartUpMenu : UserControl
         {
             if (!this.TryFindResource("PasteBrush", Application.Current.RequestedThemeVariant, out var brush))
                 return;
-            
+
             if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
                 return;
-            
+
             var pasteBrush = brush as SolidColorBrush;
             pasteBrush.Color = color as Color? ?? default;
         };
@@ -109,99 +108,83 @@ public partial class StartUpMenu : UserControl
             tab.TitleTooltip.Value = TranslationManager.Translation.NoImage ?? string.Empty;
         }
 
-        SelectFileButton.Click += async delegate { await SelectFileButtonOnClick(); };
+        //SelectFileButton.Click += async delegate { await SelectFileButtonOnClick(); };
         OpenLastFileButton.Click += async delegate { await OpenLastButtonOnClick(); };
     }
-    
-  private async ValueTask SelectFileButtonOnClick()
-{
-    var file = await FilePicker2.SelectFile().ConfigureAwait(false);
-    if (file is null)
+
+    private async ValueTask SelectFileButtonOnClick()
     {
-        return;
+        // if (Application.Current.DataContext is not CoreViewModel core)
+        // {
+        //     return;
+        // }
+        // core.MainWindows.ActiveWindow.CurrentValue.OpenCommand
     }
 
-    // Switch to ImageViewer and get the ViewModel in one go
-    var (vm, tab) = await Dispatcher.UIThread.InvokeAsync(() =>
+    private async ValueTask OpenLastButtonOnClick()
     {
-        if (DataContext is not TabViewModel currentTab || ParentContext is not { } parentVm)
+        var lastFile = Settings.StartUp.LastFile;
+        var lastEntry = FileHistoryManager.GetLastEntry();
+
+        // determine which file source to use (prioritize LastFile, fallback to History)
+        var fileToLoad = !string.IsNullOrEmpty(lastFile) ? lastFile : lastEntry;
+
+        if (string.IsNullOrEmpty(fileToLoad))
         {
-            return (null, null);
+            return;
         }
 
-        currentTab.CurrentView.Value = new ImageViewer2();
-        return (parentVm, currentTab);
-    });
-
-    if (vm is not null && tab is not null)
-    {
-        await vm.WindowTabs.LoadFromFileAsync(file, tab).ConfigureAwait(false);
-    }
-}
-
-private async ValueTask OpenLastButtonOnClick()
-{
-    var lastFile = Settings.StartUp.LastFile;
-    var lastEntry = FileHistoryManager.GetLastEntry();
-    
-    // determine which file source to use (prioritize LastFile, fallback to History)
-    var fileToLoad = !string.IsNullOrEmpty(lastFile) ? lastFile : lastEntry;
-
-    if (string.IsNullOrEmpty(fileToLoad))
-    {
-        return;
-    }
-
-    try
-    {
-        var (vm, tab) = await Dispatcher.UIThread.InvokeAsync(() =>
+        try
         {
-            if (DataContext is not TabViewModel { ParentWindowContext: CoreViewModel parentVm } currentTab)
+            var (vm, tab) = await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                return (null, null);
+                if (DataContext is not TabViewModel { ParentWindowContext: CoreViewModel parentVm } currentTab)
+                {
+                    return (null, null);
+                }
+
+                currentTab.CurrentView.Value = new ImageViewer2();
+                return (parentVm, currentTab);
+            });
+
+            if (vm is not null && tab is not null)
+            {
+                await vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromStringAsync(fileToLoad, tab)
+                    .ConfigureAwait(false);
             }
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(StartUpMenu), nameof(OpenLastButtonOnClick), e);
+            await RestoreStartUpMenu();
+        }
+    }
 
-            currentTab.CurrentView.Value = new ImageViewer2();
-            return (parentVm, currentTab);
+    private async ValueTask RestoreStartUpMenu()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (DataContext is TabViewModel tab)
+            {
+                tab.CurrentView.Value = new StartUpMenu();
+            }
         });
-
-        if (vm is not null && tab is not null)
-        {
-            await vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromStringAsync(fileToLoad, tab).ConfigureAwait(false);
-        }
     }
-    catch (Exception e)
-    {
-        DebugHelper.LogDebug(nameof(StartUpMenu), nameof(OpenLastButtonOnClick), e);
-        await RestoreStartUpMenu();
-    }
-}
-
-private async ValueTask RestoreStartUpMenu()
-{
-    await Dispatcher.UIThread.InvokeAsync(() =>
-    {
-        if (DataContext is TabViewModel tab)
-        {
-            tab.CurrentView.Value = new StartUpMenu();
-        }
-    });
-}
 
     public void ResponsiveSize(double width, double height)
     {
         const int breakPoint = 900;
         const int bottomMargin = 16;
         const int logoWidth = 350;
-        
+
         LogoViewbox.Height = double.NaN;
-        
+
         if (DataContext is not MainViewModel vm)
             return;
-        
+
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             return;
-        
+
         if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
         {
             ShowFullLogo();
@@ -225,7 +208,8 @@ private async ValueTask RestoreStartUpMenu()
 
         var titleMaxWidth = ImageSizeCalculationHelper.GetTitleMaxWidth(vm.PicViewer.RotationAngle.CurrentValue, width,
             height,
-            desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight, vm.PlatformWindowService.CombinedTitleButtonsWidth,
+            desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight,
+            vm.PlatformWindowService.CombinedTitleButtonsWidth,
             desktop.MainWindow.Width);
 
         if (Settings.Zoom.ScrollEnabled)
@@ -236,7 +220,7 @@ private async ValueTask RestoreStartUpMenu()
         {
             vm.MainWindow.TitleMaxWidth.Value = titleMaxWidth;
         }
-        
+
         return;
 
         void ShowIcon()

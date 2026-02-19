@@ -2,6 +2,8 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using PicView.Avalonia.StartUp;
+using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;
@@ -24,6 +26,14 @@ public static class FilePicker2
         }
 
         await vm.WindowTabs.LoadFromFileAsync(file).ConfigureAwait(false);
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+            {
+                vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+            }
+        });
+        TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value);
     }
 
     public static async Task<string?> SelectFile()

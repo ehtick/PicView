@@ -108,6 +108,11 @@ public static class TabNavigationInitializer
         parentVm.WindowTabs.IsTabPanelVisible.Value = parentVm.WindowTabs.Tabs.CurrentValue.Count > 1;
     }
     
+    public static void InitializeNewTab(TabViewModel newTab)
+    {
+        
+    }
+    
     private static void ModelSubscription(TabViewModel tabViewModel, CompositeDisposable disposable)
     {
         // Subscribing with AvaloniaRenderingFrameProvider is faster and fixes not being able to navigate while gallery is loading
