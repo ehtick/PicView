@@ -299,7 +299,7 @@ public static class StartUpHelper2
                 }
             };
            // vm.Tabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
-            TabNavigationInitializer.Initialize(vm, disposable);
+            TabNavigationInitializer.Initialize(vm);
         }
     }
 

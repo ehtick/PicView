@@ -214,7 +214,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                 }
             }, DispatcherPriority.Send);
 
-            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab, Disposables);
+            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
         });
     }
 

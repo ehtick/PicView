@@ -14,7 +14,7 @@ namespace PicView.Avalonia.StartUp;
 
 public static class TabNavigationInitializer
 {
-    public static void Initialize(CoreViewModel core, CompositeDisposable disposable)
+    public static void Initialize(CoreViewModel core)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -43,12 +43,12 @@ public static class TabNavigationInitializer
         tabOverView.LoadAndInitialize(navService, sharedCache,thumbnailCache, thumbnailService, fileWatcher);
         tabOverView.SetParentContext(core);
         tab.UpdateTabTitle();
-        ModelSubscription(tab, disposable);
+        InitializeNewTab(tab);
         tab.Gallery.Initialize();
         core.GallerySettings.Initialize();
     }
     
-    public static void Initialize(CoreViewModel core, FileInfo fileInfo, CompositeDisposable disposable)
+    public static void Initialize(CoreViewModel core, FileInfo fileInfo)
     {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
@@ -77,12 +77,12 @@ public static class TabNavigationInitializer
         tabOverView.LoadAndInitializeFromPath(files, navService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
         tabOverView.SetParentContext(core);
         tab.UpdateTabTitle();
-        ModelSubscription(tab, disposable);
+        InitializeNewTab(tab);
         tab.Gallery.Initialize();
         core.GallerySettings.Initialize();
     }
     
-    public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab, CompositeDisposable disposable)
+    public static void InitializeDetachedWindow(MainWindowViewModel parentVm, MainWindowViewModel newVm, TabViewModel tab)
     {
         newVm.WindowTabs.Tabs.Value[0] = tab;
         
@@ -110,10 +110,15 @@ public static class TabNavigationInitializer
     
     public static void InitializeNewTab(TabViewModel newTab)
     {
-        
+        if (newTab.IsInitialized)
+        {
+            return;
+        }
+        ModelSubscription(newTab);
+        newTab.IsInitialized = true;
     }
     
-    private static void ModelSubscription(TabViewModel tabViewModel, CompositeDisposable disposable)
+    private static void ModelSubscription(TabViewModel tabViewModel)
     {
         // Subscribing with AvaloniaRenderingFrameProvider is faster and fixes not being able to navigate while gallery is loading
         try
@@ -152,7 +157,7 @@ public static class TabNavigationInitializer
                         }
 #endif
                     })
-                    .AddTo(disposable);
+                    .AddTo(tabViewModel.Disposables);
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Model.Image, UIHelper2.GetFrameProvider)
                     .Subscribe(image =>
                     {
@@ -175,7 +180,7 @@ public static class TabNavigationInitializer
                         }
 #endif
                     })
-                    .AddTo(disposable);
+                    .AddTo(tabViewModel.Disposables);
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Gallery.GalleryMode.Value, UIHelper2.GetFrameProvider)
                     .Skip(1)
                     .SubscribeAwait(async (mode, _) =>
@@ -205,7 +210,7 @@ public static class TabNavigationInitializer
                         }
 #endif
                     })
-                    .AddTo(disposable);
+                    .AddTo(tabViewModel.Disposables);
                 tabViewModel.Gallery.OpenSelectedItemCommand
                     .SubscribeAwait(async (index, _) =>
                     {
@@ -228,7 +233,7 @@ public static class TabNavigationInitializer
                         }
 #endif
                     })
-                    .AddTo(disposable);
+                    .AddTo(tabViewModel.Disposables);
             });
         }
         catch (Exception e)

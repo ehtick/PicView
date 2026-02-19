@@ -14,7 +14,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.Services;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ColorHandling;
 using PicView.Core.FileSorting;
@@ -1039,7 +1039,8 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
 
     public ValueTask NewTab()
     {
-        vm.WindowTabs.CreateTab();
+        var tab = vm.WindowTabs.CreateTab();
+        TabNavigationInitializer.InitializeNewTab(tab);
         return ValueTask.CompletedTask;
     }
     

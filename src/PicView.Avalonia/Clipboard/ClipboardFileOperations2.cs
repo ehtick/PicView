@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
 using PicView.Avalonia.Animations;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
@@ -235,7 +236,8 @@ public static class ClipboardFileOperations2
         // Open consecutive files in a new process
         foreach (var file in storageItems.Skip(1))
         {
-            await vm.WindowTabs.CreateNewTabFromFileAsync(file.Path.AbsolutePath);
+            var tab = await vm.WindowTabs.CreateNewTabFromFileAsync(file.Path.AbsolutePath);
+            TabNavigationInitializer.InitializeNewTab(tab);
             file.Dispose();
         }
     }

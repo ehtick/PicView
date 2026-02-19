@@ -114,13 +114,14 @@ public class TabOverviewViewModel
         return tab;
     }
 
-    public async ValueTask CreateNewTabFromFileAsync(string filePath)
+    public async ValueTask<TabViewModel> CreateNewTabFromFileAsync(string filePath)
         => await CreateNewTabFromFileAsync(new FileInfo(filePath));
-    public async ValueTask CreateNewTabFromFileAsync(FileInfo file)
+    public async ValueTask<TabViewModel> CreateNewTabFromFileAsync(FileInfo file)
     {
         var tab = CreateTab(file);
         await SharedNavigation.LoadFromFileAsync(file, tab, tab.GetTabCancellation())
             .ConfigureAwait(false);
+        return tab;
     }
     
     public void SetParentContext(object parent)

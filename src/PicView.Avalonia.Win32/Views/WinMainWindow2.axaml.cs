@@ -226,7 +226,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
                 desktop.MainWindow = newWindow;
             }, DispatcherPriority.Send);
 
-            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab, Disposables);
+            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
         });
     }
 

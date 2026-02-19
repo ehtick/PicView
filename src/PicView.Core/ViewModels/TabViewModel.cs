@@ -182,12 +182,16 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         return NavigationCts;
     }
     
+    public CompositeDisposable Disposables { get; } = new();
+    public bool IsInitialized { get; set; }
+    
     public void Dispose()
     {
         _fileWatcherService?.Unwatch(this);
         ThumbnailCache?.RemoveOwner(Id);
         ImageIterator?.Dispose();
         NavigationCts.Dispose();
+        Disposables.Dispose();
         
         GC.SuppressFinalize(this);
     }
