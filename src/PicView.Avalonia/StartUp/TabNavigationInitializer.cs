@@ -33,9 +33,9 @@ public static class TabNavigationInitializer
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
-        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, core.PlatformService.CompareStrings);
-
         var thumbnailService = new AvaloniaThumbnailLoader();
+        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
+
         var tabOverView = core.MainWindows.ActiveWindow.Value.WindowTabs;
         var tab = tabOverView.ActiveTab.CurrentValue;
 
@@ -67,9 +67,8 @@ public static class TabNavigationInitializer
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
-        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, core.PlatformService.CompareStrings);
-
         var thumbnailService = new AvaloniaThumbnailLoader();
+        var navService = new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
 
         var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel

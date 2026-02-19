@@ -1,4 +1,6 @@
+using PicView.Core.Config;
 using PicView.Core.FileHandling.Interfaces;
+using PicView.Core.Localization;
 using PicView.Core.IPlatform;
 using PicView.Core.Models;
 using PicView.Core.Navigation;
@@ -15,11 +17,20 @@ public class NavigationServiceTests
     private readonly MockArchiveService _mockArchiveService;
     private readonly MockImageCache _mockCache;
     private readonly MockFileWatcherService _mockFileWatcherService;
+    private readonly MockThumbnailLoader _mockThumbnailLoader;
     private readonly NavigationService _navigationService;
     private readonly string _testDirectory;
 
     public NavigationServiceTests()
     {
+        SettingsManager.SetDefaults();
+        TranslationManager.Init();
+        // Initialize required translations to avoid NullReferenceException in GalleryThumbInfo
+        if (TranslationManager.Translation != null)
+        {
+            TranslationManager.Translation.FileSize = "Size";
+            TranslationManager.Translation.Modified = "Modified";
+        }
         ObservableSystem.DefaultFrameProvider = new MockFrameProvider();
 
         _testDirectory = Path.Combine(Path.GetTempPath(), "PicViewNavTests_" + Guid.NewGuid());
@@ -29,6 +40,7 @@ public class NavigationServiceTests
         _mockArchiveService = new MockArchiveService();
         _mockCache = new MockImageCache();
         _mockFileWatcherService = new MockFileWatcherService();
+        _mockThumbnailLoader = new MockThumbnailLoader();
 
         _navigationService = new NavigationService(
             _mockImageLoader,
@@ -37,6 +49,7 @@ public class NavigationServiceTests
             _mockFileWatcherService,
             new MockPlatformSpecificService(),
             new MockTempFileService(),
+            _mockThumbnailLoader,
             string.CompareOrdinal
         );
     }
@@ -59,11 +72,36 @@ public class NavigationServiceTests
         Assert.Equal(tab, _mockFileWatcherService.WatchedTab);
     }
 
+    [Fact]
+    public async Task RepopulateIterator_ReloadsGallery_WhenVisible()
+    {
+        // Arrange
+        var tab = CreateTab(_testDirectory);
+        // Ensure gallery is considered visible
+        tab.Gallery.IsDockedGalleryVisible.Value = true;
+        
+        var fileInfo = new FileInfo(Path.Combine(_testDirectory, "test.jpg"));
+        // Create a dummy file so there is something to load
+        File.Create(fileInfo.FullName).Dispose();
+        
+        var cts = new CancellationTokenSource();
+        // Provide files list to avoid RetrieveFiles attempting to read directory
+        var files = new List<FileInfo> { fileInfo };
+
+        // Act
+        await _navigationService.RepopulateIterator(fileInfo, tab, cts, files);
+
+        // Assert
+        // GalleryLoader.LoadGalleryAsync calls GetThumbnailAsync
+        Assert.True(_mockThumbnailLoader.GetThumbnailAsyncCalledCount > 0, "Gallery should be reloaded (GetThumbnailAsync called)");
+    }
+
     private TabViewModel CreateTab(string directory)
     {
         var tab = new TabViewModel("test", null);
         // Initialize with mocks to avoid null refs
-        tab.Initialize(_mockCache, new MockThumbnailCache(), new MockThumbnailLoader());
+        var thumbCache = new MockThumbnailCache();
+        tab.Initialize(_mockCache, thumbCache, new MockThumbnailLoader(), null, thumbCache);
         tab.ImageIterator.Files = new List<FileInfo>();
         return tab;
     }
@@ -126,8 +164,20 @@ public class NavigationServiceTests
     
     private class MockThumbnailLoader : IThumbnailLoader
     {
-        public ValueTask<object?> GetThumbnailAsync(FileInfo file) => ValueTask.FromResult<object?>(null);
-        public ValueTask<object?> GetThumbnailAsync(FileInfo file, uint size) => ValueTask.FromResult<object?>(null);
+        public int GetThumbnailAsyncCalledCount { get; private set; }
+
+        public ValueTask<object?> GetThumbnailAsync(FileInfo file) 
+        {
+            GetThumbnailAsyncCalledCount++;
+            return ValueTask.FromResult<object?>(null);
+        }
+
+        public ValueTask<object?> GetThumbnailAsync(FileInfo file, uint size) 
+        {
+            GetThumbnailAsyncCalledCount++;
+            return ValueTask.FromResult<object?>(null);
+        }
+
         public object? GetExifThumbnail(FileInfo file) => null;
     }
 

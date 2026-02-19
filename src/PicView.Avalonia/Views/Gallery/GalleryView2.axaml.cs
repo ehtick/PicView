@@ -85,7 +85,13 @@ public partial class GalleryView2 : GalleryAnimationControl
                     }
                 }
                 break;
-            // Remove, Replace, Move, Reset
+            case NotifyCollectionChangedAction.Reset:
+                Dispatcher.UIThread.Post(() =>
+                {
+                    GalleryItemsControl.Items.Clear();
+                },DispatcherPriority.Background);
+                break;
+            // Remove, Replace, Move
             default:
                 break;
         }

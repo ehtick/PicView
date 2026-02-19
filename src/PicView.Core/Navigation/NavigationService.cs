@@ -2,6 +2,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling.Interfaces;
 using PicView.Core.FileSorting;
+using PicView.Core.Gallery;
 using PicView.Core.Http;
 using PicView.Core.IPlatform;
 using PicView.Core.Localization;
@@ -18,6 +19,7 @@ public class NavigationService(
     IFileWatcherService fileWatcherService,
     IPlatformSpecificService platformService,
     ITempFileService tempFileService,
+    IThumbnailLoader thumbnailLoader,
     Func<string, string, int> stringComparer)
     : INavigationService
 {
@@ -42,6 +44,12 @@ public class NavigationService(
             cache.Clear(tab.Id);
             cache.Add(tab.Id, index, new PreLoadValue(model), tab.ImageIterator.Files.Count, false);
             cache.Preload(tab.Id, index, false, tab.ImageIterator.Files, tab.GetTabCancellation().Token);
+
+            if ((tab.Gallery.IsDockedGalleryVisible.CurrentValue || tab.Gallery.IsGalleryExpanded.CurrentValue) && tab.ThumbnailCache != null)
+            {
+                tab.Gallery.LoadingState = GalleryLoadingState.NotLoaded;
+                await GalleryLoader.LoadGalleryAsync(tab, tab.ImageIterator.Files, thumbnailLoader, tab.ThumbnailCache, ct.Token).ConfigureAwait(false);
+            }
         }
         catch (Exception e)
         {
