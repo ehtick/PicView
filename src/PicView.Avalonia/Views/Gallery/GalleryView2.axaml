@@ -1,5 +1,6 @@
 <customControls:GalleryAnimationControl
     BorderBrush="{DynamicResource MainBorderColor}"
+    GalleryMode="{CompiledBinding Gallery.GalleryMode.Value}"
     Padding="1"
     x:Class="PicView.Avalonia.Views.Gallery.GalleryView2"
     x:DataType="viewModels:TabViewModel"

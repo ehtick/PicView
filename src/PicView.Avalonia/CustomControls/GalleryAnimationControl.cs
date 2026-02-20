@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
@@ -28,15 +29,15 @@ public class GalleryAnimationControl : UserControl
 
     private const int BorderTopAndBottomThickness = 2;
 
-    // Tracks the previous mode to determine the animation transition
+    /// Tracks the previous mode to determine the animation transition
     private GalleryMode2 _previousMode = GalleryMode2.Closed;
 
-    public static readonly AvaloniaProperty<GalleryMode?> GalleryModeProperty =
-        AvaloniaProperty.Register<GalleryAnimationControl, GalleryMode?>(nameof(GalleryMode));
+    public static readonly StyledProperty<GalleryMode2> GalleryModeProperty =
+        AvaloniaProperty.Register<GalleryAnimationControl, GalleryMode2>(nameof(GalleryMode));
 
-    public GalleryMode GalleryMode
+    public GalleryMode2 GalleryMode
     {
-        get => GetValue(GalleryModeProperty) as GalleryMode? ?? GalleryMode.Closed;
+        get => GetValue(GalleryModeProperty);
         set => SetValue(GalleryModeProperty, value);
     }
 
@@ -78,19 +79,6 @@ public class GalleryAnimationControl : UserControl
             return;
         }
         _disposables = new CompositeDisposable();
-        // Subscribe to Mode changes
-        ViewModel.Gallery.GalleryMode
-            .Skip(1) // Skip startup
-            .SubscribeAwait(async (mode, _) => await OnGalleryModeChanged(mode), result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(GalleryAnimationControl), nameof(OnGalleryModeChanged), result.Exception);
-                }
-#endif
-            })
-            .AddTo(_disposables);
 
         Debug.Assert(Settings.Gallery is not null);
         // Also subscribe to DockPosition, as changing it while Docked might need layout updates
@@ -116,6 +104,16 @@ public class GalleryAnimationControl : UserControl
     #endregion
 
     #region Logic
+    
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == GalleryModeProperty && change.NewValue is GalleryMode2 mode)
+        {
+            Dispatcher.UIThread.InvokeAsync(() => OnGalleryModeChanged(mode));
+        }
+    }
 
     private static Thickness GetDockedMargin => new(0);
     private static Thickness GetExpandedMargin => new(15,40,15,5);
@@ -172,7 +170,7 @@ public class GalleryAnimationControl : UserControl
 
     private void UpdateLayoutForCurrentState()
     {
-        var mode = ViewModel.Gallery.GalleryMode.Value;
+        var mode = GalleryMode;
         var dock = Settings.Gallery.DockPosition;
 
         IsVisible = mode != GalleryMode2.Closed;
@@ -217,7 +215,7 @@ public class GalleryAnimationControl : UserControl
         }
 
         _itemsPanel?.Orientation = Orientation.Vertical;
-        ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
+        ViewModel?.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
         _viewer.SetHorizontalScrolling();
     }
 
@@ -372,7 +370,7 @@ public class GalleryAnimationControl : UserControl
         gallerySettings.GalleryStretch.Value = stretchValue;
         gallerySettings.ItemWidth.Value = isSquare ? gallerySettings.ItemHeight.CurrentValue : double.NaN;
 
-        ViewModel.Gallery.ItemSpacing.Value = 2;
+        ViewModel?.Gallery.ItemSpacing.Value = 2;
         _itemsPanel.Margin = GetDockedMargin;
     }
 
@@ -533,7 +531,7 @@ public class GalleryAnimationControl : UserControl
         );
 
         _itemsPanel?.Orientation = Orientation.Vertical;
-        ViewModel.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
+        ViewModel?.Gallery.ItemSpacing.Value = Settings.Gallery.ItemSpacing;
 
         SetExpandedThumbs();
         _viewer?.ScrollToCenterOfCurrentItem();
@@ -555,7 +553,7 @@ public class GalleryAnimationControl : UserControl
     private void ParentSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         // Keep the layout correct when the view is resized
-        if (ViewModel?.Gallery.GalleryMode.Value == GalleryMode2.Expanded)
+        if (GalleryMode == GalleryMode2.Expanded)
         {
             UpdateLayoutForCurrentState();
         }
