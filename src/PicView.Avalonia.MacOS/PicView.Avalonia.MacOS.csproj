@@ -45,6 +45,11 @@
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
 
+    <PropertyGroup>
+        <EnablePreviewFeatures>true</EnablePreviewFeatures>
+        <Features>$(Features);runtime-async=on</Features>
+    </PropertyGroup>
+
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|arm64' ">
     <DebugType>full</DebugType>
