@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net11.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Platforms>x64;arm64</Platforms>
@@ -24,12 +24,6 @@
     <PropertyGroup Condition="'$(Platform)' == 'arm64'">
         <PlatformTarget>ARM64</PlatformTarget>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <EnablePreviewFeatures>true</EnablePreviewFeatures>
-        <Features>$(Features);runtime-async=on</Features>
-    </PropertyGroup>
-    
     <ItemGroup>
 
         <PackageReference Include="Magick.NET-Q8-OpenMP-x64" Version="14.10.2"/>
