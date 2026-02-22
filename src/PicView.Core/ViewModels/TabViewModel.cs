@@ -32,7 +32,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     public bool IsSelected { get; set; }
     public BindableReactiveProperty<object?> Image { get; } = new();
     public BindableReactiveProperty<ImageType> ImageType { get; } = new(ImageDecoding.ImageType.Invalid);
-    public BindableReactiveProperty<object?> FileInfo { get; } = new();
+    public BindableReactiveProperty<FileInfo?> FileInfo { get; } = new();
     public BindableReactiveProperty<object?> SecondaryImage { get; } = new();
     public BindableReactiveProperty<object?> SecondaryFileInfo { get; } = new();
     public ImageModel Model { get; set; } = new();

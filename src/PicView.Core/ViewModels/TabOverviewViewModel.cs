@@ -356,4 +356,26 @@ public class TabOverviewViewModel
     
 
     #endregion
+
+    #region Retrieval
+
+    public object? GetCurrentSource() => GetSourceFromFile(ActiveTab.CurrentValue.FileInfo.CurrentValue);
+
+    public object? GetSourceFromFile(FileInfo fileInfo)
+    {
+        if (SharedCache.TryGet(fileInfo, out var preLoadValue))
+        {
+            if (!preLoadValue.IsLoading && preLoadValue.ImageModel?.Image is not null)
+            {
+                return preLoadValue.ImageModel.Image;
+            }
+        }
+
+        return SharedCache.LoadAsync(ActiveTab.CurrentValue.Id, ActiveTab.CurrentValue.ImageIterator.CurrentIndex,
+            ActiveTab.CurrentValue.ImageIterator.Files, ActiveTab.CurrentValue.GetTabCancellation().Token)?.Result?.Image;
+    }
+
+    
+
+    #endregion
 }

@@ -132,6 +132,19 @@ public class PicBox2 : Control
         }
         catch (Exception e)
         {
+            var bitmap = GetBitmapFromAlternativeSources();
+            if (bitmap is IImage image)
+            {
+                try
+                {
+                    context.DrawImage(image, sourceRect, destRect);
+                }
+                catch (Exception exception)
+                {
+                    DebugHelper.LogDebug(nameof(PicBox), nameof(GetBitmapFromAlternativeSources), exception);
+                }
+            }
+            
             DebugHelper.LogDebug(nameof(PicBox), nameof(Render), e);
         }
     }
@@ -188,6 +201,16 @@ public class PicBox2 : Control
             DebugHelper.LogDebug(nameof(PicBox), nameof(GetImageSize), e);
             return GetSizeFromAlternativeSources();
         }
+    }
+
+    private Bitmap? GetBitmapFromAlternativeSources()
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return null;
+        }
+
+        return core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.GetCurrentSource() as Bitmap;
     }
 
     private Size GetSizeFromAlternativeSources()
