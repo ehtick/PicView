@@ -5,8 +5,6 @@ namespace PicView.Core.Navigation.Interfaces;
 
 public interface INavigationService
 {
-    ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct, List<FileInfo>? files = null);
-    
     ValueTask LoadFromFileAsync(string source, TabViewModel tab, CancellationTokenSource ct);
     
     ValueTask LoadFromFileAsync(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct);
@@ -15,11 +13,7 @@ public interface INavigationService
 
     ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct);
 
-    ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationTokenSource ct);
-
     ValueTask NavigateByIncrementsAsync(TabViewModel tab, SkipAmount skipAmount, bool forwards, CancellationTokenSource ct);
-    
-    bool CanNavigate(TabViewModel tab);
 
     /// <summary>
     /// Sorts the files in the current tab according to the specified sort order,

@@ -151,7 +151,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
             return;
         }
         var index = ImageIterator.CurrentIndex;
-        var next = ImageIterator.GetIteration(index, NavigateTo.Next, Id, SkipAmount.One);
+        var next = ImageIterator.GetIteration(index, NavigateTo.Next, SkipAmount.One);
         await ImageIterator.IterateToIndexAsync(next, NavigationCts).ConfigureAwait(false);
     }
 
@@ -162,7 +162,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
             return;
         }
         var index = ImageIterator.CurrentIndex;
-        var prev = ImageIterator.GetIteration(index, NavigateTo.Previous, Id, SkipAmount.One);
+        var prev = ImageIterator.GetIteration(index, NavigateTo.Previous, SkipAmount.One);
         await ImageIterator.IterateToIndexAsync(prev, NavigationCts).ConfigureAwait(false);
     }
 

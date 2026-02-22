@@ -206,7 +206,7 @@ public class NavigationService(
             return;
         }
 
-        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to, tab.Id, SkipAmount.One);
+        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to, SkipAmount.One);
         if (to is NavigateTo.First or NavigateTo.Last)
         {
             await tab.ImageIterator.SkipToIndexAsync(nextFileIndex, ct).ConfigureAwait(false);

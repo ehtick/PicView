@@ -98,7 +98,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         _timer.Interval = repeatInterval.TotalMilliseconds;
         _timer.Start();
 
-        var iteration = GetIteration(CurrentIndex, to, _tab.Id, SkipAmount.One);
+        var iteration = GetIteration(CurrentIndex, to, SkipAmount.One);
         await IterateToIndexAsync(iteration, CancellationTokenSource.CreateLinkedTokenSource(ct));
     }
 
@@ -231,7 +231,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
     {
-        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, _tab.Id, skipAmount);
+        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, skipAmount);
         await SkipToIndexAsync(iteration, ct).ConfigureAwait(false);
     }
 
@@ -241,7 +241,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         UpdateNavigationProperties();
     }
 
-    public int GetIteration(int index, NavigateTo navigation, string tabId, SkipAmount skipAmount)
+    public int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount)
     {
         int next;
         var skip = skipAmount switch

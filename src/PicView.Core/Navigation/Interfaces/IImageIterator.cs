@@ -38,7 +38,7 @@ public interface IImageIterator : IDisposable
     /// Calculates the next index based on navigation direction and skip modifiers.
     /// </summary>
     /// <returns>The calculated target index.</returns>
-    int GetIteration(int index, NavigateTo navigation, string tabId, SkipAmount skipAmount);
+    int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount);
 
     /// <summary>
     /// Moves the iterator to the specified index and triggers the loading of that image.
@@ -59,5 +59,4 @@ public interface IImageIterator : IDisposable
     void StopRepeatedNavigation();
 
     void UpdateNavigationProperties();
-    void UpdateNavigationProperties(int index, int count);
 }
