@@ -2,7 +2,6 @@ using PicView.Core.DebugTools;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.ViewModels;
-using R3;
 
 namespace PicView.Core.Navigation;
 
@@ -18,7 +17,6 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     private System.Timers.Timer? _timer;
 
     public IReadOnlyList<FileInfo> Files { get; set; } = [];
-    private CompositeDisposable? _disposable;
 
     public int CurrentIndex { get; private set; } = -1;
     public bool IsReversed { get; private set; }
@@ -26,40 +24,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     public void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0)
     {
         Files = files ?? [];
-        CurrentIndex = Math.Clamp(initialIndex, 0, Math.Max(0, Files.Count - 1));
-
-        _disposable = new CompositeDisposable();
-        // Update UI bound values
-        Observable.EveryValueChanged(this, i => i.CurrentIndex)
-            .Subscribe(i =>
-            {
-                _tab.NavigationIndex.Value = i;
-                UpdateNavigationProperties(i, Files.Count);
-            }, result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                     DebugHelper.LogDebug(nameof(ImageIterator), nameof(Initialize), result.Exception);
-                }
-#endif
-            })
-            .AddTo(_disposable);
-        Observable.EveryValueChanged(Files, i => i.Count)
-            .Subscribe( i =>
-            {
-                _tab.MaxIndex.Value = i;
-                UpdateNavigationProperties(CurrentIndex, i);
-            }, result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(ImageIterator), nameof(Initialize), result.Exception);
-                }
-#endif
-            })
-            .AddTo(_disposable);
+        CurrentIndex = initialIndex;
     }
 
     public void UpdateNavigationProperties()
@@ -203,6 +168,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             // Update UI bound vales
             _tab.NavigationIndex.Value = CurrentIndex;
             _tab.MaxIndex.Value = Files.Count;
+            UpdateNavigationProperties();
 
             // Queue Preloading. Call directly on the current thread; preloader writes to a channel immediately.
             _cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
@@ -403,7 +369,6 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     {
         _timer?.Dispose();
         _cache.RemoveOwner(_tab.Id);
-        _disposable?.Dispose();
         GC.SuppressFinalize(this);
     }
 

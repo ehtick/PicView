@@ -22,72 +22,28 @@ public static class ImageTitleFormatter
     private const double NormalZoomLevel = 100;
     private const double NoZoomLevel = 0.0;
 
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo,
+        double zoomValue, IReadOnlyList<FileInfo> filesList)
+        => GenerateTitleStrings(width, height, index, fileInfo.Name, fileInfo, zoomValue, filesList);
 
     /// <summary>
-    /// Generates the title strings based on the specified parameters, including image properties
-    /// such as width, height, file name, zoom level, and current index in the file list.
+    /// Generates window title strings based on provided image and display-related metadata.
+    /// The resulting titles include information such as the file name, image dimensions, file size,
+    /// aspect ratio, zoom percentage, and application name.
     /// </summary>
     /// <param name="width">The width of the image in pixels.</param>
     /// <param name="height">The height of the image in pixels.</param>
-    /// <param name="index">The index of the image in the list.</param>
-    /// <param name="fileInfo">The <see cref="FileInfo"/> object representing the image file.</param>
-    /// <param name="zoomValue">The current zoom level of the image.</param>
-    /// <param name="filesList">The list of image file paths.</param>
-    /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList)
-    {
-        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
-        {
-            return errorTitle;
-        }
-
-        var namePart = validatedFileInfo.Name;
-        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
-    }
-
-    public static WindowTitles GenerateTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList, int? currentPage, int? pageCount)
-    {
-        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
-        {
-            return errorTitle;
-        }
-
-        var namePart = validatedFileInfo.Name;
-        if (currentPage.HasValue && pageCount.HasValue)
-        {
-            namePart = $"{validatedFileInfo.Name} [{currentPage + 1}/{pageCount}]";
-        }
-        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
-    }
-
-    /// <summary>
-    /// Generates the title strings for TIFF images, including page navigation information.
-    /// </summary>
-    /// <param name="width">The width of the image in pixels.</param>
-    /// <param name="height">The height of the image in pixels.</param>
-    /// <param name="index">The index of the image in the list.</param>
-    /// <param name="fileInfo">The <see cref="FileInfo"/> object representing the image file.</param>
-    /// <param name="tiffNavigationInfo">The TIFF navigation information containing page details.</param>
-    /// <param name="zoomValue">The current zoom level of the image.</param>
-    /// <param name="filesList">The list of image file paths.</param>
-    /// <returns>A <see cref="WindowTitles"/> struct containing the generated titles.</returns>
-    public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo fileInfo, TiffManager.TiffNavigationInfo tiffNavigationInfo, double zoomValue, List<FileInfo> filesList)
-    {
-        if (tiffNavigationInfo == null)
-        {
-            return GenerateErrorTitle();
-        }
-
-        if (!TryValidateAndGetFileInfo(index, filesList, fileInfo, out var validatedFileInfo, out var errorTitle))
-        {
-            return errorTitle;
-        }
-
-        var namePart = $"{validatedFileInfo.Name} [{tiffNavigationInfo.CurrentPage + 1}/{tiffNavigationInfo.PageCount}]";
-        return GenerateTitleStringsCore(width, height, validatedFileInfo, zoomValue, filesList, index, namePart);
-    }
-
-    private static WindowTitles GenerateTitleStringsCore(int width, int height, FileInfo fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList, int index, string namePart)
+    /// <param name="index">The zero-based index of the current file in the list.</param>
+    /// <param name="namePart">The base name of the file used in the title.</param>
+    /// <param name="fileInfo">The file information of the image file.</param>
+    /// <param name="zoomValue">The current zoom level of the image as a double value.</param>
+    /// <param name="filesList">A read-only list of all files in the current file collection.</param>
+    /// <returns>
+    /// A <see cref="WindowTitles"/> struct containing the base title, title with the application name appended,
+    /// and a title using the full file path.
+    /// </returns>
+    public static WindowTitles GenerateTitleStrings(int width, int height, int index, string namePart,
+        FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList)
     {
         using var sb = ZString.CreateStringBuilder(true);
 
@@ -118,7 +74,7 @@ public static class ImageTitleFormatter
         sb.Append(" - ");
         sb.Append(AppName);
         var fullTitle = sb.ToString();
-        var filePathTitle = baseTitle.Replace(fileInfo.Name, fileInfo.FullName);
+        var filePathTitle = baseTitle.Replace(namePart, fileInfo.FullName);
 
         return new WindowTitles
         {
@@ -128,62 +84,10 @@ public static class ImageTitleFormatter
         };
     }
 
-    private static bool TryValidateAndGetFileInfo(int index, IReadOnlyList<FileInfo> filesList, FileInfo? fileInfo, out FileInfo? validatedFileInfo, out WindowTitles errorTitle, [CallerMemberName] string callerName = "")
+    public static WindowTitles GenerateTiffTitleStrings(int width, int height, int index, FileInfo? fileInfo, double zoomValue, IReadOnlyList<FileInfo> filesList, int? currentPage, int? pageCount)
     {
-        validatedFileInfo = null;
-        errorTitle = default;
-
-        if (index < 0 || index >= filesList.Count)
-        {
-            DebugHelper.LogDebug(nameof(ImageTitleFormatter), callerName, "index invalid");
-            return false;
-        }
-
-        if (fileInfo is null)
-        {
-            try
-            {
-                validatedFileInfo = filesList[index];
-            }
-            catch (Exception e)
-            {
-                DebugHelper.LogDebug(nameof(ImageTitleFormatter), callerName, e);
-                return false;
-            }
-        }
-        else
-        {
-            validatedFileInfo = fileInfo;
-        }
-        
-        if (!Settings.Navigation.IsFileWatcherEnabled)
-        {
-            // Don't check if the file exists if file watcher disabled
-            return true;
-        }
-
-        if (validatedFileInfo.Exists)
-        {
-            return true;
-        }
-
-        errorTitle = GenerateErrorTitle();
-        return false;
-    }
-
-
-    /// <summary>
-    /// Generates a set of error titles in case of invalid parameters or exceptions during title generation.
-    /// </summary>
-    /// <returns>A <see cref="WindowTitles"/> struct containing error titles.</returns>
-    private static WindowTitles GenerateErrorTitle()
-    {
-        return new WindowTitles
-        {
-            BaseTitle = TranslationManager.Translation?.UnexpectedError ?? "",
-            TitleWithAppName = TranslationManager.Translation?.UnexpectedError ?? "",
-            FilePathTitle = TranslationManager.Translation?.UnexpectedError ?? ""
-        };
+        var namePart = $"{fileInfo.Name} [{currentPage + 1}/{pageCount}]";
+        return GenerateTitleStrings(width, height,  index, namePart, fileInfo, zoomValue, filesList);
     }
 
     /// <summary>

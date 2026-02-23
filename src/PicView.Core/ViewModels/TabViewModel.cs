@@ -98,7 +98,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         {
             if (Model.TiffNavigation is { } tiff)
             {
-                return ImageTitleFormatter.GenerateTitleStrings(width, height,
+                return ImageTitleFormatter.GenerateTiffTitleStrings(width, height,
                     index, Model.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
             }
 

@@ -169,9 +169,9 @@ public static class TitleManager
     public static void SetTiffTitle(TiffManager.TiffNavigationInfo tiffNavigationInfo, int width, int height, int index,
         FileInfo fileInfo, MainViewModel vm)
     {
-        var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo,
-            tiffNavigationInfo, 1, NavigationManager.GetCollection);
-        ApplyTitles(vm, singeImageWindowTitles);
+        // var singeImageWindowTitles = ImageTitleFormatter.GenerateTiffTitleStrings(width, height, index, fileInfo,
+        //     tiffNavigationInfo, 1, NavigationManager.GetCollection);
+        //ApplyTitles(vm, singeImageWindowTitles);
     }
 
     /// <summary>
