@@ -7,11 +7,18 @@
     <Nullable>enable</Nullable>
     <Platforms>arm64;x64</Platforms>
 
+    <!-- AOT -->
     <PublishAot>true</PublishAot>
     <Trimming>full</Trimming>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
     <OptimizationPreference>Speed</OptimizationPreference>
     <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <IsAotCompatible>True</IsAotCompatible>
+    <IsTrimmable>True</IsTrimmable>
+    <EventSourceSupport>false</EventSourceSupport>
+    <StackTraceSupport>false</StackTraceSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <IlcTrimMetadata>true</IlcTrimMetadata>
       
   </PropertyGroup>
     

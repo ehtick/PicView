@@ -10,11 +10,19 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <UseAppHost>true</UseAppHost>
     <ImplicitUsings>enable</ImplicitUsings>
-    
+
+    <!-- AOT -->
     <PublishAot>true</PublishAot>
-    <OptimizationPreference>Speed</OptimizationPreference>
     <Trimming>full</Trimming>
     <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <IsAotCompatible>True</IsAotCompatible>
+    <IsTrimmable>True</IsTrimmable>
+    <EventSourceSupport>false</EventSourceSupport>
+    <StackTraceSupport>false</StackTraceSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <IlcTrimMetadata>true</IlcTrimMetadata>
     
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>

@@ -8,11 +8,6 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <PublishAot>true</PublishAot>
-    <Trimming>full</Trimming>
-    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-    <OptimizationPreference>Speed</OptimizationPreference>
-    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
     <Platforms>x64;arm64</Platforms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Product>PicView</Product>
@@ -21,7 +16,21 @@
     <Copyright>© Ruben Hyldgaard Negendahl</Copyright>
     <AssemblyName>PicView</AssemblyName>
     <StartupObject>PicView.Avalonia.Win32.Program</StartupObject>
+      
     <LangVersion>preview</LangVersion>
+
+    <!-- AOT -->
+    <PublishAot>true</PublishAot>
+    <Trimming>full</Trimming>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <OptimizationPreference>Speed</OptimizationPreference>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <IsAotCompatible>True</IsAotCompatible>
+    <IsTrimmable>True</IsTrimmable>
+    <EventSourceSupport>false</EventSourceSupport>
+    <StackTraceSupport>false</StackTraceSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <IlcTrimMetadata>true</IlcTrimMetadata>
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="icon.ico">
