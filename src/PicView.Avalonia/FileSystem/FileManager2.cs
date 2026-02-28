@@ -38,11 +38,11 @@ public static class FileManager2
                     var msg = recycle
                         ? TranslationManager.Translation.SentFileToRecycleBin
                         : TranslationManager.Translation.DeletedFile;
-                    TooltipHelper.ShowTooltipMessage(msg + Environment.NewLine + Path.GetFileName(path));
+                    TooltipHelper2.ShowTooltipMessage(msg + Environment.NewLine + Path.GetFileName(path));
                 }
                 else if (File.Exists(path))
                 {
-                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError, true);
+                    TooltipHelper2.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError, true);
                 }
             }
         }
@@ -104,7 +104,7 @@ public static class FileManager2
 
                 if (string.IsNullOrWhiteSpace(file))
                 {
-                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
+                    TooltipHelper2.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
                     return;
                 }
 

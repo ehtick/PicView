@@ -100,7 +100,7 @@ public partial class ImageViewer2 : UserControl
                 TitleManager.SetTabTitle(tab, zoomLevel);
                 if (Settings.Zoom.IsShowingZoomPercentagePopup)
                 {
-                    _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{zoomLevel}%", true,
+                    _ = TooltipHelper2.ShowTooltipMessageContinuallyAsync($"{Math.Floor(zoomLevel)}%", true,
                         TimeSpan.FromSeconds(1));
                 }
 

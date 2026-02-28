@@ -1038,10 +1038,10 @@
             <buttons:AltRestore x:Name="AltRestore" />
             <buttons:AltClose x:Name="AltClose" />
         </StackPanel>
-        <!--  <uc:ToolTipMessage  -->
-        <!--  HorizontalAlignment="Center"  -->
-        <!--  Opacity="0"  -->
-        <!--  VerticalAlignment="Center"  -->
-        <!--  x:Name="ToolTipMessage" />  -->
+        <uc:ToolTipMessage2
+            HorizontalAlignment="Center"
+            Opacity="0"
+            VerticalAlignment="Center"
+            x:Name="ToolTipMessage" />
     </Panel>
 </UserControl>

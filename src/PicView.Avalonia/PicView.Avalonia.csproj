@@ -226,6 +226,10 @@
             <DependentUpon>GalleryItem2.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\UC\ToolTipMessage2.axaml.cs">
+          <DependentUpon>ToolTipMessage2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

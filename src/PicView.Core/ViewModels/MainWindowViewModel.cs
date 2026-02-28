@@ -13,6 +13,7 @@ public class MainWindowViewModel : IDisposable
     public GallerySharedSettingsViewModel GallerySettings { get; }
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     public TabOverviewViewModel WindowTabs { get; } = new();
+    public ToolTipViewModel? ToolTip { get; set; }
     
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }

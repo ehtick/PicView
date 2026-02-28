@@ -179,7 +179,6 @@ public static class StartUpHelper2
         UIHelper2.SetControls(window);
         Task.Run(() =>
         {
-   //         vm.Tabs.SetParentContext(vm);
             _ = FileHistoryManager.InitializeAsync();
             HandleWindowControlSettings(vm, desktop);
      //     SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
@@ -214,8 +213,9 @@ public static class StartUpHelper2
         }
         
         desktop.MainWindow = window;
-        
- //       TooltipHelper.StartTooltipSubscription(vm);
+
+        vm.MainWindows.ActiveWindow.CurrentValue.ToolTip ??= new ToolTipViewModel();
+        TooltipHelper2.StartTooltipSubscription(vm.MainWindows.ActiveWindow.CurrentValue.ToolTip);
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {
