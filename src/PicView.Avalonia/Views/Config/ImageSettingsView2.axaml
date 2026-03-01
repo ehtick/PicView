@@ -8,13 +8,13 @@
 
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
-        <StackPanel Orientation="Horizontal" Spacing="12">
+        <StackPanel Classes="searchHeader">
             <Image
                 Height="18"
                 Source="{StaticResource ImageSettingAltImage}"
                 Width="18" />
             <TextBlock
-                Classes="txt bold searchHeader"
+                Classes="txt bold"
                 Margin="0,20,0,20"
                 Text="{CompiledBinding Translation.Image.Value,
                                        Mode=OneWay}" />

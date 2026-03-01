@@ -133,17 +133,16 @@
         </Setter>
     </Style>
 
-    <Style Selector="TextBlock.searchHeader">
+    <Style Selector="StackPanel.searchHeader">
         <Setter Property="Opacity" Value="1.0" />
-        <Setter Property="Transitions">
-            <Transitions>
-                <DoubleTransition Duration="0:0:0.4" Property="Opacity" />
-            </Transitions>
-        </Setter>
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="12" />
     </Style>
 
-    <Style Selector="TextBlock.searchHeaderDim">
+    <Style Selector="StackPanel.searchHeaderDim">
         <Setter Property="Opacity" Value="0.2" />
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="12" />
     </Style>
 
     <Style Selector="Border.searchMatch">

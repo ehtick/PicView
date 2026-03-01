@@ -8,7 +8,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
-        <StackPanel Orientation="Horizontal" Spacing="12">
+
+        <StackPanel Classes="searchHeader">
             <Image
                 Height="18"
                 Source="{StaticResource SignPostImage}"

@@ -17,7 +17,7 @@
                         Source="{StaticResource SlideshowImage}"
                         Width="18" />
                     <TextBlock
-                        Classes="txt bold searchHeader"
+                        Classes="txt bold"
                         Margin="0,20,0,20"
                         Text="{CompiledBinding Translation.Slideshow.Value,
                                                Mode=OneWay}" />
