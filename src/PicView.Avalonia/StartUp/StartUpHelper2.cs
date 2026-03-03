@@ -298,7 +298,7 @@ public static class StartUpHelper2
                     DataContext = vm
                 }
             };
-           // vm.Tabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
+            vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
             TabNavigationInitializer.Initialize(vm);
         }
     }
