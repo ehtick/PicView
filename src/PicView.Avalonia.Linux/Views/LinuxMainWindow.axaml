@@ -1,7 +1,9 @@
 <Window
-    ExtendClientAreaChromeHints="NoChrome"
-    ExtendClientAreaTitleBarHeightHint="-1"
-    ExtendClientAreaToDecorationsHint="True"
+    BorderBrush="{DynamicResource SecondaryBackgroundColor}"
+    BorderThickness="1"
+    CanResize="True"
+    ExtendClientAreaChromeHints="SystemChrome"
+    ExtendClientAreaTitleBarHeightHint="28"
     MinHeight="{CompiledBinding WindowMinHeight.Value}"
     MinWidth="{CompiledBinding WindowMinWidth.Value}"
     SystemDecorations="None"
