@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using Avalonia;
@@ -241,7 +241,7 @@ public static class StartUpHelper2
             GlassThemeHelper.GlassThemeUpdates();
         }
 
-  //      BackgroundManager.SetBackground(vm);
+        ThemeManager.SetBackground(Settings.UIProperties.BgColorChoice);
         ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
     }
 

@@ -21,13 +21,13 @@ internal class Program
             .LogToTrace()
 #endif
             .UseR3()
+            .UseSkia()
             .With(new SkiaOptions
             {
                 MaxGpuResourceSizeBytes = 256_000_000,
                 UseOpacitySaveLayer = true
             })
             .UseX11()
-            .UseHarfBuzz()
-            .UseSkia();
+            .UseHarfBuzz();
     }
 }

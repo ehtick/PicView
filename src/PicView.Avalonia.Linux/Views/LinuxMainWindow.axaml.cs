@@ -223,31 +223,6 @@ public partial class LinuxMainWindow : Window, IPlatformWindowService
         base.OnClosing(e);
     }
 
-    private void Control_OnSizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-        if (DataContext == null)
-        {
-            return;
-        }
-
-        if (e is { HeightChanged: false, WidthChanged: false })
-        {
-            return;
-        }
-
-        if (Settings.WindowProperties.AutoFit)
-        {
-            return;
-        }
-
-        if (DataContext is not MainWindowViewModel vm)
-        {
-            return;
-        }
-
-        //WindowResizing.SetSize(vm);
-    }
-
     protected override void OnClosed(EventArgs e)
     {
         _frameProvider?.Dispose();

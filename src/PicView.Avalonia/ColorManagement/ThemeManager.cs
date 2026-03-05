@@ -1,5 +1,8 @@
-﻿using Avalonia;
+using Avalonia;
+using Avalonia.Media;
 using Avalonia.Styling;
+using PicView.Core.ColorHandling;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.ColorManagement;
 public static class ThemeManager
@@ -66,5 +69,36 @@ public static class ThemeManager
                 application.RequestedThemeVariant = Settings.Theme.Dark ? ThemeVariant.Dark : ThemeVariant.Light;
             }
         }
+    }
+    
+    public static void SetColorTheme(int colorIndex)
+    {
+        ColorManager.UpdateAccentColors(colorIndex);
+    }
+
+    public static void SetBackground(int backgroundIndex)
+    {
+        var coreVm = Application.Current?.DataContext as CoreViewModel;
+        if (coreVm?.MainWindows.ActiveWindow.Value is not { } activeWindow)
+        {
+            return;
+        }
+
+        Settings.UIProperties.BgColorChoice = backgroundIndex;
+                 
+        var brush = BackgroundManager.GetBackgroundBrush((BackgroundType)backgroundIndex);
+                 
+        if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
+        {
+            activeWindow.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+            activeWindow.ConstrainedImageBackground.Value = brush;
+        }
+        else
+        {
+            activeWindow.ImageBackground.Value = brush;
+            activeWindow.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+        }
+                 
+        activeWindow.BackgroundChoice.Value = backgroundIndex;
     }
 }
