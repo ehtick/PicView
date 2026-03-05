@@ -349,7 +349,7 @@
   "ShowConfirmationDialogWhenMovingFileToRecycleBin": "将文件移动到回收站时显示确认对话框",
   "ShowConfirmationDialogWhenPermanentlyDeletingFile": "永久删除文件时显示确认对话框",
   "ShowConfirmationOnEsc": "按下 'Esc' 时显示确认对话框",
-  "ShowFadeInButtonsOnHover": "將鼠標懸停時顯示淡入按鈕",
+  "ShowFadeInButtonsOnHover": "将鼠标悬停时显示淡入按钮",
   "ShowFileSavingDialog": "查看文件保存对话框",
   "ShowHoverNavigationBar": "鼠标悬停时显示导航栏",
   "ShowImageGallery": "显示图片相册",
