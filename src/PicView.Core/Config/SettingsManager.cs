@@ -164,7 +164,18 @@ public static class SettingsManager
         }
         else
         {
-            uiProperties = new UIProperties();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                uiProperties = new UIProperties
+                {
+                    BgColorChoice = 3
+                };
+            }
+            else
+            {
+                uiProperties = new UIProperties();
+            }
+            
         }
 
         return uiProperties;
