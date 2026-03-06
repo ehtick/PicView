@@ -46,10 +46,8 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
     }
 
     // The startup procedure for macOS is a bit different than Windows.
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
-        try
-        {
             string? startUpFilePath = null;
             if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -63,27 +61,7 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                     if (e is ProtocolActivatedEventArgs protocolArgs)
                     {
                         startUpFilePath = protocolArgs.Uri.AbsolutePath;
-                        if (!_isInitialLoad)
-                        {
-                            _isInitialLoad = true;
-
-                            // Force switch to ImageViewer (in case we were sitting on the Start Menu)
-                            _vm.ImageViewer ??= new ImageViewer();
-                            _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
-
-                            await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                            _isInitialLoad = true;
-                            return;
-                        }
-                        if (Settings.UIProperties.OpenInSameWindow)
-                        {
-                            Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
-                            await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            ProcessHelper.StartNewProcess(startUpFilePath);
-                        }
+                        await HandleInitialLoadOrConsecutive();
                     }
                     else if (e is FileActivatedEventArgs fileArgs)
                     {
@@ -93,64 +71,58 @@ public class App : Application, IPlatformSpecificService, IPlatformWindowService
                         }
 
                         startUpFilePath = fileArgs.Files[0].Path.AbsolutePath;
-                        if (!_isInitialLoad)
-                        {
-                            _isInitialLoad = true;
-
-                            // Force switch to ImageViewer (in case we were sitting on the Start Menu)
-                            _vm.ImageViewer ??= new ImageViewer();
-                            _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
-
-                            await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                            _isInitialLoad = true;
-                            return;
-                        }
-                        if (Settings.UIProperties.OpenInSameWindow)
-                        {
-                            Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
-                            await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            ProcessHelper.StartNewProcess(startUpFilePath);
-                        }
+                        await HandleInitialLoadOrConsecutive();
                     }
                 };
             }
             base.OnFrameworkInitializationCompleted();        
 
-            var settingsExists = await Task.FromResult(LoadSettings()).ConfigureAwait(false);
+            var settingsExists = LoadSettings();
             TranslationManager.Init();
 
             _vm = new MainViewModel(this, this);
 
-            // 2. Initialize the Window
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                ThemeManager.DetermineTheme(Current, settingsExists);
-                _mainWindow = new MacMainWindow();
-                desktop.MainWindow = _mainWindow;
-                _mainWindow.DataContext = _vm;
-            }, DispatcherPriority.Send);
+            ThemeManager.DetermineTheme(Current, settingsExists);
+            _mainWindow = new MacMainWindow();
+            desktop.MainWindow = _mainWindow;
+            _mainWindow.DataContext = _vm;
 
-            // 3. Decide Initial State
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            StartUpHelper.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
+            _windowInitializer = new WindowInitializer();
+            
+            Dispatcher.UIThread.Post(() =>
             {
-                StartUpHelper.StartUpBlank(_vm, settingsExists, desktop, _mainWindow);
-                _windowInitializer = new WindowInitializer();
-            }, DispatcherPriority.Send);
-            if (!_isInitialLoad && startUpFilePath is null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                if (!_isInitialLoad && startUpFilePath is null)
                 {
                     StartUpHelper.HandleStartUpMenuOrImage(_vm, _mainWindow);
-                }, DispatcherPriority.Send);
+                }
+            }, DispatcherPriority.Send);
+            
+            return;
+
+            async ValueTask HandleInitialLoadOrConsecutive()
+            {
+                if (!_isInitialLoad)
+                {
+                    _isInitialLoad = true;
+
+                    // Force switch to ImageViewer (in case we were sitting on the Start Menu)
+                    _vm.ImageViewer ??= new ImageViewer();
+                    _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
+
+                    await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
+                    return;
+                }
+                if (Settings.UIProperties.OpenInSameWindow)
+                {
+                    Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
+                    await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
+                }
+                else
+                {
+                    ProcessHelper.StartNewProcess(startUpFilePath);
+                }
             }
-        }
-        catch (Exception)
-        {
-            //
-        }
     }
 
     #region Interface implementations
