@@ -105,6 +105,15 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
 
                         break;
                 }
+            }, result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(WinMainWindow2), nameof(WindowState),
+                        result.Exception);
+                }
+#endif
             });
 
             UIHelper2.AddDropDownMenu();

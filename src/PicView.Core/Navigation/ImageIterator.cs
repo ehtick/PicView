@@ -136,9 +136,9 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                     _tab.Model = model;
                 }
                 var loadedModel = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
-                if (loadedModel is null)
+                if (index != CurrentIndex || loadedModel is null)
                 {
-                    Preload();
+                    // User skipped
                     return;
                 }
                 _tab.Model = loadedModel;
@@ -364,17 +364,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         return (statusToReturn, model);
     }
 
-    private async ValueTask<ImageModel?> LoadManuallyAsync(int index, CancellationTokenSource ct)
-    {
-        var imageModel = await _cache.LoadAsync(_tab.Id, index, Files, ct.Token).ConfigureAwait(false);
-        if (index != CurrentIndex || ct.IsCancellationRequested)
-        {
-            // User skipped
-            return null;
-        }
-
-        return imageModel;
-    }
+    private async ValueTask<ImageModel?> LoadManuallyAsync(int index, CancellationTokenSource ct) =>
+        await _cache.LoadAsync(_tab.Id, index, Files, ct.Token).ConfigureAwait(false);
 
     #endregion
 
