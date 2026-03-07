@@ -104,6 +104,10 @@
         <DependentUpon>WinTitleBar2.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\AboutWindow2.axaml.cs">
+        <DependentUpon>AboutWindow2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
   </ItemGroup>
 
 	<ItemGroup>

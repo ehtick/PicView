@@ -16,7 +16,7 @@ namespace PicView.Avalonia.Win32.WindowImpl;
 
 public class WindowInitializer : IPlatformSpecificUpdate
 {
-    private AboutWindow? _aboutWindow;
+    private AboutWindow2? _aboutWindow;
     private BatchResizeWindow? _batchResizeWindow;
     private ConvertWindow? _convertWindow;
     private EffectsWindow? _effectsWindow;
@@ -31,7 +31,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         await WinUpdateHelper.HandleWindowsUpdate(updateInfo, tempPath);
     }
 
-    public void ShowAboutWindow(MainWindowViewModel vm)
+    public void ShowAboutWindow()
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -53,9 +53,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
             if (_aboutWindow is null)
             {
-                _aboutWindow = new AboutWindow
+                _aboutWindow = new AboutWindow2
                 {
-                    DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
                 _aboutWindow.Show(desktop.MainWindow);

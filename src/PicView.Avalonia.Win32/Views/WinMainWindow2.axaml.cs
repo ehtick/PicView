@@ -288,7 +288,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
     } = 185;
     
     public void ShowAboutWindow() =>
-        _windowInitializer?.ShowAboutWindow(null);
+        _windowInitializer?.ShowAboutWindow();
 
     public async Task ShowImageInfoWindow() =>
         await _windowInitializer?.ShowImageInfoWindow(null);
