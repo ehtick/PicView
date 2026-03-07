@@ -4,11 +4,13 @@ using PicView.Core.Navigation;
 
 namespace PicView.Core.ViewModels;
 
-public class CoreViewModel
+public class CoreViewModel(
+    IPlatformSpecificService? platformSpecificService,
+    Func<FileInfo, ValueTask<ImageModel>> imageLoader)
 {
     // Shared Services
-    public IPlatformSpecificService? PlatformService { get; }
-    public SharedImageCache SharedCache { get; }
+    public IPlatformSpecificService? PlatformService { get; } = platformSpecificService;
+    public SharedImageCache SharedCache { get; } = new(imageLoader);
     public ThumbnailCache SharedThumbnailCache { get; } = new();
     
     // --- Globally Shared State ---
@@ -23,17 +25,5 @@ public class CoreViewModel
     /// Bindable reactive properties that are Exif related
     public List<ExifViewModel> Exifs { get; } = []; 
     /// View models for the image info view
-    public List<ImageInfoWindowViewModel?> InfoWindows { get; } = [];  
-    
-    public CoreViewModel(IPlatformSpecificService? platformSpecificService, Func<FileInfo, ValueTask<ImageModel>> imageLoader)
-    {
-        PlatformService = platformSpecificService;
-        SharedCache = new SharedImageCache(imageLoader);
-    }
-
-    public CoreViewModel()
-    {
-        // Only use for unit test
-    }
-
+    public List<ImageInfoWindowViewModel?> InfoWindows { get; } = [];
 }
