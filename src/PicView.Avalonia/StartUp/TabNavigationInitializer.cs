@@ -127,9 +127,6 @@ public static class TabNavigationInitializer
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Model.FileInfo, UIHelper2.GetFrameProvider)
                     .Subscribe(file =>
                     {
-                        // Trigger file changes to UI
-                        tabViewModel.FileInfo.Value = file;
-
                         // Update title to reflect file changes
                         if (file is null)
                         {
@@ -143,11 +140,14 @@ public static class TabNavigationInitializer
                             tabViewModel.TabTooltip.Value = noImage;
                             return;
                         }
+                        
+                        // Trigger file changes to UI
+                        tabViewModel.FileInfo.Value = file;
 
                         tabViewModel.TabTitle.Value = file.Name;
                         tabViewModel.TabTooltip.Value = file.FullName;
                         tabViewModel.UpdateTabTitle();
-                    }, result =>
+                    }, static result =>
                     {
 #if DEBUG
                         if (result is { IsFailure: true, Exception: not null })
@@ -170,7 +170,7 @@ public static class TabNavigationInitializer
                         }
 
                         tabViewModel.UpdateTabTitle();
-                    }, result =>
+                    }, static result =>
                     {
 #if DEBUG
                         if (result is { IsFailure: true, Exception: not null })
