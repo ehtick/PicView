@@ -108,6 +108,10 @@
         <DependentUpon>AboutWindow2.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\PrintPreviewWindow2.axaml.cs">
+        <DependentUpon>PrintPreviewWindow2.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
   </ItemGroup>
 
 	<ItemGroup>

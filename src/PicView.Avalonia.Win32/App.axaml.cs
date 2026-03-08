@@ -137,7 +137,7 @@ public class App : Application, IPlatformSpecificService
     {
         if (Settings.UIProperties.ShowPrintPreview)
         {
-            //_windowInitializer?.ShowPrintPreviewWindow(null, path);
+            _mainWindow.ShowPrintWindow(path);
         }
         else
         {

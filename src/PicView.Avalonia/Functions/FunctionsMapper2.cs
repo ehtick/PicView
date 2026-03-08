@@ -631,8 +631,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="FileManager.Print(string, MainViewModel)" />
     public async ValueTask Print()
     {
-        // await FileManager.Print(vm.PicViewer.FileInfo?.CurrentValue?.FullName, vm).ConfigureAwait(false);
-        return;
+        await FileManager2.Print(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.FullName, vm).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="FilePicker.SelectAndLoadFile(MainViewModel)" />
@@ -726,7 +725,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
         }
         await Task.Run(() =>
             FileManager2.ShowFileProperties(vm.WindowTabs.ActiveTab.CurrentValue.Model
-                .FileInfo?.FullName, core.PlatformService)).ConfigureAwait(false);
+                .FileInfo?.FullName)).ConfigureAwait(false);
     }
 
     #endregion

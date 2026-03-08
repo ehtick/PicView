@@ -14,6 +14,7 @@ public class MainWindowViewModel : IDisposable
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     public TabOverviewViewModel WindowTabs { get; } = new();
     public ToolTipViewModel? ToolTip { get; set; }
+    public PrintPreviewViewModel? PrintPreview { get; set; }
     
     public bool IsNavigationButtonLeftClicked { get; set; }
     public bool IsNavigationButtonRightClicked { get; set; }

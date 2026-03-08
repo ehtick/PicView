@@ -230,6 +230,10 @@
           <DependentUpon>ToolTipMessage2.axaml</DependentUpon>
           <SubType>Code</SubType>
         </Compile>
+        <Compile Update="Views\Main\PrintPreviewView2.axaml.cs">
+          <DependentUpon>PrintPreviewView2.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
 

@@ -11,6 +11,8 @@ using PicView.Core.Config;
 using PicView.Core.Update;
 using PicView.Core.ViewModels;
 using PicView.Avalonia.Services;
+using PicView.Avalonia.Win32.Printing;
+using R3;
 
 namespace PicView.Avalonia.Win32.WindowImpl;
 
@@ -24,7 +26,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
     private KeybindingsWindow? _keybindingsWindow;
     private SettingsWindow? _settingsWindow;
     private SingleImageResizeWindow? _singleImageResizeWindow;
-    private PrintPreviewWindow? _printPreviewWindow;
+    private PrintPreviewWindow2? _printPreviewWindow;
 
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
     {
@@ -76,7 +78,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public async Task ShowImageInfoWindow(MainWindowViewModel vm)
+    public async Task ShowImageInfoWindow()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -137,7 +139,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public async Task ShowKeybindingsWindow(MainWindowViewModel vm)
+    public async Task ShowKeybindingsWindow()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -274,7 +276,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public void ShowSingleImageResizeWindow(MainWindowViewModel vm)
+    public void ShowSingleImageResizeWindow()
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -298,7 +300,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
             {
                 _singleImageResizeWindow = new SingleImageResizeWindow
                 {
-                    DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
                 _singleImageResizeWindow.Show(desktop.MainWindow);
@@ -320,7 +321,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public async Task ShowBatchResizeWindow(MainWindowViewModel vm)
+    public async Task ShowBatchResizeWindow()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -383,7 +384,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public void ShowEffectsWindow(MainWindowViewModel vm)
+    public void ShowEffectsWindow()
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -407,7 +408,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
             {
                 _effectsWindow = new EffectsWindow
                 {
-                    DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
                 _effectsWindow.Show(desktop.MainWindow);
@@ -429,7 +429,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public void ShowConvertWindow(MainWindowViewModel vm)
+    public void ShowConvertWindow()
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -453,7 +453,6 @@ public class WindowInitializer : IPlatformSpecificUpdate
             {
                 _convertWindow = new ConvertWindow
                 {
-                    DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
                 _convertWindow.Show(desktop.MainWindow);
@@ -475,7 +474,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
         }
     }
 
-    public void ShowPrintPreviewWindow(MainWindowViewModel vm, string path)
+    public void ShowPrintPreviewWindow(string path, MainWindowViewModel vm)
     {
         if (Dispatcher.UIThread.CheckAccess())
         {
@@ -497,33 +496,33 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
             if (_printPreviewWindow is null)
             {
-                // vm.PrintPreview = new PrintPreviewViewModel();
+                vm.PrintPreview = new PrintPreviewViewModel();
 
                 // TODO: Move this initialization to its own dedicated class
 
-                _printPreviewWindow = new PrintPreviewWindow
+                _printPreviewWindow = new PrintPreviewWindow2
                 {
                     DataContext = vm,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                // vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
-                // {
-                //     await _printPreviewWindow?.RunPrintAsync(vm);
-                // })
-                // .AddTo(vm.PrintPreview.Disposables);
+                vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
+                {
+                    await _printPreviewWindow?.RunPrintAsync(vm);
+                })
+                .AddTo(vm.PrintPreview.Disposables);
 
-                // vm.PrintPreview.CancelCommand.SubscribeAwait(async (_, _) =>
-                // {
-                //     await Dispatcher.UIThread.InvokeAsync(() => _printPreviewWindow?.Close());
-                // }).AddTo(vm.PrintPreview.Disposables);
+                vm.PrintPreview.CancelCommand.SubscribeAwait(async (_, _) =>
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => _printPreviewWindow?.Close());
+                }).AddTo(vm.PrintPreview.Disposables);
 
                 _printPreviewWindow.Show(desktop.MainWindow);
                 _printPreviewWindow.Closing += (_, _) => _printPreviewWindow = null;
 
                 Task.Run(() =>
                 {
-                    // PrintInitialization.Initialize(vm, path, _printPreviewWindow);
+                    PrintInitialization2.Initialize(vm, path, _printPreviewWindow);
                 });
             }
             else
