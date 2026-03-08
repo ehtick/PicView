@@ -30,6 +30,9 @@ public class App : Application, IPlatformSpecificService
     private MacMainWindow2? _mainWindow;
     private static CoreViewModel? _coreViewModel;
     private static MainWindowViewModel? _mainWindowViewModel;
+    
+    ///  Flag to track if we are processing the initial startup file
+    private bool _isInitialLoad;
 
     public override void Initialize()
     {
@@ -41,108 +44,87 @@ public class App : Application, IPlatformSpecificService
     }
 
     // The startup procedure for macOS is a bit different than Windows.
-    public override async void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
     {
-        try
-        {
-            base.OnFrameworkInitializationCompleted();
-
-            // Capture the startup file immediately if the event fires early
             string? startUpFilePath = null;
-
-            // We use a flag to track if THIS instance has handled its "startup" file yet.
-            var hasHandledInitialFile = false;
-
+            
             if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
             {
                 return;
             }
 
-            // Capture the event early
-            EventHandler<UrlOpenedEventArgs> earlyHandler = (_, e) => { startUpFilePath = e.Urls[0]; };
-            Current.UrlsOpened += earlyHandler;
-
-            var settingsExists = await Task.FromResult(LoadSettings()).ConfigureAwait(false);
-            TranslationManager.Init();
-            
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            if (this.TryGetFeature<IActivatableLifetime>() is { } activatableLifetime)
             {
-                _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
-                DataContext = _coreViewModel;
-                ThemeManager.DetermineTheme(Current, settingsExists);
-
-                _mainWindow = new MacMainWindow2();
-                _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
-                _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
-                _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
-                
-                // If the event fired BEFORE we got here, start with that file.
-                if (startUpFilePath is not null)
+                activatableLifetime.Activated += async (_, e) =>
                 {
-                    StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow, _mainWindow.Disposables);
-                    hasHandledInitialFile = true;
-
-                    if (Settings.WindowProperties.AutoFit)
+                    if (e is ProtocolActivatedEventArgs protocolArgs)
                     {
-                        WindowFunctions.CenterWindowOnScreen();
+                        startUpFilePath = protocolArgs.Uri.AbsolutePath;
+                        await HandleInitialLoadOrConsecutive();
                     }
-                }
-                else
+                    else if (e is FileActivatedEventArgs fileArgs)
+                    {
+                        if (fileArgs.Files.Count <= 0)
+                        {
+                            return;
+                        }
+
+                        startUpFilePath = fileArgs.Files[0].Path.AbsolutePath;
+                        await HandleInitialLoadOrConsecutive();
+                    }
+                };
+            }
+            base.OnFrameworkInitializationCompleted();        
+
+            var settingsExists = LoadSettings();
+            TranslationManager.Init();
+
+            _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
+            DataContext = _coreViewModel;
+            ThemeManager.DetermineTheme(Current, settingsExists);
+
+            _mainWindow = new MacMainWindow2();
+            _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
+            _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
+            _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
+            
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (!_isInitialLoad && startUpFilePath is null)
                 {
-                    // If no file yet, start normally (Last File / StartUpMenu)
-                    StartUpHelper2.RegularStartUp(_coreViewModel, settingsExists, desktop, _mainWindow, _mainWindow.Disposables);
+                    StartUpHelper2.RegularStartUp(_coreViewModel,
+                        settingsExists,
+                        desktop,
+                        _mainWindow,
+                        _mainWindow.Disposables);
                 }
             }, DispatcherPriority.Send);
+            
+            return;
 
-            // 4. Remove the temporary early handler
-            Current.UrlsOpened -= earlyHandler;
-
-            // 5. Register the PERMANENT handler with Logic to prevent double-opening
-            Current.UrlsOpened += (_, e) =>
+            async ValueTask HandleInitialLoadOrConsecutive()
             {
-                var incomingUrl = e.Urls[0];
-
-                // SCENARIO A: Startup Race Condition Fix
-                // If we haven't handled a startup file yet (meaning StartWithoutArguments ran),
-                // AND this event comes in shortly after launch, this IS our startup file.
-                // We must open it in THIS window, ignoring the "OpenInSameWindow=false" setting.
-                if (!hasHandledInitialFile)
+                if (!_isInitialLoad)
                 {
-                    hasHandledInitialFile = true;
-                    startUpFilePath = incomingUrl; // Mark this as our startup file
+                    _isInitialLoad = true;
 
                     // Force switch to ImageViewer (in case we were sitting on the Start Menu)
-                    //_vm.ImageViewer ??= new ImageViewer();
-                    //_vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
-
-                    //await NavigationManager.LoadPicFromStringAsync(incomingUrl, _vm).ConfigureAwait(false);
+                    // _vm.ImageViewer ??= new ImageViewer();
+                    // _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
+                    //
+                    // await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
                     return;
                 }
-
-                // SCENARIO B: Duplicate Event Fix
-                // macOS sometimes fires the event again for the file we just opened.
-                // If the incoming URL is the exact same one we started with, ignore it.
-                if (incomingUrl == startUpFilePath)
-                {
-                    return;
-                }
-
-                // SCENARIO C: Actual Drag & Drop / Next File
                 if (Settings.UIProperties.OpenInSameWindow)
                 {
                     Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
-                    //await NavigationManager.LoadPicFromStringAsync(incomingUrl, _vm).ConfigureAwait(false);
+                    //await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
                 }
                 else
                 {
-                    ProcessHelper.StartNewProcess(incomingUrl);
+                    ProcessHelper.StartNewProcess(startUpFilePath);
                 }
-            };
-        }
-        catch (Exception)
-        {
-            //
-        }
+            }
     }
 
    #region Interface implementations
