@@ -31,7 +31,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     public void UpdateNavigationProperties()
         => UpdateNavigationProperties(CurrentIndex, Files.Count);
 
-    public void UpdateNavigationProperties(int index, int count)
+    private void UpdateNavigationProperties(int index, int count)
     {
         if (count <= 1)
         {
@@ -125,8 +125,20 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                 {
                     goto case CacheStatus.NotInCache;
                 }
-                _tab.Model = model;
-                await Update();
+                await Update(model);
+                break;
+            case CacheStatus.IsLoadingInCache:
+                var successFullyLoaded = await _cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
+                if (!successFullyLoaded)
+                {
+                    goto case CacheStatus.NotInCache;
+                }
+                if (index != CurrentIndex || model is null)
+                {
+                    // User skipped
+                    return;
+                }
+                await Update(model);
                 break;
             case CacheStatus.NotInCache:
                 var manuallyLoaded = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
@@ -135,18 +147,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                     // User skipped
                     return;
                 }
-                _tab.Model = manuallyLoaded;
-                await Update();
-                break;
-            case CacheStatus.IsLoadingInCache:
-                var loadingValue = await _cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
-                if (index != CurrentIndex || loadingValue is null)
-                {
-                    // User skipped
-                    return;
-                }
-                _tab.Model = loadingValue;
-                await Update();
+                await Update(manuallyLoaded);
                 break;
 
             default: return;
@@ -159,9 +160,11 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             _cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
         }
 
-        async ValueTask Update()
+        async ValueTask Update(ImageModel newModel)
         {
-            // 2. Load Secondary Image (if Side-by-Side)
+            _tab.Model = newModel;
+            
+            // Load Secondary Image (if Side-by-Side)
             if (Settings.ImageScaling.ShowImageSideBySide)
             {
                 var nextIndex = CurrentIndex + 1;

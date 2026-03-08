@@ -88,5 +88,5 @@ public interface IImageCache
     /// </summary>
     void Resynchronize(string ownerId, IReadOnlyList<FileInfo> files);
 
-    ValueTask<ImageModel?> WaitForLoadingCompleteAsync(string ownerId, int index);
+    ValueTask<bool> WaitForLoadingCompleteAsync(string ownerId, int index);
 }
