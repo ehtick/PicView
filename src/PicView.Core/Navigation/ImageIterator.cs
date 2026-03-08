@@ -115,35 +115,40 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         var targetFile = Files[CurrentIndex];
 
         var (status, model) = TryLoadFromCache(CurrentIndex, targetFile, ct);
-        if (index != CurrentIndex)
-        {
-            // User skipped
-            return;
-        }
         switch (status)
         {
             case CacheStatus.Cancelled:
                 Preload();
                 break;
-            case CacheStatus.IsInCache when model is not null:
+            case CacheStatus.IsInCache:
+                if (model is null)
+                {
+                    goto case CacheStatus.NotInCache;
+                }
                 _tab.Model = model;
                 await Update();
                 break;
             case CacheStatus.NotInCache:
-            case CacheStatus.IsLoadingInCache:
-                if (model is { Image: not null })
-                {
-                    _tab.Model = model;
-                }
-                var loadedModel = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
-                if (index != CurrentIndex || loadedModel is null)
+                var manuallyLoaded = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
+                if (index != CurrentIndex || manuallyLoaded is null)
                 {
                     // User skipped
                     return;
                 }
-                _tab.Model = loadedModel;
+                _tab.Model = manuallyLoaded;
                 await Update();
                 break;
+            case CacheStatus.IsLoadingInCache:
+                var loadingValue = await _cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
+                if (index != CurrentIndex || loadingValue is null)
+                {
+                    // User skipped
+                    return;
+                }
+                _tab.Model = loadingValue;
+                await Update();
+                break;
+
             default: return;
         }
         
@@ -181,11 +186,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                 _tab.SecondaryModel = null;
             }
             
-            // Update UI bound vales
-            _tab.NavigationIndex.Value = CurrentIndex;
-            _tab.MaxIndex.Value = Files.Count;
             UpdateNavigationProperties();
-            
             Preload();
         }
     }

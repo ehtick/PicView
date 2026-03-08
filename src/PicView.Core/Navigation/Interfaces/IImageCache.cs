@@ -87,4 +87,6 @@ public interface IImageCache
     /// Resynchronizes the cache for a specific owner when the file list changes (e.g., sorting).
     /// </summary>
     void Resynchronize(string ownerId, IReadOnlyList<FileInfo> files);
+
+    ValueTask<ImageModel?> WaitForLoadingCompleteAsync(string ownerId, int index);
 }

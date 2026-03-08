@@ -81,6 +81,22 @@ public class SharedImageCache : IImageCache
     public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) 
         => _preLoader.Preload(ownerId, currentIndex, reversed, files, token);
 
+    public async ValueTask<ImageModel?> WaitForLoadingCompleteAsync(string ownerId, int index)
+    {
+        if (!_items.TryGetValue(ownerId, index, out var value))
+        {
+            return null;
+        }
+
+        if (value is null)
+        {
+            return null;
+        }
+
+        await value.WaitForLoadingCompleteAsync();
+        return value.ImageModel;
+    }
+    
     public void Clear(TabViewModel tab)
     {
         var id = tab.Id;
