@@ -55,6 +55,7 @@ public interface IFunctionsMapper
     // Open Windows/Dialogs
     ValueTask ShowStartUpMenu();
     ValueTask AboutWindow();
+    ValueTask CheckForUpdates();
     ValueTask ConvertWindow();
     ValueTask KeybindingsWindow();
     ValueTask EffectsWindow();

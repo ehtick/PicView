@@ -213,6 +213,9 @@ public class MainWindowViewModel : IDisposable
 
     public ReactiveCommand SettingsWindowCommand { get; }
     private async ValueTask SettingsWindow(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.SettingsWindow(); }
+    
+    public ReactiveCommand CheckForUpdatesCommand { get; }
+    private async ValueTask CheckForUpdates(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.CheckForUpdates(); }
 
     #endregion
 
@@ -535,6 +538,7 @@ public class MainWindowViewModel : IDisposable
         // Windows & Dialogs
         ShowStartUpMenuCommand = new ReactiveCommand(ShowStartUpMenu);
         AboutWindowCommand = new ReactiveCommand(AboutWindow);
+        CheckForUpdatesCommand = new ReactiveCommand(CheckForUpdates);
         ConvertWindowCommand = new ReactiveCommand(ConvertWindow);
         KeybindingsWindowCommand = new ReactiveCommand(KeybindingsWindow);
         EffectsWindowCommand = new ReactiveCommand(EffectsWindow);

@@ -1,12 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Update;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.PlatformUpdate;
 using PicView.Core.Update;
 

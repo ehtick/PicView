@@ -1005,18 +1005,18 @@
                     </MenuItem>
 
                     <!--  Check for updates  -->
-                    <!--  <MenuItem  -->
-                    <!--  Command="{CompiledBinding CheckForUpdatesCommand}"  -->
-                    <!--  Header="{CompiledBinding Translation.CheckForUpdates.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  Theme="{StaticResource MainBg}">  -->
-                    <!--     <MenuItem.Icon> -->
-                    <!--  <Image  -->
-                    <!--  Height="12"  -->
-                    <!--  Source="{StaticResource DownloadImage}"  -->
-                    <!--  Width="12" />  -->
-                    <!--     </MenuItem.Icon> -->
-                    <!-- </MenuItem> -->
+                    <MenuItem
+                        Command="{CompiledBinding CheckForUpdatesCommand}"
+                        Header="{CompiledBinding Translation.CheckForUpdates.Value,
+                                                 Mode=OneWay}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Height="12"
+                                Source="{StaticResource DownloadImage}"
+                                Width="12" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
             <DockPanel>

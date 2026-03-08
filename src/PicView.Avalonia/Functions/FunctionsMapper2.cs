@@ -95,6 +95,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
 
             // Windows
             "AboutWindow" => AboutWindow,
+            "CheckForUpdates" => CheckForUpdates,
             "EffectsWindow" => EffectsWindow,
             "ImageInfoWindow" => ImageInfoWindow,
             "ResizeWindow" => ResizeWindow,
@@ -541,6 +542,16 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
 
     public async ValueTask AboutWindow() =>
         await Dispatcher.UIThread.InvokeAsync(() => vm?.PlatformWindowService?.ShowAboutWindow());
+    public async ValueTask CheckForUpdates()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => vm.PlatformWindowService?.ShowAboutWindow());
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        await core.AboutView.UpdateCurrentVersion();
+    }
 
     public async ValueTask ConvertWindow() =>
         await Dispatcher.UIThread.InvokeAsync(() => vm?.PlatformWindowService?.ShowConvertWindow());
