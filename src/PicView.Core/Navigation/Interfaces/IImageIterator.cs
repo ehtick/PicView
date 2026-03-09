@@ -2,10 +2,6 @@ namespace PicView.Core.Navigation.Interfaces;
 
 /// <summary>
 /// Defines the contract for navigating a collection of files within a specific context (Tab).
-/// <para>
-/// This interface manages the file list and the "Current Index" cursor. It determines 
-/// logic for looping, skipping (next/previous), and resolving the next target index.
-/// </para>
 /// </summary>
 public interface IImageIterator : IDisposable
 {
@@ -39,12 +35,13 @@ public interface IImageIterator : IDisposable
 
     /// <summary>
     /// Calculates the next index based on navigation direction and skip modifiers.
+    /// Note: This method updates the <see cref="IsReversed"/> property.
     /// </summary>
     /// <returns>The calculated target index.</returns>
     int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount);
 
     /// <summary>
-    /// Moves the iterator to the specified index and triggers the loading of that image.
+    /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.
     /// </summary>
     ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
 
@@ -56,10 +53,17 @@ public interface IImageIterator : IDisposable
     ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct);
 
     /// <summary>
-    /// Handles continuous navigation (e.g., holding down a key).
+    /// Handles continuous navigation (e.g., holding down a key) at a set interval.
     /// </summary>
     ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);
+    
+    /// <summary>
+    /// Stops the continuous navigation started by <see cref="RepeatNavigateAsync"/>.
+    /// </summary>
     void StopRepeatedNavigation();
 
+    /// <summary>
+    /// Updates the forward/backward navigation permissions based on the current index and list bounds.
+    /// </summary>
     void UpdateNavigationProperties();
 }

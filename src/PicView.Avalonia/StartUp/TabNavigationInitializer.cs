@@ -127,8 +127,13 @@ public static class TabNavigationInitializer
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Model.FileInfo, UIHelper2.GetFrameProvider)
                     .Subscribe(file =>
                     {
+                        if (tabViewModel.Model.Image is null || tabViewModel.Model.PixelHeight is 0 || tabViewModel.Model.PixelWidth is 0)
+                        {
+                            return;
+                        }
+                        
                         // Update title to reflect file changes
-                        if (file is null)
+                        if (file is null || file.Length is 0)
                         {
                             var noImage = TranslationManager.Translation?.NoImage;
                             if (string.IsNullOrEmpty(noImage))

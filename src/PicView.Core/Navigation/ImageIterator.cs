@@ -7,20 +7,23 @@ namespace PicView.Core.Navigation;
 
 public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, TabViewModel tab) : IImageIterator
 {
+    #region Dependencies & Properties
+
     public IImageCache Cache { get; } = cache ?? throw new ArgumentNullException(nameof(cache));
     public string? CurrentDirectory => Files.Count > 0 ? Files[0].DirectoryName : null;
+    
     private readonly IThumbnailCache _thumbCache = thumbCache ?? throw new ArgumentNullException(nameof(thumbCache));
     private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
-
-    private readonly IThumbnailLoader _thumbnailLoader =
-        thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
-
+    private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
     private System.Timers.Timer? _timer;
 
     public IReadOnlyList<FileInfo> Files { get; set; } = [];
-
     public int CurrentIndex { get; private set; } = -1;
     public bool IsReversed { get; private set; }
+
+    #endregion
+
+    #region Initialization & Property Updates
 
     public void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0)
     {
@@ -49,23 +52,104 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         _tab.MaxIndex.Value = count;
     }
 
-    /// <summary>
-    /// Initiates the <see cref="IterateToIndexAsync"/> in a timer delay, intended for repeated navigation based on the specified direction and interval.
-    /// The navigation should continue until key is released, by calling the <see cref="StopRepeatedNavigation"/> or the cancellation token is triggered.
-    /// </summary>
-    /// <param name="to">The target direction or position for the navigation (e.g., Next, Previous, First, Last).</param>
-    /// <param name="repeatInterval">The time interval between each navigation cycle.</param>
-    /// <param name="ct">The cancellation token used to stop the navigation process.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    #endregion
+
+    #region Core Navigation Logic
+
+    public async ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct)
+    {
+        if (index < 0 || index >= Files.Count) return;
+
+        // Handle internal TIFF navigation
+        if (_tab.Model?.TiffNavigation is not null && ShouldNavigateTiffEntry(_tab.Model, IsReversed))
+        {
+            return;
+        }
+
+        CurrentIndex = index;
+        var targetFile = Files[CurrentIndex];
+
+        // Fetch from cache, or show a thumbnail while we wait
+        var (status, model) = GetCachedImageOrThumbnail(CurrentIndex, targetFile, ct);
+        
+        await HandleCacheStatusAsync(status, model, index, ct).ConfigureAwait(false);
+    }
+
+    public async ValueTask SkipToIndexAsync(int index, CancellationTokenSource ct)
+    {
+        if (index < 0 || index >= Files.Count) return;
+
+        var file = Files[index];
+
+        if (!Cache.TryGet(file, out var preLoadValue) || preLoadValue?.ImageModel?.Image == null)
+        {
+            Cache.Clear(_tab.Id);
+        }
+
+        await IterateToIndexAsync(index, ct).ConfigureAwait(false);
+    }
+
+    public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
+    {
+        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, skipAmount);
+        await SkipToIndexAsync(iteration, ct).ConfigureAwait(false);
+    }
+
+    public void SetCurrentIndex(int index)
+    {
+        CurrentIndex = index;
+        UpdateNavigationProperties();
+    }
+
+    public int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount)
+    {
+        var skip = skipAmount switch
+        {
+            SkipAmount.One => 1,
+            SkipAmount.Two => 2,
+            SkipAmount.Ten => 10,
+            SkipAmount.Hundred => 100,
+            _ => throw new ArgumentOutOfRangeException(nameof(skipAmount), skipAmount, null)
+        };
+
+        switch (navigation)
+        {
+            case NavigateTo.Next:
+            case NavigateTo.Previous:
+                var indexChange = navigation == NavigateTo.Next ? skip : -skip;
+                IsReversed = navigation == NavigateTo.Previous;
+
+                if (Settings.UIProperties.Looping)
+                {
+                    return (index + indexChange + Files.Count) % Files.Count;
+                }
+                
+                var newIndex = index + indexChange;
+                return Math.Clamp(newIndex, 0, Files.Count - 1);
+
+            case NavigateTo.First:
+                return 0;
+
+            case NavigateTo.Last:
+                return Files.Count - 1;
+
+            default:
+#if DEBUG
+                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIteration), $"{navigation} is not a valid NavigateTo value.");
+#endif
+                return -1;
+        }
+    }
+
+    #endregion
+
+    #region Repeated Navigation (Timer)
+
     public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
     {
         if (_timer is null)
         {
-            _timer = new System.Timers.Timer
-            {
-                AutoReset = false,
-                Enabled = true
-            };
+            _timer = new System.Timers.Timer { AutoReset = false, Enabled = true };
         }
         else if (_timer.Enabled)
         {
@@ -86,207 +170,111 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         _timer = null;
     }
 
+    #endregion
+
+    #region Cache & Thumbnail Loading
+
     /// <summary>
-    /// Navigates to the specified index within the collection of files and manages image caching, TIFF navigation, and updates the model.
-    /// Ensures that navigation actions like loading, preloading, or skipping are handled depending on the cache state and cancellation state.
+    /// Checks the cache for the full image. If it's not ready, it attempts to load and return a thumbnail as a fallback.
     /// </summary>
-    /// <param name="index">The target index of the file to navigate to in the collection.</param>
-    /// <param name="ct">The cancellation token source used to cancel the navigation process if needed.</param>
-    /// <returns>A task representing the asynchronous operation of navigating to the specified index.</returns>
-    public async ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct)
+    private (CacheStatus Status, ImageModel? Model) GetCachedImageOrThumbnail(int index, FileInfo file, CancellationTokenSource ct)
     {
-        if (index < 0 || index >= Files.Count)
+        if (!Cache.TryGet(file, out var preLoadValue) || preLoadValue is null)
         {
-            return;
+            return LoadThumbnailInternal(index, file, ct, CacheStatus.NotInCache);
         }
 
-        // Handle internal TIFF navigation
-        var currentModel = _tab.Model;
-
-        if (tab.Model?.TiffNavigation is not null)
+        if (preLoadValue is { IsLoading: true, ImageModel.Image: null })
         {
-            var isTiffNavigated = ShouldNavigateTiffEntry(currentModel, IsReversed);
-            if (isTiffNavigated)
-            {
-                return;
-            }
+            return LoadThumbnailInternal(index, file, ct, CacheStatus.IsLoadingInCache);
         }
 
-        CurrentIndex = index;
-        var targetFile = Files[CurrentIndex];
+        return (CacheStatus.IsInCache, preLoadValue.ImageModel);
+    }
 
-        var (status, model) = TryLoadFromCache(CurrentIndex, targetFile, ct);
+    private (CacheStatus Status, ImageModel? Model) LoadThumbnailInternal(int index, FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
+    {
+        if (_thumbCache.TryGet(file.FullName, out var cachedThumb))
+        {
+            return (statusToReturn, new ImageModel { Image = cachedThumb, FileInfo = file });
+        }
+        
+        var thumb = _thumbnailLoader.GetExifThumbnail(file);
+
+        if (ct.IsCancellationRequested || CurrentIndex != index)
+        {
+            DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetCachedImageOrThumbnail), "Cancelled");
+            return (CacheStatus.Cancelled, null);
+        }
+
+        return (statusToReturn, new ImageModel { Image = thumb, FileInfo = file });
+    }
+
+    private async ValueTask HandleCacheStatusAsync(CacheStatus status, ImageModel? model, int targetIndex, CancellationTokenSource ct)
+    {
         switch (status)
         {
             case CacheStatus.Cancelled:
-                Preload();
+                TriggerPreload();
                 break;
+                
             case CacheStatus.IsInCache:
-                if (model is null)
-                {
-                    goto case CacheStatus.NotInCache;
-                }
-                await Update(model);
+                if (model is not null) await UpdateModelAsync(model, ct).ConfigureAwait(false);
                 break;
+                
             case CacheStatus.IsLoadingInCache:
-                var successFullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
-                if (!successFullyLoaded)
+                var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, targetIndex).ConfigureAwait(false);
+                if (successfullyLoaded && targetIndex == CurrentIndex && model is not null)
                 {
-                    goto case CacheStatus.NotInCache;
+                    await UpdateModelAsync(model, ct).ConfigureAwait(false);
                 }
-                if (index != CurrentIndex || model is null)
-                {
-                    // User skipped
-                    return;
-                }
-                await Update(model);
                 break;
+                
             case CacheStatus.NotInCache:
-                var manuallyLoaded = await LoadManuallyAsync(CurrentIndex, ct).ConfigureAwait(false);
-                if (index != CurrentIndex || manuallyLoaded is null)
+                var manuallyLoaded = await Cache.LoadAsync(_tab.Id, targetIndex, Files, ct.Token).ConfigureAwait(false);
+                if (targetIndex == CurrentIndex && manuallyLoaded is not null)
                 {
-                    // User skipped
-                    return;
+                    await UpdateModelAsync(manuallyLoaded, ct).ConfigureAwait(false);
                 }
-                await Update(manuallyLoaded);
                 break;
-
-            default: return;
-        }
-        
-        return;
-
-        void Preload()
-        {
-            Cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
-        }
-
-        async ValueTask Update(ImageModel newModel)
-        {
-            _tab.Model = newModel;
-            
-            // Load Secondary Image (if Side-by-Side)
-            if (Settings.ImageScaling.ShowImageSideBySide)
-            {
-                var nextIndex = CurrentIndex + 1;
-                if (nextIndex < Files.Count)
-                {
-                    var loadedModel = await LoadManuallyAsync(nextIndex, ct).ConfigureAwait(false);
-                    if (loadedModel is null)
-                    {
-                        Preload();
-                        return;
-                    }
-
-                    _tab.SecondaryModel = loadedModel;
-                }
-                else
-                {
-                    _tab.SecondaryModel = null;
-                }
-            }
-            else
-            {
-                _tab.SecondaryModel = null;
-            }
-            
-            UpdateNavigationProperties();
-            Preload();
         }
     }
 
-    public async ValueTask SkipToIndexAsync(int index, CancellationTokenSource ct)
+    private async ValueTask UpdateModelAsync(ImageModel newModel, CancellationTokenSource ct)
     {
-        if (index < 0 || index >= Files.Count)
+        _tab.Model = newModel;
+            
+        // Load Secondary Image (if Side-by-Side is enabled)
+        if (Settings.ImageScaling.ShowImageSideBySide && CurrentIndex + 1 < Files.Count)
         {
-            return;
-        }
+            var nextIndex = CurrentIndex + 1;
+            var loadedModel = await Cache.LoadAsync(_tab.Id, nextIndex, Files, ct.Token).ConfigureAwait(false);
+            
+            if (loadedModel is null)
+            {
+                TriggerPreload();
+                return;
+            }
 
-        var file = Files[index];
-
-        if (Cache.TryGet(file, out var preLoadValue) && preLoadValue?.ImageModel?.Image != null)
-        {
-            await IterateToIndexAsync(index, ct).ConfigureAwait(false);
+            _tab.SecondaryModel = loadedModel;
         }
         else
         {
-            Cache.Clear(_tab.Id);
-            await IterateToIndexAsync(index, ct).ConfigureAwait(false);
+            _tab.SecondaryModel = null;
         }
-    }
-
-    public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
-    {
-        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, skipAmount);
-        await SkipToIndexAsync(iteration, ct).ConfigureAwait(false);
-    }
-
-    public void SetCurrentIndex(int index)
-    {
-        CurrentIndex = index;
+            
         UpdateNavigationProperties();
+        TriggerPreload();
     }
 
-    public int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount)
+    private void TriggerPreload()
     {
-        int next;
-        var skip = skipAmount switch
-        {
-            SkipAmount.One => 1,
-            SkipAmount.Two => 2,
-            SkipAmount.Ten => 10,
-            SkipAmount.Hundred => 100,
-            _ => throw new ArgumentOutOfRangeException(nameof(skipAmount), skipAmount, null)
-        };
-
-        switch (navigation)
-        {
-            case NavigateTo.Next:
-            case NavigateTo.Previous:
-                var indexChange = navigation == NavigateTo.Next ? skip : -skip;
-                IsReversed = navigation == NavigateTo.Previous;
-
-                if (Settings.UIProperties.Looping)
-                {
-                    // Calculate new index with looping
-                    next = (index + indexChange + Files.Count) % Files.Count;
-                }
-                else
-                {
-                    // Calculate new index without looping and ensure bounds
-                    var newIndex = index + indexChange;
-                    if (newIndex < 0)
-                    {
-                        return 0;
-                    }
-
-                    if (newIndex >= Files.Count)
-                    {
-                        return Files.Count - 1;
-                    }
-
-                    next = newIndex;
-                }
-
-                break;
-
-            case NavigateTo.First:
-            case NavigateTo.Last:
-                next = navigation == NavigateTo.First ? 0 : Files.Count - 1;
-                break;
-
-            default:
-#if DEBUG
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIteration),
-                    $"{navigation} is not a valid NavigateTo value.");
-#endif
-                return -1;
-        }
-
-        return next;
+        Cache.Preload(_tab.Id, CurrentIndex, IsReversed, Files, _tab.GetTabCancellation().Token);
     }
-    
-    #region Private Helpers
+
+    #endregion
+
+    #region TIFF Handling & Helpers
     
     private static bool ShouldNavigateTiffEntry(ImageModel model, bool isPrevious)
     {
@@ -326,55 +314,9 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         }
     }
 
-    private (CacheStatus Status, ImageModel? Model) TryLoadFromCache(int index, FileInfo file,
-        CancellationTokenSource ct)
-    {
-        // Check if the item is in the cache
-        if (!Cache.TryGet(file, out var preLoadValue) || preLoadValue is null)
-        {
-            return LoadThumbnailInternal(index, file, ct, CacheStatus.NotInCache);
-        }
-
-        // Show thumb while loading
-        if (preLoadValue is { IsLoading: true, ImageModel.Image: null })
-        {
-            return LoadThumbnailInternal(index, file, ct, CacheStatus.IsLoadingInCache);
-        }
-
-        // If we have the full image, show it and return
-        return (CacheStatus.IsInCache, preLoadValue.ImageModel);
-    }
-
-    /// <summary>
-    /// Loads and displays a thumbnail for immediate feedback, then returns the status needed for the next step.
-    /// </summary>
-    private (CacheStatus Status, ImageModel? Model) LoadThumbnailInternal(int index,
-        FileInfo file, CancellationTokenSource ct, CacheStatus statusToReturn)
-    {
-        if (_thumbCache.TryGet(file.FullName, out var cachedThumb))
-        {
-            return (statusToReturn, new ImageModel {Image = cachedThumb, FileInfo = file});
-        }
-        
-        var thumb = _thumbnailLoader.GetExifThumbnail(file);
-
-        // Check for cancellation or navigation change before updating UI
-        if (ct.IsCancellationRequested || CurrentIndex != index)
-        {
-            DebugHelper.LogDebug(nameof(ImageIterator), nameof(TryLoadFromCache), "Cancelled");
-            return (CacheStatus.Cancelled, null);
-        }
-
-        var model = new ImageModel { Image = thumb, FileInfo = file };
-        return (statusToReturn, model);
-    }
-
-    private async ValueTask<ImageModel?> LoadManuallyAsync(int index, CancellationTokenSource ct) =>
-        await Cache.LoadAsync(_tab.Id, index, Files, ct.Token).ConfigureAwait(false);
-
     #endregion
 
-    #region IDispose
+    #region IDisposable
 
     public void Dispose()
     {

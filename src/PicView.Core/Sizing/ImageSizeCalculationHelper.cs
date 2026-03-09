@@ -79,7 +79,7 @@ public static class ImageSizeCalculationHelper
         {
             (displayedWidth, displayedHeight, scrollWidth, scrollHeight) = CalculateScrolledImageSize(
                 isFullscreen, autoFit, screenSize, imageWidth, imageHeight, aspectRatio,
-                adjustedContainerWidth, adjustedContainerHeight, containerHeight, margin, dpiScaling
+                adjustedContainerWidth, containerHeight, margin
             );
         }
         else
@@ -186,7 +186,7 @@ public static class ImageSizeCalculationHelper
 
     private static (double width, double height, double scrollWidth, double scrollHeight) CalculateScrolledImageSize(
         bool fullscreen, bool autoFit, ScreenSize screenSize, double width, double height, double aspectRatio,
-        double containerWidth, double containerHeight, double origContainerHeight, double margin, double dpiScaling)
+        double containerWidth, double origContainerHeight, double margin)
     {
         if (fullscreen)
         {
