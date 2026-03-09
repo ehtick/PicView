@@ -621,8 +621,19 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm) : IFunctio
     /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public async ValueTask OpenLastFile()
     {
-        // await NavigationManager.LoadLastFileAsync(vm).ConfigureAwait(false);
-        return;
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadLastFileAsync())
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
     }
 
     /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />

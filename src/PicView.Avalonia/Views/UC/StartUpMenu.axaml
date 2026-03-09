@@ -72,7 +72,7 @@
                 </StackPanel>
             </Button>
 
-            <Button x:Name="OpenLastFileButton">
+            <Button Command="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).OpenLastFileCommand}" x:Name="OpenLastFileButton">
                 <StackPanel Height="30" Orientation="Horizontal">
                     <Image Height="20.091">
                         <Image.Source>

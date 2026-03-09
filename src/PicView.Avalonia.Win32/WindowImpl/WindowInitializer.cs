@@ -244,7 +244,6 @@ public class WindowInitializer : IPlatformSpecificUpdate, PicView.Core.IPlatform
 
         if (_settingsWindow is null)
         {
-            // vm.AssociationsViewModel ??= new FileAssociationsViewModel();
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 _settingsWindow = new SettingsWindow(core.SettingsViewModel.SettingsWindowConfig)

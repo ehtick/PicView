@@ -325,6 +325,24 @@ public class TabOverviewViewModel
     {
         await LoadFromFileAsync(new FileInfo(file), senderTab).ConfigureAwait(false);
     }
+    
+    public async ValueTask<bool> LoadLastFileAsync()
+    {
+        if (SharedNavigation is null)
+        {
+            return false;
+        }
+        var tab = ActiveTab.Value;
+        var ct = tab.GetTabCancellation();
+        var lastFileExists = await SharedNavigation.LoadLastFileAsync(tab, ct).ConfigureAwait(false);
+        if (lastFileExists)
+        {
+            CanActiveTabNavigate.Value = tab.ImageIterator?.Files?.Count > 1;
+            return true;
+        }
+        CanActiveTabNavigate.Value = false;
+        return false;
+    }
     #endregion
 
     #region Sort
@@ -378,4 +396,6 @@ public class TabOverviewViewModel
     
 
     #endregion
+
+
 }

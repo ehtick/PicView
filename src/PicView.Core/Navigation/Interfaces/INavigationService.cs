@@ -26,4 +26,6 @@ public interface INavigationService
     /// updates the current index to maintain the current image, and resynchronizes the cache.
     /// </summary>
     ValueTask SortAsync(TabViewModel tab, bool ascending, CancellationTokenSource ct);
+
+    ValueTask<bool> LoadLastFileAsync(TabViewModel tab, CancellationTokenSource ct);
 }

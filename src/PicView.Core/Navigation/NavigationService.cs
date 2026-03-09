@@ -1,6 +1,7 @@
 using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling.Interfaces;
+using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
 using PicView.Core.Http;
@@ -230,6 +231,22 @@ public class NavigationService(
             return;
         }
         await iterator.NavigateByIncrementsAsync(skipAmount,forwards, ct).ConfigureAwait(false);
+    }
+    
+    public async ValueTask<bool> LoadLastFileAsync(TabViewModel tab, CancellationTokenSource ct)
+    {
+        var lastFile = Settings.StartUp.LastFile;
+        var lastEntry = FileHistoryManager.GetLastEntry();
+
+        // determine which file source to use (prioritize LastFile, fallback to History)
+        var fileToLoad = !string.IsNullOrEmpty(lastFile) ? lastFile : lastEntry;
+        if (string.IsNullOrEmpty(lastEntry))
+        {
+            return false;
+        }
+
+        await LoadFromStringAsync(fileToLoad, tab, ct).ConfigureAwait(false);
+        return true;
     }
 
     public bool CanNavigate(TabViewModel tab) => tab?.ImageIterator?.Files?.Count > 0;
