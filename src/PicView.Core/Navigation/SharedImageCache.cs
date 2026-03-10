@@ -20,6 +20,9 @@ public class SharedImageCache : IImageCache
     
     // Fast lookup by file path (using OS-specific string comparer)
     private readonly ConcurrentDictionary<string, PreLoadValue> _pathLookup;
+    // Lazy disposal list: FilePath -> (PreLoadValue, ExpirationTime)
+    private readonly ConcurrentDictionary<string, (PreLoadValue Item, DateTime Expiration)> _disposalList;
+
     
     // Keep track of which directories and file lists each owner has for transfer logic
     private readonly ConcurrentDictionary<string, (string Directory, IReadOnlyList<FileInfo> Files, int CurrentIndex)> _ownerContexts = new();
@@ -40,6 +43,8 @@ public class SharedImageCache : IImageCache
             : StringComparer.Ordinal;
             
         _pathLookup = new ConcurrentDictionary<string, PreLoadValue>(pathComparer);
+        _disposalList = new ConcurrentDictionary<string, (PreLoadValue, DateTime)>(pathComparer);
+
         _preLoader = new Preloader2(imageLoader, this);
     }
     
@@ -59,8 +64,14 @@ public class SharedImageCache : IImageCache
         _ownerContexts.TryRemove(ownerId, out _);
     }
 
-    public bool TryGet(FileInfo f, out PreLoadValue? value) =>
-        _pathLookup.TryGetValue(f.FullName, out value);
+    public bool TryGet(FileInfo f, out PreLoadValue? value)
+    {
+        if (_pathLookup.TryGetValue(f.FullName, out value))
+        {
+            return true;
+        }
+        return TryResurrect(f.FullName, out value);
+    }
 
     public bool TryGet(string ownerId, int index, out PreLoadValue? value)
     {
@@ -75,7 +86,26 @@ public class SharedImageCache : IImageCache
     public bool TryGet(ReadOnlySpan<char> f, out PreLoadValue? value)
     {
         var lookup = _pathLookup.GetAlternateLookup<ReadOnlySpan<char>>();
-        return lookup.TryGetValue(f, out value);
+        if (lookup.TryGetValue(f, out value))
+        {
+            return true;
+        }
+        return TryResurrect(f.ToString(), out value);
+    }
+
+    private bool TryResurrect(string path, out PreLoadValue? value)
+    {
+        // Check if it's in the disposal list
+        if (_disposalList.TryRemove(path, out var pendingDisposal))
+        {
+            value = pendingDisposal.Item;
+            // Add it back to path lookup
+            _pathLookup.TryAdd(path, value);
+            return true;
+        }
+        
+        value = null;
+        return false;
     }
 
     public void Clear()
@@ -85,6 +115,12 @@ public class SharedImageCache : IImageCache
             dict.Clear();
         }
         _pathLookup.Clear();
+        
+        foreach (var kvp in _disposalList)
+        {
+            DisposeHelper(kvp.Value.Item);
+        }
+        _disposalList.Clear();
     }
 
     public void Clear(string ownerId)
@@ -141,7 +177,7 @@ public class SharedImageCache : IImageCache
         return evicted;
     }
 
-    private void CheckAndDisposeIfNotReferenced(PreLoadValue item)
+    internal void CheckAndDisposeIfNotReferenced(PreLoadValue item)
     {
         var isReferenced = false;
         foreach (var dict in _ownerDictionaries.Values)
@@ -164,8 +200,31 @@ public class SharedImageCache : IImageCache
             return;
         }
 
-        _pathLookup.TryRemove(item.ImageModel.FileInfo.FullName, out _);
-        DisposeHelper(item);
+        var path = item.ImageModel.FileInfo.FullName;
+        _pathLookup.TryRemove(path, out _);
+        
+        // Add to disposal queue instead of immediately disposing
+        _disposalList.AddOrUpdate(path, 
+            (item, DateTime.UtcNow.AddMinutes(1)), 
+            (_, existing) => existing.Item == item ? (existing.Item, DateTime.UtcNow.AddMinutes(1)) : existing);
+            
+        // Process any expired items lazily
+        ProcessDisposalQueue();
+    }
+
+    private void ProcessDisposalQueue()
+    {
+        var now = DateTime.UtcNow;
+        foreach (var kvp in _disposalList)
+        {
+            if (now >= kvp.Value.Expiration)
+            {
+                if (_disposalList.TryRemove(kvp.Key, out var removed))
+                {
+                    DisposeHelper(removed.Item);
+                }
+            }
+        }
     }
 
     public void Preload(string ownerId, int currentIndex, bool reversed, IReadOnlyList<FileInfo> files, CancellationToken token) 

@@ -80,7 +80,7 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
             
         if (cache.TryAdd(ownerId, index, preloadValue, list.Count, isReverse, out var evicted) && cache is SharedImageCache shared)
         {
-            shared.DisposeHelper(evicted);
+            shared.CheckAndDisposeIfNotReferenced(evicted);
         }
         // Check cancel before IO
         if (ct.IsCancellationRequested)
@@ -98,7 +98,7 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
         var evicted = cache.TryAdd(ownerId, index, new PreLoadValue(model), list.Count, false, out var evictedValue);
         if (evicted && cache is SharedImageCache shared)
         {
-            shared.DisposeHelper(evictedValue);
+            shared.CheckAndDisposeIfNotReferenced(evictedValue!);
         }
     }
 
