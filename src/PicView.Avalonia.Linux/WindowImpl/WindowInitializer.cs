@@ -2,19 +2,16 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Input;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.Linux.PlatformUpdate;
 using PicView.Avalonia.Linux.Printing;
 using PicView.Avalonia.Linux.Views;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Services;
-using PicView.Core.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Update;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.Linux.WindowImpl;
@@ -27,9 +24,9 @@ public class WindowInitializer : IPlatformSpecificUpdate
     private EffectsWindow? _effectsWindow;
     private ImageInfoWindow? _imageInfoWindow;
     private KeybindingsWindow? _keybindingsWindow;
+    private PrintPreviewWindow? _printPreviewWindow;
     private SettingsWindow? _settingsWindow;
     private SingleImageResizeWindow? _singleImageResizeWindow;
-    private PrintPreviewWindow? _printPreviewWindow;
 
 
     public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
@@ -204,7 +201,8 @@ public class WindowInitializer : IPlatformSpecificUpdate
 
     public async ValueTask ShowSettingsWindow()
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop || Application.Current.DataContext is not CoreViewModel core)
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
@@ -214,7 +212,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
             core.SettingsViewModel = new SettingsViewModel();
             core.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
         }
-        
+
         if (core.SettingsViewModel.SettingsWindowConfig is null)
         {
             core.SettingsViewModel.SettingsWindowConfig = new SettingsWindowConfig();
@@ -231,7 +229,7 @@ public class WindowInitializer : IPlatformSpecificUpdate
                     DataContext = core,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-            
+
                 Show();
                 _settingsWindow.Closing += (_, _) => _settingsWindow = null;
             });
@@ -446,66 +444,61 @@ public class WindowInitializer : IPlatformSpecificUpdate
         //     _ = FunctionsMapper.CloseMenus();
         // }
     }
-    
-    public void ShowPrintPreviewWindow(string path)
+
+    public void ShowPrintPreviewWindow(string path, MainWindowViewModel vm)
     {
-        // if (Dispatcher.UIThread.CheckAccess())
-        // {
-        //     Set();
-        // }
-        // else
-        // {
-        //     Dispatcher.UIThread.InvokeAsync(Set);
-        // }
-        //
-        // return;
-        //
-        // void Set()
-        // {
-        //     if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        //     {
-        //         return;
-        //     }
-        //
-        //     if (_printPreviewWindow is null)
-        //     {
-        //         vm.PrintPreview = new PrintPreviewViewModel();
-        //
-        //         _printPreviewWindow = new PrintPreviewWindow
-        //         {
-        //             DataContext = vm,
-        //             WindowStartupLocation = WindowStartupLocation.CenterOwner
-        //         };
-        //
-        //         vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
-        //             {
-        //                 await _printPreviewWindow.RunPrintAsync(vm);
-        //             })
-        //             .AddTo(vm.PrintPreview.Disposables);
-        //
-        //         vm.PrintPreview.CancelCommand.SubscribeAwait(async (_, _) =>
-        //         {
-        //             await Dispatcher.UIThread.InvokeAsync(() => _printPreviewWindow?.Close());
-        //         }).AddTo(vm.PrintPreview.Disposables);
-        //
-        //         _printPreviewWindow.Show(desktop.MainWindow);
-        //         _printPreviewWindow.Closing += (_, _) => _printPreviewWindow = null;
-        //
-        //         Task.Run(() => LinuxPrintInitialization.Initialize(vm, path, _printPreviewWindow));
-        //     }
-        //     else
-        //     {
-        //         if (_printPreviewWindow.WindowState == WindowState.Minimized)
-        //         {
-        //             WindowFunctions.ShowMinimizedWindow(_printPreviewWindow);
-        //         }
-        //         else
-        //         {
-        //             _printPreviewWindow.Show();
-        //         }
-        //     }
-        //
-        //     _ = FunctionsMapper.CloseMenus();
-        // }
+        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+            desktop.MainWindow == null)
+        {
+            return;
+        }
+
+        if (!File.Exists(path))
+        {
+            return;
+        }
+
+        try
+        {
+            if (_printPreviewWindow is null)
+            {
+                vm.PrintPreview = new PrintPreviewViewModel();
+
+                _printPreviewWindow = new PrintPreviewWindow
+                {
+                    DataContext = vm
+                };
+
+                vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
+                {
+                    await _printPreviewWindow.RunPrintAsync(vm);
+                }).AddTo(vm.PrintPreview.Disposables);
+
+                vm.PrintPreview.CancelCommand.SubscribeAwait(async (_, _) =>
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() => _printPreviewWindow?.Close());
+                }).AddTo(vm.PrintPreview.Disposables);
+
+                _printPreviewWindow.Show(desktop.MainWindow);
+                _printPreviewWindow.Closing += (_, _) => _printPreviewWindow = null;
+
+                Task.Run(() => LinuxPrintInitialization.Initialize(vm, path, _printPreviewWindow));
+            }
+            else
+            {
+                if (_printPreviewWindow.WindowState == WindowState.Minimized)
+                {
+                    WindowFunctions.ShowMinimizedWindow(_printPreviewWindow);
+                }
+                else
+                {
+                    _printPreviewWindow.Show();
+                }
+            }
+        }
+        catch (Exception)
+        {
+            // Ignore
+        }
     }
 }

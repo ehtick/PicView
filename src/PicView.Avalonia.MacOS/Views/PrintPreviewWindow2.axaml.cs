@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using PicView.Avalonia.Linux.Printing;
+using PicView.Avalonia.MacOS.Printing;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.Main;
@@ -15,13 +15,13 @@ using PicView.Core.Printing;
 using PicView.Core.ViewModels;
 using R3;
 
-namespace PicView.Avalonia.Linux.Views;
+namespace PicView.Avalonia.MacOS.Views;
 
-public partial class PrintPreviewWindow : Window, IPrintWindow
+public partial class PrintPreviewWindow2 : Window, IPrintWindow
 {
     private const float PreviewDpi = 96f;
 
-    public PrintPreviewWindow()
+    public PrintPreviewWindow2()
     {
         InitializeComponent();
         GenericWindowHelper.GenericWindowInitialize(this,
@@ -106,8 +106,9 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             vm.GrayCache = null;
         }
         
+        var paper = MacPrintEngine.ResolvePaper(settings.PaperSize.Value, settings.Orientation.Value);
         PrintLayout? printLayout = null;
-        var paper = LinuxPrintEngine.ResolvePaper(settings.PaperSize.Value, settings.Orientation.Value);
+
         try
         {
             printLayout = PrintCore.ComputeLayout(
@@ -191,7 +192,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
 
         try
         {
-            await LinuxPrintEngine.RunPrintJob(settings, avaloniaBmp);
+            await MacPrintEngine.RunPrintJob(settings, avaloniaBmp);
             await Dispatcher.UIThread.InvokeAsync(Close);
         }
         catch (Exception ex)

@@ -7,6 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Win32.Printing;
 using PicView.Core.DebugTools;
@@ -15,10 +16,11 @@ using PicView.Core.Printing;
 using PicView.Core.ViewModels;
 using R3;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
+using PaperSize = System.Drawing.Printing.PaperSize;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class PrintPreviewWindow2 : Window
+public partial class PrintPreviewWindow2  : Window, IPrintWindow
 {
     private const float PreviewDpi = 96f;
 

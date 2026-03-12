@@ -100,7 +100,7 @@ public class App : Application, IPlatformSpecificService
 
     public void Print(string path)
     {
-        throw new NotImplementedException();
+        
     }
 
     public async Task SetAsWallpaper(string path, int wallpaperStyle)

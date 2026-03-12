@@ -7,7 +7,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Win32.Printing;
@@ -16,6 +15,7 @@ using PicView.Core.Localization;
 using PicView.Core.Printing;
 using PicView.Core.ViewModels;
 using R3;
+using PaperSize = System.Drawing.Printing.PaperSize;
 
 namespace PicView.Avalonia.Win32.Views;
 

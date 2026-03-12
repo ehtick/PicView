@@ -3,8 +3,8 @@
     ExtendClientAreaChromeHints="SystemChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     SizeToContent="WidthAndHeight"
-    Title="PrintPreviewWindow"
-    x:Class="PicView.Avalonia.Linux.Views.PrintPreviewWindow"
+    Title="PrintPreviewWindow2"
+    x:Class="PicView.Avalonia.MacOS.Views.PrintPreviewWindow2"
     x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
@@ -34,7 +34,7 @@
                 Margin="0,28,0,0"
                 Padding="10,5,5,10"
                 PointerPressed="MoveWindow"
-                x:Name="XPrintView" />
+                x:Name="PrintPreviewView" />
         </Panel>
     </Border>
 </Window>

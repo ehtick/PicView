@@ -48,4 +48,6 @@ public interface IPlatformWindowService
     Task ShowBatchResizeWindow();
 
     void ShowConvertWindow();
+    
+    void ShowPrintWindow(string path);
 }

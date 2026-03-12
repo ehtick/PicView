@@ -102,7 +102,6 @@
       <DependentUpon>MacMainWindow2.axaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Remove="Views\PrintPreviewWindow2.axaml.cs" />
   </ItemGroup>
 
 	<ItemGroup>

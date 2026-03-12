@@ -181,7 +181,7 @@ public class App : Application, IPlatformSpecificService
 
     public void Print(string path)
     {
-        //_windowInitializer?.ShowPrintPreviewWindow(null, path);
+        _mainWindow.ShowPrintWindow(path);
     }
 
     public async Task SetAsWallpaper(string path, int wallpaperStyle)
