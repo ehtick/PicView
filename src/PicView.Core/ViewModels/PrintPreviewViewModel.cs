@@ -48,7 +48,7 @@ public class PrintPreviewViewModel : IDisposable
 
     public BindableReactiveProperty<double> Zoom { get; } = new(1.0);
 
-    public BindableReactiveProperty<bool> IsProcessing { get; } = new(false);
+    public BindableReactiveProperty<bool> IsProcessing { get; } = new(true);
     public BindableReactiveProperty<double> Opacity { get; } = new(1.0);
 
     public object? GrayCache { get; set; }

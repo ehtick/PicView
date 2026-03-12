@@ -107,6 +107,7 @@ public partial class PrintPreviewWindow2 : Window, IPrintWindow
             .ThrottleLast(TimeSpan.FromMilliseconds(100))
             .Subscribe(_ => UpdatePreview(vm.PrintPreview))
             .AddTo(vm.PrintPreview.Disposables);
+        vm.PrintPreview.IsProcessing.Value = false;
     }
 
 
