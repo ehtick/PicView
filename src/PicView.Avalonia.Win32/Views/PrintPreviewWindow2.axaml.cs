@@ -280,4 +280,13 @@ public partial class PrintPreviewWindow2  : Window, IPrintWindow
             preview.IsProcessing.Value = false;
         }
     }
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        base.OnClosing(e);
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        vm.PrintPreview?.Dispose();
+    }
 }
