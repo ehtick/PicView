@@ -83,7 +83,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                 
                 // Wait for loading complete
                 var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
-                if (successfullyLoaded && index == CurrentIndex && preLoadValue.ImageModel is not null)
+                if (successfullyLoaded && index == CurrentIndex && preLoadValue.ImageModel.Image is not null)
                 {
                     await UpdateModelAsync(preLoadValue.ImageModel, ct).ConfigureAwait(false);
                 }
