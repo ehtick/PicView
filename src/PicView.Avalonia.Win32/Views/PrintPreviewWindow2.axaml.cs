@@ -4,12 +4,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Win32.Printing;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 using PicView.Core.Printing;
@@ -77,6 +79,13 @@ public partial class PrintPreviewWindow2 : Window, IPrintWindow
         
         vm.PrintPreview ??= new PrintPreviewViewModel();
 
+        ClientSizeProperty.Changed.ToObservable()
+            .ObserveOn(UIHelper2.GetFrameProvider)
+            .Subscribe(_ =>
+            {
+                WindowFunctions2.CenterWindowOnOwnerWindow(this, Owner as Window);
+            })
+            .AddTo(vm.PrintPreview.Disposables);
 
         // Initial render
         UpdatePreview(vm.PrintPreview);
