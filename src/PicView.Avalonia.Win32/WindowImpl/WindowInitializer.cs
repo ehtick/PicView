@@ -527,9 +527,9 @@ public class WindowInitializer : IPlatformSpecificUpdate, PicView.Core.IPlatform
                 _printPreviewWindow.Show(desktop.MainWindow);
                 _printPreviewWindow.Closing += (_, _) => _printPreviewWindow = null;
 
-                Task.Run(() =>
+                Task.Run(async () =>
                 {
-                    PrintInitialization2.Initialize(vm, path, _printPreviewWindow);
+                    await PrintInitialization2.InitializeAsync(vm, path, _printPreviewWindow);
                 });
             }
             else
