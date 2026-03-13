@@ -153,8 +153,25 @@ public class PicBox : Control, IDisposable
             return;
         }
 
-        var svgSource = SvgSource.LoadFromSvg(svg);
-        Source = new SvgImage { Source = svgSource };
+        SvgSource? svgSource = null;
+        try
+        {
+            svgSource = SvgSource.LoadFromSvg(svg);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(UpdateSvgSource), e);
+        }
+
+        if (svgSource is not null)
+        {
+            Source = new SvgImage { Source = svgSource };
+        }
+        else
+        {
+            Source = null;
+        }
+        
     }
 
     private void UpdateAnimatedSource()
@@ -211,7 +228,21 @@ public class PicBox : Control, IDisposable
 
     private void RenderSvgSource(DrawingContext context, string svg)
     {
-        var svgSource = SvgSource.LoadFromSvg(svg);
+        SvgSource? svgSource = null;
+        try
+        {
+            svgSource = SvgSource.LoadFromSvg(svg);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(RenderSvgSource), e);
+        }
+
+        if (svgSource is null)
+        {
+            return;
+        }
+        
         var svgImage = new SvgImage { Source = svgSource };
         RenderBasedOnSettings(context, svgImage);
     }
