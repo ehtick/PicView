@@ -23,20 +23,25 @@ public partial class ImageViewer2 : UserControl
 {
     private RotationTransformer? _imageTransformer;
     private CompositeDisposable? _disposables;
+    private MainWindowViewModel? _mainWindowViewModel;
     
     public ImageViewer2()
     {
         InitializeComponent();
         ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         Loaded += OnLoaded;
+        if (Application.Current.DataContext is CoreViewModel core)
+        {
+            _mainWindowViewModel = core.MainWindows.ActiveWindow.CurrentValue;
+        }
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         InitializeImageTransformer();
         AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
-        AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-        AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        AddHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        AddHandler(PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
     }
 
     public void TriggerScalingModeUpdate(bool invalidate) =>
@@ -57,13 +62,13 @@ public partial class ImageViewer2 : UserControl
             return;
         }
         
-        if (control.GetVisualRoot() is not Window { DataContext: MainWindowViewModel vm })
+        if (_mainWindowViewModel is null)
         {
             return;
         }
         await MouseShortcuts2.HandlePointerWheelChanged(
-            e, 
-            vm, 
+            e,
+            _mainWindowViewModel, 
             ImageScrollViewer,
             async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomIn(args)),
             async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomOut(args)));
@@ -155,8 +160,8 @@ public partial class ImageViewer2 : UserControl
     {
         base.OnDetachedFromLogicalTree(e);
         RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
-        RemoveHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
-        RemoveHandler(Gestures.PinchEvent, TouchMagnifyEvent);
+        RemoveHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
+        RemoveHandler(PinchEvent, TouchMagnifyEvent);
         _disposables?.Dispose();
     }
 

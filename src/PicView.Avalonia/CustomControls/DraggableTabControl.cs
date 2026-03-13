@@ -775,7 +775,7 @@ public class DraggableTabControl : TabControl
 
         _ghostWindow = new Window
         {
-            SystemDecorations = isMacOs ? SystemDecorations.BorderOnly : SystemDecorations.None,
+            WindowDecorations = isMacOs ? WindowDecorations.BorderOnly : WindowDecorations.None,
             CornerRadius = cornerRadius,
             ShowInTaskbar = false,
             Topmost = true,

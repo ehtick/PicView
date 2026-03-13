@@ -19,7 +19,7 @@
 
     <Window.Styles>
         <Style Selector="Window[WindowState=Maximized]">
-            <Setter Property="SystemDecorations" Value="None" />
+            <Setter Property="WindowDecorations" Value="None" />
             <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
         </Style>
     </Window.Styles>

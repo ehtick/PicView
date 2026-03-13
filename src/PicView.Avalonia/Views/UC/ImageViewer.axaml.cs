@@ -35,8 +35,8 @@ public partial class ImageViewer : UserControl
         Dispatcher.UIThread.Invoke(() =>
         {
             AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
-            AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+            AddHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+            AddHandler(PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
             InitializeMouseInputHelper();
         }, DispatcherPriority.Background);
     }
