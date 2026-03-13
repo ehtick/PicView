@@ -1,7 +1,6 @@
 <Window
     BorderBrush="{StaticResource MainBorderColor}"
     BorderThickness="1"
-    ExtendClientAreaChromeHints="NoChrome"
     ExtendClientAreaTitleBarHeightHint="-1"
     Height="320"
     MinHeight="320"
