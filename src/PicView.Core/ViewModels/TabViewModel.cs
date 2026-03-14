@@ -6,6 +6,7 @@ using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.Titles;
+using PicView.Core.FileHistory;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -54,6 +55,11 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     /// Should be used when changing directory or closing the tab
     /// </summary>
     private CancellationTokenSource NavigationCts { get; set; } = new();
+
+    /// <summary>
+    /// Subject used to debounce adding files to the global file history.
+    /// </summary>
+    public Subject<string> FileHistorySubject { get; } = new();
     
     /// <summary>
     /// The main title displayed in the window title bar.
@@ -138,6 +144,11 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
             ThumbnailCache = thumbnailCache;
         }
         ImageIterator = new ImageIterator(cache, thumbCache, thumbnailLoader, this);
+        
+        FileHistorySubject
+            .Debounce(TimeSpan.FromSeconds(.75))
+            .Subscribe(FileHistoryManager.Add)
+            .AddTo(Disposables);
     }
 
     public void InitializeImageIterator(IReadOnlyList<FileInfo> files, IImageCache cache, IThumbnailCache thumbCache,  IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
@@ -155,6 +166,11 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
 
+        FileHistorySubject
+            .Debounce(TimeSpan.FromSeconds(.75))
+            .Subscribe(FileHistoryManager.Add)
+            .AddTo(Disposables);
+
         if (index > -1 && index < files.Count)
         {
             cache.TryAdd(Id, index, new PreLoadValue(Model), files.Count, false, out _);
@@ -163,7 +179,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         var directory = files.Count > 0 ? files[0].DirectoryName : null;
         _fileWatcherService?.Watch(this, directory);
     }
-    
+
     public async ValueTask Next()
     {
         if (!CanNavigateForwards.CurrentValue)
@@ -209,6 +225,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     {
         _fileWatcherService?.Unwatch(this);
         ThumbnailCache?.RemoveOwner(Id);
+        FileHistorySubject.Dispose();
         
         if (ImageIterator != null)
         {

@@ -73,7 +73,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             if (preLoadValue is { IsLoading: false, ImageModel.Image: not null })
             {
                 // Is in cache
-                await NavigateNextModelAsync();
+                await NavigateNextModelAsync(preLoadValue.ImageModel);
             }
             else
             {
@@ -85,7 +85,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
                 var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
                 if (successfullyLoaded && index == CurrentIndex && preLoadValue.ImageModel.Image is not null)
                 {
-                    await NavigateNextModelAsync();
+                    await NavigateNextModelAsync(preLoadValue.ImageModel);
                 }
                 else
                 {
@@ -99,7 +99,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             var manuallyLoaded = await Cache.LoadAsync(_tab.Id, index, Files, ct.Token).ConfigureAwait(false);
             if (index == CurrentIndex && manuallyLoaded is not null)
             {
-                await UpdateModelAsync(manuallyLoaded, ct).ConfigureAwait(false);
+                await NavigateNextModelAsync(manuallyLoaded);
             }
             else
             {
@@ -109,10 +109,12 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         
         return;
 
-        async ValueTask NavigateNextModelAsync()
+        async ValueTask NavigateNextModelAsync(ImageModel model)
         {
-            await UpdateModelAsync(preLoadValue.ImageModel, ct).ConfigureAwait(false);
-            // TODO: Add to file history
+            await UpdateModelAsync(model, ct).ConfigureAwait(false);
+
+            // Update the file history
+            _tab.FileHistorySubject.OnNext(targetFile.FullName);
         }
     }
 

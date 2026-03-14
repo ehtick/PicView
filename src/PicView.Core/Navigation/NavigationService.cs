@@ -185,6 +185,7 @@ public class NavigationService(
             tab.WindowTitle.Value = safeFileName;
             tab.TitleTooltip.Value = destPath;
 
+            FileHistoryManager.Add(url);
         }
         catch (Exception e)
         {
