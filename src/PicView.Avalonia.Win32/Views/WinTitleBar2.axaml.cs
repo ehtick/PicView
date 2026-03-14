@@ -128,6 +128,9 @@ public partial class WinTitleBar2 : UserControl
             return;
         }
 
-        WindowFunctions2.WindowDragAndDoubleClickBehavior((Window)VisualRoot, e, vm.PlatformWindowService);
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            WindowFunctions2.WindowDragAndDoubleClickBehavior(window, e, vm.PlatformWindowService);
+        }
     }
 }

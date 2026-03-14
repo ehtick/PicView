@@ -70,11 +70,11 @@ public static class FileManager2
     /// </summary>
     public static void ShowFileProperties(string path)
     {
-        if (Application.Current.DataContext is not CoreViewModel core)
+        CoreViewModel? core = Dispatcher.UIThread.Invoke(() => Application.Current.DataContext as CoreViewModel);
+        if (core is null)
         {
             return;
         }
-
         try
         {
             core.PlatformService.ShowFileProperties(path);

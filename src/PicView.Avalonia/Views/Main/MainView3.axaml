@@ -1022,7 +1022,7 @@
                                     FontSize="12"
                                     Text="{CompiledBinding TabTitle.Value,
                                                            Mode=OneWay}" />
-                                <Image
+                                <customControls:ThumbImage
                                     HorizontalAlignment="Center"
                                     DockPanel.Dock="Bottom"
                                     Source="{CompiledBinding Image.Value,

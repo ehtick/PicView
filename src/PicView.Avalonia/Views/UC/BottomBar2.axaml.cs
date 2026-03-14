@@ -154,12 +154,13 @@ public partial class BottomBar2 : UserControl
 
         if (e.GetCurrentPoint(this).Properties.IsRightButtonPressed)
         {
-            // Context menu doesn't want to be opened normally
-            //MainContextMenu.Open();
             return;
         }
 
-        WindowFunctions.WindowDragBehavior((Window)VisualRoot, e);
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            WindowFunctions.WindowDragBehavior(window, e);
+        }
     }
     
     private void OpenRotationContextMenu(PointerPressedEventArgs e)
