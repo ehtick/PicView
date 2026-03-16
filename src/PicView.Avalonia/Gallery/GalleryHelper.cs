@@ -1,6 +1,10 @@
 ﻿using Avalonia.Media;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Gallery;
 
@@ -48,5 +52,21 @@ public static class GalleryHelper
                 GalleryStretchMode.ChangeBottomGalleryItemStretch(vm, stretch);
             }
         }
+    }
+    
+    public static double GetGalleryHeight(GallerySharedSettingsViewModel gallery, MainWindowViewModel main)
+    {
+        if (!Settings.Gallery.IsGalleryDocked || Slideshow.IsRunning)
+        {
+            return 0;
+        }
+        if (!Settings.Gallery.ShowBottomGalleryInHiddenUI && !main.IsUIShown.CurrentValue)
+        {
+            return 0;
+        }
+
+        return Settings.Gallery.IsGalleryDocked
+            ? gallery.DockedGalleryItemSize.CurrentValue + (SizeDefaults.ScrollbarSize - 1)
+            : 0;
     }
 }

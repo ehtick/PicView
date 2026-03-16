@@ -5,6 +5,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
 using PicView.Core.DebugTools;
 using PicView.Core.Sizing;
@@ -217,11 +218,11 @@ public static class WindowResizing2
         var screenSize = ScreenHelper.ScreenSize;
         var (containerWidth, containerHeight) = GetContainerSize();
 
-        if (double.IsNaN(width) || double.IsNaN(height))
+        if (double.IsNaN(width) || double.IsNaN(height) || Application.Current.DataContext is not CoreViewModel core)
         {
             return null;
         }
-        
+        var galleryHeight = GalleryHelper.GetGalleryHeight(core.GallerySettings, vm);
         ImageSize2 size;
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
@@ -238,7 +239,7 @@ public static class WindowResizing2
                 screenSize.Scaling,
                 vm.TitlebarHeight.CurrentValue,
                 vm.BottombarHeight.CurrentValue,
-                0,
+                galleryHeight,
                 containerWidth,
                 containerHeight);
         }
@@ -255,7 +256,7 @@ public static class WindowResizing2
                 screenSize.Scaling,
                 vm.TitlebarHeight.CurrentValue,
                 vm.BottombarHeight.CurrentValue,
-                0,
+                galleryHeight,
                 containerWidth,
                 containerHeight);
         }
