@@ -2,17 +2,10 @@ namespace PicView.Core.Sizing;
 
 public static class ImageSizeCalculationHelper2
 {
-    private const int MinTitleWidth = 250;
-    private const int MaxRotationAngle = 360;
-    private const int MinRotationAngle = 0;
-
     public static ImageSize2 GetImageSize(
         double imageWidth,
         double imageHeight,
         ScreenSize screenSize,
-        double minWidth,
-        double minHeight,
-        double interfaceSize,
         double rotationAngle,
         double dpiScaling,
         double uiTopSize,
@@ -21,9 +14,9 @@ public static class ImageSizeCalculationHelper2
         double containerWidth,
         double containerHeight)
     {
-        if (imageWidth <= 0 || imageHeight <= 0 || rotationAngle > MaxRotationAngle || rotationAngle < MinRotationAngle)
+        if (imageWidth <= 0 || imageHeight <= 0)
         {
-            return ErrorImageSize(minWidth, minHeight, interfaceSize, containerWidth);
+            return new ImageSize2(0, 0, 0, 0, 0,  0, 0, 0);
         }
 
         // When in fullscreen, we need to capture the entire screen estate
@@ -219,20 +212,16 @@ public static class ImageSizeCalculationHelper2
         double containerWidth,
         double containerHeight)
     {
-        if (width <= 0 || height <= 0 || secondaryWidth <= 0 || secondaryHeight <= 0 ||
-            rotationAngle > MaxRotationAngle ||
-            rotationAngle < MinRotationAngle)
+        if (width <= 0 || height <= 0 || secondaryWidth <= 0 || secondaryHeight <= 0)
         {
-            return ErrorImageSize(minWidth, minHeight, interfaceSize, containerWidth);
+            return new ImageSize2(0, 0, 0, 0, 0,  0, 0, 0);
         }
 
         // Get sizes for both images
-        var firstSize = GetImageSize(width, height, screenSize, minWidth, minHeight,
-            interfaceSize, rotationAngle, dpiScaling, uiTopSize, uiBottomSize, galleryHeight,
+        var firstSize = GetImageSize(width, height, screenSize, rotationAngle, dpiScaling, uiTopSize, uiBottomSize, galleryHeight,
             containerWidth,
             containerHeight);
-        var secondSize = GetImageSize(secondaryWidth, secondaryHeight, screenSize, minWidth,
-            minHeight, interfaceSize, rotationAngle, dpiScaling, uiTopSize, uiBottomSize,
+        var secondSize = GetImageSize(secondaryWidth, secondaryHeight, screenSize, rotationAngle, dpiScaling, uiTopSize, uiBottomSize,
             galleryHeight,
             containerWidth, containerHeight);
 
@@ -333,12 +322,7 @@ public static class ImageSizeCalculationHelper2
             scrollHeight = double.NaN;
         }
 
-        var margin = firstSize.Height > secondSize.Height ? firstSize.Margin : secondSize.Margin;
         return new ImageSize2(0,0, combinedWidth, xHeight, xWidth2, scrollWidth, scrollHeight,
             firstSize.AspectRatio);
     }
-
-    private static ImageSize2 ErrorImageSize(double monitorMinWidth, double monitorMinHeight, double interfaceSize,
-        double containerWidth)
-        => new(0, 0, 0, 0, 0,  0, 0, 0);
 }
