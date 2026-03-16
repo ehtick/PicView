@@ -1,10 +1,15 @@
 ﻿using System.Runtime.InteropServices;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -356,24 +361,62 @@ public static class NavigationManager
     public static async ValueTask LoadLastFileAsync(MainViewModel vm)
     {
         var lastFile = Settings.StartUp.LastFile;
+        var isFromStartUpMenu = false;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (vm.MainWindow.CurrentView.CurrentValue is StartUpMenu)
+            {
+                // Change view beforehand to avoid weird rendering error
+                vm.MainWindow.CurrentView.Value = vm.ImageViewer;
+            }
+
+            isFromStartUpMenu = true;
+        });
         if (!string.IsNullOrEmpty(lastFile))
         {
-            await LoadPicFromStringAsync(lastFile, vm).ConfigureAwait(false);
-            if (Settings.WindowProperties.AutoFit)
-            {
-                WindowFunctions.CenterWindowOnScreen();
-            }
+            await ChooseLoading(lastFile).ConfigureAwait(false);
+
         }
         else
         {
             var lastEntry = FileHistoryManager.GetLastEntry();
             if (lastEntry != null)
             {
-                await LoadPicFromStringAsync(lastEntry, vm).ConfigureAwait(false);
-                if (Settings.WindowProperties.AutoFit)
+                await ChooseLoading(lastEntry).ConfigureAwait(false);
+            }
+            else if (isFromStartUpMenu)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => { vm.MainWindow.CurrentView.Value = new StartUpMenu(); });
+            }
+        }
+
+        return;
+
+        async Task ChooseLoading(string chosenFile)
+        {
+            if (isFromStartUpMenu)
+            {
+                // Using QuickLoadAsync fixes rendering error, if the startup menu was used
+                Window? window = null;
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    WindowFunctions.CenterWindowOnScreen();
-                }
+                    if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                    {
+                        return;
+                    }
+
+                    window = desktop.MainWindow;
+                });
+                await QuickLoad.QuickLoadAsync(vm, chosenFile, window, false);
+            }
+            else
+            {
+                await LoadPicFromStringAsync(chosenFile, vm).ConfigureAwait(false);
+            }
+
+            if (Settings.WindowProperties.AutoFit)
+            {
+                WindowFunctions.CenterWindowOnScreen();
             }
         }
     }
