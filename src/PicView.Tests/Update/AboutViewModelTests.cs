@@ -3,7 +3,7 @@ using PicView.Core.Localization;
 using PicView.Core.Update;
 using PicView.Core.ViewModels;
 
-namespace PicView.Tests;
+namespace PicView.Tests.Update;
 
 public class AboutViewModelTests
 {
