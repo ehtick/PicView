@@ -15,6 +15,9 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.CustomControls;
 
+/// <summary>
+/// A horizontal custom TabControl that adds drag-to-reorder, drag-to-detach, and auto-scroll while dragging behavior.
+/// </summary>
 [PseudoClasses(PseudoDragging, PseudoDetaching)]
 public class DraggableTabControl : TabControl
 {
@@ -55,7 +58,7 @@ public class DraggableTabControl : TabControl
     private double _scrollDirection; // -1 for Left, 1 for Right, 0 for None
 
     // Auto-Scroll State
-    private ScrollViewer? _scrollViewer;
+    private AutoScrollViewer? _scrollViewer;
 
     private int _sourceIndex = -1;
     private Point _startClickPoint;
