@@ -821,8 +821,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
     /// <inheritdoc cref="SettingsUpdater.ToggleSideBySide(MainViewModel)" />
     public async ValueTask SideBySide()
     {
-        // await SettingsUpdater.ToggleSideBySide(vm).ConfigureAwait(false);
-        return;
+        await SettingsUpdater2.ToggleSideBySide().ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="ErrorHandling.ReloadAsync(MainViewModel)" />

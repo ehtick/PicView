@@ -130,7 +130,6 @@ public static class SettingsUpdater2
         
             await TurnOffSubdirectories(vm);
         
-            TurnOffSideBySide(vm);
             TurnOffScroll(vm);
             TurnOffCtrlZoom(vm);
             TurnOffLooping(vm);
@@ -335,74 +334,11 @@ public static class SettingsUpdater2
     
     #region Image settings
 
-    public static async Task ToggleSideBySide(MainViewModel vm)
+    public static async Task ToggleSideBySide()
     {
-        if (vm is null)
-        {
-            return;
-        }
-        
-        if (Settings.ImageScaling.ShowImageSideBySide)
-        {
-            TurnOffSideBySide(vm);
-        }
-        else
-        {
-            await TurnOnSideBySide(vm);
-        }
+        Settings.ImageScaling.ShowImageSideBySide = !Settings.ImageScaling.ShowImageSideBySide;
 
         await SaveSettingsAsync();
-    }
-
-    public static void TurnOffSideBySide(MainViewModel vm)
-    {
-        Settings.ImageScaling.ShowImageSideBySide = false;
-        vm.PicViewer.IsShowingSideBySide.Value = false;
-        vm.PicViewer.SecondaryImageSource.Value = null;
-        WindowResizing.SetSize(vm);
-        TitleManager.SetTitle(vm);
-    }
-    
-    public static async Task TurnOnSideBySide(MainViewModel vm)
-    {
-        Settings.ImageScaling.ShowImageSideBySide = true;
-        vm.PicViewer.IsShowingSideBySide.Value = true;
-        if (NavigationManager.CanNavigate(vm))
-        {
-            var preloadValue = await NavigationManager.GetNextPreLoadValueAsync();
-            if (preloadValue is null)
-            {
-#if DEBUG
-                Console.WriteLine($"{nameof(TurnOnSideBySide)} {nameof(preloadValue)} is null");       
-#endif
-                return;
-            }
-            vm.PicViewer.SecondaryImageSource.Value = preloadValue.ImageModel.Image;
-            var imageModel1 = new ImageModel
-            {
-                FileInfo = vm.PicViewer.FileInfo.CurrentValue,
-                PixelWidth = (int)vm.PicViewer.ImageWidth.CurrentValue,
-                PixelHeight = (int)vm.PicViewer.ImageHeight.CurrentValue,
-                ImageType = vm.PicViewer.ImageType.CurrentValue,
-                Image = vm.PicViewer.ImageSource,
-                Orientation = vm.PicViewer.ExifOrientation.CurrentValue
-            };
-            var imageModel2 = new ImageModel
-            {
-                FileInfo = preloadValue.ImageModel.FileInfo,
-                PixelWidth = preloadValue.ImageModel.PixelWidth,
-                PixelHeight = preloadValue.ImageModel.PixelHeight,
-                ImageType = preloadValue.ImageModel.ImageType,
-                Image = preloadValue.ImageModel.Image,
-                Orientation = preloadValue.ImageModel.Orientation
-            };
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                WindowResizing.SetSize(vm.PicViewer.ImageWidth.CurrentValue, vm.PicViewer.ImageHeight.CurrentValue, preloadValue.ImageModel.PixelWidth,
-                    preloadValue.ImageModel.PixelHeight, vm.PicViewer.RotationAngle.CurrentValue, vm);
-                TitleManager.SetSideBySideTitle(vm, imageModel1, imageModel2);
-            });
-        }
     }
     
     public static async Task ToggleScroll(MainViewModel vm)
