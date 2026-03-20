@@ -250,7 +250,7 @@ public partial class ZoomPreviewer : UserControl
         }
 
         // Don't start hide timer if we're currently dragging
-        if (!_isDragging)
+        if (!_isDragging && !IsPointerOver && _zoomPanControl.Scale is not 1.0)
         {
             RestartHideTimer();
         }
