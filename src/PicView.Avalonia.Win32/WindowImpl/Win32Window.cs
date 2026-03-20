@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -40,6 +39,13 @@ public static class Win32Window
         // Apply fullscreen state
         await Dispatcher.UIThread.InvokeAsync(() => window.WindowState = WindowState.FullScreen, DispatcherPriority.Send);
 
+        // Needs to reset decorations from potentially being changed from maximized state
+        Dispatcher.UIThread.Post(() =>
+        {
+            window.SystemDecorations = SystemDecorations.Full;
+            window.ExtendClientAreaToDecorationsHint = true;
+        }, DispatcherPriority.ApplicationIdle);
+
         var size = WindowResizing.GetSize(vm);
         if (size.HasValue)
         {
@@ -76,6 +82,13 @@ public static class Win32Window
             Settings.WindowProperties.Maximized = true;
             WindowResizing.SetSize(vm);
         });
+
+        // Needs to adjust decorations to make maximized window position itself correctly
+        Dispatcher.UIThread.Post(() =>
+        {
+            window.SystemDecorations = SystemDecorations.None;
+            window.ExtendClientAreaToDecorationsHint = false;
+        }, DispatcherPriority.Send);
 
         vm.MainWindow.IsMaximized.Value = true;
         vm.MainWindow.IsFullscreen.Value = false;
@@ -132,6 +145,13 @@ public static class Win32Window
         await WindowResizing.SetSizeAsync(vm);
 
         Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.SystemIdle);
+
+        // Needs to reset decorations from potentially being changed from maximized state
+        Dispatcher.UIThread.Post(() =>
+        {
+            window.SystemDecorations = SystemDecorations.Full;
+            window.ExtendClientAreaToDecorationsHint = true;
+        }, DispatcherPriority.ApplicationIdle);
 
 
         if (saveSettings)

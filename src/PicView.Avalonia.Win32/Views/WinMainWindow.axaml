@@ -17,17 +17,6 @@
     SizeToContent="{CompiledBinding MainWindow.SizeToContent.Value}"
     TransparencyLevelHint="AcrylicBlur">
 
-    <Window.Styles>
-        <Style Selector="Window[WindowState=Maximized]">
-            <Setter Property="SystemDecorations" Value="None" />
-            <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
-        </Style>
-        <Style Selector="Window[WindowState=Minimized]">
-            <Setter Property="SystemDecorations" Value="None" />
-            <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
-        </Style>
-    </Window.Styles>
-
     <Border BorderBrush="{DynamicResource WindowBorderColor}" BorderThickness="1">
         <DockPanel LastChildFill="True">
             <views1:WinTitleBar x:Name="Titlebar" DockPanel.Dock="Top" />

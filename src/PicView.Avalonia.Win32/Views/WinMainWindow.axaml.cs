@@ -23,11 +23,6 @@ public partial class WinMainWindow : Window
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
         UIHelper.SetFrameProvider(_frameProvider);
 
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
         Loaded += delegate
         {
             if (DataContext is not MainViewModel vm)
@@ -77,7 +72,6 @@ public partial class WinMainWindow : Window
                         {
                             vm.PlatformWindowService.Restore();
                         }
-
                         break;
                 }
             });
