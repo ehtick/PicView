@@ -107,6 +107,18 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         WindowTitle.Value = windowTitles.TitleWithAppName;
         Title.Value = windowTitles.BaseTitle;
         TitleTooltip.Value = windowTitles.FilePathTitle;
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            TabTitle.Value = StringExtensions.Combine(Model.FileInfo.Name, SecondaryModel.FileInfo.Name);
+            TabTooltip.Value = StringExtensions.Combine(Model.FileInfo.FullName, SecondaryModel.FileInfo.FullName);
+        }
+        else
+        {
+            TabTitle.Value = Model.FileInfo.Name;
+            TabTooltip.Value = Model.FileInfo.FullName;
+        }
+
+        
         return;
         
         WindowTitles GetTitles()
@@ -117,15 +129,16 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
                     index, Model.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
             }
 
-            if (Settings.ImageScaling.ShowImageSideBySide && SecondaryModel is not null)
+            if (!Settings.ImageScaling.ShowImageSideBySide || SecondaryModel is null)
             {
-                var firstInfo = new ImageTitleInfo(width, height, index, Model.FileInfo, 100);
-                var secondInfo = new ImageTitleInfo(SecondaryModel.PixelWidth, SecondaryModel.PixelHeight, index + 1, SecondaryModel.FileInfo, 100);
-                return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, ImageIterator.Files);
+                return ImageTitleFormatter.GenerateTitleStrings(width, height,
+                    index, Model.FileInfo, 100, ImageIterator.Files);
             }
 
-            return ImageTitleFormatter.GenerateTitleStrings(width, height,
-                index, Model.FileInfo, 100, ImageIterator.Files);
+            var firstInfo = new ImageTitleInfo(width, height, index, Model.FileInfo, 100);
+            var secondInfo = new ImageTitleInfo(SecondaryModel.PixelWidth, SecondaryModel.PixelHeight, index + 1, SecondaryModel.FileInfo, 100);
+            return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, ImageIterator.Files);
+
         }
     }
     

@@ -49,9 +49,7 @@ public static class NavigationSubscriptions
 
                         // Trigger file changes to UI
                         tabViewModel.FileInfo.Value = file;
-
-                        tabViewModel.TabTitle.Value = file.Name;
-                        tabViewModel.TabTooltip.Value = file.FullName;
+                        
                         tabViewModel.UpdateTabTitle();
                     }, static result =>
                     {
