@@ -67,7 +67,11 @@ public static class MacOSWindow
                 vm.GlobalSettings.IsAutoFit.Value = false;
             }
         });
-        
+
+        vm.HoverbarViewModel.IsHoverbarVisible.Value = !Settings.UIProperties.ShowInterface &&
+                                                       Settings.UIProperties.ShowHoverNavigationBar &&
+                                                       Settings.UIProperties.ShowAltInterfaceButtons;
+
         await WindowResizing.SetSizeAsync(vm);
         
         if (Settings.WindowProperties.KeepCentered)

@@ -142,6 +142,10 @@ public static class Win32Window
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
 
+        vm.HoverbarViewModel.IsHoverbarVisible.Value = !Settings.UIProperties.ShowInterface &&
+                                                       Settings.UIProperties.ShowHoverNavigationBar &&
+                                                       Settings.UIProperties.ShowAltInterfaceButtons;
+
         await WindowResizing.SetSizeAsync(vm);
 
         Dispatcher.UIThread.Post(() => IsChangingWindowState = false, DispatcherPriority.SystemIdle);
