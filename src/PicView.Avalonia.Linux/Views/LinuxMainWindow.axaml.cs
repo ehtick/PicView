@@ -27,7 +27,7 @@ public partial class LinuxMainWindow : Window, IPlatformWindowService
         {
             return;
         }
-        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GallerySettings);
+        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GlobalSettings, core.GallerySettings);
         DataContext = mainWindowViewModel;
         
         // initialize RenderingFrameProvider

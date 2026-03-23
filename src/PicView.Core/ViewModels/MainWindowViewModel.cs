@@ -11,6 +11,7 @@ public class MainWindowViewModel : IDisposable
     
     public TranslationViewModel Translation { get;  } 
     public GallerySharedSettingsViewModel GallerySettings { get; }
+    public GlobalSettingsViewModel GlobalSettings { get; }
     public TopTitlebarViewModel TopTitlebarViewModel { get; }  = new();
     public TabOverviewViewModel WindowTabs { get; } = new();
     public ToolTipViewModel? ToolTip { get; set; }
@@ -504,10 +505,11 @@ public class MainWindowViewModel : IDisposable
 
     #endregion
 
-    public MainWindowViewModel(TranslationViewModel translations, IPlatformWindowService windowService, GallerySharedSettingsViewModel gallerySettings)
+    public MainWindowViewModel(TranslationViewModel translations, IPlatformWindowService windowService, GlobalSettingsViewModel globalSettings, GallerySharedSettingsViewModel gallerySettings)
     {
         Translation = translations;
         PlatformWindowService = windowService;
+        GlobalSettings = globalSettings;
         GallerySettings = gallerySettings;
         
         // Navigation

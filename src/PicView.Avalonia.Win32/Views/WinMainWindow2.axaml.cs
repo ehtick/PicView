@@ -28,7 +28,7 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
         {
             return;
         }
-        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GallerySettings);
+        var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GlobalSettings, core.GallerySettings);
         DataContext = mainWindowViewModel;
         
         // initialize RenderingFrameProvider
