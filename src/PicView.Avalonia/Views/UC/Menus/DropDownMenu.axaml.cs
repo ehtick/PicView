@@ -2,6 +2,7 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
+using PicView.Core.Localization;
 using R3;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
@@ -17,15 +18,14 @@ public partial class DropDownMenu : AnimatedMenu
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is not MainWindowViewModel vm)
-        {
-            return;
-        }
-        Observable.EveryValueChanged(vm.TopTitlebarViewModel.DropDownMenu, x => x.MenuCarouselIndex.CurrentValue, UIHelper2.GetFrameProvider)
-            .Subscribe(i =>
-            {
-                MainCarousel.SelectedIndex = i;
-            });
+        SlideShow2Sec.Text = $"2 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow5Sec.Text = $"5 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow10Sec.Text = $"10 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow20Sec.Text = $"20 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow30Sec.Text = $"30 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow60Sec.Text = $"60 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow90Sec.Text = $"90 {TranslationManager.Translation.SecAbbreviation}";
+        SlideShow120Sec.Text = $"120 {TranslationManager.Translation.SecAbbreviation}";
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
