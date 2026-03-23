@@ -682,6 +682,74 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="RefreshCcwOff">
+        <DrawingGroup>
+            <GeometryDrawing Geometry="F1 M21 8L18.74 5.74Q18.4047 5.41586 18.04 5.12521Q17.6753 4.83455 17.2845 4.58003Q16.8937 4.32551 16.4805 4.10945Q16.0672 3.89339 15.6352 3.71776Q15.2031 3.54213 14.7563 3.40854Q14.3095 3.27494 13.852 3.18461Q13.3945 3.09427 12.9304 3.04801Q12.4664 3.00175 12 3C11 3 10.03 3.16 9.13 3.47">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M8 16L3 16L3 21">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M3 12C3 9.51 4 7.26 5.64 5.64">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M3 16L5.26 18.26Q5.5953 18.5841 5.96 18.8748Q6.3247 19.1655 6.71548 19.42Q7.10625 19.6745 7.51954 19.8906Q7.93283 20.1066 8.36485 20.2822Q8.79687 20.4579 9.24368 20.5915Q9.69049 20.7251 10.148 20.8154Q10.6055 20.9057 11.0696 20.952Q11.5336 20.9982 12 21C14.49 21 16.74 20 18.36 18.36">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M21 12C21 13 20.84 13.97 20.53 14.87">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M21 3L21 8L16 8">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+            <GeometryDrawing Geometry="F1 M22 22L2 2">
+                <GeometryDrawing.Pen>
+                    <Pen
+                        LineCap="Round"
+                        LineJoin="Round"
+                        MiterLimit="4"
+                        Thickness="2" />
+                </GeometryDrawing.Pen>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingImage>
+
     <DrawingImage x:Key="ReloadImage">
         <DrawingGroup>
             <GeometryDrawing Geometry="F1 M21 12Q21 11.7791 20.9892 11.5584Q20.9783 11.3377 20.9567 11.1178Q20.935 10.898 20.9026 10.6794Q20.8702 10.4609 20.8271 10.2442Q20.784 10.0275 20.7303 9.81318Q20.6766 9.59886 20.6125 9.38744Q20.5483 9.17601 20.4739 8.96799Q20.3995 8.75997 20.3149 8.55585Q20.2304 8.35173 20.1359 8.152Q20.0414 7.95228 19.9373 7.75743Q19.8331 7.56258 19.7196 7.37307Q19.606 7.18357 19.4832 6.99987Q19.3605 6.81616 19.2289 6.63871Q19.0973 6.46125 18.9571 6.29046Q18.8169 6.11967 18.6686 5.95597Q18.5202 5.79227 18.364 5.63604Q18.2077 5.47981 18.044 5.33144Q17.8803 5.18307 17.7095 5.04291Q17.5388 4.90274 17.3613 4.77113Q17.1838 4.63952 17.0001 4.51677Q16.8164 4.39403 16.6269 4.28044Q16.4374 4.16686 16.2426 4.06271Q16.0477 3.95856 15.848 3.8641Q15.6483 3.76963 15.4441 3.68508Q15.24 3.60053 15.032 3.5261Q14.824 3.45167 14.6126 3.38754Q14.4011 3.3234 14.1868 3.26972Q13.9725 3.21604 13.7558 3.17293Q13.5391 3.12983 13.3206 3.09741Q13.102 3.06499 12.8822 3.04334Q12.6623 3.02168 12.4416 3.01084Q12.2209 3 12 3Q11.5336 3.00175 11.0696 3.04801Q10.6055 3.09427 10.148 3.18461Q9.69049 3.27494 9.24368 3.40854Q8.79687 3.54213 8.36485 3.71776Q7.93283 3.89339 7.51954 4.10945Q7.10625 4.32551 6.71548 4.58003Q6.3247 4.83455 5.96 5.12521Q5.5953 5.41586 5.26 5.74L3 8">

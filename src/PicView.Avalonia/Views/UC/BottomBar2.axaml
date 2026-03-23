@@ -207,92 +207,6 @@
             </MenuItem>
 
         </ContextMenu>
-        <ContextMenu x:Key="ToolsMenu">
-
-            <!--  Show image gallery  -->
-            <MenuItem Header="{CompiledBinding Translation.ShowImageGallery.Value, Mode=OneWay}" StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource GalleryImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Gallery options  -->
-            <MenuItem Header="Gallery options">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource GalleryImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-                <MenuItem Header="Show docked gallery at bottom">
-                    <MenuItem.Icon>
-                        <Image
-                            Height="12"
-                            Source="{StaticResource GalleryImage}"
-                            Width="12" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Show docked gallery to the left">
-                    <MenuItem.Icon>
-                        <Image
-                            Height="12"
-                            Source="{StaticResource GalleryImage}"
-                            Width="12" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Show docked gallery to the right">
-                    <MenuItem.Icon>
-                        <Image
-                            Height="12"
-                            Source="{StaticResource GalleryImage}"
-                            Width="12" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="Show docked gallery at top">
-                    <MenuItem.Icon>
-                        <Image
-                            Height="12"
-                            Source="{StaticResource GalleryImage}"
-                            Width="12" />
-                    </MenuItem.Icon>
-                </MenuItem>
-            </MenuItem>
-
-            <!--  Resize image  -->
-            <MenuItem Header="{CompiledBinding Translation.ResizeImage, Mode=OneWay}" StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource BatchResizeImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-            <!--  Effects  -->
-            <MenuItem Header="{CompiledBinding Translation.Effects, Mode=OneWay}" StaysOpenOnClick="True">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource FlaskImage}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-
-
-            <Separator />
-            <!--  Hide bottom bar  -->
-            <MenuItem Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
-                <MenuItem.Icon>
-                    <Image
-                        Height="12"
-                        Source="{StaticResource Panel-Bottom}"
-                        Width="12" />
-                </MenuItem.Icon>
-            </MenuItem>
-        </ContextMenu>
 
     </UserControl.Resources>
 
@@ -322,23 +236,7 @@
                 Width="38"
                 x:Name="FileMenuButton" />
 
-            <customControls:IconButton
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,1,0"
-                Classes="noBorderHover"
-                Command="{CompiledBinding ImageInfoWindowCommand}"
-                ContextMenu="{StaticResource ToolsMenu}"
-                Data="{StaticResource ImageInfoGeometry}"
-                Foreground="{StaticResource ImageMenuBrush}"
-                Height="25"
-                IconHeight="17"
-                IconWidth="17"
-                IsTabStop="False"
-                ToolTip.HorizontalOffset="15"
-                ToolTip.Tip="{CompiledBinding Translation.ImageInfo.Value}"
-                Width="38"
-                x:Name="ImageInfoButton" />
+
 
             <customControls:IconButton
                 Background="{DynamicResource AltBackgroundColor}"
@@ -379,6 +277,26 @@
                 ToolTip.Tip="{CompiledBinding Translation.ZoomIn.Value}"
                 Width="38"
                 x:Name="ZoomInButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding ResetZoomCommand}"
+                Height="25"
+                Icon="{StaticResource RefreshCcwOff}"
+                IconHeight="17"
+                IconWidth="17"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
+                IsTabStop="False"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.ResetZoom.Value}"
+                Width="38"
+                x:Name="ResetZoomButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource MainButtonBackgroundColor}"

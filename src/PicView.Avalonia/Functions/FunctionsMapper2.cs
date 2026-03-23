@@ -357,23 +357,21 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
         return ValueTask.CompletedTask;
     }
 
-    public async ValueTask ResetZoom()
+    public ValueTask ResetZoom()
     {
-        // TODO: ImageViewer Needs refactor
-        if (vm is null)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
         {
-            return;
+            imageViewer.ResetZoom(Settings.Zoom.IsZoomAnimated);
         }
 
-        // await Dispatcher.UIThread.InvokeAsync(() => vm.ImageViewer.ResetZoom(Settings.Zoom.IsZoomAnimated));
-        return;
+        return ValueTask.CompletedTask;
     }
-    
+
     #endregion
 
-    #region Toggle UI functions
+        #region Toggle UI functions
 
-    /// <inheritdoc cref="SettingsUpdater.ToggleScroll(MainViewModel)" />
+        /// <inheritdoc cref="SettingsUpdater.ToggleScroll(MainViewModel)" />
     public async ValueTask ToggleScroll()
     {
         // await SettingsUpdater.ToggleScroll(vm).ConfigureAwait(false);

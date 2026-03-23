@@ -74,9 +74,9 @@ public partial class BottomBar2 : UserControl
                 CropButton.Classes.Remove("noBorderHover");
                 CropButton.Classes.Add("hover");
 
-                ImageInfoButton.Background = Brushes.Transparent;
-                ImageInfoButton.Classes.Remove("noBorderHover");
-                ImageInfoButton.Classes.Add("hover");
+                ResetZoomButton.Background = Brushes.Transparent;
+                ResetZoomButton.Classes.Remove("noBorderHover");
+                ResetZoomButton.Classes.Add("hover");
 
                 SettingsMenuButton.Background = Brushes.Transparent;
                 SettingsMenuButton.Classes.Remove("noBorderHover");
@@ -104,7 +104,7 @@ public partial class BottomBar2 : UserControl
 
                 FileMenuButton.Foreground = new SolidColorBrush(color);
                 CropButton.Foreground = new SolidColorBrush(color);
-                ImageInfoButton.Foreground = new SolidColorBrush(color);
+                ResetZoomButton.Foreground = new SolidColorBrush(color);
                 SettingsMenuButton.Foreground = new SolidColorBrush(color);
 
                 NextButton.Foreground = new SolidColorBrush(color);
@@ -126,8 +126,8 @@ public partial class BottomBar2 : UserControl
                     }
                 }
 
-                ImageInfoButton.Classes.Remove("noBorderHover");
-                ImageInfoButton.Classes.Add("noBorderHoverAlt");
+                ResetZoomButton.Classes.Remove("noBorderHover");
+                ResetZoomButton.Classes.Add("noBorderHoverAlt");
 
                 SettingsMenuButton.Classes.Remove("noBorderHover");
                 SettingsMenuButton.Classes.Add("noBorderHoverAlt");
