@@ -70,10 +70,6 @@ public partial class BottomBar2 : UserControl
                 FileMenuButton.Classes.Remove("noBorderHover");
                 FileMenuButton.Classes.Add("hover");
 
-                CropButton.Background = Brushes.Transparent;
-                CropButton.Classes.Remove("noBorderHover");
-                CropButton.Classes.Add("hover");
-
                 ResetZoomButton.Background = Brushes.Transparent;
                 ResetZoomButton.Classes.Remove("noBorderHover");
                 ResetZoomButton.Classes.Add("hover");
@@ -97,13 +93,17 @@ public partial class BottomBar2 : UserControl
                 RotateRightButton.Background = alphaBrush;
                 RotateRightButton.Classes.Remove("noBorderHover");
                 RotateRightButton.Classes.Add("hover");
+                
+                RotateLeftButton.Background = Brushes.Transparent;
+                RotateLeftButton.Classes.Remove("noBorderHover");
+                RotateLeftButton.Classes.Add("hover");
 
                 FlipButton.Background = alphaBrush;
                 FlipButton.Classes.Remove("noBorderHover");
                 FlipButton.Classes.Add("hover");
 
                 FileMenuButton.Foreground = new SolidColorBrush(color);
-                CropButton.Foreground = new SolidColorBrush(color);
+                RotateLeftButton.Foreground = new SolidColorBrush(color);
                 ResetZoomButton.Foreground = new SolidColorBrush(color);
                 SettingsMenuButton.Foreground = new SolidColorBrush(color);
 
@@ -115,16 +115,8 @@ public partial class BottomBar2 : UserControl
                 FileMenuButton.Classes.Remove("noBorderHover");
                 FileMenuButton.Classes.Add("noBorderHoverAlt");
 
-                CropButton.Classes.Remove("noBorderHover");
-                CropButton.Classes.Add("noBorderHoverAlt");
-                if (TryGetResource("ImageMenuBrush", Application.Current.RequestedThemeVariant,
-                        out var imageMenuBrush))
-                {
-                    if (imageMenuBrush is SolidColorBrush brush)
-                    {
-                        UIHelper.SetButtonHover(CropButton, brush);
-                    }
-                }
+                RotateLeftButton.Classes.Remove("noBorderHover");
+                RotateLeftButton.Classes.Add("noBorderHoverAlt");
 
                 ResetZoomButton.Classes.Remove("noBorderHover");
                 ResetZoomButton.Classes.Add("noBorderHoverAlt");

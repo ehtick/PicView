@@ -338,12 +338,36 @@
 
             <customControls:IconButton
                 Background="{DynamicResource AltBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
                 Classes="noBorderHover"
-                Command="{CompiledBinding RotateRightCommand}"
+                Command="{CompiledBinding RotateLeftCommand}"
+                Data="{StaticResource RotateLeftGeometry}"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
                 Height="{CompiledBinding BottombarHeight.Value}"
-                Icon="{StaticResource RefreshCcwDot}"
+                IconHeight="16"
+                IconWidth="16"
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                            Converter={x:Static ObjectConverters.IsNotNull},
+                                            FallbackValue=False,
+                                            Mode=OneWay}"
+                IsRepeatEnabled="False"
+                Margin="0"
+                ToolTip.HorizontalOffset="15"
+                ToolTip.Tip="{CompiledBinding Translation.RotateRight.Value,
+                                              Mode=OneWay}"
+                Width="38"
+                x:Name="RotateLeftButton" />
+
+            <customControls:IconButton
+                Background="{DynamicResource AltBackgroundColor}"
+                Classes="noBorderHover"
+                Command="{CompiledBinding RotateRightCommand}"
+                Data="{StaticResource RotateRightGeometry}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                Height="{CompiledBinding BottombarHeight.Value}"
                 IconHeight="16"
                 IconWidth="16"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
@@ -357,6 +381,8 @@
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="RotateRightButton" />
+
+
 
             <customControls:IconButton
                 Background="{DynamicResource AltBackgroundColor}"
@@ -381,27 +407,6 @@
                                               Mode=OneWay}"
                 Width="38"
                 x:Name="FlipButton" />
-
-            <customControls:IconButton
-                Background="{DynamicResource SecondaryButtonBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,1,0"
-                Classes="noBorderHover"
-                Command="{CompiledBinding CropCommand}"
-                Data="{StaticResource CropGeometry}"
-                Foreground="{StaticResource ImageMenuBrush}"
-                Height="25"
-                IconHeight="16"
-                IconWidth="16"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False,
-                                            Mode=OneWay}"
-                IsTabStop="False"
-                ToolTip.HorizontalOffset="15"
-                ToolTip.Tip="{CompiledBinding Translation.Crop.Value}"
-                Width="38"
-                x:Name="CropButton" />
 
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
