@@ -65,6 +65,16 @@ public static class WindowResizing2
             () => UIHelper2.GetBottomBar.GetControl<Button>("NextButton"),
             new Point(50, 10));
 
+        RepositionCursorIfTriggered(mainWindowVm.IsBottomToolbarRightRotationClicked,
+            clicked => mainWindowVm.IsNavigationButtonLeftClicked = clicked,
+            () => UIHelper2.GetBottomBar.GetControl<Button>("RotateRightButton"),
+            new Point(20, 10));
+
+        RepositionCursorIfTriggered(mainWindowVm.IsBottomToolbarLeftRotationClicked,
+            clicked => mainWindowVm.IsBottomToolbarLeftRotationClicked = clicked,
+            () => UIHelper2.GetBottomBar.GetControl<Button>("RotateLeftButton"),
+            new Point(20, 10));
+
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonNextClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonNextClicked = clicked,
             () => UIHelper2.GetHoverBar.GetControl<Button>("NextButton"),
@@ -111,7 +121,7 @@ public static class WindowResizing2
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                Dispatcher.UIThread.Post(() =>
+                Dispatcher.CurrentDispatcher.Post(() =>
                 {
                     var screenPoint = control.PointToScreen(offset);
                     core.PlatformService.SetCursorPos(screenPoint.X, screenPoint.Y);
@@ -146,7 +156,7 @@ public static class WindowResizing2
 
     public static void SetSize(double width, double height, WindowResizeReason reason, MainWindowViewModel vm)
     {
-        var size = GetSize(width, height, 0, 0, 0, vm);
+        var size = GetSize(width, height, 0, 0, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue, vm);
 
         if (size is null)
         {
@@ -160,6 +170,7 @@ public static class WindowResizing2
     {
         vm.ScrollViewerWidth.Value = size.ScrollViewerWidth;
         vm.ScrollViewerHeight.Value = size.ScrollViewerHeight;
+        var rotationAngle = vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue;
         if (Settings.WindowProperties.AutoFit)
         {
             if (reason is WindowResizeReason.User)
@@ -169,13 +180,23 @@ public static class WindowResizing2
             }
             else
             {
-                vm.WindowWidth.Value = size.WindowWidth;
-                vm.WindowHeight.Value = size.WindowHeight;
+                if (rotationAngle is 90 or 270)
+                {
+                    vm.WindowWidth.Value = size.WindowHeight;
+                    vm.WindowHeight.Value = size.WindowWidth;
 
+                    vm.ImageWidth.Value = size.Height;
+                    vm.ImageHeight.Value = size.Width;
+                }
+                else
+                {
+                    vm.WindowWidth.Value = size.WindowWidth;
+                    vm.WindowHeight.Value = size.WindowHeight;
+
+                    vm.ImageWidth.Value = size.Width;
+                    vm.ImageHeight.Value = size.Height;
+                }
             }
-
-            vm.ImageWidth.Value = size.Width;
-            vm.ImageHeight.Value = size.Height;
         }
         else
         {
@@ -233,7 +254,7 @@ public static class WindowResizing2
             secondaryWidth = secondaryHeight = 0;
         }
 
-        return GetSize(width, height, secondaryWidth, secondaryHeight, 0,
+        return GetSize(width, height, secondaryWidth, secondaryHeight, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue,
             vm);
     }
 

@@ -84,6 +84,9 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     /// </summary>
     public BindableReactiveProperty<string> TabTooltip { get; } = new(string.Empty);
 
+    public BindableReactiveProperty<double> RotationAngle { get; } = new();
+    public BindableReactiveProperty<double> ScaleX { get; } = new();
+
     /// <summary>
     /// Updates the window title and tab title based on the current image model.
     /// </summary>

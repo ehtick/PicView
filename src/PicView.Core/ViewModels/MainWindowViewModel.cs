@@ -23,8 +23,9 @@ public class MainWindowViewModel : IDisposable
     public bool IsClickArrowLeftClicked { get; set; }
     public bool IsClickArrowRightClicked { get; set; }
 
-    public bool IsBottomToolbarRotationClicked { get; set; }
-    
+    public bool IsBottomToolbarRightRotationClicked { get; set; }
+    public bool IsBottomToolbarLeftRotationClicked { get; set; }
+
     public bool IsTitlebarRotationClicked { get; set; }
 
     public BindableReactiveProperty<int> BackgroundChoice { get; } = new();

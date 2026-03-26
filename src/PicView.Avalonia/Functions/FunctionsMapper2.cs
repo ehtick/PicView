@@ -273,22 +273,37 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
             await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown, NavigateTo.Up).ConfigureAwait(false);
             return;
         }
-        // await RotationNavigation.NavigateUp(vm).ConfigureAwait(false);
-        return;
+
+        await RotateRight();
     }
 
     /// <inheritdoc cref="RotationNavigation.RotateRight(MainViewModel)" />
-    public async ValueTask RotateRight()
+    public ValueTask RotateRight()
     {
-        // await RotationNavigation.RotateRight(vm).ConfigureAwait(false);
-        return;
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Rotate(true);
+        }
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc cref="RotationNavigation.RotateLeft(MainViewModel)" />
-    public async ValueTask RotateLeft()
+    public ValueTask RotateLeft()
     {
-        // await RotationNavigation.RotateLeft(vm).ConfigureAwait(false);
-        return;
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Rotate(false);
+        }
+        return ValueTask.CompletedTask;
+    }
+    
+    public ValueTask Flip()
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Flip(true);
+        }
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc cref="RotationNavigation.NavigateDown(MainViewModel)" />
@@ -299,8 +314,8 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
             await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown, NavigateTo.Down).ConfigureAwait(false);
             return;
         }
-        // await RotationNavigation.NavigateDown(vm).ConfigureAwait(false);
-        return;
+
+        await RotateLeft();
     }
     
     public async ValueTask ScrollDown()
@@ -836,12 +851,6 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
     public async ValueTask Crop()
     {
         // await CropFunctions.StartCropControlAsync(vm).ConfigureAwait(false);
-        return;
-    }
-
-    public async ValueTask Flip()
-    {
-        // await Dispatcher.UIThread.InvokeAsync(() => RotationNavigation.Flip(vm));
         return;
     }
 

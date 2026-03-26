@@ -18,7 +18,7 @@ namespace PicView.Avalonia.Views.UC;
 
 public partial class ImageViewer2 : UserControl
 {
-    private RotationTransformer? _imageTransformer;
+    private RotationTransformer2? _imageTransformer;
     private CompositeDisposable? _disposables;
     private MainWindowViewModel? _mainWindowViewModel;
     
@@ -78,16 +78,20 @@ public partial class ImageViewer2 : UserControl
         {
             return;
         }
-        // _imageTransformer = new RotationTransformer(
-        //     ImageLayoutTransformControl,
-        //     MainImage,
-        //     () => DataContext,
-        //     () =>
-        //     {
-        //         ZoomPanControl.ResetZoomSlim();
-        //     });
+
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        _imageTransformer = new RotationTransformer2(
+            MainTransform,
+            MainImage,
+            core.MainWindows.ActiveWindow.CurrentValue,
+            () =>
+            {
+                ZoomPanControl.ResetZoomSlim();
+            });
         ZoomPanControl.Initialize(ZoomPreview);
-        //MainPanel.Children.Add(ZoomPanControl.ZoomPreviewer);
 
         if (DataContext is not TabViewModel tab)
         {
@@ -116,16 +120,11 @@ public partial class ImageViewer2 : UserControl
             {
                 if (isSideBySide)
                 {
-                    SecondaryTransform.IsVisible = true;
                     if (SecondaryImage.Source is null)
                     {
                         var ct = CancellationTokenSource.CreateLinkedTokenSource(c, tab.GetTabCancellation().Token);
                         await tab.ImageIterator.IterateToIndexAsync(tab.ImageIterator.CurrentIndex, ct);   
                     }
-                }
-                else
-                {
-                    SecondaryTransform.IsVisible = false;
                 }
             }).AddTo(_disposables);
         
