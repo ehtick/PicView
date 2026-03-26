@@ -4,6 +4,8 @@ namespace PicView.Core.Localization;
 
 public class LanguageModel
 {
+#region Translations
+
     public string? _1Star { get; set; }
     public string? _2Star { get; set; }
     public string? _3Star { get; set; }
@@ -11,9 +13,9 @@ public class LanguageModel
     public string? _5Star { get; set; }
     public string? About { get; set; }
     public string? ActionProgram { get; set; }
+    public string? AddedToClipboard { get; set; }
     public string? AddFiles { get; set; }
     public string? AddFolder { get; set; }
-    public string? AddedToClipboard { get; set; }
     public string? AdditionalFunctions { get; set; }
     public string? AdjustNavSpeed { get; set; }
     public string? AdjustTimingForSlideshow { get; set; }
@@ -65,6 +67,7 @@ public class LanguageModel
     public string? CloseWindowPrompt { get; set; }
     public string? CloudyWeather { get; set; }
     public string? Color { get; set; }
+    public string? ColorBalance { get; set; }
     public string? ColorPickerTool { get; set; }
     public string? ColorPickerToolTooltip { get; set; }
     public string? ColorRepresentation { get; set; }
@@ -77,8 +80,8 @@ public class LanguageModel
     public string? ConvertedToBase64 { get; set; }
     public string? ConvertTo { get; set; }
     public string? CoolWhiteFluorescent { get; set; }
-    public string? Copies { get; set; }
     public string? CopiedImage { get; set; }
+    public string? Copies { get; set; }
     public string? Copy { get; set; }
     public string? CopyFile { get; set; }
     public string? CopyImage { get; set; }
@@ -188,6 +191,7 @@ public class LanguageModel
     public string? HideUI { get; set; }
     public string? High { get; set; }
     public string? HighlightColor { get; set; }
+    public string? Highlights { get; set; }
     public string? HighQuality { get; set; }
     public string? Image { get; set; }
     public string? ImageAliasing { get; set; }
@@ -228,6 +232,7 @@ public class LanguageModel
     public string? MegaPixels { get; set; }
     public string? Meter { get; set; }
     public string? MeteringMode { get; set; }
+    public string? Midtones { get; set; }
     public string? Minimize { get; set; }
     public string? MiscSettings { get; set; }
     public string? Modified { get; set; }
@@ -333,16 +338,16 @@ public class LanguageModel
     public string? Scrolling { get; set; }
     public string? ScrollingDisabled { get; set; }
     public string? ScrollingEnabled { get; set; }
-    public string? Search { get; set; }
     public string? ScrollToBottom { get; set; }
     public string? ScrollToTop { get; set; }
     public string? ScrollToZoom { get; set; }
     public string? ScrollUp { get; set; }
+    public string? Search { get; set; }
     public string? SearchSubdirectory { get; set; }
     public string? SecAbbreviation { get; set; }
     public string? SelectAll { get; set; }
-    public string? SelectFileTypesToAssociate { get; set; }
     public string? SelectFiles { get; set; }
+    public string? SelectFileTypesToAssociate { get; set; }
     public string? SelectGalleryThumb { get; set; }
     public string? SendCurrentImageToRecycleBin { get; set; }
     public string? SentFileToRecycleBin { get; set; }
@@ -353,6 +358,7 @@ public class LanguageModel
     public string? SetStarRating { get; set; }
     public string? Settings { get; set; }
     public string? Shade { get; set; }
+    public string? Shadows { get; set; }
     public string? Sharpness { get; set; }
     public string? Shift { get; set; }
     public string? ShowAllSettingsWindow { get; set; }
@@ -441,4 +447,6 @@ public class LanguageModel
     public string? Zoom { get; set; }
     public string? ZoomIn { get; set; }
     public string? ZoomOut { get; set; }
+
+#endregion
 }
