@@ -1,19 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.Extensions;
-using PicView.Avalonia.History;
-using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -86,7 +78,7 @@ public partial class EffectsView : UserControl
         // Footer buttons
         ResetButton.Click += async (_, _) => await RemoveEffects();
         CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
-        ApplyButton.Click += async (_, _) => await CommitToHistoryAndClose();
+        //ApplyButton.Click += async (_, _) => await CommitToHistoryAndClose();
 
         // Per-tab reset
         ResetColorTabBtn.Click += (_, _) => { ResetColor(); HideCancelBtn(); RequestUpdate(); };
@@ -527,26 +519,26 @@ public partial class EffectsView : UserControl
         }
     }
 
-    private async Task CommitToHistoryAndClose()
-    {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-            return;
-
-        if (vm.PicViewer.ImageSource.Value is not Bitmap bmp)
-            return;
-
-        if (vm.PicViewer.EffectConfig.Value is null)
-            return;
-
-        await using (DebouncedLoadingScope.Start(vm.MainWindow.IsLoadingIndicatorShown, 50))
-        {
-            var config = vm.PicViewer.EffectConfig.CurrentValue;
-            var desc = BuildEffectDescription(config);
-
-            await vm.HistoryManager.AddSnapshot(EditKind.Effect, desc, bmp).ConfigureAwait(false);
-            await Dispatcher.UIThread.InvokeAsync(() => (VisualRoot as Window)?.Close());
-        }
-    }
+    // private async Task CommitToHistoryAndClose()
+    // {
+    //     if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+    //         return;
+    //
+    //     if (vm.PicViewer.ImageSource.Value is not Bitmap bmp)
+    //         return;
+    //
+    //     if (vm.PicViewer.EffectConfig.Value is null)
+    //         return;
+    //
+    //     await using (DebouncedLoadingScope.Start(vm.MainWindow.IsLoadingIndicatorShown, 50))
+    //     {
+    //         var config = vm.PicViewer.EffectConfig.CurrentValue;
+    //         var desc = BuildEffectDescription(config);
+    //
+    //         //await vm.HistoryManager.AddSnapshot(EditKind.Effect, desc, bmp).ConfigureAwait(false);
+    //         await Dispatcher.UIThread.InvokeAsync(() => (VisualRoot as Window)?.Close());
+    //     }
+    // }
 
     private void HideResetBtn()
     {
@@ -658,3 +650,4 @@ public partial class EffectsView : UserControl
         public override string ToString() => Name;
     }
 }
+

@@ -63,6 +63,7 @@ public class TranslationViewModel : IDisposable
         CloseGallery.Value = t.CloseGallery;
         CloseWindowPrompt.Value = t.CloseWindowPrompt;
         Color.Value = t.Color;
+        ColorBalance.Value = t.ColorBalance;
         ColorPickerTool.Value = t.ColorPickerTool;
         ColorPickerToolTooltip.Value = t.ColorPickerToolTooltip;
         ColorRepresentation.Value = t.ColorRepresentation;
@@ -140,6 +141,7 @@ public class TranslationViewModel : IDisposable
         HideBottomToolbar.Value = t.HideBottomToolbar;
         HideHoverNavigationBar.Value = t.HideHoverNavigationBar;
         HideUI.Value = t.HideUI;
+        Highlights.Value = t.Highlights;
         HighlightColor.Value = t.HighlightColor;
         HighQuality.Value = t.HighQuality;
         Image.Value = t.Image;
@@ -167,6 +169,7 @@ public class TranslationViewModel : IDisposable
         MaxAperture.Value = t.MaxAperture;
         Maximize.Value = t.Maximize;
         MeteringMode.Value = t.MeteringMode;
+        Midtones.Value = t.Midtones;
         MiscSettings.Value = t.MiscSettings;
         Modified.Value = t.Modified;
         Mouse.Value = t.Mouse;
@@ -267,6 +270,7 @@ public class TranslationViewModel : IDisposable
         SetAsWallpaper.Value = t.SetAsWallpaper;
         SetStarRating.Value = t.SetStarRating;
         Settings.Value = t.Settings;
+        Shadows.Value = t.Shadows;
         Sharpness.Value = t.Sharpness;
         ShowAllSettingsWindow.Value = t.ShowAllSettingsWindow;
         ShowBottomGallery.Value = t.ShowBottomGallery;
@@ -340,10 +344,10 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> _4Star { get; } = new();
     public BindableReactiveProperty<string?> _5Star { get; } = new();
     public BindableReactiveProperty<string?> About { get; } = new();
+    public BindableReactiveProperty<string?> AboutWindow { get; } = new();
     public BindableReactiveProperty<string?> AddFiles { get; } = new();
     public BindableReactiveProperty<string?> AddFolder { get; } = new();
     public BindableReactiveProperty<string?> AdditionalFunctions { get; } = new();
-    public BindableReactiveProperty<string?> AboutWindow { get; } = new();
     public BindableReactiveProperty<string?> AdjustNavSpeed { get; } = new();
     public BindableReactiveProperty<string?> AdjustTimingForSlideshow { get; } = new();
     public BindableReactiveProperty<string?> AdjustTimingForZoom { get; } = new();
@@ -362,6 +366,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> BitDepth { get; } = new();
     public BindableReactiveProperty<string?> BlackAndWhite { get; } = new();
     public BindableReactiveProperty<string?> Blur { get; } = new();
+    public BindableReactiveProperty<string?> Bottom { get; } = new();
     public BindableReactiveProperty<string?> BottomGalleryItemSize { get; } = new();
     public BindableReactiveProperty<string?> BottomGalleryThumbnailStretch { get; } = new();
     public BindableReactiveProperty<string?> Brightness { get; } = new();
@@ -381,6 +386,8 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Close { get; } = new();
     public BindableReactiveProperty<string?> CloseGallery { get; } = new();
     public BindableReactiveProperty<string?> CloseWindowPrompt { get; } = new();
+    public BindableReactiveProperty<string?> Color { get; } = new();
+    public BindableReactiveProperty<string?> ColorBalance { get; } = new();
     public BindableReactiveProperty<string?> ColorPickerTool { get; } = new();
     public BindableReactiveProperty<string?> ColorPickerToolTooltip { get; } = new();
     public BindableReactiveProperty<string?> ColorRepresentation { get; } = new();
@@ -390,6 +397,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ConstrainBackgroundToImage { get; } = new();
     public BindableReactiveProperty<string?> Contrast { get; } = new();
     public BindableReactiveProperty<string?> ConvertTo { get; } = new();
+    public BindableReactiveProperty<string?> Copies { get; } = new();
     public BindableReactiveProperty<string?> Copy { get; } = new();
     public BindableReactiveProperty<string?> CopyFile { get; } = new();
     public BindableReactiveProperty<string?> CopyImage { get; } = new();
@@ -417,7 +425,6 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ExposureProgram { get; } = new();
     public BindableReactiveProperty<string?> ExposureTime { get; } = new();
     public BindableReactiveProperty<string?> File { get; } = new();
-    public BindableReactiveProperty<string?> Files { get; } = new();
     public BindableReactiveProperty<string?> FileAssociations { get; } = new();
     public BindableReactiveProperty<string?> FileConversion { get; } = new();
     public BindableReactiveProperty<string?> FileCopyPath { get; } = new();
@@ -426,6 +433,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> FileManagement { get; } = new();
     public BindableReactiveProperty<string?> FileName { get; } = new();
     public BindableReactiveProperty<string?> FileProperties { get; } = new();
+    public BindableReactiveProperty<string?> Files { get; } = new();
     public BindableReactiveProperty<string?> FileSize { get; } = new();
     public BindableReactiveProperty<string?> Fill { get; } = new();
     public BindableReactiveProperty<string?> FillSquare { get; } = new();
@@ -458,6 +466,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> HideHoverNavigationBar { get; } = new();
     public BindableReactiveProperty<string?> HideUI { get; } = new();
     public BindableReactiveProperty<string?> HighlightColor { get; } = new();
+    public BindableReactiveProperty<string?> Highlights { get; } = new();
     public BindableReactiveProperty<string?> HighQuality { get; } = new();
     public BindableReactiveProperty<string?> Image { get; } = new();
     public BindableReactiveProperty<string?> ImageAliasing { get; } = new();
@@ -471,6 +480,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> LastAccessTime { get; } = new();
     public BindableReactiveProperty<string?> LastImage { get; } = new();
     public BindableReactiveProperty<string?> Latitude { get; } = new();
+    public BindableReactiveProperty<string?> Left { get; } = new();
     public BindableReactiveProperty<string?> LensMaker { get; } = new();
     public BindableReactiveProperty<string?> LensModel { get; } = new();
     public BindableReactiveProperty<string?> Lighting { get; } = new();
@@ -479,9 +489,11 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Longitude { get; } = new();
     public BindableReactiveProperty<string?> Lossless { get; } = new();
     public BindableReactiveProperty<string?> Lossy { get; } = new();
+    public BindableReactiveProperty<string?> Margins { get; } = new();
     public BindableReactiveProperty<string?> MaxAperture { get; } = new();
     public BindableReactiveProperty<string?> Maximize { get; } = new();
     public BindableReactiveProperty<string?> MeteringMode { get; } = new();
+    public BindableReactiveProperty<string?> Midtones { get; } = new();
     public BindableReactiveProperty<string?> MiscSettings { get; } = new();
     public BindableReactiveProperty<string?> Modified { get; } = new();
     public BindableReactiveProperty<string?> Mouse { get; } = new();
@@ -517,6 +529,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> Orientation { get; } = new();
     public BindableReactiveProperty<string?> OutputFolder { get; } = new();
     public BindableReactiveProperty<string?> Pan { get; } = new();
+    public BindableReactiveProperty<string?> PaperSize { get; } = new();
     public BindableReactiveProperty<string?> Paste { get; } = new();
     public BindableReactiveProperty<string?> PencilSketch { get; } = new();
     public BindableReactiveProperty<string?> Percentage { get; } = new();
@@ -530,6 +543,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> PrevFolder { get; } = new();
     public BindableReactiveProperty<string?> PrevImage { get; } = new();
     public BindableReactiveProperty<string?> Print { get; } = new();
+    public BindableReactiveProperty<string?> Printer { get; } = new();
     public BindableReactiveProperty<string?> PrintSizeCm { get; } = new();
     public BindableReactiveProperty<string?> PrintSizeIn { get; } = new();
     public BindableReactiveProperty<string?> Quality { get; } = new();
@@ -552,11 +566,13 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ResolutionUnit { get; } = new();
     public BindableReactiveProperty<string?> RestoreDown { get; } = new();
     public BindableReactiveProperty<string?> Reverse { get; } = new();
+    public BindableReactiveProperty<string?> Right { get; } = new();
     public BindableReactiveProperty<string?> RotateLeft { get; } = new();
     public BindableReactiveProperty<string?> RotateRight { get; } = new();
     public BindableReactiveProperty<string?> Saturation { get; } = new();
     public BindableReactiveProperty<string?> Save { get; } = new();
     public BindableReactiveProperty<string?> SaveAs { get; } = new();
+    public BindableReactiveProperty<string?> Scale { get; } = new();
     public BindableReactiveProperty<string?> ScrollAndRotate { get; } = new();
     public BindableReactiveProperty<string?> ScrollDirection { get; } = new();
     public BindableReactiveProperty<string?> ScrollDisabled { get; } = new();
@@ -571,13 +587,14 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> SecAbbreviation { get; } = new();
     public BindableReactiveProperty<string?> SelectAll { get; } = new();
     public BindableReactiveProperty<string?> SelectFile { get; } = new();
-    public BindableReactiveProperty<string?> SelectFileTypesToAssociate { get; } = new();
     public BindableReactiveProperty<string?> SelectFiles { get; } = new();
+    public BindableReactiveProperty<string?> SelectFileTypesToAssociate { get; } = new();
     public BindableReactiveProperty<string?> SelectGalleryThumb { get; } = new();
     public BindableReactiveProperty<string?> SetAsLockScreenImage { get; } = new();
     public BindableReactiveProperty<string?> SetAsWallpaper { get; } = new();
     public BindableReactiveProperty<string?> SetStarRating { get; } = new();
     public BindableReactiveProperty<string?> Settings { get; } = new();
+    public BindableReactiveProperty<string?> Shadows { get; } = new();
     public BindableReactiveProperty<string?> Sharpness { get; } = new();
     public BindableReactiveProperty<string?> ShowAllSettingsWindow { get; } = new();
     public BindableReactiveProperty<string?> ShowBottomGallery { get; } = new();
@@ -618,6 +635,7 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ToggleScroll { get; } = new();
     public BindableReactiveProperty<string?> ToggleTaskbarProgress { get; } = new();
     public BindableReactiveProperty<string?> ToolWindows { get; } = new();
+    public BindableReactiveProperty<string?> Top { get; } = new();
     public BindableReactiveProperty<string?> Unassociate { get; } = new();
     public BindableReactiveProperty<string?> UnFlip { get; } = new();
     public BindableReactiveProperty<string?> Uniform { get; } = new();
@@ -649,7 +667,6 @@ public class TranslationViewModel : IDisposable
     public BindableReactiveProperty<string?> ZoomIn { get; } = new();
 
     public BindableReactiveProperty<string?> ZoomOut { get; } = new();
-
     #endregion strings
 
     #region Dynamic Translation strings
@@ -671,18 +688,6 @@ public class TranslationViewModel : IDisposable
 
     public BindableReactiveProperty<string?> IsShowingUI { get; } = new();
     public BindableReactiveProperty<string?> IsUsingTouchpad { get; } = new();
-
-
-    public BindableReactiveProperty<string?> Printer { get; } = new();
-    public BindableReactiveProperty<string?> PaperSize { get; } = new();
-    public BindableReactiveProperty<string?> Scale { get; } = new();
-    public BindableReactiveProperty<string?> Color { get; } = new();
-    public BindableReactiveProperty<string?> Copies { get; } = new();
-    public BindableReactiveProperty<string?> Margins { get; } = new();
-    public BindableReactiveProperty<string?> Top { get; } = new();
-    public BindableReactiveProperty<string?> Bottom { get; } = new();
-    public BindableReactiveProperty<string?> Left { get; } = new();
-    public BindableReactiveProperty<string?> Right { get; } = new();
 
     #endregion
 }
