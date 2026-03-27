@@ -62,6 +62,7 @@ public class LanguageModel
     public string? ChangeKeybindingTooltip { get; set; }
     public string? ChangingThemeRequiresRestart { get; set; }
     public string? CheckForUpdates { get; set; }
+    public string? Clarity { get; set; }
     public string? Clear { get; set; }
     public string? ClearEffects { get; set; }
     public string? ClipboardImage { get; set; }
@@ -107,6 +108,7 @@ public class LanguageModel
     public string? Daylight { get; set; }
     public string? DaylightFluorescent { get; set; }
     public string? DayWhiteFluorescent { get; set; }
+    public string? Dehaze { get; set; }
     public string? Del { get; set; }
     public string? DeletedFile { get; set; }
     public string? DeleteFile { get; set; }
@@ -153,6 +155,7 @@ public class LanguageModel
     public string? Fill { get; set; }
     public string? FillHeight { get; set; }
     public string? FillSquare { get; set; }
+    public string? FilmGrain { get; set; }
     public string? Filter { get; set; }
     public string? FineWeather { get; set; }
     public string? FirstImage { get; set; }
@@ -193,6 +196,7 @@ public class LanguageModel
     public string? HideHoverNavigationBar { get; set; }
     public string? HideUI { get; set; }
     public string? High { get; set; }
+    public string? HighContrastBW { get; set; }
     public string? HighlightColor { get; set; }
     public string? Highlights { get; set; }
     public string? HighQuality { get; set; }
@@ -208,6 +212,7 @@ public class LanguageModel
     public string? InterfaceConfiguration { get; set; }
     public string? ISOSpeed { get; set; }
     public string? Landscape { get; set; }
+    public string? LandscapeCrisp { get; set; }
     public string? Language { get; set; }
     public string? LastAccessTime { get; set; }
     public string? LastImage { get; set; }
@@ -293,7 +298,10 @@ public class LanguageModel
     public string? Pinned { get; set; }
     public string? Pixels { get; set; }
     public string? Portrait { get; set; }
+    public string? PortraitSoft { get; set; }
     public string? Posterize { get; set; }
+    public string? PresetDescription { get; set; }
+    public string? Presets { get; set; }
     public string? PressKey { get; set; }
     public string? PrevArchive { get; set; }
     public string? PrevFolder { get; set; }
@@ -315,6 +323,7 @@ public class LanguageModel
     public string? RenameFile { get; set; }
     public string? Reset { get; set; }
     public string? ResetButtonText { get; set; }
+    public string? ResetPreset { get; set; }
     public string? ResetZoom { get; set; }
     public string? ResetZoomOnChange { get; set; }
     public string? Resize { get; set; }
@@ -362,6 +371,7 @@ public class LanguageModel
     public string? Settings { get; set; }
     public string? Shade { get; set; }
     public string? Shadows { get; set; }
+    public string? Sharpen { get; set; }
     public string? Sharpness { get; set; }
     public string? Shift { get; set; }
     public string? ShowAllSettingsWindow { get; set; }
@@ -389,7 +399,9 @@ public class LanguageModel
     public string? SizeMp { get; set; }
     public string? SizeTooltip { get; set; }
     public string? Slideshow { get; set; }
+    public string? SmartPresets { get; set; }
     public string? Soft { get; set; }
+    public string? SoftMatte { get; set; }
     public string? Software { get; set; }
     public string? Solarize { get; set; }
     public string? SortFilesBy { get; set; }
@@ -438,6 +450,8 @@ public class LanguageModel
     public string? Vibrance { get; set; }
     public string? View { get; set; }
     public string? ViewLicenseFile { get; set; }
+    public string? Vignette { get; set; }
+    public string? VividPop { get; set; }
     public string? WhenDeletingAFile { get; set; }
     public string? WhiteBalance { get; set; }
     public string? WhiteFluorescent { get; set; }

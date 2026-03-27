@@ -1012,7 +1012,7 @@
                                 </DockPanel>
 
                                 <!--  Dehaze  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Dehaze" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Dehaze.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="DehazeSlider"
@@ -1043,7 +1043,7 @@
                                 </StackPanel>
 
                                 <!--  Clarity  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Clarity" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Clarity.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="ClaritySlider"
@@ -1074,7 +1074,7 @@
                                 </StackPanel>
 
                                 <!--  Grain  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Film Grain" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.FilmGrain.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="GrainSlider"
@@ -1105,7 +1105,7 @@
                                 </StackPanel>
 
                                 <!--  Sharpen  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Sharpen" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Sharpen.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="SharpenSlider"
@@ -1136,7 +1136,7 @@
                                 </StackPanel>
 
                                 <!--  Vignette  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Vignette" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Vignette.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="VignetteSlider"
@@ -1349,16 +1349,16 @@
                     </TabItem>
 
                     <!--  PRESETS TAB  -->
-                    <TabItem Margin="0" Header="Presets">
+                    <TabItem Margin="0" Header="{Binding Translation.Presets.Value}">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="15,10">
-                                <TextBlock Classes="txt sectionHeader" Text="Smart Presets" />
+                                <TextBlock Classes="txt sectionHeader" Text="{Binding Translation.SmartPresets.Value}" />
 
                                 <TextBlock
                                     Margin="0,0,0,10"
                                     Classes="txt"
                                     Foreground="{StaticResource SecondaryTextColor}"
-                                    Text="Presets set multiple sliders. You can tweak further after applying." />
+                                    Text="{Binding Translation.PresetDescription.Value}" />
 
                                 <StackPanel Orientation="Horizontal">
                                     <ComboBox
@@ -1375,7 +1375,7 @@
                                             HorizontalAlignment="Center"
                                             Classes="txt"
                                             Foreground="{DynamicResource MainTextColor}"
-                                            Text="Apply" />
+                                            Text="{Binding Translation.Apply.Value}" />
                                     </Button>
                                     <customControls:IconButton
                                         x:Name="ResetAllBtn"
@@ -1389,7 +1389,7 @@
                                         Icon="{StaticResource UndoImage}"
                                         IconHeight="12"
                                         IconWidth="12"
-                                        ToolTip.Tip="Reset Preset" />
+                                        ToolTip.Tip="{Binding Translation.ResetPreset.Value}" />
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
