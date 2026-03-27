@@ -65,6 +65,77 @@
 
 
     </UserControl.Styles>
+    <UserControl.ContextMenu>
+        <ContextMenu x:Name="EffectsContextMenu">
+            <MenuItem Command="{CompiledBinding Tools.SaveFileCommand}" Header="{CompiledBinding Translation.Save.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource SaveGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding Tools.SaveFileAsCommand}" Header="{CompiledBinding Translation.SaveAs.Value}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource SaveGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding Tools.CopyImageCommand}" Header="{CompiledBinding Translation.CopyImage.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource CopyGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem
+                Command="{CompiledBinding Tools.SetAsWallpaperFilledCommand}"
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
+                                                   FallbackValue=''}"
+                Header="{CompiledBinding Translation.SetAsWallpaper.Value,
+                                         Mode=OneWay}"
+                IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="13"
+                        Height="10.40"
+                        Data="{StaticResource PanoramaGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}" />
+            <MenuItem x:Name="ClearEffectsItem" Header="{CompiledBinding Translation.ClearEffects.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Image
+                        Width="12"
+                        Height="12"
+                        Source="{StaticResource ClearImage}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem x:Name="CloseItem" Header="{CompiledBinding Translation.Close.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource CloseGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="CancelBrush" Color="{DynamicResource MainTextColor}" />
