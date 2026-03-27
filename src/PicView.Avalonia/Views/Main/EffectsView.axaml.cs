@@ -10,6 +10,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageEffects;
+using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Avalonia.Views.Main;
@@ -355,8 +356,8 @@ public partial class EffectsView : UserControl
         // Smart presets: avoid aggressive vignette, keep safe, fast and pleasant
         _presets.AddRange(new[]
         {
-            new EffectPreset("Neutral", () => { ResetAllUi(); }),
-            new EffectPreset("Vivid Pop", () =>
+            new EffectPreset(TranslationManager.Translation.Normal, () => { ResetAllUi(); }),
+            new EffectPreset(TranslationManager.Translation.VividPop, () =>
             {
                 ResetAllUi();
                 VibranceSlider.Value = 25;
@@ -365,7 +366,7 @@ public partial class EffectsView : UserControl
                 ClaritySlider.Value = 12;
                 DehazeSlider.Value = 8;
             }),
-            new EffectPreset("Soft Matte", () =>
+            new EffectPreset(TranslationManager.Translation.SoftMatte, () =>
             {
                 ResetAllUi();
                 ContrastSlider.Value = -12;
@@ -375,7 +376,7 @@ public partial class EffectsView : UserControl
                 VignetteSlider.Value = 10;
                 GrainSlider.Value = 10;
             }),
-            new EffectPreset("High Contrast B&W", () =>
+            new EffectPreset(TranslationManager.Translation.HighContrastBW, () =>
             {
                 ResetAllUi();
                 BlackAndWhiteToggleButton.IsChecked = true;
@@ -386,7 +387,7 @@ public partial class EffectsView : UserControl
                 ClaritySlider.Value = 15;
                 VignetteSlider.Value = 12;
             }),
-            new EffectPreset("Old Movie", () =>
+            new EffectPreset(TranslationManager.Translation.OldMovie, () =>
             {
                 ResetAllUi();
                 OldMovieToggleButton.IsChecked = true;
@@ -394,7 +395,7 @@ public partial class EffectsView : UserControl
                 GrainSlider.Value = 25;
                 VignetteSlider.Value = 15;
             }),
-            new EffectPreset("Portrait Soft", () =>
+            new EffectPreset(TranslationManager.Translation.PortraitSoft, () =>
             {
                 ResetAllUi();
                 ExposureSlider.Value = 0.15;
@@ -404,7 +405,7 @@ public partial class EffectsView : UserControl
                 SharpenSlider.Value = 6;
                 VibranceSlider.Value = 8;
             }),
-            new EffectPreset("Landscape Crisp", () =>
+            new EffectPreset(TranslationManager.Translation.LandscapeCrisp, () =>
             {
                 ResetAllUi();
                 DehazeSlider.Value = 12;

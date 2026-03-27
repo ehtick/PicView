@@ -43,6 +43,8 @@ public class LanguageModel
     public string? BatchResize { get; set; }
     public string? BitDepth { get; set; }
     public string? BlackAndWhite { get; set; }
+    public string? Blacks { get; set; }
+    public string? Blue { get; set; }
     public string? Blur { get; set; }
     public string? Bottom { get; set; }
     public string? Brightness { get; set; }
@@ -58,6 +60,7 @@ public class LanguageModel
     public string? ChangeKeybindingTooltip { get; set; }
     public string? ChangingThemeRequiresRestart { get; set; }
     public string? CheckForUpdates { get; set; }
+    public string? Clarity { get; set; }
     public string? Clear { get; set; }
     public string? ClearEffects { get; set; }
     public string? ClipboardImage { get; set; }
@@ -103,6 +106,7 @@ public class LanguageModel
     public string? Daylight { get; set; }
     public string? DaylightFluorescent { get; set; }
     public string? DayWhiteFluorescent { get; set; }
+    public string? Dehaze { get; set; }
     public string? Del { get; set; }
     public string? DeletedFile { get; set; }
     public string? DeleteFile { get; set; }
@@ -152,6 +156,7 @@ public class LanguageModel
     public string? Fill { get; set; }
     public string? FillHeight { get; set; }
     public string? FillSquare { get; set; }
+    public string? FilmGrain { get; set; }
     public string? Filter { get; set; }
     public string? FineWeather { get; set; }
     public string? FirstImage { get; set; }
@@ -175,6 +180,7 @@ public class LanguageModel
     public string? Fullscreen { get; set; }
     public string? GallerySettings { get; set; }
     public string? GalleryThumbnailStretch { get; set; }
+    public string? Gamma { get; set; }
     public string? GeneralSettings { get; set; }
     public string? GenerateThumbnails { get; set; }
     public string? GithubRepo { get; set; }
@@ -182,6 +188,7 @@ public class LanguageModel
     public string? GoBackBy100Images { get; set; }
     public string? GoBackBy10Images { get; set; }
     public string? Graphics { get; set; }
+    public string? Green { get; set; }
     public string? Hard { get; set; }
     public string? Height { get; set; }
     public string? Help { get; set; }
@@ -190,9 +197,11 @@ public class LanguageModel
     public string? HideHoverNavigationBar { get; set; }
     public string? HideUI { get; set; }
     public string? High { get; set; }
+    public string? HighContrastBW { get; set; }
     public string? HighlightColor { get; set; }
     public string? Highlights { get; set; }
     public string? HighQuality { get; set; }
+    public string? Hue { get; set; }
     public string? Image { get; set; }
     public string? ImageAliasing { get; set; }
     public string? ImageControl { get; set; }
@@ -205,6 +214,7 @@ public class LanguageModel
     public string? ISOSpeed { get; set; }
     public string? ItemSpacing { get; set; }
     public string? Landscape { get; set; }
+    public string? LandscapeCrisp { get; set; }
     public string? Language { get; set; }
     public string? LastAccessTime { get; set; }
     public string? LastImage { get; set; }
@@ -291,7 +301,10 @@ public class LanguageModel
     public string? Pinned { get; set; }
     public string? Pixels { get; set; }
     public string? Portrait { get; set; }
+    public string? PortraitSoft { get; set; }
     public string? Posterize { get; set; }
+    public string? PresetDescription { get; set; }
+    public string? Presets { get; set; }
     public string? PressKey { get; set; }
     public string? PrevArchive { get; set; }
     public string? PrevFolder { get; set; }
@@ -304,6 +317,7 @@ public class LanguageModel
     public string? Random { get; set; }
     public string? RawCamera { get; set; }
     public string? RecentFiles { get; set; }
+    public string? Red { get; set; }
     public string? RedEyeReduction { get; set; }
     public string? Reload { get; set; }
     public string? RemoveAll { get; set; }
@@ -312,6 +326,7 @@ public class LanguageModel
     public string? RenameFile { get; set; }
     public string? Reset { get; set; }
     public string? ResetButtonText { get; set; }
+    public string? ResetPreset { get; set; }
     public string? ResetZoom { get; set; }
     public string? ResetZoomOnChange { get; set; }
     public string? Resize { get; set; }
@@ -359,6 +374,7 @@ public class LanguageModel
     public string? Settings { get; set; }
     public string? Shade { get; set; }
     public string? Shadows { get; set; }
+    public string? Sharpen { get; set; }
     public string? Sharpness { get; set; }
     public string? Shift { get; set; }
     public string? ShowAllSettingsWindow { get; set; }
@@ -390,7 +406,9 @@ public class LanguageModel
     public string? SizeMp { get; set; }
     public string? SizeTooltip { get; set; }
     public string? Slideshow { get; set; }
+    public string? SmartPresets { get; set; }
     public string? Soft { get; set; }
+    public string? SoftMatte { get; set; }
     public string? Software { get; set; }
     public string? Solarize { get; set; }
     public string? SortFilesBy { get; set; }
@@ -405,15 +423,18 @@ public class LanguageModel
     public string? StrobeReturnLightDetected { get; set; }
     public string? StrobeReturnLightNotDetected { get; set; }
     public string? Subject { get; set; }
+    public string? Temperature { get; set; }
     public string? Theme { get; set; }
     public string? Thumbnail { get; set; }
     public string? Tile { get; set; }
+    public string? Tint { get; set; }
     public string? Title { get; set; }
     public string? ToggleBackgroundColor { get; set; }
     public string? ToggleFullscreen { get; set; }
     public string? ToggleLooping { get; set; }
     public string? ToggleScroll { get; set; }
     public string? ToggleTaskbarProgress { get; set; }
+    public string? Tonal { get; set; }
     public string? ToolWindows { get; set; }
     public string? Top { get; set; }
     public string? UnableToRender { get; set; }
@@ -433,11 +454,15 @@ public class LanguageModel
     public string? UsingMouse { get; set; }
     public string? UsingTouchpad { get; set; }
     public string? Version { get; set; }
+    public string? Vibrance { get; set; }
     public string? View { get; set; }
     public string? ViewLicenseFile { get; set; }
+    public string? Vignette { get; set; }
+    public string? VividPop { get; set; }
     public string? WhenDeletingAFile { get; set; }
     public string? WhiteBalance { get; set; }
     public string? WhiteFluorescent { get; set; }
+    public string? Whites { get; set; }
     public string? Width { get; set; }
     public string? WidthAndHeight { get; set; }
     public string? Window { get; set; }
@@ -447,6 +472,5 @@ public class LanguageModel
     public string? Zoom { get; set; }
     public string? ZoomIn { get; set; }
     public string? ZoomOut { get; set; }
-
-#endregion
+    #endregion
 }

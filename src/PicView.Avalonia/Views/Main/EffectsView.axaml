@@ -65,6 +65,77 @@
 
 
     </UserControl.Styles>
+    <UserControl.ContextMenu>
+        <ContextMenu x:Name="EffectsContextMenu">
+            <MenuItem Command="{CompiledBinding Tools.SaveFileCommand}" Header="{CompiledBinding Translation.Save.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource SaveGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding Tools.SaveFileAsCommand}" Header="{CompiledBinding Translation.SaveAs.Value}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource SaveGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Command="{CompiledBinding Tools.CopyImageCommand}" Header="{CompiledBinding Translation.CopyImage.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource CopyGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem
+                Command="{CompiledBinding Tools.SetAsWallpaperFilledCommand}"
+                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
+                                                   FallbackValue=''}"
+                Header="{CompiledBinding Translation.SetAsWallpaper.Value,
+                                         Mode=OneWay}"
+                IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="13"
+                        Height="10.40"
+                        Data="{StaticResource PanoramaGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}" />
+            <MenuItem x:Name="ClearEffectsItem" Header="{CompiledBinding Translation.ClearEffects.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Image
+                        Width="12"
+                        Height="12"
+                        Source="{StaticResource ClearImage}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem x:Name="CloseItem" Header="{CompiledBinding Translation.Close.Value, Mode=OneWay}">
+                <MenuItem.Icon>
+                    <Path
+                        Width="12"
+                        Height="12"
+                        Data="{StaticResource CloseGeometry}"
+                        Fill="{DynamicResource MainTextColor}"
+                        Stretch="Fill" />
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
+    </UserControl.ContextMenu>
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="CancelBrush" Color="{DynamicResource MainTextColor}" />
@@ -171,7 +242,7 @@
                 <TabControl x:Name="EffectsTabs">
 
                     <!--  COLOR TAB  -->
-                    <TabItem Margin="0" Header="{Binding Translation.Color}">
+                    <TabItem Margin="0" Header="{Binding Translation.Color.Value}">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="15,10">
 
@@ -194,11 +265,11 @@
                                     <TextBlock
                                         Classes="txt sectionHeader"
                                         DockPanel.Dock="Left"
-                                        Text="Color" />
+                                        Text="{Binding Translation.Color.Value}" />
                                 </DockPanel>
 
                                 <!--  Hue  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Hue" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Hue.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="HueSlider"
@@ -290,7 +361,7 @@
                                 </StackPanel>
 
                                 <!--  Temperature  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Temperature" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Temperature.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="TemperatureSlider"
@@ -334,7 +405,7 @@
                                 </StackPanel>
 
                                 <!--  Tint  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Tint" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Tint.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="TintSlider"
@@ -378,7 +449,7 @@
                                 </StackPanel>
 
                                 <!--  Vibrance  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Vibrance" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Tint.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="VibranceSlider"
@@ -431,10 +502,10 @@
 
                                 <TabControl x:Name="ColorBalanceTabs" Margin="0,6,0,0">
 
-                                    <TabItem Margin="0" Header="Shadows">
+                                    <TabItem Margin="0" Header="{Binding Translation.Shadows.Value}">
                                         <StackPanel Margin="0,8,0,0">
 
-                                            <TextBlock Classes="txt fieldLabel" Text="Red" />
+                                            <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Red.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBShadowsCR"
@@ -454,7 +525,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Green" />
+                                                Text="{Binding Translation.Green.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBShadowsMG"
@@ -475,7 +546,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Blue" />
+                                                Text="{Binding Translation.Blue.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBShadowsYB"
@@ -498,7 +569,7 @@
                                     <TabItem Margin="0" Header="{Binding Translation.Midtones.Value}">
                                         <StackPanel Margin="0,8,0,0">
 
-                                            <TextBlock Classes="txt fieldLabel" Text="Red" />
+                                            <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Red.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBMidCR"
@@ -518,7 +589,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Green" />
+                                                Text="{Binding Translation.Green.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBMidMG"
@@ -538,7 +609,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Blue" />
+                                                Text="{Binding Translation.Blue.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBMidYB"
@@ -561,7 +632,7 @@
                                     <TabItem Margin="0" Header="{Binding Translation.Highlights.Value}">
                                         <StackPanel Margin="0,8,0,0">
 
-                                            <TextBlock Classes="txt fieldLabel" Text="Red" />
+                                            <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Red.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBHighCR"
@@ -581,7 +652,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Green" />
+                                                Text="{Binding Translation.Green.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBHighMG"
@@ -601,7 +672,7 @@
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Classes="txt fieldLabel"
-                                                Text="Blue" />
+                                                Text="{Binding Translation.Blue.Value}" />
                                             <StackPanel Orientation="Horizontal">
                                                 <customControls:CustomSlider
                                                     x:Name="CBHighYB"
@@ -789,7 +860,7 @@
                                 </StackPanel>
 
                                 <!--  Gamma  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Gamma" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Gamma.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="GammaSlider"
@@ -833,10 +904,10 @@
                                         IconWidth="12" />
                                 </StackPanel>
 
-                                <TextBlock Classes="txt sectionHeader" Text="Tonal" />
+                                <TextBlock Classes="txt sectionHeader" Text="{Binding Translation.Tonal.Value}" />
 
                                 <!--  Highlights  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Highlights" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Highlights.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="HighlightsSlider"
@@ -908,7 +979,7 @@
                                 </StackPanel>
 
                                 <!--  Blacks / Whites  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Blacks" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Blacks.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="BlacksSlider"
@@ -944,7 +1015,7 @@
                                         IconWidth="12" />
                                 </StackPanel>
 
-                                <TextBlock Classes="txt fieldLabel" Text="Whites" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Whites.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="WhitesSlider"
@@ -1012,7 +1083,7 @@
                                 </DockPanel>
 
                                 <!--  Dehaze  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Dehaze" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Dehaze.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="DehazeSlider"
@@ -1043,7 +1114,7 @@
                                 </StackPanel>
 
                                 <!--  Clarity  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Clarity" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Clarity.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="ClaritySlider"
@@ -1074,7 +1145,7 @@
                                 </StackPanel>
 
                                 <!--  Grain  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Film Grain" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.FilmGrain.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="GrainSlider"
@@ -1105,7 +1176,7 @@
                                 </StackPanel>
 
                                 <!--  Sharpen  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Sharpen" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Sharpen.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="SharpenSlider"
@@ -1136,7 +1207,7 @@
                                 </StackPanel>
 
                                 <!--  Vignette  -->
-                                <TextBlock Classes="txt fieldLabel" Text="Vignette" />
+                                <TextBlock Classes="txt fieldLabel" Text="{Binding Translation.Vignette.Value}" />
                                 <StackPanel Orientation="Horizontal">
                                     <customControls:CustomSlider
                                         x:Name="VignetteSlider"
@@ -1349,16 +1420,16 @@
                     </TabItem>
 
                     <!--  PRESETS TAB  -->
-                    <TabItem Margin="0" Header="Presets">
+                    <TabItem Margin="0" Header="{Binding Translation.Presets.Value}">
                         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="15,10">
-                                <TextBlock Classes="txt sectionHeader" Text="Smart Presets" />
+                                <TextBlock Classes="txt sectionHeader" Text="{Binding Translation.SmartPresets.Value}" />
 
                                 <TextBlock
                                     Margin="0,0,0,10"
                                     Classes="txt"
                                     Foreground="{StaticResource SecondaryTextColor}"
-                                    Text="Presets set multiple sliders. You can tweak further after applying." />
+                                    Text="{Binding Translation.PresetDescription.Value}" />
 
                                 <StackPanel Orientation="Horizontal">
                                     <ComboBox
@@ -1375,7 +1446,7 @@
                                             HorizontalAlignment="Center"
                                             Classes="txt"
                                             Foreground="{DynamicResource MainTextColor}"
-                                            Text="Apply" />
+                                            Text="{Binding Translation.Apply.Value}" />
                                     </Button>
                                     <customControls:IconButton
                                         x:Name="ResetAllBtn"
@@ -1389,7 +1460,7 @@
                                         Icon="{StaticResource UndoImage}"
                                         IconHeight="12"
                                         IconWidth="12"
-                                        ToolTip.Tip="Reset Preset" />
+                                        ToolTip.Tip="{Binding Translation.ResetPreset.Value}" />
                                 </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
