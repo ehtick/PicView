@@ -109,6 +109,13 @@ public static class MainKeyboardShortcuts2
         mainWindowViewModel?.Mapper?.StopRepeatedNavigation();
         UpdateModifierState(e.Key, false);
         Reset();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            if (e.Key is Key.LeftAlt)
+            {
+                mainWindowViewModel.TopTitlebarViewModel.ToggleMenu();
+            }
+        }
     }
 
     /// <summary>
@@ -186,6 +193,12 @@ public static class MainKeyboardShortcuts2
             return true;
         }
         */
+
+        // Don't interrupt navigating main menu with keyboard
+        if (vm.TopTitlebarViewModel.IsMainMenuVisible.CurrentValue)
+        {
+            return true;
+        }
 
         // Handle open dialog
         if (DialogManager.IsDialogOpen)

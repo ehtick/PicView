@@ -1,4 +1,5 @@
-﻿using PicView.Core.Conversion;
+﻿using System.Diagnostics;
+using PicView.Core.Conversion;
 using PicView.Core.ViewModels;
 using R3;
 

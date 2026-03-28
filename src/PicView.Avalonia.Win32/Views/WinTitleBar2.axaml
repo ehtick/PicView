@@ -1,45 +1,45 @@
 <UserControl
-    Height="{CompiledBinding TitlebarHeight.Value,
-                             Mode=OneWay}"
-    IsVisible="{CompiledBinding IsTopToolbarShown.Value,
-                                Mode=OneWay}"
-    Margin="{CompiledBinding TopScreenMargin.Value,
-                             Mode=OneWay}"
     x:Class="PicView.Avalonia.Win32.Views.WinTitleBar2"
-    x:DataType="vm:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:PicView.Avalonia.Converters;assembly=PicView.Avalonia"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
     xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    Height="{CompiledBinding TitlebarHeight.Value,
+                             Mode=OneWay}"
+    Margin="{CompiledBinding TopScreenMargin.Value,
+                             Mode=OneWay}"
+    x:DataType="vm:MainWindowViewModel"
+    IsVisible="{CompiledBinding IsTopToolbarShown.Value,
+                                Mode=OneWay}">
     <UserControl.Resources>
         <converters:SortFilesByToBoolConverter x:Key="EnumToBoolConverter" />
     </UserControl.Resources>
 
     <Border
+        x:Name="TopWindowBorder"
         Background="{DynamicResource WindowSecondaryBackgroundColor}"
         BorderBrush="{DynamicResource MainBorderColor}"
-        BorderThickness="0,0,0,1"
-        x:Name="TopWindowBorder">
+        BorderThickness="0,0,0,1">
         <Panel>
             <Menu
+                x:Name="MainMenu"
+                Height="{CompiledBinding TitlebarHeight.Value,
+                                         Mode=OneWay}"
+                Margin="34,0,0,0"
+                HorizontalAlignment="Left"
                 Background="{DynamicResource WindowSecondaryBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="0,0,0,1"
                 Foreground="{DynamicResource MainTextColor}"
-                Height="{CompiledBinding TitlebarHeight.Value,
-                                         Mode=OneWay}"
-                HorizontalAlignment="Left"
                 IsVisible="{CompiledBinding TopTitlebarViewModel.IsMainMenuVisible.Value}"
-                Margin="34,0,0,0"
-                ZIndex="9"
-                x:Name="MainMenu">
+                ZIndex="9">
                 <MenuItem
-                    Header="{CompiledBinding Translation.File}"
+                    x:Name="FileMenuItem"
                     Height="{CompiledBinding TitlebarHeight.Value,
                                              Mode=OneWay}"
-                    x:Name="FileMenuItem">
+                    Header="{CompiledBinding Translation.File}">
 
                     <!--  Open  -->
                     <MenuItem
@@ -82,14 +82,14 @@
 
                     <!--  Print  -->
                     <MenuItem
+                        x:Name="PrintMenuItem"
                         Command="{CompiledBinding PrintCommand}"
                         Header="{CompiledBinding Translation.Print.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull},
                                                     FallbackValue=False}"
-                        Theme="{StaticResource MainBg}"
-                        x:Name="PrintMenuItem">
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="PrintPath" />
                         </MenuItem.Icon>
@@ -97,16 +97,16 @@
 
                     <!--  Open with  -->
                     <MenuItem
+                        x:Name="OpenWithMenuItem"
                         Command="{CompiledBinding OpenWithCommand}"
                         Header="{CompiledBinding Translation.OpenWith.Value,
                                                  Mode=OneWay}"
                         IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                                     Converter={x:Static ObjectConverters.IsNotNull},
                                                     FallbackValue=False}"
-                        Theme="{StaticResource MainBg}"
-                        x:Name="OpenWithMenuItem">
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
-                            <Image Height="12" Width="12">
+                            <Image Width="12" Height="12">
                                 <Image.Source>
                                     <DrawingImage>
                                         <DrawingGroup>
@@ -162,8 +162,8 @@
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource MainBorderColor}"
                         Margin="0"
+                        Background="{DynamicResource MainBorderColor}"
                         Opacity=".3" />
 
                     <!--  Close  -->
@@ -239,8 +239,8 @@
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Duplicate file  -->
@@ -268,8 +268,8 @@
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Delete file  -->
@@ -290,115 +290,6 @@
                 <!--  View  -->
                 <MenuItem Header="{CompiledBinding Translation.View, Mode=OneWay}">
 
-                    <!--  Change background  -->
-                    <MenuItem
-                        Command="{CompiledBinding ChangeBackgroundCommand}"
-                        Header="{CompiledBinding Translation.ChangeBackground.Value,
-                                                 Mode=OneWay}"
-                        StaysOpenOnClick="True"
-                        Theme="{StaticResource MainBg}">
-                        <MenuItem.Icon>
-                            <Image
-                                Height="12"
-                                Source="{StaticResource PaletteImage}"
-                                Width="12" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
-                        Margin="0"
-                        Opacity=".9" />
-
-                    <!--  Toggle UI  -->
-                    <MenuItem
-                        Command="{CompiledBinding ToggleInterfaceCommand}"
-                        Header="{CompiledBinding Translation.IsShowingUI.Value,
-                                                 Mode=OneWay}"
-                        IsVisible="{CompiledBinding IsUIShown.Value,
-                                                    Mode=OneWay}"
-                        Theme="{StaticResource MainBg}">
-                        <MenuItem.Icon>
-                            <Image
-                                Height="12"
-                                Source="{StaticResource EyeOffImage}"
-                                Width="12" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <!--  Toggle bottom bar  -->
-                    <MenuItem
-                        Command="{CompiledBinding ToggleBottomToolbarCommand}"
-                        Header="{CompiledBinding Translation.ShowBottomToolbar.Value,
-                                                 Mode=OneWay}"
-                        IsVisible="{CompiledBinding !IsBottomToolbarShown.Value}"
-                        Theme="{StaticResource MainBg}">
-                        <MenuItem.Icon>
-                            <Image
-                                Height="12"
-                                Source="{StaticResource Panel-Bottom}"
-                                Width="12" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem
-                        Command="{CompiledBinding ToggleBottomToolbarCommand}"
-                        Header="{CompiledBinding Translation.HideBottomToolbar.Value,
-                                                 Mode=OneWay}"
-                        IsVisible="{CompiledBinding IsBottomToolbarShown.Value}"
-                        Theme="{StaticResource MainBg}">
-                        <MenuItem.Icon>
-                            <Image
-                                Height="12"
-                                Source="{StaticResource Panel-Bottom}"
-                                Width="12" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-
-                    <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
-                        Margin="0"
-                        Opacity=".9" />
-
-                    <!--  Toggle side-by-side  -->
-                    <!--  <MenuItem  -->
-                    <!--  Command="{CompiledBinding SideBySideCommand}"  -->
-                    <!--  Header="{CompiledBinding Translation.SideBySide.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  Theme="{StaticResource MainBg}"  -->
-                    <!--  ToggleType="CheckBox" />  -->
-
-
-                    <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
-                        Margin="0"
-                        Opacity=".9" />
-
-
-                    <!--  Toggle bottom gallery  -->
-                    <!--  <MenuItem  -->
-                    <!--  Command="{CompiledBinding Gallery.ToggleBottomGalleryCommand}"  -->
-                    <!--  Header="{CompiledBinding Translation.IsShowingDockedGallery.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  IsChecked="{CompiledBinding Gallery.IsBottomGalleryShown.Value}"  -->
-                    <!--  Theme="{StaticResource MainBg}">  -->
-                    <!--     <MenuItem.Icon> -->
-                    <!--  <Image  -->
-                    <!--  Height="12"  -->
-                    <!--  Source="{StaticResource GalleryImage}"  -->
-                    <!--  Width="12" />  -->
-                    <!--     </MenuItem.Icon> -->
-                    <!-- </MenuItem> -->
-                    <!--    -->
-                    <!--  <Separator  -->
-                    <!--  Background="{DynamicResource ContextMenuBackgroundColor}"  -->
-                    <!--  Margin="0"  -->
-                    <!--  Opacity=".9" />  -->
-
-                    <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
-                        Margin="0"
-                        Opacity=".9" />
-
                     <!--  Fullscreen  -->
                     <MenuItem
                         Command="{CompiledBinding ToggleFullscreenCommand}"
@@ -412,13 +303,13 @@
 
                     <!--  Maximize  -->
                     <MenuItem
+                        x:Name="MaximizeMenuItem"
                         Command="{CompiledBinding MaximizeCommand}"
                         Header="{CompiledBinding Translation.Maximize.Value,
                                                  Mode=OneWay}"
                         IsVisible="{CompiledBinding ShouldMaximizeBeShown.Value,
                                                     Mode=OneWay}"
-                        Theme="{StaticResource MainBg}"
-                        x:Name="MaximizeMenuItem">
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image Classes="MaximizeImage" />
                         </MenuItem.Icon>
@@ -436,6 +327,107 @@
                             <Path Classes="RestorePath" />
                         </MenuItem.Icon>
                     </MenuItem>
+
+                    <Separator
+                        Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Opacity=".9" />
+
+                    <!--  Change background  -->
+                    <MenuItem
+                        Command="{CompiledBinding ChangeBackgroundCommand}"
+                        Header="{CompiledBinding Translation.ChangeBackground.Value,
+                                                 Mode=OneWay}"
+                        StaysOpenOnClick="True"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Width="12"
+                                Height="12"
+                                Source="{StaticResource PaletteImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator
+                        Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Opacity=".9" />
+
+                    <!--  Toggle side-by-side  -->
+                    <MenuItem
+                        Command="{CompiledBinding SideBySideCommand}"
+                        Header="{CompiledBinding Translation.SideBySide.Value,
+                                                 Mode=OneWay}"
+                        Theme="{StaticResource MainBg}"
+                        ToggleType="CheckBox" />
+
+                    <Separator
+                        Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Opacity=".9" />
+
+                    <!--  Toggle UI  -->
+                    <MenuItem
+                        Command="{CompiledBinding ToggleInterfaceCommand}"
+                        Header="{CompiledBinding Translation.IsShowingUI.Value,
+                                                 Mode=OneWay}"
+                        IsVisible="{CompiledBinding IsUIShown.Value,
+                                                    Mode=OneWay}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Width="12"
+                                Height="12"
+                                Source="{StaticResource EyeOffImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <!--  Toggle bottom bar  -->
+                    <MenuItem
+                        Command="{CompiledBinding ToggleBottomToolbarCommand}"
+                        Header="{CompiledBinding Translation.ShowBottomToolbar.Value,
+                                                 Mode=OneWay}"
+                        IsVisible="{CompiledBinding !IsBottomToolbarShown.Value}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Width="12"
+                                Height="12"
+                                Source="{StaticResource Panel-Bottom}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem
+                        Command="{CompiledBinding ToggleBottomToolbarCommand}"
+                        Header="{CompiledBinding Translation.HideBottomToolbar.Value,
+                                                 Mode=OneWay}"
+                        IsVisible="{CompiledBinding IsBottomToolbarShown.Value}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Image
+                                Width="12"
+                                Height="12"
+                                Source="{StaticResource Panel-Bottom}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+
+                    <!--  Toggle bottom gallery  -->
+                    <!--  <MenuItem  -->
+                    <!--  Command="{CompiledBinding Gallery.ToggleBottomGalleryCommand}"  -->
+                    <!--  Header="{CompiledBinding Translation.IsShowingDockedGallery.Value,  -->
+                    <!--  Mode=OneWay}"  -->
+                    <!--  IsChecked="{CompiledBinding Gallery.IsBottomGalleryShown.Value}"  -->
+                    <!--  Theme="{StaticResource MainBg}">  -->
+                    <!--     <MenuItem.Icon> -->
+                    <!--  <Image  -->
+                    <!--  Height="12"  -->
+                    <!--  Source="{StaticResource GalleryImage}"  -->
+                    <!--  Width="12" />  -->
+                    <!--     </MenuItem.Icon> -->
+                    <!-- </MenuItem> -->
+
+
+
 
                 </MenuItem>
 
@@ -463,9 +455,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource FileUserImage}"
-                                Width="12" />
+                                Source="{StaticResource FileUserImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -500,8 +492,8 @@
                     <!-- </MenuItem> -->
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Optimize image  -->
@@ -514,32 +506,32 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource PortalImage}"
-                                Width="12" />
+                                Source="{StaticResource PortalImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Crop  -->
                     <MenuItem
+                        x:Name="CropMenuItem"
                         Command="{CompiledBinding CropCommand}"
                         Header="{CompiledBinding Translation.Crop.Value,
                                                  Mode=OneWay}"
-                        Theme="{StaticResource MainBg}"
-                        x:Name="CropMenuItem">
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Path Classes="CropPath" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Flip  -->
@@ -603,9 +595,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource NextImage}"
-                                Width="12" />
+                                Source="{StaticResource NextImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -620,15 +612,15 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource PrevImage}"
-                                Width="12" />
+                                Source="{StaticResource PrevImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
 
@@ -643,9 +635,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource NextImage}"
-                                Width="12" />
+                                Source="{StaticResource NextImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -660,9 +652,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource NextImage}"
-                                Width="12" />
+                                Source="{StaticResource NextImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -677,9 +669,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource PrevImage}"
-                                Width="12" />
+                                Source="{StaticResource PrevImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -694,15 +686,15 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource PrevImage}"
-                                Width="12" />
+                                Source="{StaticResource PrevImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  First Image  -->
@@ -715,9 +707,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource FirstImage}"
-                                Width="12" />
+                                Source="{StaticResource FirstImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -731,15 +723,15 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource LastImage}"
-                                Width="12" />
+                                Source="{StaticResource LastImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Next folder  -->
@@ -752,9 +744,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="14"
                                 Height="14"
-                                Source="{StaticResource NextFolderImage}"
-                                Width="14" />
+                                Source="{StaticResource NextFolderImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -768,9 +760,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="14"
                                 Height="14"
-                                Source="{StaticResource PrevFolderImage}"
-                                Width="14" />
+                                Source="{StaticResource PrevFolderImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
@@ -971,8 +963,8 @@
                     <!-- </MenuItem> -->
 
                     <Separator
-                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
                         Opacity=".9" />
 
                     <!--  Show Settings window  -->
@@ -998,9 +990,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource AboutImage}"
-                                Width="12" />
+                                Source="{StaticResource AboutImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -1012,9 +1004,9 @@
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
+                                Width="12"
                                 Height="12"
-                                Source="{StaticResource DownloadImage}"
-                                Width="12" />
+                                Source="{StaticResource DownloadImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </MenuItem>
@@ -1022,18 +1014,21 @@
             <DockPanel>
 
                 <Border
+                    x:Name="LogoBorder"
                     Background="{DynamicResource WindowButtonBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    x:Name="LogoBorder">
+                    BorderThickness="0,0,1,0">
                     <Image
+                        Width="20"
                         Height="25"
                         Margin="7,1,7,1"
-                        Source="{StaticResource LogoImage}"
-                        Width="20" />
+                        Source="{StaticResource LogoImage}" />
                 </Border>
 
                 <customControls:IconButton
+                    x:Name="MenuButton"
+                    Width="30"
+                    Margin="0"
                     Background="{DynamicResource WindowButtonBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,1,0"
@@ -1044,36 +1039,36 @@
                     IconHeight="16"
                     IconWidth="16"
                     IsRepeatEnabled="False"
-                    IsVisible="{CompiledBinding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
-                    Margin="0"
-                    Width="30"
-                    x:Name="MenuButton" />
+                    IsVisible="{CompiledBinding TopTitlebarViewModel.IsMenuButtonVisible.Value}" />
 
 
                 <Button
+                    x:Name="SearchButton"
+                    Width="30"
+                    Margin="2,3,7,3"
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     Classes="noBorderHover"
                     CornerRadius="6"
                     DockPanel.Dock="Left"
                     Foreground="{DynamicResource MainTextColor}"
-                    IsTabStop="False"
-                    Margin="2,3,7,3"
-                    Width="30"
-                    x:Name="SearchButton">
+                    IsTabStop="False">
                     <Image
+                        Width="13"
                         Height="13"
-                        Source="{StaticResource SearchImage}"
-                        Width="13" />
+                        Source="{StaticResource SearchImage}" />
                 </Button>
 
                 <StackPanel
+                    x:Name="WinBtnPanel"
                     DockPanel.Dock="Right"
                     IsVisible="{CompiledBinding TopTitlebarViewModel.IsBtnPanelVisible.Value}"
-                    Orientation="Horizontal"
-                    x:Name="WinBtnPanel">
+                    Orientation="Horizontal">
 
                     <customControls:IconButton
+                        x:Name="MinimizeButton"
+                        Width="30"
+                        Margin="0,0"
                         Background="{DynamicResource WindowButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="1,0,1,0"
@@ -1084,12 +1079,11 @@
                         Foreground="{DynamicResource MainTextColor}"
                         IconHeight="12"
                         IconWidth="12"
-                        IsRepeatEnabled="False"
-                        Margin="0,0"
-                        Width="30"
-                        x:Name="MinimizeButton" />
+                        IsRepeatEnabled="False" />
 
                     <customControls:IconButton
+                        x:Name="FullscreenButton"
+                        Width="30"
                         Background="{DynamicResource WindowButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         Classes="hover"
@@ -1101,11 +1095,11 @@
                         IconWidth="12"
                         IsRepeatEnabled="False"
                         IsVisible="{CompiledBinding ShouldMaximizeBeShown.Value,
-                                                    Mode=OneWay}"
-                        Width="30"
-                        x:Name="FullscreenButton" />
+                                                    Mode=OneWay}" />
 
                     <customControls:IconButton
+                        x:Name="RestoreButton"
+                        Width="30"
                         Background="{DynamicResource WindowButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         BorderThickness="0,0,1,0"
@@ -1117,11 +1111,11 @@
                         IconWidth="12"
                         IsRepeatEnabled="False"
                         IsVisible="{CompiledBinding !ShouldMaximizeBeShown.Value,
-                                                    Mode=OneWay}"
-                        Width="30"
-                        x:Name="RestoreButton" />
+                                                    Mode=OneWay}" />
 
                     <customControls:IconButton
+                        x:Name="CloseButton"
+                        Width="30"
                         Background="{DynamicResource WindowButtonBackgroundColor}"
                         BorderBrush="{DynamicResource MainBorderColor}"
                         Classes="hover"
@@ -1131,13 +1125,14 @@
                         Foreground="{DynamicResource MainTextColor}"
                         IconHeight="10"
                         IconWidth="10"
-                        IsRepeatEnabled="False"
-                        Width="30"
-                        x:Name="CloseButton" />
+                        IsRepeatEnabled="False" />
 
                 </StackPanel>
 
                 <Button
+                    x:Name="DropDownMenuButton"
+                    Width="30"
+                    Margin="2,3,7,3"
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     Classes="noBorderHover"
@@ -1145,19 +1140,19 @@
                     CommandParameter="{CompiledBinding}"
                     CornerRadius="6"
                     DockPanel.Dock="Right"
-                    IsTabStop="False"
-                    Margin="2,3,7,3"
-                    Width="30"
-                    x:Name="DropDownMenuButton">
+                    IsTabStop="False">
                     <Path
+                        Width="17"
+                        Height="17"
                         Data="{StaticResource FilledArrowDownGeometry}"
                         Fill="{DynamicResource MainTextColor}"
-                        Height="17"
-                        Stretch="Fill"
-                        Width="17" />
+                        Stretch="Fill" />
                 </Button>
 
                 <Button
+                    x:Name="CreateTabButton"
+                    Width="30"
+                    Margin="0,3,2,3"
                     Background="Transparent"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     Classes="noBorderHover"
@@ -1165,25 +1160,22 @@
                     CornerRadius="6"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
-                    IsTabStop="False"
-                    Margin="0,3,2,3"
-                    Width="30"
-                    x:Name="CreateTabButton">
+                    IsTabStop="False">
                     <Path
+                        Width="13"
+                        Height="13"
                         Data="{StaticResource AddGeometry}"
                         Fill="{DynamicResource MainTextColor}"
-                        Height="13"
-                        Stretch="Fill"
-                        Width="13" />
+                        Stretch="Fill" />
                 </Button>
 
                 <uc:EditableTitlebar
+                    x:Name="EditableTitlebar"
                     Background="{DynamicResource WindowSecondaryBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="0,0,0,1"
                     Foreground="{DynamicResource MainTextColor}"
-                    IsVisible="{CompiledBinding TopTitlebarViewModel.IsEditableTitlebarVisible.Value}"
-                    x:Name="EditableTitlebar" />
+                    IsVisible="{CompiledBinding TopTitlebarViewModel.IsEditableTitlebarVisible.Value}" />
             </DockPanel>
         </Panel>
     </Border>
