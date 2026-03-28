@@ -1,42 +1,44 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
-    mc:Ignorable="d"
     x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
-    x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gallery="clr-namespace:PicView.Core.Gallery;assembly=PicView.Core"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="viewModels:MainWindowViewModel"
+    IsOpen="{CompiledBinding TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
+    mc:Ignorable="d">
     <Border
+        x:Name="MainBorder"
         Background="{DynamicResource MenuBackgroundColor}"
         BorderBrush="{DynamicResource OuterBorderColor}"
         BorderThickness="1"
         CornerRadius="8"
-        Effect="{DynamicResource MenuShadowButtonBorder}"
-        x:Name="MainBorder">
+        Effect="{DynamicResource MenuShadowButtonBorder}">
 
         <DockPanel MinWidth="315">
 
             <!--  Gallery Carousel  -->
             <Carousel
+                x:Name="GalleryCarousel"
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}"
-                x:Name="GalleryCarousel">
+                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsGalleryCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <customControls:IconButton
+                            x:Name="GalleryExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -47,11 +49,11 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="GalleryExpandButton" />
+                            IconWidth="12" />
 
                         <customControls:TextIconButton
+                            x:Name="MainGalleryButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Click="Close_OnClick"
@@ -61,13 +63,14 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowImageGallery.Value}"
-                            x:Name="MainGalleryButton" />
+                            Text="{CompiledBinding Translation.ShowImageGallery.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
                             <customControls:IconButton
+                                x:Name="GalleryContractButton"
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -76,22 +79,20 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="12"
-                                IconWidth="12"
-                                Width="35"
-                                x:Name="GalleryContractButton" />
+                                IconWidth="12" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.GallerySettings.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,2" />
+                            Margin="5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
@@ -102,9 +103,9 @@
                             IconMargin="0,0,7,0"
                             IconWidth="12"
                             IsEnabled="{CompiledBinding !GallerySettings.IsBottomDocked.Value}"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.ShowDockedGalleryAtBottom.Value}" />
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
@@ -115,9 +116,9 @@
                             IconMargin="0,0,7,0"
                             IconWidth="12"
                             IsEnabled="{CompiledBinding !GallerySettings.IsTopDocked.Value}"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.ShowDockedGalleryAtTop.Value}" />
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
@@ -128,9 +129,9 @@
                             IconMargin="0,0,7,0"
                             IconWidth="12"
                             IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value}" />
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
@@ -141,9 +142,9 @@
                             IconMargin="0,0,7,0"
                             IconWidth="12"
                             IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value}" />
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding GallerySettings.CloseGalleryCommand}"
@@ -152,7 +153,6 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.HideDockedGallery.Value}" />
                     </StackPanel>
                 </Carousel.Items>
@@ -160,21 +160,23 @@
 
             <!--  Slideshow Carousel  -->
             <Carousel
+                x:Name="SlideshowCarousel"
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}"
-                x:Name="SlideshowCarousel">
+                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsSlideshowCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <customControls:IconButton
+                            x:Name="SlideshowExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -185,11 +187,10 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="SlideshowExpandButton" />
+                            IconWidth="12" />
 
                         <customControls:TextIconButton
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             ClickMode="Release"
@@ -198,12 +199,13 @@
                             IconHeight="12"
                             IconMargin="0,0,7,0"
                             IconWidth="12"
-                            Padding="15,7,15,7"
                             Text="{CompiledBinding Translation.Slideshow.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
                             <customControls:IconButton
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -212,21 +214,21 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="12"
-                                IconWidth="12"
-                                Width="35" />
+                                IconWidth="12" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.Slideshow.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,2" />
+                            Margin="5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow2Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="2000"
@@ -234,10 +236,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow2Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow5Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="5000"
@@ -245,10 +247,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow5Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow10Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="10000"
@@ -256,10 +258,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow10Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow20Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="20000"
@@ -267,10 +269,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow20Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow30Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="30000"
@@ -278,10 +280,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow30Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow60Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="60000"
@@ -289,10 +291,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow60Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow90Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="90000"
@@ -300,10 +302,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow90Sec" />
+                            IconWidth="12" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow120Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="120000"
@@ -311,51 +313,52 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="12"
                             IconMargin="0,0,7,0"
-                            IconWidth="12"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow120Sec" />
+                            IconWidth="12" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>
 
             <StackPanel
-                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsExpandedOptionsOpened.Value}"
                 Margin="0,0,0,5"
-                VerticalAlignment="Top">
+                VerticalAlignment="Top"
+                IsVisible="{CompiledBinding !TopTitlebarViewModel.DropDownMenu.IsExpandedOptionsOpened.Value}">
                 <Rectangle
-                    Fill="{DynamicResource MainBorderColor}"
                     Height="2"
-                    Margin="10,5,0,5" />
+                    Margin="10,5,0,5"
+                    Fill="{DynamicResource MainBorderColor}" />
 
                 <DockPanel>
-                    <customControls:IconButton
-                        Classes="errorHover"
-                        Data="{StaticResource RecycleGeometry}"
-                        DockPanel.Dock="Right"
-                        Foreground="{DynamicResource MainTextColor}"
-                        IconHeight="12"
-                        IconWidth="12"
-                        Margin="0,0,5,0"
-                        Padding="8,4"
-                        ToolTip.Tip="{CompiledBinding Translation.Clear.Value,
-                                                      Mode=OneWay}"
-                        x:Name="HistoryClearButton" />
-
 
                     <customControls:IconButton
+                        x:Name="HistorySortButton"
+                        Margin="0,0,0,0"
+                        Padding="8,5"
                         Background="Transparent"
                         Classes="hover"
                         DockPanel.Dock="Right"
                         Foreground="{DynamicResource MainTextColor}"
                         Icon="{StaticResource SortDescImage}"
                         IconHeight="12"
+                        IconWidth="12" />
+
+                    <customControls:IconButton
+                        x:Name="HistoryClearButton"
+                        Margin="0,0,5,0"
+                        Padding="8,4"
+                        Classes="errorHover"
+                        Data="{StaticResource RecycleGeometry}"
+                        DockPanel.Dock="Right"
+                        Foreground="{DynamicResource MainTextColor}"
+                        IconHeight="12"
                         IconWidth="12"
-                        Margin="0,0,15,0"
-                        Padding="8,5"
-                        x:Name="HistorySortButton" />
+                        ToolTip.Tip="{CompiledBinding Translation.Clear.Value,
+                                                      Mode=OneWay}" />
 
 
                     <customControls:IconButton
+                        x:Name="HistoryFileButton"
+                        Margin="0,0,5,0"
+                        Padding="8,5"
                         Classes="hover"
                         ClickMode="Release"
                         DockPanel.Dock="Right"
@@ -363,22 +366,184 @@
                         Icon="{StaticResource SquareLibrary}"
                         IconHeight="12"
                         IconWidth="12"
-                        Margin="0,0,5,0"
-                        Padding="8,5"
                         ToolTip.Tip="{CompiledBinding Translation.OpenFileHistory.Value,
-                                                      Mode=OneWay}"
-                        x:Name="HistoryFileButton" />
+                                                      Mode=OneWay}" />
 
                     <TextBlock
-                        Classes="txt"
-                        DockPanel.Dock="Left"
                         Padding="15,5,0,5"
+                        Classes="txt bold"
+                        DockPanel.Dock="Left"
+                        FontSize="12"
                         Text="{CompiledBinding Translation.RecentFiles.Value}" />
 
                 </DockPanel>
 
                 <customControls:AutoScrollViewer>
-                    <Rectangle />
+                    <StackPanel>
+                        <TextBlock
+                            Margin="15,5"
+                            Classes="txt"
+                            Text="{Binding Translation.Pinned}" />
+
+                        <DockPanel LastChildFill="True">
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="hover"
+                                ClickMode="Release"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Icon="{StaticResource UnPinImage}"
+                                IconHeight="12"
+                                IconWidth="12"
+                                ToolTip.Tip="{CompiledBinding Translation.Unpin.Value,
+                                                              Mode=OneWay}" />
+
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="errorHover"
+                                ClickMode="Release"
+                                Data="{StaticResource CloseGeometry}"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                IconHeight="12"
+                                IconWidth="12" />
+
+                            <Button
+                                Background="Transparent"
+                                Classes="hover"
+                                DockPanel.Dock="Left">
+                                <TextBlock
+                                    Margin="15,5"
+                                    Classes="txt"
+                                    Text="file1.jpg" />
+                            </Button>
+                        </DockPanel>
+
+                        <DockPanel LastChildFill="True">
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="hover"
+                                ClickMode="Release"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Icon="{StaticResource UnPinImage}"
+                                IconHeight="12"
+                                IconWidth="12"
+                                ToolTip.Tip="{CompiledBinding Translation.Unpin.Value,
+                                                              Mode=OneWay}" />
+
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="errorHover"
+                                ClickMode="Release"
+                                Data="{StaticResource CloseGeometry}"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                IconHeight="12"
+                                IconWidth="12" />
+
+                            <Button
+                                Background="Transparent"
+                                Classes="hover"
+                                DockPanel.Dock="Left">
+                                <TextBlock
+                                    Margin="15,5"
+                                    Classes="txt"
+                                    Text="file2.jpg" />
+                            </Button>
+                        </DockPanel>
+
+                        <Rectangle
+                            Height="1"
+                            Margin="10,5,0,5"
+                            Fill="{DynamicResource MainBorderColor}"
+                            Opacity=".7" />
+
+                        <DockPanel LastChildFill="True">
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="hover"
+                                ClickMode="Release"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Icon="{StaticResource PinImage}"
+                                IconHeight="12"
+                                IconWidth="12"
+                                ToolTip.Tip="{CompiledBinding Translation.Pin.Value,
+                                                              Mode=OneWay}" />
+
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="errorHover"
+                                ClickMode="Release"
+                                Data="{StaticResource CloseGeometry}"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                IconHeight="12"
+                                IconWidth="12" />
+
+                            <Button
+                                Background="Transparent"
+                                Classes="hover"
+                                DockPanel.Dock="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="15,5,5,5"
+                                        Classes="txt"
+                                        Text="1" />
+                                    <TextBlock Classes="txt" Text="file3.jpg" />
+                                </StackPanel>
+                            </Button>
+                        </DockPanel>
+
+                        <DockPanel LastChildFill="True">
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="hover"
+                                ClickMode="Release"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                Icon="{StaticResource PinImage}"
+                                IconHeight="12"
+                                IconWidth="12"
+                                ToolTip.Tip="{CompiledBinding Translation.Pin.Value,
+                                                              Mode=OneWay}" />
+
+                            <customControls:IconButton
+                                Padding="5,0"
+                                Background="Transparent"
+                                Classes="errorHover"
+                                ClickMode="Release"
+                                Data="{StaticResource CloseGeometry}"
+                                DockPanel.Dock="Right"
+                                Foreground="{DynamicResource MainTextColor}"
+                                IconHeight="12"
+                                IconWidth="12" />
+
+                            <Button
+                                Background="Transparent"
+                                Classes="hover"
+                                DockPanel.Dock="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="15,5,5,5"
+                                        Classes="txt"
+                                        Text="1" />
+                                    <TextBlock Classes="txt" Text="file4.jpg" />
+                                </StackPanel>
+                            </Button>
+                        </DockPanel>
+
+
+                    </StackPanel>
+
                 </customControls:AutoScrollViewer>
 
             </StackPanel>
