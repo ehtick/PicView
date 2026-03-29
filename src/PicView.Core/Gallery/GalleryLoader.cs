@@ -14,7 +14,7 @@ public static class GalleryLoader
         }
 
         tab.Gallery.LoadingState = GalleryLoadingState.Loading;
-        tab.Gallery.GalleryItems.Value.Clear();
+        tab.Gallery.GalleryItems.Clear();
 
         var dockedHeight = Settings.Gallery.BottomGalleryItemSize;
         var expandedHeight = Settings.Gallery.ExpandedGalleryItemSize;
@@ -47,7 +47,7 @@ public static class GalleryLoader
 
             if (batchList.Count >= batchSize)
             {
-                tab.Gallery.GalleryItems.Value.AddRange(batchList);
+                tab.Gallery.GalleryItems.AddRange(batchList);
                 batchList.Clear();
             }
         }
@@ -55,7 +55,7 @@ public static class GalleryLoader
         // Add any remaining items in the final batch
         if (batchList.Count > 0)
         {
-            tab.Gallery.GalleryItems.Value.AddRange(batchList);
+            tab.Gallery.GalleryItems.AddRange(batchList);
         }
 
         // Load thumbnails asynchronously
@@ -69,19 +69,19 @@ public static class GalleryLoader
         {
             if (thumbnailCache.IsEmpty())
             {
-                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Value.Count, parallelOptions,
+                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Count, parallelOptions,
                 async (i, _) =>
                 {
-                    var item = tab.Gallery.GalleryItems.Value[i];
+                    var item = tab.Gallery.GalleryItems[i];
                     await LoadItem(item).ConfigureAwait(false);
                 });
             }
             else
             {
-                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Value.Count, parallelOptions,
+                await Parallel.ForAsync(0, tab.Gallery.GalleryItems.Count, parallelOptions,
                 async (i, _) =>
                 {
-                    var item = tab.Gallery.GalleryItems.Value[i];
+                    var item = tab.Gallery.GalleryItems[i];
                     await CheckAndLoad(item).ConfigureAwait(false);
                 });
             }

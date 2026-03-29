@@ -22,7 +22,7 @@ public partial class GalleryView2 : GalleryAnimationControl
         InitializeComponent();
 
         var gallery = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Gallery;
-        gallery.GalleryItems.CurrentValue.CollectionChanged += CurrentValueOnCollectionChanged;
+        gallery.GalleryItems.CollectionChanged += CurrentValueOnCollectionChanged;
         
         gallery.NavigateGalleryCommand.Subscribe(x =>
         {

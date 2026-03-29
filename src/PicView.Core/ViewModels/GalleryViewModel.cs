@@ -17,7 +17,7 @@ public class GalleryViewModel : IDisposable
     public ReactiveCommand<NavigateTo> NavigateGalleryCommand { get; } = new();
     public ReactiveCommand<int> OpenSelectedItemCommand { get; } = new();
 
-    public BindableReactiveProperty<ObservableList<GalleryItemViewModel>> GalleryItems { get; } = new([]);
+    public ObservableList<GalleryItemViewModel> GalleryItems { get; } = new([]);
     public BindableReactiveProperty<GalleryMode2> GalleryMode { get; } = new(GalleryMode2.Closed);
 
     public BindableReactiveProperty<bool> IsGalleryExpanded { get; } = new();
@@ -156,7 +156,6 @@ public class GalleryViewModel : IDisposable
     {
         _disposables.Dispose();
         Disposable.Dispose(
-            GalleryItems,
             GalleryMode,
             IsGalleryExpanded,
             GalleryMode,
