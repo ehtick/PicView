@@ -776,42 +776,41 @@
                         Theme="{StaticResource MainBg}"
                         ToggleType="CheckBox" />
 
-                    <!--  <Separator  -->
-                    <!--  Background="{DynamicResource ContextMenuBackgroundColor}"  -->
-                    <!--  Margin="0"  -->
-                    <!--  Opacity=".9" />  -->
-                    <!--    -->
-                    <!--  ~1~  Toggle looping  @1@  -->
-                    <!--  <MenuItem  -->
-                    <!--  Command="{CompiledBinding Tools.ToggleLoopingCommand}"  -->
-                    <!--  Header="{CompiledBinding Translation.IsLooping.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  IsChecked="{Binding GlobalSettings.IsLooping.Value}"  -->
-                    <!--  Theme="{StaticResource MainBg}"  -->
-                    <!--  ToggleType="CheckBox" />  -->
-                    <!--    -->
-                    <!--  <Separator  -->
-                    <!--  Background="{DynamicResource ContextMenuBackgroundColor}"  -->
-                    <!--  Margin="0"  -->
-                    <!--  Opacity=".9" />  -->
-                    <!--    -->
-                    <!--  ~1~  Toggle scrolling  @1@  -->
-                    <!--  <MenuItem  -->
-                    <!--  Header="{CompiledBinding Translation.IsScrolling.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  IsChecked="{CompiledBinding GlobalSettings.IsScrollingEnabled.Value}"  -->
-                    <!--  Theme="{StaticResource MainBg}"  -->
-                    <!--  ToggleType="CheckBox" />  -->
-                    <!--    -->
-                    <!--  ~1~  Toggle stretching  @1@  -->
-                    <!--  <MenuItem  -->
-                    <!--  Command="{CompiledBinding Tools.StretchCommand}"  -->
-                    <!--  Header="{CompiledBinding Translation.Stretch.Value,  -->
-                    <!--  Mode=OneWay}"  -->
-                    <!--  IsChecked="{CompiledBinding GlobalSettings.IsStretched.Value}"  -->
-                    <!--  Theme="{StaticResource MainBg}"  -->
-                    <!--  ToggleType="CheckBox" />  -->
-                    <!--    -->
+                    <Separator
+                        Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Opacity=".9" />
+
+                    <!--  Toggle looping  -->
+                    <MenuItem
+                        Command="{CompiledBinding ToggleLoopingCommand}"
+                        Header="{CompiledBinding Translation.IsLooping.Value,
+                                                 Mode=OneWay}"
+                        IsChecked="{Binding GlobalSettings.IsLooping.Value}"
+                        Theme="{StaticResource MainBg}"
+                        ToggleType="CheckBox" />
+
+                    <Separator
+                        Margin="0"
+                        Background="{DynamicResource ContextMenuBackgroundColor}"
+                        Opacity=".9" />
+                    <!--  Toggle scrolling  -->
+                    <MenuItem
+                        Header="{CompiledBinding Translation.IsScrolling.Value,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsScrollingEnabled.Value}"
+                        Theme="{StaticResource MainBg}"
+                        ToggleType="CheckBox" />
+
+                    <!--  Toggle stretching -->
+                    <MenuItem
+                        Command="{CompiledBinding StretchCommand}"
+                        Header="{CompiledBinding Translation.Stretch.Value,
+                                                 Mode=OneWay}"
+                        IsChecked="{CompiledBinding GlobalSettings.IsStretched.Value}"
+                        Theme="{StaticResource MainBg}"
+                        ToggleType="CheckBox" />
+
                     <!--  <Separator  -->
                     <!--  Background="{DynamicResource ContextMenuBackgroundColor}"  -->
                     <!--  Margin="0"  -->

@@ -111,7 +111,7 @@ public static class MainKeyboardShortcuts2
         Reset();
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (e.Key is Key.LeftAlt)
+            if (e.Key is Key.LeftAlt or Key.RightAlt)
             {
                 mainWindowViewModel.TopTitlebarViewModel.ToggleMenu();
             }

@@ -1,4 +1,4 @@
-﻿using PicView.Core.IPlatform;
+using PicView.Core.IPlatform;
 using PicView.Core.Sizing;
 using R3;
 
@@ -25,8 +25,6 @@ public class MainWindowViewModel : IDisposable
 
     public bool IsBottomToolbarRightRotationClicked { get; set; }
     public bool IsBottomToolbarLeftRotationClicked { get; set; }
-
-    public bool IsTitlebarRotationClicked { get; set; }
 
     public BindableReactiveProperty<int> BackgroundChoice { get; } = new();
     
