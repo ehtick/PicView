@@ -36,7 +36,7 @@ public static class WindowFunctions2
 
         CoreViewModel? core = null;
         MainWindowViewModel? mainWindowViewModel = null;
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        await Dispatcher.CurrentDispatcher.InvokeAsync(() =>
         {
             window.Hide();
 
