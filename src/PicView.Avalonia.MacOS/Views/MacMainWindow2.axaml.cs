@@ -224,21 +224,6 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
         });
     }
 
-    private void Control_OnSizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-        if (DataContext == null)
-        {
-            return;
-        }
-
-        if (e is { HeightChanged: false, WidthChanged: false })
-        {
-            return;
-        }
-        // var vm = (MainViewModel)DataContext;
-        // WindowResizing.SetSize(vm);
-    }
-
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
         await WindowFunctions2.WindowClosingBehavior(this);
