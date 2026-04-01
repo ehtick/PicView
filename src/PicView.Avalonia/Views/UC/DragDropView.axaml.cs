@@ -9,7 +9,7 @@ using PicView.Core.Sizing;
 
 namespace PicView.Avalonia.Views.UC;
 
-public partial class DragDrogView : UserControl
+public partial class DragDropView : UserControl
 {
     private LinkChain? _linkChain;
     private DirectoryIcon? _directoryIcon;
@@ -21,7 +21,7 @@ public partial class DragDrogView : UserControl
     public bool IsDirectoryIconVisible => _directoryIcon != null && ParentPanel.Children.Contains(_directoryIcon);
     public bool IsZipIconVisible => _zipIcon != null && ParentPanel.Children.Contains(_zipIcon);
     
-    public DragDrogView()
+    public DragDropView()
     {
         InitializeComponent();
         InitializeView();
