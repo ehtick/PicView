@@ -21,7 +21,7 @@ public partial class BottomBar2 : UserControl
         Loaded += delegate
         {
             PointerPressed += (_, e) => MoveWindow(e);
-            PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
+            PointerExited += (_, _) => { DragAndDropManager.RemoveDragDropView(); };
             
             _rotationContextMenu = new RotationContextMenu();
             _rotationContextMenu.UpdateSubscription();

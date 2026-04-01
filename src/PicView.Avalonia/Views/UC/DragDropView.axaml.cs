@@ -1,11 +1,13 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
+using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -23,6 +25,11 @@ public partial class DragDropView : UserControl
     
     public DragDropView()
     {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        DataContext = core.MainWindows.ActiveWindow.CurrentValue;
         InitializeComponent();
         InitializeView();
     }
@@ -35,8 +42,8 @@ public partial class DragDropView : UserControl
 
     private void UpdateViewSize()
     {
-        Width = UIHelper.GetMainView.Bounds.Width;
-        Height = UIHelper.GetMainView.Bounds.Height;
+        Width = UIHelper2.GetMainView.Bounds.Width;
+        Height = UIHelper2.GetMainView.Bounds.Height;
     }
 
     private void AddIconToPanel(Control icon)
@@ -77,7 +84,7 @@ public partial class DragDropView : UserControl
     public void UpdateThumbnail(Bitmap image)
     {
         UpdateViewSize();
-        if (DataContext is not MainViewModel vm || image is null) 
+        if (DataContext is not MainWindowViewModel vm || image is null) 
             return;
 
         var scale = CalculateScale(image.PixelSize.Width, image.PixelSize.Height, vm);
@@ -87,7 +94,7 @@ public partial class DragDropView : UserControl
     public void UpdateSvgThumbnail(object svg)
     {
         UpdateViewSize();
-        if (DataContext is not MainViewModel vm) return;
+        if (DataContext is not MainWindowViewModel vm) return;
 
         var svgSource = SvgSource.Load(svg as string);
         var svgImage = new SvgImage { Source = svgSource };
@@ -103,12 +110,12 @@ public partial class DragDropView : UserControl
         ContentHolder.IsVisible = true;
     }
 
-    private static double CalculateScale(double width, double height, MainViewModel vm)
+    private static double CalculateScale(double width, double height, MainWindowViewModel vm)
     {
         var screen = ScreenHelper.ScreenSize;
-        var padding = vm.MainWindow.BottombarHeight.CurrentValue + vm.MainWindow.TitlebarHeight.CurrentValue + 50;
-        var boxedWidth = UIHelper.GetMainView.Bounds.Width * screen.Scaling - padding;
-        var boxedHeight = UIHelper.GetMainView.Bounds.Height * screen.Scaling - padding;
+        var padding = vm.BottombarHeight.CurrentValue + vm.TitlebarHeight.CurrentValue + 50;
+        var boxedWidth = UIHelper2.GetMainView.Bounds.Width * screen.Scaling - padding;
+        var boxedHeight = UIHelper2.GetMainView.Bounds.Height * screen.Scaling - padding;
         var scaledWidth = boxedWidth / width;
         var scaledHeight = boxedHeight / height;
         return Math.Min(scaledWidth, scaledHeight);

@@ -9,7 +9,6 @@ using PicView.Avalonia.Crop;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
@@ -115,7 +114,7 @@ public partial class MainView3 : UserControl
             WindowFunctions.WindowDragBehavior(hostWindow, e);
         }
         
-        DragAndDropHelper.RemoveDragDropView();
+        DragAndDropManager.RemoveDragDropView();
     }
     
     private void CloseTitlebarIfOpen(object? sender, EventArgs e)
@@ -137,7 +136,7 @@ public partial class MainView3 : UserControl
     
     private static void HandleLostFocus(object? sender, EventArgs e)
     {
-        DragAndDropHelper.RemoveDragDropView();
+        DragAndDropManager.RemoveDragDropView();
     }
 
     private async Task OnMainContextMenuOpened(object? sender, EventArgs e)
@@ -168,23 +167,20 @@ public partial class MainView3 : UserControl
 
     private async Task Drop(object? sender, DragEventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
             return;
         }
-        await DragAndDropHelper.Drop(e, vm);
+        await DragAndDropManager.Drop(e, vm.WindowTabs);
     }
     
     private async Task DragEnter(object? sender, DragEventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
-            return;
-
-        await DragAndDropHelper.DragEnter(e, vm, this);
+        await DragAndDropManager.DragEnter(e, this);
     }
     
     private void DragLeave(object? sender, DragEventArgs e)
     {
-        DragAndDropHelper.DragLeave(e, this);
+        DragAndDropManager.DragLeave(e, this);
     }
 }
