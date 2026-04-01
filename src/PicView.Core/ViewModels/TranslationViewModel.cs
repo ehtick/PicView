@@ -239,6 +239,7 @@ public class TranslationViewModel
         RecentFiles.Value = t.RecentFiles;
         Red.Value = t.Red;
         Reload.Value = t.Reload;
+        Remove.Value = t.Remove;
         RemoveAll.Value = t.RemoveAll;
         RemoveImageData.Value = t.RemoveImageData;
         RemoveStarRating.Value = t.RemoveStarRating;
@@ -618,6 +619,7 @@ public class TranslationViewModel
     public BindableReactiveProperty<string?> RecentFiles { get; } = new();
     public BindableReactiveProperty<string?> Red { get; } = new();
     public BindableReactiveProperty<string?> Reload { get; } = new();
+    public BindableReactiveProperty<string?> Remove { get; } = new();
     public BindableReactiveProperty<string?> RemoveAll { get; } = new();
     public BindableReactiveProperty<string?> RemoveImageData { get; } = new();
     public BindableReactiveProperty<string?> RemoveStarRating { get; } = new();

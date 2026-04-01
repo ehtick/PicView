@@ -9,6 +9,7 @@ public class FileHistoryEntryViewModel : IDisposable
     public BindableReactiveProperty<string> FilePath { get; } = new();
     public BindableReactiveProperty<string> FileName { get; } = new();
     public BindableReactiveProperty<bool> IsPinned { get; } = new();
+    public BindableReactiveProperty<bool> IsCurrentItem { get; } = new(false);
     public BindableReactiveProperty<int> Index { get;  } = new();
 
     public ReactiveCommand<Unit> OpenCommand { get; } = new();
@@ -16,13 +17,14 @@ public class FileHistoryEntryViewModel : IDisposable
     public ReactiveCommand<Unit> UnpinCommand { get; } = new();
     public ReactiveCommand<Unit> RemoveCommand { get; } = new();
     
-    public void Initialize(string path, string fileName, bool isPinned, int index, MainWindowViewModel mainWindow)
+    public void Initialize(string path, string fileName, bool isPinned, bool isCurrentItem, int index, MainWindowViewModel mainWindow)
     {
         _mainWindow = mainWindow;
         
         FilePath.Value = path;
         FileName.Value = fileName;
         IsPinned.Value = isPinned;
+        IsCurrentItem.Value = isCurrentItem;
         Index.Value = index;
 
         OpenCommand.SubscribeAwait(Open);
@@ -75,6 +77,7 @@ public class FileHistoryEntryViewModel : IDisposable
         FilePath.Dispose();
         FileName.Dispose();
         IsPinned.Dispose();
+        IsCurrentItem.Dispose();
         Index.Dispose();
         
         GC.SuppressFinalize(this);

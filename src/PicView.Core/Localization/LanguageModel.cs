@@ -320,6 +320,7 @@ public class LanguageModel
     public string? Red { get; set; }
     public string? RedEyeReduction { get; set; }
     public string? Reload { get; set; }
+    public string? Remove { get; set; }
     public string? RemoveAll { get; set; }
     public string? RemoveImageData { get; set; }
     public string? RemoveStarRating { get; set; }
