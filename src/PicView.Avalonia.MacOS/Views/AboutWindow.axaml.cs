@@ -4,8 +4,8 @@ using Avalonia.Media;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.PlatformUpdate;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Update;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -13,8 +13,6 @@ public partial class AboutWindow : Window, IPlatformSpecificUpdate
 {
     public AboutWindow()
     {
-        var vm = UIHelper.GetMainView.DataContext as MainViewModel;
-        vm.AboutView ??= new AboutViewModel(this);
         InitializeComponent();
         if (!Settings.Theme.Dark || Settings.Theme.GlassTheme)
         {

@@ -7,26 +7,24 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- <NativeMenu.Menu> -->
-    <!--     <NativeMenu> -->
-    <!--    -->
-    <!--  ~1~  Show about window  @1@  -->
-    <!--         <NativeMenuItem Command="{CompiledBinding Window.ShowAboutWindow}" Header="{CompiledBinding Translation.About.Value, Mode=OneWay}" /> -->
-    <!--    -->
-    <!--  ~1~  Check for updates  @1@  -->
-    <!--         <NativeMenuItem Command="{CompiledBinding Tools.CheckForUpdatesCommand}" Header="{CompiledBinding Translation.CheckForUpdates.Value, Mode=OneWay}" /> -->
-    <!--    -->
-    <!--  ~1~  Show settings window  @1@  -->
-    <!--  <NativeMenuItem  -->
-    <!--  Command="{CompiledBinding Window.ShowSettingsWindow}"  -->
-    <!--  Header="{CompiledBinding Translation.Settings.Value,  -->
-    <!--  Mode=OneWay}"  -->
-    <!--  ToolTip="{CompiledBinding Translation.ShowAllSettingsWindow.Value,  -->
-    <!--  Mode=OneWay}" />  -->
-    <!--    -->
-    <!--    -->
-    <!--     </NativeMenu> -->
-    <!-- </NativeMenu.Menu> -->
+    <NativeMenu.Menu>
+        <NativeMenu>
+
+            <!--  Show about window  -->
+            <NativeMenuItem Command="{CompiledBinding MainWindows.ActiveWindow.Value.AboutWindowCommand}" Header="{CompiledBinding Translation.About.Value, Mode=OneWay}" />
+
+            <!--  Check for updates  -->
+            <NativeMenuItem Command="{CompiledBinding MainWindows.ActiveWindow.Value.CheckForUpdatesCommand}" Header="{CompiledBinding Translation.CheckForUpdates.Value, Mode=OneWay}" />
+
+            <!--  Show settings window  -->
+            <NativeMenuItem
+                Command="{CompiledBinding MainWindows.ActiveWindow.Value.SettingsWindowCommand}"
+                Header="{CompiledBinding Translation.Settings.Value,
+                                         Mode=OneWay}"
+                ToolTip="{CompiledBinding Translation.ShowAllSettingsWindow.Value,
+                                          Mode=OneWay}" />
+        </NativeMenu>
+    </NativeMenu.Menu>
 
     <Application.Styles>
         <StyleInclude Source="avares://PicView.Avalonia/PicViewTheme/AllControls.axaml" />

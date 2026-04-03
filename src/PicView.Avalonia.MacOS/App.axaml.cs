@@ -85,8 +85,6 @@ public class App : Application, IPlatformSpecificService
 
             _mainWindow = new MacMainWindow2();
             _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
-            _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
-            _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
             
             Dispatcher.UIThread.Post(() =>
             {
