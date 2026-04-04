@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.Views.UC.Buttons;
 using PicView.Avalonia.Views.UC.Menus;
 using PicView.Core.ViewModels;
 using R3.Avalonia;
@@ -68,7 +69,25 @@ public static class UIHelper2
 
     #endregion
 
-    #region Helper functions
+    #region Helper functions`
+    
+    public static ClickArrowRight2? GetClickArrowRight(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            return imageViewer.ClickArrowRight;
+        }
+        return null;
+    }
+    
+    public static ClickArrowLeft2? GetClickArrowLeft(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            return imageViewer.ClickArrowLeft;
+        }
+        return null;
+    }
     
     private const string BoldFontLocation = "avares://PicView.Avalonia/Assets/Fonts/Roboto-Medium.ttf#Roboto";
     public static FontFamily BoldFontFamily => new(BoldFontLocation);

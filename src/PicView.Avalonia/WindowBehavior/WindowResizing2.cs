@@ -7,6 +7,7 @@ using ImageMagick;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC.Buttons;
 using PicView.Core.DebugTools;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
@@ -85,15 +86,15 @@ public static class WindowResizing2
             () => UIHelper2.GetHoverBar.GetControl<Button>("PreviousButton"),
             new Point(50, 10));
 
-        // RepositionCursorIfTriggered(mainWindowVm.IsClickArrowLeftClicked,
-        //     clicked => mainWindowVm.IsClickArrowLeftClicked = clicked,
-        //     () => UIHelper2.GetMainView.GetControl<UserControl>("ClickArrowLeft"),
-        //     new Point(15, 95));
-        //
-        // RepositionCursorIfTriggered(mainWindowVm.IsClickArrowRightClicked,
-        //     clicked => mainWindowVm.IsClickArrowRightClicked = clicked,
-        //     () => UIHelper2.GetMainView.GetControl<UserControl>("ClickArrowRight"),
-        //     new Point(65, 95));
+        RepositionCursorIfTriggered(mainWindowVm.IsClickArrowLeftClicked,
+            clicked => mainWindowVm.IsClickArrowLeftClicked = clicked,
+            () => UIHelper2.GetClickArrowLeft(mainWindowVm),
+            new Point(15, 95));
+        
+        RepositionCursorIfTriggered(mainWindowVm.IsClickArrowRightClicked,
+            clicked => mainWindowVm.IsClickArrowRightClicked = clicked,
+            () => UIHelper2.GetClickArrowRight(mainWindowVm),
+            new Point(65, 95));
 
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateRightClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateRightClicked = clicked,
