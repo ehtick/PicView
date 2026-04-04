@@ -78,12 +78,12 @@ public static class FileHistoryManager
     /// <summary>
     ///     Initializes the file history by loading entries from the history file.
     /// </summary>
-    public static async Task InitializeAsync()
+    public static void Initialize()
     {
         _fileHistoryConfiguration = new FileHistoryConfiguration();
         _fileHistoryConfiguration.CorrectPath = ConfigFileManager.ResolveDefaultConfigPath(_fileHistoryConfiguration);
         _entries = new List<Entry>(FileHistoryConfiguration.MaxHistoryEntries);
-        await LoadFromFileAsync().ConfigureAwait(false);
+        LoadFromFile();
 
         // Set the current index to the most recent entry.
         CurrentIndex = Count > 0 ? Count - 1 : -1;
@@ -362,7 +362,7 @@ public static class FileHistoryManager
     /// <summary>
     ///     Loads the history from the history file.
     /// </summary>
-    private static async Task LoadFromFileAsync()
+    private static void LoadFromFile()
     {
         if (!Settings.Navigation.IsFileHistoryEnabled)
         {
@@ -371,9 +371,9 @@ public static class FileHistoryManager
         
         try
         {
-            var jsonString = await File.ReadAllTextAsync(_fileHistoryConfiguration.TryGetCurrentUserConfigPath).ConfigureAwait(false);
+            var bytes = File.ReadAllBytes(_fileHistoryConfiguration.TryGetCurrentUserConfigPath);
 
-            if (JsonSerializer.Deserialize(jsonString, typeof(FileHistoryEntries),
+            if (JsonSerializer.Deserialize(bytes, typeof(FileHistoryEntries),
                     FileHistoryGenerationContext.Default)
                 is not FileHistoryEntries entries)
             {
@@ -389,7 +389,7 @@ public static class FileHistoryManager
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(FileHistoryManager), nameof(LoadFromFileAsync), ex);
+            DebugHelper.LogDebug(nameof(FileHistoryManager), nameof(LoadFromFile), ex);
         }
     }
 }

@@ -141,7 +141,7 @@ public static class StartUpHelper
         UIHelper2.SetControls(window);
         Task.Run(() =>
         {
-            _ = FileHistoryManager.InitializeAsync();
+            FileHistoryManager.Initialize();
             HandleWindowControlSettings(vm, desktop);
             SettingsUpdater.ValidateGallerySettings(vm, settingsExists);
 
