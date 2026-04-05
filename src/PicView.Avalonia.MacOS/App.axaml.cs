@@ -6,8 +6,8 @@ using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.MacOS.Views;
+using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.StartUp;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileAssociations;
 using PicView.Core.FileSorting;
 using PicView.Core.IPlatform;
@@ -46,83 +46,93 @@ public class App : Application, IPlatformSpecificService
     // The startup procedure for macOS is a bit different than Windows.
     public override void OnFrameworkInitializationCompleted()
     {
-            string? startUpFilePath = null;
-            
-            if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        string? startUpFilePath = null;
+
+        if (this.TryGetFeature<IActivatableLifetime>() is { } activatableLifetime)
+        {
+            activatableLifetime.Activated += async (_, e) =>
             {
+                if (e is FileActivatedEventArgs fileArgs)
+                {
+                    if (fileArgs.Files.Count <= 0)
+                    {
+                        return;
+                    }
+
+                    startUpFilePath = fileArgs.Files[0].Path.AbsolutePath;
+                    await HandleInitialLoadOrConsecutive();
+                }
+                else if (e is ProtocolActivatedEventArgs protocolArgs)
+                {
+                    startUpFilePath = protocolArgs.Uri.AbsolutePath;
+                    await HandleInitialLoadOrConsecutive();
+                }
+
+            };
+        }
+        base.OnFrameworkInitializationCompleted();        
+
+        var settingsExists = LoadSettings();
+        TranslationManager.Init();
+
+        _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
+        DataContext = _coreViewModel;
+        ThemeManager.DetermineTheme(Current, settingsExists);
+
+        _mainWindow = new MacMainWindow2();
+        _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
+        
+        TranslationManager.Init();
+        SettingsUpdater2.InitializeSettings(_mainWindowViewModel, settingsExists);
+
+        StartUpHelper2.HandleWindowScalingMode(_coreViewModel, _mainWindow, Settings.WindowProperties.AutoFit);
+        
+        var arg = Environment.GetCommandLineArgs();
+        if (arg.Length > 1)
+        {
+            startUpFilePath = arg[1];
+        }
+        if (startUpFilePath is not null)
+        {
+            Task.Run(() => QuickLoad2.QuickLoadAsync(_coreViewModel, startUpFilePath, false));
+        }
+        else
+        {
+            StartUpHelper2.StartUpMenuOrLastFile(_coreViewModel);
+        }
+        
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return;
+        }
+        
+        StartUpHelper2.HandlePostWindowUpdates(_coreViewModel, settingsExists, desktop, _mainWindow);
+        
+        return;
+
+        async ValueTask HandleInitialLoadOrConsecutive()
+        {
+            if (!_isInitialLoad)
+            {
+                _isInitialLoad = true;
+
+                // Force switch to ImageViewer (in case we were sitting on the Start Menu)
+                // _vm.ImageViewer ??= new ImageViewer();
+                // _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
+                //
+                // await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
                 return;
             }
-
-            if (this.TryGetFeature<IActivatableLifetime>() is { } activatableLifetime)
+            if (Settings.UIProperties.OpenInSameWindow)
             {
-                activatableLifetime.Activated += async (_, e) =>
-                {
-                    if (e is ProtocolActivatedEventArgs protocolArgs)
-                    {
-                        startUpFilePath = protocolArgs.Uri.AbsolutePath;
-                        await HandleInitialLoadOrConsecutive();
-                    }
-                    else if (e is FileActivatedEventArgs fileArgs)
-                    {
-                        if (fileArgs.Files.Count <= 0)
-                        {
-                            return;
-                        }
-
-                        startUpFilePath = fileArgs.Files[0].Path.AbsolutePath;
-                        await HandleInitialLoadOrConsecutive();
-                    }
-                };
+                Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
+                //await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
             }
-            base.OnFrameworkInitializationCompleted();        
-
-            var settingsExists = LoadSettings();
-            TranslationManager.Init();
-
-            _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
-            DataContext = _coreViewModel;
-            ThemeManager.DetermineTheme(Current, settingsExists);
-
-            _mainWindow = new MacMainWindow2();
-            _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
-            
-            Dispatcher.UIThread.Post(() =>
+            else
             {
-                if (!_isInitialLoad && startUpFilePath is null)
-                {
-                    StartUpHelper2.RegularStartUp(_coreViewModel,
-                        settingsExists,
-                        desktop,
-                        _mainWindow,
-                        _mainWindow.Disposables);
-                }
-            }, DispatcherPriority.Send);
-            
-            return;
-
-            async ValueTask HandleInitialLoadOrConsecutive()
-            {
-                if (!_isInitialLoad)
-                {
-                    _isInitialLoad = true;
-
-                    // Force switch to ImageViewer (in case we were sitting on the Start Menu)
-                    // _vm.ImageViewer ??= new ImageViewer();
-                    // _vm.MainWindow.CurrentView.Value = _vm.ImageViewer;
-                    //
-                    // await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                    return;
-                }
-                if (Settings.UIProperties.OpenInSameWindow)
-                {
-                    Dispatcher.UIThread.Invoke(() => { _mainWindow.Activate(); }, DispatcherPriority.Send);
-                    //await NavigationManager.LoadPicFromStringAsync(startUpFilePath, _vm).ConfigureAwait(false);
-                }
-                else
-                {
-                    ProcessHelper.StartNewProcess(startUpFilePath);
-                }
+                ProcessHelper.StartNewProcess(startUpFilePath);
             }
+        }
     }
 
    #region Interface implementations

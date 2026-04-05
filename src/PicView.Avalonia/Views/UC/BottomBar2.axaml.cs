@@ -211,4 +211,16 @@ public partial class BottomBar2 : UserControl
         // Context menu doesn't want to be opened normally
         _rotationContextMenu.Open();
     }
+
+    public void ResponsiveNavigationBtnSize(AvaloniaPropertyChangedEventArgs<Size> size)
+    {
+        if (size.NewValue.Value.Width < 450)
+        {
+            PreviousButton.Width = NextButton.Width = 65;
+        }
+        else
+        {
+            PreviousButton.Width = NextButton.Width = 80;
+        }
+    }   
 }

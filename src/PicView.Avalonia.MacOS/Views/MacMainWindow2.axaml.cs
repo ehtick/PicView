@@ -46,8 +46,8 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                     {
                         return;
                     }
-
                     WindowResizing2.HandleWindowResize(this, size);
+                    BottomBar.ResponsiveNavigationBtnSize(size);
                 }).AddTo(Disposables);
             if (DataContext is not MainWindowViewModel vm)
             {
@@ -94,6 +94,7 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
                     WindowDecorations = shown ? WindowDecorations.Full : WindowDecorations.None;
                 }
             });
+            Resized += WindowSizeChanged;
             
             UIHelper2.AddDropDownMenu();
 
@@ -225,6 +226,29 @@ public partial class MacMainWindow2 : Window, IPlatformWindowService
             TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
         });
     }
+    
+    private void WindowSizeChanged(object? sender, WindowResizedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        if (e.Reason is WindowResizeReason.User)
+        {
+            // Reset to manual window
+            Dispatcher.CurrentDispatcher.Post(() => WindowFunctions2.SetManualWindow(vm, this));
+            return;
+        }
+
+        if (Settings.WindowProperties.AutoFit)
+        {
+            return;
+        }
+
+        WindowResizing2.SetSize(vm, e.Reason);
+    }
+
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {

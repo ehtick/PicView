@@ -72,7 +72,7 @@ public static class StartUpHelper2
         }
         else
         {
-            RegularStartUp(vm, settingsExists, desktop, window, disposable);
+            RegularStartUp(vm, settingsExists, desktop, window);
         }
             
         return;
@@ -83,7 +83,7 @@ public static class StartUpHelper2
 
             HandleWindowScalingMode(vm, window);
 
-            HandleStartImage(vm, filePath, disposable);
+            HandleStartImage(vm, filePath);
             window.Show();
 
             HandlePostWindowUpdates(vm, settingsExists, desktop, window);
@@ -114,14 +114,14 @@ public static class StartUpHelper2
     
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
-        Window window, CompositeDisposable disposable)
+        Window window)
     {
         TranslationManager.Init();
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
         HandleWindowScalingMode(vm, window);
 
-        StartUpMenuOrLastFile(vm, disposable);
+        StartUpMenuOrLastFile(vm);
         window.Show();
 
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
@@ -129,7 +129,7 @@ public static class StartUpHelper2
     
     
 
-    private static void HandleWindowScalingMode(CoreViewModel vm, Window window, bool setPos = true)
+    public static void HandleWindowScalingMode(CoreViewModel vm, Window window, bool setPos = true)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -148,7 +148,7 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandlePostWindowUpdates(CoreViewModel vm, bool settingsExists,
+    public static void HandlePostWindowUpdates(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         SetMemorySettings();
@@ -263,12 +263,12 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleStartImage(CoreViewModel vm, string arg, CompositeDisposable disposable)
+    private static void HandleStartImage(CoreViewModel vm, string arg)
     {
         Task.Run(() => QuickLoad2.QuickLoadAsync(vm, arg, false));
     }
 
-    private static void StartUpMenuOrLastFile(CoreViewModel vm, CompositeDisposable disposable)
+    public static void StartUpMenuOrLastFile(CoreViewModel vm)
     {
         if (Settings.StartUp.OpenLastFile)
         {

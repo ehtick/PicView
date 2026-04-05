@@ -333,6 +333,7 @@
                 Width="80"
                 x:Name="NextButton" />
 
+
             <customControls:IconButton
                 Background="{DynamicResource AltBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
