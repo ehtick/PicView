@@ -15,7 +15,7 @@ using R3.Avalonia;
 
 namespace PicView.Avalonia.Linux.Views;
 
-public partial class LinuxMainWindow : Window, IPlatformWindowService
+public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
 {
     private readonly AvaloniaRenderingFrameProvider? _frameProvider;
     private static WindowInitializer? _windowInitializer;
@@ -35,6 +35,9 @@ public partial class LinuxMainWindow : Window, IPlatformWindowService
         UIHelper2.SetFrameProvider(_frameProvider);
 
         InitializeComponent();
+        
+        SharedBottomBar = BottomBar;
+        SharedTitleBar = Titlebar;
 
         LoadedInitialization();
     }

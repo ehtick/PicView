@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
@@ -10,7 +11,7 @@ using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class WinTitleBar2 : UserControl
+public partial class WinTitleBar2 : MainTitleBar
 {
     public WinTitleBar2()
     {
@@ -57,7 +58,6 @@ public partial class WinTitleBar2 : UserControl
             return;
         }
         
-        PointerPressed += (_, e) => TryDragWindow(e);
         PointerExited += (_, _) => { DragAndDropHelper.RemoveDragDropView(); };
         MainMenu.Closed += (_, _) => { CloseMenu(); };
         
@@ -114,23 +114,5 @@ public partial class WinTitleBar2 : UserControl
         }
 
         vm.TopTitlebarViewModel.CloseMenu();
-    }
-
-    private void TryDragWindow(PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null || DataContext is not MainWindowViewModel vm)
-        {
-            return;
-        }
-
-        if (vm.IsEditableTitlebarOpen.Value || MainMenu.IsOpen)
-        {
-            return;
-        }
-
-        if (TopLevel.GetTopLevel(this) is Window window)
-        {
-            WindowFunctions2.WindowDragAndDoubleClickBehavior(window, e, vm.PlatformWindowService);
-        }
     }
 }

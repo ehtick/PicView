@@ -1,4 +1,4 @@
-<UserControl
+<customControls:MainTitleBar
     Height="{CompiledBinding TitlebarHeight.Value,
                              Mode=OneWay}"
     IsVisible="{CompiledBinding IsTopToolbarShown.Value,
@@ -1183,4 +1183,4 @@
             </DockPanel>
         </Panel>
     </Border>
-</UserControl>
+</customControls:MainTitleBar>

@@ -1,7 +1,8 @@
-<Window
+<customControls:MainWindow
     x:Class="PicView.Avalonia.Win32.Views.WinMainWindow2"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
@@ -20,4 +21,4 @@
             <main:MainView3 x:Name="MainView" />
         </DockPanel>
     </Border>
-</Window>
+</customControls:MainWindow>

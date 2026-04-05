@@ -1,4 +1,4 @@
-<UserControl
+<customControls:MainTitleBar
     x:Class="PicView.Avalonia.Win32.Views.WinTitleBar2"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,9 +13,9 @@
     x:DataType="vm:MainWindowViewModel"
     IsVisible="{CompiledBinding IsTopToolbarShown.Value,
                                 Mode=OneWay}">
-    <UserControl.Resources>
+    <customControls:MainTitleBar.Resources>
         <converters:SortFilesByToBoolConverter x:Key="EnumToBoolConverter" />
-    </UserControl.Resources>
+    </customControls:MainTitleBar.Resources>
 
     <Border
         x:Name="TopWindowBorder"
@@ -1070,4 +1070,4 @@
             </DockPanel>
         </Panel>
     </Border>
-</UserControl>
+</customControls:MainTitleBar>

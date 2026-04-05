@@ -16,7 +16,7 @@ using R3.Avalonia;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class WinMainWindow2 : Window, IPlatformWindowService
+public partial class WinMainWindow2 : MainWindow, IPlatformWindowService
 {
     private readonly AvaloniaRenderingFrameProvider? _frameProvider;
     private static WindowInitializer? _windowInitializer;
@@ -36,6 +36,9 @@ public partial class WinMainWindow2 : Window, IPlatformWindowService
         UIHelper2.SetFrameProvider(_frameProvider);
 
         InitializeComponent();
+        
+        SharedBottomBar = BottomBar;
+        SharedTitleBar = Titlebar;
 
         LoadedInitialization();
     }
