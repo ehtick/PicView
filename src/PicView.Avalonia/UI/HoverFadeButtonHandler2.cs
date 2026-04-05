@@ -96,10 +96,11 @@ public class HoverFadeButtonHandler2 : IDisposable
             return false;
         }
 
-        if (_mainButton is HoverBar2)
+        if (_mainButton is HoverBar2 hoverBar)
         {
-            if (Settings.UIProperties.ShowBottomNavBar)
+            if (Settings.WindowProperties.AutoFit)
             {
+                hoverBar.IsVisible = false;
                 return false;
             }
         }
