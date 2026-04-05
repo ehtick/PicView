@@ -10,7 +10,6 @@ using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
-using PicView.Core.Models;
 using PicView.Core.Sizing;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 

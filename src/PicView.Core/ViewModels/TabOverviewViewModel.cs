@@ -17,7 +17,6 @@ namespace PicView.Core.ViewModels;
 public class TabOverviewViewModel
 {
     public BindableReactiveProperty<ObservableCollection<TabViewModel>> Tabs { get; } = new([]);
-    public BindableReactiveProperty<int> ActiveTabIndex { get; } = new(0);
     public BindableReactiveProperty<TabViewModel> ActiveTab { get; }
     public BindableReactiveProperty<bool> CanActiveTabNavigate { get; } = new();
     
@@ -137,7 +136,6 @@ public class TabOverviewViewModel
     public void SelectTab(TabViewModel tab)
     {
         ActiveTab.Value = tab;
-        ActiveTabIndex.Value = Tabs.Value.IndexOf(tab);
         
         ActiveTab.Value.IsSelected = true;
         CanActiveTabNavigate.Value = ActiveTab.Value.ImageIterator?.Files?.Count > 1;

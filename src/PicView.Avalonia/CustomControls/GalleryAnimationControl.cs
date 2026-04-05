@@ -6,7 +6,6 @@ using Avalonia.Layout;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.UI;
-using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Sizing;

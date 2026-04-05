@@ -21,15 +21,13 @@ using PicView.Core.FileHistory;
 using PicView.Core.Localization;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
-using R3;
 
 namespace PicView.Avalonia.StartUp;
 
 public static class StartUpHelper2
 {
     public static void StartWithArguments(CoreViewModel vm, bool settingsExists,
-        IClassicDesktopStyleApplicationLifetime desktop,
-        Window window, CompositeDisposable disposable)
+        IClassicDesktopStyleApplicationLifetime desktop, Window window)
     {
         var args = Environment.GetCommandLineArgs();
         if (args.Length > 1)

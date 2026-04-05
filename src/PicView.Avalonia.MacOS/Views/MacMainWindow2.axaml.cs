@@ -106,6 +106,7 @@ public partial class MacMainWindow2 : MainWindow, IPlatformWindowService
             Activated += OnActivated;
         };
     }
+
     private void OnActivated(object? sender, EventArgs e)
     {
         if (Application.Current.DataContext is not CoreViewModel core)

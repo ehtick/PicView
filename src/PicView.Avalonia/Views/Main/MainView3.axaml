@@ -896,8 +896,7 @@
             BorderThickness="0,0,0,1"
             DataContext="{CompiledBinding WindowTabs}"
             ItemsSource="{CompiledBinding Tabs.Value}"
-            SelectedIndex="{CompiledBinding ActiveTabIndex.Value,
-                                            Mode=TwoWay}"
+            SelectedItem="{Binding ActiveTab.Value}"
             Tag="{CompiledBinding IsTabPanelVisible.Value}"
             x:Name="MainTabControl">
 

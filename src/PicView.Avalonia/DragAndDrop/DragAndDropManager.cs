@@ -6,6 +6,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.Extensions;
@@ -149,6 +150,8 @@ public static class DragAndDropManager
         // Remove preview first and show loading
         RemoveDragDropView();
         
+        var tab = tabOverview.ActiveTab.Value;
+        
         if (url.StartsWith("file://"))
         {
             var file = url[7..];
@@ -156,11 +159,20 @@ public static class DragAndDropManager
             {
                 file = file[1..];
             }
+            
+            if (tab.CurrentView.CurrentValue is not ImageViewer2)
+            {
+                tab.CurrentView.Value = new ImageViewer2();
+            }
 
             await tabOverview.LoadFromFileAsync(file);
         }
         else
         {
+            if (tab.CurrentView.CurrentValue is not ImageViewer2)
+            {
+                tab.CurrentView.Value = new ImageViewer2();
+            }
             await tabOverview.LoadFromStringAsync(url);
         }
     }
@@ -318,11 +330,12 @@ public static class DragAndDropManager
     private static async Task LoadSupportedFile(string path, TabOverviewViewModel tabOverview)
     {
         var tab = tabOverview.ActiveTab.CurrentValue;
+        var droppedFileInfo = new FileInfo(path);
+        
         if (_preLoadValue is not null)
         {
              if (Application.Current?.DataContext is CoreViewModel core)
              {
-                 var droppedFileInfo = new FileInfo(path);
                  var droppedDir = droppedFileInfo.DirectoryName ?? string.Empty;
                  var currentDir = tab.ImageIterator?.CurrentDirectory ?? string.Empty;
 
@@ -342,8 +355,31 @@ public static class DragAndDropManager
                  core.SharedCache.Add(tab.Id, index, _preLoadValue, files.Count, false);
              }
         }
+
+        InitializeTab(tabOverview, droppedFileInfo);
         
         await tabOverview.LoadFromFileAsync(path);
+    }
+    
+    private static void InitializeTab(TabOverviewViewModel tabOverview, FileInfo? fileInfo)
+    {
+        if (fileInfo is null)
+        {
+            return;
+        }
+        
+        var tab = tabOverview.ActiveTab.Value;
+        
+        if (tab.CurrentView.CurrentValue is ImageViewer2)
+        {
+            return;
+        }
+        tab.CurrentView.Value = new ImageViewer2();
+        if (Application.Current?.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        TabNavigationInitializer.InitializeNewTab(tab, core.MainWindows.ActiveWindow.CurrentValue);
     }
 
     #endregion
