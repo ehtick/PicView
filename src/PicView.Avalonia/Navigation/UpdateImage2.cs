@@ -13,8 +13,7 @@ public static class UpdateImage2
         {
             return;
         }
-
-        // Update title to reflect file changes
+        
         if (file is null || file.Length is 0)
         {
             var noImage = TranslationManager.Translation?.NoImage;
@@ -52,7 +51,7 @@ public static class UpdateImage2
         {
             return;
         }
-
+        // Update title to reflect tiff navigation changes
         tabViewModel.UpdateTabTitle();
     }
 }
