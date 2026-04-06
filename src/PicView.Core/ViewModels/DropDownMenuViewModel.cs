@@ -28,12 +28,14 @@ public class DropDownMenuViewModel
         IsExpandedOptionsOpened.Value = true;
         IsSlideshowCarouselVisible.Value = false;
         IsToolWindowsCarouselVisible.Value = false;
+        IsFileHistoryVisible.Value = false;
     }
 
     public async ValueTask CloseGalleryOptions()
     {
         GalleryCarouselIndex.Value = 0;
         await CloseCarousel();
+        IsFileHistoryVisible.Value = Settings.Navigation.IsFileHistoryEnabled;
     }
 
     public void OpenSlideshowOptions()
@@ -45,12 +47,14 @@ public class DropDownMenuViewModel
         IsSlideshowCarouselVisible.Value = true;
         IsGalleryCarouselVisible.Value = false;
         IsToolWindowsCarouselVisible.Value = false;
+        IsFileHistoryVisible.Value = false;
     }
 
     public async ValueTask CloseSlideshowOptions()
     {
         SlideshowCarouselIndex.Value = 0;
         await CloseCarousel();
+        IsFileHistoryVisible.Value = Settings.Navigation.IsFileHistoryEnabled;
     }
 
     public async ValueTask CloseCarousel()
@@ -60,6 +64,7 @@ public class DropDownMenuViewModel
         IsGalleryCarouselVisible.Value = true;
         IsSlideshowCarouselVisible.Value = true;
         IsToolWindowsCarouselVisible.Value = true;
+        IsFileHistoryVisible.Value = Settings.Navigation.IsFileHistoryEnabled;
     }
     
     public void OpenToolWindowsOptions()
@@ -71,6 +76,7 @@ public class DropDownMenuViewModel
         IsToolWindowsCarouselVisible.Value = true;
         IsGalleryCarouselVisible.Value = false;
         IsSlideshowCarouselVisible.Value = false;
+        IsFileHistoryVisible.Value = false;
     }
     
     public async ValueTask CloseToolWindowsOptions()
