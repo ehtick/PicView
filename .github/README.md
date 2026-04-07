@@ -243,13 +243,13 @@ https://github.com/Ruben2776/PicView/issues/13.
 
 ## Code Signing Policy
 
-All releases are virus scanned and digitally signed.
+All releases are built via GitHub Actions, virus scanned and digitally signed.
 
 Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 
 
 ## Privacy Policy
 
-PicView does not collect, send, or receive any user data.
+PicView does **not** collect, send, or receive any user data.
 
 
