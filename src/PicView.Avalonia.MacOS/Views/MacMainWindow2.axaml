@@ -33,7 +33,7 @@
                     <NativeMenuItem
                         Command="{Binding OpenWithCommand}"
                         Header="{Binding Translation.OpenWith.Value, Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Save  -->
                     <NativeMenuItem
@@ -73,7 +73,7 @@
                         Command="{CompiledBinding OpenInExplorerCommand}"
                         Header="{CompiledBinding Translation.ShowInFolder.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                     Converter={x:Static ObjectConverters.IsNotNull},
                                                     FallbackValue=False,
                                                     Mode=OneWay}" />
@@ -85,7 +85,7 @@
                         Command="{CompiledBinding DeleteFileCommand}"
                         Header="{CompiledBinding Translation.DeleteFile.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                     Converter={x:Static ObjectConverters.IsNotNull},
                                                     FallbackValue=False,
                                                     Mode=OneWay}" />
@@ -120,7 +120,7 @@
                         Command="{CompiledBinding RenameCommand}"
                         Header="{CompiledBinding Translation.RenameFile.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                     Converter={x:Static ObjectConverters.IsNotNull},
                                                     FallbackValue=False,
                                                     Mode=OneWay}" />
@@ -131,7 +131,7 @@
                     <NativeMenuItem
                         Command="{Binding ShowFilePropertiesCommand}"
                         Header="{Binding Translation.FileProperties.Value}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
 
                 </NativeMenu>
@@ -147,7 +147,7 @@
                     <NativeMenuItem
                         Command="{Binding CopyFileCommand}"
                         Header="{Binding Translation.CopyFile.Value}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
                     <NativeMenuItem
                         Command="{Binding CopyBase64Command}"
                         Header="{Binding Translation.CopyImage.Value}"
@@ -405,14 +405,14 @@
                         Command="{CompiledBinding FirstCommand}"
                         Header="{CompiledBinding Translation.FirstImage.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Last image  -->
                     <NativeMenuItem
                         Command="{CompiledBinding LastCommand}"
                         Header="{CompiledBinding Translation.LastImage.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <NativeMenuItemSeparator />
 
@@ -421,28 +421,28 @@
                         Command="{CompiledBinding WindowTabs.Next10}"
                         Header="{CompiledBinding Translation.AdvanceBy10Images.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Skip 100  -->
                     <NativeMenuItem
                         Command="{CompiledBinding WindowTabs.Next100}"
                         Header="{CompiledBinding Translation.AdvanceBy100Images.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Go back 10  -->
                     <NativeMenuItem
                         Command="{CompiledBinding WindowTabs.Prev10}"
                         Header="{CompiledBinding Translation.GoBackBy10Images.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Go back 100  -->
                     <NativeMenuItem
                         Command="{CompiledBinding WindowTabs.Prev100}"
                         Header="{CompiledBinding Translation.GoBackBy100Images.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <NativeMenuItemSeparator />
 
@@ -451,14 +451,14 @@
                         Command="{CompiledBinding NextFolderCommand}"
                         Header="{CompiledBinding Translation.NextFolder.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Previous folder  -->
                     <NativeMenuItem
                         Command="{CompiledBinding PrevFolderCommand}"
                         Header="{CompiledBinding Translation.PrevFolder.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <NativeMenuItemSeparator />
 
@@ -467,14 +467,14 @@
                         Command="{CompiledBinding NextArchiveCommand}"
                         Header="{CompiledBinding Translation.NextArchive.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                     <!--  Previous folder  -->
                     <NativeMenuItem
                         Command="{CompiledBinding PrevArchiveCommand}"
                         Header="{CompiledBinding Translation.PrevArchive.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
                 </NativeMenu>
             </NativeMenuItem>

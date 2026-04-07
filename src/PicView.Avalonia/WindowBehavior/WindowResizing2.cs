@@ -209,7 +209,7 @@ public static class WindowResizing2
     public static ImageSize2? GetSize(MainWindowViewModel vm)
     {
         double width, height, secondaryWidth, secondaryHeight;
-        if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.FileInfo.CurrentValue, out var preloadValue))
+        if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue.FileInfo, out var preloadValue))
         {
             width = preloadValue.ImageModel.PixelWidth;
             height = preloadValue.ImageModel.PixelHeight;
@@ -229,7 +229,7 @@ public static class WindowResizing2
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.SecondaryFileInfo.CurrentValue, out var secondaryPreloadValue))
+            if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.SecondaryModel.CurrentValue.FileInfo, out var secondaryPreloadValue))
             {
                 secondaryWidth = secondaryPreloadValue.ImageModel.PixelWidth;
                 secondaryHeight = secondaryPreloadValue.ImageModel.PixelHeight;

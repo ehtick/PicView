@@ -367,7 +367,7 @@ public class TabOverviewViewModel
 
     #region Retrieval
 
-    public object? GetCurrentSource() => GetSourceFromFile(ActiveTab.CurrentValue.FileInfo.CurrentValue);
+    public object? GetCurrentSource() => GetSourceFromFile(ActiveTab.CurrentValue.Model.CurrentValue.FileInfo);
 
     public object? GetSourceFromFile(FileInfo fileInfo)
     {

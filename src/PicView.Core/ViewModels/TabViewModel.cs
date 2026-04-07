@@ -35,8 +35,6 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
 
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
-    public BindableReactiveProperty<FileInfo?> FileInfo { get; } = new();
-    public BindableReactiveProperty<FileInfo?> SecondaryFileInfo { get; } = new();
     public BindableReactiveProperty<ImageModel> Model { get; set; } = new();
     public BindableReactiveProperty<ImageModel?> SecondaryModel { get; set; } = new();
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);

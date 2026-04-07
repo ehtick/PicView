@@ -93,7 +93,7 @@ public partial class MainView3 : UserControl
         }
 
         vm.WindowTabs.SelectTab(tab);
-        if (tab.FileInfo?.CurrentValue?.Exists == true)
+        if (tab.Model.CurrentValue.FileInfo?.Exists == true)
         {
             tab.UpdateTabTitle();
         }

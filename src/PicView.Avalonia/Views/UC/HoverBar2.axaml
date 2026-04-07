@@ -201,7 +201,7 @@
                 CornerRadius="0,6,6,0"
                 CurrentIndex="{CompiledBinding NavigationIndex.Value}"
                 DragSensitivity="1"
-                IsEnabled="{CompiledBinding FileInfo.Value,
+                IsEnabled="{CompiledBinding Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Maximum="{CompiledBinding MaxIndex.Value}"
                 ThumbFill="{DynamicResource SecondaryBorderColor}"

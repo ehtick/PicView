@@ -68,7 +68,7 @@
                 Command="{CompiledBinding OpenWithCommand}"
                 Header="{CompiledBinding Translation.OpenWith.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}"
                 x:Name="OpenWithMenuItem">
@@ -82,7 +82,7 @@
                 Command="{CompiledBinding OpenInExplorerCommand}"
                 Header="{CompiledBinding Translation.ShowInFolder.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}">
                 <MenuItem.Icon>
@@ -94,7 +94,7 @@
             <MenuItem
                 Header="{CompiledBinding Translation.RemoveImageData.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}"
                 x:Name="RemoveImageDataMenuItem">
@@ -226,7 +226,7 @@
                 Command="{CompiledBinding ShowFilePropertiesCommand}"
                 Header="{CompiledBinding Translation.FileProperties.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}">
                 <MenuItem.Icon>
@@ -257,7 +257,7 @@
                 Command="{CompiledBinding ConvertWindowCommand}"
                 Header="{CompiledBinding Translation.ConvertTo.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}">
                 <MenuItem.Icon>
@@ -276,7 +276,7 @@
                 Command="{CompiledBinding DeleteFileCommand}"
                 Header="{CompiledBinding Translation.DeleteFile.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}">
                 <MenuItem.Icon>
@@ -297,7 +297,7 @@
                     Command="{CompiledBinding CopyFileCommand}"
                     Header="{CompiledBinding Translation.CopyFile.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False}">
                     <MenuItem.Icon>
@@ -310,7 +310,7 @@
                     Command="{CompiledBinding CopyImageCommand}"
                     Header="{CompiledBinding Translation.CopyImage.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False}">
                     <MenuItem.Icon>
@@ -322,7 +322,7 @@
                 <MenuItem
                     Command="{CompiledBinding CopyFilePathCommand}"
                     Header="{Binding Translation.FileCopyPath, Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False}">
                     <MenuItem.Icon>
@@ -331,7 +331,7 @@
                 </MenuItem>
 
                 <!--  Copy base64  -->
-                <MenuItem Command="{CompiledBinding CopyBase64Command}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False}">
+                <MenuItem Command="{CompiledBinding CopyBase64Command}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False}">
                     <MenuItem.Header>
                         <TextBlock>
                             <Run Text="{CompiledBinding Translation.Copy, Mode=OneWay}" />
@@ -350,7 +350,7 @@
                     Command="{CompiledBinding DuplicateFileCommand}"
                     Header="{CompiledBinding Translation.DuplicateFile,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False}">
                     <MenuItem.Icon>
@@ -401,13 +401,13 @@
                                                         FallbackValue=0}" />
                             <customControls:FuncTextBox
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.Name}"
+                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.Name}"
                                 Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value,
                                                         FallbackValue=0}"
                                 x:Name="FileNameTextBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value}"
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value,
                                                             FallbackValue=True}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -427,14 +427,14 @@
                                                         FallbackValue=0}" />
                             <customControls:FuncTextBox
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.DirectoryName,
+                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.DirectoryName,
                                                        FallbackValue=''}"
                                 Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value,
                                                         FallbackValue=0}"
                                 x:Name="DirectoryNameTextBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.DirectoryName,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.DirectoryName,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value,
                                                             FallbackValue=False}"
@@ -455,13 +455,13 @@
                                                         FallbackValue='0'}" />
                             <customControls:FuncTextBox
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName,
+                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName,
                                                        FallbackValue=''}"
                                 Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value}"
                                 x:Name="FullPathTextBox" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -759,7 +759,7 @@
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
                                 CopyText="{Binding Path=Text, ElementName=FileSizeBox}"
-                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -777,16 +777,16 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:DateTimePickerButtons
-                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                                 Margin="5,0,0,0"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.CreationTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.CreationTime,
                                                                    Mode=TwoWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
 
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.CreationTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.CreationTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -804,15 +804,15 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:DateTimePickerButtons
-                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                                 Margin="5,0,0,0"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastWriteTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.LastWriteTime,
                                                                    Mode=TwoWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastWriteTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.LastWriteTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -830,16 +830,16 @@
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextWidth}" />
                             <customControls:DateTimePickerButtons
-                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                                 Margin="5,0,0,0"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastAccessTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.LastAccessTime,
                                                                    Mode=TwoWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
 
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastAccessTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.LastAccessTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,

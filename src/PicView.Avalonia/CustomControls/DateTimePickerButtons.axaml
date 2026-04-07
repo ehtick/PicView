@@ -23,7 +23,7 @@
                 Icon="{StaticResource CalendarImage}"
                 IconHeight="16"
                 IconWidth="16"
-                IsVisible="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsVisible="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Width="35"
                 ZIndex="1"
@@ -35,7 +35,7 @@
                 Icon="{StaticResource ClockImage}"
                 IconHeight="18"
                 IconWidth="18"
-                IsVisible="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsVisible="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull}}"
                 Width="35"
                 ZIndex="1"

@@ -271,12 +271,10 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             }
 
             _tab.SecondaryModel.Value = loadedModel;
-            _tab.SecondaryFileInfo.Value = loadedModel.FileInfo;
         }
         else
         {
             _tab.SecondaryModel.Value = null;
-            _tab.SecondaryFileInfo.Value = null;
         }
 
         UpdateNavigationProperties();

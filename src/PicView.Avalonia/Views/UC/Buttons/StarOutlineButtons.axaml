@@ -21,7 +21,7 @@
                 Canvas.Left="5"
                 Canvas.Top="3"
                 Command="{CompiledBinding Exif.SetExifRating1Command}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName}"
+                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName}"
                 Foreground="{DynamicResource MainTextColor}"
                 ToolTip.Tip="{Binding Translation._1Star, Mode=OneWay}"
                 x:Name="Star1">
@@ -42,7 +42,7 @@
                 Canvas.Left="3"
                 Canvas.Top="3"
                 Command="{CompiledBinding Exif.SetExifRating2Command}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName}"
+                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName}"
                 ToolTip.Tip="{Binding Translation._2Star, Mode=OneWay}"
                 x:Name="Star2">
                 <Image
@@ -62,7 +62,7 @@
                 Canvas.Left="3"
                 Canvas.Top="3"
                 Command="{CompiledBinding Exif.SetExifRating3Command}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName}"
+                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName}"
                 ToolTip.Tip="{Binding Translation._3Star, Mode=OneWay}"
                 x:Name="Star3">
                 <Image
@@ -82,7 +82,7 @@
                 Canvas.Left="3"
                 Canvas.Top="3"
                 Command="{CompiledBinding Exif.SetExifRating4Command}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName}"
+                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName}"
                 ToolTip.Tip="{Binding Translation._4Star, Mode=OneWay}"
                 x:Name="Star4">
                 <Image
@@ -102,7 +102,7 @@
                 Canvas.Left="3"
                 Canvas.Top="3"
                 Command="{CompiledBinding Exif.SetExifRating5Command}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName}"
+                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName}"
                 ToolTip.Tip="{Binding Translation._5Star, Mode=OneWay}"
                 x:Name="Star5">
                 <Image

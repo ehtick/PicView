@@ -73,7 +73,7 @@
                 Command="{CompiledBinding OpenWithCommand}"
                 Header="{CompiledBinding Translation.OpenWith.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}"
                 x:Name="OpenWithMenuItem">
@@ -124,7 +124,7 @@
                 Command="{CompiledBinding OpenInExplorerCommand}"
                 Header="{CompiledBinding Translation.ShowInFolder.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False}">
                 <MenuItem.Icon>
@@ -531,7 +531,7 @@
                     Command="{CompiledBinding NextFolderCommand}"
                     Header="{CompiledBinding Translation.NextFolder.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}">
@@ -548,7 +548,7 @@
                     Command="{CompiledBinding PrevFolderCommand}"
                     Header="{CompiledBinding Translation.PrevFolder.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}">
@@ -604,7 +604,7 @@
                     Command="{CompiledBinding ShowFilePropertiesCommand}"
                     Header="{CompiledBinding Translation.FileProperties.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}">
@@ -652,7 +652,7 @@
                 <MenuItem
                     Header="{CompiledBinding Translation.OptimizeImage.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}"
@@ -776,7 +776,7 @@
                 <MenuItem
                     Command="{CompiledBinding CopyFileCommand}"
                     Header="{Binding Translation.FileCopyPath.Value, Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}">
@@ -805,7 +805,7 @@
                     Command="{CompiledBinding DuplicateFileCommand}"
                     Header="{CompiledBinding Translation.DuplicateFile.Value,
                                              Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                                 Converter={x:Static ObjectConverters.IsNotNull},
                                                 FallbackValue=False,
                                                 Mode=OneWay}">
@@ -821,7 +821,7 @@
                 Command="{CompiledBinding CopyFileCommand}"
                 Header="{CompiledBinding Translation.CopyFile.Value,
                                          Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
+                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Value.FileInfo,
                                             Converter={x:Static ObjectConverters.IsNotNull},
                                             FallbackValue=False,
                                             Mode=OneWay}">

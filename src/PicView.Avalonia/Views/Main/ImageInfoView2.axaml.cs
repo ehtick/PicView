@@ -70,7 +70,7 @@ public partial class ImageInfoView2 : UserControl
             PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
             PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
 
-            Observable.EveryValueChanged(vm.WindowTabs.ActiveTab.Value.FileInfo, x => x.Value)
+            Observable.EveryValueChanged(vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo, x => x)
                 .SubscribeAwait(UpdateValuesAsync).AddTo(_disposables);
 
             SizeChanged += (_, _) => ResponsiveResizeUpdate(vm);
@@ -79,14 +79,14 @@ public partial class ImageInfoView2 : UserControl
             
             FileNameTextBox.KeyDown += async (_, e) =>
                 await HandleRenameOnEnterAsync(e, () =>
-                    Path.Combine(vm.WindowTabs.ActiveTab.Value.FileInfo.CurrentValue.DirectoryName!, FileNameTextBox.Text));
+                    Path.Combine(vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo.DirectoryName!, FileNameTextBox.Text));
 
             FullPathTextBox.KeyDown += async (_, e) =>
                 await HandleRenameOnEnterAsync(e, () => FullPathTextBox.Text ?? string.Empty);
 
             DirectoryNameTextBox.KeyDown += async (_, e) =>
                 await HandleRenameOnEnterAsync(e, () =>
-                    Path.Combine(DirectoryNameTextBox.Text, vm.WindowTabs.ActiveTab.Value.FileInfo.CurrentValue.Name));
+                    Path.Combine(DirectoryNameTextBox.Text, vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo.Name));
 
             // Register EXIF property updates on 'Enter' key press
             RegisterExifUpdateHandlers();
@@ -136,7 +136,7 @@ public partial class ImageInfoView2 : UserControl
             vm.IsLoadingIndicatorShown.Value = true;
             //NavigationManager.DisableWatcher();
 
-            var fileInfo = vm.WindowTabs.ActiveTab.Value.FileInfo.CurrentValue;
+            var fileInfo = vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo;
             var oldPath = fileInfo.FullName;
 
             // Avoid renaming if the path hasn't changed
@@ -156,7 +156,7 @@ public partial class ImageInfoView2 : UserControl
 
                 FileHelper.RenameFile(oldPath, newPath);
 
-                vm.WindowTabs.ActiveTab.Value.FileInfo.Value = new FileInfo(newPath);
+                vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo = new FileInfo(newPath);
             }
             else
             {
@@ -167,7 +167,7 @@ public partial class ImageInfoView2 : UserControl
 
             //await NavigationManager.QuickReload();
 
-            await UpdateValuesAsync(vm.WindowTabs.ActiveTab.Value.FileInfo.CurrentValue, CancellationToken.None);
+            await UpdateValuesAsync(vm.WindowTabs.ActiveTab.Value.Model.CurrentValue.FileInfo, CancellationToken.None);
         }
         finally
         {

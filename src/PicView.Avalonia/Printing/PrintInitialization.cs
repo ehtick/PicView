@@ -25,7 +25,7 @@ public static class PrintInitialization
         var currentPrintSettings =
             new PrintSettings // TODO: Add print settings to its own config class to remember user preference
             {
-                ImagePath = { Value = vm.WindowTabs.ActiveTab.CurrentValue.FileInfo?.Value?.FullName },
+                ImagePath = { Value = vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue.FileInfo?.FullName },
                 PrinterName = { Value = printerName },
                 PaperSize = { Value = pageSettings.PaperSize.PaperName },
                 ColorMode =
