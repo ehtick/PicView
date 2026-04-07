@@ -31,6 +31,8 @@ public static class UpdateImage2
         tabViewModel.FileInfo.Value = file;
                         
         tabViewModel.UpdateTabTitle();
+        
+        tabViewModel.Format.Value = tabViewModel.Model.Format;
     }
 
     public static void ChangeImage(TabViewModel tabViewModel, object image, MainWindowViewModel mainWindowViewModel)

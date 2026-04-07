@@ -1,3 +1,4 @@
+using ImageMagick;
 using PicView.Core.Extensions;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
@@ -41,6 +42,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     public BindableReactiveProperty<FileInfo?> SecondaryFileInfo { get; } = new();
     public ImageModel Model { get; set; } = new();
     public ImageModel? SecondaryModel { get; set; }
+    public BindableReactiveProperty<MagickFormat?> Format { get; private set; }
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator"/>>
     public IImageIterator? ImageIterator { get; private set; }
@@ -62,6 +64,7 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
     /// Subject used to debounce adding files to the global file history.
     /// </summary>
     public Subject<string> FileHistorySubject { get; } = new();
+    private TimeSpan FileHistoryDebounceTime { get; } = TimeSpan.FromSeconds(.50);
     
     /// <summary>
     /// The main title displayed in the window title bar.
@@ -169,8 +172,10 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         }
         ImageIterator = new ImageIterator(cache, thumbCache, thumbnailLoader, this);
         
+        Format = new BindableReactiveProperty<MagickFormat?>(Model.Format);
+        
         FileHistorySubject
-            .Debounce(TimeSpan.FromSeconds(.75))
+            .Debounce(FileHistoryDebounceTime)
             .Subscribe(FileHistoryManager.Add)
             .AddTo(Disposables);
     }
@@ -189,9 +194,11 @@ public class TabViewModel(string id, Action<string> closeTab, IFileWatcherServic
         ImageIterator ??= new ImageIterator(cache, thumbCache, thumbnailLoader, this);
         var index = files.FindIndex(x => x.FullName.Equals(Model?.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
+        
+        Format = new BindableReactiveProperty<MagickFormat?>(Model.Format);
 
         FileHistorySubject
-            .Debounce(TimeSpan.FromSeconds(.75))
+            .Debounce(FileHistoryDebounceTime)
             .Subscribe(FileHistoryManager.Add)
             .AddTo(Disposables);
 

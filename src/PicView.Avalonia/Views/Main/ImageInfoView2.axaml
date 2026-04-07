@@ -729,12 +729,12 @@
                                 Background="{DynamicResource DisabledBackgroundColor}"
                                 Classes="TStyle x"
                                 IsReadOnly="True"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Format,
+                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Format.Value,
                                                        Mode=OneWay}"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.Format,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Format.Value,
                                                            Mode=OneWay}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
