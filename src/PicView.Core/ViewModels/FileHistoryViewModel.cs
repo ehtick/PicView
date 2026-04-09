@@ -16,12 +16,19 @@ public class FileHistoryViewModel
 
     public ReactiveCommand ClearHistoryCommand { get; }
     public ReactiveCommand ToggleSortCommand { get; }
+    public ReactiveCommand OpenFileHistoryCommand { get; }
 
     public FileHistoryViewModel(MainWindowViewModel mainWindow)
     {
         _mainWindow = mainWindow;
         ClearHistoryCommand = new ReactiveCommand(ClearHistory);
         ToggleSortCommand = new ReactiveCommand(ToggleSort);
+        OpenFileHistoryCommand = new ReactiveCommand(OpenFileHistory);
+    }
+
+    private void OpenFileHistory(Unit obj)
+    {
+        _mainWindow.Mapper.ShowRecentHistoryFile();
     }
 
     private void ToggleSort(Unit obj)

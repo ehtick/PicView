@@ -324,11 +324,6 @@ public static class FileHistoryManager
     /// </summary>
     public static async Task SaveToFileAsync()
     {
-        if (!Settings.Navigation.IsFileHistoryEnabled)
-        {
-            return;
-        }
-        
         try
         {
             if (string.IsNullOrWhiteSpace(_fileHistoryConfiguration.CorrectPath))

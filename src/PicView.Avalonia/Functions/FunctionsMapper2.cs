@@ -18,6 +18,7 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ColorHandling;
+using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
 using PicView.Core.IPlatform;
 using PicView.Core.Navigation;
@@ -130,6 +131,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
             "ShowFileProperties" => ShowFileProperties,
             "ShowSettingsFile" => ShowSettingsFile,
             "ShowKeybindingsFile" => ShowKeybindingsFile,
+            "ShowRecentHistoryFile" => ShowRecentHistoryFile,
             
             // Sorting functions
             "SortFilesByName" => SortFilesByName,
@@ -1147,10 +1149,14 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
         return;
     }
     
-    public async ValueTask ShowRecentHistoryFile()
+    public ValueTask ShowRecentHistoryFile()
     {
-        // await Task.Run(() => vm?.PlatformService?.OpenWith(FileHistoryManager.CurrentFileHistoryFile)).ConfigureAwait(false);
-        return;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return ValueTask.CompletedTask;
+        }
+        core.PlatformService.OpenWith(FileHistoryManager.CurrentFileHistoryFile);
+        return ValueTask.CompletedTask;
     }
     
     public async ValueTask ToggleOpeningInSameWindow()

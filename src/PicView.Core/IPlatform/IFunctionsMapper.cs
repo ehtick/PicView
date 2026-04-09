@@ -125,6 +125,7 @@ public interface IFunctionsMapper
     ValueTask SortFilesAscending();
     ValueTask SortFilesDescending();
     
+    // File History
     ValueTask ToggleFileHistory();
 
     // Ratings
@@ -160,5 +161,4 @@ public interface IFunctionsMapper
     ValueTask ShowKeybindingsFile();
     ValueTask ShowRecentHistoryFile();
     ValueTask ToggleOpeningInSameWindow();
-
 }

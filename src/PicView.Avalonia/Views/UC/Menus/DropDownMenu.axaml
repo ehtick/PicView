@@ -694,6 +694,7 @@
                     <customControls:IconButton
                         Classes="hover"
                         ClickMode="Release"
+                        Command="{Binding FileHistory.OpenFileHistoryCommand}"
                         DockPanel.Dock="Right"
                         Foreground="{DynamicResource MainTextColor}"
                         Icon="{StaticResource SquareLibrary}"

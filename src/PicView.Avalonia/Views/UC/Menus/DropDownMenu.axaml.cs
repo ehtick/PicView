@@ -45,7 +45,7 @@ public partial class DropDownMenu : AnimatedMenu
                 {
                     if (isVisible)
                     {
-                        MaxHeight = UIHelper2.GetMainView.Bounds.Height - 5;
+                        MaxHeight = UIHelper2.GetMainView.Bounds.Height - 1;
                         vm.FileHistory.UpdateHistory();
                     }
                 }, static result =>
