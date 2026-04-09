@@ -34,24 +34,17 @@ public static class WindowFunctions2
     {
         WindowResizing2.SaveSize(window);
 
-        CoreViewModel? core = null;
-        MainWindowViewModel? mainWindowViewModel = null;
-        await Dispatcher.CurrentDispatcher.InvokeAsync(() =>
+        if (Application.Current?.DataContext is not CoreViewModel core)
         {
-            window.Hide();
+            return;
+        }
 
-            if (Application.Current?.DataContext is not CoreViewModel coreViewModel)
-            {
-                return;
-            }
-
-            core = coreViewModel;
-            if (window.DataContext is not MainWindowViewModel viewModel)
-            {
-                return;
-            }
-            mainWindowViewModel = viewModel;
-        });
+        if (window.DataContext is not MainWindowViewModel viewModel)
+        {
+            return;
+        }
+        
+        window.Hide();
         
         string? lastFile;
 
@@ -59,13 +52,13 @@ public static class WindowFunctions2
         {
             lastFile = ArchiveExtraction.LastOpenedArchive;
         }
-        else if (mainWindowViewModel.WindowTabs.ActiveTab.CurrentValue.TabTitle.CurrentValue.TryGetURL(out var url))
+        else if (viewModel.WindowTabs.ActiveTab.CurrentValue.TabTitle.CurrentValue.TryGetURL(out var url))
         {
             lastFile = url;
         }
         else
         {
-            lastFile = mainWindowViewModel.WindowTabs.ActiveTab.CurrentValue?.Model.CurrentValue?.FileInfo?.FullName ?? FileHistoryManager.GetLastEntry() ?? null;
+            lastFile = viewModel.WindowTabs.ActiveTab.CurrentValue?.Model.CurrentValue?.FileInfo?.FullName ?? FileHistoryManager.GetLastEntry() ?? null;
         }
 
 
@@ -75,11 +68,11 @@ public static class WindowFunctions2
         }
         
         await SaveSettingsAsync();
-        await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
+        //await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
         TempFileHelper.DeleteTempFiles();
         await FileHistoryManager.SaveToFileAsync();
         ArchiveExtraction.Cleanup();
-        core.MainWindows.MainWindows.Remove(mainWindowViewModel);
+        core.MainWindows.MainWindows.Remove(viewModel);
 
         if (core?.SettingsViewModel?.SettingsWindowConfig is not null)
         {
