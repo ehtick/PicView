@@ -11,8 +11,7 @@ public class FileHistoryViewModel
 
     public ObservableList<FileHistoryEntryViewModel> PinnedEntries { get; } = [];
     public BindableReactiveProperty<bool> HasPinnedEntries { get; } = new(false);
-    public ObservableList<FileHistoryEntryViewModel> UnpinnedEntries { get; } = [];
-    public BindableReactiveProperty<bool> HasUnpinnedEntries { get; } = new(false);
+    public ObservableList<FileHistoryEntryViewModel> Entries { get; } = [];
 
     public ReactiveCommand ClearHistoryCommand { get; }
     public ReactiveCommand ToggleSortCommand { get; }
@@ -45,8 +44,8 @@ public class FileHistoryViewModel
 
     public void UpdateHistory()
     {
+        Entries.Clear();
         PinnedEntries.Clear();
-        UnpinnedEntries.Clear();
         
         if (!Settings.Navigation.IsFileHistoryEnabled)
         {
@@ -54,10 +53,9 @@ public class FileHistoryViewModel
         }
 
         var pinnedEntries = FileHistoryManager.PinnedEntries;
-        var unpinnedEntries = FileHistoryManager.UnPinnedEntries;
+        var entries = FileHistoryManager.AllEntries;
         
         HasPinnedEntries.Value = pinnedEntries.Any();
-        HasUnpinnedEntries.Value = unpinnedEntries.Any();
         
         var currentFilePath = _mainWindow.WindowTabs.ActiveTab.Value?.Model.CurrentValue.FileInfo?.FullName;
 
@@ -75,30 +73,30 @@ public class FileHistoryViewModel
             PinnedEntries.Add(pinnedEntry);
         }
 
-        var count = unpinnedEntries.Count();
+        var count = entries.Count;
         if (FileHistoryManager.IsSortingDescending)
         {
             for (var i = 0; i < count; i++)
             {
-                var path = unpinnedEntries.ElementAt(i).Path;
+                var path = entries.ElementAt(i).Path;
                 var index = i + 1;
                 var fileName = Path.GetFileName(path);
-                var unpinnedEntry = new FileHistoryEntryViewModel();
-                unpinnedEntry.Initialize(
+                var entry = new FileHistoryEntryViewModel();
+                entry.Initialize(
                     path, 
                     fileName, 
                     false, 
                     path == currentFilePath,
                     index, 
                     _mainWindow);
-                UnpinnedEntries.Add(unpinnedEntry);
+                Entries.Add(entry);
             }
         }
         else
         {
             for (var i = count - 1; i >= 0; i--)
             {
-                var entry = unpinnedEntries.ElementAt(i);
+                var entry = entries.ElementAt(i);
                 var index = i + 1;
                 var fileName = Path.GetFileName(entry.Path);
                 var unpinnedEntry = new FileHistoryEntryViewModel();
@@ -109,7 +107,7 @@ public class FileHistoryViewModel
                     entry.Path == currentFilePath,
                     index,
                     _mainWindow);
-                UnpinnedEntries.Add(unpinnedEntry);
+                Entries.Add(unpinnedEntry);
             }
         }
     }

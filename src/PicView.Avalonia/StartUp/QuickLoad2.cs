@@ -6,6 +6,7 @@ using PicView.Avalonia.Views.UC;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
+using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
 using PicView.Core.ViewModels;
 
@@ -69,7 +70,7 @@ public static class QuickLoad2
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
 
-            await GalleryLoader.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+            _ = GalleryLoader.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
                     vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
                     new AvaloniaThumbnailLoader(),
                     vm.SharedThumbnailCache,
@@ -80,6 +81,6 @@ public static class QuickLoad2
         {
             Settings.Gallery.DockPosition = GalleryDockPosition.Closed;
         }
-        
+        FileHistoryManager.Add(fileInfo.FullName);
     }
 }

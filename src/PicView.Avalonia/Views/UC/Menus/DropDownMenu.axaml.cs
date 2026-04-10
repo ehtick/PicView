@@ -38,7 +38,7 @@ public partial class DropDownMenu : AnimatedMenu
         if (DataContext is MainWindowViewModel vm)
         {
             vm.FileHistory.PinnedEntries.CollectionChanged += PinnedEntriesOnCollectionChanged;
-            vm.FileHistory.UnpinnedEntries.CollectionChanged += UnPinnedEntriesOnCollectionChanged;   
+            vm.FileHistory.Entries.CollectionChanged += EntriesOnCollectionChanged;   
             
             _menuVisibilitySubscription = vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible
                 .Subscribe(isVisible =>
@@ -65,7 +65,7 @@ public partial class DropDownMenu : AnimatedMenu
         UpdateCollection(e, PinnedEntriesCollection);
     }
     
-    private void UnPinnedEntriesOnCollectionChanged(in NotifyCollectionChangedEventArgs<FileHistoryEntryViewModel> e)
+    private void EntriesOnCollectionChanged(in NotifyCollectionChangedEventArgs<FileHistoryEntryViewModel> e)
     {
         UpdateCollection(e, UnPinnedEntriesCollection);
     }
@@ -123,11 +123,13 @@ public partial class DropDownMenu : AnimatedMenu
         base.OnDetachedFromLogicalTree(e);
         Loaded -= OnLoaded;
         _menuVisibilitySubscription?.Dispose();
-        if (DataContext is MainWindowViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
-            vm.FileHistory.PinnedEntries.CollectionChanged -= PinnedEntriesOnCollectionChanged;
-            vm.FileHistory.UnpinnedEntries.CollectionChanged -= UnPinnedEntriesOnCollectionChanged;   
+            return;
         }
+
+        vm.FileHistory.PinnedEntries.CollectionChanged -= PinnedEntriesOnCollectionChanged;
+        vm.FileHistory.Entries.CollectionChanged -= EntriesOnCollectionChanged;
     }
 
     private void Close_OnClick(object? sender, RoutedEventArgs e)
