@@ -7,7 +7,7 @@ namespace PicView.Core.ViewModels;
 
 public class FileHistoryViewModel
 {
-    private readonly MainWindowViewModel _mainWindow;
+    private readonly CoreViewModel _core;
 
     public ObservableList<FileHistoryEntryViewModel> PinnedEntries { get; } = [];
     public BindableReactiveProperty<bool> HasPinnedEntries { get; } = new(false);
@@ -17,9 +17,9 @@ public class FileHistoryViewModel
     public ReactiveCommand ToggleSortCommand { get; }
     public ReactiveCommand OpenFileHistoryCommand { get; }
 
-    public FileHistoryViewModel(MainWindowViewModel mainWindow)
+    public FileHistoryViewModel(CoreViewModel core)
     {
-        _mainWindow = mainWindow;
+        _core = core;
         ClearHistoryCommand = new ReactiveCommand(ClearHistory);
         ToggleSortCommand = new ReactiveCommand(ToggleSort);
         OpenFileHistoryCommand = new ReactiveCommand(OpenFileHistory);
@@ -27,7 +27,7 @@ public class FileHistoryViewModel
 
     private void OpenFileHistory(Unit obj)
     {
-        _mainWindow.Mapper.ShowRecentHistoryFile();
+        _core.MainWindows.ActiveWindow.CurrentValue.Mapper.ShowRecentHistoryFile();
     }
 
     private void ToggleSort(Unit obj)
@@ -57,7 +57,7 @@ public class FileHistoryViewModel
         
         HasPinnedEntries.Value = pinnedEntries.Any();
         
-        var currentFilePath = _mainWindow.WindowTabs.ActiveTab.Value?.Model.CurrentValue.FileInfo?.FullName;
+        var currentFilePath = _core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value?.Model.CurrentValue.FileInfo?.FullName;
 
         foreach (var entry in pinnedEntries)
         {
@@ -69,7 +69,7 @@ public class FileHistoryViewModel
                 true, 
                 entry.Path == currentFilePath,
                 -1, 
-                _mainWindow);
+                _core);
             PinnedEntries.Add(pinnedEntry);
         }
 
@@ -88,7 +88,7 @@ public class FileHistoryViewModel
                     false, 
                     path == currentFilePath,
                     index, 
-                    _mainWindow);
+                    _core);
                 Entries.Add(entry);
             }
         }
@@ -106,7 +106,7 @@ public class FileHistoryViewModel
                     false, 
                     entry.Path == currentFilePath,
                     index,
-                    _mainWindow);
+                    _core);
                 Entries.Add(unpinnedEntry);
             }
         }

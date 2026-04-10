@@ -1,7 +1,7 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
+    IsOpen="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
     x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
-    x:DataType="viewModels:MainWindowViewModel"
+    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:gallery="clr-namespace:PicView.Core.Gallery;assembly=PicView.Core"
@@ -22,7 +22,7 @@
             <!--  Gallery Carousel  -->
             <Carousel
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}"
+                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}"
                 x:Name="GalleryCarousel">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
@@ -31,7 +31,7 @@
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
-                        IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsGalleryCarouselVisible.Value}"
+                        IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsGalleryCarouselVisible.Value}"
                         LastChildFill="True"
                         VerticalAlignment="Top">
 
@@ -40,7 +40,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenGalleryOptions}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.OpenGalleryOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -54,7 +54,7 @@
                             Background="Transparent"
                             Classes="altHover"
                             Click="Close_OnClick"
-                            Command="{CompiledBinding WindowTabs.ActiveTab.Value.Gallery.ToggleGalleryCommand}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.ToggleGalleryCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource GalleryImage}"
                             IconHeight="14"
@@ -71,7 +71,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.CloseGalleryOptions}"
+                                Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.CloseGalleryOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -160,7 +160,7 @@
             <!--  Slideshow Carousel  -->
             <Carousel
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}"
+                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}"
                 x:Name="SlideshowCarousel">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
@@ -169,7 +169,7 @@
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
-                        IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsSlideshowCarouselVisible.Value}"
+                        IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsSlideshowCarouselVisible.Value}"
                         LastChildFill="True"
                         VerticalAlignment="Top">
 
@@ -178,7 +178,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenSlideshowOptions}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.OpenSlideshowOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -207,7 +207,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.CloseSlideshowOptions}"
+                                Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.CloseSlideshowOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -318,7 +318,7 @@
             </Carousel>
 
             <!--  Tool windows Carousel  -->
-            <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.ToolWindowsCarouselIndex.Value}">
+            <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.ToolWindowsCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
                         <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
@@ -326,7 +326,7 @@
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
-                        IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsToolWindowsCarouselVisible.Value}"
+                        IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsToolWindowsCarouselVisible.Value}"
                         LastChildFill="True"
                         VerticalAlignment="Top">
 
@@ -335,7 +335,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenToolWindowsOptions}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.OpenToolWindowsOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -348,7 +348,7 @@
                             Background="Transparent"
                             Classes="altHover"
                             ClickMode="Release"
-                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenToolWindowsOptions}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.OpenToolWindowsOptions}"
                             CornerRadius="8,0,0,0"
                             Padding="15,7,15,7">
                             <StackPanel Orientation="Horizontal" Spacing="7">
@@ -393,7 +393,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.CloseToolWindowsOptions}"
+                                Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.CloseToolWindowsOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -414,7 +414,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding EffectsWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.EffectsWindowCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource FlaskImage}"
                             IconHeight="14"
@@ -427,7 +427,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding BatchResizeWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.BatchResizeWindowCommand}"
                             CornerRadius="8,0,0,0"
                             Icon="{StaticResource BatchResizeImage}"
                             IconHeight="14"
@@ -438,7 +438,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding ImageInfoWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.ImageInfoWindowCommand}"
                             CornerRadius="8,0,0,0"
                             Data="{StaticResource ImageInfoGeometry}"
                             IconHeight="14"
@@ -449,7 +449,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding CropCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.CropCommand}"
                             CornerRadius="8,0,0,0"
                             Data="{StaticResource CropGeometry}"
                             IconHeight="14"
@@ -462,7 +462,7 @@
             </Carousel>
 
             <!--  Settings Carousel  -->
-            <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding TopTitlebarViewModel.DropDownMenu.SettingsCarouselIndex.Value}">
+            <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SettingsCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
                         <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
@@ -470,7 +470,7 @@
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
-                        IsVisible="{Binding TopTitlebarViewModel.DropDownMenu.IsSettingsCarouselVisible.Value}"
+                        IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsSettingsCarouselVisible.Value}"
                         LastChildFill="True"
                         VerticalAlignment="Top">
 
@@ -479,7 +479,7 @@
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
                             Classes="noBorderHover"
-                            Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.OpenSettingsOptions}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.OpenSettingsOptions}"
                             CornerRadius="0,8,0,0"
                             Data="{StaticResource FilledArrowRightGeometry}"
                             DockPanel.Dock="Right"
@@ -492,7 +492,7 @@
                             Background="Transparent"
                             Classes="altHover"
                             ClickMode="Release"
-                            Command="{CompiledBinding SettingsWindowCommand}"
+                            Command="{CompiledBinding MainWindows.ActiveWindow.Value.SettingsWindowCommand}"
                             CornerRadius="8,0,0,0"
                             Data="{StaticResource CogGeometry}"
                             IconHeight="14"
@@ -508,7 +508,7 @@
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
                                 Classes="noBorderHover"
-                                Command="{CompiledBinding TopTitlebarViewModel.DropDownMenu.CloseSettingsOptions}"
+                                Command="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.CloseSettingsOptions}"
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
@@ -529,7 +529,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding AutoFitWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.AutoFitWindowCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsAutoFit.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -543,7 +543,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding SetTopMostCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.SetTopMostCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsTopMost.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -557,7 +557,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding ToggleLoopingCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.ToggleLoopingCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsLooping.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -571,7 +571,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding ToggleScrollCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.ToggleScrollCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsScrollingEnabled.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -585,7 +585,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding StretchCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.StretchCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsStretched.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -599,7 +599,7 @@
                         <ToggleButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding SideBySideCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.SideBySideCommand}"
                             CornerRadius="8,0,0,0"
                             IsChecked="{Binding GlobalSettings.IsSideBySide.Value, Mode=TwoWay}"
                             Padding="7,4"
@@ -613,7 +613,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding AboutWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.AboutWindowCommand}"
                             Icon="{StaticResource AboutImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
@@ -624,7 +624,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding KeybindingsWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.KeybindingsWindowCommand}"
                             Icon="{StaticResource ShortcutsImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
@@ -635,7 +635,7 @@
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
-                            Command="{Binding SettingsWindowCommand}"
+                            Command="{Binding MainWindows.ActiveWindow.Value.SettingsWindowCommand}"
                             CornerRadius="0,0,8,8"
                             Data="{StaticResource CogGeometry}"
                             IconHeight="14"
@@ -650,7 +650,7 @@
 
             <!--  File history  -->
             <DockPanel
-                IsVisible="{CompiledBinding TopTitlebarViewModel.DropDownMenu.IsFileHistoryVisible.Value}"
+                IsVisible="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsFileHistoryVisible.Value}"
                 LastChildFill="False"
                 Margin="0,0,0,5"
                 VerticalAlignment="Top">

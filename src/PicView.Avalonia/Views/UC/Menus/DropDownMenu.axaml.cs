@@ -1,5 +1,6 @@
 using Avalonia.Interactivity;
 using System.Collections.Specialized;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
@@ -20,6 +21,13 @@ public partial class DropDownMenu : AnimatedMenu
 
     public DropDownMenu()
     {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        core.FileHistory ??= new FileHistoryViewModel(core);
+        DataContext = core;
         InitializeComponent();
         Loaded += OnLoaded;
     }
@@ -35,29 +43,31 @@ public partial class DropDownMenu : AnimatedMenu
         SlideShow90Sec.Text = $"90 {TranslationManager.Translation.SecAbbreviation}";
         SlideShow120Sec.Text = $"120 {TranslationManager.Translation.SecAbbreviation}";
 
-        if (DataContext is MainWindowViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
-            vm.FileHistory.PinnedEntries.CollectionChanged += PinnedEntriesOnCollectionChanged;
-            vm.FileHistory.Entries.CollectionChanged += EntriesOnCollectionChanged;   
-            
-            _menuVisibilitySubscription = vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible
-                .Subscribe(isVisible =>
-                {
-                    if (isVisible)
-                    {
-                        MaxHeight = UIHelper2.GetMainView.Bounds.Height - 1;
-                        vm.FileHistory.UpdateHistory();
-                    }
-                }, static result =>
-                {
-#if DEBUG
-                    if (result is { IsFailure: true, Exception: not null })
-                    {
-                        DebugHelper.LogDebug(nameof(DropDownMenu), nameof(_menuVisibilitySubscription), result.Exception);
-                    }
-#endif
-                });
+            return;
         }
+
+        core.FileHistory.PinnedEntries.CollectionChanged += PinnedEntriesOnCollectionChanged;
+        core.FileHistory.Entries.CollectionChanged += EntriesOnCollectionChanged;   
+            
+        _menuVisibilitySubscription = core.MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible
+            .Subscribe(isVisible =>
+            {
+                if (isVisible)
+                {
+                    MaxHeight = UIHelper2.GetMainView.Bounds.Height - 1;
+                    core.FileHistory.UpdateHistory();
+                }
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(DropDownMenu), nameof(_menuVisibilitySubscription), result.Exception);
+                }
+#endif
+            });
     }
 
     private void PinnedEntriesOnCollectionChanged(in NotifyCollectionChangedEventArgs<FileHistoryEntryViewModel> e)
@@ -123,13 +133,13 @@ public partial class DropDownMenu : AnimatedMenu
         base.OnDetachedFromLogicalTree(e);
         Loaded -= OnLoaded;
         _menuVisibilitySubscription?.Dispose();
-        if (DataContext is not MainWindowViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
 
-        vm.FileHistory.PinnedEntries.CollectionChanged -= PinnedEntriesOnCollectionChanged;
-        vm.FileHistory.Entries.CollectionChanged -= EntriesOnCollectionChanged;
+        core.FileHistory.PinnedEntries.CollectionChanged -= PinnedEntriesOnCollectionChanged;
+        core.FileHistory.Entries.CollectionChanged -= EntriesOnCollectionChanged;
     }
 
     private void Close_OnClick(object? sender, RoutedEventArgs e)

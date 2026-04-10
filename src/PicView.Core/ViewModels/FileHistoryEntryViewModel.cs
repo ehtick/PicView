@@ -5,7 +5,7 @@ namespace PicView.Core.ViewModels;
 
 public class FileHistoryEntryViewModel : IDisposable 
 {
-    private MainWindowViewModel? _mainWindow;
+    private CoreViewModel? _core;
     public BindableReactiveProperty<string> FilePath { get; } = new();
     public BindableReactiveProperty<string> FileName { get; } = new();
     public BindableReactiveProperty<bool> IsPinned { get; } = new();
@@ -17,9 +17,9 @@ public class FileHistoryEntryViewModel : IDisposable
     public ReactiveCommand<Unit> UnpinCommand { get; } = new();
     public ReactiveCommand<Unit> RemoveCommand { get; } = new();
     
-    public void Initialize(string path, string fileName, bool isPinned, bool isCurrentItem, int index, MainWindowViewModel mainWindow)
+    public void Initialize(string path, string fileName, bool isPinned, bool isCurrentItem, int index, CoreViewModel core)
     {
-        _mainWindow = mainWindow;
+        _core = core;
         
         FilePath.Value = path;
         FileName.Value = fileName;
@@ -37,26 +37,26 @@ public class FileHistoryEntryViewModel : IDisposable
     {
         IsPinned.Value = true;
         FileHistoryManager.Pin(FilePath.CurrentValue);
-        _mainWindow.FileHistory.UpdateHistory();
+        _core.FileHistory.UpdateHistory();
     }
 
     private void Unpin(Unit unit)
     {
         IsPinned.Value = false;
         FileHistoryManager.UnPin(FilePath.CurrentValue);
-        _mainWindow.FileHistory.UpdateHistory();
+        _core.FileHistory.UpdateHistory();
     }
 
     private void Remove(Unit unit)
     {
         FileHistoryManager.Remove(FilePath.CurrentValue);
-        _mainWindow.FileHistory.UpdateHistory();
+        _core.FileHistory.UpdateHistory();
     }
 
     private async ValueTask Open(Unit unit, CancellationToken ct)
     {
-        _mainWindow.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
-        await _mainWindow.WindowTabs.LoadFromStringAsync(FilePath.CurrentValue);
+        _core.MainWindows.ActiveWindow.CurrentValue.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
+        await _core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromStringAsync(FilePath.CurrentValue);
     }
     
     public void Dispose()
