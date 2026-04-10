@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
-using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Config;

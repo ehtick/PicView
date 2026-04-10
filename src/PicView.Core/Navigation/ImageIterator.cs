@@ -1,4 +1,6 @@
 using PicView.Core.DebugTools;
+using PicView.Core.FileHistory;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.ViewModels;
@@ -87,6 +89,12 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             {
                 // Is loading in cache, show thumbnail while loading
                 var thumb = _thumbnailLoader.GetExifThumbnail(targetFile);
+                _tab.Model.Value = new ImageModel
+                {
+                    Image = thumb,
+                    FileInfo = targetFile,
+                    ImageType = ImageType.Bitmap
+                };
 
                 // Wait for loading complete
                 var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
@@ -121,7 +129,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             await UpdateModelAsync(model, ct).ConfigureAwait(false);
 
             // Update the file history
-            _tab.FileHistorySubject.OnNext(targetFile.FullName);
+            FileHistoryManager.Add(targetFile.FullName);
         }
     }
 

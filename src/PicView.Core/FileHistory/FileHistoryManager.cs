@@ -372,7 +372,8 @@ public static class FileHistoryManager
                     FileHistoryGenerationContext.Default)
                 is not FileHistoryEntries entries)
             {
-                throw new JsonException("Failed to deserialize settings");
+                DebugHelper.LogDebug(nameof(FileHistoryManager), nameof(LoadFromFile), "Failed to deserialize settings");
+                return;
             }
 
             IsSortingDescending = entries.IsSortingDescending;
