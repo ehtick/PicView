@@ -806,5 +806,6 @@ public class MainWindowViewModel : IDisposable
             ToggleOpeningInSameWindowCommand,
             ToggleFileHistoryCommand
         );
+        GC.SuppressFinalize(this);
     }
 }

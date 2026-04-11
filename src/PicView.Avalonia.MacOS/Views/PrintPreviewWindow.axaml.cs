@@ -28,12 +28,22 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
 
         Loaded += (_, _) =>
         {
+            var vm = DataContext as MainWindowViewModel;
             // Keep window position when resizing
             ClientSizeProperty.Changed.ToObservable()
                 .Subscribe(size =>
                 {
                     WindowResizing.KeepWindowSize(this, size);
-                });
+                }, static result =>
+                {
+#if DEBUG
+                    if (result is { IsFailure: true, Exception: not null })
+                    {
+                        DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(ClientSizeProperty), result.Exception);
+                    }
+#endif
+                })
+                .AddTo(vm.PrintPreview.Disposables);
         };
     }
 
@@ -48,6 +58,14 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             .Subscribe(_ =>
             {
                 WindowFunctions2.CenterWindowOnOwnerWindow(this, Owner as Window);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
+                }
+#endif
             })
             .AddTo(vm.PrintPreview.Disposables);
 
@@ -57,7 +75,18 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         ps.PrinterName
             .AsObservable()
             .DistinctUntilChanged()
-            .SubscribeAwait(async (_, _) =>{ await UpdatePreviewAsync(vm.PrintPreview); })
+            .SubscribeAwait(async (_, _) =>
+            {
+                await UpdatePreviewAsync(vm.PrintPreview);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
+                }
+#endif
+            })
             .AddTo(vm.PrintPreview.Disposables);
         
         // Any setting change triggers preview update
@@ -73,7 +102,18 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
                 ps.PaperSize.AsObservable(),
                 (orientation, top, bottom, left, right, scale, color, paper)
                     => (orientation, top, bottom, left, right, scale, color, paper))
-            .SubscribeAwait(async (_, _) =>{ await UpdatePreviewAsync(vm.PrintPreview); })
+            .SubscribeAwait(async (_, _) =>
+            {
+                await UpdatePreviewAsync(vm.PrintPreview);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
+                }
+#endif
+            })
             .AddTo(vm.PrintPreview.Disposables);
         
         vm.PrintPreview.IsProcessing.Value = false;
@@ -157,11 +197,6 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
                 new Rect(0, 0, avaloniaBmp.PixelSize.Width, avaloniaBmp.PixelSize.Height),
                 destRect);
         });
-        
-        // if (vm.PreviewImage.Value is Bitmap old)
-        // {
-        //     old.Dispose();
-        // }
 
         vm.PreviewImage.Value = rtb;
         vm.PageWidth.Value = layout.PageWidthPx;
@@ -226,28 +261,30 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             return;
         }
 
-        if (vm.PrintPreview != null)
+        if (vm.PrintPreview == null)
         {
-            var ps = vm.PrintPreview.PrintSettings.Value;
-            var config = vm.PrintPreview.PrintWindowConfig;
-            if (ps != null && config != null && config.PrintProperties != null)
-            {
-                var props = config.PrintProperties;
-                props.PrinterName = ps.PrinterName.Value;
-                props.PaperSize = ps.PaperSize.Value;
-                props.Orientation = ps.Orientation.Value;
-                props.ScaleMode = ps.ScaleMode.Value;
-                props.ColorMode = ps.ColorMode.Value;
-                props.Copies = ps.Copies.Value;
-                props.MarginTop = ps.MarginTop.Value;
-                props.MarginBottom = ps.MarginBottom.Value;
-                props.MarginLeft = ps.MarginLeft.Value;
-                props.MarginRight = ps.MarginRight.Value;
-
-                _ = config.SaveAsync();
-            }
-
-            vm.PrintPreview.Dispose();
+            return;
         }
+
+        var ps = vm.PrintPreview.PrintSettings.Value;
+        var config = vm.PrintPreview.PrintWindowConfig;
+        if (ps != null && config is { PrintProperties: not null })
+        {
+            var props = config.PrintProperties;
+            props.PrinterName = ps.PrinterName.Value;
+            props.PaperSize = ps.PaperSize.Value;
+            props.Orientation = ps.Orientation.Value;
+            props.ScaleMode = ps.ScaleMode.Value;
+            props.ColorMode = ps.ColorMode.Value;
+            props.Copies = ps.Copies.Value;
+            props.MarginTop = ps.MarginTop.Value;
+            props.MarginBottom = ps.MarginBottom.Value;
+            props.MarginLeft = ps.MarginLeft.Value;
+            props.MarginRight = ps.MarginRight.Value;
+
+            _ = config.SaveAsync();
+        }
+
+        vm.PrintPreview.Dispose();
     }
 }

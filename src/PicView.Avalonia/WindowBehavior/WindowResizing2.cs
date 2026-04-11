@@ -64,7 +64,7 @@ public static class WindowResizing2
             new Point(50, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.IsBottomToolbarRightRotationClicked,
-            clicked => mainWindowVm.IsNavigationButtonLeftClicked = clicked,
+            clicked => mainWindowVm.IsBottomToolbarRightRotationClicked = clicked,
             () => UIHelper2.GetBottomBar.GetControl<Button>("RotateRightButton"),
             new Point(20, 10));
 
