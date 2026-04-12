@@ -33,7 +33,7 @@ public static class WindowFunctions2
     {
         WindowResizing2.SaveSize(window);
 
-        if (Application.Current?.DataContext is not CoreViewModel core)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
@@ -268,10 +268,6 @@ public static class WindowFunctions2
         Dispatcher.UIThread.Post(() =>
         {
             window ??= desktop.MainWindow;
-            if (window.WindowState is WindowState.Maximized or WindowState.FullScreen)
-            {
-                return;
-            }
 
             ScreenHelper.UpdateScreenSize(window);
             var screen = ScreenHelper.ScreenSize;

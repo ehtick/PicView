@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -40,13 +41,17 @@ public class RotationTransformer2(
         }
 
         WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
-        mainImage.InvalidateVisual();
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Settings.WindowProperties.Fullscreen)
+        {
+            // Sometimes the window is off-center after rotating on macOS fullscreen view
+            WindowFunctions2.CenterWindowOnScreen();
+        }
     }
 
     public void Rotate(double angle)
     {
         WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
-        mainImage.InvalidateVisual();
     }
 
     private ScaleTransform? _scaleTransform;

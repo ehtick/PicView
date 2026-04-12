@@ -9,6 +9,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Navigation;
@@ -28,7 +29,7 @@ namespace PicView.Avalonia.StartUp;
 public static class StartUpHelper2
 {
     public static void StartWithArguments(CoreViewModel vm, bool settingsExists,
-        IClassicDesktopStyleApplicationLifetime desktop, Window window)
+        IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         var args = Environment.GetCommandLineArgs();
         if (args.Length > 1)
@@ -100,7 +101,7 @@ public static class StartUpHelper2
 
     
     public static void StartUpBlank(CoreViewModel vm, bool settingsExists, bool setPos,
-        IClassicDesktopStyleApplicationLifetime desktop, Window window)
+        IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
         
@@ -113,7 +114,7 @@ public static class StartUpHelper2
     
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop,
-        Window window)
+        MainWindow window)
     {
         TranslationManager.Init();
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
@@ -126,9 +127,7 @@ public static class StartUpHelper2
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
     
-    
-
-    public static void HandleWindowScalingMode(CoreViewModel vm, Window window, bool setPos = true)
+    public static void HandleWindowScalingMode(CoreViewModel vm, MainWindow window, bool setPos = true)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -148,7 +147,7 @@ public static class StartUpHelper2
     }
 
     public static void HandlePostWindowUpdates(CoreViewModel vm, bool settingsExists,
-        IClassicDesktopStyleApplicationLifetime desktop, Window window)
+        IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         SetMemorySettings();
         
@@ -159,23 +158,32 @@ public static class StartUpHelper2
 
         UIHelper2.SetControls(window);
 
-        if (!Settings.WindowProperties.AutoFit)
-        {
-            // Need to update the screen size after the window is shown,
-            // to avoid rendering error when switching between auto-fit
-            ScreenHelper.UpdateScreenSize(window);
-        }
-
         // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
         if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
         {
-            // Dispatcher.UIThread
-            //     .InvokeAsync(() => { window Maximize(false); }, DispatcherPriority.Background);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false);
+            }
+            else
+            {
+                Dispatcher.UIThread.Post(() =>
+                    vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false),
+                    DispatcherPriority.Background);
+            }
         }
         else if (Settings.WindowProperties.Fullscreen)
         {
-            // Dispatcher.UIThread.InvokeAsync(() => { vm.PlatformWindowService.Fullscreen(false); },
-            //     DispatcherPriority.Background);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false);
+            }
+            else
+            {
+                Dispatcher.UIThread.Post(() =>
+                    vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false),
+                    DispatcherPriority.Background);
+            }
         }
 
         if (Settings.UIProperties.ShowHoverNavigationBar)
@@ -312,7 +320,7 @@ public static class StartUpHelper2
         }
     }
 
-    private static void HandleAutoFit(MainWindowViewModel vm, Window window)
+    private static void HandleAutoFit(MainWindowViewModel vm, MainWindow window)
     {
         WindowFunctions2.SetAutoFit(vm, window);
         vm.IsAutoFit.Value = true;

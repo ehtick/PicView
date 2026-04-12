@@ -169,10 +169,24 @@ public static class WindowResizing2
         vm.ScrollViewerWidth.Value = size.ScrollViewerWidth;
         vm.ScrollViewerHeight.Value = size.ScrollViewerHeight;
         var rotationAngle = vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue;
-        if (Settings.WindowProperties.Maximized || Settings.WindowProperties.Fullscreen)
+        var isRotated = rotationAngle is 90 or 270;
+
+        var imageWidth = isRotated ? size.Height : size.Width;
+        var imageHeight = isRotated ? size.Width : size.Height;
+
+        if (Settings.WindowProperties.Fullscreen)
         {
-            vm.WindowMaxWidth.Value = vm.WindowMaxHeight.Value =
-            vm.ImageWidth.Value = vm.ImageHeight.Value = double.NaN;
+            vm.WindowMaxWidth.Value = ScreenHelper.ScreenSize.Width;
+            vm.WindowMaxHeight.Value = ScreenHelper.ScreenSize.Height;
+            vm.ImageWidth.Value = imageWidth;
+            vm.ImageHeight.Value = imageHeight;
+        }
+        else if (Settings.WindowProperties.Maximized)
+        {
+            vm.WindowMaxWidth.Value = ScreenHelper.ScreenSize.WorkingAreaWidth;
+            vm.WindowMaxHeight.Value = ScreenHelper.ScreenSize.WorkingAreaHeight;
+            vm.ImageWidth.Value = imageWidth;
+            vm.ImageHeight.Value = imageHeight;
         }
         else if (Settings.WindowProperties.AutoFit)
         {
@@ -183,22 +197,10 @@ public static class WindowResizing2
             }
             else
             {
-                if (rotationAngle is 90 or 270)
-                {
-                    vm.WindowMaxWidth.Value = size.WindowHeight;
-                    vm.WindowMaxHeight.Value = size.WindowWidth;
-
-                    vm.ImageWidth.Value = size.Height;
-                    vm.ImageHeight.Value = size.Width;
-                }
-                else
-                {
-                    vm.WindowMaxWidth.Value = size.WindowWidth;
-                    vm.WindowMaxHeight.Value = size.WindowHeight;
-
-                    vm.ImageWidth.Value = size.Width;
-                    vm.ImageHeight.Value = size.Height;
-                }
+                vm.WindowMaxWidth.Value = isRotated ? size.WindowHeight : size.WindowWidth;
+                vm.WindowMaxHeight.Value = isRotated ? size.WindowWidth : size.WindowHeight;
+                vm.ImageWidth.Value = imageWidth;
+                vm.ImageHeight.Value = imageHeight;
             }
         }
         else

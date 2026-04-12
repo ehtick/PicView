@@ -102,6 +102,13 @@ public static class MacOSWindow2
         vm.IsFullscreen.Value = true;
         vm.IsMaximized.Value = false;
         
+        // Set the window size to the screen size
+        window.Width = ScreenHelper.ScreenSize.Width;
+        window.Height = ScreenHelper.ScreenSize.Height;
+        
+        // Sometimes the window is not centered properly, so center it again
+        WindowFunctions2.CenterWindowOnScreen(window);
+        
         WindowResizing2.SetSize(vm, WindowResizeReason.Application);
         
         // Reset changing state flag so subscription can fire again. Need to be delayed by dispatcher to not be misfired. 

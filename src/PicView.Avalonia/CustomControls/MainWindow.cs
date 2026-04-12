@@ -24,7 +24,7 @@ public class MainWindow : Window, IMainWindow
     public UserControl? SharedTitleBar { get; set; }
     public AvaloniaRenderingFrameProvider? FrameProvider { get; set; }
 
-    public MainWindow()
+    protected MainWindow()
     {
         FrameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this));
         UIHelper2.SetFrameProvider(FrameProvider);
@@ -54,7 +54,7 @@ public class MainWindow : Window, IMainWindow
     
     private void OnActivated(object? sender, EventArgs e)
     {
-        if (Application.Current.DataContext is not CoreViewModel core || Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.DataContext is not CoreViewModel core || Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }
