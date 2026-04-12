@@ -17,11 +17,6 @@
         Height="37"
         MaxWidth="{CompiledBinding Hoverbar.MaxWidth}"
         x:Name="BottomBorder">
-        <Border.Styles>
-            <Style Selector="DockPanel">
-                <Setter Property="ContextFlyout" Value="{x:Null}" />
-            </Style>
-        </Border.Styles>
         <DockPanel LastChildFill="True">
             <customControls:IconButton
                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
@@ -131,7 +126,7 @@
                 Width="38"
                 x:Name="FlipButton">
                 <Button.RenderTransform>
-                    <!-- <ScaleTransform ScaleX="{CompiledBinding PicViewer.ScaleX.Value}" /> -->
+                    <ScaleTransform ScaleX="{Binding ScaleX.Value}" />
                 </Button.RenderTransform>
             </customControls:IconButton>
 

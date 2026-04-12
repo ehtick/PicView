@@ -27,12 +27,9 @@ public static class UIHelper2
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
     public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar2? GetBottomBar { get; private set; }
-    public static HoverBar2? GetHoverBar { get; private set; }
     public static DropDownMenu? GetDropDownMenu { get; private set; }
-    
     public static ToolTipMessage2? GetToolTipMessage { get; private set; }
-
-
+    
     public static AvaloniaRenderingFrameProvider? GetFrameProvider { get; private set; }
 
     public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) =>
@@ -50,6 +47,21 @@ public static class UIHelper2
         GetBottomBar = mainWindow?.FindControl<BottomBar2>("BottomBar");
         GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage2>("ToolTipMessage");
         GetMainTabControl = GetMainView.MainTabControl;
+    }
+
+    public static HoverBar2? GetHoverBar()
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return null;
+        }
+
+        if (core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            return imageViewer.HoverBar;
+        }
+
+        return null;
     }
     
     public static void AddDropDownMenu()

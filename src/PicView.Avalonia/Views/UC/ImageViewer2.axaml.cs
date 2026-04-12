@@ -9,8 +9,8 @@ using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;
 using R3;
@@ -106,7 +106,15 @@ public partial class ImageViewer2 : UserControl
                         TimeSpan.FromSeconds(1));
                 }
 
-                ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,(HoverBar.Bounds.Height / 2) + 25) : new Thickness(0, 0, 25, 25);
+                ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,HoverBar.Bounds.Height / 2 + 25) : new Thickness(0, 0, 25, 25);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(ImageViewer2), nameof(InitializeImageTransformer), result.Exception);
+                }
+#endif
             }).AddTo(ref _disposables);
             
         
@@ -127,7 +135,16 @@ public partial class ImageViewer2 : UserControl
                 {
                     SecondaryImage.IsVisible = false;
                 }
-            }).AddTo(ref _disposables);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(ImageViewer2), nameof(InitializeImageTransformer), result.Exception);
+                }
+#endif
+            }, AwaitOperation.Drop)
+            .AddTo(ref _disposables);
         
         // Correspond to change when index clicked on track
         Observable.FromEvent<EventHandler<int>, int>(
@@ -137,6 +154,14 @@ public partial class ImageViewer2 : UserControl
             .SubscribeAwait(async (x, _) =>
             {
                 await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(ImageViewer2), nameof(InitializeImageTransformer), result.Exception);
+                }
+#endif
             }, AwaitOperation.Drop)
             .AddTo(ref _disposables);
         // Correspond to change when index dragged on track
@@ -149,6 +174,14 @@ public partial class ImageViewer2 : UserControl
             .SubscribeAwait(async (x, _) =>
             {
                 await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+            }, static result =>
+            {
+#if DEBUG
+                if (result is { IsFailure: true, Exception: not null })
+                {
+                    DebugHelper.LogDebug(nameof(ImageViewer2), nameof(InitializeImageTransformer), result.Exception);
+                }
+#endif
             }, AwaitOperation.Drop)
             .AddTo(ref _disposables);
     }

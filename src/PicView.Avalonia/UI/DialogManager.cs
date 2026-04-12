@@ -4,7 +4,9 @@ using Avalonia.Threading;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.Views.UC.PopUps;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.UI;
 
@@ -79,12 +81,21 @@ public static class DialogManager2
 
     public static void AddNavigationDialog()
     {
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
+        if (UIHelper2.GetMainView.MainPanel.Children.OfType<NavigationDialog>().Any())
         {
             return;
         }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
+        
+        UIHelper2.GetDropDownMenu.IsOpen = false;
+        
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        
+        UIHelper2.GetMainView.MainPanel.Children.Add(new NavigationDialog
+        {
+            DataContext = core.MainWindows.ActiveWindow.CurrentValue
+        });
     }
 }

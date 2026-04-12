@@ -115,7 +115,7 @@ public class AnimatedPopUp : ContentControl
         );
         if (remove)
         {
-            UIHelper.GetMainView.MainGrid.Children.Remove(this);
+            UIHelper2.GetMainView.MainPanel.Children.Remove(this);
         }
         else
         {

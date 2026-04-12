@@ -55,32 +55,32 @@ public static class WindowResizing2
 
         RepositionCursorIfTriggered(mainWindowVm.IsNavigationButtonLeftClicked,
             clicked => mainWindowVm.IsNavigationButtonLeftClicked = clicked,
-            () => UIHelper2.GetBottomBar.GetControl<Button>("PreviousButton"),
+            () => UIHelper2.GetBottomBar.PreviousButton,
             new Point(50, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.IsNavigationButtonRightClicked,
             clicked => mainWindowVm.IsNavigationButtonRightClicked = clicked,
-            () => UIHelper2.GetBottomBar.GetControl<Button>("NextButton"),
+            () => UIHelper2.GetBottomBar.NextButton,
             new Point(50, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.IsBottomToolbarRightRotationClicked,
             clicked => mainWindowVm.IsBottomToolbarRightRotationClicked = clicked,
-            () => UIHelper2.GetBottomBar.GetControl<Button>("RotateRightButton"),
+            () => UIHelper2.GetBottomBar.RotateRightButton,
             new Point(20, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.IsBottomToolbarLeftRotationClicked,
             clicked => mainWindowVm.IsBottomToolbarLeftRotationClicked = clicked,
-            () => UIHelper2.GetBottomBar.GetControl<Button>("RotateLeftButton"),
+            () => UIHelper2.GetBottomBar.RotateLeftButton,
             new Point(20, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonNextClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonNextClicked = clicked,
-            () => UIHelper2.GetHoverBar.GetControl<Button>("NextButton"),
+            () => UIHelper2.GetHoverBar().NextButton,
             new Point(50, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonPreviousClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverNavigationButtonPreviousClicked = clicked,
-            () => UIHelper2.GetHoverBar.GetControl<Button>("PreviousButton"),
+            () => UIHelper2.GetHoverBar().PreviousButton,
             new Point(50, 10));
 
         RepositionCursorIfTriggered(mainWindowVm.IsClickArrowLeftClicked,
@@ -95,12 +95,12 @@ public static class WindowResizing2
 
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateRightClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateRightClicked = clicked,
-            () => UIHelper2.GetHoverBar.GetControl<IconButton>("RotateRightButton"),
+            () => UIHelper2.GetHoverBar().RotateRightButton,
             new Point(11, 7));
 
         RepositionCursorIfTriggered(mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateLeftClicked,
             clicked => mainWindowVm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverRotateLeftClicked = clicked,
-            () => UIHelper2.GetHoverBar.GetControl<IconButton>("RotateLeftButton"),
+            () => UIHelper2.GetHoverBar().RotateLeftButton,
             new Point(11, 7));
     }
 
@@ -110,7 +110,7 @@ public static class WindowResizing2
         Func<Control?> controlProvider,
         Point offset)
     {
-        if (!isTriggered)
+        if (!isTriggered)   
         {
             return;
         }

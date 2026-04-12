@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -49,18 +50,33 @@ public partial class MainView3 : UserControl
                 if (value is ContextMenu mainContextMenu)
                 {
                     mainContextMenu.Opened += async (sender, args) =>  await OnMainContextMenuOpened(sender, args);
+                    mainContextMenu.Opening += async (sender, args) => OnMainContextMenuOpening(sender, args);
                 }
             }
             
             //MainTabControl.TabDetached += MainTabControlOnTabDetached;
             MainTabControl.TabCreated += MainTabControlOnTabCreated;
             MainTabControl.SelectionChanged += MainTabControlOnSelectionChanged;
-
-            // Setup hover fade buttons
-            //_ = new HoverFadeButtonHandler(AltButtonsPanel, vm);
         };
     }
-    
+
+    private void OnMainContextMenuOpening(object? sender, CancelEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            // Cancel the context menu if the hover bar is visible, because custom pop-up dialogs are shown instead.
+            if (imageViewer.HoverBar.Opacity > 0)
+            {
+                e.Cancel = true;
+            }
+        }
+    }
+
     private void MainTabControlOnTabCreated(object? sender, TabCreatedEventArgs e)
     {
         // Only set the StartUpMenu if the View is currently null.
