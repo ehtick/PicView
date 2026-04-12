@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;
@@ -30,14 +31,22 @@ public static class UpdateImage2
         tabViewModel.UpdateTabTitle();
     }
 
-    public static void ChangeImage(TabViewModel tabViewModel, object image, MainWindowViewModel mainWindowViewModel)
+    public static void ChangeImage(TabViewModel tabViewModel, MainWindowViewModel vm)
     {
+        if (Settings.Zoom.ResetZoomOnChange)
+        {
+            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+            {
+                imageViewer.Reset();
+            }
+        }
+        
         if (Settings.WindowProperties.AutoFit)
         {
             WindowResizing2.SetSize(tabViewModel.Model.CurrentValue.PixelWidth,
                 tabViewModel.Model.CurrentValue.PixelHeight,
                 WindowResizeReason.Application,
-                mainWindowViewModel);
+                vm);
         }
 
         // Update tiff title if appropriate (there are no file changes in this instance

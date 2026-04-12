@@ -32,9 +32,9 @@ public static class NavigationSubscriptions
                     })
                     .AddTo(tabViewModel.Disposables);
                 Observable.EveryValueChanged(tabViewModel, tab => tab.Model.CurrentValue.Image, UIHelper2.GetFrameProvider)
-                    .Subscribe(image =>
+                    .Subscribe(_ =>
                     {
-                        UpdateImage2.ChangeImage(tabViewModel, image, mainWindowViewModel);
+                        UpdateImage2.ChangeImage(tabViewModel, mainWindowViewModel);
                     }, static result =>
                     {
 #if DEBUG

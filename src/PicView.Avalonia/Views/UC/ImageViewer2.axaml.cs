@@ -20,7 +20,7 @@ namespace PicView.Avalonia.Views.UC;
 public partial class ImageViewer2 : UserControl
 {
     private RotationTransformer2? _imageTransformer;
-    private CompositeDisposable? _disposables;
+    private DisposableBag _disposables;
     private MainWindowViewModel? _mainWindowViewModel;
     
     public ImageViewer2()
@@ -51,11 +51,6 @@ public partial class ImageViewer2 : UserControl
     public async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         if (GalleryView.IsPointerOver)
-        {
-            return;
-        }
-        
-        if (sender is not Control control)
         {
             return;
         }
@@ -91,11 +86,7 @@ public partial class ImageViewer2 : UserControl
         _imageTransformer = new RotationTransformer2(
             MainTransform,
             MainImage,
-            core.MainWindows.ActiveWindow.CurrentValue,
-            () =>
-            {
-                ZoomPanControl.ResetZoomSlim();
-            });
+            core.MainWindows.ActiveWindow.CurrentValue);
         ZoomPanControl.Initialize(ZoomPreview);
 
         if (DataContext is not TabViewModel tab)
@@ -103,7 +94,6 @@ public partial class ImageViewer2 : UserControl
             return;
         }
 
-        _disposables = new CompositeDisposable();
         Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
             .Skip(1)
             .Subscribe(zoomLevel =>
@@ -116,7 +106,7 @@ public partial class ImageViewer2 : UserControl
                 }
 
                 ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,(HoverBar.Bounds.Height / 2) + 25) : new Thickness(0, 0, 25, 25);
-            }).AddTo(_disposables);
+            }).AddTo(ref _disposables);
             
         
         Debug.Assert(Settings.ImageScaling is not null);
@@ -136,7 +126,7 @@ public partial class ImageViewer2 : UserControl
                 {
                     SecondaryImage.IsVisible = false;
                 }
-            }).AddTo(_disposables);
+            }).AddTo(ref _disposables);
         
         // Correspond to change when index clicked on track
         Observable.FromEvent<EventHandler<int>, int>(
@@ -147,7 +137,7 @@ public partial class ImageViewer2 : UserControl
             {
                 await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
             }, AwaitOperation.Drop)
-            .AddTo(_disposables);
+            .AddTo(ref _disposables);
         // Correspond to change when index dragged on track
         // wait for a 25ms pause in changes (debounce), and then emit the last value.
         Observable.FromEvent<EventHandler<int>, int>(
@@ -159,7 +149,7 @@ public partial class ImageViewer2 : UserControl
             {
                 await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
             }, AwaitOperation.Drop)
-            .AddTo(_disposables);
+            .AddTo(ref _disposables);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -168,7 +158,7 @@ public partial class ImageViewer2 : UserControl
         RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
         RemoveHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
         RemoveHandler(PinchEvent, TouchMagnifyEvent);
-        _disposables?.Dispose();
+        _disposables.Dispose();
     }
 
     #region Zoom
@@ -191,12 +181,17 @@ public partial class ImageViewer2 : UserControl
     /// <inheritdoc cref="Zoom.ResetZoom(bool, ViewModels.MainViewModel)"/>
     public void ResetZoom(bool enableAnimations = true) =>
         ZoomPanControl.ResetZoom(enableAnimations);
+
+    public void Reset()
+    {
+        ZoomPanControl.ResetZoomSlim();
+        _imageTransformer.Rotate(0);
+    } 
     
     #endregion
 
     #region Image Transformation
     public void Rotate(bool clockWise) => _imageTransformer?.Rotate(clockWise);
-    public void Rotate(double angle) => _imageTransformer?.Rotate(angle);
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
         
     #endregion

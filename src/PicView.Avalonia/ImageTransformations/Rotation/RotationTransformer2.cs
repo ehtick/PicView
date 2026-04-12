@@ -10,11 +10,7 @@ using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.ImageTransformations.Rotation;
 
-public class RotationTransformer2(
-    LayoutTransformControl imageLayoutTransformControl,
-    PicBox2 mainImage,
-    MainWindowViewModel vm,
-    Action resetZoom)
+public class RotationTransformer2(LayoutTransformControl imageLayoutTransformControl, PicBox2 mainImage, MainWindowViewModel vm)
 {
     public void Rotate(bool clockWise)
     {
@@ -49,9 +45,9 @@ public class RotationTransformer2(
         }
     }
 
-    public void Rotate(double angle)
+    public void Rotate(int angle)
     {
-        WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+        vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.Value = angle;
     }
 
     private ScaleTransform? _scaleTransform;
@@ -88,5 +84,4 @@ public class RotationTransformer2(
         vm.Translation.IsFlipped.Value =
             newScaleX is -1 ? TranslationManager.Translation.Flip : TranslationManager.Translation.Unflip;
     }
-
 }
