@@ -158,15 +158,17 @@ public static class WindowFunctions2
         await SaveSettingsAsync().ConfigureAwait(false);
     }
 
-    public static void SetAutoFit(MainWindowViewModel vm, Window window)
+    public static void SetAutoFit(MainWindowViewModel vm, Window window, bool center = true)
     {
         window.SizeToContent = SizeToContent.WidthAndHeight;
-        // vm.MainWindow.CanResize.Value = false;
         Settings.WindowProperties.AutoFit = true;
         vm.IsAutoFit.Value = true;
 
-        // Fix unpleasant window placement
-        Dispatcher.CurrentDispatcher.Post(() => { CenterWindowOnScreen(); }, DispatcherPriority.Background);
+        if (center)
+        {
+            // Fix unpleasant window placement
+            Dispatcher.CurrentDispatcher.Post(() => { CenterWindowOnScreen(); }, DispatcherPriority.Background);
+        }
     }
 
     public static void SetManualWindow(MainWindowViewModel vm, Window window)

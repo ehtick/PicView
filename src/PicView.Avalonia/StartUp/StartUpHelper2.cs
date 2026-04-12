@@ -100,12 +100,12 @@ public static class StartUpHelper2
     }
 
     
-    public static void StartUpBlank(CoreViewModel vm, bool settingsExists, bool setPos,
+    public static void StartUpBlank(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
         
-        HandleWindowScalingMode(vm, window, setPos);
+        HandleWindowScalingMode(vm, window);
 
         window.Show();
 
@@ -113,8 +113,7 @@ public static class StartUpHelper2
     }
     
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
-        IClassicDesktopStyleApplicationLifetime desktop,
-        MainWindow window)
+        IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         TranslationManager.Init();
         SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
@@ -127,7 +126,7 @@ public static class StartUpHelper2
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
     
-    public static void HandleWindowScalingMode(CoreViewModel vm, MainWindow window, bool setPos = true)
+    public static void HandleWindowScalingMode(CoreViewModel vm, MainWindow window)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -136,13 +135,22 @@ public static class StartUpHelper2
             Settings.WindowProperties.Margin = 45;
         }
 
-        if (Settings.WindowProperties.AutoFit)
+        if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
         {
-            HandleAutoFit(vm.MainWindows.ActiveWindow.CurrentValue, window);
+            vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false);
+        }
+        else if (Settings.WindowProperties.Fullscreen)
+        {
+            vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false);
+        }
+        else if (Settings.WindowProperties.AutoFit)
+        {
+            WindowFunctions2.SetAutoFit(vm.MainWindows.ActiveWindow.CurrentValue, window, false);
         }
         else 
         {
-            HandleNormalWindow(vm, window, setPos);
+            WindowFunctions2.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
+            WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
     }
 
@@ -154,37 +162,26 @@ public static class StartUpHelper2
         BackGroundLoadings(settingsExists);
 
         SetWindowEventHandlers(window);
-        HandleThemeUpdates(vm);
+        HandleThemeUpdates();
 
         UIHelper2.SetControls(window);
 
-        // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
-        if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false);
-            }
-            else
-            {
-                Dispatcher.UIThread.Post(() =>
-                    vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false),
-                    DispatcherPriority.Background);
-            }
-        }
-        else if (Settings.WindowProperties.Fullscreen)
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false);
-            }
-            else
-            {
-                Dispatcher.UIThread.Post(() =>
-                    vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false),
-                    DispatcherPriority.Background);
-            }
-        }
+        // if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        // {
+        //     // Need to delay setting fullscreen or maximized until after the window is shown to select the correct monitor
+        //     if (Settings.WindowProperties.Maximized && !Settings.WindowProperties.Fullscreen)
+        //     {
+        //         Dispatcher.UIThread.Post(() =>
+        //                 vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Maximize(false),
+        //             DispatcherPriority.Background);
+        //     }
+        //     else if (Settings.WindowProperties.Fullscreen)
+        //     {
+        //         Dispatcher.UIThread.Post(() =>
+        //                 vm.MainWindows.ActiveWindow.CurrentValue.PlatformWindowService.Fullscreen(false),
+        //             DispatcherPriority.Background);
+        //     }
+        // }
 
         if (Settings.UIProperties.ShowHoverNavigationBar)
         {
@@ -237,7 +234,7 @@ public static class StartUpHelper2
         GCSettings.LatencyMode = GCLatencyMode.LowLatency;
     }
 
-    private static void HandleThemeUpdates(CoreViewModel vm)
+    private static void HandleThemeUpdates()
     {
         if (Settings.Theme.GlassTheme)
         {
@@ -318,27 +315,6 @@ public static class StartUpHelper2
         {
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
-    }
-
-    private static void HandleAutoFit(MainWindowViewModel vm, MainWindow window)
-    {
-        WindowFunctions2.SetAutoFit(vm, window);
-        vm.IsAutoFit.Value = true;
-        if (Settings.UIProperties.ShowInterface)
-        {
-  //          vm.MainWindow.IsTopToolbarShown.Value = true;
-    //        vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
-        }
-
-        if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
-        {
-            window.WindowStartupLocation = WindowStartupLocation.Manual;
-        }
-        else
-        {
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        }
-        
     }
 
     private static void SetWindowEventHandlers(Window w)

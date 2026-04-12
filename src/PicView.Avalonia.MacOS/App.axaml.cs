@@ -85,7 +85,7 @@ public class App : Application, IPlatformSpecificService
         TranslationManager.Init();
         SettingsUpdater2.InitializeSettings(_mainWindowViewModel, settingsExists);
 
-        StartUpHelper2.HandleWindowScalingMode(_coreViewModel, _mainWindow, Settings.WindowProperties.AutoFit);
+        StartUpHelper2.HandleWindowScalingMode(_coreViewModel, _mainWindow);
         
         var arg = Environment.GetCommandLineArgs();
         if (arg.Length > 1)

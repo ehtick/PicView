@@ -62,7 +62,7 @@ public class MainWindowViewModel : IDisposable
 
     public BindableReactiveProperty<bool> IsMaximized { get; } = new();
 
-    public BindableReactiveProperty<bool> ShouldRestore { get; } = new();
+    public BindableReactiveProperty<bool> ShouldRestoreBeShown { get; } = new();
 
     public BindableReactiveProperty<bool> ShouldMaximizeBeShown { get; } = new(true);
 
@@ -685,7 +685,7 @@ public class MainWindowViewModel : IDisposable
             BottombarHeight,
             IsFullscreen,
             IsMaximized,
-            ShouldRestore,
+            ShouldRestoreBeShown,
             ShouldMaximizeBeShown,
             IsLoadingIndicatorShown,
             IsUIShown,

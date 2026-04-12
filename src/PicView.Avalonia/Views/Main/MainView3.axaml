@@ -850,7 +850,7 @@
                 Command="{CompiledBinding RestoreCommand}"
                 Header="{CompiledBinding Translation.RestoreDown.Value,
                                          Mode=OneWay}"
-                IsVisible="{CompiledBinding ShouldRestore.Value,
+                IsVisible="{CompiledBinding ShouldRestoreBeShown.Value,
                                             Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path Classes="RestorePath" />

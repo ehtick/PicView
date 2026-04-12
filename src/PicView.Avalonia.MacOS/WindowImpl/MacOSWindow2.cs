@@ -13,6 +13,7 @@ public static class MacOSWindow2
     {
         if (Settings.WindowProperties.Fullscreen)
         {
+            Settings.WindowProperties.Fullscreen = false;
             await Restore(window, vm, saveSettings);
         }
         else
@@ -25,6 +26,7 @@ public static class MacOSWindow2
     {
         if (window.WindowState == WindowState.Maximized || Settings.WindowProperties.Maximized)
         {
+            Settings.WindowProperties.Maximized = false;
             await Restore(window, vm, saveSettings); 
         }
         else
@@ -46,20 +48,22 @@ public static class MacOSWindow2
         // Update UI state
         vm.IsMaximized.Value = false;
         vm.IsFullscreen.Value = false;
-
-        WindowFunctions2.RestoreInterface(vm);
-
+        vm.ShouldMaximizeBeShown.Value = true;
+        vm.ShouldRestoreBeShown.Value = false;
+        
         // Update window state
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Set the window size back again
             window.Width = 
-            window.Height = 
-            window.MainView.Width = 
-            window.MainView.Height = double.NaN;
+                window.Height = 
+                    window.MainView.Width = 
+                        window.MainView.Height = double.NaN;
             window.WindowState = WindowState.Normal;
             window.SizeToContent = Settings.WindowProperties.AutoFit ? SizeToContent.WidthAndHeight : SizeToContent.Manual;
         });
+
+        WindowFunctions2.RestoreInterface(vm);
         
         WindowResizing2.SetSize(vm, WindowResizeReason.Application);
         
@@ -67,7 +71,7 @@ public static class MacOSWindow2
         {
             WindowFunctions2.CenterWindowOnScreen();
         }
-        else
+        else if (!Settings.WindowProperties.AutoFit)
         {
             WindowFunctions2.InitializeWindowSizeAndPosition(window);
         }
@@ -93,6 +97,8 @@ public static class MacOSWindow2
         
         vm.IsTopToolbarShown.Value = false;
         vm.IsBottomToolbarShown.Value = false;
+        vm.ShouldMaximizeBeShown.Value = true;
+        vm.ShouldRestoreBeShown.Value = true;
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
@@ -102,9 +108,12 @@ public static class MacOSWindow2
         vm.IsFullscreen.Value = true;
         vm.IsMaximized.Value = false;
         
-        // Set the window size to the screen size
-        window.Width = ScreenHelper.ScreenSize.Width;
-        window.Height = ScreenHelper.ScreenSize.Height;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            // Set the window size to the screen size
+            window.Width = ScreenHelper.ScreenSize.Width;
+            window.Height = ScreenHelper.ScreenSize.Height;
+        });
         
         // Sometimes the window is not centered properly, so center it again
         WindowFunctions2.CenterWindowOnScreen(window);
@@ -143,6 +152,8 @@ public static class MacOSWindow2
 
         vm.IsMaximized.Value = true;
         vm.IsFullscreen.Value = false;
+        vm.ShouldMaximizeBeShown.Value = false;
+        vm.ShouldRestoreBeShown.Value = true;
         
         Dispatcher.UIThread.Post(() => window.IsChangingWindowState = false, DispatcherPriority.SystemIdle);
 
