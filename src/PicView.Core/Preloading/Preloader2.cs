@@ -27,6 +27,8 @@ public class Preloader2(Func<FileInfo, ValueTask<ImageModel>> imageModelLoader, 
                 {
                     return; // Already running
                 }
+                // Currently, it is intended to be able to have multiple different preloaders running at the same time,
+                // but if adding features like "Restore Previous Session" this might require a rework.
             }
         
             _isRunning = true; // Mark running immediately so that the next caller (of the same id) is blocked

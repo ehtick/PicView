@@ -151,6 +151,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         }
 
         // Handle internal TIFF navigation
+        // TODO: Figure out how to handle multi-page TIFF files when side-by-side is enabled
         if (_tab.Model?.CurrentValue.TiffNavigation is not null && ShouldNavigateTiffEntry(_tab.Model.CurrentValue, IsReversed))
         {
             return;
@@ -158,10 +159,10 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
         CurrentIndex = index;
         SecondaryCurrentIndex = secondaryIndex;
-        var targetFile = Files[index];
+        var firstFile = Files[index];
         var secondaryFile = Files[secondaryIndex];
         ImageModel firstModel, secondModel;
-        if (Cache.TryGet(targetFile, out var preLoadValue))
+        if (Cache.TryGet(firstFile, out var preLoadValue))
         {
             if (preLoadValue is { IsLoading: false, ImageModel.Image: not null })
             {
@@ -209,7 +210,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             {
                 // Wait for loading complete
                 var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, secondaryIndex).ConfigureAwait(false);
-                if (successfullyLoaded && secondaryIndex == CurrentIndex && secondaryPreLoadValue.ImageModel.Image is not null)
+                if (successfullyLoaded && index == CurrentIndex && secondaryPreLoadValue.ImageModel.Image is not null)
                 {
                     secondModel = secondaryPreLoadValue.ImageModel;
                 }
@@ -224,7 +225,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         {
             // Not in cache
             var manuallyLoaded = await Cache.LoadAsync(_tab.Id, secondaryIndex, Files, ct.Token).ConfigureAwait(false);
-            if (secondaryIndex == CurrentIndex && manuallyLoaded is not null)
+            if (index == CurrentIndex && manuallyLoaded is not null)
             {
                 secondModel = manuallyLoaded;
             }

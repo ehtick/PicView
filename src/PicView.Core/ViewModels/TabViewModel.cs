@@ -217,10 +217,14 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
 
     public CancellationTokenSource GetTabCancellation()
     {
-        if (NavigationCts.IsCancellationRequested)
+        if (!NavigationCts.IsCancellationRequested)
         {
-            NavigationCts = new CancellationTokenSource();
+            return NavigationCts;
         }
+
+        var oldCts = NavigationCts;
+        NavigationCts = new CancellationTokenSource();
+        oldCts.Dispose();
         return NavigationCts;
     }
     
