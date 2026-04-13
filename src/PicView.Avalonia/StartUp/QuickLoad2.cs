@@ -6,6 +6,7 @@ using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
@@ -23,10 +24,10 @@ public static class QuickLoad2
     /// Asynchronously loads an image, archive, URL, base64 string, or directory into the application view,
     /// updating the UI state and loading indicative properties as necessary.
     /// </summary>
-    /// <param name="vm">The main view model.</param>
+    /// <param name="core">The main view model.</param>
     /// <param name="file">The file, URL, or directory path to be loaded.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async ValueTask QuickLoadAsync(CoreViewModel vm, string file, bool continueFromLeftOff)
+    public static async ValueTask QuickLoadAsync(CoreViewModel core, string file, bool continueFromLeftOff)
     {        
         var fileInfo = new FileInfo(file);
         if (!fileInfo.Exists) // If not file, try to load if URL, base64 or directory
@@ -44,7 +45,7 @@ public static class QuickLoad2
         }
         Dispatcher.UIThread.Invoke(() =>
         {
-           vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+           core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
         }, DispatcherPriority.Send);
     
         var magickImage = new MagickImage();
@@ -60,21 +61,27 @@ public static class QuickLoad2
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
-        var tab = vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
+        var tab = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
         tab.Model.Value = imageModel;
-        TabNavigationInitializer.Initialize(vm, fileInfo);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            TabNavigationInitializer.Initialize(vm, fileInfo);
-            var nextIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, NavigateTo.Next, SkipAmount.One);
-            var nextFileInfo = tab.ImageIterator.Files[nextIndex];
+            var files = core.PlatformService.GetFiles(fileInfo);
+            var index = files.FindIndex(x =>
+                x.FullName.AsSpan().Equals(fileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
+            var (nextIndex, _) = IterationHelper.GetIteration(index, files.Count, NavigateTo.Next, SkipAmount.One);
+            var nextFileInfo = files[nextIndex];
             var secondImageModel = await GetImageModel.GetImageModelAsync(nextFileInfo, magickImage).ConfigureAwait(false);
             tab.SecondaryModel.Value = secondImageModel;
-            UpdateImage2.ChangeImage(tab, vm.MainWindows.ActiveWindow.CurrentValue);
-            UpdateImage2.UpdateFileInfo(vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue, fileInfo);
+            UpdateImage2.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
+            UpdateImage2.UpdateTabSideBySideTitles(core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue, index, nextIndex, fileInfo, nextFileInfo, files);
+            TabNavigationInitializer.Initialize(core, files);
+        }
+        else
+        {
+            TabNavigationInitializer.Initialize(core, fileInfo);
         }
 
-        vm.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
+        core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
 
         if (Settings.Gallery.IsGalleryDocked)
         {
@@ -83,11 +90,11 @@ public static class QuickLoad2
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
 
-            _ = GalleryLoader.LoadGalleryAsync(vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
-                    vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
+            _ = GalleryLoader.LoadGalleryAsync(core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
                     new AvaloniaThumbnailLoader(),
-                    vm.SharedThumbnailCache,
-                    vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
+                    core.SharedThumbnailCache,
+                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
                 .ConfigureAwait(false);
         }
         else

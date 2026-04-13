@@ -3,6 +3,7 @@ using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
+using PicView.Core.Titles;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Navigation;
@@ -30,6 +31,16 @@ public static class UpdateImage2
         }
                         
         tabViewModel.UpdateTabTitle();
+    }
+    
+    public static void UpdateTabSideBySideTitles(TabViewModel tabViewModel, int index, int secondaryIndex, FileInfo firstFile, FileInfo secondFile, List<FileInfo> files)
+    {
+        var firstInfo = new ImageTitleInfo(tabViewModel.Model.CurrentValue.PixelWidth, tabViewModel.Model.CurrentValue.PixelHeight, index, firstFile, 100);
+        var secondInfo = new ImageTitleInfo(tabViewModel.SecondaryModel.CurrentValue.PixelWidth, tabViewModel.SecondaryModel.CurrentValue.PixelHeight, secondaryIndex, secondFile, 100);
+        var titles = ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, index, secondaryIndex, files);
+        tabViewModel.WindowTitle.Value = titles.TitleWithAppName;
+        tabViewModel.Title.Value = titles.BaseTitle;
+        tabViewModel.TitleTooltip.Value = titles.FilePathTitle;
     }
 
     public static void ChangeImage(TabViewModel tabViewModel, MainWindowViewModel vm)

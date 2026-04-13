@@ -43,13 +43,6 @@ public interface IImageIterator : IDisposable
     ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
     
     ValueTask IterateToIndicesAsync(int index, int secondaryIndex, CancellationTokenSource ct);
-    
-    /// <summary>
-    /// Calculates the next index based on navigation direction and skip modifiers.
-    /// Note: This method updates the <see cref="IsReversed"/> property.
-    /// </summary>
-    /// <returns>The calculated target index.</returns>
-    int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount);
 
     /// <summary>
     /// Checks if the target index is cached before iterating. If not cached, clears cache first.

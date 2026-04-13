@@ -44,6 +44,11 @@ public static class TabNavigationInitializer
     
     public static void Initialize(CoreViewModel core, FileInfo fileInfo)
     {
+        Initialize(core, core.PlatformService.GetFiles(fileInfo));
+    }
+    
+    public static void Initialize(CoreViewModel core, List<FileInfo> files)
+    {
         // --- Initialization Logic ---
         // This is the initialization logic for the navigation system.
         // It is initialized after initial image load, to make it feel faster by showing the image asap. 
@@ -64,7 +69,6 @@ public static class TabNavigationInitializer
         var thumbnailService = new AvaloniaThumbnailLoader();
         core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
 
-        var files = core.PlatformService.GetFiles(fileInfo);
         // 4. Initialize ViewModel
         var tabOverView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
         var tab = tabOverView.ActiveTab.CurrentValue;

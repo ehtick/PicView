@@ -71,12 +71,14 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     {
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            var (currentIndex, secondaryIndex) = GetIterations(CurrentIndex, navigateTo, skipAmount);
+            var (currentIndex, secondaryIndex, isReversed) = IterationHelper.GetIterations(CurrentIndex, Files.Count, navigateTo, skipAmount);
+            IsReversed = isReversed;
             await IterateToIndicesAsync(currentIndex, secondaryIndex, ct).ConfigureAwait(false);
         }
         else
         {
-            var iteration = GetIteration(CurrentIndex, navigateTo, skipAmount);
+            var (iteration, isReversed) = IterationHelper.GetIteration(CurrentIndex, Files.Count, navigateTo, skipAmount);
+            IsReversed = isReversed;
             await IterateToIndexAsync(iteration, ct).ConfigureAwait(false);
         }
     }
@@ -237,6 +239,9 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         _tab.Model.Value = firstModel;
         UpdateNavigationProperties();
         TriggerPreload();
+        
+        FileHistoryManager.Add(firstModel.FileInfo.FullName);
+        FileHistoryManager.Add(secondModel.FileInfo.FullName);
     }
 
     public async ValueTask SkipToIndexAsync(int index, CancellationTokenSource ct)
@@ -255,7 +260,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     public async ValueTask NavigateByIncrementsAsync(SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
     {
-        var iteration = GetIteration(CurrentIndex, forwards ? NavigateTo.Next : NavigateTo.Previous, skipAmount);
+        var (iteration, isReversed) = IterationHelper.GetIteration(CurrentIndex, Files.Count, forwards ? NavigateTo.Next : NavigateTo.Previous, skipAmount);
+        IsReversed = isReversed;
         await SkipToIndexAsync(iteration, ct).ConfigureAwait(false);
     }
 
@@ -263,130 +269,6 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     {
         CurrentIndex = index;
         UpdateNavigationProperties();
-    }
-    
-    public int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount)
-    {
-        var skip = SkipAmountToInt(skipAmount);
-
-        switch (navigation)
-        {
-            case NavigateTo.Next:
-            case NavigateTo.Previous:
-                var indexChange = navigation == NavigateTo.Next ? skip : -skip;
-                IsReversed = navigation == NavigateTo.Previous;
-
-                if (Settings.UIProperties.Looping)
-                {
-                    var loopedIndex = (index + indexChange) % Files.Count;
-                    if (loopedIndex < 0)
-                    {
-                        loopedIndex += Files.Count;
-                    }
-                    return loopedIndex;
-                }
-
-                var newIndex = index + indexChange;
-                return Math.Clamp(newIndex, 0, Files.Count - 1);
-
-            case NavigateTo.First:
-                return 0;
-
-            case NavigateTo.Last:
-                return Files.Count - 1;
-
-            default:
-#if DEBUG
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIteration), $"{navigation} is not a valid NavigateTo value.");
-#endif
-                return -1;
-        }
-    }
-
-    public (int, int) GetIterations(int index, NavigateTo navigation, SkipAmount skipAmount)
-    {
-        switch (Files.Count)
-        {
-            // Handle edge cases where we don't have enough files for a proper dual view
-            case 0:
-                return (-1, -1);
-            case 1:
-                return (0, 0);
-        }
-
-        var skip = SkipAmountToInt(skipAmount);
-
-        // For a dual pane view, we skip by pairs (multiply the skip amount by 2)
-        var jump = skip * 2;
-        var count = Files.Count;
-
-        switch (navigation)
-        {
-            case NavigateTo.Next:
-            case NavigateTo.Previous:
-                var indexChange = navigation == NavigateTo.Next ? jump : -jump;
-                IsReversed = navigation == NavigateTo.Previous;
-
-                if (Settings.UIProperties.Looping)
-                {
-                    // Calculate the first index with wrap-around logic
-                    var first = (index + indexChange) % count;
-                    if (first < 0)
-                    {
-                        first += count;
-                    }
-                    
-                    // The second index is just the next image, also wrapped
-                    var second = (first + 1) % count;
-                    return (first, second);
-                }
-                else
-                {
-                    // Calculate raw indices without wrapping
-                    var first = index + indexChange;
-                    var second = first + 1;
-
-                    // Clamp to the beginning of the list if we go too far back
-                    if (first < 0)
-                    {
-                        return (0, 1);
-                    }
-
-                    // Clamp to the end of the list if the second index goes out of bounds
-                    if (second >= count)
-                    {
-                        return (count - 2, count - 1);
-                    }
-
-                    return (first, second);
-                }
-
-            case NavigateTo.First:
-                IsReversed = true;
-                return (0, 1);
-
-            case NavigateTo.Last:
-                IsReversed = false;
-                return (count - 2, count - 1);
-
-            default:
-#if DEBUG
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIterations), $"{navigation} is not a valid NavigateTo value.");
-#endif
-                return (-1, -1);
-        }
-    }
-    
-    private static int SkipAmountToInt(SkipAmount skipAmount)
-    {
-        return skipAmount switch
-        {
-            SkipAmount.One => 1,
-            SkipAmount.Two => 2,
-            SkipAmount.Ten => 10,
-            SkipAmount.Hundred => 100,
-            _ => throw new ArgumentOutOfRangeException(nameof(skipAmount), skipAmount, null)
-        };
     }
 
     #endregion
@@ -407,7 +289,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         _timer.Interval = repeatInterval.TotalMilliseconds;
         _timer.Start();
 
-        var iteration = GetIteration(CurrentIndex, to, SkipAmount.One);
+        var (iteration, isReversed) = IterationHelper.GetIteration(CurrentIndex, Files.Count, to, SkipAmount.One);
+        IsReversed = isReversed;
         await IterateToIndexAsync(iteration, CancellationTokenSource.CreateLinkedTokenSource(ct));
     }
 
