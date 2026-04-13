@@ -1,5 +1,6 @@
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
+using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
@@ -104,6 +105,9 @@ public static class TabNavigationInitializer
     {
         if (newTab.IsInitialized)
         {
+#if DEBUG
+            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(InitializeNewTab), $"TabNavigationInitializer.InitializeNewTab: Tab {newTab.Model.Value.FileInfo.Name} is already initialized");
+#endif
             return;
         }
         NavigationSubscriptions.ModelSubscription(newTab, mainWindowViewModel);

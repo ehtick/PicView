@@ -3,8 +3,8 @@
     ExtendClientAreaToDecorationsHint="True"
     MaxHeight="{CompiledBinding WindowMaxHeight.Value}"
     MaxWidth="{CompiledBinding WindowMaxWidth.Value}"
-    MinHeight="{CompiledBinding WindowMinHeight.Value}"
-    MinWidth="{CompiledBinding WindowMinWidth.Value}"
+    MinHeight="{CompiledBinding WindowMinHeight}"
+    MinWidth="{CompiledBinding WindowMinWidth}"
     Title="{CompiledBinding WindowTabs.ActiveTab.Value.WindowTitle.Value,
                             FallbackValue=''}"
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow2"

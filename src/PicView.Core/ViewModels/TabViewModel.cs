@@ -1,3 +1,4 @@
+using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.Models;
@@ -99,7 +100,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         WindowTitle.Value = windowTitles.TitleWithAppName;
         Title.Value = windowTitles.BaseTitle;
         TitleTooltip.Value = windowTitles.FilePathTitle;
-        if (Settings.ImageScaling.ShowImageSideBySide)
+        if (Settings.ImageScaling.ShowImageSideBySide && SecondaryModel.CurrentValue is not null)
         {
             TabTitle.Value = StringExtensions.Combine(Model.CurrentValue.FileInfo.Name, SecondaryModel.CurrentValue.FileInfo.Name);
             TabTooltip.Value = StringExtensions.Combine(Model.CurrentValue.FileInfo.FullName, SecondaryModel.CurrentValue.FileInfo.FullName);
@@ -120,7 +121,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
                     index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
             }
 
-            if (!Settings.ImageScaling.ShowImageSideBySide || SecondaryModel is null)
+            if (!Settings.ImageScaling.ShowImageSideBySide || SecondaryModel.CurrentValue is null)
             {
                 return ImageTitleFormatter.GenerateTitleStrings(width, height,
                     index, Model.CurrentValue.FileInfo, 100, ImageIterator.Files);
@@ -128,7 +129,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
 
             var firstInfo = new ImageTitleInfo(width, height, index, Model.CurrentValue.FileInfo, 100);
             var secondInfo = new ImageTitleInfo(SecondaryModel.CurrentValue.PixelWidth, SecondaryModel.CurrentValue.PixelHeight, index + 1, SecondaryModel.CurrentValue.FileInfo, 100);
-            return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, ImageIterator.Files);
+            return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, ImageIterator.CurrentIndex, ImageIterator.SecondaryCurrentIndex, ImageIterator.Files);
         }
     }
     
@@ -170,6 +171,13 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
             ThumbnailCache.RemoveOwner(Id);
         }
         ImageIterator ??= new ImageIterator(cache, thumbCache, thumbnailLoader, this);
+        if (Model.CurrentValue.FileInfo is null)
+        {
+#if DEBUG
+            DebugHelper.LogDebug(nameof(TabViewModel), nameof(InitializeImageIterator), $"Model.FileInfo is null for tab {Id}");
+#endif
+            return;
+        }
         var index = files.FindIndex(x => x.FullName.Equals(Model.CurrentValue.FileInfo.FullName));
         ImageIterator.Initialize(files, index);
 
@@ -188,9 +196,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         {
             return;
         }
-        var index = ImageIterator.CurrentIndex;
-        var next = ImageIterator.GetIteration(index, NavigateTo.Next, SkipAmount.One);
-        await ImageIterator.IterateToIndexAsync(next, NavigationCts).ConfigureAwait(false);
+        await ImageIterator.NavigateAsync(NavigateTo.Next, SkipAmount.One, NavigationCts).ConfigureAwait(false);
     }
 
     public async ValueTask Prev()
@@ -199,9 +205,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         {
             return;
         }
-        var index = ImageIterator.CurrentIndex;
-        var prev = ImageIterator.GetIteration(index, NavigateTo.Previous, SkipAmount.One);
-        await ImageIterator.IterateToIndexAsync(prev, NavigationCts).ConfigureAwait(false);
+        await ImageIterator.NavigateAsync(NavigateTo.Previous, SkipAmount.One, NavigationCts).ConfigureAwait(false);
     }
 
     public void CloseTab()

@@ -207,16 +207,8 @@ public class NavigationService(
         {
             return;
         }
-
-        var nextFileIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, to, SkipAmount.One);
-        if (to is NavigateTo.First or NavigateTo.Last)
-        {
-            await tab.ImageIterator.SkipToIndexAsync(nextFileIndex, ct).ConfigureAwait(false);
-        }
-        else
-        {
-            await tab.ImageIterator.IterateToIndexAsync(nextFileIndex, ct).ConfigureAwait(false);
-        }
+        
+        await tab.ImageIterator.NavigateAsync(to, SkipAmount.One, ct).ConfigureAwait(false);
     }
 
     public ValueTask NavigateToIndexAsync(TabViewModel tab, int index, CancellationTokenSource ct)

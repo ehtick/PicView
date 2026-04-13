@@ -1,6 +1,7 @@
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.Config;
@@ -8,6 +9,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.Gallery;
+using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.StartUp;
@@ -58,9 +60,20 @@ public static class QuickLoad2
         }
 
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
-
-        vm.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model.Value = imageModel;
+        var tab = vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
+        tab.Model.Value = imageModel;
         TabNavigationInitializer.Initialize(vm, fileInfo);
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            TabNavigationInitializer.Initialize(vm, fileInfo);
+            var nextIndex = tab.ImageIterator.GetIteration(tab.ImageIterator.CurrentIndex, NavigateTo.Next, SkipAmount.One);
+            var nextFileInfo = tab.ImageIterator.Files[nextIndex];
+            var secondImageModel = await GetImageModel.GetImageModelAsync(nextFileInfo, magickImage).ConfigureAwait(false);
+            tab.SecondaryModel.Value = secondImageModel;
+            UpdateImage2.ChangeImage(tab, vm.MainWindows.ActiveWindow.CurrentValue);
+            UpdateImage2.UpdateFileInfo(vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue, fileInfo);
+        }
+
         vm.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
 
         if (Settings.Gallery.IsGalleryDocked)

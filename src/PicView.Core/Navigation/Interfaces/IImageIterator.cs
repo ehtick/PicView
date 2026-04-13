@@ -17,6 +17,8 @@ public interface IImageIterator : IDisposable
     /// Gets the current position in the file list.
     /// </summary>
     int CurrentIndex { get; }
+    
+    int SecondaryCurrentIndex { get; }
 
     /// <summary>
     /// Gets a value indicating if the last navigation action was backwards.
@@ -32,18 +34,22 @@ public interface IImageIterator : IDisposable
     /// Initializes the iterator with a new list of files and a starting position.
     /// </summary>
     void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0);
+    
+    ValueTask NavigateAsync(NavigateTo to, SkipAmount skipAmount, CancellationTokenSource ct);
 
+    /// <summary>
+    /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.
+    /// </summary>
+    ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
+    
+    ValueTask IterateToIndicesAsync(int index, int secondaryIndex, CancellationTokenSource ct);
+    
     /// <summary>
     /// Calculates the next index based on navigation direction and skip modifiers.
     /// Note: This method updates the <see cref="IsReversed"/> property.
     /// </summary>
     /// <returns>The calculated target index.</returns>
     int GetIteration(int index, NavigateTo navigation, SkipAmount skipAmount);
-
-    /// <summary>
-    /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.
-    /// </summary>
-    ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
 
     /// <summary>
     /// Checks if the target index is cached before iterating. If not cached, clears cache first.

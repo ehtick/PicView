@@ -152,9 +152,9 @@ public static class WindowResizing2
         SetSize(size.Value, reason, vm);
     }
 
-    public static void SetSize(double width, double height, WindowResizeReason reason, MainWindowViewModel vm)
+    public static void SetSize(double width, double height, double secondWidth, double secondHeight, WindowResizeReason reason, MainWindowViewModel vm)
     {
-        var size = GetSize(width, height, 0, 0, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue, vm);
+        var size = GetSize(width, height, secondWidth, secondHeight, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue, vm);
 
         if (size is null)
         {
@@ -270,10 +270,11 @@ public static class WindowResizing2
         var screenSize = ScreenHelper.ScreenSize;
         var (containerWidth, containerHeight) = GetContainerSize();
 
-        if (double.IsNaN(width) || double.IsNaN(height) || Application.Current.DataContext is not CoreViewModel core)
+        if (double.IsNaN(width) || double.IsNaN(height))
         {
             return null;
         }
+        var core = Dispatcher.UIThread.Invoke(() => Application.Current.DataContext as CoreViewModel, DispatcherPriority.Send);
         var galleryHeight = GalleryHelper.GetGalleryHeight(core.GallerySettings, vm);
         ImageSize2 size;
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)

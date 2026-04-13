@@ -133,7 +133,7 @@ public static class ImageTitleFormatter
     /// <param name="second">Information about the second image.</param>
     /// <param name="filesList">A read-only list of all files in the current file collection.</param>
     /// <returns>A <see cref="WindowTitles"/> struct containing the generated side-by-side titles.</returns>
-    public static WindowTitles GenerateTitleForSideBySide(ImageTitleInfo first, ImageTitleInfo second, IReadOnlyList<FileInfo> filesList)
+    public static WindowTitles GenerateTitleForSideBySide(ImageTitleInfo first, ImageTitleInfo second, int firstIndex, int secondIndex, IReadOnlyList<FileInfo> filesList)
     {
         using var sb = ZString.CreateStringBuilder(true);
 
@@ -179,9 +179,9 @@ public static class ImageTitleFormatter
 
         // File count group
         sb.Append(" [");
-        sb.Append(first.Index + 1);
+        sb.Append(firstIndex);
         sb.Append(" & ");
-        sb.Append(second.Index + 1);
+        sb.Append(secondIndex);
         sb.Append(" / ");
         sb.Append(filesList.Count);
         sb.Append(' ');
