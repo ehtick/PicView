@@ -36,6 +36,8 @@ public interface IImageIterator : IDisposable
     void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0);
     
     ValueTask NavigateAsync(NavigateTo to, SkipAmount skipAmount, CancellationTokenSource ct);
+    
+    ValueTask ReloadAsync(CancellationTokenSource ct);
 
     /// <summary>
     /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.

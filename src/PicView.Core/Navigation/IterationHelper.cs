@@ -6,6 +6,11 @@ public static class IterationHelper
 {
     public static (int, bool) GetIteration(int index, int count, NavigateTo navigation, SkipAmount skipAmount)
     {
+        if (count is 0)
+        {
+            return (-1, false);
+        }
+        
         var skip = SkipAmountToInt(skipAmount);
 
         switch (navigation)
@@ -13,7 +18,7 @@ public static class IterationHelper
             case NavigateTo.Next:
             case NavigateTo.Previous:
                 var indexChange = navigation == NavigateTo.Next ? skip : -skip;
-                var issReversed = navigation == NavigateTo.Previous;
+                var isReversed = navigation == NavigateTo.Previous;
 
                 if (Settings.UIProperties.Looping)
                 {
@@ -22,11 +27,11 @@ public static class IterationHelper
                     {
                         loopedIndex += count;
                     }
-                    return (loopedIndex, issReversed);
+                    return (loopedIndex, isReversed);
                 }
 
                 var newIndex = index + indexChange;
-                return (Math.Clamp(newIndex, 0, count - 1), issReversed);
+                return (Math.Clamp(newIndex, 0, count - 1), isReversed);
 
             case NavigateTo.First:
                 return (0, true);
@@ -36,7 +41,7 @@ public static class IterationHelper
 
             default:
 #if DEBUG
-                DebugHelper.LogDebug(nameof(ImageIterator), nameof(GetIteration), $"{navigation} is not a valid NavigateTo value.");
+                DebugHelper.LogDebug(nameof(IterationHelper), nameof(GetIteration), $"{navigation} is not a valid NavigateTo value.");
 #endif
                 return (-1, false);
         }
@@ -107,7 +112,7 @@ public static class IterationHelper
 
             default:
 #if DEBUG
-                DebugHelper.LogDebug(nameof(Core.Navigation.ImageIterator), nameof(GetIterations), $"{navigation} is not a valid NavigateTo value.");
+                DebugHelper.LogDebug(nameof(IterationHelper), nameof(GetIterations), $"{navigation} is not a valid NavigateTo value.");
 #endif
                 return (-1, -1, false);
         }

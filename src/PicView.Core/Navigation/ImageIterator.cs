@@ -17,7 +17,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
     private readonly IThumbnailCache _thumbCache = thumbCache ?? throw new ArgumentNullException(nameof(thumbCache));
     private readonly TabViewModel _tab = tab ?? throw new ArgumentNullException(nameof(tab));
     private readonly IThumbnailLoader _thumbnailLoader = thumbnailLoader ?? throw new ArgumentNullException(nameof(thumbnailLoader));
-    private System.Timers.Timer? _timer;
+    private DateTime _lastRepeatTime = DateTime.MinValue;
 
     public IReadOnlyList<FileInfo> Files { get; set; } = [];
     public int CurrentIndex { get; private set; } = -1;
@@ -271,23 +271,36 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         UpdateNavigationProperties();
     }
 
+    public async ValueTask ReloadAsync(CancellationTokenSource ct)
+    {
+        if (Settings.ImageScaling.ShowImageSideBySide)
+        {
+            if (SecondaryCurrentIndex is -1)
+            {
+                var (first, _, _) = IterationHelper.GetIterations(CurrentIndex, Files.Count, NavigateTo.Next, SkipAmount.One);
+                SecondaryCurrentIndex = first;
+            }
+            await IterateToIndicesAsync(CurrentIndex, SecondaryCurrentIndex, ct).ConfigureAwait(false);
+        }
+        else
+        {
+            await IterateToIndexAsync(CurrentIndex, ct).ConfigureAwait(false);
+        }
+    }
+
     #endregion
 
-    #region Repeated Navigation (Timer)
+    #region Repeated Navigation (Throttling)
 
     public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
     {
-        if (_timer is null)
-        {
-            _timer = new System.Timers.Timer { AutoReset = false, Enabled = true };
-        }
-        else if (_timer.Enabled)
+        var now = DateTime.UtcNow;
+        if (now - _lastRepeatTime < repeatInterval)
         {
             return;
         }
 
-        _timer.Interval = repeatInterval.TotalMilliseconds;
-        _timer.Start();
+        _lastRepeatTime = now;
 
         var (iteration, isReversed) = IterationHelper.GetIteration(CurrentIndex, Files.Count, to, SkipAmount.One);
         IsReversed = isReversed;
@@ -296,9 +309,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     public void StopRepeatedNavigation()
     {
-        _timer?.Stop();
-        _timer?.Dispose();
-        _timer = null;
+        // Reset the throttle so the next click reacts instantly.
+        _lastRepeatTime = DateTime.MinValue; 
     }
 
     #endregion
@@ -368,7 +380,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     public void Dispose()
     {
-        _timer?.Dispose();
+        Cache.Clear(_tab, CurrentIndex, CurrentDirectory, Files);
         GC.SuppressFinalize(this);
     }
 

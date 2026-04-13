@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
@@ -116,35 +117,6 @@ public partial class ImageViewer2 : UserControl
                 }
 #endif
             }).AddTo(ref _disposables);
-            
-        
-        Debug.Assert(Settings.ImageScaling is not null);
-        Observable.EveryValueChanged(Settings.ImageScaling, s => s.ShowImageSideBySide)
-            .SubscribeAwait(async (isSideBySide, c) =>
-            {
-                if (isSideBySide)
-                {
-                    if (SecondaryImage.Source is null)
-                    {
-                        var ct = CancellationTokenSource.CreateLinkedTokenSource(c, tab.GetTabCancellation().Token);
-                        await tab.ImageIterator.IterateToIndexAsync(tab.ImageIterator.CurrentIndex, ct);   
-                    }
-                    SecondaryImage.IsVisible = true;
-                }
-                else
-                {
-                    SecondaryImage.IsVisible = false;
-                }
-            }, static result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(ImageViewer2), nameof(InitializeImageTransformer), result.Exception);
-                }
-#endif
-            }, AwaitOperation.Drop)
-            .AddTo(ref _disposables);
         
         // Correspond to change when index clicked on track
         Observable.FromEvent<EventHandler<int>, int>(

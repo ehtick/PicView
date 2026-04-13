@@ -228,12 +228,8 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     {
         _fileWatcherService?.Unwatch(this);
         ThumbnailCache?.RemoveOwner(Id);
-        
-        if (ImageIterator != null)
-        {
-            ImageIterator.Cache?.Clear(this, ImageIterator.CurrentIndex, ImageIterator.CurrentDirectory ?? string.Empty, ImageIterator.Files);
-            ImageIterator.Dispose();
-        }
+
+        ImageIterator?.Dispose();
 
         NavigationCts.Dispose();
         Disposables.Dispose();

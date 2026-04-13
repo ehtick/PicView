@@ -12,6 +12,7 @@ using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.SettingsManagement;
@@ -333,6 +334,15 @@ public static class SettingsUpdater2
     public static async Task ToggleSideBySide()
     {
         Settings.ImageScaling.ShowImageSideBySide = !Settings.ImageScaling.ShowImageSideBySide;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        var window = core.MainWindows.ActiveWindow.Value;
+        var tab = window.WindowTabs.ActiveTab.Value;
+        window.IsSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
+        await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
+        WindowResizing2.SetSize(window, WindowResizeReason.Application);
 
         await SaveSettingsAsync();
     }

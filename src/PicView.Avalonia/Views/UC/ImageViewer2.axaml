@@ -1,17 +1,17 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.UC.ImageViewer2"
-    x:DataType="viewModels1:TabViewModel"
+    x:DataType="vm:TabViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:gallery="clr-namespace:PicView.Avalonia.Views.Gallery"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
-    xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel LastChildFill="True">
         <gallery:GalleryView2 ZIndex="1" x:Name="GalleryView" />
 
-        <Panel Background="{CompiledBinding $parent[Window].((viewModels1:MainWindowViewModel)DataContext).GlobalSettings.ImageBackground.Value, Mode=OneWay}" x:Name="MainPanel">
+        <Panel Background="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).GlobalSettings.ImageBackground.Value, Mode=OneWay}" x:Name="MainPanel">
             <LayoutTransformControl x:Name="MainTransform">
                 <LayoutTransformControl.LayoutTransform>
                     <RotateTransform Angle="{Binding RotationAngle.Value}" />
@@ -23,14 +23,17 @@
                         VerticalScrollBarVisibility="Disabled"
                         x:Name="ImageScrollViewer">
                         <Border
-                            Background="{CompiledBinding $parent[Window].((viewModels1:MainWindowViewModel)DataContext).GlobalSettings.ConstrainedImageBackground.Value,
+                            Background="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).GlobalSettings.ConstrainedImageBackground.Value,
                                                          Mode=OneWay}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             x:Name="MainBorder">
                             <StackPanel Orientation="Horizontal">
                                 <customControls:PicBox2 Source="{CompiledBinding Model.Value.Image}" x:Name="MainImage" />
-                                <customControls:PicBox2 Source="{CompiledBinding SecondaryModel.Value.Image}" x:Name="SecondaryImage" />
+                                <customControls:PicBox2
+                                    IsVisible="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).IsSideBySide.Value}"
+                                    Source="{CompiledBinding SecondaryModel.Value.Image}"
+                                    x:Name="SecondaryImage" />
                             </StackPanel>
                         </Border>
                     </customControls:AutoScrollViewer>
@@ -58,7 +61,7 @@
                 x:Name="ClickArrowLeft" />
             <buttons:GalleryShortcut2
                 HorizontalAlignment="Right"
-                IsVisible="{CompiledBinding !$parent[Window].((viewModels1:MainWindowViewModel)DataContext).IsUIShown.Value}"
+                IsVisible="{CompiledBinding !$parent[Window].((vm:MainWindowViewModel)DataContext).IsUIShown.Value}"
                 Opacity="0"
                 VerticalAlignment="Bottom"
                 ZIndex="9"
