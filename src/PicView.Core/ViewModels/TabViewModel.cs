@@ -190,7 +190,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         _fileWatcherService?.Watch(this, directory);
     }
 
-    public async ValueTask Next()
+    public async Task Next()
     {
         if (!CanNavigateForwards.CurrentValue)
         {
@@ -199,7 +199,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         await ImageIterator.NavigateAsync(NavigateTo.Next, SkipAmount.One, NavigationCts).ConfigureAwait(false);
     }
 
-    public async ValueTask Prev()
+    public async Task Prev()
     {
         if (!CanNavigateBackwards.CurrentValue)
         {

@@ -4,9 +4,12 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
+using PicView.Core.Navigation;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -55,7 +58,8 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     public NavigateAbleItemsViewer()
     {
-        PointerWheelChanged += OnPointerWheelChanged;
+        //PointerWheelChanged += OnPointerWheelChanged;
+        AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Direct | RoutingStrategies.Tunnel);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -218,7 +222,7 @@ public class NavigateAbleItemsViewer : ItemsControl
         switch (Settings.Gallery.GalleryMouseWheelBehavior)
         {
             case GalleryMouseWheel.Navigate:
-                NavigateTheControl(e);
+                 NavigateTheControl(e);
                 break;
             case GalleryMouseWheel.Scroll:
                 ScrollTheControl(e);
@@ -228,14 +232,40 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     private void NavigateTheControl(PointerWheelEventArgs e)
     {
-        // TODO
+        if (DataContext is not TabViewModel tab)
+        {
+            return;
+        }
+
+        if (Settings.Zoom.HorizontalReverseScroll)
+        {
+            if (e.Delta.Y < 0 || e.Delta.X < 0)
+            {
+                _ = tab.Next();
+            }
+            else
+            {
+                _ = tab.Prev();
+            }
+        }
+        else
+        {
+            if (e.Delta.Y > 0 || e.Delta.X > 0)
+            {
+                _ = tab.Prev();
+            }
+            else
+            {
+                _ = tab.Next();
+            }
+        }
     }
 
     private void ScrollTheControl(PointerWheelEventArgs e)
     {
         if (Settings.Zoom.HorizontalReverseScroll)
         {
-            if (e.Delta.Y < 0)
+            if (e.Delta.Y < 0 || e.Delta.X < 0)
             {
                 _scrollViewer.LineRight();
             }
@@ -246,7 +276,7 @@ public class NavigateAbleItemsViewer : ItemsControl
         }
         else
         {
-            if (e.Delta.Y > 0)
+            if (e.Delta.Y > 0 || e.Delta.X > 0)
             {
                 _scrollViewer.LineRight();
             }

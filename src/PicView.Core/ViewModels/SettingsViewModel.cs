@@ -1,6 +1,7 @@
 using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Core.ColorHandling;
+using PicView.Core.Gallery;
 using PicView.Core.ISettings;
 using PicView.Core.Search;
 using R3;
@@ -456,6 +457,12 @@ public class SettingsViewModel : IDisposable
                         await _languageService.UpdateLanguageAsync(x);
                     }
                 }
+            }).AddTo(_disposables);
+        
+        GalleryMouseWheelBehavior
+            .Skip(1) // Skip initial
+            .Subscribe(x => {
+                Settings.Gallery.GalleryMouseWheelBehavior = (GalleryMouseWheel)x;
             }).AddTo(_disposables);
     }
     
