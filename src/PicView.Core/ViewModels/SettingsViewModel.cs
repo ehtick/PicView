@@ -276,22 +276,22 @@ public class SettingsViewModel : IDisposable
     /// </summary>
     public void SubscriptionSettingsUpdate()
     {
+        // Set initial value
         Observable.EveryValueChanged(this, x => x.NavSpeed.CurrentValue)
-            .Skip(1) // Skip initial
             .Subscribe(x =>
             {
                 Settings.UIProperties.NavSpeed = x;
                 GetNavSpeed.Value = Math.Round(Settings.UIProperties.NavSpeed, 2);
             }).AddTo(_disposables);
+        // Set initial value
         Observable.EveryValueChanged(this, x => x.ZoomSpeed.CurrentValue)
-            .Skip(1) // Skip initial
             .Subscribe(x =>
             {
                 Settings.Zoom.ZoomSpeed = x;
                 GetZoomSpeed.Value = Math.Round(Settings.Zoom.ZoomSpeed, 2);
             }).AddTo(_disposables);
+        // Set initial value
         Observable.EveryValueChanged(this, x => x.SlideshowSpeed.CurrentValue)
-            .Skip(1) // Skip initial
             .Subscribe(x =>
             {
                 var roundedValue = Math.Round(x, 2);
