@@ -26,13 +26,13 @@
             <StackPanel>
                 <customControls:TextIconButton
                     Classes="altHover settingsTextIconButton"
-                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
                     CommandParameter="{x:Static gallery:GalleryDockPosition.Bottom}"
                     Icon="{StaticResource GalleryImage}"
                     IconHeight="16"
                     IconMargin="0,0,7,0"
                     IconWidth="16"
-                    IsEnabled="{CompiledBinding !GallerySettings.IsBottomDocked.Value}"
+                    IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsBottomDocked.Value}"
                     Padding="9,8,8,8"
                     Text="{CompiledBinding Translation.ShowDockedGalleryAtBottom.Value,
                                            Mode=OneWay}"
@@ -42,13 +42,13 @@
 
                 <customControls:TextIconButton
                     Classes="altHover settingsTextIconButton"
-                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
                     CommandParameter="{x:Static gallery:GalleryDockPosition.Top}"
                     Icon="{StaticResource GalleryImage}"
                     IconHeight="16"
                     IconMargin="0,0,7,0"
                     IconWidth="16"
-                    IsEnabled="{CompiledBinding !GallerySettings.IsTopDocked.Value}"
+                    IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsTopDocked.Value}"
                     Padding="9,8,8,8"
                     Text="{CompiledBinding Translation.ShowDockedGalleryAtTop.Value,
                                            Mode=OneWay}"
@@ -58,13 +58,13 @@
 
                 <customControls:TextIconButton
                     Classes="altHover settingsTextIconButton"
-                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
                     CommandParameter="{x:Static gallery:GalleryDockPosition.Right}"
                     Icon="{StaticResource GalleryImage}"
                     IconHeight="16"
                     IconMargin="0,0,7,0"
                     IconWidth="16"
-                    IsEnabled="{CompiledBinding !GallerySettings.IsRightDocked.Value}"
+                    IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsRightDocked.Value}"
                     Padding="9,8,8,8"
                     Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value,
                                            Mode=OneWay}"
@@ -74,13 +74,13 @@
 
                 <customControls:TextIconButton
                     Classes="altHover settingsTextIconButton"
-                    Command="{CompiledBinding GallerySettings.SetDockPositionCommand}"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
                     CommandParameter="{x:Static gallery:GalleryDockPosition.Left}"
                     Icon="{StaticResource GalleryImage}"
                     IconHeight="16"
                     IconMargin="0,0,7,0"
                     IconWidth="16"
-                    IsEnabled="{CompiledBinding !GallerySettings.IsLeftDocked.Value}"
+                    IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsLeftDocked.Value}"
                     Padding="9,8,8,8"
                     Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value,
                                            Mode=OneWay}"
@@ -94,7 +94,7 @@
             <StackPanel>
                 <customControls:TextToggleButton
                     Classes="altHover settingsToggleButton"
-                    Command="{CompiledBinding GallerySettings.CloseGalleryCommand}"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.CloseGalleryCommand}"
                     Text="{CompiledBinding Translation.HideDockedGallery.Value,
                                            Mode=OneWay}"
                     x:Name="CloseDockedGalleryButton" />

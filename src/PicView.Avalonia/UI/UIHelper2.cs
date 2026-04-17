@@ -34,6 +34,8 @@ public static class UIHelper2
 
     public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) =>
         GetFrameProvider = frameProvider;
+    
+    public static CoreViewModel CoreViewModel => Application.Current.DataContext as CoreViewModel ?? throw new InvalidOperationException("CoreViewModel is null");
 
     /// <summary>
     /// Sets up control references from the main desktop application

@@ -262,6 +262,9 @@ public class Gallery
     /// <summary>
     /// Specifies the height/width of the gallery items displayed at the docked section of the gallery view.
     /// </summary>
+    public double DockedGalleryItemSize { get; set; } = 37;
+    
+    // TODO: Deprecated, delete when cleaning up the fork 
     public double BottomGalleryItemSize { get; set; } = 37;
 
     /// <summary>

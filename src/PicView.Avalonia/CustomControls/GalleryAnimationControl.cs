@@ -23,7 +23,6 @@ public class GalleryAnimationControl : UserControl
     private const int BorderTopAndBottomThickness = 2;
 
     private TabViewModel? TabViewModel => DataContext as TabViewModel;
-    private static CoreViewModel? CoreViewModel => Application.Current?.DataContext as CoreViewModel;
     private Control? ParentControl => Parent as Control;
 
     private DisposableBag _disposables;
@@ -45,6 +44,7 @@ public class GalleryAnimationControl : UserControl
     private static Thickness GetDockedMargin => new(0);
     private static Thickness GetExpandedMargin => new(15, 40, 15, 5);
     private static double GetDockedSize => Settings.Gallery.BottomGalleryItemSize + BorderTopAndBottomThickness + SizeDefaults.ScrollbarSize;
+    private static bool IsHorizontalDock(GalleryDockPosition dock) => dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom;
 
     #endregion
 
@@ -92,51 +92,44 @@ public class GalleryAnimationControl : UserControl
     {
         Debug.Assert(Settings.Gallery is not null);
 
+        var core = UIHelper2.CoreViewModel;
+
         // Change layout corresponding to DockPositions
         Observable.EveryValueChanged(Settings.Gallery, gallery => gallery.DockPosition, UIHelper2.GetFrameProvider)
             .Skip(1)
-            .Subscribe(SetDockedLayout, LogError(nameof(SetDockedLayout)))
+            .Subscribe(SetDockedLayout, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(SetDockedLayout)))
             .AddTo(ref _disposables);
         
         // Update expanded item sizes
-        Observable.EveryValueChanged(CoreViewModel.GallerySettings, gallery => gallery.ExpandedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
+        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.ExpandedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
             .Skip(1)
-            .Subscribe(UpdateExpandedItemHeight, LogError(nameof(UpdateExpandedItemHeight)))
+            .Subscribe(UpdateExpandedItemHeight, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateExpandedItemHeight)))
             .AddTo(ref _disposables);
 
         // Update docked item sizes
-        Observable.EveryValueChanged(CoreViewModel.GallerySettings, gallery => gallery.DockedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
+        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.DockedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
             .Skip(1)
-            .Subscribe(UpdateDockedItemHeight, LogError(nameof(UpdateDockedItemHeight)))
+            .Subscribe(UpdateDockedItemHeight, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateDockedItemHeight)))
             .AddTo(ref _disposables);
         
-        CoreViewModel.GallerySettings.ExpandedGalleryStretchMode.Skip(1).Subscribe(x =>
+        core.GallerySettings.ExpandedGalleryStretchMode.Skip(1).Subscribe(_ =>
         {
             SetExpandedThumbs();
-        }, LogError(nameof(UpdateExpandedItemHeight)))
+        }, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateExpandedItemHeight)))
         .AddTo(ref _disposables);
         
-        CoreViewModel.GallerySettings.DockedGalleryStretchMode.Skip(1).Subscribe(x =>
-        {
-            ApplyThumbSettings(
-                Settings.Gallery.BottomGalleryItemSize,
-                (GalleryStretchMode)x,
-                GetDockedMargin,
-                spacing: 2);
-        }, LogError(nameof(UpdateDockedItemHeight)))
+        core.GallerySettings.DockedGalleryStretchMode.Skip(1).Subscribe(SetDockedStretch, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateDockedItemHeight)))
         .AddTo(ref _disposables);
     }
 
-    // Properly handles R3's Action<Result> overload while preserving exact method context
-    private static Action<Result> LogError(string methodName) => result =>
+    private void SetDockedStretch(int x)
     {
-#if DEBUG
-        if (result is { IsFailure: true, Exception: not null })
-        {
-            DebugHelper.LogDebug(nameof(GalleryAnimationControl), methodName, result.Exception);
-        }
-#endif
-    };
+        ApplyThumbSettings(
+            Settings.Gallery.BottomGalleryItemSize,
+            (GalleryStretchMode)x,
+            GetDockedMargin,
+            spacing: 2);
+    }
 
     #endregion
 
@@ -154,8 +147,6 @@ public class GalleryAnimationControl : UserControl
 
     private async ValueTask OnGalleryModeChanged(GalleryMode2 newMode)
     {
-        if (TabViewModel == null) return;
-
         try
         {
             var oldMode = _previousMode;
@@ -249,8 +240,11 @@ public class GalleryAnimationControl : UserControl
 
     private void UpdateExpandedItemHeight(double itemHeight)
     {
-        if (CoreViewModel == null || TabViewModel?.Gallery.IsGalleryExpanded.CurrentValue != true) return;
-        CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
+        if (!TabViewModel.Gallery.IsGalleryExpanded.CurrentValue)
+        {
+            return;
+        }
+        UIHelper2.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
     }
 
     #endregion
@@ -291,30 +285,30 @@ public class GalleryAnimationControl : UserControl
 
     private void SetDockedThumbPosition(GalleryDockPosition dock)
     {
-        if (CoreViewModel == null) return;
-        var gallerySettings = CoreViewModel.GallerySettings;
+        var core = UIHelper2.CoreViewModel;
+        var gallery = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.Gallery;
 
         // Reset all dock flags
-        gallerySettings.IsTopDocked.Value = gallerySettings.IsBottomDocked.Value =
-        gallerySettings.IsLeftDocked.Value = gallerySettings.IsRightDocked.Value = false;
+        gallery.IsTopDocked.Value = gallery.IsBottomDocked.Value =
+        gallery.IsLeftDocked.Value = gallery.IsRightDocked.Value = false;
 
         switch (dock)
         {
             case GalleryDockPosition.Top:
                 DockPanel.SetDock(this, Dock.Top);
-                gallerySettings.IsTopDocked.Value = true;
+                gallery.IsTopDocked.Value = true;
                 break;
             case GalleryDockPosition.Left:
                 DockPanel.SetDock(this, Dock.Left);
-                gallerySettings.IsLeftDocked.Value = true;
+                gallery.IsLeftDocked.Value = true;
                 break;
             case GalleryDockPosition.Right:
                 DockPanel.SetDock(this, Dock.Right);
-                gallerySettings.IsRightDocked.Value = true;
+                gallery.IsRightDocked.Value = true;
                 break;
             case GalleryDockPosition.Bottom:
                 DockPanel.SetDock(this, Dock.Bottom);
-                gallerySettings.IsBottomDocked.Value = true;
+                gallery.IsBottomDocked.Value = true;
                 break;
             case GalleryDockPosition.Closed:
             default:
@@ -329,8 +323,11 @@ public class GalleryAnimationControl : UserControl
 
     private void UpdateDockedItemHeight(double itemHeight)
     {
-        if (CoreViewModel == null || TabViewModel?.Gallery.IsGalleryExpanded.CurrentValue == true) return;
-        CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
+        if (TabViewModel.Gallery.IsGalleryExpanded.CurrentValue)
+        {
+            return;
+        }
+        UIHelper2.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
 
         // Resize control bounds
         var size = itemHeight + BorderTopAndBottomThickness + SizeDefaults.ScrollbarSize;
@@ -345,16 +342,10 @@ public class GalleryAnimationControl : UserControl
             Height = double.NaN;
         }
     }
-
-    #endregion
-
-    #region Helpers
-
-    private bool IsHorizontalDock(GalleryDockPosition dock) => dock is GalleryDockPosition.Top or GalleryDockPosition.Bottom;
-
+    
     private void ApplyThumbSettings(double size, GalleryStretchMode mode, Thickness margin, double spacing = 0)
     {
-        var settings = CoreViewModel.GallerySettings;
+        var settings = UIHelper2.CoreViewModel.GallerySettings;
         settings.ItemHeight.Value = size;
         switch (mode)
         {
@@ -386,10 +377,10 @@ public class GalleryAnimationControl : UserControl
 
         if (spacing > 0)
         {
-            TabViewModel?.Gallery.ItemSpacing.Value = spacing;
+            TabViewModel.Gallery.ItemSpacing.Value = spacing;
         }
         
-        _itemsPanel?.Margin = margin;
+        _itemsPanel.Margin = margin;
     }
 
     #endregion

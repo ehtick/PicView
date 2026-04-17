@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
+using R3;
 
 namespace PicView.Core.DebugTools;
 
@@ -46,4 +47,15 @@ public static class DebugHelper
         Debug.WriteLine(
             $"\n[{DateTime.Now.ToString("T", CultureInfo.CurrentCulture)}] {className}.{methodName} exception: {exceptionMessage}");
     }
+    
+    // Properly handles R3's Action<Result> overload while preserving exact method context
+    public static Action<Result> LogError(string className, string methodName) => result =>
+    {
+#if DEBUG
+        if (result is { IsFailure: true, Exception: not null })
+        {
+            LogDebug(className, methodName, result.Exception);
+        }
+#endif
+    };
 }
