@@ -20,4 +20,44 @@ public static class RotationManager
             WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
         }
     }
+    
+    public static void ResetZoom(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.ResetZoom(Settings.Zoom.IsZoomAnimated);
+        }
+    }
+    
+    public static void Rotate(MainWindowViewModel vm, int angle)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Rotate(angle);
+        }
+    }
+    
+    public static void RotateRight(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Rotate(true);
+        }
+    }
+
+    public static void RotateLeft(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Rotate(false);
+        }
+    }
+    
+    public static void Flip(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        {
+            imageViewer.Flip(true);
+        }
+    }
 }

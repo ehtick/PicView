@@ -284,29 +284,20 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
     /// <inheritdoc cref="RotationNavigation.RotateRight(MainViewModel)" />
     public ValueTask RotateRight()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
-        {
-            imageViewer.Rotate(true);
-        }
+        RotationManager.RotateRight(vm);
         return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc cref="RotationNavigation.RotateLeft(MainViewModel)" />
     public ValueTask RotateLeft()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
-        {
-            imageViewer.Rotate(false);
-        }
+        RotationManager.RotateLeft(vm);
         return ValueTask.CompletedTask;
     }
     
     public ValueTask Flip()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
-        {
-            imageViewer.Flip(true);
-        }
+        RotationManager.Flip(vm);
         return ValueTask.CompletedTask;
     }
 
@@ -384,11 +375,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
 
     public ValueTask ResetZoom()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
-        {
-            imageViewer.ResetZoom(Settings.Zoom.IsZoomAnimated);
-        }
-
+        RotationManager.ResetZoom(vm);
         return ValueTask.CompletedTask;
     }
 

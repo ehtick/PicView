@@ -75,6 +75,7 @@ public class MainWindow : Window, IMainWindow
         Disposables?.Dispose();
         Loaded -= OnLoaded;
         Activated -= OnActivated;
+        SharedBottomBar.Dispose();
         base.OnClosed(e);
     }
 

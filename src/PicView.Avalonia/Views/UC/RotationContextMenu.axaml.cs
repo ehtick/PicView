@@ -1,13 +1,17 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
+using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.DebugTools;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.Views.UC;
 
-public partial class RotationContextMenu : ContextMenu
+public partial class RotationContextMenu : ContextMenu, IDisposable
 {
     protected override Type StyleKeyOverride => typeof(ContextMenu);
+    private IDisposable? _disposable;
     
     public RotationContextMenu()
     {
@@ -16,13 +20,55 @@ public partial class RotationContextMenu : ContextMenu
 
     public void UpdateSubscription()
     {
-        Observable.EveryValueChanged(this, x => IsOpen, UIHelper2.GetFrameProvider)
-            .Subscribe(_ => { UpdateRotation(); });
+        _disposable = Observable.EveryValueChanged(this, x => IsOpen, UIHelper2.GetFrameProvider)
+            .Subscribe(_ => { UpdateRotation(); },
+                DebugHelper.LogError(nameof(RotationContextMenu), nameof(UpdateSubscription)));
+
+        Rotation0Item.Click += Rotation0ItemOnClick;
+        Rotation90Item.Click += Rotation90ItemOnClick;
+        Rotation180Item.Click += Rotation180ItemOnClick;
+        Rotation270Item.Click += Rotation270ItemOnClick;
     }
-    
+
+    private void Rotation270ItemOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        RotationManager.Rotate(vm, 270);
+    }
+
+    private void Rotation180ItemOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        RotationManager.Rotate(vm, 180);
+    }
+
+    private void Rotation90ItemOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        RotationManager.Rotate(vm, 90);
+    }
+
+    private void Rotation0ItemOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        RotationManager.Rotate(vm, 0);
+    }
+
     private void UpdateRotation()
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not MainWindowViewModel vm)
         {
             return;
         }
@@ -31,7 +77,7 @@ public partial class RotationContextMenu : ContextMenu
         Rotation90Item.IsChecked = false;
         Rotation180Item.IsChecked = false;
         Rotation270Item.IsChecked = false;
-        switch (vm.PicViewer.RotationAngle.CurrentValue)
+        switch (vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue)
         {
             case 0:
                 Rotation0Item.IsChecked = true;
@@ -46,5 +92,15 @@ public partial class RotationContextMenu : ContextMenu
                 Rotation270Item.IsChecked = true;
                 break;
         }
+    }
+
+    public void Dispose()
+    {
+        _disposable?.Dispose();
+        _disposable = null;
+        Rotation0Item.Click -= Rotation0ItemOnClick;
+        Rotation90Item.Click -= Rotation90ItemOnClick;
+        Rotation180Item.Click -= Rotation180ItemOnClick;
+        Rotation270Item.Click -= Rotation270ItemOnClick;
     }
 }
