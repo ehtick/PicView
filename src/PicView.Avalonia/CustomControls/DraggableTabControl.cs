@@ -44,6 +44,8 @@ public class DraggableTabControl : TabControl
     private double _draggedTabStartX;
     private double _draggedTabWidth;
 
+    private bool _isSwitchingTabs; // Prevent accidental tab switching
+
     private Window? _ghostWindow;
     private bool _isDetaching;
 
@@ -193,6 +195,8 @@ public class DraggableTabControl : TabControl
 
         _isDragging = false;
         _isDetaching = false;
+        
+        _isSwitchingTabs = true;
 
         ItemFromContainer(tabItem);
         _sourceIndex = IndexFromContainer(tabItem);
@@ -212,7 +216,7 @@ public class DraggableTabControl : TabControl
 
     private void OnItemPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_pressedTab == null)
+        if (_pressedTab == null || _isSwitchingTabs)
         {
             return;
         }
@@ -328,6 +332,8 @@ public class DraggableTabControl : TabControl
 
     private void OnItemPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        _isSwitchingTabs = false;
+        
         CloseGhostWindow();
         StopAutoScroll();
 

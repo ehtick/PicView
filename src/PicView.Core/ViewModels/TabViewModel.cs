@@ -7,6 +7,7 @@ using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.Titles;
 using PicView.Core.Generators;
+using PicView.Core.Sizing;
 using R3;
 
 namespace PicView.Core.ViewModels;
@@ -26,6 +27,8 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     
     /// Unique identifier for this tab.
     public uint Id { get; } = TabIDGenerator.GetNextId();
+
+    public double TabHeight => SizeDefaults.TabHeight;
     
     public CompositeDisposable Disposables { get; } = new();
     public bool IsInitialized { get; set; }
@@ -171,7 +174,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
             ThumbnailCache.RemoveOwner(Id);
         }
         ImageIterator ??= new ImageIterator(cache, thumbCache, thumbnailLoader, this);
-        if (Model.CurrentValue.FileInfo is null)
+        if (Model?.CurrentValue?.FileInfo is null)
         {
 #if DEBUG
             DebugHelper.LogDebug(nameof(TabViewModel), nameof(InitializeImageIterator), $"Model.FileInfo is null for tab {Id}");

@@ -155,7 +155,7 @@ public static class WindowResizing2
     {
         var size = GetSize(width, height, secondWidth, secondHeight, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue, vm);
 
-        if (size is null)
+        if (size is null || size.Value.WindowWidth == 0 || size.Value.WindowHeight == 0)
         {
             return;
         }
@@ -215,7 +215,7 @@ public static class WindowResizing2
     public static ImageSize2? GetSize(MainWindowViewModel vm)
     {
         double width, height, secondaryWidth, secondaryHeight;
-        if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue.FileInfo, out var preloadValue))
+        if (vm.WindowTabs.SharedCache?.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.CurrentValue.FileInfo, out var preloadValue) ?? false)
         {
             width = preloadValue.ImageModel.PixelWidth;
             height = preloadValue.ImageModel.PixelHeight;
@@ -235,7 +235,7 @@ public static class WindowResizing2
 
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.SecondaryModel.CurrentValue.FileInfo, out var secondaryPreloadValue))
+            if (vm.WindowTabs.SharedCache?.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.SecondaryModel.CurrentValue.FileInfo, out var secondaryPreloadValue) ?? false)
             {
                 secondaryWidth = secondaryPreloadValue.ImageModel.PixelWidth;
                 secondaryHeight = secondaryPreloadValue.ImageModel.PixelHeight;
@@ -267,72 +267,54 @@ public static class WindowResizing2
         MainWindowViewModel vm)
     {
         var screenSize = ScreenHelper.ScreenSize;
-        var (containerWidth, containerHeight, galleryWidth, galleryHeight) = GetContainerSize();
+        var (uiBottomSize, uiTopSize, galleryWidth, galleryHeight) = GetContainerSize();
 
         if (double.IsNaN(width) || double.IsNaN(height))
         {
             return null;
         }
         
-        ImageSize2 size;
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
-            size = ImageSizeCalculationHelper2.GetSideBySideImageSize(
+            return ImageSizeCalculationHelper2.GetSideBySideImageSize(
                 width,
                 height,
                 secondWidth,
                 secondHeight,
                 screenSize,
                 rotation,
-                vm.TitlebarHeight.CurrentValue,
-                vm.BottombarHeight.CurrentValue,
+                uiTopSize,
+                uiBottomSize,
                 galleryWidth,
                 galleryHeight);
         }
-        else
-        {
-            size = ImageSizeCalculationHelper2.GetImageSize(
+        return ImageSizeCalculationHelper2.GetImageSize(
                 width,
                 height,
                 screenSize,
                 rotation,
-                vm.TitlebarHeight.CurrentValue,
-                vm.BottombarHeight.CurrentValue,
+                uiTopSize,
+                uiBottomSize,
                 galleryWidth,
                 galleryHeight);
-        }
 
-        return size;
-
-        (double containerWidth, double containerHeight, double galleryWidth, double galleryHeight) GetContainerSize()
+        (double, double, double, double) GetContainerSize()
         {
             return Dispatcher.CurrentDispatcher.CheckAccess() ? Get() : Dispatcher.CurrentDispatcher.Invoke(Get, DispatcherPriority.Send);
 
-            (double containerWidth, double containerHeight, double galleryWidth, double galleryHeight) Get()
+            (double, double, double, double) Get()
             {
-                var core = Application.Current.DataContext as CoreViewModel;
-                var (galleryWidth, galleryHeight) = GalleryHelper.GetGallerySize(vm);
-                var mainView = UIHelper2.GetMainView;
-
-                if (mainView is null)
+                var (gW, gH) = GalleryHelper.GetGallerySize(vm);
+                if (vm.WindowTabs.Tabs.CurrentValue.Count > 1)
                 {
-                    return default;
+                    uiTopSize = SizeDefaults.TabHeight + vm.TitlebarHeight.CurrentValue;
+                }
+                else
+                {
+                    uiTopSize = vm.TitlebarHeight.CurrentValue;
                 }
 
-                containerWidth = mainView.Bounds.Width;
-                containerHeight = mainView.Bounds.Height;
-
-                if (double.IsNaN(containerWidth))
-                {
-                    containerWidth = mainView.Bounds.Width;
-                }
-
-                if (double.IsNaN(containerHeight))
-                {
-                    containerHeight = mainView.Bounds.Height;
-                }
-
-                return (containerWidth, containerHeight, galleryWidth, galleryHeight);
+                return (UIHelper2.GetBottomBar.Bounds.Height, uiTopSize, gW, gH);
             }
         }
     }

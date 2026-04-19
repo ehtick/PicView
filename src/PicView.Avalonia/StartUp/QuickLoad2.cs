@@ -4,6 +4,7 @@ using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
@@ -79,7 +80,13 @@ public static class QuickLoad2
             TabNavigationInitializer.Initialize(core, fileInfo);
         }
 
+        if (Settings.WindowProperties.AutoFit)
+        {
+            WindowFunctions2.CenterWindowOnScreen();
+        }
+
         core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
+        FileHistoryManager.Add(fileInfo.FullName);
 
         if (Settings.Gallery.IsGalleryDocked)
         {
@@ -88,7 +95,7 @@ public static class QuickLoad2
                 Settings.Gallery.DockPosition = GalleryDockPosition.Bottom;
             }
 
-            _ = GalleryLoader.LoadGalleryAsync(core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+            await GalleryLoader.LoadGalleryAsync(core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
                     core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
                     new AvaloniaThumbnailLoader(),
                     core.SharedThumbnailCache,
@@ -99,6 +106,6 @@ public static class QuickLoad2
         {
             Settings.Gallery.DockPosition = GalleryDockPosition.Closed;
         }
-        FileHistoryManager.Add(fileInfo.FullName);
+
     }
 }

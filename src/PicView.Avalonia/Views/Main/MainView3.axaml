@@ -903,7 +903,7 @@
                             Data="{StaticResource CloseGeometry}"
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
-                            Height="32"
+                            Height="{Binding TabHeight}"
                             IconHeight="12"
                             IconWidth="12"
                             Padding="9,0" />

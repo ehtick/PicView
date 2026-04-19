@@ -60,7 +60,7 @@ public static class UpdateImage2
             if (tabViewModel.SecondaryModel.CurrentValue is null)
             {
 #if DEBUG
-                DebugHelper.LogDebug(nameof(UpdateImage2), nameof(ChangeImage), $"SecondaryModel.CurrentValue is null");
+                DebugHelper.LogDebug(nameof(UpdateImage2), nameof(ChangeImage), "SecondaryModel.CurrentValue is null");
 #endif
                 secondaryWidth = 0;
                 secondaryHeight = 0;

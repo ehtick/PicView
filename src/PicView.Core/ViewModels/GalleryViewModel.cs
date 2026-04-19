@@ -115,12 +115,14 @@ public class GalleryViewModel : IDisposable
                 {
                     IsLeftDocked.Value = IsRightDocked.Value = IsTopDocked.Value = IsBottomDocked.Value = false;
                     GalleryMode.Value = GalleryMode2.Closed;
+                    Settings.Gallery.IsGalleryDocked = false;
                 }
             }
             else if (Settings.Gallery.IsGalleryDocked && !IsGalleryExpanded.CurrentValue)
             {
                 IsLeftDocked.Value = IsRightDocked.Value = IsTopDocked.Value = IsBottomDocked.Value = false;
                 GalleryMode.Value = GalleryMode2.Closed;
+                Settings.Gallery.IsGalleryDocked = false;
             }
         }, DebugHelper.LogError(nameof(GalleryViewModel), nameof(Initialize)))
         .AddTo(ref _disposables);
