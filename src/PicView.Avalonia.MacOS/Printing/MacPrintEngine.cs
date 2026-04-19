@@ -72,7 +72,8 @@ public static class MacPrintEngine
             {
                 case false
                     when string.Equals(printerName, saveAsPdf, StringComparison.Ordinal):
-                    await PdfExport.SavePdfWithFilePicker(null, rtb);
+                    var outputFilename = Path.GetFileNameWithoutExtension(settings.ImagePath.Value) + ".pdf";
+                    await PdfExport.SavePdfWithFilePicker(outputFilename, rtb);
                     break;
                 case false:
                 {

@@ -4,19 +4,18 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using ImageMagick;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Localization;
 
 namespace PicView.Avalonia.FileSystem;
 
 public static class PdfExport
 {
-    public static async Task SavePdfWithFilePicker(MainViewModel? vm, RenderTargetBitmap bitmap)
+    public static async Task SavePdfWithFilePicker(string outputFilename, RenderTargetBitmap bitmap)
     {
-        vm ??= await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
-        var fileName = Path.GetFileNameWithoutExtension(vm.PicViewer.FileInfo?.Value?.Name)
-                       ?? "export";
+        if (string.IsNullOrWhiteSpace(outputFilename))
+        {
+            throw new ArgumentException("Output filename cannot be null or whitespace", nameof(outputFilename));
+        }
 
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
             desktop.MainWindow?.StorageProvider is not { } provider)
@@ -26,7 +25,7 @@ public static class PdfExport
         var options = new FilePickerSaveOptions
         {
             Title = TranslationManager.Translation.SaveAs + " - PicView",
-            SuggestedFileName = fileName + ".pdf",
+            SuggestedFileName = outputFilename,
             FileTypeChoices =
             [
                 new FilePickerFileType("PDF") { Patterns = ["*.pdf"] }
