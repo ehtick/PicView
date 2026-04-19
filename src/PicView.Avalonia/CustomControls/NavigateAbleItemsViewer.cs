@@ -8,7 +8,6 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
-using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.CustomControls;

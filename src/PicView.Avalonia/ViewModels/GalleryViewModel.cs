@@ -71,12 +71,11 @@ public class GalleryViewModel : IDisposable
     public ReactiveCommand ToggleGalleryCommand { get; } = new(ToggleGallery);
     public ReactiveCommand ToggleBottomGalleryCommand { get; } = new(ToggleBottomGallery);
     public ReactiveCommand CloseGalleryCommand { get; } = new(CloseGallery);
-    public ReactiveCommand<string> GalleryItemStretchCommand { get; } = new(GalleryItemStretch);
+    public ReactiveCommand<string> GalleryItemStretchCommand { get; }
 
     private static void ToggleGallery(Unit unit) => FunctionsMapper.ToggleGallery();
     private static void ToggleBottomGallery(Unit unit) => FunctionsMapper.OpenCloseBottomGallery();
     private static void CloseGallery(Unit unit) => FunctionsMapper.CloseGallery();
-    private static void GalleryItemStretch(string value) => GalleryHelper.SetGalleryItemStretch(value);
     
     #endregion
 
