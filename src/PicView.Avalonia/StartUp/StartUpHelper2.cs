@@ -164,7 +164,7 @@ public static class StartUpHelper2
         SetWindowEventHandlers(window);
         HandleThemeUpdates();
 
-        UIHelper2.SetControls(window);
+        UIHelper.SetControls(window);
 
         // if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         // {

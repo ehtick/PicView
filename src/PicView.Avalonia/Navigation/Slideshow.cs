@@ -108,8 +108,6 @@ public static class Slideshow
         _timer.Start();
         vm.PlatformService.DisableScreensaver();
 
-        MenuManager.CloseMenus(vm);
-
         if (!Settings.WindowProperties.Fullscreen)
         {
             await vm.PlatformWindowService.ToggleFullscreen();

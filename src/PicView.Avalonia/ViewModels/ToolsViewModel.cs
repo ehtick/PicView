@@ -20,14 +20,14 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand CheckForUpdatesCommand { get; } = new(async (_, _) =>
     {
-        var vm = await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
-        if (vm == null)
-        {
-            return;
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() => vm.Window.ShowAboutWindow());
-        await vm.AboutView.UpdateCurrentVersion();
+        // var vm = await Dispatcher.UIThread.InvokeAsync(() => UIHelper.GetMainView.DataContext as MainViewModel);
+        // if (vm == null)
+        // {
+        //     return;
+        // }
+        //
+        // await Dispatcher.UIThread.InvokeAsync(() => vm.Window.ShowAboutWindow());
+        // await vm.AboutView.UpdateCurrentVersion();
     });
 
     public ReactiveCommand ShowKeybindingsFileCommand { get; } = new(async (_, _) =>
@@ -45,10 +45,6 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand<string> OpenWithCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await FileManager.OpenWith(path, vm).ConfigureAwait(false);
-        }
     });
 
     // Save related
@@ -61,44 +57,22 @@ public class ToolsViewModel : IDisposable
     // File Tasks
     public ReactiveCommand<string> RecycleFileCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(true, path, vm.PlatformService))
-                .ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> DeleteFilePermanentlyCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await Task.Run(() => FileManager.DeleteFileWithOptionalDialog(false, path, vm.PlatformService))
-                .ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> LocateOnDiskCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await FileManager.LocateOnDisk(path, vm).ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> FilePropertiesCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await FileManager.ShowFileProperties(path, vm).ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> PrintCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await FileManager.Print(path, vm).ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> RenameCommand { get; } = new(async (_, _) =>
@@ -115,10 +89,6 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand<string> DuplicateFileCommand { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await ClipboardFileOperations.Duplicate(path, vm).ConfigureAwait(false);
-        }
     });
 
     public ReactiveCommand<string> CopyImageCommand { get; } = new(async (_, _) =>
@@ -138,10 +108,6 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand<string> CopyBase64Command { get; } = new(async (path, _) =>
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await ClipboardImageOperations.CopyBase64ToClipboard(path, vm).ConfigureAwait(false);
-        }
     });
 
     // Settings
@@ -182,7 +148,6 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand ToggleUsingTouchPadCommand { get; } = new(async (_, _) =>
     {
-        await SettingsUpdater.ToggleUsingTouchpad(UIHelper.GetMainView.DataContext as MainViewModel);
     });
 
     // UI
@@ -198,18 +163,14 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand ToggleBottomGalleryShownInHiddenUICommand { get; } = new(async (_, _) =>
     {
-        await HideInterfaceLogic.ToggleBottomGalleryShownInHiddenUI(
-            UIHelper.GetMainView.DataContext as MainViewModel);
     });
 
     public ReactiveCommand ToggleFadeInButtonsOnHoverCommand { get; } = new(async (_, _) =>
     {
-        await HideInterfaceLogic.ToggleFadeInButtonsOnHover(UIHelper.GetMainView.DataContext as MainViewModel);
     });
 
     public ReactiveCommand ToggleHoverbarCommand { get; } = new(async (_, _) =>
     {
-        await HideInterfaceLogic.ToggleHoverNavigationBar(UIHelper.GetMainView.DataContext as MainViewModel);
     });
 
     public ReactiveCommand ChangeCtrlZoomCommand { get; } = new(async (_, _) =>
@@ -264,44 +225,26 @@ public class ToolsViewModel : IDisposable
     // Wallpaper
     public ReactiveCommand<string> SetAsWallpaperCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Fill, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand<string> SetAsWallpaperTiledCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Tile, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand<string> SetAsWallpaperStretchedCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Stretch, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand<string> SetAsWallpaperCenteredCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Center, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand<string> SetAsWallpaperFilledCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Fill, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand<string> SetAsWallpaperFittedCommand { get; } = new(async (path, _) =>
     {
-        await WallpaperManager
-            .SetAsWallpaper(path, WallpaperStyle.Fit, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
     });
 
     public ReactiveCommand ToggleFileHistoryTask { get; } = new(async (_, _) =>
@@ -311,10 +254,6 @@ public class ToolsViewModel : IDisposable
 
     public ReactiveCommand<string> StartSlideShowTask { get; } = new(async (value, _) =>
     {
-        if (int.TryParse(value, out var milliseconds))
-        {
-            await Slideshow.StartSlideshow(UIHelper.GetMainView.DataContext as MainViewModel, milliseconds);
-        }
     });
 
     public void Dispose()
@@ -329,11 +268,9 @@ public class ToolsViewModel : IDisposable
 
     public async Task RotateTask(int angle)
     {
-        await RotationNavigation.RotateTo(UIHelper.GetMainView.DataContext as MainViewModel, angle);
     }
 
     public async Task StretchedCommand()
     {
-        await SettingsUpdater.ToggleStretch(UIHelper.GetMainView.DataContext as MainViewModel);
     }
 }

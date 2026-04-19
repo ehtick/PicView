@@ -21,9 +21,7 @@ using PicView.Core.Preloading;
 
 namespace PicView.Avalonia.Navigation;
 
-/// <summary>
-///     Manages image navigation within the application.
-/// </summary>
+// TODO deprecated, delete
 public static class NavigationManager
 {
     public static TiffManager.TiffNavigationInfo? TiffNavigationInfo { get; private set; }
@@ -434,28 +432,7 @@ public static class NavigationManager
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async ValueTask NavigateFirstOrLast(bool last, MainViewModel vm)
     {
-        if (!CanNavigate(vm))
-        {
-            return;
-        }
-
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            GalleryNavigation.NavigateGallery(last, vm);
-        }
-        else
-        {
-            if (last)
-            {
-                await ImageLoader.LastIterationAsync(ImageIterator).ConfigureAwait(false);
-            }
-            else
-            {
-                await ImageLoader.FirstIterationAsync(ImageIterator).ConfigureAwait(false);
-            }
-
-            await UIHelper.ScrollToEndIfNecessary(last);
-        }
+        
     }
     
     /// <inheritdoc cref="NavigateFirstOrLast(bool last, MainViewModel vm)"/>

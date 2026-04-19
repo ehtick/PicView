@@ -203,11 +203,8 @@ public static class MainKeyboardShortcuts2
         // Handle open dialog
         if (DialogManager.IsDialogOpen)
         {
-            UIHelper.GetMainView.MainGrid.Children
-                .OfType<AnimatedPopUp>()
-                .FirstOrDefault()
-                ?.KeyDownHandler(null, e);
-            return true;
+            // TODO
+            return false;
         }
         
         // Handle escape key

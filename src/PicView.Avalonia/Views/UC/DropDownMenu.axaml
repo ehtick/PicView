@@ -1,6 +1,6 @@
 <customControls:AnimatedMenu
     IsOpen="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
-    x:Class="PicView.Avalonia.Views.UC.Menus.DropDownMenu"
+    x:Class="PicView.Avalonia.Views.UC.DropDownMenu"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"

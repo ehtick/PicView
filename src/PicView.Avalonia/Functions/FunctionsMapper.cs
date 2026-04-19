@@ -183,51 +183,26 @@ public static class FunctionsMapper
 
     public static Task CloseMenus()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-        MenuManager.CloseMenus(Vm);
         return Task.CompletedTask;
     }
 
     public static Task ToggleFileMenu()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-        MenuManager.ToggleFileMenu(Vm);
         return Task.CompletedTask;
     }
 
     public static Task ToggleImageMenu()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-        MenuManager.ToggleImageMenu(Vm);
         return Task.CompletedTask;
     }
 
     public static Task ToggleSettingsMenu()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-        MenuManager.ToggleSettingsMenu(Vm);
         return Task.CompletedTask;
     }
 
     public static Task ToggleToolsMenu()
     {
-        if (Vm is null)
-        {
-            return Task.CompletedTask;
-        }
-        MenuManager.ToggleToolsMenu(Vm);
         return Task.CompletedTask;
     }
 
@@ -444,8 +419,9 @@ public static class FunctionsMapper
     public static async ValueTask Close() =>
         await DialogManager.HandleShouldClosing(Vm).ConfigureAwait(false);
 
-    public static async ValueTask Center() =>
-        await UIHelper.CenterAsync(Vm).ConfigureAwait(false);
+    public static async ValueTask Center()
+    {
+    }
 
     /// <inheritdoc cref="Interfaces.IPlatformWindowService.MaximizeRestore" />
     public static async ValueTask Maximize()

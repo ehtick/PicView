@@ -196,21 +196,9 @@ public partial class HoverBar : UserControl
         }
         else if (SettingsMenuButton.IsPointerOver)
         {
-            if (props.IsRightButtonPressed)
-            {
-                ShowQuickSettingsDialog();
-            }
-            else if (props.IsLeftButtonPressed)
-            {
-                await FunctionsMapper.SettingsWindow();
-            }
         }
         else if (ImageMenuButton.IsPointerOver)
         {
-            if (props.IsRightButtonPressed || props.IsLeftButtonPressed)
-            {
-                ShowQuickEditingDialog();
-            }
         }
         else if (RotateLeftButton.IsPointerOver)
         {
@@ -249,12 +237,6 @@ public partial class HoverBar : UserControl
 
     private static void ShowNavigationDialog() =>
         DialogManager.AddNavigationDialog();
-
-    private static void ShowQuickSettingsDialog() =>
-        UIHelper.GetMainView.MainGrid.Children.Add(new QuickSettingsDialog());
-    
-    private static void ShowQuickEditingDialog() =>
-        UIHelper.GetMainView.MainGrid.Children.Add(new QuickEditingDialog());
 
     private static void ShowSearchDialog() =>
         DialogManager.AddFileSearchDialog();

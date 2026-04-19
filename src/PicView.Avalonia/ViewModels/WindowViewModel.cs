@@ -15,65 +15,33 @@ public class WindowViewModel
     
     public async Task ShowImageInfoWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            await vm.PlatformWindowService.ShowImageInfoWindow();
-        }
     }
 
     public void ShowSettingsWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowSettingsWindow();
-        }
     }
 
     public void ShowKeybindingsWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowKeybindingsWindow();
-        }
     }
 
     public void ShowAboutWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowAboutWindow();
-        }
     }
 
     public void ShowConvertWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowConvertWindow();
-        }
     }
 
     public void ShowBatchResizeWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowBatchResizeWindow();
-        }
     }
 
     public void ShowSingleImageResizeWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowSingleImageResizeWindow();
-        }
     }
 
     public void ShowEffectsWindow()
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            vm.PlatformWindowService.ShowEffectsWindow();
-        }
     }
 }

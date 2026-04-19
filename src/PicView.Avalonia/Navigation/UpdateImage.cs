@@ -270,57 +270,6 @@ public static class UpdateImage
         MainViewModel vm)
     {
         
-        int width, height;
-        if (imageType is ImageType.Svg)
-        {
-            var path = source as string;
-            using var magickImage = new MagickImage();
-            magickImage.Ping(path);
-            vm.PicViewer.ImageSource.Value = source;
-            vm.PicViewer.ImageType.Value = ImageType.Svg;
-            width = (int)magickImage.Width;
-            height = (int)magickImage.Height;
-        }
-        else
-        {
-            var bitmap = source as Bitmap;
-            vm.PicViewer.ImageSource.Value = source;
-            vm.PicViewer.ImageType.Value = imageType == ImageType.Invalid ? ImageType.Bitmap : imageType;
-            width = bitmap?.PixelSize.Width ?? 0;
-            height = bitmap?.PixelSize.Height ?? 0;
-        }
-
-        vm.PicViewer.FileInfo.Value = null;
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (vm.MainWindow.CurrentView.CurrentValue != vm.ImageViewer)
-            {
-                vm.MainWindow.CurrentView.Value = vm.ImageViewer;
-            }
-            WindowResizing.SetSize(width, height, 0, 0, 0, vm);
-            vm.ImageViewer.ZoomPanControl.ResetZoomSlim();
-        }, DispatcherPriority.Send);
-
-        var singeImageWindowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, 100);
-        vm.PicViewer.WindowTitle.Value = singeImageWindowTitles.TitleWithAppName;
-        vm.PicViewer.Title.Value = singeImageWindowTitles.BaseTitle;
-        vm.PicViewer.TitleTooltip.Value = singeImageWindowTitles.BaseTitle;
-
-        vm.PlatformService.StopTaskbarProgress();
-
-        vm.PicViewer.PixelWidth.Value = width;
-        vm.PicViewer.PixelHeight.Value = height;
-
-        if (Settings.Gallery.IsGalleryDocked)
-        {
-            vm.Gallery.GalleryMode.Value = GalleryMode.Closed;
-            vm.Gallery.GalleryMargin.Value = new Thickness(0);
-        }
-
-        vm.PicViewer.IsSingleImage.Value = true;
-        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetGalleryView.IsVisible = false; }, DispatcherPriority.Render);
-        await NavigationManager.DisposeImageIteratorAsync();
     }
 
     #endregion

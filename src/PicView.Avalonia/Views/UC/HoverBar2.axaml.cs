@@ -28,7 +28,7 @@ public partial class HoverBar2 : UserControl
         }
         
         AddHandler(PointerPressedEvent, ManagePointerPressed, RoutingStrategies.Tunnel);
-        UIHelper2.GetMainView.SizeChanged += (_, args) => ApplyResponsiveResize(args.NewSize.Width);
+        UIHelper.GetMainView.SizeChanged += (_, args) => ApplyResponsiveResize(args.NewSize.Width);
         ApplyResponsiveResize(Bounds.Width);
 
         if (Settings.Theme.GlassTheme)
@@ -199,7 +199,7 @@ public partial class HoverBar2 : UserControl
 
         // Make sure hover bar is above the bottom gallery if needed
         var newHeight = Settings.Gallery.IsGalleryDocked ? 50 : 160;
-        Height = UIHelper2.GetMainView.Bounds.Height > SizeDefaults.WindowMinSize ? newHeight : double.NaN;
+        Height = UIHelper.GetMainView.Bounds.Height > SizeDefaults.WindowMinSize ? newHeight : double.NaN;
     }
 
 
@@ -220,7 +220,7 @@ public partial class HoverBar2 : UserControl
             }
             else if (props.IsLeftButtonPressed)
             {
-                UIHelper2.SetButtonInterval(NextButton);
+                UIHelper.SetButtonInterval(NextButton);
             }
         }
         else if (PreviousButton.IsPointerOver)
@@ -231,7 +231,7 @@ public partial class HoverBar2 : UserControl
             }
             else if (props.IsLeftButtonPressed)
             {
-                UIHelper2.SetButtonInterval(PreviousButton);
+                UIHelper.SetButtonInterval(PreviousButton);
             }
         }
         else if (SettingsMenuButton.IsPointerOver)
@@ -282,7 +282,7 @@ public partial class HoverBar2 : UserControl
         {
             if (props.IsRightButtonPressed)
             {
-                UIHelper2.ShowMainContextMenu();
+                UIHelper.ShowMainContextMenu();
             }
         }
     }
@@ -291,10 +291,10 @@ public partial class HoverBar2 : UserControl
         DialogManager2.AddNavigationDialog();
 
     private static void ShowQuickSettingsDialog() =>
-        UIHelper2.GetMainView.MainPanel.Children.Add(new QuickSettingsDialog());
+        UIHelper.GetMainView.MainPanel.Children.Add(new QuickSettingsDialog());
     
     private static void ShowQuickEditingDialog() =>
-        UIHelper2.GetMainView.MainPanel.Children.Add(new QuickEditingDialog());
+        UIHelper.GetMainView.MainPanel.Children.Add(new QuickEditingDialog());
 
     private static void ShowSearchDialog() =>
         DialogManager2.AddFileSearchDialog();

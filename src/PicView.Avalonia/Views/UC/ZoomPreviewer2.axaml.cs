@@ -188,39 +188,8 @@ public partial class ZoomPreviewer2 : UserControl
             return;
         }
 
-        if (UIHelper2.GetMainView.DataContext is MainWindowViewModel vm)
+        if (UIHelper.GetMainView.DataContext is MainWindowViewModel vm)
         {
-            // if (vm.HoverbarViewModel.IsHoverbarVisible.CurrentValue && UIHelper.GetHoverBar?.Opacity > 0)
-            // {
-            //     // Fit zoom preview window on top of gallery and/or hoverbar
-            //     // TODO: refactor
-            //     if (UIHelper.GetMainView.Bounds.Width > vm.HoverbarViewModel.MaxWidth + 300)
-            //     {
-            //         var newBottomMargin = Settings.Gallery.IsGalleryDocked
-            //             ? GalleryFunctions.GetGalleryHeight(vm) + UIHelper.GetHoverBar.BottomBorder.Bounds.Height + 5
-            //             : 25;
-            //         Margin = new Thickness(0, 0, 25,
-            //             UIHelper.GetMainView.Bounds.Height > SizeDefaults.WindowMinSize ? newBottomMargin : 0);
-            //     }
-            //     else
-            //     {
-            //         var newBottomMargin = Settings.Gallery.IsGalleryDocked
-            //             ? GalleryFunctions.GetGalleryHeight(vm) + UIHelper.GetHoverBar.BottomBorder.Bounds.Height + 10
-            //             : 115;
-            //         Margin = new Thickness(0, 0, 70,
-            //             UIHelper.GetMainView.Bounds.Height > SizeDefaults.WindowMinSize ? newBottomMargin : 0);
-            //     }
-            //     
-            // }
-            // else if (Settings.Gallery.IsGalleryDocked)
-            // {
-            //     Margin = new Thickness(0, 0, 25, vm.Gallery.GalleryMargin.CurrentValue.Bottom + 7);
-            // }
-            // else
-            // {
-            //     Margin = new Thickness(0, 0, 25, 25);
-            // }
-
             UpdateSize(vm);
         }
 

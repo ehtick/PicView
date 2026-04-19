@@ -12,14 +12,6 @@ public partial class GalleryItem : UserControl
     public GalleryItem()
     {
         InitializeComponent();
-        GalleryContextMenu.Opened += delegate
-        {
-            ImageBorder.BorderBrush = UIHelper.GetBrush("SecondaryAccentColor");
-        };
-        GalleryContextMenu.Closed += delegate
-        {
-            ImageBorder.BorderBrush = Brushes.Transparent;
-        };
     }
         
     private void Flyout_OnPointerPressed(object? sender, PointerPressedEventArgs e)

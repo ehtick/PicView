@@ -41,11 +41,6 @@ public partial class EffectsView : UserControl
 
         vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
 
-        // reset on file change
-        Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
-            .Subscribe(_ => ResetAllUiAndConfig(vm))
-            .AddTo(_disposables);
-
         InitButtons(vm);
         InitControlHooks();
         InitPresets();
@@ -61,18 +56,6 @@ public partial class EffectsView : UserControl
 
     private void InitButtons(MainViewModel vm)
     {
-        if (!Settings.Theme.Dark)
-        {
-            if (TryGetResource("CancelBrush", Application.Current.RequestedThemeVariant, out var cBrush) && cBrush is SolidColorBrush brush)
-            {
-                UIHelper.SetButtonHover(CancelButton, brush);
-                UIHelper.SetButtonHover(ResetButton, brush);
-            }
-
-            UIHelper.SwitchAccentHoverClass(ResetButton);
-            UIHelper.SwitchAccentHoverClass(CancelButton);
-            LowerPanel.Background = new SolidColorBrush(Color.Parse("#5DA2A2A2"));
-        }
 
         PointerPressed += OnPointerPressed;
 

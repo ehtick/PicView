@@ -4,7 +4,6 @@ using Avalonia.Threading;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC.Menus;
 using PicView.Avalonia.Views.UC.PopUps;
 using PicView.Core.ViewModels;
 
@@ -19,12 +18,6 @@ public static class DialogManager2
     /// </summary>
     public static async Task HandleShouldClosing(MainViewModel vm)
     {
-        // Handle open menus
-        if (MenuManager.IsAnyMenuOpen(vm))
-        {
-            MenuManager.CloseMenus(vm);
-            return;
-        }
 
         // Handle cropping mode
         if (CropFunctions.IsCropping)
@@ -48,7 +41,7 @@ public static class DialogManager2
     {
         if (Settings.UIProperties.ShowConfirmationOnEsc)
         {
-            UIHelper.GetMainView?.MainGrid.Children.Add(new CloseDialog());
+            //UIHelper.GetMainView?.MainGrid.Children.Add(new CloseDialog());
         }
         else
         {
@@ -70,30 +63,30 @@ public static class DialogManager2
         {
             return;
         }
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper.GetMainView.MainGrid.Children.Add(new FileSearchDialog());
+        // if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
+        // {
+        //     return;
+        // }
+        //
+        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
+        // UIHelper.GetMainView.MainGrid.Children.Add(new FileSearchDialog());
     }
 
     public static void AddNavigationDialog()
     {
-        if (UIHelper2.GetMainView.MainPanel.Children.OfType<NavigationDialog>().Any())
+        if (UIHelper.GetMainView.MainPanel.Children.OfType<NavigationDialog>().Any())
         {
             return;
         }
         
-        UIHelper2.GetDropDownMenu.IsOpen = false;
+        UIHelper.GetDropDownMenu.IsOpen = false;
         
         if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
         
-        UIHelper2.GetMainView.MainPanel.Children.Add(new NavigationDialog
+        UIHelper.GetMainView.MainPanel.Children.Add(new NavigationDialog
         {
             DataContext = core.MainWindows.ActiveWindow.CurrentValue
         });

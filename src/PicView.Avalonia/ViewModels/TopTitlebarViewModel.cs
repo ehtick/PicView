@@ -1,9 +1,7 @@
-﻿using PicView.Avalonia.Crop;
-using PicView.Avalonia.UI;
-using PicView.Core.Conversion;
-using PicView.Core.ViewModels;
+﻿using PicView.Core.ViewModels;
 using R3;
 
+// TODO deprecated, delete
 namespace PicView.Avalonia.ViewModels;
 
 public class TopTitlebarViewModel
@@ -58,14 +56,14 @@ public class TopTitlebarViewModel
         IsGalleryButtonVisible.Value = false;
         IsMenuButtonVisible.Value = false;
 
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        CropFunctions.DetermineIfShouldBeEnabled(vm);
-        vm.PicViewer.ShouldOptimizeImageBeEnabled.Value =
-            ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
+        // if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        // {
+        //     return;
+        // }
+        //
+        // CropFunctions.DetermineIfShouldBeEnabled(vm);
+        // vm.PicViewer.ShouldOptimizeImageBeEnabled.Value =
+        //     ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
     }
 
     public void CloseMenu(Unit unit)

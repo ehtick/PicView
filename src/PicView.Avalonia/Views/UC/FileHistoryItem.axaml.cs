@@ -18,7 +18,7 @@ public partial class FileHistoryItem : UserControl
     private void OnPointerEntered(object? sender, PointerEventArgs e)
     {
         ButtonPanel.IsVisible = true;
-        AppBorder.BorderBrush = UIHelper2.GetBrush("MainBorderColor");
+        AppBorder.BorderBrush = UIHelper.GetBrush("MainBorderColor");
     }
 
     private void OnPointerExited(object? sender, PointerEventArgs e)

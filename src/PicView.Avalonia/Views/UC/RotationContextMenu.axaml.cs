@@ -18,7 +18,7 @@ public partial class RotationContextMenu : ContextMenu, IDisposable
 
     public void UpdateSubscription()
     {
-        _disposable = Observable.EveryValueChanged(this, x => IsOpen, UIHelper2.GetFrameProvider)
+        _disposable = Observable.EveryValueChanged(this, x => IsOpen, UIHelper.GetFrameProvider)
             .Subscribe(_ => { UpdateRotation(); },
                 DebugHelper.LogError(nameof(RotationContextMenu), nameof(UpdateSubscription)));
     }

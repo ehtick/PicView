@@ -143,26 +143,26 @@ public static class UpdateManager
     
     public static async Task DownloadUpdateFile(string downloadUrl, string tempPath)
     {
-        var vm = UIHelper.GetMainView.DataContext as MainViewModel;
-        vm.PlatformService.StopTaskbarProgress();
-
-        using var downloader = new HttpClientDownloadWithProgress(downloadUrl, tempPath);
-        try
-        {
-            downloader.ProgressChanged += (size, downloaded, percentage) =>
-                UpdateDownloadProgress(vm, size, downloaded, percentage);
-
-            await downloader.StartDownloadAsync();
-        }
-        catch (Exception e)
-        {
-            DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
-            TooltipHelper.ShowTooltipMessage(e.Message);
-        }
-        finally
-        {
-            vm.PlatformService.StopTaskbarProgress();
-        }
+        // var vm = UIHelper.GetMainView.DataContext as MainViewModel;
+        // vm.PlatformService.StopTaskbarProgress();
+        //
+        // using var downloader = new HttpClientDownloadWithProgress(downloadUrl, tempPath);
+        // try
+        // {
+        //     downloader.ProgressChanged += (size, downloaded, percentage) =>
+        //         UpdateDownloadProgress(vm, size, downloaded, percentage);
+        //
+        //     await downloader.StartDownloadAsync();
+        // }
+        // catch (Exception e)
+        // {
+        //     DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
+        //     TooltipHelper.ShowTooltipMessage(e.Message);
+        // }
+        // finally
+        // {
+        //     vm.PlatformService.StopTaskbarProgress();
+        // }
     }
     
     private static void UpdateDownloadProgress(

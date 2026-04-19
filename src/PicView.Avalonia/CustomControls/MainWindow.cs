@@ -27,7 +27,7 @@ public class MainWindow : Window, IMainWindow
     protected MainWindow()
     {
         FrameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this));
-        UIHelper2.SetFrameProvider(FrameProvider);
+        UIHelper.SetFrameProvider(FrameProvider);
         Loaded += OnLoaded;
     }
 
@@ -48,7 +48,7 @@ public class MainWindow : Window, IMainWindow
             })
             .AddTo(Disposables);
             
-        UIHelper2.AddDropDownMenu();
+        UIHelper.AddDropDownMenu();
         Activated += OnActivated;
     }
     

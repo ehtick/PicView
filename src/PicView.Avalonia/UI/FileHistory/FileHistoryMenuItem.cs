@@ -12,9 +12,7 @@ using PicView.Core.FileHistory;
 
 namespace PicView.Avalonia.UI.FileHistory
 {
-    /// <summary>
-    ///     Represents a single file history menu item with pin/unpin functionality
-    /// </summary>
+// TODO deprecated, delete
     public class FileHistoryMenuItem : Panel
     {
         private const int MaxFilenameLength = 42;
@@ -78,7 +76,6 @@ namespace PicView.Avalonia.UI.FileHistory
                 // Schedule a deferred menu refresh to happen after this event has completed
                 Dispatcher.UIThread.Post(() =>
                 {
-                    UIHelper.GetMainView.FileHistoryMenuController.UpdateFileHistoryMenu();
                 });
             };
     
@@ -92,7 +89,6 @@ namespace PicView.Avalonia.UI.FileHistory
                 // Schedule a deferred menu refresh to happen after this event has completed
                 Dispatcher.UIThread.Post(() =>
                 {
-                    UIHelper.GetMainView.FileHistoryMenuController.UpdateFileHistoryMenu();
                 });
             };
 

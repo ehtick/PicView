@@ -104,7 +104,7 @@ public static class DragAndDropManager
             return;
         }
 
-        UIHelper2.GetMainView?.MainPanel.Children.Remove(_dragDropView);
+        UIHelper.GetMainView?.MainPanel.Children.Remove(_dragDropView);
         _dragDropView = null;
     }
 
@@ -299,9 +299,9 @@ public static class DragAndDropManager
                 _dragDropView.AddLinkChain();
             }
 
-            if (UIHelper2.GetMainView != null && !UIHelper2.GetMainView.MainPanel.Children.Contains(_dragDropView))
+            if (UIHelper.GetMainView != null && !UIHelper.GetMainView.MainPanel.Children.Contains(_dragDropView))
             {
-                UIHelper2.GetMainView.MainPanel.Children.Add(_dragDropView);
+                UIHelper.GetMainView.MainPanel.Children.Add(_dragDropView);
             }
         });
 
@@ -315,9 +315,9 @@ public static class DragAndDropManager
             if (_dragDropView == null)
             {
                 _dragDropView = new DragDropView();
-                if (!control.IsPointerOver && UIHelper2.GetMainView != null)
+                if (!control.IsPointerOver && UIHelper.GetMainView != null)
                 {
-                    UIHelper2.GetMainView.MainPanel.Children.Add(_dragDropView);
+                    UIHelper.GetMainView.MainPanel.Children.Add(_dragDropView);
                 }
             }
             else

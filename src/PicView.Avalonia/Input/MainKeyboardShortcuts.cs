@@ -1,14 +1,6 @@
-﻿﻿using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using System.Runtime.InteropServices;
 using Avalonia.Input;
-using PicView.Avalonia.Crop;
-using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Input;
@@ -168,53 +160,6 @@ public static class MainKeyboardShortcuts
     /// <returns>True if the key event was handled by a special case handler.</returns>
     private static async Task<bool> HandleSpecialCases(KeyEventArgs e)
     {
-        // Handle cropping mode
-        if (CropFunctions.IsCropping)
-        {
-            if (UIHelper.GetMainView.MainGrid.DataContext is MainViewModel { MainWindow.CurrentView.CurrentValue: CropControl cropControl })
-            {
-                await cropControl.KeyDownHandler(null, e);
-            }
-            return true;
-        }
-
-        // Handle open dialog
-        if (DialogManager.IsDialogOpen)
-        {
-            UIHelper.GetMainView.MainGrid.Children
-                .OfType<AnimatedPopUp>()
-                .FirstOrDefault()
-                ?.KeyDownHandler(null, e);
-            return true;
-        }
-        
-        // Handle escape key
-        if (e.Key == Key.Escape)
-        {
-            if (UIHelper.GetMainView.DataContext as MainViewModel is { MainWindow.IsEditableTitlebarOpen.CurrentValue: true })
-            {
-                return true;
-            }
-            
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { Windows.Count: > 1 } desktop)
-            {
-                desktop.Windows[^1].Close();
-                IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
-                return true;
-            }
-
-            if (Slideshow.IsRunning)
-            {
-                Slideshow.StopSlideshow(UIHelper.GetMainView.MainGrid.DataContext as MainViewModel);
-                return true;
-            }
-
-            if (!IsKeyHeldDown && IsEscKeyEnabled)
-            {
-                _ = FunctionsMapper.Close();
-            }
-        }
-
         return false;
     }
 

@@ -14,19 +14,6 @@ public static class FilePicker
 {
     public static async Task SelectAndLoadFile(MainViewModel vm)
     {
-        if (vm is null)
-        {
-            return;
-        }
-
-        var file = await SelectFile().ConfigureAwait(false);
-        if (file is null)
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(vm);
-        await NavigationManager.LoadPicFromStringAsync(file, vm).ConfigureAwait(false);
     }
 
     public static async Task<string?> SelectFile()

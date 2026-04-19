@@ -33,7 +33,7 @@ public class MainTitleBar : UserControl, ITitleBar
             return;
         }
 
-        if (vm.IsEditableTitlebarOpen.Value || UIHelper2.GetDropDownMenu.IsOpen)
+        if (vm.IsEditableTitlebarOpen.Value || UIHelper.GetDropDownMenu.IsOpen)
         {
             return;
         }

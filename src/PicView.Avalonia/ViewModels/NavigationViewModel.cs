@@ -10,7 +10,7 @@ public class NavigationViewModel : IDisposable
     // Reload
     public ReactiveCommand ReloadCommand { get; } = new(async (_, _) =>
     {
-        await ErrorHandling.ReloadAsync(UIHelper.GetMainView.DataContext as MainViewModel).ConfigureAwait(false);
+        //await ErrorHandling.ReloadAsync(UIHelper.GetMainView.DataContext as MainViewModel).ConfigureAwait(false);
     });
     
     // Next
@@ -73,8 +73,8 @@ public class NavigationViewModel : IDisposable
 
     public ReactiveCommand<string> LoadFileFromStringCommand { get; } = new(async (value, _) =>
     {
-        await NavigationManager.LoadPicFromFile(value, UIHelper.GetMainView.DataContext as MainViewModel)
-            .ConfigureAwait(false);
+        // await NavigationManager.LoadPicFromFile(value, UIHelper.GetMainView.DataContext as MainViewModel)
+        //     .ConfigureAwait(false);
     });
     
     public void Dispose()

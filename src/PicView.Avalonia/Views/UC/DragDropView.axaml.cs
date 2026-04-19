@@ -42,8 +42,8 @@ public partial class DragDropView : UserControl
 
     private void UpdateViewSize()
     {
-        Width = UIHelper2.GetMainView.Bounds.Width;
-        Height = UIHelper2.GetMainView.Bounds.Height;
+        Width = UIHelper.GetMainView.Bounds.Width;
+        Height = UIHelper.GetMainView.Bounds.Height;
     }
 
     private void AddIconToPanel(Control icon)
@@ -114,8 +114,8 @@ public partial class DragDropView : UserControl
     {
         var screen = ScreenHelper.ScreenSize;
         var padding = vm.BottombarHeight.CurrentValue + vm.TitlebarHeight.CurrentValue + 50;
-        var boxedWidth = UIHelper2.GetMainView.Bounds.Width * screen.Scaling - padding;
-        var boxedHeight = UIHelper2.GetMainView.Bounds.Height * screen.Scaling - padding;
+        var boxedWidth = UIHelper.GetMainView.Bounds.Width * screen.Scaling - padding;
+        var boxedHeight = UIHelper.GetMainView.Bounds.Height * screen.Scaling - padding;
         var scaledWidth = boxedWidth / width;
         var scaledHeight = boxedHeight / height;
         return Math.Min(scaledWidth, scaledHeight);

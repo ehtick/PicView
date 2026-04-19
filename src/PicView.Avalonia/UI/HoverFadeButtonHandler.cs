@@ -131,16 +131,16 @@ public class HoverFadeButtonHandler
     private async Task AnimateOpacityAsync(Control control, double targetOpacity, double durationSeconds,
         CancellationToken token)
     {
-        if (control == UIHelper.GetHoverBar)
-        {
-            // Fix instances where hover bar is visible, but shouldn't be
-            // TODO: find a cleaner solution
-            if (!_vm.HoverbarViewModel.IsHoverbarVisible.Value)
-            {
-                control.IsVisible = false;
-                return;
-            }
-        }
+        // if (control == UIHelper.GetHoverBar)
+        // {
+        //     // Fix instances where hover bar is visible, but shouldn't be
+        //     // TODO: find a cleaner solution
+        //     if (!_vm.HoverbarViewModel.IsHoverbarVisible.Value)
+        //     {
+        //         control.IsVisible = false;
+        //         return;
+        //     }
+        // }
         var from = control.Opacity;
         if (Math.Abs(from - targetOpacity) < 0.01)
         {

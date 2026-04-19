@@ -55,12 +55,6 @@ public static class FileManager
 
         void ShowDeleteDialog()
         {
-            var prompt = recycle
-                ? TranslationManager.Translation.DeleteFile
-                : TranslationManager.Translation.DeleteFilePermanently;
-            var deleteDialog = new DeleteDialog(prompt, path, recycle);
-            UIHelper.GetMainView.MainGrid.Children.Add(deleteDialog);
-            // Dialog handles the deletion
         }
     }
 

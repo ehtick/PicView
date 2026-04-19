@@ -117,10 +117,6 @@ public partial class AppearanceView : UserControl
         
         CheckerboardButton.Background = BackgroundManager.CreateCheckerboardBrush(default, default,10);
         CheckerboardAltButton.Background = BackgroundManager.CreateCheckerboardBrushAlt(25);
-        
-        Observable.EveryValueChanged(vm.MainWindow, x => x.BackgroundChoice, UIHelper.GetFrameProvider)
-            .Subscribe(_ => SetBackgroundTheme(Settings.UIProperties.BgColorChoice))
-            .AddTo(_disposables);
     }
     
     // New method to update color buttons with values from ColorManager

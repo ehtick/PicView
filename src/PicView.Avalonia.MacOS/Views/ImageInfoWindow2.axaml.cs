@@ -34,7 +34,7 @@ public partial class ImageInfoWindow2 : Window, IDisposable
         Loaded += delegate
         {
             ClientSizeProperty.Changed.ToObservable()
-                .ObserveOn(UIHelper2.GetFrameProvider)
+                .ObserveOn(UIHelper.GetFrameProvider)
                 .Debounce(TimeSpan.FromMilliseconds(10))
                 .Subscribe(UpdateWindowSize)
                 .AddTo(_disposables);

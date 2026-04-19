@@ -34,16 +34,16 @@ public static class TooltipHelper2
     private static async ValueTask ShowToolTipAsync(string message, bool center, TimeSpan interval, CancellationToken cancellationToken)
     {
         // 1. Set the text and make the control visible
-        UIHelper2.GetToolTipMessage.ToolTipMessageText.Text = message;
-        UIHelper2.GetToolTipMessage.IsVisible = true;
+        UIHelper.GetToolTipMessage.ToolTipMessageText.Text = message;
+        UIHelper.GetToolTipMessage.IsVisible = true;
         
-        UIHelper2.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-        UIHelper2.GetToolTipMessage.VerticalAlignment =
+        UIHelper.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
+        UIHelper.GetToolTipMessage.VerticalAlignment =
             center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
 
         // 2. Create and run the fade-in animation
         var fadeIn = AnimationsHelper.OpacityAnimation(0, 1, Speed);
-        await fadeIn.RunAsync(UIHelper2.GetToolTipMessage, cancellationToken);
+        await fadeIn.RunAsync(UIHelper.GetToolTipMessage, cancellationToken);
 
         // Exit if a new message cancelled this task
         if (cancellationToken.IsCancellationRequested) return;
@@ -55,18 +55,18 @@ public static class TooltipHelper2
         if (cancellationToken.IsCancellationRequested)
         {
             // If cancelled here, we still want to fade out smoothly
-            var instantFadeOut = AnimationsHelper.OpacityAnimation(UIHelper2.GetToolTipMessage.Opacity, 0, Speed);
+            var instantFadeOut = AnimationsHelper.OpacityAnimation(UIHelper.GetToolTipMessage.Opacity, 0, Speed);
             await instantFadeOut.RunAsync(UIHelper.GetToolTipMessage, cancellationToken);
-            UIHelper2.GetToolTipMessage.IsVisible = false;
+            UIHelper.GetToolTipMessage.IsVisible = false;
             return;
         }
 
         // 4. Create and run the fade-out animation
         var fadeOut = AnimationsHelper.OpacityAnimation(1, 0, 0.3);
-        await fadeOut.RunAsync(UIHelper2.GetToolTipMessage, cancellationToken);
+        await fadeOut.RunAsync(UIHelper.GetToolTipMessage, cancellationToken);
             
         // 5. Hide the control
-        UIHelper2.GetToolTipMessage.IsVisible = false;
+        UIHelper.GetToolTipMessage.IsVisible = false;
     }
     
     public static async Task ShowTooltipMessageContinuallyAsync(object message, bool center, TimeSpan interval)
@@ -81,14 +81,14 @@ public static class TooltipHelper2
             
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var toolTip = UIHelper2.GetToolTipMessage;
+                var toolTip = UIHelper.GetToolTipMessage;
                 toolTip.ToolTipMessageText.Text = message.ToString();
-                UIHelper2.GetToolTipMessage.IsVisible = true;
+                UIHelper.GetToolTipMessage.IsVisible = true;
                 
                 if (!_isRunning)
                 {
-                    UIHelper2.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
-                    UIHelper2.GetToolTipMessage.VerticalAlignment =
+                    UIHelper.GetToolTipMessage.Margin = center ? new Thickness(0) : new Thickness(0, 0, 0, 15);
+                    UIHelper.GetToolTipMessage.VerticalAlignment =  
                         center ? VerticalAlignment.Center : VerticalAlignment.Bottom;
                 }
                 else
@@ -102,10 +102,10 @@ public static class TooltipHelper2
                 _isRunning = true;
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    UIHelper2.GetToolTipMessage.Opacity = 1;
+                    UIHelper.GetToolTipMessage.Opacity = 1;
                 }, DispatcherPriority.Normal, _cancellationTokenSource.Token);
                 await Task.Delay(interval, _cancellationTokenSource.Token);
-                await endAnimation.RunAsync(UIHelper2.GetToolTipMessage, _cancellationTokenSource.Token);
+                await endAnimation.RunAsync(UIHelper.GetToolTipMessage, _cancellationTokenSource.Token);
             }
         }
         catch (TaskCanceledException)

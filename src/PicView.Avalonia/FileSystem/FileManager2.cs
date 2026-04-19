@@ -60,7 +60,7 @@ public static class FileManager2
                 ? TranslationManager.Translation.DeleteFile
                 : TranslationManager.Translation.DeleteFilePermanently;
             var deleteDialog = new DeleteDialog(prompt, path, recycle);
-            UIHelper2.GetMainView.MainPanel.Children.Add(deleteDialog);
+            UIHelper.GetMainView.MainPanel.Children.Add(deleteDialog);
             // Dialog handles the deletion
         }
     }

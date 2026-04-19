@@ -92,22 +92,22 @@ public class GalleryAnimationControl : UserControl
     {
         Debug.Assert(Settings.Gallery is not null);
 
-        var core = UIHelper2.CoreViewModel;
+        var core = UIHelper.CoreViewModel;
 
         // Change layout corresponding to DockPositions
-        Observable.EveryValueChanged(Settings.Gallery, gallery => gallery.DockPosition, UIHelper2.GetFrameProvider)
+        Observable.EveryValueChanged(Settings.Gallery, gallery => gallery.DockPosition, UIHelper.GetFrameProvider)
             .Skip(1)
             .Subscribe(SetDockedLayout, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(SetDockedLayout)))
             .AddTo(ref _disposables);
         
         // Update expanded item sizes
-        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.ExpandedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
+        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.ExpandedGalleryItemSize.CurrentValue, UIHelper.GetFrameProvider)
             .Skip(1)
             .Subscribe(UpdateExpandedItemHeight, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateExpandedItemHeight)))
             .AddTo(ref _disposables);
 
         // Update docked item sizes
-        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.DockedGalleryItemSize.CurrentValue, UIHelper2.GetFrameProvider)
+        Observable.EveryValueChanged(core.GallerySettings, gallery => gallery.DockedGalleryItemSize.CurrentValue, UIHelper.GetFrameProvider)
             .Skip(1)
             .Subscribe(UpdateDockedItemHeight, DebugHelper.LogError(nameof(GalleryAnimationControl), nameof(UpdateDockedItemHeight)))
             .AddTo(ref _disposables);
@@ -250,7 +250,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        UIHelper2.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
+        UIHelper.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
     }
 
     #endregion
@@ -291,7 +291,7 @@ public class GalleryAnimationControl : UserControl
 
     private void SetDockedThumbPosition(GalleryDockPosition dock)
     {
-        var core = UIHelper2.CoreViewModel;
+        var core = UIHelper.CoreViewModel;
         var gallery = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.Gallery;
 
         // Reset all dock flags
@@ -333,7 +333,7 @@ public class GalleryAnimationControl : UserControl
         {
             return;
         }
-        UIHelper2.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
+        UIHelper.CoreViewModel.GallerySettings.ItemHeight.Value = itemHeight;
 
         // Resize control bounds
         var size = itemHeight + BorderTopAndBottomThickness + SizeDefaults.ScrollbarSize;
@@ -351,7 +351,7 @@ public class GalleryAnimationControl : UserControl
     
     private void ApplyThumbSettings(double size, GalleryStretchMode mode, Thickness margin, double spacing = 0)
     {
-        var settings = UIHelper2.CoreViewModel.GallerySettings;
+        var settings = UIHelper.CoreViewModel.GallerySettings;
         settings.ItemHeight.Value = size;
         switch (mode)
         {

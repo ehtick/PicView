@@ -64,24 +64,6 @@ public class ZoomPanControl : Decorator
 
     public void Initialize()
     {
-        // Pointer handling for panning
-        AddHandler(PointerPressedEvent, HandleResetZoomOrStartPanning, RoutingStrategies.Tunnel);
-        AddHandler(PointerMovedEvent, HandlePanning, RoutingStrategies.Tunnel);
-        AddHandler(PointerReleasedEvent, StopPanning, RoutingStrategies.Tunnel);
-
-        _zoomPreviewer = new ZoomPreviewer
-        {
-            DataContext = UIHelper.GetMainView.DataContext as MainViewModel,
-            HorizontalAlignment = HorizontalAlignment.Right,
-            VerticalAlignment = VerticalAlignment.Bottom,
-            Margin = new Thickness(0, 0, 25, 25),
-            ZIndex = 90,
-            Opacity = 0
-        };
-        _zoomPreviewer.SetZoomPanControl(this);
-
-        // TODO: should figure out how to make a more self-contained approach, for ZoomPreviewer, for possible future tab-based layout
-        UIHelper.GetMainView.MainGrid.Children.Add(_zoomPreviewer);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -109,18 +91,6 @@ public class ZoomPanControl : Decorator
 
         return base.ArrangeOverride(finalSize);
     }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        RemoveHandler(PointerPressedEvent, HandleResetZoomOrStartPanning);
-        RemoveHandler(PointerMovedEvent, HandlePanning);
-        RemoveHandler(PointerReleasedEvent, StopPanning);
-
-        UIHelper.GetMainView.MainGrid.Children.Remove(_zoomPreviewer);
-        _zoomPreviewer = null;
-        base.OnDetachedFromVisualTree(e);
-    }
-
     #endregion
 
     #region Public Zoom API

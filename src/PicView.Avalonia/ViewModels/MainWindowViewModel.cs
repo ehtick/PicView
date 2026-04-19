@@ -154,36 +154,36 @@ public class MainWindowViewModel : IDisposable
 
     public static void HoverBarSubscription()
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
-        Observable.EveryValueChanged(vm.MainWindow.CurrentView, control => control.Value)
-            .Subscribe(control =>
-            {
-                if (control is ImageViewer && Settings.UIProperties.ShowHoverNavigationBar)
-                {
-                    if (Settings.WindowProperties.Fullscreen)
-                    {
-                        vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
-                    }
-                    else if ((!Settings.UIProperties.ShowBottomNavBar &&
-                              Settings.UIProperties.ShowAltInterfaceButtons) ||
-                             !Settings.UIProperties.ShowInterface)
-                    {
-                        vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
-                    }
-                    else
-                    {
-                        vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
-                    }
-                }
-                else
-                {
-                    vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
-                }
-            });
+        // if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        // {
+        //     return;
+        // }
+        //
+        // Observable.EveryValueChanged(vm.MainWindow.CurrentView, control => control.Value)
+        //     .Subscribe(control =>
+        //     {
+        //         if (control is ImageViewer && Settings.UIProperties.ShowHoverNavigationBar)
+        //         {
+        //             if (Settings.WindowProperties.Fullscreen)
+        //             {
+        //                 vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowAltInterfaceButtons;
+        //             }
+        //             else if ((!Settings.UIProperties.ShowBottomNavBar &&
+        //                       Settings.UIProperties.ShowAltInterfaceButtons) ||
+        //                      !Settings.UIProperties.ShowInterface)
+        //             {
+        //                 vm.HoverbarViewModel.IsHoverbarVisible.Value = true;
+        //             }
+        //             else
+        //             {
+        //                 vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+        //             }
+        //         }
+        //         else
+        //         {
+        //             vm.HoverbarViewModel.IsHoverbarVisible.Value = false;
+        //         }
+        //     });
     }
 
     private static void Close(Unit unit) => DialogManager.Close();
@@ -209,29 +209,4 @@ public class MainWindowViewModel : IDisposable
         ShouldRestore.Value = IsFullscreen.CurrentValue || IsMaximized.CurrentValue;
         ShouldMaximizeBeShown.Value = !IsFullscreen.CurrentValue && !IsMaximized.CurrentValue;
     }
-
-    #region Menus
-
-    public ReactiveCommand CloseMenuCommand { get; } = new(CloseMenus);
-    public ReactiveCommand ToggleFileMenuCommand { get; } = new(ToggleFileMenu);
-    public ReactiveCommand ToggleImageMenuCommand { get; } = new(ToggleImageMenu);
-    public ReactiveCommand ToggleSettingsMenuCommand { get; } = new(ToggleSettingsMenu);
-    public ReactiveCommand ToggleToolsMenuCommand { get; } = new(ToggleToolsMenu);
-
-    private static void CloseMenus(Unit unit) =>
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-
-    private static void ToggleFileMenu(Unit unit) =>
-        MenuManager.ToggleFileMenu(UIHelper.GetMainView.DataContext as MainViewModel);
-
-    private static void ToggleImageMenu(Unit unit) =>
-        MenuManager.ToggleImageMenu(UIHelper.GetMainView.DataContext as MainViewModel);
-
-    private static void ToggleSettingsMenu(Unit unit) =>
-        MenuManager.ToggleSettingsMenu(UIHelper.GetMainView.DataContext as MainViewModel);
-
-    private static void ToggleToolsMenu(Unit unit) =>
-        MenuManager.ToggleToolsMenu(UIHelper.GetMainView.DataContext as MainViewModel);
-
-    #endregion Menus
 }

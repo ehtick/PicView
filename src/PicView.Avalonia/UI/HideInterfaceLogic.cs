@@ -33,10 +33,6 @@ public static class HideInterfaceLogic
                     vm.Gallery.GalleryMode.Value = GalleryMode.Closed;
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        if (UIHelper.GetGalleryView.Bounds.Height > 0)
-                        {
-                            vm.Gallery.GalleryMode.Value = GalleryMode.BottomToClosed;
-                        }
                     });
                     vm.Gallery.IsBottomGalleryShown.Value = false;
                 }
@@ -71,11 +67,6 @@ public static class HideInterfaceLogic
                     {
                         await Dispatcher.UIThread.InvokeAsync(() =>
                         {
-                            if (UIHelper.GetGalleryView.Bounds.Height <= 0)
-                            {
-                                vm.Gallery.GalleryMode.Value = GalleryMode.Closed;
-                                GalleryFunctions.OpenBottomGallery(vm);
-                            }
                         });
                         _ = GalleryLoad.LoadGallery(vm, vm.PicViewer.FileInfo.CurrentValue.DirectoryName);
                     }
@@ -89,7 +80,6 @@ public static class HideInterfaceLogic
             }
         }
         
-        MenuManager.CloseMenus(vm);
         await WindowResizing.SetSizeAsync(vm);
 
         await SaveSettingsAsync();
@@ -152,40 +142,6 @@ public static class HideInterfaceLogic
             gallery.GalleryMode.Value = GalleryMode.ClosedToBottom;
         }
         
-        await SaveSettingsAsync();
-    }
-
-    public static async Task ToggleFadeInButtonsOnHover(MainViewModel vm)
-    {
-        Settings.UIProperties.ShowAltInterfaceButtons = !Settings
-            .UIProperties.ShowAltInterfaceButtons;
-        
-        vm.Translation.IsShowingFadingUIButtons.Value = Settings.UIProperties.ShowAltInterfaceButtons
-            ? TranslationManager.Translation.DisableFadeInButtonsOnHover
-            : TranslationManager.Translation.ShowFadeInButtonsOnHover;
-        
-        await SaveSettingsAsync();
-    }
-
-    public static async Task ToggleHoverNavigationBar(MainViewModel vm)
-    {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (!UIHelper.GetMainView.MainGrid.Children.Contains(UIHelper.GetHoverBar))
-            {
-                UIHelper.AddHoverBar(vm);
-            }
-        });
-        
-        Settings.UIProperties.ShowHoverNavigationBar = !Settings
-            .UIProperties.ShowHoverNavigationBar;
-
-        vm.Translation.IsShowingHoverNavigationBar.Value = Settings.UIProperties.ShowHoverNavigationBar
-            ? TranslationManager.Translation.HideHoverNavigationBar
-            : TranslationManager.Translation.ShowHoverNavigationBar;
-
-        vm.HoverbarViewModel.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
-
         await SaveSettingsAsync();
     }
 }

@@ -138,7 +138,7 @@ public static class StartUpHelper
         SetWindowEventHandlers(window);
         HandleThemeUpdates(vm);
 
-        UIHelper2.SetControls(window);
+        UIHelper.SetControls(window);
         Task.Run(() =>
         {
             FileHistoryManager.Initialize();
@@ -168,10 +168,9 @@ public static class StartUpHelper
                 DispatcherPriority.Background);
         }
 
-        MenuManager.AddMenus();
         if (Settings.UIProperties.ShowHoverNavigationBar)
         {
-            UIHelper.AddHoverBar(vm);
+            //UIHelper.AddHoverBar(vm);
         }
         
         TooltipHelper.StartTooltipSubscription(vm);

@@ -1,12 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using ImageMagick;
-using PicView.Avalonia.Animations;
-using PicView.Avalonia.Crop;
-using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Core.Localization;
 using R3;
 using Unit = R3.Unit;
@@ -65,58 +61,54 @@ public class ImageCropperViewModel : IDisposable
 
     private static void HandleCloseCrop(Unit unit)
     {
-        if (UIHelper.GetMainView.DataContext is MainViewModel vm)
-        {
-            CropFunctions.CloseCropControl(vm);
-        }
     }
 
     private async ValueTask SaveCroppedImageAsync(Unit unit, CancellationToken cancellationToken)
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
+        // if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
+        // {
+        //     return;
+        // }
 
-        var (fileName, fileInfo, bitmap) = PrepareCropData(vm);
-
-        var saveFileDialog = await FilePicker.PickFileForSavingAsync(fileName);
-        if (saveFileDialog == null)
-        {
-            return;
-        }
-
-        await SaveImage(saveFileDialog, fileInfo, bitmap);
-
-        CropFunctions.CloseCropControl(vm);
-
-        if (vm.PicViewer.FileInfo.CurrentValue.FullName == saveFileDialog)
-        {
-            await ErrorHandling.ReloadAsync(vm);
-        }
+        // var (fileName, fileInfo, bitmap) = PrepareCropData(vm);
+        //
+        // var saveFileDialog = await FilePicker.PickFileForSavingAsync(fileName);
+        // if (saveFileDialog == null)
+        // {
+        //     return;
+        // }
+        //
+        // await SaveImage(saveFileDialog, fileInfo, bitmap);
+        //
+        // CropFunctions.CloseCropControl(vm);
+        //
+        // if (vm.PicViewer.FileInfo.CurrentValue.FullName == saveFileDialog)
+        // {
+        //     await ErrorHandling.ReloadAsync(vm);
+        // }
     }
 
     public async ValueTask SaveCroppedImageAsync() => await SaveCroppedImageAsync(Unit.Default, CancellationToken.None);
 
     private async ValueTask CopyCroppedImageAsync(Unit unit, CancellationToken cancellationToken)
     {
-        if (UIHelper.GetMainView.DataContext is not MainViewModel vm ||
-            vm.PicViewer.ImageSource.CurrentValue is not Bitmap sourceBitmap)
-        {
-            return;
-        }
-
-        var x = Convert.ToInt32(SelectionX.CurrentValue / AspectRatio.CurrentValue);
-        var y = Convert.ToInt32(SelectionY.CurrentValue / AspectRatio.CurrentValue);
-        var rect = new PixelRect(x, y, (int)PixelSelectionWidth.CurrentValue, (int)PixelSelectionHeight.CurrentValue);
-
-        var croppedBitmap = new CroppedBitmap(sourceBitmap, rect);
-        var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
-
-        if (bitmap is not null)
-        {
-            await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), AnimationsHelper.CopyAnimation());
-        }
+        // if (UIHelper.GetMainView.DataContext is not MainViewModel vm ||
+        //     vm.PicViewer.ImageSource.CurrentValue is not Bitmap sourceBitmap)
+        // {
+        //     return;
+        // }
+        //
+        // var x = Convert.ToInt32(SelectionX.CurrentValue / AspectRatio.CurrentValue);
+        // var y = Convert.ToInt32(SelectionY.CurrentValue / AspectRatio.CurrentValue);
+        // var rect = new PixelRect(x, y, (int)PixelSelectionWidth.CurrentValue, (int)PixelSelectionHeight.CurrentValue);
+        //
+        // var croppedBitmap = new CroppedBitmap(sourceBitmap, rect);
+        // var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
+        //
+        // if (bitmap is not null)
+        // {
+        //     await Task.WhenAll(vm.PlatformService.CopyImageToClipboard(bitmap), AnimationsHelper.CopyAnimation());
+        // }
     }
 
     public async ValueTask CopyCroppedImageAsync() => await CopyCroppedImageAsync(Unit.Default, CancellationToken.None);

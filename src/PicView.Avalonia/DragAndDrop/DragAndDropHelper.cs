@@ -98,8 +98,6 @@ public static class DragAndDropHelper
 
     public static void RemoveDragDropView()
     {
-        UIHelper.GetMainView.MainGrid.Children.Remove(_dragDropView);
-        _dragDropView = null;
     }
 
     #endregion
@@ -314,11 +312,6 @@ public static class DragAndDropHelper
             {
                 _dragDropView.AddLinkChain();
             }
-
-            if (!UIHelper.GetMainView.MainGrid.Children.Contains(_dragDropView))
-            {
-                UIHelper.GetMainView.MainGrid.Children.Add(_dragDropView);
-            }
         });
 
         return true;
@@ -326,21 +319,6 @@ public static class DragAndDropHelper
 
     private static async Task EnsureDragDropViewCreated(MainViewModel vm, Control control)
     {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (_dragDropView == null)
-            {
-                _dragDropView = new DragDropView { DataContext = vm };
-                if (!control.IsPointerOver)
-                {
-                    UIHelper.GetMainView.MainGrid.Children.Add(_dragDropView);
-                }
-            }
-            else
-            {
-                _dragDropView.RemoveThumbnail();
-            }
-        });
     }
 
     private static async Task LoadSupportedFile(string path, MainViewModel vm)

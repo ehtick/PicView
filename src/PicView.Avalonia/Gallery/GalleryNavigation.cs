@@ -1,14 +1,11 @@
 ﻿using Avalonia;
-using Avalonia.Threading;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
-using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
-using GalleryItem = PicView.Avalonia.Views.Gallery.GalleryItem;
 
 namespace PicView.Avalonia.Gallery;
 
+// TODO deprecated, delete
 public static class GalleryNavigation
 {
     #region Position and calculations
@@ -49,49 +46,10 @@ public static class GalleryNavigation
 
     public static void CenterScrollToSelectedItem(MainViewModel vm)
     {
-        if (vm.PicViewer?.Index?.CurrentValue < 0)
-        {
-            return;
-        }
-
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            if (vm.PicViewer?.Index?.CurrentValue >= UIHelper.GetGalleryView.GalleryListBox.Items.Count)
-            {
-                return;
-            }
-
-            CenterScrollToItem(vm.PicViewer.Index.Value);
-        });
     }
 
     public static void CenterScrollToItem(int itemIndex)
     {
-        if (Settings.WindowProperties.AutoFit)
-        {
-            // Use post to ensure the UI update takes place after resize
-            Dispatcher.UIThread.Post(ScrollToSelected);
-        }
-        else
-        {
-            Dispatcher.UIThread.Invoke(ScrollToSelected);
-        }
-
-        return;
-
-        void ScrollToSelected()
-        {
-            var listbox = UIHelper.GetGalleryView.GalleryListBox;
-
-            try
-            {
-                listbox.ScrollToCenterOfItem(listbox.Items[itemIndex] as GalleryItem);
-            }
-            catch (Exception e)
-            {
-                DebugHelper.LogDebug(nameof(GalleryNavigation), nameof(CenterScrollToSelectedItem), e);
-            }
-        }
     }
 
     public static void NavigateGallery(Direction direction, MainViewModel vm)
@@ -144,27 +102,6 @@ public static class GalleryNavigation
     private static List<GalleryItemPosition> GetGalleryItems()
     {
         var galleryItems = new List<GalleryItemPosition>();
-        var galleryView = UIHelper.GetGalleryView;
-        var listBox = galleryView.GalleryListBox;
-        for (var i = 0; i < listBox.Items.Count; i++)
-        {
-            if (listBox.ContainerFromIndex(i) is not { } container)
-            {
-                continue;
-            }
-
-            var position = container.TranslatePoint(new Point(0, 0), galleryView);
-            var size = container.Bounds.Size;
-            if (position.HasValue)
-            {
-                galleryItems.Add(new GalleryItemPosition
-                {
-                    Index = i,
-                    Position = position.Value,
-                    Size = size
-                });
-            }
-        }
         return galleryItems;
     }
 
@@ -202,17 +139,6 @@ public static class GalleryNavigation
     /// <returns>A task representing the asynchronous operation.</returns>
     public static async Task ScrollGallery(bool next)
     {
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            if (next)
-            {
-                UIHelper.GetGalleryView.GalleryListBox.PageRight();
-            }
-            else
-            {
-                UIHelper.GetGalleryView.GalleryListBox.PageLeft();
-            }
-        });
     }
 }
 

@@ -17,12 +17,6 @@ public static class DialogManager
     /// </summary>
     public static async Task HandleShouldClosing(MainViewModel vm)
     {
-        // Handle open menus
-        if (MenuManager.IsAnyMenuOpen(vm))
-        {
-            MenuManager.CloseMenus(vm);
-            return;
-        }
 
         // Handle cropping mode
         if (CropFunctions.IsCropping)
@@ -46,7 +40,7 @@ public static class DialogManager
     {
         if (Settings.UIProperties.ShowConfirmationOnEsc)
         {
-            UIHelper.GetMainView?.MainGrid.Children.Add(new CloseDialog());
+            //UIHelper.GetMainView?.MainGrid.Children.Add(new CloseDialog());
         }
         else
         {
@@ -68,23 +62,23 @@ public static class DialogManager
         {
             return;
         }
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper2.GetMainView.MainPanel.Children.Add(new FileSearchDialog());
+        // if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
+        // {
+        //     return;
+        // }
+        //
+        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
+        // UIHelper2.GetMainView.MainPanel.Children.Add(new FileSearchDialog());
     }
 
     public static void AddNavigationDialog()
     {
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
+        // if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
+        // {
+        //     return;
+        // }
+        //
+        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
+        // UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
     }
 }

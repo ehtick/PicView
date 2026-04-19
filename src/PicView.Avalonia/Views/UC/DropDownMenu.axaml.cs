@@ -14,7 +14,7 @@ using PicView.Core.ViewModels;
 using R3;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
-namespace PicView.Avalonia.Views.UC.Menus;
+namespace PicView.Avalonia.Views.UC;
 
 public partial class DropDownMenu : AnimatedMenu
 {
@@ -62,7 +62,7 @@ public partial class DropDownMenu : AnimatedMenu
             {
                 if (isVisible)
                 {
-                    MaxHeight = UIHelper2.GetMainView.Bounds.Height - 1;
+                    MaxHeight = UIHelper.GetMainView.Bounds.Height - 1;
                     core.FileHistory.UpdateHistory();
                 }
             }, static result =>
