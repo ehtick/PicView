@@ -27,7 +27,7 @@ namespace PicView.Avalonia.MacOS;
 
 public class App : Application, IPlatformSpecificService
 {
-    private MacMainWindow2? _mainWindow;
+    private MacMainWindow? _mainWindow;
     private static CoreViewModel? _coreViewModel;
     private static MainWindowViewModel? _mainWindowViewModel;
     
@@ -79,7 +79,7 @@ public class App : Application, IPlatformSpecificService
         DataContext = _coreViewModel;
         ThemeManager.DetermineTheme(Current, settingsExists);
 
-        _mainWindow = new MacMainWindow2();
+        _mainWindow = new MacMainWindow();
         _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
         
         TranslationManager.Init();

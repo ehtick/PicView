@@ -9,7 +9,7 @@ namespace PicView.Avalonia.MacOS.WindowImpl;
 
 public static class MacOSWindow
 {
-    public static async Task ToggleFullscreen(MacMainWindow2? window, MainWindowViewModel? vm, bool saveSettings)
+    public static async Task ToggleFullscreen(MacMainWindow? window, MainWindowViewModel? vm, bool saveSettings)
     {
         if (Settings.WindowProperties.Fullscreen)
         {
@@ -22,7 +22,7 @@ public static class MacOSWindow
         }
     }
     
-    public static async Task ToggleMaximize(MacMainWindow2? window, MainWindowViewModel? vm, bool saveSettings = true)
+    public static async Task ToggleMaximize(MacMainWindow? window, MainWindowViewModel? vm, bool saveSettings = true)
     {
         if (window.WindowState == WindowState.Maximized || Settings.WindowProperties.Maximized)
         {
@@ -35,7 +35,7 @@ public static class MacOSWindow
         }
     }
 
-    public static async Task Restore(MacMainWindow2? window, MainWindowViewModel vm, bool saveSettings = true)
+    public static async Task Restore(MacMainWindow? window, MainWindowViewModel vm, bool saveSettings = true)
     {
         window.IsChangingWindowState = true;
         
@@ -84,7 +84,7 @@ public static class MacOSWindow
         }
     }
 
-    public static async Task Fullscreen(MacMainWindow2? window, MainWindowViewModel? vm, bool saveSettings = true)
+    public static async Task Fullscreen(MacMainWindow? window, MainWindowViewModel? vm, bool saveSettings = true)
     {
         // Need to set changing state to true, to prevent image resize subscription from firing
         window.IsChangingWindowState = true;
@@ -129,7 +129,7 @@ public static class MacOSWindow
         }
     }
 
-    public static async Task Maximize(MacMainWindow2? window, MainWindowViewModel vm, bool saveSettings = true)
+    public static async Task Maximize(MacMainWindow? window, MainWindowViewModel vm, bool saveSettings = true)
     {
         window.IsChangingWindowState = true;
         Settings.WindowProperties.Maximized = true;
@@ -163,7 +163,7 @@ public static class MacOSWindow
         }
     }
     
-    public static void Minimize(MacMainWindow2? window)
+    public static void Minimize(MacMainWindow? window)
     {
         window.WindowState = WindowState.Minimized;
     }
