@@ -19,7 +19,7 @@ public static class UIHelper
 {
     #region Controls
 
-    public static MainView3? GetMainView { get; private set; }
+    public static MainView? GetMainView { get; private set; }
     public static DraggableTabControl? GetMainTabControl { get; private set; }
     public static Control? GetTitlebar { get; private set; }
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
@@ -39,7 +39,7 @@ public static class UIHelper
     /// </summary>
     public static void SetControls(Window mainWindow)
     {
-        GetMainView = mainWindow?.FindControl<MainView3>("MainView");
+        GetMainView = mainWindow?.FindControl<MainView>("MainView");
         GetTitlebar = mainWindow?.FindControl<Control>("Titlebar");
         GetEditableTitlebar = GetTitlebar?.FindControl<EditableTitlebar>("EditableTitlebar");
         GetBottomBar = mainWindow?.FindControl<BottomBar>("BottomBar");

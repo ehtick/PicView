@@ -6,6 +6,7 @@ using R3;
 
 namespace PicView.Avalonia.Gallery;
 
+// TODO deprecated, delete
 public static class UpdateGallery
 {
     public static async ValueTask LoadGalleryIfDockedOrExpanded(TabViewModel tabViewModel, GalleryMode2 mode)
