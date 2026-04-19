@@ -169,7 +169,7 @@ public class App : Application, IPlatformSpecificService
         {
             var openWithView = new OpenWithView(path)
             {
-                DataContext = null // TODO: fix
+                DataContext = _mainWindowViewModel
             };
             openWithView.Show();
         }, DispatcherPriority.Input);

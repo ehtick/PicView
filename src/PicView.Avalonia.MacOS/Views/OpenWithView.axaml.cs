@@ -62,7 +62,10 @@ public partial class OpenWithView : Window
         // Focus the window
         Focus();
         
-        CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
+        CancelButton.Click += (_, _) =>
+        {
+            Close();
+        };
 
         Task.Run(async () =>
         {
