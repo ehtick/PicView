@@ -61,7 +61,13 @@ public partial class ImageInfoView2 : UserControl
                 MainContextMenu.Open();
             };
 
-            CloseItem.Click += (_, _) => (VisualRoot as Window)?.Close();
+            CloseItem.Click += (_, _) =>
+            {
+                if (TopLevel.GetTopLevel(this) is Window hostWindow)
+                {
+                    hostWindow.Close();
+                }
+            };
 
             PixelWidthTextBox.KeyDown += async (s, e) => await ResizeImageOnEnter(s, e);
             PixelHeightTextBox.KeyDown += async (s, e) => await ResizeImageOnEnter(s, e);
