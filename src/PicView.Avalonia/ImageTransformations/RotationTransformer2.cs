@@ -8,7 +8,7 @@ using PicView.Core.ImageTransformations;
 using PicView.Core.Localization;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
-namespace PicView.Avalonia.ImageTransformations.Rotation;
+namespace PicView.Avalonia.ImageTransformations;
 
 public class RotationTransformer2(LayoutTransformControl imageLayoutTransformControl, PicBox2 mainImage, MainWindowViewModel vm)
 {

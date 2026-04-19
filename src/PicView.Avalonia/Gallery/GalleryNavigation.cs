@@ -1,6 +1,4 @@
 ﻿using Avalonia;
-using PicView.Avalonia.Navigation;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Gallery;
 
 namespace PicView.Avalonia.Gallery;
@@ -43,88 +41,5 @@ public static class GalleryNavigation
 
     
     #endregion
-
-    public static void CenterScrollToSelectedItem(MainViewModel vm)
-    {
-    }
-
-    public static void CenterScrollToItem(int itemIndex)
-    {
-    }
-
-    public static void NavigateGallery(Direction direction, MainViewModel vm)
-    {
-        var highlightedGalleryItem = vm.PicViewer.Index.CurrentValue;
-        var galleryItems = GetGalleryItems();
-
-        if (highlightedGalleryItem < 0 || highlightedGalleryItem >= galleryItems.Count)
-        {
-            return;
-        }
-
-        var currentItem = galleryItems[highlightedGalleryItem];
-
-        var targetItem = direction switch
-        {
-            Direction.Up => GetClosestItemAbove(currentItem, galleryItems),
-            Direction.Down => GetClosestItemBelow(currentItem, galleryItems),
-            Direction.Left => GetClosestItemLeft(currentItem, galleryItems),
-            Direction.Right => GetClosestItemRight(currentItem, galleryItems),
-            _ => null
-        };
-
-        if (targetItem != null)
-        {
-            SetHighlightedGalleryItem(vm, targetItem.Index);
-        }
-    }
-    
-    public static void NavigateGallery(bool last, MainViewModel vm)
-    {
-        var highlightedGalleryItem = vm.PicViewer.Index.CurrentValue;
-        var galleryItems = GetGalleryItems();
-        
-        if (highlightedGalleryItem < 0 || highlightedGalleryItem >= galleryItems.Count)
-        {
-            return;
-        }
-        
-        if (last)
-        {
-            SetHighlightedGalleryItem(vm, galleryItems.Count - 1);
-        }
-        else
-        {
-            SetHighlightedGalleryItem(vm, 0);
-        }
-    }
-
-    private static List<GalleryItemPosition> GetGalleryItems()
-    {
-        var galleryItems = new List<GalleryItemPosition>();
-        return galleryItems;
-    }
-
-
-
-    public static void SetHighlightedGalleryItem(MainViewModel vm, int index)
-    {
-        vm.PicViewer.Index.Value = index;
-        CenterScrollToSelectedItem(vm); // Ensure the selected item is in view
-    }
-
-
-    public static async Task GalleryClick(MainViewModel? vm)
-    {
-    }
-    
-    /// <summary>
-    ///     Scrolls the gallery to the next or previous page.
-    /// </summary>
-    /// <param name="next">True to scroll to the next page, false for the previous page.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task ScrollGallery(bool next)
-    {
-    }
 }
 

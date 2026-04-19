@@ -7,7 +7,6 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageTransformations;
-using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Config;

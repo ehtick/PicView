@@ -163,7 +163,6 @@ public static class UpdateImage
         vm.PicViewer.Index.Value = index;
         if (Settings.Gallery.IsGalleryDocked)
         {
-            GalleryNavigation.CenterScrollToItem(index);
         }
         
         SetStats(vm, preLoadValue.ImageModel);

@@ -9,7 +9,6 @@ using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
-using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;

@@ -7,7 +7,6 @@ using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
@@ -404,7 +403,7 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="GalleryNavigation.GalleryClick(MainViewModel)" />
     public static async ValueTask GalleryClick() =>
-        await GalleryNavigation.GalleryClick(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     #endregion
     
