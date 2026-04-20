@@ -1,10 +1,10 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.Main.EffectsView"
-    x:DataType="viewModels:MainViewModel"
+    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <UserControl.Styles>
@@ -99,7 +99,7 @@
             </MenuItem>
             <Separator />
             <MenuItem
-                CommandParameter="{CompiledBinding PicViewer.FileInfo.CurrentValue.FullName,
+                CommandParameter="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Model.Value.FileInfo.FullName,
                                                    FallbackValue=''}"
                 Header="{CompiledBinding Translation.SetAsWallpaper.Value,
                                          Mode=OneWay}"
