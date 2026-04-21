@@ -32,7 +32,7 @@ public static class UpdateImage2
             tabViewModel.TabTooltip.Value = noImage;
             return;
         }
-                        
+        tabViewModel.FileInfo.Value = file;
         tabViewModel.UpdateTabTitle();
 
         if (Application.Current.DataContext is not CoreViewModel core)
@@ -50,6 +50,8 @@ public static class UpdateImage2
         FileInfo secondFile,
         List<FileInfo> files)
     {
+        tabViewModel.FileInfo.Value = firstFile;
+        tabViewModel.SecondaryFileInfo.Value = secondFile;
         var firstInfo = new ImageTitleInfo(tabViewModel.Model.PixelWidth,
             tabViewModel.Model.PixelHeight,
             index,

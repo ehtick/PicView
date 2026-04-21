@@ -56,7 +56,7 @@
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False}">
+                                            FallbackValue=False}"
                 x:Name="PrintMenuItem">
                 <MenuItem.Icon>
                     <Path Classes="PrintPath" />
