@@ -39,11 +39,11 @@ public static class FileManager2
                     var msg = recycle
                         ? TranslationManager.Translation.SentFileToRecycleBin
                         : TranslationManager.Translation.DeletedFile;
-                    TooltipHelper2.ShowTooltipMessage(msg + Environment.NewLine + Path.GetFileName(path));
+                    TooltipHelper.ShowTooltipMessage(msg + Environment.NewLine + Path.GetFileName(path));
                 }
                 else if (File.Exists(path))
                 {
-                    TooltipHelper2.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError, true);
+                    TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError, true);
                 }
             }
         }

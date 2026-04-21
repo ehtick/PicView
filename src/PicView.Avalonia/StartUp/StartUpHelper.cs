@@ -192,7 +192,7 @@ public static class StartUpHelper
         desktop.MainWindow = window;
 
         vm.MainWindows.ActiveWindow.CurrentValue.ToolTip ??= new ToolTipViewModel();
-        TooltipHelper2.StartTooltipSubscription(vm.MainWindows.ActiveWindow.CurrentValue.ToolTip);
+        TooltipHelper.StartTooltipSubscription(vm.MainWindows.ActiveWindow.CurrentValue.ToolTip);
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
         {

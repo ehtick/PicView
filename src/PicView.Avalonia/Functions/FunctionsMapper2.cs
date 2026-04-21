@@ -540,13 +540,13 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
     /// <inheritdoc cref="DialogManager.HandleShouldClosing" />
     public ValueTask Close()
     {
-        DialogManager2.CloseWithOptionalDialog();
+        DialogManager.CloseWithOptionalDialog();
         return ValueTask.CompletedTask;
     }
     
     public ValueTask Exit()
     {
-        DialogManager2.Close();
+        DialogManager.Close();
         return ValueTask.CompletedTask;
     }
 
