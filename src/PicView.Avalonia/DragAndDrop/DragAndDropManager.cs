@@ -160,18 +160,18 @@ public static class DragAndDropManager
                 file = file[1..];
             }
             
-            if (tab.CurrentView.CurrentValue is not ImageViewer2)
+            if (tab.CurrentView.CurrentValue is not ImageViewer)
             {
-                tab.CurrentView.Value = new ImageViewer2();
+                tab.CurrentView.Value = new ImageViewer();
             }
 
             await tabOverview.LoadFromFileAsync(file);
         }
         else
         {
-            if (tab.CurrentView.CurrentValue is not ImageViewer2)
+            if (tab.CurrentView.CurrentValue is not ImageViewer)
             {
-                tab.CurrentView.Value = new ImageViewer2();
+                tab.CurrentView.Value = new ImageViewer();
             }
             await tabOverview.LoadFromStringAsync(url);
         }
@@ -370,11 +370,11 @@ public static class DragAndDropManager
         
         var tab = tabOverview.ActiveTab.Value;
         
-        if (tab.CurrentView.CurrentValue is ImageViewer2)
+        if (tab.CurrentView.CurrentValue is ImageViewer)
         {
             return;
         }
-        tab.CurrentView.Value = new ImageViewer2();
+        tab.CurrentView.Value = new ImageViewer();
         if (Application.Current?.DataContext is not CoreViewModel core)
         {
             return;

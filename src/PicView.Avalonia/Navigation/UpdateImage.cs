@@ -77,7 +77,7 @@ public static class UpdateImage
         tabViewModel.Image.Value = tabViewModel.Model.Image;
         if (Settings.Zoom.ResetZoomOnChange)
         {
-            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
             {
                 imageViewer.ResetZoomSlim();
                 imageViewer.Rotate(0);

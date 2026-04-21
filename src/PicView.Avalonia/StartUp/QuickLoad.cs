@@ -44,7 +44,7 @@ public static class QuickLoad
         }
         Dispatcher.UIThread.Invoke(() =>
         {
-           core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+           core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
         }, DispatcherPriority.Send);
     
         var magickImage = new MagickImage();

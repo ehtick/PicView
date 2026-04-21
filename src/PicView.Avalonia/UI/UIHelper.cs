@@ -54,7 +54,7 @@ public static class UIHelper
             return null;
         }
 
-        if (core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             return imageViewer.HoverBar;
         }
@@ -83,7 +83,7 @@ public static class UIHelper
     
     public static ClickArrowRight2? GetClickArrowRight(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             return imageViewer.ClickArrowRight;
         }
@@ -92,7 +92,7 @@ public static class UIHelper
     
     public static ClickArrowLeft2? GetClickArrowLeft(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             return imageViewer.ClickArrowLeft;
         }

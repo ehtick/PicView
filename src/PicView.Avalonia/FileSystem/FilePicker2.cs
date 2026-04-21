@@ -30,7 +30,7 @@ public static class FilePicker2
         {
             if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
             {
-                vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+                vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
             }
         });
         TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);

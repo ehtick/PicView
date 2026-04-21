@@ -16,7 +16,7 @@ public static class GalleryHelper
         }
 
         Rect galleryBounds;
-        if (main.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (main.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             galleryBounds = imageViewer.GalleryView.Bounds;
         }

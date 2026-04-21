@@ -9,7 +9,7 @@ public static class RotationManager
 {
     public static void ResetZoomAndRotations(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             imageViewer.ResetZoomSlim();
             imageViewer.Rotate(0);
@@ -23,7 +23,7 @@ public static class RotationManager
     
     public static void ResetZoom(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
         {
             return;
         }
@@ -37,7 +37,7 @@ public static class RotationManager
     
     public static void Rotate(MainWindowViewModel vm, int angle)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
         {
             return;
         }
@@ -52,7 +52,7 @@ public static class RotationManager
     
     public static void RotateRight(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
         {
             return;
         }
@@ -67,7 +67,7 @@ public static class RotationManager
 
     public static void RotateLeft(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
         {
             return;
         }
@@ -82,7 +82,7 @@ public static class RotationManager
     
     public static void Flip(MainWindowViewModel vm)
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             imageViewer.Flip(true);
         }

@@ -64,7 +64,7 @@ public partial class MainView : UserControl
             return;
         }
 
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             // Cancel the context menu if the hover bar is visible, because custom pop-up dialogs are shown instead.
             if (imageViewer.HoverBar.Opacity > 0)
@@ -86,7 +86,7 @@ public partial class MainView : UserControl
 
         if (tabViewModel.Model?.FileInfo is not null)
         {
-            tabViewModel.CurrentView.Value = new ImageViewer2();
+            tabViewModel.CurrentView.Value = new ImageViewer();
         }
         else
         {

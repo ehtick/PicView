@@ -378,7 +378,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
 
     public ValueTask ZoomIn()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             imageViewer.ZoomIn();
         }
@@ -387,7 +387,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
 
     public ValueTask ZoomOut()
     {
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer2 imageViewer)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
             imageViewer.ZoomOut();
         }
@@ -658,6 +658,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
     /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public async ValueTask OpenLastFile()
     {
+        // TODO refactor out of here
         vm.IsLoadingIndicatorShown.Value = true;
         if (await vm.WindowTabs.LoadLastFileAsync())
         {
@@ -665,7 +666,7 @@ public class FunctionsMapper2(Core.ViewModels.MainWindowViewModel vm, Window win
             {
                 if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
                 {
-                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer2();
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
                 }
             });
             TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
