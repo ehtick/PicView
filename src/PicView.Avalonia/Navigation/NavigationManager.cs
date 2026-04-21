@@ -166,11 +166,6 @@ public static class NavigationManager
             {
                 await ExitTiffNavigationAndNavigate().ConfigureAwait(false);
             }
-            else
-            {
-                await UpdateImage.SetTiffImageAsync(TiffNavigationInfo, ImageIterator.CurrentIndex,
-                    vm.PicViewer.FileInfo.CurrentValue, vm);
-            }
         }
 
         return;
@@ -204,7 +199,6 @@ public static class NavigationManager
             PageCount = tiffPages.Count,
             Pages = tiffPages
         };
-        await UpdateImage.SetTiffImageAsync(TiffNavigationInfo, index, fileInfo, vm);
         return true;
     }
 

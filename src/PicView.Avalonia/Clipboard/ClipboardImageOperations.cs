@@ -2,7 +2,6 @@ using System.Runtime.InteropServices;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
@@ -10,6 +9,7 @@ using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Clipboard;
 
+// TODO: Clean up deprecated references to MainViewModel vm
 /// <summary>
 ///     Handles clipboard operations related to images
 /// </summary>
@@ -142,7 +142,7 @@ public static class ClipboardImageOperations
             // Set the image if we got one
             if (bitmap != null)
             {
-                await UpdateImage.SetSingleImageAsync(bitmap, ImageType.Bitmap, name, vm);
+                //await UpdateImage.SetSingleImageAsync(bitmap, ImageType.Bitmap, name, vm);
             }
         }
         catch (Exception ex)

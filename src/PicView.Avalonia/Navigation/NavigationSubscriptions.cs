@@ -17,14 +17,14 @@ public static class NavigationSubscriptions
             Observable.EveryValueChanged(tabViewModel, tab => tab.Model.FileInfo, UIHelper.GetFrameProvider)
                 .Subscribe(file =>
                 {
-                    UpdateImage2.UpdateFileInfo(tabViewModel, file);
-                }, DebugHelper.LogError(nameof(NavigationSubscriptions), nameof(UpdateImage2)))
+                    UpdateImage.UpdateFileInfo(tabViewModel, file);
+                }, DebugHelper.LogError(nameof(NavigationSubscriptions), nameof(UpdateImage)))
                 .AddTo(tabViewModel.Disposables);
             Observable.EveryValueChanged(tabViewModel, tab => tab.Model.Image, UIHelper.GetFrameProvider)
                 .Subscribe(_ =>
                 {
-                    UpdateImage2.ChangeImage(tabViewModel, mainWindowViewModel);
-                }, DebugHelper.LogError(nameof(NavigationSubscriptions), nameof(UpdateImage2)))
+                    UpdateImage.ChangeImage(tabViewModel, mainWindowViewModel);
+                }, DebugHelper.LogError(nameof(NavigationSubscriptions), nameof(UpdateImage)))
                 .AddTo(tabViewModel.Disposables);
 
             Observable.EveryValueChanged(tabViewModel, tab => tab.Gallery.GalleryMode.Value, UIHelper.GetFrameProvider)
