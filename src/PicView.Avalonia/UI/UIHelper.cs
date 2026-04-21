@@ -47,7 +47,7 @@ public static class UIHelper
         GetMainTabControl = GetMainView.MainTabControl;
     }
 
-    public static HoverBar2? GetHoverBar()
+    public static HoverBar? GetHoverBar()
     {
         if (Application.Current.DataContext is not CoreViewModel core)
         {

@@ -59,7 +59,7 @@
                 VerticalAlignment="Bottom"
                 ZIndex="90"
                 x:Name="ZoomPreview" />
-            <uc:HoverBar2 VerticalAlignment="Bottom" x:Name="HoverBar" />
+            <uc:HoverBar VerticalAlignment="Bottom" x:Name="HoverBar" />
             <buttons:ClickArrowRight2
                 HorizontalAlignment="Right"
                 Opacity="0"
