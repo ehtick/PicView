@@ -17,7 +17,7 @@ public static class RotationManager
         
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
     }
     
@@ -31,7 +31,7 @@ public static class RotationManager
         imageViewer.ResetZoom(Settings.Zoom.IsZoomAnimated);
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
     }
     
@@ -46,7 +46,7 @@ public static class RotationManager
         
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
     }
     
@@ -61,7 +61,7 @@ public static class RotationManager
         
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
     }
 
@@ -76,7 +76,7 @@ public static class RotationManager
         
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
     }
     

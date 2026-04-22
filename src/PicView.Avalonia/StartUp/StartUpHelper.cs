@@ -145,11 +145,11 @@ public static class StartUpHelper
         }
         else if (Settings.WindowProperties.AutoFit)
         {
-            WindowFunctions2.SetAutoFit(vm.MainWindows.ActiveWindow.CurrentValue, window, false);
+            WindowFunctions.SetAutoFit(vm.MainWindows.ActiveWindow.CurrentValue, window, false);
         }
         else 
         {
-            WindowFunctions2.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
+            WindowFunctions.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
     }
@@ -304,7 +304,7 @@ public static class StartUpHelper
 
     private static void HandleNormalWindow(CoreViewModel vm, Window window, bool setPos)
     {
-        WindowFunctions2.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
+        WindowFunctions.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
         if (Settings.UIProperties.ShowInterface)
         {
          //   vm.MainWindow.IsTopToolbarShown.Value = true;

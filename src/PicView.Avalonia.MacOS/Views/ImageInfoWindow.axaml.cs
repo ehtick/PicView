@@ -60,7 +60,7 @@ public partial class ImageInfoWindow : Window, IDisposable
     }
     
     private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)
-        => WindowFunctions2.SetWindowSize(this, size, _config.WindowProperties);
+        => WindowFunctions.SetWindowSize(this, size, _config.WindowProperties);
     
     public void Dispose()
     {

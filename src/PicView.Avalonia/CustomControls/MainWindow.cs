@@ -64,7 +64,7 @@ public class MainWindow : Window, IMainWindow
     
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
-        await WindowFunctions2.WindowClosingBehavior(this);
+        await WindowFunctions.WindowClosingBehavior(this);
         base.OnClosing(e);
     }
     
@@ -103,7 +103,7 @@ public class MainWindow : Window, IMainWindow
                 return;
             }
             // User manually resized (not maximize or restore), reset to manual window
-            Dispatcher.CurrentDispatcher.Post(() => WindowFunctions2.SetManualWindow(vm, this));
+            Dispatcher.CurrentDispatcher.Post(() => WindowFunctions.SetManualWindow(vm, this));
             return;
         }
 
@@ -112,7 +112,7 @@ public class MainWindow : Window, IMainWindow
             return;
         }
 
-        WindowResizing2.SetSize(vm, e.Reason);
+        WindowResizing.SetSize(vm, e.Reason);
         SharedBottomBar.ResponsiveNavigationBtnSize();
     }
     
@@ -128,7 +128,7 @@ public class MainWindow : Window, IMainWindow
         {
             return;
         }
-        WindowResizing2.HandleWindowResize(this, size);
+        WindowResizing.HandleWindowResize(this, size);
     }
     
     #endregion

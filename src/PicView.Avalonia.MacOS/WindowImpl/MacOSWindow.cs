@@ -63,17 +63,17 @@ public static class MacOSWindow
             window.SizeToContent = Settings.WindowProperties.AutoFit ? SizeToContent.WidthAndHeight : SizeToContent.Manual;
         });
 
-        WindowFunctions2.RestoreInterface(vm);
+        WindowFunctions.RestoreInterface(vm);
         
-        WindowResizing2.SetSize(vm, WindowResizeReason.Application);
+        WindowResizing.SetSize(vm, WindowResizeReason.Application);
         
         if (Settings.WindowProperties.AutoFit && Settings.WindowProperties.KeepCentered)
         {
-            WindowFunctions2.CenterWindowOnScreen();
+            WindowFunctions.CenterWindowOnScreen();
         }
         else if (!Settings.WindowProperties.AutoFit)
         {
-            WindowFunctions2.InitializeWindowSizeAndPosition(window);
+            WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
         
         Dispatcher.UIThread.Post(() => window.IsChangingWindowState = false, DispatcherPriority.SystemIdle);
@@ -90,7 +90,7 @@ public static class MacOSWindow
         window.IsChangingWindowState = true;
         
         // Save window size, so that restoring it will return to the same size and position
-        WindowResizing2.SaveSize(window);
+        WindowResizing.SaveSize(window);
         
         Settings.WindowProperties.Maximized = false;
         Settings.WindowProperties.Fullscreen = true;
@@ -116,9 +116,9 @@ public static class MacOSWindow
         });
         
         // Sometimes the window is not centered properly, so center it again
-        WindowFunctions2.CenterWindowOnScreen(window);
+        WindowFunctions.CenterWindowOnScreen(window);
         
-        WindowResizing2.SetSize(vm, WindowResizeReason.Application);
+        WindowResizing.SetSize(vm, WindowResizeReason.Application);
         
         // Reset changing state flag so subscription can fire again. Need to be delayed by dispatcher to not be misfired. 
         Dispatcher.UIThread.Post(() => window.IsChangingWindowState = false, DispatcherPriority.SystemIdle);
@@ -137,11 +137,11 @@ public static class MacOSWindow
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Save window size, so that restoring it will return to the same size and position
-            WindowResizing2.SaveSize(window);
+            WindowResizing.SaveSize(window);
 
             
             // Use WindowResizing to reset the max size of the window
-            WindowResizing2.SetSize(vm, WindowResizeReason.Application);
+            WindowResizing.SetSize(vm, WindowResizeReason.Application);
             
             // Set the window size to the screen size
             window.Width = ScreenHelper.ScreenSize.WorkingAreaWidth;

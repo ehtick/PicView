@@ -164,7 +164,7 @@ public static class SettingsUpdater
         {
             Settings.ImageScaling.StretchImage = true;
         }
-        await WindowResizing.SetSizeAsync(vm).ConfigureAwait(false);
+        //await WindowResizing.SetSizeAsync(vm).ConfigureAwait(false);
         await SaveSettingsAsync();
     }
     
@@ -310,7 +310,7 @@ public static class SettingsUpdater
         Settings.ImageScaling.ShowImageSideBySide = false;
         vm.PicViewer.IsShowingSideBySide.Value = false;
         vm.PicViewer.SecondaryImageSource.Value = null;
-        WindowResizing.SetSize(vm);
+      //  WindowResizing.SetSize(vm);
         TitleManager.SetTitle(vm);
     }
     
@@ -372,7 +372,7 @@ public static class SettingsUpdater
             TurnOnScroll(vm);
         }
         
-        WindowResizing.SetSize(vm);
+        //WindowResizing.SetSize(vm);
         
         await SaveSettingsAsync();
     }

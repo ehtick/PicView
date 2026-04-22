@@ -67,7 +67,7 @@ public static class SettingsUpdater2
 
     public static void InitializeSettings(MainWindowViewModel vm, bool settingsExists)
     {
-        Task.Run(() => LanguageUpdater2.UpdateLanguageAsync(vm.Translation, settingsExists));
+        Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, settingsExists));
         
         //MainWindowViewModel.GetAndSetWindowMinSize(vm);
         
@@ -199,7 +199,7 @@ public static class SettingsUpdater2
         await SaveSettingsAsync();
     }
 
-    public static async Task ToggleStretch(MainViewModel vm)
+    public static async Task ToggleStretch(MainWindowViewModel vm)
     {
         if (Settings.ImageScaling.StretchImage)
         {
@@ -209,7 +209,7 @@ public static class SettingsUpdater2
         {
             Settings.ImageScaling.StretchImage = true;
         }
-        await WindowResizing.SetSizeAsync(vm).ConfigureAwait(false);
+        WindowResizing.SetSize(vm, WindowResizeReason.Application);
         await SaveSettingsAsync();
     }
     
@@ -342,7 +342,7 @@ public static class SettingsUpdater2
         var tab = window.WindowTabs.ActiveTab.Value;
         window.IsSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
         await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
-        WindowResizing2.SetSize(window, WindowResizeReason.Application);
+        WindowResizing.SetSize(window, WindowResizeReason.Application);
 
         await SaveSettingsAsync();
     }
@@ -363,7 +363,7 @@ public static class SettingsUpdater2
             TurnOnScroll(vm);
         }
         
-        WindowResizing2.SetSize(vm, WindowResizeReason.Application);
+        WindowResizing.SetSize(vm, WindowResizeReason.Application);
         
         await SaveSettingsAsync();
     }

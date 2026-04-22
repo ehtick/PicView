@@ -44,7 +44,7 @@ public static class HideInterfaceLogic
             // vm.MainWindow.TitlebarHeight.Value = SizeDefaults.MainTitlebarHeight;
         }
         
-        await WindowResizing.SetSizeAsync(vm);
+       // await WindowResizing.SetSizeAsync(vm);
 
         await SaveSettingsAsync();
     }
@@ -72,7 +72,7 @@ public static class HideInterfaceLogic
         }
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            WindowResizing.SetSize(vm);
+            //WindowResizing.SetSize(vm);
         });
         
         await SaveSettingsAsync();

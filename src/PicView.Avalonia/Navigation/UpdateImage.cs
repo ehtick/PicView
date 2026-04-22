@@ -112,7 +112,7 @@ public static class UpdateImage
         
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowResizing2.SetSize(tabViewModel.Model.PixelWidth,
+            WindowResizing.SetSize(tabViewModel.Model.PixelWidth,
                 tabViewModel.Model.PixelHeight, 
                 secondaryWidth, secondaryHeight,
                 WindowResizeReason.Application,

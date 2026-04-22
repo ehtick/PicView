@@ -40,7 +40,7 @@ public class MainTitleBar : UserControl, ITitleBar
 
         if (TopLevel.GetTopLevel(this) is Window window)
         {
-            WindowFunctions2.WindowDragAndDoubleClickBehavior(window, e, vm.PlatformWindowService);
+            WindowFunctions.WindowDragAndDoubleClickBehavior(window, e, vm.PlatformWindowService);
         }
     }
 

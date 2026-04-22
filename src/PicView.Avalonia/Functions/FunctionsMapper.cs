@@ -465,18 +465,18 @@ public static class FunctionsMapper
     #endregion Windows
 
     #region Image Scaling and Window Behavior
-    
+
     /// <inheritdoc cref="WindowFunctions.Stretch(MainViewModel)" />
     public static async ValueTask Stretch() =>
-        await WindowFunctions.Stretch(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
     
     /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainViewModel)" />
     public static async ValueTask AutoFitWindow() =>
-        await WindowFunctions.ToggleAutoFit(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="WindowFunctions.NormalWindow(MainViewModel)" />
     public static async ValueTask NormalWindow() =>
-        await WindowFunctions.NormalWindow(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="Interfaces.IPlatformWindowService.ToggleFullscreen" />
     public static async ValueTask ToggleFullscreen() =>
@@ -487,8 +487,7 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="WindowFunctions.ToggleTopMost(MainViewModel)" />
     public static async ValueTask SetTopMost() =>
-
-        await WindowFunctions.ToggleTopMost(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     #endregion
 

@@ -57,7 +57,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             .ObserveOn(UIHelper.GetFrameProvider)
             .Subscribe(_ =>
             {
-                WindowFunctions2.CenterWindowOnOwnerWindow(this, Owner as Window);
+                WindowFunctions.CenterWindowOnOwnerWindow(this, Owner as Window);
             }, static result =>
             {
 #if DEBUG

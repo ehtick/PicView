@@ -627,7 +627,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainViewModel)" />
     public async ValueTask AutoFitWindow()
     {
-        await WindowFunctions2.ToggleAutoFit(vm, window);
+        await WindowFunctions.ToggleAutoFit(vm, window);
     }
 
     /// <inheritdoc cref="WindowFunctions.NormalWindow(MainViewModel)" />

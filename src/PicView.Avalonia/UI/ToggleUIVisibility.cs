@@ -26,7 +26,7 @@ public static class ToggleUIVisibility
             vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = false;
         }
         
-        WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+        WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         
         await SaveSettingsAsync();
     }

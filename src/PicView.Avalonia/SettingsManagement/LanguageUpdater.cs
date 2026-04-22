@@ -5,8 +5,7 @@ namespace PicView.Avalonia.SettingsManagement;
 
 public static class LanguageUpdater
 {
-    public static async ValueTask UpdateLanguageAsync(TranslationViewModel translationViewModel,
-        PicViewerModel picViewerModel, bool settingsExists)
+    public static async ValueTask UpdateLanguageAsync(TranslationViewModel translationViewModel, bool settingsExists)
     {
         if (settingsExists)
         {
@@ -18,9 +17,8 @@ public static class LanguageUpdater
         }
 
         translationViewModel.UpdateLanguage();
+        translationViewModel.SubscribeToDynamicTranslationUpdates();
 
-        translationViewModel.IsFlipped.Value = picViewerModel.ScaleX.CurrentValue == 1 ? translationViewModel.Flip.CurrentValue : translationViewModel.UnFlip.CurrentValue;
-        
         translationViewModel.IsShowingUI.Value = !Settings.UIProperties.ShowInterface ? translationViewModel.ShowUI.CurrentValue : translationViewModel.HideUI.CurrentValue;
         
         translationViewModel.IsScrolling.Value = Settings.Zoom.ScrollEnabled ?

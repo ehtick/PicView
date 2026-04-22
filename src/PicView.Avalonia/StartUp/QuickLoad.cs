@@ -83,7 +83,7 @@ public static class QuickLoad
 
         if (Settings.WindowProperties.AutoFit)
         {
-            WindowFunctions2.CenterWindowOnScreen();
+            WindowFunctions.CenterWindowOnScreen();
         }
 
         core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;

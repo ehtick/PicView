@@ -42,12 +42,12 @@ public class RotationTransformer2(LayoutTransformControl imageLayoutTransformCon
         var tab = vm.WindowTabs.ActiveTab.Value;
         tab.RotationAngle.Value = angle;
         
-        WindowResizing2.SetSize(vm, WindowResizeReason.Layout);
+        WindowResizing.SetSize(vm, WindowResizeReason.Layout);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Settings.WindowProperties.Fullscreen)
         {
             // Sometimes the window is off-center after rotating on macOS fullscreen view
-            WindowFunctions2.CenterWindowOnScreen();
+            WindowFunctions.CenterWindowOnScreen();
         }
 
         switch (angle)
