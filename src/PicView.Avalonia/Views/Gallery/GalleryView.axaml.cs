@@ -31,6 +31,6 @@ public partial class GalleryAnimationControlView : GalleryAnimationControl
         {
             return;
         }
-        GalleryStretchMode.DetermineStretchMode(vm);
+        //GalleryStretchMode.DetermineStretchMode(vm);
     }
 }

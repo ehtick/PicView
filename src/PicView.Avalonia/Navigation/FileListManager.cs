@@ -89,7 +89,7 @@ public static class FileListManager
 
         if (!_cancellationTokenSource.IsCancellationRequested)
         {
-            await GalleryLoad.ReloadGalleryAsync(vm, vm.PicViewer.FileInfo.CurrentValue.DirectoryName);
+            //await GalleryLoad.ReloadGalleryAsync(vm, vm.PicViewer.FileInfo.CurrentValue.DirectoryName);
         }
     }
 }

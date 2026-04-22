@@ -24,7 +24,7 @@ public partial class ClickArrowRight2 : UserControl
                 core.MainWindows.ActiveWindow.CurrentValue.TopTitlebarViewModel.CloseDropDownMenu();
                 UIHelper.SetButtonInterval(PolyButton);
             };
-            _ = new HoverFadeButtonHandler2(this, core.MainWindows.ActiveWindow.Value, PolyButton);
+            _ = new HoverFadeButtonHandler(this, core.MainWindows.ActiveWindow.Value, PolyButton);
         };
     }
 

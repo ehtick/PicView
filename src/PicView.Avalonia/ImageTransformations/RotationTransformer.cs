@@ -10,7 +10,7 @@ using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.ImageTransformations;
 
-public class RotationTransformer2(LayoutTransformControl imageLayoutTransformControl, PicBox2 mainImage, MainWindowViewModel vm)
+public class RotationTransformer(LayoutTransformControl imageLayoutTransformControl, PicBox2 mainImage, MainWindowViewModel vm)
 {
     public void Rotate(bool clockWise)
     {

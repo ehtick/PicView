@@ -18,7 +18,7 @@ namespace PicView.Avalonia.Views.UC;
 
 public partial class ImageViewer : UserControl
 {
-    private RotationTransformer2? _imageTransformer;
+    private RotationTransformer? _imageTransformer;
     private DisposableBag _disposables;
     private readonly MainWindowViewModel? _mainWindowViewModel;
     
@@ -82,7 +82,7 @@ public partial class ImageViewer : UserControl
         // The image is not flipped by default, update translation to reflect that
         core.Translation.IsFlipped.Value = TranslationManager.Translation.Flip;
 
-        _imageTransformer = new RotationTransformer2(
+        _imageTransformer = new RotationTransformer(
             MainTransform,
             MainImage,
             core.MainWindows.ActiveWindow.CurrentValue);

@@ -25,7 +25,7 @@ public partial class ClickArrowLeft2 : UserControl
                 UIHelper.SetButtonInterval(PolyButton);
             };
             
-            _ = new HoverFadeButtonHandler2(this, core.MainWindows.ActiveWindow.Value, PolyButton);
+            _ = new HoverFadeButtonHandler(this, core.MainWindows.ActiveWindow.Value, PolyButton);
         };
     }
 
