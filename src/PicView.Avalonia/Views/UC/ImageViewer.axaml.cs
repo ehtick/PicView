@@ -58,7 +58,7 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
-        await MouseShortcuts2.HandlePointerWheelChanged(
+        await MouseShortcuts.HandlePointerWheelChanged(
             e,
             _mainWindowViewModel, 
             ImageScrollViewer,
