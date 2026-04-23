@@ -25,7 +25,7 @@ public static class UIHelper
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
     public static BottomBar? GetBottomBar { get; private set; }
     public static DropDownMenu? GetDropDownMenu { get; private set; }
-    public static ToolTipMessage2? GetToolTipMessage { get; private set; }
+    public static ToolTipMessage? GetToolTipMessage { get; private set; }
     
     public static AvaloniaRenderingFrameProvider? GetFrameProvider { get; private set; }
 
@@ -43,7 +43,7 @@ public static class UIHelper
         GetTitlebar = mainWindow?.FindControl<Control>("Titlebar");
         GetEditableTitlebar = GetTitlebar?.FindControl<EditableTitlebar>("EditableTitlebar");
         GetBottomBar = mainWindow?.FindControl<BottomBar>("BottomBar");
-        GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage2>("ToolTipMessage");
+        GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage>("ToolTipMessage");
         GetMainTabControl = GetMainView.MainTabControl;
     }
 

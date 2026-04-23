@@ -955,7 +955,7 @@
             <buttons:AltRestore x:Name="AltRestore" />
             <buttons:AltClose x:Name="AltClose" />
         </StackPanel>
-        <uc:ToolTipMessage2
+        <uc:ToolTipMessage
             HorizontalAlignment="Center"
             Opacity="0"
             VerticalAlignment="Center"

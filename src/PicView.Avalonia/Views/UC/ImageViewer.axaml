@@ -20,7 +20,7 @@
                 <LayoutTransformControl.LayoutTransform>
                     <RotateTransform Angle="{Binding RotationAngle.Value}" />
                 </LayoutTransformControl.LayoutTransform>
-                <customControls:ZoomPanControl2 x:Name="ZoomPanControl">
+                <customControls:ZoomPanControl x:Name="ZoomPanControl">
                     <customControls:AutoScrollViewer
                         Focusable="False"
                         HorizontalScrollBarVisibility="Disabled"
@@ -50,7 +50,7 @@
                             </DockPanel>
                         </Border>
                     </customControls:AutoScrollViewer>
-                </customControls:ZoomPanControl2>
+                </customControls:ZoomPanControl>
             </LayoutTransformControl>
             <uc:ZoomPreviewer
                 HorizontalAlignment="Right"

@@ -18,7 +18,7 @@ public partial class ZoomPreviewer : UserControl
 
     // Dragging state
     private bool _isDragging;
-    private ZoomPanControl2? _zoomPanControl;
+    private ZoomPanControl? _zoomPanControl;
 
     public ZoomPreviewer()
     {
@@ -166,7 +166,7 @@ public partial class ZoomPreviewer : UserControl
         return expandedRect.Contains(point);
     }
 
-    public void SetZoomPanControl(ZoomPanControl2 zoomPanControl)
+    public void SetZoomPanControl(ZoomPanControl zoomPanControl)
     {
         _zoomPanControl = zoomPanControl;
         _childControl = zoomPanControl.Child;

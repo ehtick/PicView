@@ -3,9 +3,7 @@ using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Layout;
 using Avalonia.Media;
-using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC;
 
@@ -56,14 +54,21 @@ public class ZoomPanControl : Decorator
     private Point _panStartTranslate;
 
     // UI Components
-    private ZoomPreviewer? _zoomPreviewer;
+    public ZoomPreviewer? ZoomPreviewer;
 
     #endregion
 
     #region Initialization and Lifecycle
 
-    public void Initialize()
+    public void Initialize(ZoomPreviewer zoomPreviewer)
     {
+        // Pointer handling for panning
+        AddHandler(PointerPressedEvent, HandleResetZoomOrStartPanning, RoutingStrategies.Tunnel);
+        AddHandler(PointerMovedEvent, HandlePanning, RoutingStrategies.Tunnel);
+        AddHandler(PointerReleasedEvent, StopPanning, RoutingStrategies.Tunnel);
+
+        zoomPreviewer.SetZoomPanControl(this);
+        ZoomPreviewer = zoomPreviewer;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -71,12 +76,12 @@ public class ZoomPanControl : Decorator
         base.OnAttachedToVisualTree(e);
 
         // Show preview window when attached
-        if (_zoomPreviewer is not { IsVisible: false })
+        if (ZoomPreviewer is not { IsVisible: false })
         {
             return;
         }
 
-        // _zoomPreviewer.SetVisible();
+        ZoomPreviewer.SetVisible();
         UpdatePreviewWindow();
     }
 
@@ -91,6 +96,16 @@ public class ZoomPanControl : Decorator
 
         return base.ArrangeOverride(finalSize);
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        RemoveHandler(PointerPressedEvent, HandleResetZoomOrStartPanning);
+        RemoveHandler(PointerMovedEvent, HandlePanning);
+        RemoveHandler(PointerReleasedEvent, StopPanning);
+        
+        base.OnDetachedFromVisualTree(e);
+    }
+
     #endregion
 
     #region Public Zoom API
@@ -144,9 +159,9 @@ public class ZoomPanControl : Decorator
             return;
         }
 
-        _zoomPreviewer?.Opacity = 0;
+        ZoomPreviewer?.IsVisible = false;
 
-        ApplyZoomAndTitle(1.0, CenterPoint(), animated);
+        SetTransitionsAndScale(1.0, CenterPoint(), animated);
         SetZoomValue(100);
     }
 
@@ -155,6 +170,10 @@ public class ZoomPanControl : Decorator
     /// </summary>
     public void ResetZoomSlim()
     {
+        if (ZoomLevel is 100)
+        {
+            return;
+        }
         SetTransitions(false);
         Scale = 1.0;
         TranslateX = 0;
@@ -162,8 +181,6 @@ public class ZoomPanControl : Decorator
         SetScaleImmediate(1.0, CenterPoint());
 
         SetZoomValue(100);
-
-        // _zoomPreviewer?.SetInvisible();
     }
 
     /// <summary>
@@ -197,9 +214,6 @@ public class ZoomPanControl : Decorator
         TranslateY = translateY;
         ConstrainTranslationToBounds();
         UpdateChildTransform();
-
-        // Update preview window after transform change
-        UpdatePreviewWindow();
     }
 
     #endregion
@@ -269,9 +283,6 @@ public class ZoomPanControl : Decorator
 
         ConstrainTranslationToBounds();
         UpdateChildTransform();
-
-        // Update preview window after transform change
-        UpdatePreviewWindow();
     }
 
     private void StopPanning(object? sender, PointerReleasedEventArgs e)
@@ -319,25 +330,11 @@ public class ZoomPanControl : Decorator
         // Check if target scale is within deadzone
         if (!(targetScale >= lowerBound) || !(targetScale <= upperBound))
         {
-            ApplyZoomAndTitle(targetScale, center, animated);
+            SetTransitionsAndScale(targetScale, center, animated);
         }
         else
         {
             ResetZoom(animated);
-        }
-
-        // Update preview window after transform change
-        UpdatePreviewWindow();
-    }
-
-    private void ApplyZoomAndTitle(double targetScale, Point center, bool animated)
-    {
-        SetTransitionsAndScale(targetScale, center, animated);
-        TitleManager.SetTitle(DataContext as MainViewModel);
-        if (Settings.Zoom.IsShowingZoomPercentagePopup)
-        {
-            _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(ZoomLevel)}%", true,
-                TimeSpan.FromSeconds(1));
         }
     }
 
@@ -415,6 +412,9 @@ public class ZoomPanControl : Decorator
         _scaleTransform.ScaleY = Scale;
         _translateTransform.X = TranslateX;
         _translateTransform.Y = TranslateY;
+
+        // Update preview window after transform change
+        UpdatePreviewWindow();
     }
 
     private void SetTransitions(bool isAnimated)
@@ -554,16 +554,16 @@ public class ZoomPanControl : Decorator
 
     private void UpdatePreviewWindow()
     {
-        if (_zoomPreviewer == null)
+        if (ZoomPreviewer == null)
         {
             return;
         }
 
-        // // Update visibility based on zoom state
-        // _zoomPreviewer.UpdateVisibility();
-        //
-        // // Update viewport rectangle
-        // _zoomPreviewer.UpdateViewportRect();
+        // Update visibility based on zoom state
+        ZoomPreviewer.UpdateVisibility();
+
+        // Update viewport rectangle
+        ZoomPreviewer.UpdateViewportRect();
     }
 
     private Point CenterPoint() => new(Bounds.Width / 2.0, Bounds.Height / 2.0);
