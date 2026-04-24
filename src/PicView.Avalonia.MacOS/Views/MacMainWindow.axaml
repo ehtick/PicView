@@ -1,6 +1,4 @@
 <customControls:MainWindow
-    ExtendClientAreaTitleBarHeightHint="-1"
-    ExtendClientAreaToDecorationsHint="True"
     MaxHeight="{CompiledBinding WindowMaxHeight.Value}"
     MaxWidth="{CompiledBinding WindowMaxWidth.Value}"
     MinHeight="{CompiledBinding WindowMinHeight}"

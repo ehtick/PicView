@@ -9,6 +9,7 @@ using PicView.Avalonia.Win32.WindowImpl;
 using PicView.Core.DebugTools;
 using PicView.Core.IPlatform;
 using PicView.Core.ViewModels;
+using PicView.Core.WindowsNT;
 using R3;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -27,6 +28,9 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
         DataContext = mainWindowViewModel;
 
         InitializeComponent();
+        
+        // Fix annoying empty blank spaces when snapping window to edges
+        Win32Properties.AddWndProcHookCallback(this, WindowHook.WndProc);
         
         SharedBottomBar = BottomBar;
         SharedTitleBar = Titlebar;
