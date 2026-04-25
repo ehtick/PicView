@@ -28,161 +28,6 @@
                     Width="20" />
             </Border>
 
-            <customControls:IconButton
-                Background="{DynamicResource WindowButtonBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,1,0"
-                Classes="noBorderHover"
-                Command="{CompiledBinding TopTitlebarViewModel.OpenMenuCommand}"
-                Foreground="{DynamicResource MainTextColor}"
-                Icon="{StaticResource MenuImage}"
-                IconHeight="16"
-                IconWidth="16"
-                IsRepeatEnabled="False"
-                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
-                Margin="0"
-                Width="30"
-                x:Name="MenuButton" />
-
-
-            <Button
-                Background="Transparent"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                Classes="noBorderHover"
-                CornerRadius="6"
-                DockPanel.Dock="Left"
-                Foreground="{DynamicResource MainTextColor}"
-                IsTabStop="False"
-                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
-                Margin="2,3,7,3"
-                Width="30"
-                x:Name="SearchButton">
-                <Image
-                    Height="13"
-                    Source="{StaticResource SearchImage}"
-                    Width="13" />
-            </Button>
-
-            <StackPanel
-                DockPanel.Dock="Right"
-                IsVisible="{CompiledBinding TopTitlebarViewModel.IsBtnPanelVisible.Value}"
-                Orientation="Horizontal"
-                x:Name="WinBtnPanel">
-
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="1,0,1,0"
-                    Classes="hover "
-                    ClickMode="Release"
-                    Command="{CompiledBinding MinimizeCommand}"
-                    Data="{StaticResource MinimizeGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="12"
-                    IconWidth="12"
-                    IsRepeatEnabled="False"
-                    Margin="0,0"
-                    Width="30"
-                    x:Name="MinimizeButton" />
-
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    Classes="hover"
-                    ClickMode="Release"
-                    Command="{CompiledBinding ToggleFullscreenCommand}"
-                    Data="{StaticResource FullscreenGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="12"
-                    IconWidth="12"
-                    IsRepeatEnabled="False"
-                    IsVisible="{CompiledBinding ShouldMaximizeBeShown.Value,
-                                                Mode=OneWay}"
-                    Width="30"
-                    x:Name="FullscreenButton" />
-
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    BorderThickness="0,0,1,0"
-                    Classes="hover"
-                    Command="{CompiledBinding RestoreCommand}"
-                    Data="{StaticResource RestoreGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="12"
-                    IconWidth="12"
-                    IsRepeatEnabled="False"
-                    IsVisible="{CompiledBinding !ShouldMaximizeBeShown.Value,
-                                                Mode=OneWay}"
-                    Width="30"
-                    x:Name="RestoreButton" />
-
-                <customControls:IconButton
-                    Background="{DynamicResource WindowButtonBackgroundColor}"
-                    BorderBrush="{DynamicResource MainBorderColor}"
-                    Classes="hover"
-                    ClickMode="Release"
-                    Command="{CompiledBinding ExitCommand}"
-                    Data="{StaticResource CloseGeometry}"
-                    Foreground="{DynamicResource MainTextColor}"
-                    IconHeight="10"
-                    IconWidth="10"
-                    IsRepeatEnabled="False"
-                    Width="30"
-                    x:Name="CloseButton" />
-
-            </StackPanel>
-
-            <Button
-                Background="Transparent"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                Classes="noBorderHover"
-                Command="{CompiledBinding TopTitlebarViewModel.ToggleDropDownMenuCommand}"
-                CommandParameter="{CompiledBinding}"
-                CornerRadius="6"
-                DockPanel.Dock="Right"
-                IsTabStop="False"
-                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
-                Margin="2,3,7,3"
-                Width="30"
-                x:Name="DropDownMenuButton">
-                <Path
-                    Data="{StaticResource FilledArrowDownGeometry}"
-                    Fill="{DynamicResource MainTextColor}"
-                    Height="17"
-                    Stretch="Fill"
-                    Width="17" />
-            </Button>
-
-            <Button
-                Background="Transparent"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                Classes="noBorderHover"
-                Command="{CompiledBinding WindowTabs.CreateTab}"
-                CornerRadius="6"
-                DockPanel.Dock="Right"
-                Foreground="{DynamicResource MainTextColor}"
-                IsTabStop="False"
-                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
-                Margin="0,3,2,3"
-                Width="30"
-                x:Name="CreateTabButton">
-                <Path
-                    Data="{StaticResource AddGeometry}"
-                    Fill="{DynamicResource MainTextColor}"
-                    Height="13"
-                    Stretch="Fill"
-                    Width="13" />
-            </Button>
-
-            <uc:EditableTitlebar
-                Background="{DynamicResource WindowSecondaryBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="0,0,0,1"
-                Foreground="{DynamicResource MainTextColor}"
-                IsVisible="{Binding TopTitlebarViewModel.IsEditableTitlebarVisible.Value}"
-                x:Name="EditableTitlebar" />
-
             <Menu
                 Background="{DynamicResource WindowSecondaryBackgroundColor}"
                 BorderBrush="{DynamicResource MainBorderColor}"
@@ -515,7 +360,10 @@
                                                  Mode=OneWay}"
                         Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
-                            <Path Classes="ImageInfoPath" />
+                            <Image
+                                Height="12"
+                                Source="{StaticResource CameraImage}"
+                                Width="12" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -542,7 +390,7 @@
                         <MenuItem.Icon>
                             <Image
                                 Height="12"
-                                Source="{StaticResource FlaskImage}"
+                                Source="{StaticResource SparklesImage}"
                                 Width="12" />
                         </MenuItem.Icon>
                     </MenuItem>
@@ -604,7 +452,7 @@
                         Theme="{StaticResource MainBg}"
                         x:Name="CropMenuItem">
                         <MenuItem.Icon>
-                            <Path Classes="CropPath" />
+                            <Image Classes="CropImage" />
                         </MenuItem.Icon>
                     </MenuItem>
 
@@ -666,6 +514,7 @@
                         <!--  Sort files by name  -->
                         <MenuItem
                             Command="{Binding SortFilesByNameCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.FileName.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByName.Value}"
                             Theme="{StaticResource MainBg}"
@@ -674,6 +523,7 @@
                         <!--  Sort files by size  -->
                         <MenuItem
                             Command="{Binding SortFilesBySizeCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.FileSize.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByFileSize.Value}"
                             Theme="{StaticResource MainBg}"
@@ -682,6 +532,7 @@
                         <!--  Sort files by extension  -->
                         <MenuItem
                             Command="{Binding SortFilesByExtensionCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.FileExtension.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByExtension.Value}"
                             Theme="{StaticResource MainBg}"
@@ -690,6 +541,7 @@
                         <!--  Sort files by creation time  -->
                         <MenuItem
                             Command="{Binding SortFilesByCreationTimeCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.Created.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByCreationTime.Value}"
                             Theme="{StaticResource MainBg}"
@@ -698,6 +550,7 @@
                         <!--  Sort files by last access time  -->
                         <MenuItem
                             Command="{Binding SortFilesByLastAccessTimeCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.LastAccessTime.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByLastAccessTime.Value}"
                             Theme="{StaticResource MainBg}"
@@ -706,6 +559,7 @@
                         <!--  Sort files by last write time  -->
                         <MenuItem
                             Command="{Binding SortFilesByLastAccessTimeCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.Modified.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByLastWriteTime.Value}"
                             Theme="{StaticResource MainBg}"
@@ -714,6 +568,7 @@
                         <!--  Sort files randomly  -->
                         <MenuItem
                             Command="{Binding SortFilesRandomlyCommand}"
+                            GroupName="Sort"
                             Header="{Binding Translation.Random.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsSortedByRandomization.Value}"
                             Theme="{StaticResource MainBg}"
@@ -727,6 +582,7 @@
                         <!--  Sort files ascending  -->
                         <MenuItem
                             Command="{Binding SortFilesAscendingCommand}"
+                            GroupName="Order"
                             Header="{Binding Translation.Ascending.Value, Mode=OneWay}"
                             IsChecked="{Binding WindowTabs.IsAscending.Value}"
                             Theme="{StaticResource MainBg}"
@@ -735,6 +591,7 @@
                         <!--  Sort files descending  -->
                         <MenuItem
                             Command="{Binding SortFilesDescendingCommand}"
+                            GroupName="Order"
                             Header="{Binding Translation.Descending.Value, Mode=OneWay}"
                             IsChecked="{Binding !WindowTabs.IsAscending.Value}"
                             Theme="{StaticResource MainBg}"
@@ -1044,6 +901,160 @@
                     </MenuItem>
                 </MenuItem>
             </Menu>
+
+            <customControls:IconButton
+                Background="{DynamicResource WindowButtonBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,1,0"
+                Classes="noBorderHover"
+                Command="{CompiledBinding TopTitlebarViewModel.OpenMenuCommand}"
+                Foreground="{DynamicResource MainTextColor}"
+                Icon="{StaticResource MenuImage}"
+                IconHeight="16"
+                IconWidth="16"
+                IsRepeatEnabled="False"
+                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
+                Margin="0"
+                Width="30"
+                x:Name="MenuButton" />
+
+            <Button
+                Background="Transparent"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                Classes="noBorderHover"
+                CornerRadius="6"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}"
+                IsTabStop="False"
+                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
+                Margin="2,3,7,3"
+                Width="30"
+                x:Name="SearchButton">
+                <Image
+                    Height="13"
+                    Source="{StaticResource SearchImage}"
+                    Width="13" />
+            </Button>
+
+            <StackPanel
+                DockPanel.Dock="Right"
+                IsVisible="{CompiledBinding TopTitlebarViewModel.IsBtnPanelVisible.Value}"
+                Orientation="Horizontal"
+                x:Name="WinBtnPanel">
+
+                <customControls:IconButton
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1,0,1,0"
+                    Classes="hover "
+                    ClickMode="Release"
+                    Command="{CompiledBinding MinimizeCommand}"
+                    Data="{StaticResource MinimizeGeometry}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="12"
+                    IconWidth="12"
+                    IsRepeatEnabled="False"
+                    Margin="0,0"
+                    Width="30"
+                    x:Name="MinimizeButton" />
+
+                <customControls:IconButton
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    Classes="hover"
+                    ClickMode="Release"
+                    Command="{CompiledBinding ToggleFullscreenCommand}"
+                    Data="{StaticResource FullscreenGeometry}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="12"
+                    IconWidth="12"
+                    IsRepeatEnabled="False"
+                    IsVisible="{CompiledBinding ShouldMaximizeBeShown.Value,
+                                                Mode=OneWay}"
+                    Width="30"
+                    x:Name="FullscreenButton" />
+
+                <customControls:IconButton
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="0,0,1,0"
+                    Classes="hover"
+                    Command="{CompiledBinding RestoreCommand}"
+                    Data="{StaticResource RestoreGeometry}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="12"
+                    IconWidth="12"
+                    IsRepeatEnabled="False"
+                    IsVisible="{CompiledBinding !ShouldMaximizeBeShown.Value,
+                                                Mode=OneWay}"
+                    Width="30"
+                    x:Name="RestoreButton" />
+
+                <customControls:IconButton
+                    Background="{DynamicResource WindowButtonBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    Classes="hover"
+                    ClickMode="Release"
+                    Command="{CompiledBinding ExitCommand}"
+                    Data="{StaticResource CloseGeometry}"
+                    Foreground="{DynamicResource MainTextColor}"
+                    IconHeight="10"
+                    IconWidth="10"
+                    IsRepeatEnabled="False"
+                    Width="30"
+                    x:Name="CloseButton" />
+
+            </StackPanel>
+
+            <Button
+                Background="Transparent"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                Classes="noBorderHover"
+                Command="{CompiledBinding TopTitlebarViewModel.ToggleDropDownMenuCommand}"
+                CommandParameter="{CompiledBinding}"
+                CornerRadius="6"
+                DockPanel.Dock="Right"
+                IsTabStop="False"
+                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
+                Margin="2,3,7,3"
+                Width="30"
+                x:Name="DropDownMenuButton">
+                <Path
+                    Data="{StaticResource FilledArrowDownGeometry}"
+                    Fill="{DynamicResource MainTextColor}"
+                    Height="17"
+                    Stretch="Fill"
+                    Width="17" />
+            </Button>
+
+            <Button
+                Background="Transparent"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                Classes="noBorderHover"
+                Command="{CompiledBinding WindowTabs.CreateTab}"
+                CornerRadius="6"
+                DockPanel.Dock="Right"
+                Foreground="{DynamicResource MainTextColor}"
+                IsTabStop="False"
+                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}"
+                Margin="0,3,2,3"
+                Width="30"
+                x:Name="CreateTabButton">
+                <Path
+                    Data="{StaticResource AddGeometry}"
+                    Fill="{DynamicResource MainTextColor}"
+                    Height="13"
+                    Stretch="Fill"
+                    Width="13" />
+            </Button>
+
+            <uc:EditableTitlebar
+                Background="{DynamicResource WindowSecondaryBackgroundColor}"
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,0,0,1"
+                Foreground="{DynamicResource MainTextColor}"
+                IsVisible="{Binding TopTitlebarViewModel.IsEditableTitlebarVisible.Value}"
+                x:Name="EditableTitlebar" />
 
         </DockPanel>
     </Border>

@@ -398,12 +398,14 @@
                             Fill="{DynamicResource MainBorderColor}"
                             Height="1"
                             Margin="5,2" />
+
+                        <!--  Effects  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.EffectsWindowCommand}"
                             Foreground="{DynamicResource MainTextColor}"
-                            Icon="{StaticResource FlaskImage}"
+                            Icon="{StaticResource SparklesImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
@@ -412,6 +414,22 @@
                             ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip.Value,
                                                           Mode=OneWay}"
                             x:Name="EffectsButton" />
+
+                        <!--  Single image Resize  -->
+                        <customControls:TextIconButton
+                            Background="Transparent"
+                            Classes="altHover"
+                            Command="{Binding MainWindows.ActiveWindow.Value.ResizeWindowCommand}"
+                            Foreground="{DynamicResource MainTextColor}"
+                            Icon="{StaticResource BatchResizeImage}"
+                            IconHeight="14"
+                            IconMargin="0,0,7,0"
+                            IconWidth="14"
+                            Padding="15,7,15,7"
+                            Text="{Binding Translation.ResizeImage.Value}"
+                            x:Name="SingleImageResizeButton" />
+
+                        <!--  Batch Resize  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
@@ -422,20 +440,24 @@
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             Padding="15,7,15,7"
-                            Text="{Binding Translation.ResizeImage.Value}"
-                            x:Name="ResizeButton" />
+                            Text="{Binding Translation.BatchResize.Value}"
+                            x:Name="BatchResizeButton" />
+
+                        <!--  Image info  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.ImageInfoWindowCommand}"
-                            Data="{StaticResource ImageInfoGeometry}"
                             Foreground="{DynamicResource MainTextColor}"
+                            Icon="{StaticResource CameraImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             Padding="15,7,15,7"
                             Text="{Binding Translation.ImageInfo.Value}"
                             x:Name="ImageInfoButton" />
+
+                        <!--  Crop  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
@@ -466,6 +488,7 @@
                         LastChildFill="True"
                         VerticalAlignment="Top">
 
+                        <!--  Expand into settings  -->
                         <customControls:IconButton
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
@@ -480,6 +503,7 @@
                             Width="35"
                             x:Name="SettingsExpandButton" />
 
+                        <!--  Main settings button  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
@@ -496,6 +520,8 @@
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
+
+                            <!--  Close settings  -->
                             <customControls:IconButton
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
@@ -520,6 +546,8 @@
                             Fill="{DynamicResource MainBorderColor}"
                             Height="1"
                             Margin="5,2" />
+
+                        <!--  Auto-fit window  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -532,6 +560,8 @@
                             ToolTip.Tip="{CompiledBinding Translation.AutoFitWindow.Value,
                                                           Mode=OneWay}"
                             x:Name="AutoFitButton" />
+
+                        <!--  Topmost  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -544,6 +574,8 @@
                             ToolTip.Tip="{CompiledBinding Translation.StayTopMost.Value,
                                                           Mode=OneWay}"
                             x:Name="TopMostButton" />
+
+                        <!--  Looping  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -556,6 +588,8 @@
                             ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
                                                           Mode=OneWay}"
                             x:Name="LoopingButton" />
+
+                        <!--  Scroll  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -568,6 +602,8 @@
                             ToolTip.Tip="{CompiledBinding Translation.ToggleScroll.Value,
                                                           Mode=OneWay}"
                             x:Name="ScrollButton" />
+
+                        <!--  Stretch  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -580,6 +616,8 @@
                             ToolTip.Tip="{CompiledBinding Translation.Stretch.Value,
                                                           Mode=OneWay}"
                             x:Name="StretchButton" />
+
+                        <!--  Side by side  -->
                         <customControls:TextToggleButton
                             Background="Transparent"
                             Classes="altHover"
@@ -592,6 +630,13 @@
                             ToolTip.Tip="{CompiledBinding Translation.SideBySideTooltip.Value,
                                                           Mode=OneWay}"
                             x:Name="SideBySideButton" />
+
+                        <Rectangle
+                            Fill="{DynamicResource MainBorderColor}"
+                            Height="1"
+                            Margin="5,0" />
+
+                        <!--  About  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
@@ -605,12 +650,15 @@
                             Text="{Binding Translation.About.Value}"
                             ToolTip.Tip="{Binding Translation.AboutWindow.Value}"
                             x:Name="AboutButton" />
+
+
+                        <!--  Keybindings  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.KeybindingsWindowCommand}"
                             Foreground="{DynamicResource MainTextColor}"
-                            Icon="{StaticResource ShortcutsImage}"
+                            Icon="{StaticResource KeyImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
@@ -618,6 +666,8 @@
                             Text="{Binding Translation.ApplicationShortcuts.Value}"
                             ToolTip.Tip="{Binding Translation.ApplicationShortcuts.Value}"
                             x:Name="KeybindingsButton" />
+
+                        <!--  Settings  -->
                         <customControls:TextIconButton
                             Background="Transparent"
                             Classes="altHover"
@@ -753,8 +803,6 @@
                 </customControls:AutoScrollViewer>
 
             </DockPanel>
-
-
 
         </DockPanel>
     </Border>
