@@ -1,3 +1,6 @@
+using Avalonia;
+using Avalonia.Markup.Xaml;
+using Avalonia.Controls.ApplicationLifetimes;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Linux.Views;
@@ -8,6 +11,8 @@ using PicView.Core.ViewModels;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 #pragma warning disable CS0618 // Type or member is obsolete
+
+using PicView.Avalonia.Linux.WindowImpl;
 
 namespace PicView.Avalonia.Linux;
 
@@ -45,7 +50,7 @@ public class App : Application, IPlatformSpecificService
         _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
         _coreViewModel.MainWindows.MainWindows.Add(_mainWindowViewModel);
         _coreViewModel.MainWindows.ActiveWindow.Value = _mainWindowViewModel;
-        StartUpHelper2.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow);
+        StartUpHelper.StartWithArguments(_coreViewModel, settingsExists, desktop, _mainWindow);
 
         desktop.MainWindow = _mainWindow;
     }

@@ -3,11 +3,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
-using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.Linux.WindowImpl;
+using WindowInitializer = PicView.Avalonia.Services.WindowInitializer;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.IPlatform;
 using PicView.Core.ViewModels;
 using R3;
@@ -32,7 +31,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
         
         // initialize RenderingFrameProvider
         _frameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
-        UIHelper2.SetFrameProvider(_frameProvider);
+        UIHelper.SetFrameProvider(_frameProvider);
 
         InitializeComponent();
         
@@ -46,7 +45,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
     {
         Loaded += delegate
         {
-            _windowInitializer = new WindowInitializer();
+            _windowInitializer ??= new WindowInitializer(new LinuxWindowProvider());
             if (Application.Current.DataContext is not CoreViewModel || DataContext is not MainWindowViewModel windowViewModel)
             {
                 return;
@@ -205,7 +204,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
                 newVm = newWindow.DataContext as MainWindowViewModel;
                 core.MainWindows.MainWindows.Add(newVm);
                 core.MainWindows.ActiveWindow.Value = newVm;
-                StartUpHelper2.StartUpBlank(core, true, desktop, newWindow);
+                StartUpHelper.StartUpBlank(core, true, desktop, newWindow);
 
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
@@ -246,7 +245,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
         _windowInitializer?.ShowAboutWindow();
 
     public async Task ShowImageInfoWindow() =>
-        await _windowInitializer?.ShowImageInfoWindow();
+        await _windowInitializer?.ShowImageInfoWindow(DataContext as MainWindowViewModel);
 
     public async Task ShowKeybindingsWindow() =>
         await _windowInitializer?.ShowKeybindingsWindow();
@@ -258,13 +257,19 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
         _windowInitializer?.ShowSingleImageResizeWindow();
 
     public async Task ShowBatchResizeWindow() =>
-        await _windowInitializer?.ShowBatchResizeWindow();
+        await _windowInitializer?.ShowBatchResizeWindow(DataContext as MainWindowViewModel);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow();
 
     public void ShowConvertWindow() =>
         _windowInitializer?.ShowConvertWindow();
+
+    public async Task ShowPrintWindow(string path)
+    {
+        var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
+        await _windowInitializer.ShowPrintWindow(path, vm);
+    }
 
     /// <inheritdoc />
     public async Task Maximize(bool saveSetting = true) =>

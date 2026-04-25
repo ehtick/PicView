@@ -77,6 +77,7 @@ public class App : Application, IPlatformSpecificService
 
         _coreViewModel = new CoreViewModel(this, GetImageModel.GetImageModelAsync);
         DataContext = _coreViewModel;
+
         ThemeManager.DetermineTheme(Current, settingsExists);
 
         _mainWindow = new MacMainWindow();

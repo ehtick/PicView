@@ -6,6 +6,7 @@ using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Win32.WindowImpl;
+using WindowInitializer = PicView.Avalonia.Services.WindowInitializer;
 using PicView.Core.DebugTools;
 using PicView.Core.IPlatform;
 using PicView.Core.ViewModels;
@@ -38,7 +39,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
     {
         Loaded += delegate
         {
-            _windowInitializer = new WindowInitializer();
+            _windowInitializer ??= new WindowInitializer(new Win32WindowProvider());
             if (DataContext is not MainWindowViewModel windowViewModel)
             {
                 return;
@@ -218,7 +219,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
         _windowInitializer?.ShowSingleImageResizeWindow();
 
     public async Task ShowBatchResizeWindow() =>
-        await _windowInitializer?.ShowBatchResizeWindow();
+        await _windowInitializer?.ShowBatchResizeWindow(DataContext as MainWindowViewModel);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow();
@@ -229,7 +230,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
     public async Task ShowPrintWindow(string path)
     {
         var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
-        await _windowInitializer.ShowPrintPreviewWindow(path, vm);
+        await _windowInitializer.ShowPrintWindow(path, vm);
     }
 
     /// <inheritdoc />

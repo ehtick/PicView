@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.MacOS.WindowImpl;
+using WindowInitializer = PicView.Avalonia.Services.WindowInitializer;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
 using PicView.Core.DebugTools;
@@ -34,7 +35,7 @@ public partial class MacMainWindow : MainWindow, IPlatformWindowService
 
         Loaded += delegate
         {
-            _windowInitializer = new WindowInitializer();
+            _windowInitializer ??= new WindowInitializer(new MacWindowProvider());
 
             if (DataContext is not MainWindowViewModel vm)
             {
@@ -233,7 +234,7 @@ public partial class MacMainWindow : MainWindow, IPlatformWindowService
         await _windowInitializer?.ShowImageInfoWindow(DataContext as MainWindowViewModel);
 
     public async Task ShowKeybindingsWindow() =>
-        _windowInitializer?.ShowKeybindingsWindow();
+        await _windowInitializer?.ShowKeybindingsWindow();
 
     public async ValueTask ShowSettingsWindow()
     {
@@ -248,7 +249,7 @@ public partial class MacMainWindow : MainWindow, IPlatformWindowService
         _windowInitializer?.ShowSingleImageResizeWindow();
 
     public async Task ShowBatchResizeWindow() =>
-        await _windowInitializer?.ShowBatchResizeWindow();
+        await _windowInitializer?.ShowBatchResizeWindow(DataContext as MainWindowViewModel);
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow();
@@ -259,7 +260,7 @@ public partial class MacMainWindow : MainWindow, IPlatformWindowService
     public async Task ShowPrintWindow(string path)
     {
         var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
-        await _windowInitializer.ShowPrintPreviewWindow(path, vm);
+        await _windowInitializer.ShowPrintWindow(path, vm);
     }
 
     /// <inheritdoc />
