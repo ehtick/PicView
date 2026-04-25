@@ -10,7 +10,7 @@ public static class SizeDefaults
     
     public const int TopBorderHeight = 28;
     
-    public const int WindowMinSize = 300;
+    public const int WindowMinSize = 315;
     public const int SecondaryWindowMinWidth = 410;
     
     public const int TabHeight = 32;
