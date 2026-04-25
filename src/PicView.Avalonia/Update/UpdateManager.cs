@@ -7,6 +7,7 @@ using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Http;
+using PicView.Core.IPlatform;
 using PicView.Core.Update;
 
 namespace PicView.Avalonia.Update;
@@ -63,7 +64,7 @@ public static class UpdateManager
         }
 
         // Handle update based on platform and installation type
-        await platformUpdate?.HandlePlatofrmUpdate(updateInfo, tempPath);
+        await platformUpdate?.HandlePlatformUpdate(updateInfo, tempPath);
         return true;
     }
 

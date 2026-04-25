@@ -9,7 +9,6 @@ using PicView.Avalonia.Win32.WindowImpl;
 using PicView.Core.DebugTools;
 using PicView.Core.IPlatform;
 using PicView.Core.ViewModels;
-using PicView.Core.WindowsNT;
 using R3;
 
 namespace PicView.Avalonia.Win32.Views;
