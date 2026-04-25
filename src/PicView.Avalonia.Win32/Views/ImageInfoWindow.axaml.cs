@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -9,6 +10,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.Localization;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.Win32.Views;
@@ -17,9 +19,11 @@ public partial class ImageInfoWindow: Window, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     private readonly ImageInfoWindowConfig _config;
-    public ImageInfoWindow(ImageInfoWindowConfig config)
+    public ImageInfoWindow(MainWindowViewModel viewModel)
     {
-        _config = config;
+        Debug.Assert(viewModel.InfoWindow.ImageInfoWindowConfig != null);
+        _config = viewModel.InfoWindow.ImageInfoWindowConfig;
+        DataContext = viewModel;
         InitializeComponent();
         
         if (Settings.Theme.GlassTheme)
@@ -104,27 +108,11 @@ public partial class ImageInfoWindow: Window, IDisposable
                 .AddTo(_disposables);
             PositionChanged += (_, _) => UpdateWindowPosition();
         };
-        
-        Closing += async delegate
-        {
-            Hide();
-            if (VisualRoot is null)
-            {
-                return;
-            }
-
-            var hostWindow = (Window)VisualRoot;
-            hostWindow?.Focus();
-            await _config.SaveAsync();
-        };
     }
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)
     {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
+        BeginMoveDrag(e);
     }
     
     private void UpdateWindowPosition()

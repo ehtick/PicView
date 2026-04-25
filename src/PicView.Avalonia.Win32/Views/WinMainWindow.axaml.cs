@@ -207,7 +207,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
         _windowInitializer?.ShowAboutWindow();
 
     public async Task ShowImageInfoWindow() =>
-        await _windowInitializer?.ShowImageInfoWindow();
+        await _windowInitializer?.ShowImageInfoWindow(DataContext as MainWindowViewModel);
 
     public async Task ShowKeybindingsWindow() =>
         await _windowInitializer?.ShowKeybindingsWindow();

@@ -86,39 +86,38 @@ public class WindowInitializer : IPlatformSpecificUpdate, PicView.Core.IPlatform
         }
     }
 
-    public async Task ShowImageInfoWindow()
+    public async Task ShowImageInfoWindow(MainWindowViewModel vm)
     {
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            return;
-        }
-
         if (_imageInfoWindow is null)
         {
-            // if (vm.Window.ImageInfoWindowConfig?.WindowProperties is null)
-            // {
-            //     vm.Window.ImageInfoWindowConfig = new ImageInfoWindowConfig();
-            //     await vm.Window.ImageInfoWindowConfig.LoadAsync();
-            // }
-
-            // await Dispatcher.UIThread.InvokeAsync(() =>
-            // {
-            //     vm.Exif ??= new ExifViewModel();
-            //     vm.InfoWindow = new ImageInfoWindowViewModel();
-            //     _imageInfoWindow = new ImageInfoWindow(vm.Window.ImageInfoWindowConfig)
-            //     {
-            //         DataContext = vm
-            //     };
-            //     Show();
-            //     _imageInfoWindow.Closing += (_, _) =>
-            //     {
-            //         _imageInfoWindow = null;
-            //         vm.Exif?.Dispose();
-            //         vm.Exif = null;
-            //         vm.InfoWindow.Dispose();
-            //         vm.InfoWindow = null;
-            //     };
-            // });
+            vm.InfoWindow ??= new ImageInfoWindowViewModel();
+            if (vm.InfoWindow.ImageInfoWindowConfig?.WindowProperties is null)
+            {
+                vm.InfoWindow.ImageInfoWindowConfig = new ImageInfoWindowConfig();
+                await vm.InfoWindow.ImageInfoWindowConfig.LoadAsync();
+            }
+            
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                vm.Exif ??= new ExifViewModel();
+                _imageInfoWindow = new ImageInfoWindow(vm);
+                WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow,
+                    vm.InfoWindow.ImageInfoWindowConfig.WindowProperties);
+                _imageInfoWindow.Show();
+                _imageInfoWindow.Closing += async (_, _) =>
+                {
+                    _imageInfoWindow = null;
+                    vm.Exif?.Dispose();
+                    vm.Exif = null;
+                    if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                    {
+                        desktop.MainWindow.Focus();
+                    }
+                    await vm.InfoWindow.ImageInfoWindowConfig.SaveAsync();
+                    vm.InfoWindow.Dispose();
+                    vm.InfoWindow = null;
+                };
+            });
         }
         else
         {
@@ -130,21 +129,12 @@ public class WindowInitializer : IPlatformSpecificUpdate, PicView.Core.IPlatform
                 }
                 else
                 {
-                    Show();
+                    _imageInfoWindow.Activate();
                 }
             });
         }
 
         await FunctionsMapper.CloseMenus();
-
-        return;
-
-        void Show()
-        {
-            // WindowFunctions.InitializeWindowSizeAndPosition(_imageInfoWindow,
-            //     vm.Window.ImageInfoWindowConfig.WindowProperties);
-            _imageInfoWindow.Show(desktop.MainWindow);
-        }
     }
 
     public async Task ShowKeybindingsWindow()
