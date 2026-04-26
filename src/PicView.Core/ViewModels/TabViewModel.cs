@@ -176,6 +176,14 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         TitleTooltip.Value = title;
         TabTitle.Value = title;
      }
+    
+    public void SetLoading()
+    {
+        WindowTitle.Value = TranslationManager.Translation.Loading + " - PicView";
+        Title.Value = TranslationManager.Translation.Loading;
+        TitleTooltip.Value = TranslationManager.Translation.Loading;
+        TabTitle.Value = TranslationManager.Translation.Loading;
+    }
 
     public void Initialize(IImageCache cache, IThumbnailCache thumbCache, IThumbnailLoader thumbnailLoader, IFileWatcherService? fileWatcherService = null, IThumbnailCache? thumbnailCache = null)
     {

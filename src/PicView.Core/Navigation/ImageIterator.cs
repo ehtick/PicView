@@ -109,12 +109,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             {
                 // Is loading in cache, show thumbnail while loading
                 var thumb = _thumbnailLoader.GetExifThumbnail(targetFile);
-                _tab.Model = new ImageModel
-                {
-                    Image = thumb,
-                    FileInfo = targetFile,
-                    ImageType = ImageType.Bitmap
-                };
+                _tab.Image.Value = thumb;
+                _tab.SetLoading();
 
                 // Wait for loading complete
                 var successfullyLoaded = await Cache.WaitForLoadingCompleteAsync(_tab.Id, index).ConfigureAwait(false);
@@ -322,6 +318,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     private void UpdateModel(ImageModel newModel)
     {
+        _tab.Image.Value = newModel.Image;
+        _tab.FileInfo.Value = newModel.FileInfo;
         _tab.Model = newModel;
         UpdateNavigationProperties();
         TriggerPreload();
