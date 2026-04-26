@@ -116,20 +116,11 @@ public static class WindowResizing
         var control = controlProvider();
         if (control is not null && Application.Current.DataContext is CoreViewModel core)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                Dispatcher.CurrentDispatcher.Post(() =>
-                {
-                    var screenPoint = control.PointToScreen(offset);
-                    core.PlatformService.SetCursorPos(screenPoint.X, screenPoint.Y);
-                }, DispatcherPriority.Loaded + 1);
-
-            }
-            else
+            Dispatcher.CurrentDispatcher.Post(() =>
             {
                 var screenPoint = control.PointToScreen(offset);
                 core.PlatformService.SetCursorPos(screenPoint.X, screenPoint.Y);
-            }
+            }, DispatcherPriority.Loaded + 1);
         }
 
         setTrigger(false);
