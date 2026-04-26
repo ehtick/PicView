@@ -225,7 +225,7 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
 
         if (core.SettingsViewModel is null)
         {
-            core.SettingsViewModel = new SettingsViewModel();
+            core.SettingsViewModel = new SettingsViewModel(core.Translation);
             core.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
         }
 

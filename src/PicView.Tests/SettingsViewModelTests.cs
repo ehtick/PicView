@@ -21,7 +21,7 @@ public class SettingsViewModelTests
     [Fact]
     public void RestoreLastTab_Zero_SetsOverview()
     {
-        using var vm = new SettingsViewModel();
+        using var vm = new SettingsViewModel(new TranslationViewModel());
         vm.RestoreLastTab(0);
         Assert.True(vm.IsOverviewVisible.Value);
     }
@@ -29,7 +29,7 @@ public class SettingsViewModelTests
     [Fact]
     public void RestoreLastTab_One_SetsGeneral()
     {
-        using var vm = new SettingsViewModel();
+        using var vm = new SettingsViewModel(new TranslationViewModel());
         vm.RestoreLastTab(1);
         Assert.False(vm.IsOverviewVisible.Value);
         Assert.Equal(SettingsCategory.General, vm.SelectedCategory.Value);
@@ -38,7 +38,7 @@ public class SettingsViewModelTests
     [Fact]
     public void Navigation_History_Works()
     {
-        using var vm = new SettingsViewModel();
+        using var vm = new SettingsViewModel(new TranslationViewModel());
         vm.RestoreLastTab(0); // Start at Overview
         
         // Go to General

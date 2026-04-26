@@ -23,8 +23,26 @@ public class SettingsViewModel : IDisposable
     private ILanguageService? _languageService;
     private IImageSettingsService? _imageSettingsService;
 
-    public SettingsViewModel()
+    public BindableReactiveProperty<List<SettingsCategoryItem>> Categories { get; } = new();
+
+    public SettingsViewModel(TranslationViewModel translation)
     {
+        Categories.Value =
+        [
+            new SettingsCategoryItem(translation.GeneralSettings, "GeneralSettingsImage", SettingsCategory.General),
+            new SettingsCategoryItem(translation.Appearance, "PaletteImage", SettingsCategory.Appearance),
+            new SettingsCategoryItem(translation.InterfaceConfiguration, "ColumnsSettingsImage", SettingsCategory.Interface),
+            new SettingsCategoryItem(translation.Image, "ImageSettingImage", SettingsCategory.Image),
+            new SettingsCategoryItem(translation.Navigation, "SignPostImage", SettingsCategory.Navigation),
+            new SettingsCategoryItem(translation.GallerySettings, "GalleryImage", SettingsCategory.Gallery),
+            new SettingsCategoryItem(translation.Slideshow, "SlideshowImage", SettingsCategory.Slideshow),
+            new SettingsCategoryItem(translation.Window, "WindowImage", SettingsCategory.Window),
+            new SettingsCategoryItem(translation.Zoom, "ZoomImage", SettingsCategory.Zoom),
+            new SettingsCategoryItem(translation.Mouse, "MouseWheelIcon", SettingsCategory.Mouse),
+            new SettingsCategoryItem(translation.Language, "LanguageSettingsImage", SettingsCategory.Language),
+            new SettingsCategoryItem(translation.FileAssociations, "FileAssociationImage", SettingsCategory.FileAssociations)
+        ];
+
         MouseDoubleClickBehaviors = new BindableReactiveProperty<string[]>(
         [
             TranslationManager.Translation.None!,
@@ -616,5 +634,7 @@ public enum SettingsCategory
     Keybindings,
     FileAssociations
 }
+
+public record SettingsCategoryItem(BindableReactiveProperty<string?> Name, string Icon, SettingsCategory Category);
 
 public record LanguageItem(string Code, string DisplayName);

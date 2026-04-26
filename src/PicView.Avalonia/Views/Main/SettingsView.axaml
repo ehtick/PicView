@@ -3,9 +3,14 @@
     x:DataType="viewModels1:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:config="clr-namespace:PicView.Avalonia.Views.Config"
+    xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <UserControl.Resources>
+        <converters:ResourceKeyToResourceConverter x:Key="ResourceKeyToResourceConverter" />
+    </UserControl.Resources>
 
     <UserControl.ContextMenu>
         <ContextMenu x:Name="ContextMenu">
@@ -150,273 +155,44 @@
                 Focusable="True"
                 IsVisible="{Binding SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}"
                 x:Name="OverViewScrollViewer">
-                <Panel>
-
-                    <WrapPanel
-                        HorizontalAlignment="Center"
-                        ItemHeight="100"
-                        ItemSpacing="5"
-                        ItemWidth="200"
-                        LineSpacing="5"
-                        Margin="15"
-                        VerticalAlignment="Center">
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.General}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource GeneralSettingsImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.GeneralSettings.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Appearance}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource PaletteImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Appearance.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Interface}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource ColumnsSettingsImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.InterfaceConfiguration.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Image}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource ImageSettingImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Image.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Navigation}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource SignPostImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Navigation.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Gallery}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource GalleryImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.GallerySettings.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Slideshow}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource SlideshowImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Slideshow.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Window}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource WindowImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Window.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Zoom}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource ZoomImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Zoom.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Mouse}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource MouseWheelIcon}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Mouse.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.Language}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource LanguageSettingsImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.Language.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-                        <Button
-                            Background="{DynamicResource MainBackgroundColor}"
-                            BorderBrush="{DynamicResource MainBorderColor}"
-                            BorderThickness="1"
-                            Classes="altHover"
-                            Command="{Binding SettingsViewModel.NavigateToCategoryCommand}"
-                            CommandParameter="{x:Static viewModels1:SettingsCategory.FileAssociations}"
-                            CornerRadius="4"
-                            Padding="10,20">
-                            <StackPanel Spacing="5" VerticalAlignment="Center">
-                                <Image
-                                    Height="25"
-                                    Source="{StaticResource FileAssociationImage}"
-                                    Width="25" />
-                                <TextBlock
-                                    Classes="txt"
-                                    HorizontalAlignment="Center"
-                                    Text="{Binding Translation.FileAssociations.Value, Mode=OneWay}" />
-                            </StackPanel>
-                        </Button>
-
-
-                    </WrapPanel>
-
-                </Panel>
+                <ItemsControl ItemsSource="{CompiledBinding SettingsViewModel.Categories.Value}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel
+                                HorizontalAlignment="Center"
+                                ItemHeight="100"
+                                ItemSpacing="5"
+                                ItemWidth="200"
+                                LineSpacing="5"
+                                Margin="15"
+                                VerticalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Background="{DynamicResource MainBackgroundColor}"
+                                BorderBrush="{DynamicResource MainBorderColor}"
+                                BorderThickness="1"
+                                Classes="altHover"
+                                Command="{Binding $parent[UserControl].((viewModels1:CoreViewModel)DataContext).SettingsViewModel.NavigateToCategoryCommand}"
+                                CommandParameter="{Binding Category}"
+                                CornerRadius="4"
+                                Padding="10,20">
+                                <StackPanel Spacing="5" VerticalAlignment="Center">
+                                    <Image
+                                        Height="25"
+                                        Source="{Binding Icon, Converter={StaticResource ResourceKeyToResourceConverter}}"
+                                        Width="25" />
+                                    <TextBlock
+                                        Classes="txt"
+                                        HorizontalAlignment="Center"
+                                        Text="{Binding Name.Value, Mode=OneWay}" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </customControls:AutoScrollViewer>
 
             <DockPanel IsVisible="{Binding !SettingsViewModel.IsOverviewVisible.Value, FallbackValue=False}" x:Name="SplitViewGrid">
