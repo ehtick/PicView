@@ -14,6 +14,8 @@ public class TopTitlebarViewModel
     public BindableReactiveProperty<bool> IsGalleryButtonVisible { get; } = new(true);
     public BindableReactiveProperty<bool> IsMenuButtonVisible { get; } = new(true);
     public BindableReactiveProperty<bool> IsBtnPanelVisible { get; } = new(true);
+    
+    public BindableReactiveProperty<double> MaxItemWidth { get; } = new(double.NaN);
 
     public ReactiveCommand? ToggleMenuCommand { get; private set; }
     public ReactiveCommand? OpenMenuCommand { get; private set; }

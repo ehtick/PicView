@@ -41,6 +41,7 @@
                 <MenuItem
                     Header="{Binding Translation.File}"
                     Height="{Binding TitlebarHeight.Value, Mode=OneWay}"
+                    MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}"
                     x:Name="FileMenuItem">
 
                     <!--  Open  -->
@@ -134,7 +135,7 @@
                 </MenuItem>
 
                 <!--  Edit  -->
-                <MenuItem Header="{CompiledBinding Translation.Edit, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.Edit, Mode=OneWay}" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
 
                     <!--  Copy image  -->
                     <MenuItem
@@ -230,7 +231,7 @@
                 </MenuItem>
 
                 <!--  View  -->
-                <MenuItem Header="{CompiledBinding Translation.View, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.View, Mode=OneWay}" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
 
                     <!--  Change background  -->
                     <MenuItem
@@ -351,7 +352,7 @@
                 </MenuItem>
 
                 <!--  Image  -->
-                <MenuItem Header="{CompiledBinding Translation.Image, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.Image, Mode=OneWay}" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
 
                     <!--  Exif window  -->
                     <MenuItem
@@ -503,7 +504,7 @@
                 </MenuItem>
 
                 <!--  Navigate  -->
-                <MenuItem Header="{Binding Translation.Navigate, Mode=OneWay}">
+                <MenuItem Header="{Binding Translation.Navigate, Mode=OneWay}" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
 
                     <!--  Sort files by  -->
                     <MenuItem Header="{Binding Translation.SortFilesBy.Value, Mode=OneWay}" Theme="{StaticResource MainBg}">
@@ -763,7 +764,7 @@
                 </MenuItem>
 
                 <!--  Settings  -->
-                <MenuItem Header="{CompiledBinding Translation.Settings.Value, Mode=OneWay}">
+                <MenuItem Header="{CompiledBinding Translation.Settings.Value, Mode=OneWay}" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
 
                     <!--  Toggle Subdirectories  -->
                     <MenuItem

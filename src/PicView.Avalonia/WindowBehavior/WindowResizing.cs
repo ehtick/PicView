@@ -163,7 +163,7 @@ public static class WindowResizing
         SetSize(size.Value, reason, vm);
     }
 
-    public static void SetSize(ImageSize2 size, WindowResizeReason reason, MainWindowViewModel vm)
+    public static void SetSize(ImageSize size, WindowResizeReason reason, MainWindowViewModel vm)
     {
         vm.ScrollViewerWidth.Value = size.ScrollViewerWidth;
         vm.ScrollViewerHeight.Value = size.ScrollViewerHeight;
@@ -204,15 +204,15 @@ public static class WindowResizing
         }
         else
         {
-            vm.WindowMaxWidth.Value = Settings.WindowProperties.Width;
-            vm.WindowMaxHeight.Value = Settings.WindowProperties.Height;
+            vm.WindowMaxWidth.Value =
+            vm.WindowMaxHeight.Value =
             vm.ImageWidth.Value =
                 vm.ImageHeight.Value = double.NaN;
         }
 
     }
 
-    public static ImageSize2? GetSize(MainWindowViewModel vm)
+    public static ImageSize? GetSize(MainWindowViewModel vm)
     {
         double width, height, secondaryWidth, secondaryHeight;
         if (vm.WindowTabs.SharedCache?.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo, out var preloadValue) ?? false)
@@ -262,7 +262,7 @@ public static class WindowResizing
             vm);
     }
 
-    public static ImageSize2? GetSize(double width, double height, double secondWidth, double secondHeight,
+    public static ImageSize? GetSize(double width, double height, double secondWidth, double secondHeight,
         double rotation,
         MainWindowViewModel vm)
     {
@@ -276,7 +276,7 @@ public static class WindowResizing
         
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
-            return ImageSizeCalculationHelper2.GetSideBySideImageSize(
+            return ImageSizeCalculationHelper.GetSideBySideImageSize(
                 width,
                 height,
                 secondWidth,
@@ -288,7 +288,7 @@ public static class WindowResizing
                 galleryWidth,
                 galleryHeight);
         }
-        return ImageSizeCalculationHelper2.GetImageSize(
+        return ImageSizeCalculationHelper.GetImageSize(
                 width,
                 height,
                 screenSize,

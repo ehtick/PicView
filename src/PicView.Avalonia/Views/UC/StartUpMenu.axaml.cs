@@ -21,7 +21,7 @@ public partial class StartUpMenu : UserControl
         MinWidth = SizeDefaults.WindowMinSize;
         InitializeComponent();
 
-        SizeChanged += (_, e) => ResponsiveSize(e.NewSize.Width, e.NewSize.Height);
+        SizeChanged += (_, e) => ResponsiveSize(e.NewSize.Width);
         Loaded += StartUpMenu_Loaded;
     }
 
@@ -105,19 +105,13 @@ public partial class StartUpMenu : UserControl
         }
     }
 
-    public void ResponsiveSize(double width, double height)
+    public void ResponsiveSize(double width)
     {
         const int breakPoint = 900;
         const int bottomMargin = 16;
         const int logoWidth = 350;
 
         LogoViewbox.Height = double.NaN;
-
-        if (DataContext is not MainViewModel vm)
-            return;
-
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            return;
 
         if (Settings.WindowProperties.Fullscreen || Settings.WindowProperties.Maximized)
         {
@@ -126,7 +120,6 @@ public partial class StartUpMenu : UserControl
         else if (Settings.WindowProperties.AutoFit)
         {
             ShowIcon();
-            //vm.MainWindow.TitleMaxWidth.Value = logoWidth;
             return;
         }
 
@@ -138,21 +131,6 @@ public partial class StartUpMenu : UserControl
             case > breakPoint:
                 ShowFullLogo();
                 break;
-        }
-
-        var titleMaxWidth = ImageSizeCalculationHelper.GetTitleMaxWidth(vm.PicViewer.RotationAngle.CurrentValue, width,
-            height,
-            desktop.MainWindow.MinWidth, desktop.MainWindow.MinHeight,
-            vm.PlatformWindowService.CombinedTitleButtonsWidth,
-            desktop.MainWindow.Width);
-
-        if (Settings.Zoom.ScrollEnabled)
-        {
-            //vm.MainWindow.TitleMaxWidth.Value = titleMaxWidth - SizeDefaults.ScrollbarSize;
-        }
-        else
-        {
-            //vm.MainWindow.TitleMaxWidth.Value = titleMaxWidth;
         }
 
         return;

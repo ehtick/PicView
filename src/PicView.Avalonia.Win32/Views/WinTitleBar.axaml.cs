@@ -65,13 +65,13 @@ public partial class WinTitleBar : MainTitleBar
                 if (isVisible)
                 {
                     // Overflow buttons if the window is too small
-                    if (Bounds.Width - SearchButton.Bounds.Width - DropDownMenuButton.Bounds.Width - CreateTabButton.Bounds.Width < SizeDefaults.WindowMinSize)
+                    if (Bounds.Width - SearchButton.Bounds.Width - DropDownMenuButton.Bounds.Width - CreateTabButton.Bounds.Width < SizeDefaults.SecondaryWindowMinWidth)
                     {
-                        HideButtons(vm);
+                        TruncateMenu(vm);
                     }
                     else
                     {
-                        ShowButtons(vm);
+                        FullMenu(vm);
                     }
                     MainMenu.Open();
                     FileMenuItem.Open();
@@ -79,20 +79,24 @@ public partial class WinTitleBar : MainTitleBar
                 else
                 {
                     MainMenu.Close();
-                    ShowButtons(vm);
+                    FullMenu(vm);
                 }
             }, DebugHelper.LogError(nameof(WinTitleBar), nameof(InitializeEventHandlers)))
             .AddTo(mainWindow.Disposables);
     }
 
-    private static void HideButtons(MainWindowViewModel vm)
+    private void TruncateMenu(MainWindowViewModel vm)
     {
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = false;
+        LogoBorder.IsVisible = false;
+        vm.TopTitlebarViewModel.MaxItemWidth.Value = 60;
     }
     
-    private static void ShowButtons(MainWindowViewModel vm)
+    private void FullMenu(MainWindowViewModel vm)
     {
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
+        LogoBorder.IsVisible = true;
+        vm.TopTitlebarViewModel.MaxItemWidth.Value = double.NaN;
     }
 
     private void CloseMenu()
