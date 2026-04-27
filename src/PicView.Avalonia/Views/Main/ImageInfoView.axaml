@@ -903,10 +903,7 @@
                                                         FallbackValue=0}" />
                         </StackPanel>
 
-                        <WrapPanel
-                            HorizontalAlignment="Center"
-                            ItemsAlignment="Center"
-                            Margin="5,10,0,0">
+                        <WrapPanel HorizontalAlignment="Center" Margin="5,10,0,0">
 
                             <!--  Date taken  -->
                             <StackPanel Margin="10" Orientation="Horizontal">
@@ -1126,10 +1123,7 @@
                                 Width="{CompiledBinding InfoWindow.HalfLineWidth.Value}" />
                         </StackPanel>
 
-                        <WrapPanel
-                            HorizontalAlignment="Center"
-                            ItemsAlignment="Center"
-                            Margin="5,10,0,0">
+                        <WrapPanel HorizontalAlignment="Center" Margin="5,10,0,0">
 
                             <!--  Latitude  -->
                             <StackPanel Margin="10" Orientation="Horizontal">
@@ -1216,15 +1210,15 @@
                                                                   Mode=OneWay}">
                                     <Path Classes="CopyPath Xl" />
                                 </customControls:CopyButton>
-
                             </StackPanel>
 
-                            <StackPanel Margin="94,0,0,0" Orientation="Horizontal">
+                            <!--  Map link buttons  -->
+                            <StackPanel Margin="0,5" Orientation="Horizontal">
                                 <Button
                                     Classes="altHover BorderStyle"
                                     Command="{CompiledBinding Exif.OpenGoogleLinkCommand,
                                                               Mode=OneWay}"
-                                    Margin="30,0,15,0"
+                                    Margin="117,0,15,0"
                                     x:Name="GoogleLinkButton">
                                     <Path
                                         Data="{StaticResource GoogleGeometry}"
@@ -1245,8 +1239,10 @@
                                         Stretch="Fill"
                                         Width="20" />
                                 </Button>
+
                             </StackPanel>
                         </WrapPanel>
+
                     </StackPanel>
 
                     <!--  Color  -->
@@ -1269,10 +1265,7 @@
                                 Width="{CompiledBinding InfoWindow.HalfLineWidth.Value}" />
                         </StackPanel>
 
-                        <WrapPanel
-                            HorizontalAlignment="Center"
-                            ItemsAlignment="Center"
-                            Margin="5,10,0,0">
+                        <WrapPanel HorizontalAlignment="Center" Margin="5,10,0,0">
 
                             <!--  Color representation  -->
                             <StackPanel Margin="10" Orientation="Horizontal">
@@ -1420,10 +1413,7 @@
                                 Width="{CompiledBinding InfoWindow.HalfLineWidth.Value}" />
                         </StackPanel>
 
-                        <WrapPanel
-                            HorizontalAlignment="Center"
-                            ItemsAlignment="Center"
-                            Margin="5,10,0,0">
+                        <WrapPanel HorizontalAlignment="Center" Margin="5,10,0,0">
 
                             <!--  Camera maker  -->
                             <StackPanel Margin="10" Orientation="Horizontal">
@@ -1856,6 +1846,7 @@
                                     Classes="altHover BorderStyle"
                                     CopyText="{CompiledBinding Exif.WhiteBalance.Value,
                                                                Mode=OneWay}"
+                                    IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                     ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
                                                                   Mode=OneWay}">
                                     <Path Classes="CopyPath Xl" />

@@ -49,8 +49,7 @@ public class ImageInfoWindowViewModel : IDisposable
         IsCopyButtonEnabled.Value = width >= firstBreakPoint;
         IsExtraButtonsEnabled.Value = width >= secondBreakPoint;
 
-        const int smallPadding = 10;
-        const int largePadding = 40;
+        const int padding = 10;
 
         TextBoxMaxWidth.Value = width < thirdBreakPoint ? 0 : TextMaxWidth;
         ExtraTextBoxMaxWidth.Value = width < fourthBreakPoint ? 0 : TextMaxWidth;
@@ -58,26 +57,26 @@ public class ImageInfoWindowViewModel : IDisposable
         switch (width)
         {
             case <= firstBreakPoint:
-                TextBoxWidth.Value = TextBoxXlWidth.Value = width - (textWidth + scrollBarThickness + smallPadding);
+                TextBoxWidth.Value = TextBoxXlWidth.Value = width - (textWidth + scrollBarThickness + padding);
                 TextBoxXxlWidth.Value = width - (textWidth + scrollBarThickness);
                 break;
             case >= firstBreakPoint and <= secondBreakPoint:
                 TextBoxWidth.Value = TextBoxXlWidth.Value = TextBoxXxlWidth.Value =
-                    width - (textWidth + scrollBarThickness + smallPadding + copyBtnWidth);
+                    width - (textWidth + scrollBarThickness + padding + copyBtnWidth);
                 break;
             case >= secondBreakPoint and <= thirdBreakPoint:
-                var thirdBreakWidth = width - width / 2 - (textWidth * 2 + scrollBarThickness + largePadding) +
+                var thirdBreakWidth = width - width / 2 - (textWidth * 2 + scrollBarThickness + padding) +
                                       copyBtnWidth * 2;
                 TextBoxWidth.Value = thirdBreakWidth;
-                var newWidthBreakL =  thirdBreakWidth * 2 + textWidth * 2 - smallPadding * 2;
+                var newWidthBreakL =  thirdBreakWidth * 2 + textWidth * 2 - padding * 2;
                 TextBoxXlWidth.Value = newWidthBreakL;
-                TextBoxXxlWidth.Value = newWidthBreakL - smallPadding;
+                TextBoxXxlWidth.Value = newWidthBreakL - padding;
                 break;
             case >= thirdBreakPoint:
                 var aboveThirdWidth = width / 2 - (textWidth * 2 + scrollBarThickness) +
                                       copyBtnWidth;
                 TextBoxWidth.Value = aboveThirdWidth;
-                var aboveThirdWidthL = aboveThirdWidth * 2 + textWidth * 2 - smallPadding * 2;
+                var aboveThirdWidthL = aboveThirdWidth * 2 + textWidth * 2 - padding * 2;
                 TextBoxXlWidth.Value = aboveThirdWidthL;
                 TextBoxXxlWidth.Value = aboveThirdWidthL - 10;
                 break;
@@ -85,11 +84,11 @@ public class ImageInfoWindowViewModel : IDisposable
 
         if (width >= thirdBreakPoint)
         {
-            HalfLineWidth.Value = width / 2 - (scrollBarThickness + largePadding + 15);
+            HalfLineWidth.Value = width / 2 - (scrollBarThickness + padding + 15);
         }
         else
         {
-            HalfLineWidth.Value = width / 2 - (scrollBarThickness + smallPadding);
+            HalfLineWidth.Value = width / 2 - (scrollBarThickness + padding);
         }
         
         
