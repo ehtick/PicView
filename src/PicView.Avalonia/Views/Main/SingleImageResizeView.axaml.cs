@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.UI;
@@ -12,7 +11,7 @@ namespace PicView.Avalonia.Views.Main;
 
 public partial class SingleImageResizeView : UserControl
 {
-    private readonly CompositeDisposable _disposables = new();
+    private DisposableBag _disposables;
 
     public SingleImageResizeView()
     {
@@ -51,19 +50,19 @@ public partial class SingleImageResizeView : UserControl
         });
     }
     
-    private async ValueTask<string?> SafePickAsync(string file, string destination)
-    {
-        return await FilePicker2.PickFileForSavingAsync(file, destination);
-    }
+    private static async ValueTask<string?> SafePickAsync(string file, string destination) 
+        => await FilePicker2.PickFileForSavingAsync(file, destination);
 
     private void OnUnloaded(object? sender, EventArgs e)
     {
         _disposables.Dispose();
-        if (DataContext is MainWindowViewModel mainVm)
+        if (DataContext is not MainWindowViewModel mainVm)
         {
-            mainVm.ResizeImageViewModel?.Dispose();
-            mainVm.ResizeImageViewModel = null;
+            return;
         }
+
+        mainVm.ResizeImageViewModel?.Dispose();
+        mainVm.ResizeImageViewModel = null;
     }
 
     private void ApplyThemeAdjustments()
@@ -98,8 +97,8 @@ public partial class SingleImageResizeView : UserControl
         var tab = mainVm.WindowTabs.ActiveTab.CurrentValue;
 
         // VM -> UI sync
-        vm.IsLoading.Subscribe(SetLoadingState).AddTo(_disposables);
-        vm.IsKeepingAspectRatio.Subscribe(ToggleLinkChain).AddTo(_disposables);
+        vm.IsLoading.Subscribe(SetLoadingState).AddTo(ref _disposables);
+        vm.IsKeepingAspectRatio.Subscribe(ToggleLinkChain).AddTo(ref _disposables);
 
         // Button clicks
         SaveButton.Click += async (_, _) => await vm.SaveImage();
@@ -108,15 +107,11 @@ public partial class SingleImageResizeView : UserControl
         CancelButton.Click += (_, _) => vm.CloseAction?.Invoke();
         LinkChainButton.Click += (_, _) => vm.ToggleAspectRatio();
 
-        // Keyboard shortcuts
-        PixelWidthTextBox.KeyDown += async (_, e) => { if (e.Key == Key.Enter) await vm.SaveImage(); };
-        PixelHeightTextBox.KeyDown += async (_, e) => { if (e.Key == Key.Enter) await vm.SaveImage(); };
-
         // External image updates
         Observable.EveryValueChanged(tab.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
             .Subscribe(fileInfo => { if (fileInfo != null) vm.UpdateQualitySliderState(fileInfo); },
                        DebugHelper.LogError(nameof(SingleImageResizeView), nameof(RegisterEventHandlers)))
-            .AddTo(_disposables);
+            .AddTo(ref _disposables);
     }
 
     private void SetLoadingState(bool isLoading)
