@@ -133,8 +133,8 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         TitleTooltip.Value = windowTitles.FilePathTitle;
         if (Settings.ImageScaling.ShowImageSideBySide && SecondaryModel is not null)
         {
-            TabTitle.Value = StringExtensions.Combine(Model.FileInfo.Name, SecondaryModel.FileInfo.Name);
-            TabTooltip.Value = StringExtensions.Combine(Model.FileInfo.FullName, SecondaryModel.FileInfo.FullName);
+            TabTitle.Value = StringExtensions.CombineWithSeparator(Model.FileInfo.Name, SecondaryModel.FileInfo.Name);
+            TabTooltip.Value = StringExtensions.CombineWithSeparator(Model.FileInfo.FullName, SecondaryModel.FileInfo.FullName);
         }
         else
         {
@@ -171,7 +171,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         {
             return;
         }
-        WindowTitle.Value = title + " - PicView";
+        WindowTitle.Value = StringExtensions.CombineWithPlusAppName(title);
         Title.Value = title;
         TitleTooltip.Value = title;
         TabTitle.Value = title;
@@ -179,7 +179,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     
     public void SetLoading()
     {
-        WindowTitle.Value = TranslationManager.Translation.Loading + " - PicView";
+        WindowTitle.Value = StringExtensions.CombineWithPlusAppName(TranslationManager.Translation.Loading);
         Title.Value = TranslationManager.Translation.Loading;
         TitleTooltip.Value = TranslationManager.Translation.Loading;
         TabTitle.Value = TranslationManager.Translation.Loading;

@@ -11,11 +11,6 @@ namespace PicView.Core.Titles;
 /// </summary>
 public static class ImageTitleFormatter
 {
-    /// <summary>
-    /// The name of the application.
-    /// </summary>
-    public const string AppName = "PicView";
-
     private const double NormalZoomLevel = 100;
     private const double NoZoomLevel = 0.0;
 
@@ -69,7 +64,7 @@ public static class ImageTitleFormatter
         var baseTitle = sb.ToString();
 
         sb.Append(" - ");
-        sb.Append(AppName);
+        sb.Append(StringExtensions.AppName);
         var fullTitle = sb.ToString();
         var filePathTitle = baseTitle.Replace(namePart, fileInfo.FullName);
 
@@ -113,7 +108,7 @@ public static class ImageTitleFormatter
         var baseTitle = sb.ToString();
 
         sb.Append(" - ");
-        sb.Append(AppName);
+        sb.Append(StringExtensions.AppName);
         var fullTitle = sb.ToString();
         var filePathTitle = baseTitle.Replace(info.FileInfo.Name, info.FileInfo.FullName);
 
@@ -189,7 +184,7 @@ public static class ImageTitleFormatter
         sb.Append(']');
 
         var baseTitle = sb.ToString();
-        var fullTitle = $"{baseTitle} - {AppName}";
+        var fullTitle = $"{baseTitle} - {StringExtensions.AppName}";
         
         // Construct FilePathTitle replacing the file names with their full paths
         var filePathTitle = baseTitle;
@@ -251,7 +246,7 @@ public static class ImageTitleFormatter
         var baseTitle = sb.ToString(); // Save the base title (without AppName)
 
         // Full title with AppName
-        var fullTitle = $"{baseTitle} - {AppName}";
+        var fullTitle = $"{baseTitle} - {StringExtensions.AppName}";
 
         return new WindowTitles
         {

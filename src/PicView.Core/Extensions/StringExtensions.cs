@@ -7,6 +7,7 @@ namespace PicView.Core.Extensions;
 /// </summary>
 public static partial class StringExtensions
 {
+    public const string AppName = "PicView";
 
     /// <summary>
     /// Combines two strings with a " || " separator efficiently, with exactly one string allocation.
@@ -14,7 +15,7 @@ public static partial class StringExtensions
     /// <param name="a">The first string to combine.</param>
     /// <param name="b">The second string to combine.</param>
     /// <returns>The combined string.</returns>
-    public static string Combine(string a, string b)
+    public static string CombineWithSeparator(string a, string b)
     {
         // Safety check to ensure we don't crash on null strings
         a ??= string.Empty;
@@ -43,6 +44,30 @@ public static partial class StringExtensions
 
             // Step 5: Copy string 'b' right after the separator
             spanB.CopyTo(destination.Slice(spanA.Length + 4));
+        });
+    }
+
+    /// <summary>
+    /// Combines the specified string with the application name ("PicView") using a " + " separator.
+    /// </summary>
+    /// <param name="value">The string to combine with the application name.</param>
+    /// <returns>A new string containing the original string followed by " + PicView".</returns>
+    public static string CombineWithPlusAppName(string value)
+    {
+        const string separator = " + ";
+        var requiredLength = value.Length + separator.Length + AppName.Length;
+
+        return string.Create(requiredLength, (value, AppName), (destination, state) =>
+        {
+            var offset = 0;
+
+            state.value.AsSpan().CopyTo(destination[offset..]);
+            offset += state.value.Length;
+
+            separator.AsSpan().CopyTo(destination[offset..]);
+            offset += separator.Length;
+
+            state.AppName.AsSpan().CopyTo(destination[offset..]);
         });
     }
     
