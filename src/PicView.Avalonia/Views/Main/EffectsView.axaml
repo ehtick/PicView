@@ -174,10 +174,11 @@
 
                 <!--  Footer (always visible)  -->
                 <StackPanel
-                    Background="#277A7A7A"
+                    Background="{DynamicResource TertiaryBackgroundColor}"
                     DockPanel.Dock="Bottom"
                     Height="80"
                     Orientation="Horizontal"
+                    PointerPressed="MoveWindow"
                     x:Name="LowerPanel">
 
                     <Button

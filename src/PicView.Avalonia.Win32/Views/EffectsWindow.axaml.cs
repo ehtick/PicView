@@ -5,6 +5,8 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using R3;
 
@@ -45,12 +47,15 @@ public partial class EffectsWindow : Window, IDisposable
             CloseButton.Foreground = new SolidColorBrush(color);
         }
         
-        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.Effects + " - PicView");
+        GenericWindowHelper.GenericWindowInitialize(this, StringExtensions.CombineWithPlusAppName(TranslationManager.Translation.Effects));
         Loaded += delegate
         {
             ClientSizeProperty.Changed.ToObservable()
                 .ObserveOn(UIHelper.GetFrameProvider)
-                .Subscribe(size => { WindowResizing.HandleWindowResize(this, size); })
+                .Subscribe(size =>
+                {
+                    WindowResizing.HandleWindowResize(this, size);
+                }, DebugHelper.LogError(nameof(EffectsWindow), nameof(WindowResizing.HandleWindowResize)))
                 .AddTo(_disposables);
             ClearEffectsItem.Click += delegate
             {
@@ -61,10 +66,7 @@ public partial class EffectsWindow : Window, IDisposable
 
     private void MoveWindow(object? sender, PointerPressedEventArgs e)
     {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
+        BeginMoveDrag(e);
     }
 
     private void Close(object? sender, RoutedEventArgs e) => Close();

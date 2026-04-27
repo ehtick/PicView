@@ -1,9 +1,7 @@
 <Window
     BorderThickness="1"
     CanResize="False"
-    CornerRadius="8"
     SizeToContent="WidthAndHeight"
-    Title="Loading..."
     x:Class="PicView.Avalonia.Win32.Views.EffectsWindow"
     x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -15,7 +13,6 @@
     <Border
         BorderBrush="{DynamicResource WindowBorderColor}"
         BorderThickness="1"
-        PointerPressed="MoveWindow"
         x:Name="ParentBorder">
         <StackPanel>
 
@@ -23,6 +20,7 @@
                 Background="{DynamicResource WindowSecondaryBackgroundColor}"
                 Height="28"
                 LastChildFill="True"
+                PointerPressed="MoveWindow"
                 x:Name="TitleBarPanel">
 
                 <Border
@@ -75,9 +73,9 @@
                     ClickMode="Press"
                     DockPanel.Dock="Right"
                     Foreground="{DynamicResource MainTextColor}"
-                    Icon="{StaticResource SettingsImage}"
-                    IconHeight="12"
-                    IconWidth="12"
+                    Icon="{StaticResource GeneralSettingsImage}"
+                    IconHeight="16"
+                    IconWidth="16"
                     Width="30">
                     <customControls:IconButton.Flyout>
                         <MenuFlyout FlyoutPresenterClasses="noCornerRadius" Placement="Bottom">
@@ -125,8 +123,8 @@
                                         Width="13" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <Separator IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}" />
-                            <MenuItem Header="{CompiledBinding Translation.ClearEffects.Value, Mode=OneWay}" x:Name="ClearEffectsItem">
+                            <Separator IsVisible="{Binding GlobalSettings.ShowSetAsWallpaper.Value}" />
+                            <MenuItem Header="{Binding Translation.ClearEffects.Value, Mode=OneWay}" x:Name="ClearEffectsItem">
                                 <MenuItem.Icon>
                                     <Image
                                         Height="12"
@@ -144,8 +142,7 @@
                     Height="28"
                     LineHeight="28"
                     Padding="30,0,0,0"
-                    Text="{CompiledBinding Translation.Effects.Value,
-                                           Mode=OneWay}"
+                    Text="{Binding Translation.Effects.Value, Mode=OneWay}"
                     TextAlignment="Center"
                     x:Name="TitleText" />
             </DockPanel>

@@ -61,6 +61,14 @@ public partial class EffectsView : UserControl
         else
             HideResetBtn();
     }
+    
+    private void MoveWindow(object? sender, PointerPressedEventArgs e)
+    {
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            window.BeginMoveDrag(e);
+        }
+    }
 
     private void UpdateUIImage(MagickImage? obj)
     {
