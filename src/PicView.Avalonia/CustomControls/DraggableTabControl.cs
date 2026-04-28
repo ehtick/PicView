@@ -135,7 +135,7 @@ public class DraggableTabControl : TabControl
         {
             TabCreated?.Invoke(tabItem, new TabCreatedEventArgs(item, index));
         }
-
+        
         tabItem.AddHandler(PointerPressedEvent, OnItemPointerPressed,
             RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
         tabItem.AddHandler(PointerMovedEvent, OnItemPointerMoved, RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
@@ -144,6 +144,13 @@ public class DraggableTabControl : TabControl
         tabItem.PointerCaptureLost += OnPointerCaptureLost;
 
         tabItem.AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Tunnel | RoutingStrategies.Bubble);
+        
+        SelectionChanged += OnSelectionChanged;
+    }
+
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        _isSwitchingTabs = IsPointerOver;
     }
 
     protected override void ClearContainerForItemOverride(Control container)
@@ -195,8 +202,7 @@ public class DraggableTabControl : TabControl
 
         _isDragging = false;
         _isDetaching = false;
-        
-        _isSwitchingTabs = true;
+
 
         ItemFromContainer(tabItem);
         _sourceIndex = IndexFromContainer(tabItem);
@@ -216,7 +222,11 @@ public class DraggableTabControl : TabControl
 
     private void OnItemPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (_pressedTab == null || _isSwitchingTabs)
+        if (_pressedTab == null)
+        {
+            return;
+        }
+        if (_isSwitchingTabs)
         {
             return;
         }
