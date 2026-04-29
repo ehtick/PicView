@@ -584,7 +584,17 @@
                 </MenuItem>
 
                 <!--  Resize  Image  -->
-                <MenuItem Command="{Binding BatchResizeWindowCommand}" Header="{CompiledBinding Translation.ResizeImage.Value, Mode=OneWay}">
+                <MenuItem Command="{Binding ResizeWindowCommand}" Header="{CompiledBinding Translation.ResizeImage.Value, Mode=OneWay}">
+                    <MenuItem.Icon>
+                        <Image
+                            Height="12"
+                            Source="{StaticResource UpscaleImage}"
+                            Width="12" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Batch Resize  Images  -->
+                <MenuItem Command="{Binding BatchResizeWindowCommand}" Header="{CompiledBinding Translation.BatchResize.Value, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image
                             Height="12"
