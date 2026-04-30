@@ -546,13 +546,12 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     
     public ValueTask Exit()
     {
-        DialogManager.Close();
+        DialogManager.CloseMainWindow();
         return ValueTask.CompletedTask;
     }
 
     public ValueTask Center()
     {
-        // await UIHelper.CenterAsync(vm).ConfigureAwait(false);
         UIHelper.Center(vm);
         return ValueTask.CompletedTask;
     }

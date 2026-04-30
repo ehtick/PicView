@@ -180,7 +180,10 @@ public static class MainKeyboardShortcuts2
         // Handle open dialog
         if (DialogManager.IsDialogOpen)
         {
-            // TODO
+            if (vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.CurrentValue && e.Key is Key.Escape)
+            {
+                vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
+            }
             return false;
         }
         

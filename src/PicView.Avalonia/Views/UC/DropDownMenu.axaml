@@ -1,40 +1,42 @@
 <customControls:AnimatedMenu
-    IsOpen="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}"
     x:Class="PicView.Avalonia.Views.UC.DropDownMenu"
-    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:gallery="clr-namespace:PicView.Core.Gallery;assembly=PicView.Core"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="viewModels:CoreViewModel"
+    IsOpen="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value}">
 
     <Border
+        x:Name="MainBorder"
+        Width="380"
         Background="{DynamicResource MenuBackgroundColor}"
         BorderBrush="{DynamicResource OuterBorderColor}"
         BorderThickness="1"
-        CornerRadius="8"
-        Width="380"
-        x:Name="MainBorder">
+        CornerRadius="8">
         <DockPanel>
 
             <!--  Gallery Carousel  -->
             <Carousel
+                x:Name="GalleryCarousel"
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}"
-                x:Name="GalleryCarousel">
+                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.GalleryCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsGalleryCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <customControls:IconButton
+                            x:Name="GalleryExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -45,11 +47,11 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="GalleryExpandButton" />
+                            IconWidth="12" />
 
                         <customControls:TextIconButton
+                            x:Name="MainGalleryButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Click="Close_OnClick"
@@ -60,13 +62,14 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowImageGallery.Value}"
-                            x:Name="MainGalleryButton" />
+                            Text="{CompiledBinding Translation.ShowImageGallery.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
                             <customControls:IconButton
+                                x:Name="GalleryContractButton"
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -75,22 +78,21 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="12"
-                                IconWidth="12"
-                                Width="35"
-                                x:Name="GalleryContractButton" />
+                                IconWidth="12" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.GallerySettings.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="2,0,5,2" />
+                            Margin="2,0,5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
                         <customControls:TextIconButton
+                            x:Name="BottomDockButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
@@ -102,10 +104,10 @@
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsBottomDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryAtBottom.Value}"
-                            x:Name="BottomDockButton" />
+                            Text="{CompiledBinding Translation.ShowDockedGalleryAtBottom.Value}" />
                         <customControls:TextIconButton
+                            x:Name="TopDockButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
@@ -117,10 +119,10 @@
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsTopDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryAtTop.Value}"
-                            x:Name="TopDockButton" />
+                            Text="{CompiledBinding Translation.ShowDockedGalleryAtTop.Value}" />
                         <customControls:TextIconButton
+                            x:Name="RightDockButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
@@ -132,10 +134,10 @@
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsRightDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value}"
-                            x:Name="RightDockButton" />
+                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheRight.Value}" />
                         <customControls:TextIconButton
+                            x:Name="LeftDockButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.SetDockPositionCommand}"
@@ -147,10 +149,10 @@
                             IconMargin="0,0,7,0"
                             IconWidth="14"
                             IsEnabled="{CompiledBinding !MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsLeftDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value}"
-                            x:Name="LeftDockButton" />
+                            Text="{CompiledBinding Translation.ShowDockedGalleryToTheLeft.Value}" />
                         <customControls:TextIconButton
+                            x:Name="HideDockedButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.CloseGalleryCommand}"
@@ -161,30 +163,30 @@
                             IconMargin="0,0,7,0"
                             IconWidth="12"
                             IsEnabled="{CompiledBinding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.Gallery.IsGalleryDocked.Value}"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.HideDockedGallery.Value}"
-                            x:Name="HideDockedButton" />
+                            Text="{CompiledBinding Translation.HideDockedGallery.Value}" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>
 
             <!--  Slideshow Carousel  -->
             <Carousel
+                x:Name="SlideshowCarousel"
                 DockPanel.Dock="Top"
-                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}"
-                x:Name="SlideshowCarousel">
+                SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsSlideshowCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <customControls:IconButton
+                            x:Name="SlideshowExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -194,11 +196,11 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="SlideshowExpandButton" />
+                            IconWidth="12" />
 
                         <customControls:TextIconButton
+                            x:Name="MainSlideshowButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Click="Close_OnClick"
@@ -208,13 +210,14 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.Slideshow.Value}"
-                            x:Name="MainSlideshowButton" />
+                            Text="{CompiledBinding Translation.Slideshow.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
                             <customControls:IconButton
+                                x:Name="SlideshowContractButton"
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -223,22 +226,21 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="12"
-                                IconWidth="12"
-                                Width="35"
-                                x:Name="SlideshowContractButton" />
+                                IconWidth="12" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.Slideshow.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,2" />
+                            Margin="5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow2Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="2000"
@@ -246,10 +248,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow2Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow5Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="5000"
@@ -257,10 +259,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow5Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow10Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="10000"
@@ -268,10 +270,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow10Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow20Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="20000"
@@ -279,10 +281,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow20Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow30Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="30000"
@@ -290,10 +292,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow30Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow60Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="60000"
@@ -301,10 +303,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow60Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow90Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="90000"
@@ -312,10 +314,10 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow90Sec" />
+                            IconWidth="14" />
                         <customControls:TextIconButton
+                            x:Name="SlideShow120Sec"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             CommandParameter="120000"
@@ -324,9 +326,7 @@
                             Icon="{StaticResource TimerImage}"
                             IconHeight="14"
                             IconMargin="0,0,7,0"
-                            IconWidth="14"
-                            Padding="15,7,15,7"
-                            x:Name="SlideShow120Sec" />
+                            IconWidth="14" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>
@@ -335,16 +335,18 @@
             <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.ToolWindowsCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsToolWindowsCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <customControls:IconButton
+                            x:Name="ToolWindowsExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -354,11 +356,11 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="ToolWindowsExpandButton" />
+                            IconWidth="12" />
 
                         <customControls:TextIconButton
+                            x:Name="ToolWindowButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             ClickMode="Release"
@@ -368,13 +370,14 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{Binding Translation.ToolWindows.Value}"
-                            x:Name="ToolWindowButton" />
+                            Text="{Binding Translation.ToolWindows.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
                             <customControls:IconButton
+                                x:Name="ToolWindowContractButton"
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -383,24 +386,23 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="14"
-                                IconWidth="14"
-                                Width="35"
-                                x:Name="ToolWindowContractButton" />
+                                IconWidth="14" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.ToolWindows.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,2" />
+                            Margin="5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
 
                         <!--  Effects  -->
                         <customControls:TextIconButton
+                            x:Name="EffectsButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.EffectsWindowCommand}"
@@ -409,14 +411,14 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
                             Text="{Binding Translation.Effects.Value}"
                             ToolTip.Tip="{CompiledBinding Translation.EffectsTooltip.Value,
-                                                          Mode=OneWay}"
-                            x:Name="EffectsButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Single image Resize  -->
                         <customControls:TextIconButton
+                            x:Name="SingleImageResizeButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.ResizeWindowCommand}"
@@ -425,12 +427,12 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{Binding Translation.ResizeImage.Value}"
-                            x:Name="SingleImageResizeButton" />
+                            Text="{Binding Translation.ResizeImage.Value}" />
 
                         <!--  Batch Resize  -->
                         <customControls:TextIconButton
+                            x:Name="BatchResizeButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.BatchResizeWindowCommand}"
@@ -439,12 +441,12 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{Binding Translation.BatchResize.Value}"
-                            x:Name="BatchResizeButton" />
+                            Text="{Binding Translation.BatchResize.Value}" />
 
                         <!--  Image info  -->
                         <customControls:TextIconButton
+                            x:Name="ImageInfoButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.ImageInfoWindowCommand}"
@@ -453,12 +455,12 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{Binding Translation.ImageInfo.Value}"
-                            x:Name="ImageInfoButton" />
+                            Text="{Binding Translation.ImageInfo.Value}" />
 
                         <!--  Crop  -->
                         <customControls:TextIconButton
+                            x:Name="CropButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.CropCommand}"
@@ -468,9 +470,7 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{Binding Translation.Crop.Value}"
-                            x:Name="CropButton" />
+                            Text="{Binding Translation.Crop.Value}" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>
@@ -479,17 +479,19 @@
             <Carousel DockPanel.Dock="Top" SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SettingsCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>
-                        <PageSlide Duration="0:00:00.200" Orientation="Horizontal" />
+                        <PageSlide Orientation="Horizontal" Duration="0:00:00.200" />
                     </CompositePageTransition>
                 </Carousel.PageTransition>
                 <Carousel.Items>
                     <DockPanel
+                        VerticalAlignment="Top"
                         IsVisible="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsSettingsCarouselVisible.Value}"
-                        LastChildFill="True"
-                        VerticalAlignment="Top">
+                        LastChildFill="True">
 
                         <!--  Expand into settings  -->
                         <customControls:IconButton
+                            x:Name="SettingsExpandButton"
+                            Width="35"
                             Background="{DynamicResource SecondaryButtonBackgroundColor}"
                             BorderBrush="{DynamicResource MainBorderColor}"
                             BorderThickness="0,0,1,0"
@@ -499,14 +501,15 @@
                             DockPanel.Dock="Right"
                             Foreground="{DynamicResource MainTextColor}"
                             IconHeight="12"
-                            IconWidth="12"
-                            Width="35"
-                            x:Name="SettingsExpandButton" />
+                            IconWidth="12" />
 
                         <!--  Main settings button  -->
                         <customControls:TextIconButton
+                            x:Name="SettingsButton"
+                            Padding="15,7,15,7"
                             Background="Transparent"
                             Classes="altHover"
+                            Click="Close_OnClick"
                             ClickMode="Release"
                             Command="{CompiledBinding MainWindows.ActiveWindow.Value.SettingsWindowCommand}"
                             Foreground="{DynamicResource MainTextColor}"
@@ -514,15 +517,16 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,7,15,7"
-                            Text="{CompiledBinding Translation.Settings.Value}"
-                            x:Name="SettingsButton" />
+                            Text="{CompiledBinding Translation.Settings.Value}" />
                     </DockPanel>
                     <StackPanel VerticalAlignment="Top">
                         <Panel Height="30">
 
                             <!--  Close settings  -->
                             <customControls:IconButton
+                                x:Name="SettingsContractButton"
+                                Width="35"
+                                HorizontalAlignment="Left"
                                 Background="{DynamicResource SecondaryButtonBackgroundColor}"
                                 BorderBrush="{DynamicResource MainBorderColor}"
                                 BorderThickness="0,0,1,0"
@@ -531,113 +535,112 @@
                                 CornerRadius="8,0,0,0"
                                 Data="{StaticResource FilledArrowLeftGeometry}"
                                 Foreground="{DynamicResource MainTextColor}"
-                                HorizontalAlignment="Left"
                                 IconHeight="14"
-                                IconWidth="14"
-                                Width="35"
-                                x:Name="SettingsContractButton" />
+                                IconWidth="14" />
                             <TextBlock
-                                Classes="txt"
                                 HorizontalAlignment="Center"
+                                Classes="txt"
                                 Text="{CompiledBinding Translation.Settings.Value,
                                                        Mode=OneWay}" />
                         </Panel>
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,2" />
+                            Margin="5,2"
+                            Fill="{DynamicResource MainBorderColor}" />
 
                         <!--  Auto-fit window  -->
                         <customControls:TextToggleButton
+                            x:Name="AutoFitButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.AutoFitWindowCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding MainWindows.ActiveWindow.Value.IsAutoFit.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.AutoFitWindow.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.AutoFitWindow.Value,
-                                                          Mode=OneWay}"
-                            x:Name="AutoFitButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Topmost  -->
                         <customControls:TextToggleButton
+                            x:Name="TopMostButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.SetTopMostCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding MainWindows.ActiveWindow.Value.IsTopMost.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.StayTopMost.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.StayTopMost.Value,
-                                                          Mode=OneWay}"
-                            x:Name="TopMostButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Looping  -->
                         <customControls:TextToggleButton
+                            x:Name="LoopingButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.ToggleLoopingCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding GlobalSettings.IsLooping.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.ToggleLooping.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
-                                                          Mode=OneWay}"
-                            x:Name="LoopingButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Scroll  -->
                         <customControls:TextToggleButton
+                            x:Name="ScrollButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.ToggleScrollCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding MainWindows.ActiveWindow.Value.IsScrollingEnabled.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.IsScrolling.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.ToggleScroll.Value,
-                                                          Mode=OneWay}"
-                            x:Name="ScrollButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Stretch  -->
                         <customControls:TextToggleButton
+                            x:Name="StretchButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.StretchCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding MainWindows.ActiveWindow.Value.IsStretched.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.Stretch.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.Stretch.Value,
-                                                          Mode=OneWay}"
-                            x:Name="StretchButton" />
+                                                          Mode=OneWay}" />
 
                         <!--  Side by side  -->
                         <customControls:TextToggleButton
+                            x:Name="SideBySideButton"
+                            Padding="7,0"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.SideBySideCommand}"
                             Foreground="{DynamicResource MainTextColor}"
                             IsChecked="{Binding MainWindows.ActiveWindow.Value.IsSideBySide.Value, Mode=TwoWay}"
-                            Padding="7,0"
                             Text="{Binding Translation.SideBySide.Value}"
                             TextMargin="0,0,7,0"
                             ToolTip.Tip="{CompiledBinding Translation.SideBySideTooltip.Value,
-                                                          Mode=OneWay}"
-                            x:Name="SideBySideButton" />
+                                                          Mode=OneWay}" />
 
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            Margin="5,0" />
+                            Margin="5,0"
+                            Fill="{DynamicResource MainBorderColor}" />
 
                         <!--  About  -->
                         <customControls:TextIconButton
+                            x:Name="AboutButton"
+                            Padding="15,9"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.AboutWindowCommand}"
@@ -646,14 +649,14 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,9"
                             Text="{Binding Translation.About.Value}"
-                            ToolTip.Tip="{Binding Translation.AboutWindow.Value}"
-                            x:Name="AboutButton" />
+                            ToolTip.Tip="{Binding Translation.AboutWindow.Value}" />
 
 
                         <!--  Keybindings  -->
                         <customControls:TextIconButton
+                            x:Name="KeybindingsButton"
+                            Padding="15,9"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.KeybindingsWindowCommand}"
@@ -662,13 +665,13 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,9"
                             Text="{Binding Translation.ApplicationShortcuts.Value}"
-                            ToolTip.Tip="{Binding Translation.ApplicationShortcuts.Value}"
-                            x:Name="KeybindingsButton" />
+                            ToolTip.Tip="{Binding Translation.ApplicationShortcuts.Value}" />
 
                         <!--  Settings  -->
                         <customControls:TextIconButton
+                            x:Name="AllSettingsButton"
+                            Padding="15,9"
                             Background="Transparent"
                             Classes="altHover"
                             Command="{Binding MainWindows.ActiveWindow.Value.SettingsWindowCommand}"
@@ -678,31 +681,32 @@
                             IconHeight="14"
                             IconMargin="0,0,7,0"
                             IconWidth="14"
-                            Padding="15,9"
                             Text="{Binding Translation.ShowAllSettingsWindow.Value}"
-                            ToolTip.Tip="{Binding Translation.ShowAllSettingsWindow.Value}"
-                            x:Name="AllSettingsButton" />
+                            ToolTip.Tip="{Binding Translation.ShowAllSettingsWindow.Value}" />
                     </StackPanel>
                 </Carousel.Items>
             </Carousel>
 
             <!--  File history  -->
             <DockPanel
-                IsVisible="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsFileHistoryVisible.Value}"
-                LastChildFill="False"
                 Margin="0,0,0,5"
-                VerticalAlignment="Top">
+                VerticalAlignment="Top"
+                IsVisible="{CompiledBinding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.IsFileHistoryVisible.Value}"
+                LastChildFill="False">
 
                 <Rectangle
-                    DockPanel.Dock="Top"
-                    Fill="{DynamicResource MainBorderColor}"
                     Height="2"
-                    Margin="10,5,0,5" />
+                    Margin="10,5,0,5"
+                    DockPanel.Dock="Top"
+                    Fill="{DynamicResource MainBorderColor}" />
 
                 <!--  File history header buttons  -->
                 <DockPanel DockPanel.Dock="Top">
 
                     <customControls:IconButton
+                        x:Name="HistorySortButton"
+                        Margin="0,0,0,0"
+                        Padding="8,5"
                         Background="Transparent"
                         Classes="hover"
                         Command="{Binding FileHistory.ToggleSortCommand}"
@@ -710,12 +714,12 @@
                         Foreground="{DynamicResource MainTextColor}"
                         Icon="{StaticResource SortDescImage}"
                         IconHeight="14"
-                        IconWidth="14"
-                        Margin="0,0,0,0"
-                        Padding="8,5"
-                        x:Name="HistorySortButton" />
+                        IconWidth="14" />
 
                     <customControls:IconButton
+                        x:Name="HistoryClearButton"
+                        Margin="0,0,5,0"
+                        Padding="8,4"
                         Classes="errorHover"
                         Command="{Binding FileHistory.ClearHistoryCommand}"
                         Data="{StaticResource RecycleGeometry}"
@@ -723,13 +727,13 @@
                         Foreground="{DynamicResource MainTextColor}"
                         IconHeight="14"
                         IconWidth="14"
-                        Margin="0,0,5,0"
-                        Padding="8,4"
                         ToolTip.Tip="{CompiledBinding Translation.Clear.Value,
-                                                      Mode=OneWay}"
-                        x:Name="HistoryClearButton" />
+                                                      Mode=OneWay}" />
 
                     <customControls:IconButton
+                        x:Name="HistoryFileButton"
+                        Margin="0,0,5,0"
+                        Padding="8,5"
                         Classes="hover"
                         ClickMode="Release"
                         Command="{Binding FileHistory.OpenFileHistoryCommand}"
@@ -738,17 +742,14 @@
                         Icon="{StaticResource SquareLibrary}"
                         IconHeight="14"
                         IconWidth="14"
-                        Margin="0,0,5,0"
-                        Padding="8,5"
                         ToolTip.Tip="{CompiledBinding Translation.OpenFileHistory.Value,
-                                                      Mode=OneWay}"
-                        x:Name="HistoryFileButton" />
+                                                      Mode=OneWay}" />
 
                     <TextBlock
+                        Padding="15,5,0,5"
                         Classes="txt bold"
                         DockPanel.Dock="Left"
                         FontSize="12"
-                        Padding="15,5,0,5"
                         Text="{CompiledBinding Translation.RecentFiles.Value}" />
 
                 </DockPanel>
@@ -758,15 +759,15 @@
 
                         <!--  Pinned entries  -->
                         <TextBlock
+                            Margin="15,10,15,5"
                             Classes="txt"
                             IsVisible="{CompiledBinding FileHistory.HasPinnedEntries.Value}"
-                            Margin="15,10,15,5"
                             Text="{Binding Translation.Pinned.Value}" />
 
                         <ListBox
+                            x:Name="PinnedEntriesCollection"
                             IsVisible="{CompiledBinding FileHistory.HasPinnedEntries.Value}"
-                            Theme="{StaticResource NoScrollListBox}"
-                            x:Name="PinnedEntriesCollection">
+                            Theme="{StaticResource NoScrollListBox}">
                             <ListBox.Styles>
                                 <Style Selector="ListBoxItem">
                                     <Setter Property="BorderThickness" Value="0" />
@@ -780,14 +781,14 @@
                         </ListBox>
 
                         <Rectangle
-                            Fill="{DynamicResource MainBorderColor}"
                             Height="1"
-                            IsVisible="{CompiledBinding FileHistory.HasPinnedEntries.Value}"
                             Margin="10,5,0,10"
+                            Fill="{DynamicResource MainBorderColor}"
+                            IsVisible="{CompiledBinding FileHistory.HasPinnedEntries.Value}"
                             Opacity=".85" />
 
                         <!--  Unpinned entries  -->
-                        <ListBox Theme="{StaticResource NoScrollListBox}" x:Name="UnPinnedEntriesCollection">
+                        <ListBox x:Name="UnPinnedEntriesCollection" Theme="{StaticResource NoScrollListBox}">
                             <ListBox.Styles>
                                 <Style Selector="ListBoxItem">
                                     <Setter Property="BorderThickness" Value="0" />

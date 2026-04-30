@@ -43,11 +43,11 @@ public static class DialogManager
         }
         else
         {
-            Close();
+            CloseMainWindow();
         }
     }
 
-    public static void Close()
+    public static void CloseMainWindow()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
