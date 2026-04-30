@@ -1,11 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
-using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.MacOS.PlatformUpdate;
 using PicView.Avalonia.UI;
+using PicView.Core.IPlatform;
 using PicView.Core.Update;
-using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.MacOS.Views;
 
@@ -21,7 +20,7 @@ public partial class AboutWindow : Window, IPlatformSpecificUpdate
         GenericWindowHelper.AboutWindowInitialize(this);
     }
     
-    public async Task HandlePlatofrmUpdate(UpdateInfo updateInfo, string tempPath)
+    public async Task HandlePlatformUpdate(UpdateInfo updateInfo, string tempPath)
     {
         await MacUpdateHelper.HandleMacOSUpdate(updateInfo, tempPath);
     }

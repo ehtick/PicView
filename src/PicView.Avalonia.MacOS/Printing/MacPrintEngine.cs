@@ -25,10 +25,7 @@ public static class MacPrintEngine
         }
 
         // 2. Determine paper size (mm) using shared helper
-        var paper = ResolvePaper(settings.PaperSize.Value, settings.Orientation.Value);
-
-        var pageWidthMm = paper.WidthMm;
-        var pageHeightMm = paper.HeightMm;
+        var (_, pageWidthMm, pageHeightMm) = ResolvePaper(settings.PaperSize.Value, settings.Orientation.Value);
 
         // 3. Compute final print layout (same logic as preview)
         var layout = PrintCore.ComputeLayout(
