@@ -2,8 +2,6 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media.Imaging;
-using Clowd.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.StartUp;
@@ -172,12 +170,12 @@ public class App : Application, IPlatformSpecificService
 
     public async Task CopyImageToClipboard(object bitmap)
     {
-        await ClipboardAvalonia.SetImageAsync(bitmap as Bitmap).ConfigureAwait(false);
+        await Task.CompletedTask; // TODO: Implement image copying to clipboard
     }
 
     public async Task<object?> GetImageFromClipboard()
     {
-        return await ClipboardAvalonia.GetImageAsync().ConfigureAwait(false);
+        throw new NotImplementedException(); // TODO: Implement image copying to clipboard
     }
 
     public async Task<bool> ExtractWithLocalSoftwareAsync(string path, string tempDirectory)

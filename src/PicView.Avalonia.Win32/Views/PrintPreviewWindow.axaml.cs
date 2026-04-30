@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Drawing.Printing;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -16,8 +15,6 @@ using PicView.Core.Localization;
 using PicView.Core.Printing;
 using PicView.Core.ViewModels;
 using R3;
-using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
-using PaperSize = System.Drawing.Printing.PaperSize;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -138,8 +135,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
 
         try
         {
-            var ps = new PrinterSettings { PrinterName = settings.PrinterName.Value };
-            var sizes = ps.PaperSizes.Cast<PaperSize>().Select(p => p.PaperName).ToList();
+            var sizes = PrintEngine.GetPaperSizes(settings.PrinterName.Value).ToList();
 
             var currentPaper = settings.PaperSize.Value ?? string.Empty;
             if (!sizes.Contains(currentPaper))
@@ -149,7 +145,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
                         p.StartsWith(currentPaper, StringComparison.OrdinalIgnoreCase) ||
                         currentPaper.StartsWith(p, StringComparison.OrdinalIgnoreCase))
                     ?? sizes.FirstOrDefault()
-                    ?? string.Empty;
+                    ?? "A4";
             }
 
             vm.PaperSizes.Value = new ObservableCollection<string>(sizes);
@@ -157,9 +153,9 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePrinter),
+            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(UpdatePrinter),
                 "[PrintPreview] Failed to reload paper sizes");
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePrinter), ex);
+            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(UpdatePrinter), ex);
         }
     }
 
@@ -188,7 +184,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             // Grayscale if needed
             if (settings.ColorMode.Value == (int)ColorModes.BlackAndWhite)
             {
-                vm.GrayCache ??= PrintEngine.ToGrayScale(avaloniaBmp, PreviewDpi);
+                vm.GrayCache ??= PrintCore.ToGrayScale(avaloniaBmp, PreviewDpi);
                 avaloniaBmp = (Bitmap)vm.GrayCache;
             }
             else
@@ -205,7 +201,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             }
 
             // Compute layout once
-            var layout = PrintEngine.ComputeLayout(
+            var layout = PrintCore.ComputeLayout(
                 paperInfo.WidthMm, paperInfo.HeightMm, settings,
                 avaloniaBmp.PixelSize.Width,
                 avaloniaBmp.PixelSize.Height,
@@ -278,7 +274,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
 
         try
         {
-            await Task.Run(() => PrintEngine.RunPrintJob(settings, avaloniaBmp));
+            await PrintEngine.RunPrintJob(settings, avaloniaBmp);
             await Dispatcher.UIThread.InvokeAsync(Close);
         }
         catch (Exception ex)
