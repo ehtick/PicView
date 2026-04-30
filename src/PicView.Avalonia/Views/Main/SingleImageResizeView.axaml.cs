@@ -50,8 +50,8 @@ public partial class SingleImageResizeView : UserControl
         });
     }
     
-    private static async ValueTask<string?> SafePickAsync(string file, string destination) 
-        => await FilePicker2.PickFileForSavingAsync(file, destination);
+    private static async ValueTask<string?> SafePickAsync(string file, string extension) 
+        => await FilePicker2.PickFileForSavingAsync(file, extension);
 
     private void OnUnloaded(object? sender, EventArgs e)
     {
@@ -106,12 +106,6 @@ public partial class SingleImageResizeView : UserControl
         ResetButton.Click += (_, _) => vm.ResetSettings();
         CancelButton.Click += (_, _) => vm.CloseAction?.Invoke();
         LinkChainButton.Click += (_, _) => vm.ToggleAspectRatio();
-
-        // External image updates
-        Observable.EveryValueChanged(tab.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
-            .Subscribe(fileInfo => { if (fileInfo != null) vm.UpdateQualitySliderState(fileInfo); },
-                       DebugHelper.LogError(nameof(SingleImageResizeView), nameof(RegisterEventHandlers)))
-            .AddTo(ref _disposables);
     }
 
     private void SetLoadingState(bool isLoading)
