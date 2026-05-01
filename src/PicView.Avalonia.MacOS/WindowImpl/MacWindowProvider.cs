@@ -33,7 +33,7 @@ public class MacWindowProvider : IWindowProvider
     {
         if (printPreviewWindow is PrintPreviewWindow win)
         {
-            await MacPrintInitialization.Initialize(vm, path, win);
+            await MacPrintInitialization.InitializeAsync(vm, path, win);
         }
     }
 

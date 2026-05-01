@@ -1,27 +1,22 @@
-﻿using System.Collections.ObjectModel;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Win32.Printing;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
 using PicView.Core.Printing;
 using PicView.Core.ViewModels;
-using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class PrintPreviewWindow : Window, IPrintWindow
+public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
 {
-    private const float PreviewDpi = 96f;
-
     public PrintPreviewWindow()
     {
         InitializeComponent();
@@ -58,113 +53,15 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         CloseButton.Foreground = brush;
     }
 
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is Window hostWindow)
-        {
-            hostWindow.BeginMoveDrag(e);
-        }
-    }
-
     private void Close(object? sender, RoutedEventArgs e) => Close();
     private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
-
-    public void Initialize()
-    {
-        var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
-        
-        vm.PrintPreview ??= new PrintPreviewViewModel();
-
-        ClientSizeProperty.Changed.ToObservable()
-            .ObserveOn(UIHelper.GetFrameProvider)
-            .Subscribe(_ =>
-            {
-                WindowFunctions.CenterWindowOnOwnerWindow(this, Owner as Window);
-            })
-            .AddTo(vm.PrintPreview.Disposables);
-
-        // Initial render
-        UpdatePreview(vm.PrintPreview);
-        UpdatePrinter(vm.PrintPreview);
-
-        var ps = vm.PrintPreview.PrintSettings.Value;
-
-        // Printer change
-        ps.PrinterName
-            .AsObservable()
-            .DistinctUntilChanged()
-            .Subscribe(_ => UpdatePrinter(vm.PrintPreview))
-            .AddTo(vm.PrintPreview.Disposables);
-
-        // Any setting change triggers preview update
-        // ReSharper disable once InvokeAsExtensionMethod
-        Observable.CombineLatest(
-                ps.Orientation.AsObservable(),
-                ps.MarginTop.AsObservable(),
-                ps.MarginBottom.AsObservable(),
-                ps.MarginLeft.AsObservable(),
-                ps.MarginRight.AsObservable(),
-                ps.ScaleMode.AsObservable(),
-                ps.ColorMode.AsObservable(),
-                ps.PaperSize.AsObservable(),
-                (orientation, top, bottom, left, right, scale, color, paper)
-                    => (orientation, top, bottom, left, right, scale, color, paper))
-            .ThrottleLast(TimeSpan.FromMilliseconds(100))
-            .Subscribe(_ => UpdatePreview(vm.PrintPreview))
-            .AddTo(vm.PrintPreview.Disposables);
-        vm.PrintPreview.IsProcessing.Value = false;
-    }
-
-
-    // -----------------------------------------------------------
-    //   Printer setup
-    // -----------------------------------------------------------
-
-    public void UpdatePrinter(PrintPreviewViewModel vm)
-    {
-        var settings = vm.PrintSettings.Value;
-        if (settings == null)
-        {
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(settings.PrinterName.Value))
-        {
-            return;
-        }
-
-        try
-        {
-            var sizes = PrintEngine.GetPaperSizes(settings.PrinterName.Value).ToList();
-
-            var currentPaper = settings.PaperSize.Value ?? string.Empty;
-            if (!sizes.Contains(currentPaper))
-            {
-                currentPaper =
-                    sizes.FirstOrDefault(p =>
-                        p.StartsWith(currentPaper, StringComparison.OrdinalIgnoreCase) ||
-                        currentPaper.StartsWith(p, StringComparison.OrdinalIgnoreCase))
-                    ?? sizes.FirstOrDefault()
-                    ?? "A4";
-            }
-
-            vm.PaperSizes.Value = new ObservableCollection<string>(sizes);
-            settings.PaperSize.Value = currentPaper;
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(UpdatePrinter),
-                "[PrintPreview] Failed to reload paper sizes");
-            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(UpdatePrinter), ex);
-        }
-    }
 
 
     // -----------------------------------------------------------
     //   Preview rendering (uses same layout as print)
     // -----------------------------------------------------------
 
-    private void UpdatePreview(PrintPreviewViewModel vm)
+    public async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
     {
         try
         {
@@ -210,7 +107,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             var rtb = new RenderTargetBitmap(
                 new PixelSize((int)layout.PageWidthPx, (int)layout.PageHeightPx));
 
-            Dispatcher.UIThread.Invoke(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 using var ctx = rtb.CreateDrawingContext();
                 ctx.FillRectangle(Brushes.White, new Rect(0, 0, layout.PageWidthPx, layout.PageHeightPx));
@@ -239,10 +136,12 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
             vm.PreviewImage.Value = rtb;
             vm.PageWidth.Value = layout.PageWidthPx;
             vm.PageHeight.Value = layout.PageHeightPx;
+            
+            vm.IsProcessing.Value = false;
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreview), ex);
+            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreviewAsync), ex);
         }
     }
 
@@ -251,7 +150,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
     //   Print command
     // -----------------------------------------------------------
 
-    public async Task RunPrintAsync(MainWindowViewModel vm)
+    public async ValueTask RunPrintAsync(MainWindowViewModel vm)
     {
         if (vm.PrintPreview == null)
         {
@@ -285,15 +184,5 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         {
             preview.IsProcessing.Value = false;
         }
-    }
-
-    protected override void OnClosing(WindowClosingEventArgs e)
-    {
-        base.OnClosing(e);
-        if (DataContext is not MainWindowViewModel vm)
-        {
-            return;
-        }
-        vm.PrintPreview?.Dispose();
     }
 }

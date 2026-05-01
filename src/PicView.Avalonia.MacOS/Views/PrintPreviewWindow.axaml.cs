@@ -1,9 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.MacOS.Printing;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
@@ -16,10 +16,8 @@ using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class PrintPreviewWindow : Window, IPrintWindow
+public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
 {
-    private const float PreviewDpi = 96f;
-
     public PrintPreviewWindow()
     {
         InitializeComponent();
@@ -68,53 +66,6 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
 #endif
             })
             .AddTo(vm.PrintPreview.Disposables);
-
-        var ps = vm.PrintPreview.PrintSettings.Value;
-
-        // Printer change
-        ps.PrinterName
-            .AsObservable()
-            .DistinctUntilChanged()
-            .SubscribeAwait(async (_, _) =>
-            {
-                await UpdatePreviewAsync(vm.PrintPreview);
-            }, static result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
-                }
-#endif
-            })
-            .AddTo(vm.PrintPreview.Disposables);
-        
-        // Any setting change triggers preview update
-        // ReSharper disable once InvokeAsExtensionMethod
-        Observable.CombineLatest(
-                ps.Orientation.AsObservable(),
-                ps.MarginTop.AsObservable(),
-                ps.MarginBottom.AsObservable(),
-                ps.MarginLeft.AsObservable(),
-                ps.MarginRight.AsObservable(),
-                ps.ScaleMode.AsObservable(),
-                ps.ColorMode.AsObservable(),
-                ps.PaperSize.AsObservable(),
-                (orientation, top, bottom, left, right, scale, color, paper)
-                    => (orientation, top, bottom, left, right, scale, color, paper))
-            .SubscribeAwait(async (_, _) =>
-            {
-                await UpdatePreviewAsync(vm.PrintPreview);
-            }, static result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
-                }
-#endif
-            })
-            .AddTo(vm.PrintPreview.Disposables);
         
         vm.PrintPreview.IsProcessing.Value = false;
     }
@@ -123,7 +74,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
     //   Preview rendering 
     // -----------------------------------------------------------
 
-    private async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
+    public async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
     {
         var settings = vm.PrintSettings.Value;
         if (settings == null)
@@ -241,50 +192,5 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         {
             preview.IsProcessing.Value = false;
         }
-    }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        var topLevel = GetTopLevel(this);
-        
-        if (topLevel is Window hostWindow)
-        {
-            hostWindow.BeginMoveDrag(e);
-        }
-    }
-    
-    protected override void OnClosing(WindowClosingEventArgs e)
-    {
-        base.OnClosing(e);
-        if (DataContext is not MainWindowViewModel vm)
-        {
-            return;
-        }
-
-        if (vm.PrintPreview == null)
-        {
-            return;
-        }
-
-        var ps = vm.PrintPreview.PrintSettings.Value;
-        var config = vm.PrintPreview.PrintWindowConfig;
-        if (ps != null && config is { PrintProperties: not null })
-        {
-            var props = config.PrintProperties;
-            props.PrinterName = ps.PrinterName.Value;
-            props.PaperSize = ps.PaperSize.Value;
-            props.Orientation = ps.Orientation.Value;
-            props.ScaleMode = ps.ScaleMode.Value;
-            props.ColorMode = ps.ColorMode.Value;
-            props.Copies = ps.Copies.Value;
-            props.MarginTop = ps.MarginTop.Value;
-            props.MarginBottom = ps.MarginBottom.Value;
-            props.MarginLeft = ps.MarginLeft.Value;
-            props.MarginRight = ps.MarginRight.Value;
-
-            _ = config.SaveAsync();
-        }
-
-        vm.PrintPreview.Dispose();
     }
 }

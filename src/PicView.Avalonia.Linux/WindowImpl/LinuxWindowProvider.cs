@@ -33,7 +33,7 @@ public class LinuxWindowProvider : IWindowProvider
     {
         if (printPreviewWindow is PrintPreviewWindow win)
         {
-            await LinuxPrintInitialization.Initialize(vm, path, win);
+            await LinuxPrintInitialization.InitializeAsync(vm, path, win);
         }
     }
 

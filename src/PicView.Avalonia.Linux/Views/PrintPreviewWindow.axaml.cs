@@ -120,7 +120,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         }
         catch (Exception e)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView2), nameof(UpdatePreviewAsync), e);
+            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreviewAsync), e);
         }
 
         if (printLayout == null)
@@ -196,7 +196,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView2), nameof(RunPrintAsync), ex);
+            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(RunPrintAsync), ex);
         }
         finally
         {
