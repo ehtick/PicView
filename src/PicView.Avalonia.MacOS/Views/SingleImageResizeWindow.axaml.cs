@@ -1,6 +1,5 @@
-using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Core.Extensions;
 using PicView.Core.Localization;
@@ -8,7 +7,7 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class SingleImageResizeWindow : Window
+public partial class SingleImageResizeWindow : GenericWindow
 {
     public SingleImageResizeWindow(MainWindowViewModel vm)
     {
@@ -19,13 +18,5 @@ public partial class SingleImageResizeWindow : Window
         {
             XAboutView.Background = Brushes.Transparent;
         }
-    }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
     }
 }

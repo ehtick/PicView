@@ -1,14 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Extensions;
 using PicView.Core.ViewModels;
 using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
@@ -96,7 +95,7 @@ public partial class SettingsWindow : GenericWindow
 
         Loaded += delegate
         {
-            Title = TranslationManager.GetTranslation("Settings") + " - PicView";
+            Title = StringExtensions.CombineWithAppName(TranslationManager.Translation.Settings);
             SettingsView.Focus();
             if (DataContext is not CoreViewModel core)
             {

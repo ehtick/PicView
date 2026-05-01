@@ -1,16 +1,16 @@
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Avalonia.Linux.Views;
 
-public partial class ImageInfoWindow : Window, IDisposable
+public partial class ImageInfoWindow : GenericWindow, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     private readonly ImageInfoWindowConfig _config;
@@ -26,7 +26,7 @@ public partial class ImageInfoWindow : Window, IDisposable
         {
             XExifView.Background = UIHelper.GetMenuBackgroundColor();
         }
-        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.ImageInfo + " - PicView");
+        GenericWindowHelper.GenericWindowInitialize(this, StringExtensions.CombineWithAppName(TranslationManager.Translation.ImageInfo));
         Loaded += delegate
         {
             ClientSizeProperty.Changed.ToObservable()
@@ -36,27 +36,6 @@ public partial class ImageInfoWindow : Window, IDisposable
                 .AddTo(_disposables);
             PositionChanged += (_, __) => UpdateWindowPosition();
         };
-        
-        Closing += async delegate
-        {
-            Hide();
-            if (VisualRoot is null)
-            {
-                return;
-            }
-
-            var hostWindow = (Window)VisualRoot;
-            hostWindow?.Focus();
-            await _config.SaveAsync();
-        };
-    }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
     }
     
     private void UpdateWindowPosition()

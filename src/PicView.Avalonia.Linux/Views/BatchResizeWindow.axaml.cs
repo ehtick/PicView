@@ -1,15 +1,16 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using R3;
 
 namespace PicView.Avalonia.Linux.Views;
 
-public partial class BatchResizeWindow : Window, IDisposable
+public partial class BatchResizeWindow : GenericWindow, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     private readonly BatchResizeWindowConfig _config;
@@ -17,7 +18,7 @@ public partial class BatchResizeWindow : Window, IDisposable
     {
         _config = config;
         InitializeComponent();
-        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.BatchResize + " - PicView");
+        GenericWindowHelper.GenericWindowInitialize(this, StringExtensions.CombineWithAppName(TranslationManager.Translation.BatchResize));
 
         Loaded += delegate
         {
@@ -54,14 +55,7 @@ public partial class BatchResizeWindow : Window, IDisposable
 
     private void UpdateWindowSize(AvaloniaPropertyChangedEventArgs<Size> size)
         => WindowFunctions.SetWindowSize(this, size, _config.WindowProperties);
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
-    }
+    
     public void Dispose()
     {
         Disposable.Dispose(_disposables);

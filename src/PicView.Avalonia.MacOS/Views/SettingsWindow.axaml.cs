@@ -6,6 +6,7 @@ using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Config;
+using PicView.Core.Extensions;
 using PicView.Core.FileAssociations;
 using PicView.Core.Localization;
 using PicView.Core.MacOS.FileAssociation;
@@ -70,8 +71,8 @@ public partial class SettingsWindow : GenericWindow
                 return;
             }
             core.SettingsViewModel.RestoreLastTab(_config.WindowProperties.LastTab);
-            
-            Title = TranslationManager.GetTranslation("Settings") + " - PicView";
+
+            Title = StringExtensions.CombineWithAppName(TranslationManager.Translation.Settings);
             SettingsView.Focus();
 
             GoForwardButton.Command = core.SettingsViewModel?.GoForwardCommand;

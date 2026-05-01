@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Linux.Printing;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
@@ -17,10 +18,8 @@ using R3;
 
 namespace PicView.Avalonia.Linux.Views;
 
-public partial class PrintPreviewWindow : Window, IPrintWindow
+public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
 {
-    private const float PreviewDpi = 96f;
-
     public PrintPreviewWindow()
     {
         InitializeComponent();
@@ -80,7 +79,7 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
     //   Preview rendering 
     // -----------------------------------------------------------
 
-    private async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
+    public async ValueTask UpdatePreviewAsync(PrintPreviewViewModel vm)
     {
         var settings = vm.PrintSettings.Value;
         if (settings == null)
@@ -201,14 +200,6 @@ public partial class PrintPreviewWindow : Window, IPrintWindow
         finally
         {
             preview.IsProcessing.Value = false;
-        }
-    }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is Window hostWindow)
-        {
-            hostWindow.BeginMoveDrag(e);
         }
     }
 }
