@@ -1,13 +1,13 @@
 <ResourceDictionary
-    x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:ClassModifier="internal">
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
             <Color x:Key="MainTextColor">#E2E0E0</Color>
             <Color x:Key="MainTextColorFaded">#d6d4d4</Color>
-            <SolidColorBrush Color="{StaticResource MainTextColorFaded}" x:Key="MainTextColorFadedBrush" />
+            <SolidColorBrush x:Key="MainTextColorFadedBrush" Color="{StaticResource MainTextColorFaded}" />
 
             <!--  Used for icons that should stay white in both themes  -->
             <Color x:Key="SecondaryTextColor">#fff</Color>
@@ -53,31 +53,24 @@
             <Color x:Key="DarkenSelected">#FF252525</Color>
 
             <Color x:Key="SoftenColor">#491A1A1A</Color>
-            <SolidColorBrush Color="{DynamicResource SoftenColor}" x:Key="SoftenColorBrush" />
+            <SolidColorBrush x:Key="SoftenColorBrush" Color="{DynamicResource SoftenColor}" />
 
             <ImageBrush
+                x:Key="NoisyTexture"
                 DestinationRect="0,0,200,200"
                 Opacity=".6"
                 Source="/PicViewTheme/Resources/noisy-texture-200x200-o4-d31-c-161616-t0.png"
                 Stretch="Fill"
-                TileMode="FlipXY"
-                x:Key="NoisyTexture" />
-
-            <DropShadowEffect
-                BlurRadius="5"
-                Color="DeepPink"
-                OffsetX="2"
-                OffsetY="2"
-                x:Key="MenuShadowButtonBorder" />
+                TileMode="FlipXY" />
 
             <DropShadowDirectionEffect
+                x:Key="TextShadow"
                 BlurRadius="1"
-                Color="#E6000000"
                 Direction="360"
-                x:Key="TextShadow" />
+                Color="#E6000000" />
 
             <Color x:Key="ErrorColor">#B51522</Color>
-            <SolidColorBrush Color="{StaticResource ErrorColor}" x:Key="ErrorBrush" />
+            <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}" />
         </ResourceDictionary>
 
 

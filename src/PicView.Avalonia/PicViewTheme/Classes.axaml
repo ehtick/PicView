@@ -1,7 +1,7 @@
 <Styles
     xmlns="https://github.com/avaloniaui"
-    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls">
 
     <Style Selector="Border.borderStyle">
         <Setter Property="BorderBrush" Value="{DynamicResource MainBorderColor}" />
@@ -51,7 +51,6 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="BorderBrush" Value="{DynamicResource OuterBorderColor}" />
-        <Setter Property="Effect" Value="{StaticResource MenuShadowButtonBorder}" />
         <Setter Property="Background" Value="{DynamicResource MainButtonBackgroundColor}" />
     </Style>
 
@@ -139,7 +138,7 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Duration="0:0:0.4" Property="BorderBrush" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.4" />
             </Transitions>
         </Setter>
     </Style>
