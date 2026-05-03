@@ -29,21 +29,8 @@ public class Win32WindowProvider : IWindowProvider
 
     public Window CreatePrintPreviewWindow(PrintWindowConfig config) => new PrintPreviewWindow(config);
 
-    public async Task InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow)
-    {
-        if (printPreviewWindow is PrintPreviewWindow win)
-        {
-            await PrintInitialization.InitializeAsync(vm, path, win);
-        }
-    }
-
-    public async Task RunPrintAsync(Window printPreviewWindow, MainWindowViewModel vm)
-    {
-        if (printPreviewWindow is PrintPreviewWindow win)
-        {
-            await win.RunPrintAsync(vm);
-        }
-    }
+    public async ValueTask InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow) =>
+        await PrintInitialization.InitializeAsync(vm, path);
 
     public async Task HandlePlatformUpdate(UpdateInfo updateInfo, string tempPath)
     {

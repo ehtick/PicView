@@ -126,6 +126,8 @@ public static class PrintCore
     }
 }
 
+public record PaperInfo(string Name, double WidthMm, double HeightMm);
+
 public readonly struct PrintLayout(
     double dx,
     double dy,

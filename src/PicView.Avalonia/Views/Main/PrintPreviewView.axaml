@@ -328,10 +328,9 @@
                     HorizontalAlignment="Right"
                     Background="{DynamicResource AccentColor}"
                     Classes="ButtonBorder accentHover"
-                    Command="{CompiledBinding PrintPreview.PrintCommand}"
+                    Command="{Binding PrintPreview.PrintCommand}"
                     Foreground="{DynamicResource MainTextColor}"
-                    ToolTip.Tip="{CompiledBinding Translation.Print.Value,
-                                                  Mode=OneWay}">
+                    ToolTip.Tip="{Binding Translation.Print.Value, Mode=OneWay}">
                     <TextBlock
                         Classes="txt"
                         Foreground="{StaticResource SecondaryTextColor}"

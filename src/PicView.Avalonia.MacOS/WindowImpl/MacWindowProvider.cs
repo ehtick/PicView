@@ -29,19 +29,11 @@ public class MacWindowProvider : IWindowProvider
 
     public Window CreatePrintPreviewWindow(PrintWindowConfig config) => new PrintPreviewWindow(config);
 
-    public async Task InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow)
+    public async ValueTask InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow)
     {
         if (printPreviewWindow is PrintPreviewWindow win)
         {
-            await MacPrintInitialization.InitializeAsync(vm, path, win);
-        }
-    }
-
-    public async Task RunPrintAsync(Window printPreviewWindow, MainWindowViewModel vm)
-    {
-        if (printPreviewWindow is PrintPreviewWindow win)
-        {
-            await win.RunPrintAsync(vm);
+            await MacPrintInitialization.InitializeAsync(vm, path);
         }
     }
 

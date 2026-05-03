@@ -1,4 +1,3 @@
-using PicView.Avalonia.Linux.Views;
 using PicView.Core.Linux.Printing;
 using PicView.Core.ViewModels;
 
@@ -6,7 +5,7 @@ namespace PicView.Avalonia.Linux.Printing;
 
 public static class LinuxPrintInitialization
 {
-    public static async ValueTask InitializeAsync(MainWindowViewModel vm, string path, PrintPreviewWindow printPreviewWindow)
+    public static async ValueTask InitializeAsync(MainWindowViewModel vm, string path)
     {
         // 1. Printers via CUPS
         var printers = LinuxPrint.GetAvailablePrinters().ToList(); // includes "Save as PDF" first
@@ -16,6 +15,6 @@ public static class LinuxPrintInitialization
         var paperSizes = new List<string>();
 
         await PicView.Avalonia.Printing.PrintInitialization.InitializeAsync(
-            vm, path, printPreviewWindow, printers, paperSizes, defaultPrinter);
+            vm, path, new LinuxPrintEngine(), printers, paperSizes, defaultPrinter);
     }
 }

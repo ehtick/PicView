@@ -17,9 +17,7 @@ public interface IWindowProvider
     Window CreateSingleImageResizeWindow(MainWindowViewModel vm);
     Window CreatePrintPreviewWindow(PrintWindowConfig config);
 
-    Task InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow);
-
-    Task RunPrintAsync(Window printPreviewWindow, MainWindowViewModel vm);
+    ValueTask InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow);
 
     Task HandlePlatformUpdate(UpdateInfo updateInfo, string tempPath);
 }

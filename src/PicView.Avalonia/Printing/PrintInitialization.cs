@@ -10,9 +10,9 @@ public static class PrintInitialization
     public static async ValueTask InitializeAsync(
         MainWindowViewModel vm,
         string path,
-        IPrintWindow printWindow,
-        List<string> printers,
-        List<string> paperSizes,
+        IPrintEngine printEngine,
+        IEnumerable<string> printers,
+        IEnumerable<string> paperSizes,
         string defaultPrinter,
         string? defaultPaperSize = null)
     {
@@ -24,25 +24,28 @@ public static class PrintInitialization
 
         var configProps = vm.PrintPreview.PrintWindowConfig.WindowProperties;
 
-        vm.PrintPreview.Printers.Value = printers;
-        vm.PrintPreview.PaperSizes.Value = paperSizes;
+        var printersList = printers.ToList();
+        var paperSizesList = paperSizes.ToList();
+
+        vm.PrintPreview.Printers.Value = printersList;
+        vm.PrintPreview.PaperSizes.Value = paperSizesList;
 
         var printerToUse = defaultPrinter;
         var configPrinter = configProps?.PrinterName;
-        if (!string.IsNullOrWhiteSpace(configPrinter) && printers.Contains(configPrinter))
+        if (!string.IsNullOrWhiteSpace(configPrinter) && printersList.Contains(configPrinter))
         {
             printerToUse = configPrinter;
         }
 
         var paperSizeToUse = defaultPaperSize ?? "A4";
         var configPaperSize = configProps?.PaperSize;
-        if (!string.IsNullOrWhiteSpace(configPaperSize) && paperSizes.Contains(configPaperSize))
+        if (!string.IsNullOrWhiteSpace(configPaperSize) && paperSizesList.Contains(configPaperSize))
         {
             paperSizeToUse = configPaperSize;
         }
-        else if (string.IsNullOrEmpty(defaultPaperSize) && paperSizes.Count != 0)
+        else if (string.IsNullOrEmpty(defaultPaperSize) && paperSizesList.Count != 0)
         {
-            paperSizeToUse = paperSizes.First();
+            paperSizeToUse = paperSizesList.First();
         }
 
         var currentPrintSettings = new PrintSettings
@@ -71,7 +74,7 @@ public static class PrintInitialization
             .ObserveOnThreadPool()
             .SubscribeAwait(async (_, _) =>
             {
-                await printWindow.UpdatePreviewAsync(vm.PrintPreview);
+                await printEngine.UpdatePreviewAsync(vm, vm.PrintPreview);
             })
             .AddTo(vm.PrintPreview.Disposables);
         
@@ -91,8 +94,15 @@ public static class PrintInitialization
             .ObserveOnThreadPool()
             .SubscribeAwait(async (_, _) =>
             {
-                await printWindow.UpdatePreviewAsync(vm.PrintPreview);
+                await printEngine.UpdatePreviewAsync(vm, vm.PrintPreview);
             })
             .AddTo(vm.PrintPreview.Disposables);
+
+        await printEngine.UpdatePreviewAsync(vm, vm.PrintPreview);
+        
+        vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
+        {
+            await printEngine.RunPrintAsync(vm);
+        }).AddTo(vm.PrintPreview.Disposables);
     }
 }

@@ -10,11 +10,9 @@ using PicView.Core.Printing;
 
 namespace PicView.Avalonia.Linux.Printing;
 
-public static class LinuxPrintEngine
+public class LinuxPrintEngine : AbstractPrintEngine
 {
-    private const float PrintDpi = 300f; // physical print DPI
-
-    public static async ValueTask RunPrintJob(PrintSettings settings, Bitmap avaloniaBmp)
+    protected override async ValueTask RunPrintJob(PrintSettings settings, Bitmap avaloniaBmp)
     {
         ArgumentNullException.ThrowIfNull(avaloniaBmp);
 
@@ -25,10 +23,10 @@ public static class LinuxPrintEngine
         }
 
         // 2. Determine paper size (mm) using shared helper
-        var paper = ResolvePaper(settings.PaperSize.Value, settings.Orientation.Value);
+        var paperInfo = ResolvePaper(settings);
 
-        var pageWidthMm = paper.WidthMm;
-        var pageHeightMm = paper.HeightMm;
+        var pageWidthMm = paperInfo.WidthMm;
+        var pageHeightMm = paperInfo.HeightMm;
 
         // 3. Compute final print layout (same logic as preview)
         var layout = PrintCore.ComputeLayout(
@@ -91,9 +89,9 @@ public static class LinuxPrintEngine
         }
     }
 
-    public static PaperInfo ResolvePaper(string? requestedName, int orientation)
+    public override PaperInfo ResolvePaper(PrintSettings settings)
     {
-        requestedName ??= "A4";
+        var requestedName = settings.PaperSize.Value ?? "A4";
 
         // Convert from CUPS naming patterns to PaperSizeHelper known names
         // Examples:
@@ -105,7 +103,7 @@ public static class LinuxPrintEngine
 
         var (w, h) = PaperSizeHelper.GetMmSize(normalized);
 
-        var landscape = orientation == (int)Orientations.Landscape;
+        var landscape = settings.Orientation.Value == (int)Orientations.Landscape;
 
         return landscape
             ? new PaperInfo(normalized, h, w)
@@ -134,6 +132,4 @@ public static class LinuxPrintEngine
 
     public static IEnumerable<string> GetPaperSizes(string printerName)
         => CupsPaperQuery.GetPaperSizes(printerName);
-
-    public readonly record struct PaperInfo(string Name, double WidthMm, double HeightMm);
 }

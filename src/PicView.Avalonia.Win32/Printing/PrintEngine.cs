@@ -10,13 +10,23 @@ using PicView.Core.Printing;
 using PicView.Core.WindowsNT.Printing;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
 
+
 namespace PicView.Avalonia.Win32.Printing;
 
-public static class PrintEngine
+public class PrintEngine : AbstractPrintEngine
 {
-    private const float PrintDpi = 300f; // physical print DPI
+    public override PaperInfo ResolvePaper(PrintSettings settings)
+    {
+        var landscape = settings.Orientation.Value == (int)Orientations.Landscape;
+        var requestedName = settings.PaperSize.Value ?? "A4";
+        var (w, h) = PaperSizeHelper.GetMmSize(requestedName);
 
-    public static async Task RunPrintJob(PrintSettings settings, Bitmap avaloniaBmp)
+        return landscape
+            ? new PaperInfo(requestedName, h, w)
+            : new PaperInfo(requestedName, w, h);
+    }
+
+    protected override async ValueTask RunPrintJob(PrintSettings settings, Bitmap avaloniaBmp)
     {
         ArgumentNullException.ThrowIfNull(avaloniaBmp);
 
@@ -27,8 +37,7 @@ public static class PrintEngine
         }
 
         // 2. Resolve paper size
-        var paperInfo = ResolvePaper(settings.PrinterName.Value, settings.PaperSize.Value,
-            settings.Orientation.Value == (int)Orientations.Landscape);
+        var paperInfo = ResolvePaper(settings);
 
         // 3. Compute layout
         var layout = PrintCore.ComputeLayout(
@@ -75,20 +84,8 @@ public static class PrintEngine
         }
     }
 
-    public static PaperInfo ResolvePaper(string? printerName, string? requestedName, bool landscape)
-    {
-        var normalized = requestedName ?? "A4";
-        var (w, h) = PaperSizeHelper.GetMmSize(normalized);
-
-        return landscape
-            ? new PaperInfo(normalized, h, w)
-            : new PaperInfo(normalized, w, h);
-    }
-
     public static IEnumerable<string> GetPaperSizes(string printerName)
     {
         return Win32Print.GetPaperSizes(printerName);
     }
-
-    public record PaperInfo(string Name, double WidthMm, double HeightMm);
 }

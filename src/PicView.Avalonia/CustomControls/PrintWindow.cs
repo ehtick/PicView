@@ -1,7 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
 using PicView.Core.ViewModels;
 
@@ -9,8 +7,7 @@ namespace PicView.Avalonia.CustomControls;
 
 public class PrintWindow: GenericWindow
 {
-    protected PrintWindowConfig Config;
-    protected const float PreviewDpi = 96f;
+    protected PrintWindowConfig? Config;
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
@@ -51,6 +48,7 @@ public class PrintWindow: GenericWindow
         }
 
         vm.PrintPreview.Dispose();
+        vm.PrintPreview = null;
     }
 
     protected void SetWindowSize()

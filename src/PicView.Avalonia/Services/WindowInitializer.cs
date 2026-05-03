@@ -489,7 +489,7 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
 
         if (_printPreviewWindow is null)
         {
-            vm.PrintPreview = new PrintPreviewViewModel();
+            vm.PrintPreview ??= new PrintPreviewViewModel();
             
             if (vm.PrintPreview.PrintWindowConfig is null)
             {
@@ -510,20 +510,12 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                 };
             });
 
-            vm.PrintPreview.PrintCommand.SubscribeAwait(async (_, _) =>
+            vm.PrintPreview.CancelCommand.Subscribe( _ => 
             {
-                if (_printPreviewWindow is not null)
-                {
-                    await provider.RunPrintAsync(_printPreviewWindow, vm);
-                }
+                _printPreviewWindow?.Close();
             }).AddTo(vm.PrintPreview.Disposables);
-
-            vm.PrintPreview.CancelCommand.SubscribeAwait(async (_, _) =>
-            {
-                await Dispatcher.UIThread.InvokeAsync(() => _printPreviewWindow?.Close());
-            }).AddTo(vm.PrintPreview.Disposables);
-
-            await provider.InitializePrintAsync(vm, path, _printPreviewWindow!);
+            
+            await provider.InitializePrintAsync(vm, path, _printPreviewWindow);
         }
         else
         {

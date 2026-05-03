@@ -5,7 +5,7 @@ using R3;
 
 namespace PicView.Core.ViewModels;
 
-public class PrintPreviewViewModel : IDisposable
+public class PrintPreviewViewModel
 {
     public readonly CompositeDisposable Disposables = new();
     public PrintWindowConfig? PrintWindowConfig { get; set; }
