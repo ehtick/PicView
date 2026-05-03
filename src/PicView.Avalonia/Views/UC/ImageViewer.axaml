@@ -1,84 +1,88 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.UC.ImageViewer"
-    x:DataType="vm:TabViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:buttons="clr-namespace:PicView.Avalonia.Views.UC.Buttons"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:gallery="clr-namespace:PicView.Avalonia.Views.Gallery"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="vm:TabViewModel">
     <DockPanel LastChildFill="True">
-        <gallery:GalleryView ZIndex="1" x:Name="GalleryView" />
+        <gallery:GalleryView x:Name="GalleryView" ZIndex="1" />
 
         <Panel
+            x:Name="MainPanel"
             Background="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).GlobalSettings.ImageBackground.Value,
                                          Mode=OneWay}"
-            DockPanel.Dock="Left"
-            x:Name="MainPanel">
+            DockPanel.Dock="Left">
             <LayoutTransformControl x:Name="MainTransform">
                 <LayoutTransformControl.LayoutTransform>
                     <RotateTransform Angle="{Binding RotationAngle.Value}" />
                 </LayoutTransformControl.LayoutTransform>
                 <customControls:ZoomPanControl x:Name="ZoomPanControl">
                     <customControls:AutoScrollViewer
+                        x:Name="ImageScrollViewer"
                         Focusable="False"
                         HorizontalScrollBarVisibility="Disabled"
-                        VerticalScrollBarVisibility="Disabled"
-                        x:Name="ImageScrollViewer">
+                        VerticalScrollBarVisibility="Disabled">
                         <Border
-                            Background="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).GlobalSettings.ConstrainedImageBackground.Value,
-                                                         Mode=OneWay}"
+                            x:Name="MainBorder"
+                            Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ImageWidth.Value}"
                             Height="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ImageHeight.Value}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Width="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).ImageWidth.Value}"
-                            x:Name="MainBorder">
+                            Background="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).GlobalSettings.ConstrainedImageBackground.Value,
+                                                         Mode=OneWay}">
                             <DockPanel
                                 HorizontalAlignment="Center"
-                                LastChildFill="False"
-                                VerticalAlignment="Center">
+                                VerticalAlignment="Center"
+                                LastChildFill="False">
                                 <customControls:PicBox2
+                                    x:Name="MainImage"
+                                    CurrentFileInfo="{Binding FileInfo.Value}"
                                     DockPanel.Dock="Left"
-                                    Source="{CompiledBinding Image.Value}"
-                                    x:Name="MainImage" />
+                                    ImageType="{Binding ImageType.Value}"
+                                    Source="{CompiledBinding Image.Value}" />
                                 <customControls:PicBox2
+                                    x:Name="SecondaryImage"
+                                    CurrentFileInfo="{Binding SecondaryFileInfo.Value}"
                                     DockPanel.Dock="Right"
+                                    ImageType="{Binding SecondaryImageType.Value}"
                                     IsVisible="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).IsSideBySide.Value}"
-                                    Source="{CompiledBinding SecondaryImage.Value}"
-                                    x:Name="SecondaryImage" />
+                                    Source="{CompiledBinding SecondaryImage.Value}" />
                             </DockPanel>
                         </Border>
                     </customControls:AutoScrollViewer>
                 </customControls:ZoomPanControl>
             </LayoutTransformControl>
             <uc:ZoomPreviewer
-                HorizontalAlignment="Right"
-                IsVisible="False"
+                x:Name="ZoomPreview"
                 Margin="0,0,25,25"
+                HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                ZIndex="90"
-                x:Name="ZoomPreview" />
-            <uc:HoverBar VerticalAlignment="Bottom" x:Name="HoverBar" />
+                IsVisible="False"
+                ZIndex="90" />
+            <uc:HoverBar x:Name="HoverBar" VerticalAlignment="Bottom" />
             <buttons:ClickArrowRight
+                x:Name="ClickArrowRight"
                 HorizontalAlignment="Right"
-                Opacity="0"
                 VerticalAlignment="Center"
-                ZIndex="2"
-                x:Name="ClickArrowRight" />
+                Opacity="0"
+                ZIndex="2" />
             <buttons:ClickArrowLeft
+                x:Name="ClickArrowLeft"
                 HorizontalAlignment="Left"
-                Opacity="0"
                 VerticalAlignment="Center"
-                ZIndex="2"
-                x:Name="ClickArrowLeft" />
+                Opacity="0"
+                ZIndex="2" />
             <buttons:GalleryShortcut
+                x:Name="GalleryShortcut"
                 HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
                 IsVisible="{CompiledBinding !$parent[Window].((vm:MainWindowViewModel)DataContext).IsUIShown.Value}"
                 Opacity="0"
-                VerticalAlignment="Bottom"
-                ZIndex="9"
-                x:Name="GalleryShortcut" />
+                ZIndex="9" />
         </Panel>
     </DockPanel>
 </UserControl>

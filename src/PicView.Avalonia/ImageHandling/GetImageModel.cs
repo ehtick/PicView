@@ -1,4 +1,5 @@
 using Avalonia.Media.Imaging;
+using Avalonia.Svg.Skia;
 using ImageMagick;
 using PicView.Avalonia.Svg;
 using PicView.Core.DebugTools;
@@ -6,6 +7,7 @@ using PicView.Core.Exif;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Tiff;
+using SvgImage = Svg.SvgImage;
 
 namespace PicView.Avalonia.ImageHandling;
 
@@ -203,7 +205,7 @@ public static class GetImageModel
         imageModel.PixelWidth = magickImage.Width;
         imageModel.PixelHeight = magickImage.Height;
         imageModel.ImageType = ImageType.Svg;
-        imageModel.Image = svgData;
+        imageModel.Image = SvgSource.LoadFromSvg(svgData);
         imageModel.DpiX = (ushort)magickImage.Density.X;
         imageModel.DpiY = (ushort)magickImage.Density.Y;;
     }

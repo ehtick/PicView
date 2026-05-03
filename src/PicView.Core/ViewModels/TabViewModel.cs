@@ -7,6 +7,7 @@ using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.Titles;
 using PicView.Core.Generators;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Sizing;
 using R3;
 
@@ -50,9 +51,11 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     #region Image properties
     public ImageModel Model { get; set; } = new();
     public BindableReactiveProperty<object?> Image { get; } = new(null);
+    public BindableReactiveProperty<ImageType?> ImageType { get; } = new(null);
     public BindableReactiveProperty<FileInfo?> FileInfo { get; } = new(null);
     public ImageModel? SecondaryModel { get; set; } = new();
     public BindableReactiveProperty<object?> SecondaryImage { get; } = new(null);
+    public BindableReactiveProperty<ImageType?> SecondaryImageType { get; } = new(null);
     public BindableReactiveProperty<FileInfo?> SecondaryFileInfo { get; } = new(null);
     public BindableReactiveProperty<int> RotationAngle { get; } = new(0);
     public BindableReactiveProperty<bool> IsRotated0 { get; } = new(true);

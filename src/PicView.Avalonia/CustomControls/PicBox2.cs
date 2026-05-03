@@ -1,14 +1,19 @@
-﻿using Avalonia;
+﻿using System.Numerics;
+using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
-using Avalonia.Controls.Automation.Peers;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
+using Avalonia.Rendering.Composition;
 using ImageMagick;
+using PicView.Avalonia.AnimatedImage;
 using PicView.Core.DebugTools;
+using PicView.Core.ImageDecoding;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.CustomControls;
 
@@ -17,6 +22,7 @@ namespace PicView.Avalonia.CustomControls;
 /// </summary>
 public class PicBox2 : Control
 {
+    #region Constants and Fields
     /// <summary>
     /// Defines the <see cref="Source"/> property.
     /// </summary>
@@ -42,19 +48,42 @@ public class PicBox2 : Control
         AvaloniaProperty.Register<PicBox2, StretchDirection>(
             nameof(StretchDirection),
             StretchDirection.Both);
+    
+    /// <summary>
+    ///     Defines the <see cref="ImageType" /> property.
+    /// </summary>
+    public static readonly AvaloniaProperty<ImageType> ImageTypeProperty =
+        AvaloniaProperty.Register<PicBox2, ImageType>(nameof(ImageType));
+    
+    public static readonly StyledProperty<FileInfo?> CurrentFileInfoProperty =
+        AvaloniaProperty.Register<PicBox2, FileInfo?>(nameof(CurrentFileInfo));
+    
+    private CompositionCustomVisual? _customVisual;
+    private FileStream? _stream;
+    private IGifInstance? _animInstance;
+    private readonly DisposableBag _imageTypeSubscription;
 
-    static PicBox2()
+    /// <summary>
+    ///     Gets or sets the image type.
+    ///     Determines if <see cref="Source" /> is an animated image, scalable vector graphics (SVG) or raster image.
+    /// </summary>
+    public ImageType ImageType
     {
-        AffectsRender<PicBox2>(SourceProperty, StretchProperty, StretchDirectionProperty, BlendModeProperty);
-        AffectsMeasure<PicBox2>(SourceProperty, StretchProperty, StretchDirectionProperty);
-        AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<PicBox2>(AutomationControlType.Image);
+        get => (ImageType)(GetValue(ImageTypeProperty) ?? false);
+        set => SetValue(ImageTypeProperty, value);
     }
 
+    public FileInfo? CurrentFileInfo
+    {
+        get => GetValue(CurrentFileInfoProperty);
+        set => SetValue(CurrentFileInfoProperty, value);
+    }
+    
     /// <summary>
     /// Gets or sets the image that will be displayed.
     /// </summary>
     [Content]
-    public IImage? Source
+    public object? Source
     {
         get => GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
@@ -89,6 +118,104 @@ public class PicBox2 : Control
 
     /// <inheritdoc />
     protected override bool BypassFlowDirectionPolicies => true;
+    
+    #endregion Constants and Fields
+    
+    static PicBox2()
+    {
+        AffectsRender<PicBox2>(SourceProperty, StretchProperty, StretchDirectionProperty, BlendModeProperty);
+        AffectsMeasure<PicBox2>(SourceProperty, StretchProperty, StretchDirectionProperty);
+        AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<PicBox2>(AutomationControlType.Image);
+    }
+
+    #region Animation
+    
+    private void UpdateAnimatedSource()
+    {
+        CreateVisual();
+        Source = Source as Bitmap;
+    }
+    
+    private void UpdateAnimationInstance(FileStream fileStream)
+    {
+        _animInstance?.Dispose();
+        try
+        {
+            _animInstance = ImageType == ImageType.AnimatedGif
+                ? new GifInstance(fileStream)
+                : new WebpInstance(fileStream);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(UpdateAnimatedSource), e);
+        }
+
+        _animInstance.IterationCount = IterationCount.Infinite;
+        if (_customVisual is null)
+        {
+            CreateVisual();
+        }
+        _customVisual?.SendHandlerMessage(_animInstance);
+        AnimationUpdate();
+    }
+
+    private void AnimationUpdate()
+    {
+        if (_customVisual is null)
+        {
+            CreateVisual();
+        }
+
+        var sourceSize = Bounds.Size;
+
+        _customVisual.Size = new Vector2((float)sourceSize.Width, (float)sourceSize.Height);
+        _customVisual.Offset = new Vector3(0, 0, 0);
+    }
+
+    private void CreateVisual()
+    {
+        try
+        {
+            var compositor = ElementComposition.GetElementVisual(this)?.Compositor;
+            if (compositor == null || _customVisual?.Compositor == compositor)
+            {
+                return;
+            }
+
+            _customVisual ??= compositor.CreateCustomVisual(new CustomVisualHandler());
+            ElementComposition.SetElementChildVisual(this, _customVisual);
+            _customVisual.SendHandlerMessage(CustomVisualHandler.StartMessage);
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(PicBox), nameof(CreateVisual), e);
+            _customVisual?.SendHandlerMessage(CustomVisualHandler.StartMessage);
+        }
+    }
+
+    private void DestroyVisual()
+    {
+        if (_customVisual == null)
+        {
+            return;
+        }
+
+        _customVisual.SendHandlerMessage(CustomVisualHandler.StopMessage);
+        _customVisual = null;
+    }
+
+    private void CleanupAnimatedResources()
+    {
+        DestroyVisual();
+        _animInstance?.Dispose();
+        _animInstance = null;
+        _stream?.Dispose();
+        _stream = null;
+    }
+
+    #endregion
+
+    #region Rendering
 
     /// <summary>
     /// Renders the control.
@@ -96,13 +223,21 @@ public class PicBox2 : Control
     /// <param name="context">The drawing context.</param>
     public sealed override void Render(DrawingContext context)
     {
-        var source = Source;
+        base.Render(context);
 
-        if (source == null || Bounds.Width <= 0 || Bounds.Height <= 0)
+        switch (Source)
         {
-            return;
+            case IImage source:
+                RenderImageSource(context, source);
+                break;
+            default:
+                HandleInvalidSource();
+                break;
         }
+    }
 
+    private void RenderImageSource(DrawingContext context, IImage source)
+    {
         var viewPort = new Rect(Bounds.Size);
         var sourceSize = GetImageSize(source);
 
@@ -125,13 +260,14 @@ public class PicBox2 : Control
         {
             using (context.PushRenderOptions(options))
             {
-                context.DrawImage(source, sourceRect, destRect);
+                context.DrawImage(source as IImage, sourceRect, destRect);
+                RenderAnimatedImageIfRequired(context);
             }
         }
         catch (Exception e)
         {
             var bitmap = GetBitmapFromAlternativeSources();
-            if (bitmap is IImage image)
+            if (bitmap != null)
             {
                 try
                 {
@@ -150,6 +286,28 @@ public class PicBox2 : Control
             DebugHelper.LogDebug(nameof(PicBox), nameof(Render), e);
         }
     }
+    
+    private void RenderAnimatedImageIfRequired(DrawingContext context)
+    {
+        if (ImageType is not (ImageType.AnimatedGif or ImageType.AnimatedWebp) || CurrentFileInfo is null)
+        {
+            CleanupAnimatedResources();
+            return;
+        }
+        
+        context.Dispose(); // Fixes transparent images
+        _stream = new FileStream(CurrentFileInfo.FullName, FileMode.Open, FileAccess.Read);
+        UpdateAnimationInstance(_stream);
+    }
+
+    private void HandleInvalidSource()
+    {
+        // TODO
+    }
+    
+    #endregion Rendering
+
+    #region Sizing
 
     /// <summary>
     /// Measures the control.
@@ -158,18 +316,13 @@ public class PicBox2 : Control
     /// <returns>The desired size of the control.</returns>
     protected override Size MeasureOverride(Size availableSize)
     {
-        return Source == null ? new Size() : Stretch.CalculateSize(availableSize, GetImageSize(Source), StretchDirection);
+        return Source == null ? new Size() : Stretch.CalculateSize(availableSize, GetImageSize(Source as IImage), StretchDirection);
     }
 
     /// <inheritdoc/>
     protected override Size ArrangeOverride(Size finalSize)
     {
-        return Source is null ? new Size() : Stretch.CalculateSize(finalSize, GetImageSize(Source));
-    }
-
-    protected override AutomationPeer OnCreateAutomationPeer()
-    {
-        return new ImageAutomationPeer(this);
+        return Source is null ? new Size() : Stretch.CalculateSize(finalSize, GetImageSize(Source as IImage));
     }
 
     private Size GetImageSize(IImage source)
@@ -231,4 +384,6 @@ public class PicBox2 : Control
 
         return new Size();
     }
+    
+    #endregion Sizing
 }

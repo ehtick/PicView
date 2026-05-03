@@ -1,9 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Svg.Skia;
 using ImageMagick;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
+using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Titles;
 using PicView.Core.ViewModels;
@@ -74,7 +76,16 @@ public static class UpdateImage
 
     public static void ChangeImage(TabViewModel tabViewModel, MainWindowViewModel vm)
     {
-        tabViewModel.Image.Value = tabViewModel.Model.Image;
+        if (tabViewModel.Model.ImageType is ImageType.Svg)
+        {
+            tabViewModel.Image.Value = new SvgImage { Source = tabViewModel.Model.Image as SvgSource };
+        }
+        else
+        {
+            tabViewModel.Image.Value = tabViewModel.Model.Image;
+        }
+        tabViewModel.ImageType.Value = tabViewModel.Model.ImageType;
+
         if (Settings.Zoom.ResetZoomOnChange)
         {
             if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
@@ -97,12 +108,16 @@ public static class UpdateImage
                 secondaryWidth = 0;
                 secondaryHeight = 0;
                 tabViewModel.SecondaryImage.Value = null;
+                tabViewModel.SecondaryFileInfo.Value = null;
+                tabViewModel.SecondaryImageType.Value = null;
             }
             else
             {
                 secondaryWidth = tabViewModel.SecondaryModel.PixelWidth;
-                secondaryHeight = tabViewModel.SecondaryModel.PixelHeight;
+                secondaryHeight = tabViewModel.SecondaryModel.PixelHeight;                
                 tabViewModel.SecondaryImage.Value = tabViewModel.SecondaryModel.Image;
+                tabViewModel.SecondaryImageType.Value = tabViewModel.SecondaryModel.ImageType;
+                tabViewModel.SecondaryFileInfo.Value = tabViewModel.SecondaryModel.FileInfo;
             }
         }
         else
