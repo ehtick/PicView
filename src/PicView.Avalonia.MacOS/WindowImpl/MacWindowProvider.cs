@@ -27,7 +27,7 @@ public class MacWindowProvider : IWindowProvider
 
     public Window CreateSingleImageResizeWindow(MainWindowViewModel vm) => new SingleImageResizeWindow(vm);
 
-    public Window CreatePrintPreviewWindow(MainWindowViewModel vm) => new PrintPreviewWindow();
+    public Window CreatePrintPreviewWindow(PrintWindowConfig config) => new PrintPreviewWindow(config);
 
     public async Task InitializePrintAsync(MainWindowViewModel vm, string path, Window printPreviewWindow)
     {

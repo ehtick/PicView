@@ -1,9 +1,10 @@
 <Window
-    CanResize="False"
     ExtendClientAreaTitleBarHeightHint="-1"
     ExtendClientAreaToDecorationsHint="True"
-    SizeToContent="WidthAndHeight"
-    Title="PrintPreviewWindow2"
+    Height="835"
+    MinHeight="790"
+    MinWidth="660"
+    Width="975"
     x:Class="PicView.Avalonia.MacOS.Views.PrintPreviewWindow"
     x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
@@ -14,13 +15,13 @@
         BorderBrush="{DynamicResource MainBorderColor}"
         BorderThickness="1"
         CornerRadius="8">
-        <Panel>
+        <DockPanel>
 
             <DockPanel
                 Background="{DynamicResource SecondaryBackgroundColor}"
+                DockPanel.Dock="Top"
                 Height="28"
-                PointerPressed="MoveWindow"
-                VerticalAlignment="Top">
+                PointerPressed="MoveWindow">
 
                 <TextBlock
                     Classes="txt"
@@ -31,10 +32,8 @@
 
             <main:PrintPreviewView
                 Background="{DynamicResource WindowBackgroundColor}"
-                Margin="0,28,0,0"
-                Padding="10,5,5,10"
-                PointerPressed="MoveWindow"
+                DockPanel.Dock="Bottom"
                 x:Name="PrintPreviewView" />
-        </Panel>
+        </DockPanel>
     </Border>
 </Window>

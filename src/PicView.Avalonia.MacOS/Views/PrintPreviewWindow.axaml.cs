@@ -8,7 +8,9 @@ using PicView.Avalonia.MacOS.Printing;
 using PicView.Avalonia.Printing;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Config;
 using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.Printing;
 using PicView.Core.ViewModels;
@@ -18,31 +20,14 @@ namespace PicView.Avalonia.MacOS.Views;
 
 public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
 {
-    public PrintPreviewWindow()
-    {
-        InitializeComponent();
-        GenericWindowHelper.GenericWindowInitialize(this,
-            TranslationManager.Translation.Print + " - PicView");
 
-        Loaded += (_, _) =>
-        {
-            var vm = DataContext as MainWindowViewModel;
-            // Keep window position when resizing
-            ClientSizeProperty.Changed.ToObservable()
-                .Subscribe(size =>
-                {
-                    WindowResizing.KeepWindowSize(this, size);
-                }, static result =>
-                {
-#if DEBUG
-                    if (result is { IsFailure: true, Exception: not null })
-                    {
-                        DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(ClientSizeProperty), result.Exception);
-                    }
-#endif
-                })
-                .AddTo(vm.PrintPreview.Disposables);
-        };
+    public PrintPreviewWindow(PrintWindowConfig config)
+    {
+        Config = config;
+        InitializeComponent();
+        GenericWindowHelper.GenericWindowInitialize(this, StringExtensions.CombineWithAppName(TranslationManager.Translation.Print));
+        
+        SetWindowSize();
     }
 
     public void Initialize()
@@ -50,22 +35,6 @@ public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
         var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
         
         vm.PrintPreview ??= new PrintPreviewViewModel();
-        
-        ClientSizeProperty.Changed.ToObservable()
-            .ObserveOn(UIHelper.GetFrameProvider)
-            .Subscribe(_ =>
-            {
-                WindowFunctions.CenterWindowOnOwnerWindow(this, Owner as Window);
-            }, static result =>
-            {
-#if DEBUG
-                if (result is { IsFailure: true, Exception: not null })
-                {
-                    DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(Initialize), result.Exception);
-                }
-#endif
-            })
-            .AddTo(vm.PrintPreview.Disposables);
         
         vm.PrintPreview.IsProcessing.Value = false;
     }
@@ -115,7 +84,7 @@ public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
         }
         catch (Exception e)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(UpdatePreviewAsync), e);
+            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(UpdatePreviewAsync), e);
         }
 
         if (printLayout == null)
@@ -152,6 +121,8 @@ public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
         vm.PreviewImage.Value = rtb;
         vm.PageWidth.Value = layout.PageWidthPx;
         vm.PageHeight.Value = layout.PageHeightPx;
+        
+        vm.IsProcessing.Value = false;
     }
 
     // -----------------------------------------------------------
@@ -186,7 +157,7 @@ public partial class PrintPreviewWindow : PrintWindow, IPrintWindow
         }
         catch (Exception ex)
         {
-            DebugHelper.LogDebug(nameof(PrintPreviewView), nameof(RunPrintAsync), ex);
+            DebugHelper.LogDebug(nameof(PrintPreviewWindow), nameof(RunPrintAsync), ex);
         }
         finally
         {
