@@ -5,7 +5,6 @@
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    MinHeight="740"
     x:DataType="viewModels:MainWindowViewModel">
 
     <Panel>
@@ -31,9 +30,7 @@
                 <!--  Printer  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Printer.Value,
                                            Mode=OneWay}" />
 
@@ -52,9 +49,7 @@
                 <!--  Paper Size  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.PaperSize.Value,
                                            Mode=OneWay}" />
 
@@ -73,9 +68,7 @@
                 <!--  Orientation  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Orientation.Value,
                                            Mode=OneWay}" />
 
@@ -94,9 +87,7 @@
                 <!--  Scale Mode  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Scale.Value,
                                            Mode=OneWay}" />
 
@@ -115,9 +106,7 @@
                 <!--  Color Mode  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Color.Value,
                                            Mode=OneWay}" />
 
@@ -136,9 +125,7 @@
                 <!--  Copies  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Copies.Value,
                                            Mode=OneWay}" />
 
@@ -159,9 +146,7 @@
                 <!--  Margins  -->
                 <TextBlock
                     Margin="0,6,0,0"
-                    Classes="txt"
-                    FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                    FontSize="14"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Margins.Value,
                                            Mode=OneWay}" />
 

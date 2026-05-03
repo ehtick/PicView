@@ -8,7 +8,7 @@
     Width="975"
     Height="835"
     MinWidth="660"
-    MinHeight="805"
+    MinHeight="700"
     x:DataType="viewModels:MainWindowViewModel">
 
     <Border
