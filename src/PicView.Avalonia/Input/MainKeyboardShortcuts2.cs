@@ -239,14 +239,20 @@ public static class MainKeyboardShortcuts2
     /// </summary>
     private static async ValueTask ExecuteShortcutIfRegistered(MainWindowViewModel vm)
     {
-        var function = KeybindingManager.GetFunction(CurrentKeys);
-        if (function is null)
+        // Get the action string name quickly via dictionary lookup
+        var actionName = KeybindingManager.GetActionName(CurrentKeys);
+        if (string.IsNullOrEmpty(actionName))
         {
             // Pressed key(s) have no associated function
             return;
         }
 
-        await vm.Mapper.GetFunctionByName(function.Method.Name).Invoke().ConfigureAwait(false);
+        // Map the string to the instance-specific function using the view model's mapper
+        var function = vm.Mapper.GetFunctionByName(actionName);
+        if (function is not null)
+        {
+            await function.Invoke().ConfigureAwait(false);
+        }
     }
 
     /// <summary>

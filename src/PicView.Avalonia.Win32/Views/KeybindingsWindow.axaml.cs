@@ -1,8 +1,6 @@
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Media;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
@@ -10,7 +8,7 @@ using R3;
 
 namespace PicView.Avalonia.Win32.Views;
 
-public partial class KeybindingsWindow : Window, IDisposable
+public partial class KeybindingsWindow : GenericWindow, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     private readonly KeybindingWindowConfig _config;
@@ -66,18 +64,6 @@ public partial class KeybindingsWindow : Window, IDisposable
         _config.WindowProperties.Left = Position.X;
         _config.WindowProperties.Top = Position.Y;
     }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
-    }
-
-    private void Close(object? sender, RoutedEventArgs e) => Close();
-
-    private void Minimize(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
     public void Dispose()
     {

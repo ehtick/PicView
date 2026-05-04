@@ -1,11 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Avalonia.Input;
-using PicView.Avalonia.Functions;
 using PicView.Core.DebugTools;
 using PicView.Core.IPlatform;
 using PicView.Core.Keybindings;
-using ZLinq;
 
 namespace PicView.Avalonia.Input;
 
@@ -15,7 +13,7 @@ internal partial class SourceGenerationContext : JsonSerializerContext;
 
 public static class KeybindingManager
 {
-    public static Dictionary<KeyGesture, Func<ValueTask>>? CustomShortcuts { get; private set; }
+    public static Dictionary<KeyGesture, string>? CustomShortcuts { get; private set; }
 
     public static async ValueTask LoadKeybindings(IPlatformSpecificService platformSpecificService)
     {
@@ -32,23 +30,31 @@ public static class KeybindingManager
 
     private static void UpdateKeybindings(string json)
     {
-        // Deserialize JSON into a dictionary of string keys and string values
         var keyValues = JsonSerializer.Deserialize(
                 json, typeof(Dictionary<string, string>), SourceGenerationContext.Default)
             as Dictionary<string, string>;
 
-        CustomShortcuts ??= new Dictionary<KeyGesture, Func<ValueTask>>();
-        PopulateCustomShortcuts(keyValues);
+        CustomShortcuts ??= new Dictionary<KeyGesture, string>();
+        if (keyValues != null)
+        {
+            PopulateCustomShortcuts(keyValues);
+        }
     }
 
     public static async ValueTask UpdateKeyBindingsFile()
     {
+        if (CustomShortcuts == null)
+        {
+            return;
+        }
+
         try
         {
             var json = JsonSerializer.Serialize(
-                CustomShortcuts.ToDictionary(kvp => kvp.Key.ToString(),
-                    kvp => GetFunctionNameByFunction(kvp.Value)), typeof(Dictionary<string, string>),
+                CustomShortcuts.ToDictionary(kvp => kvp.Key.ToString(), kvp => kvp.Value), 
+                typeof(Dictionary<string, string>),
                 SourceGenerationContext.Default).Replace("\\u002B", "+"); // Fix plus sign encoded to Unicode
+            
             await KeybindingFunctions.SaveKeyBindingsFile(json).ConfigureAwait(false);
         }
         catch (Exception exception)
@@ -64,16 +70,9 @@ public static class KeybindingManager
             try
             {
                 var gesture = KeyGesture.Parse(kvp.Key);
-                if (gesture is null)
+                if (gesture is not null && !string.IsNullOrWhiteSpace(kvp.Value))
                 {
-                    continue;
-                }
-
-                var function = FunctionsMapper.GetFunctionByName(kvp.Value);
-                // Add to the dictionary
-                if (function != null)
-                {
-                    CustomShortcuts[gesture] = function;
+                    CustomShortcuts[gesture] = kvp.Value;
                 }
             }
             catch (Exception exception)
@@ -91,21 +90,26 @@ public static class KeybindingManager
         }
         else
         {
-            CustomShortcuts = new Dictionary<KeyGesture, Func<ValueTask>>();
+            CustomShortcuts = new Dictionary<KeyGesture, string>();
         }
+        
         var defaultKeybindings = platformSpecificService.DefaultJsonKeyMap();
-        var keyValues = JsonSerializer.Deserialize(
-                defaultKeybindings, typeof(Dictionary<string, string>), SourceGenerationContext.Default)
-            as Dictionary<string, string>;
 
-        PopulateCustomShortcuts(keyValues);
+        if (JsonSerializer.Deserialize(
+                defaultKeybindings, typeof(Dictionary<string, string>), SourceGenerationContext.Default) 
+            is Dictionary<string, string> keyValues)
+        {
+            PopulateCustomShortcuts(keyValues);
+        }
     }
     
-    public static string GetFunctionNameByFunction(Func<ValueTask> function) =>
-        function == null ? "" : CustomShortcuts.AsValueEnumerable()
-            .FirstOrDefault(x => x.Value == function).Value.Method.Name;
-    
-    public static Func<ValueTask>? GetFunction(KeyGesture keyGesture) =>
-        keyGesture == null ? null : CustomShortcuts.AsValueEnumerable()
-            .FirstOrDefault(x => x.Key == keyGesture).Value;
+    public static string? GetActionName(KeyGesture? keyGesture)
+    {
+        if (keyGesture is null || CustomShortcuts is null)
+        {
+            return null;
+        }
+        
+        return CustomShortcuts.GetValueOrDefault(keyGesture);
+    }
 }

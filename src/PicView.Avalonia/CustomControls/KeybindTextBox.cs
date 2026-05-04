@@ -11,7 +11,6 @@ using PicView.Avalonia.Functions;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.Localization;
-using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -52,7 +51,6 @@ public class KeybindTextBox : TextBox
     }
 
     protected override Type StyleKeyOverride => typeof(TextBox);
-
 
     public KeyGesture? Keybind
     {
@@ -206,14 +204,8 @@ public class KeybindTextBox : TextBox
         }
 
         KeybindingManager.CustomShortcuts.Remove(new KeyGesture(e.Key, e.KeyModifiers));
-
-        if (DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        var function = core.MainWindows.ActiveWindow.CurrentValue.Mapper.GetFunctionByName(MethodName);
-
-        if (function == null)
+        
+        if (string.IsNullOrEmpty(MethodName))
         {
             return;
         }
@@ -234,30 +226,30 @@ public class KeybindTextBox : TextBox
         // Handle whether it's an alternative key or not
         if (Alt)
         {
-            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(MethodName))
             {
                 // If the main key is not present, add a new entry with the alternative key
                 var altKey = (Key)Enum.Parse(typeof(Key), e.Key.ToString());
                 var keyGesture = new KeyGesture(altKey, e.KeyModifiers);
-                KeybindingManager.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
             }
             else
             {
                 // Update the key and function name in the CustomShortcuts dictionary
                 var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-                KeybindingManager.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
             }
         }
         else
         {
             // Remove if it already contains
-            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(MethodName))
             {
                 Remove();
             }
 
             var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-            KeybindingManager.CustomShortcuts[keyGesture] = function;
+            KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -275,9 +267,10 @@ public class KeybindTextBox : TextBox
 
         void Remove()
         {
-            var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method.Name == MethodName)
-                ?.Select(x => x.Key).ToList() ?? null;
-            if (keys is not null)
+            var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value == MethodName)
+                .Select(x => x.Key).ToArray();
+            
+            if (keys.Length > 0)
             {
                 KeybindingManager.CustomShortcuts.Remove(Alt ? keys.LastOrDefault() : keys.FirstOrDefault());
             }
