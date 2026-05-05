@@ -306,26 +306,14 @@ public class NavigateAbleItemsViewer : ItemsControl
             return;
         }
         
-        item.BringIntoView();
         
         if (CenterCurrentItem && !_isVerticalScrolling)
         {
-            var container = ContainerFromIndex(index); 
-            var vector = container?.TranslatePoint(new Point(0, 0), _scrollViewer);
-            
-            if (vector != null)
-            {
-                var pos = vector.Value;
-                var currentOffset = _scrollViewer.Offset;
-                var itemCenterX = pos.X + container.Bounds.Width / 2;
-                var viewportCenterX = _scrollViewer.Viewport.Width / 2;
-                    
-                // Calculate difference
-                var diff = itemCenterX - viewportCenterX;
-                    
-                // Apply to X offset, keep Y same
-                _scrollViewer.Offset = new Vector(currentOffset.X + diff, currentOffset.Y);
-            }
+            ScrollToCenterOfItem(item);
+        }
+        else
+        {
+            item.BringIntoView();
         }
 
         item.SetSelected(true);
@@ -372,6 +360,42 @@ public class NavigateAbleItemsViewer : ItemsControl
     private void UpdateSelectionIndex(int index)
     {
         SelectedItemIndex = index;
+    }
+    
+    public void ScrollToCenterOfItem(NavigateAbleItem item)
+    {
+        if (DataContext is TabViewModel tab)
+        {
+            if (tab.Gallery.IsGalleryExpanded.Value)
+            {
+                ScrollIntoView(item);
+                return;
+            }
+        }
+        
+        var visibleItems = GetVisibleItems();
+        
+        var array = visibleItems as NavigateAbleItem[] ?? visibleItems.ToArray();
+        var visibleItemsCount = array.Length;
+        if (visibleItemsCount == 0)
+        {
+            return;
+        }
+        
+        var averageItemWidth = array.Sum(x => x.Bounds.Width);
+        averageItemWidth /= visibleItemsCount;
+        
+        var selectedScrollTo = item.TranslatePoint(new Point(), ItemsPanelRoot);
+        
+        if (!selectedScrollTo.HasValue)
+        {
+            return;
+        }
+
+        // ReSharper disable once PossibleLossOfFraction
+        var x = selectedScrollTo.Value.X - (visibleItemsCount + 1) / 2 * averageItemWidth + averageItemWidth / 2;
+
+        _scrollViewer.Offset = new Vector(x, _scrollViewer.Offset.Y);
     }
 
     #endregion
@@ -551,4 +575,5 @@ public class NavigateAbleItemsViewer : ItemsControl
     }
 
     #endregion
+    
 }

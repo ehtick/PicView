@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.Sizing;
@@ -424,6 +425,14 @@ public class GalleryAnimationControl : UserControl
 
         SetDockedThumbPosition(dock);
         _viewer?.ScrollToCenterOfCurrentItem();
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (Application.Current.DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
+        });
     }
 
     private async Task DockedToClosed()
@@ -443,6 +452,15 @@ public class GalleryAnimationControl : UserControl
         }
 
         IsVisible = false;
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (Application.Current.DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
+        });
+
     }
 
     private async Task DockedToExpanded()
@@ -528,6 +546,11 @@ public class GalleryAnimationControl : UserControl
         );
 
         IsVisible = false;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
     }
 
     private void ParentSizeChanged(object? sender, SizeChangedEventArgs e)
