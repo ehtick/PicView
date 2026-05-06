@@ -57,7 +57,6 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     public NavigateAbleItemsViewer()
     {
-        //PointerWheelChanged += OnPointerWheelChanged;
         AddHandler(PointerWheelChangedEvent, OnPointerWheelChanged, RoutingStrategies.Direct | RoutingStrategies.Tunnel);
     }
 
@@ -83,7 +82,7 @@ public class NavigateAbleItemsViewer : ItemsControl
         {
             if (change is { OldValue: int oldIndex, NewValue: int newIndex })
             {
-                SelectAndBringIntoView(newIndex, oldIndex);
+                UpdatePreviousAndNextSelection(newIndex, oldIndex);
             }
         }
     }
@@ -105,7 +104,6 @@ public class NavigateAbleItemsViewer : ItemsControl
         if (index == CurrentItemIndex)
         {
             navItem.SetCurrent(true);
-            navItem.BringIntoView();
         }
 
         if (index == SelectedItemIndex) navItem.SetSelected(true);
@@ -185,37 +183,6 @@ public class NavigateAbleItemsViewer : ItemsControl
         });
     }
 
-    public void CenterItemHorizontally(NavigateAbleItem selectedItem)
-    {
-        if (_scrollViewer == null)
-        {
-            return;
-        }
-
-        var visibleItems = GetVisibleItems();
-        var array = visibleItems as NavigateAbleItem[] ?? visibleItems.ToArray();
-        var visibleItemsCount = array.Length;
-        if (visibleItemsCount == 0)
-        {
-            return;
-        }
-        
-        var averageItemWidth = array.Sum(item => item.Bounds.Width);
-        averageItemWidth /= visibleItemsCount;
-        
-        var selectedScrollTo = selectedItem.TranslatePoint(new Point(), ItemsPanelRoot);
-        
-        if (!selectedScrollTo.HasValue)
-        {
-            return;
-        }
-
-        // ReSharper disable once PossibleLossOfFraction
-        var newScrollPosition = selectedScrollTo.Value.X - (visibleItemsCount + 1) / 2 * averageItemWidth + averageItemWidth / 2;
-
-        _scrollViewer.Offset = new Vector(newScrollPosition, _scrollViewer.Offset.Y);
-    }
-
     private void OnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
     {
         switch (Settings.Gallery.GalleryMouseWheelBehavior)
@@ -264,36 +231,11 @@ public class NavigateAbleItemsViewer : ItemsControl
         }
     }
 
-    public IEnumerable<Control?> GetVisibleItems()
-    {
-        return LogicalChildren.Cast<Control?>().Where(IsChildVisible);
-    }
-    
-    private bool IsChildVisible(Control? child)
-    {
-        if (child is null) return false;
-        
-        try
-        {
-            var parentBounds = new Rect(Bounds.Size);
-            var visual = child.TransformToVisual(this);
-            if (visual is null) return false;
-            
-            var childBounds = child.Bounds.TransformToAABB(visual.Value);
-            return parentBounds.Intersects(childBounds);
-        }
-        catch (Exception e)
-        {
-            DebugHelper.LogDebug(nameof(NavigateAbleItemsViewer), nameof(IsChildVisible), e);
-            return false;
-        }
-    }
-
     #endregion
 
     #region Selection & Visual State Management
 
-    public void SelectAndBringIntoView(int index, int prevIndex)
+    public void UpdatePreviousAndNextSelection(int index, int prevIndex)
     {
         if (_scrollViewer == null || index < 0 || index >= ItemCount 
             || ContainerFromIndex(index) is not ContentPresenter presenter)
@@ -304,16 +246,6 @@ public class NavigateAbleItemsViewer : ItemsControl
         if (presenter.Child is not NavigateAbleItem item)
         {
             return;
-        }
-        
-        
-        if (CenterCurrentItem && !_isVerticalScrolling)
-        {
-            ScrollToCenterOfItem(item);
-        }
-        else
-        {
-            item.BringIntoView();
         }
 
         item.SetSelected(true);
@@ -341,7 +273,6 @@ public class NavigateAbleItemsViewer : ItemsControl
 
         if (presenter.Child is NavigateAbleItem item)
         {
-            item.BringIntoView();
             item.SetCurrent(true);
         }
 
@@ -362,42 +293,6 @@ public class NavigateAbleItemsViewer : ItemsControl
         SelectedItemIndex = index;
     }
     
-    public void ScrollToCenterOfItem(NavigateAbleItem item)
-    {
-        if (DataContext is TabViewModel tab)
-        {
-            if (tab.Gallery.IsGalleryExpanded.Value)
-            {
-                ScrollIntoView(item);
-                return;
-            }
-        }
-        
-        var visibleItems = GetVisibleItems();
-        
-        var array = visibleItems as NavigateAbleItem[] ?? visibleItems.ToArray();
-        var visibleItemsCount = array.Length;
-        if (visibleItemsCount == 0)
-        {
-            return;
-        }
-        
-        var averageItemWidth = array.Sum(x => x.Bounds.Width);
-        averageItemWidth /= visibleItemsCount;
-        
-        var selectedScrollTo = item.TranslatePoint(new Point(), ItemsPanelRoot);
-        
-        if (!selectedScrollTo.HasValue)
-        {
-            return;
-        }
-
-        // ReSharper disable once PossibleLossOfFraction
-        var x = selectedScrollTo.Value.X - (visibleItemsCount + 1) / 2 * averageItemWidth + averageItemWidth / 2;
-
-        _scrollViewer.Offset = new Vector(x, _scrollViewer.Offset.Y);
-    }
-
     #endregion
 
     #region Spatial Navigation Logic

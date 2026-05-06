@@ -18,17 +18,17 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
+        var thumbnailService = new AvaloniaThumbnailLoader();
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
         var thumbnailCache = core.SharedThumbnailCache;
         
-        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache);
+        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache, thumbnailService);
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
-        var thumbnailService = new AvaloniaThumbnailLoader();
         core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
 
         var tabOverView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
@@ -56,17 +56,17 @@ public static class TabNavigationInitializer
         // 1. Create dependencies
         var imageLoader = new AvaloniaImageLoader();
         var archiveService = new AvaloniaArchiveService();
+        var thumbnailService = new AvaloniaThumbnailLoader();
 
         // 2. Create SharedImageCache
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
         var thumbnailCache = core.SharedThumbnailCache;
         
-        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache);
+        var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache, thumbnailService);
 
         // 3. Create NavigationService (Core)
         var tempFileService = new TempFileService();
-        var thumbnailService = new AvaloniaThumbnailLoader();
         core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
 
         // 4. Initialize ViewModel

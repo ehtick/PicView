@@ -70,7 +70,7 @@ public partial class GalleryView : GalleryAnimationControl
                         {
                             GalleryItemsControl.Items.Add(newItem);
                         }
-                        GalleryItemsControl.SelectAndBringIntoView(tab.ImageIterator.CurrentIndex, -1);
+                        GalleryItemsControl.ScrollToCenterOfCurrentItem();
                     },DispatcherPriority.Background);
                 }
                 else
@@ -100,7 +100,7 @@ public partial class GalleryView : GalleryAnimationControl
 
                         Dispatcher.UIThread.Post(() =>
                         {
-                            GalleryItemsControl.SelectAndBringIntoView(tab.ImageIterator.CurrentIndex, -1);
+                            GalleryItemsControl.ScrollToCenterOfCurrentItem();
                         },DispatcherPriority.Background);
                     }
                 }
@@ -121,7 +121,7 @@ public partial class GalleryView : GalleryAnimationControl
                     Dispatcher.UIThread.Post(() =>
                     {
                         GalleryItemsControl.Items.Remove(newItem);
-                        GalleryItemsControl.SelectAndBringIntoView(tab.ImageIterator.CurrentIndex, -1);
+                        GalleryItemsControl.ScrollToCenterOfCurrentItem();  
                     },DispatcherPriority.Background);
                 }
                 else
@@ -139,7 +139,7 @@ public partial class GalleryView : GalleryAnimationControl
 
                         Dispatcher.UIThread.Post(() =>
                         {
-                            GalleryItemsControl.SelectAndBringIntoView(tab.ImageIterator.CurrentIndex, -1);
+                            GalleryItemsControl.ScrollToCenterOfCurrentItem();
                         },DispatcherPriority.Background);
                     }
                     GalleryItemsControl.ScrollToCenterOfCurrentItem();

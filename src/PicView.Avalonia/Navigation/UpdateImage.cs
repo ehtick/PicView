@@ -85,15 +85,6 @@ public static class UpdateImage
             tabViewModel.Image.Value = tabViewModel.Model.Image;
         }
         tabViewModel.ImageType.Value = tabViewModel.Model.ImageType;
-
-        if (Settings.Zoom.ResetZoomOnChange)
-        {
-            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
-            {
-                imageViewer.ResetZoomSlim();
-                imageViewer.Rotate(0);
-            }
-        }
         
         double secondaryWidth, secondaryHeight;
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -132,6 +123,22 @@ public static class UpdateImage
                 secondaryWidth, secondaryHeight,
                 WindowResizeReason.Application,
                 vm);
+        }
+        
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
+        {
+            return;
+        }
+        
+        if (Settings.Zoom.ResetZoomOnChange)
+        {
+            imageViewer.ResetZoomSlim();
+            imageViewer.Rotate(0);
+        }
+
+        if (tabViewModel.Gallery.IsDockedGalleryVisible.CurrentValue)
+        {
+            imageViewer.GalleryView.GalleryItemsControl.ScrollToCenterOfCurrentItem();
         }
 
         // Update tiff title if appropriate (there are no file changes in this instance

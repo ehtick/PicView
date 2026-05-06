@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileSorting;
+using PicView.Core.Gallery;
 using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.ViewModels;
@@ -13,6 +14,7 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 {
     private readonly IImageCache _cache;
     private readonly IThumbnailCache? _thumbnailCache;
+    private readonly IThumbnailLoader? _thumbnailLoader;
     private readonly Lock _lock = new();
     private readonly Func<string, string, int> _stringComparer;
 
@@ -21,11 +23,12 @@ public class FileWatcherService : IFileWatcherService, IDisposable
         ConcurrentDictionary<string, (FileSystemWatcher Watcher, IDisposable Subscription,
             List<WeakReference<TabViewModel>> Subscribers)> _watchers = new();
 
-    public FileWatcherService(Func<string, string, int> stringComparer, IImageCache cache, IThumbnailCache? thumbnailCache = null)
+    public FileWatcherService(Func<string, string, int> stringComparer, IImageCache cache, IThumbnailCache? thumbnailCache = null, IThumbnailLoader? thumbnailLoader = null)
     {
         _stringComparer = stringComparer ?? throw new ArgumentNullException(nameof(stringComparer));
         _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         _thumbnailCache = thumbnailCache;
+        _thumbnailLoader = thumbnailLoader;
     }
 
     public void Watch(TabViewModel tab, string? directory = null)
@@ -154,12 +157,51 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             return;
         }
 
-        await HandleUpdateAsync(directory, (tab, files) =>
+        var newFile = new FileInfo(e.FullPath);
+
+        await HandleUpdateAsync(directory, async tab =>
         {
-            tab.ImageIterator.Files = files;
+            var files = tab.ImageIterator.Files as List<FileInfo>;
+            var insertionIndex = -1;
+            if (files != null)
+            {
+                insertionIndex = FileSortOrder.InsertSorted(files, newFile, _stringComparer);
+            }
+
+            if (insertionIndex >= 0)
+            {
+                var item = new GalleryItemViewModel
+                {
+                    FileInfo = newFile
+                };
+
+                var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(newFile);
+                item.FileName.Value = thumbData.FileName;
+                item.FileSize.Value = thumbData.FileSize;
+                item.FileDate.Value = thumbData.FileDate;
+                item.FileLocation.Value = thumbData.FileLocation;
+
+                tab.Gallery.GalleryItems.Insert(insertionIndex, item);
+
+                if (_thumbnailLoader != null)
+                {
+                    var maxHeight = Math.Max(Settings.Gallery.BottomGalleryItemSize, Settings.Gallery.ExpandedGalleryItemSize);
+                    if (maxHeight <= 0)
+                    {
+                        maxHeight = GalleryDefaults.DefaultBottomGalleryHeight;
+                    }
+
+                    var thumb = await _thumbnailLoader.GetThumbnailAsync(newFile, (uint)maxHeight).ConfigureAwait(false);
+                    if (thumb != null)
+                    {
+                        _thumbnailCache?.Add(tab.Id, newFile.FullName, thumb);
+                    }
+                    item.Image.Value = thumb;
+                }
+            }
 
             var currentFile = tab.Model?.FileInfo;
-            if (currentFile != null)
+            if (currentFile != null && files != null)
             {
                 var newIndex = files.FindIndex(x =>
                     x.FullName.AsSpan().Equals(currentFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
@@ -171,8 +213,6 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 
             _cache.Resynchronize(tab.Id, files);
             tab.UpdateTabTitle();
-
-            return ValueTask.CompletedTask;
         });
     }
 
@@ -185,16 +225,25 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 
         _thumbnailCache?.Remove(e.FullPath);
 
-        await HandleUpdateAsync(directory, async (tab, files) =>
+        await HandleUpdateAsync(directory, async tab =>
         {
             var oldIndex = tab.ImageIterator.CurrentIndex;
             var currentFile = tab.Model?.FileInfo;
             var wasCurrentFileDeleted =
                 currentFile?.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
-            tab.ImageIterator.Files = files;
-
-            if (wasCurrentFileDeleted)
+            var files = tab.ImageIterator.Files as List<FileInfo>;
+            if (files != null)
+            {
+                var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
+                if (removeIndex >= 0)
+                {
+                    files.RemoveAt(removeIndex);
+                    tab.Gallery.GalleryItems.RemoveAt(removeIndex);
+                }
+            }
+            
+            if (wasCurrentFileDeleted && files != null)
             {
                 if (files.Count == 0)
                 {
@@ -202,7 +251,9 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                 }
                 else
                 {
-                    var targetIndex = Math.Clamp(oldIndex, 0, files.Count - 1);
+                    var isNavigatingBackwards = Settings.Navigation.IsNavigatingBackwardsWhenDeleting;
+                    var targetIndex = isNavigatingBackwards ? oldIndex - 1 : oldIndex;
+                    targetIndex = Math.Clamp(targetIndex, 0, files.Count - 1);
                     await tab.ImageIterator.IterateToIndexAsync(targetIndex, tab.GetTabCancellation());
                 }
             }
@@ -233,17 +284,61 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 
         _thumbnailCache?.Remove(e.OldFullPath);
 
-        await HandleUpdateAsync(directory, (tab, files) =>
+        var newFileInfo = new FileInfo(e.FullPath);
+
+        await HandleUpdateAsync(directory, async tab =>
         {
             var currentFile = tab.Model?.FileInfo;
             var wasCurrentFileRenamed = currentFile?.FullName.AsSpan()
                 .Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
-            tab.ImageIterator.Files = files;
+            var files = tab.ImageIterator.Files as List<FileInfo>;
+            var insertionIndex = -1;
+            if (files != null)
+            {
+                var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
+                if (removeIndex >= 0)
+                {
+                    files.RemoveAt(removeIndex);
+                    tab.Gallery.GalleryItems.RemoveAt(removeIndex);
+                }
+                insertionIndex = FileSortOrder.InsertSorted(files, newFileInfo, _stringComparer);
+            }
+
+            if (insertionIndex >= 0)
+            {
+                var item = new GalleryItemViewModel
+                {
+                    FileInfo = newFileInfo
+                };
+
+                var thumbData = GalleryThumbInfo.GalleryThumbHolder.GetThumbData(newFileInfo);
+                item.FileName.Value = thumbData.FileName;
+                item.FileSize.Value = thumbData.FileSize;
+                item.FileDate.Value = thumbData.FileDate;
+                item.FileLocation.Value = thumbData.FileLocation;
+
+                tab.Gallery.GalleryItems.Insert(insertionIndex, item);
+
+                if (_thumbnailLoader != null)
+                {
+                    var maxHeight = Math.Max(Settings.Gallery.BottomGalleryItemSize, Settings.Gallery.ExpandedGalleryItemSize);
+                    if (maxHeight <= 0)
+                    {
+                        maxHeight = GalleryDefaults.DefaultBottomGalleryHeight;
+                    }
+
+                    var thumb = await _thumbnailLoader.GetThumbnailAsync(newFileInfo, (uint)maxHeight).ConfigureAwait(false);
+                    if (thumb != null)
+                    {
+                        _thumbnailCache?.Add(tab.Id, newFileInfo.FullName, thumb);
+                    }
+                    item.Image.Value = thumb;
+                }
+            }
 
             if (wasCurrentFileRenamed)
             {
-                var newFileInfo = new FileInfo(e.FullPath);
                 var currentModel = tab.Model;
                 if (currentModel != null)
                 {
@@ -258,9 +353,9 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                 }
             }
 
-            var fileToCheck = wasCurrentFileRenamed ? new FileInfo(e.FullPath) : currentFile;
+            var fileToCheck = wasCurrentFileRenamed ? newFileInfo : currentFile;
 
-            if (fileToCheck != null)
+            if (fileToCheck != null && files != null)
             {
                 var newIndex = files.FindIndex(x =>
                     x.FullName.Equals(fileToCheck.FullName, StringComparison.OrdinalIgnoreCase));
@@ -272,13 +367,10 @@ public class FileWatcherService : IFileWatcherService, IDisposable
 
             _cache.Resynchronize(tab.Id, files);
             tab.UpdateTabTitle();
-
-            return ValueTask.CompletedTask;
         });
     }
 
-    private async ValueTask HandleUpdateAsync(string directory,
-        Func<TabViewModel, List<FileInfo>, ValueTask> updateAction)
+    private async ValueTask HandleUpdateAsync(string directory, Func<TabViewModel, ValueTask> updateAction)
     {
         List<TabViewModel> targets = [];
         lock (_lock)
@@ -300,26 +392,16 @@ public class FileWatcherService : IFileWatcherService, IDisposable
             return;
         }
 
-        try
+        foreach (var tab in targets)
         {
-            // Perform IO to get fresh list
-            var files = FileListRetriever.RetrieveFiles(new FileInfo(directory), _stringComparer);
-
-            foreach (var tab in targets)
+            try
             {
-                try
-                {
-                    await updateAction(tab, files);
-                }
-                catch (Exception ex)
-                {
-                    DebugHelper.LogDebug(nameof(FileWatcherService), nameof(updateAction), ex);
-                }
+                await updateAction(tab);
             }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(FileWatcherService), nameof(HandleUpdateAsync), ex);
+            catch (Exception ex)
+            {
+                DebugHelper.LogDebug(nameof(FileWatcherService), nameof(updateAction), ex);
+            }
         }
     }
 
