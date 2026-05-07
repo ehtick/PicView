@@ -251,37 +251,22 @@ public static class DragAndDropManager
         if (preload && preLoadValue?.ImageModel?.Image is Bitmap bmp)
         {
             thumb = bmp;
-            UpdateThumbnailUI(thumb);
+            Dispatcher.CurrentDispatcher.Invoke(() => _dragDropView.UpdateThumbnail(thumb));
         }
         else
         {
             // Generate thumbnail
             thumb = await GetThumbnails.GetThumbAsync(fileInfo, SizeDefaults.WindowMinSize - 30)
                 .ConfigureAwait(false);
-            UpdateThumbnailUI(thumb);
+            await Dispatcher.CurrentDispatcher.InvokeAsync(() => _dragDropView.UpdateThumbnail(thumb));
             
             // Load full image in background
-            await PreloadFullImageAsync(fileInfo, preLoadValue, thumb);
-        }
-    }
-
-    private static async ValueTask PreloadFullImageAsync(FileInfo fileInfo, PreLoadValue? preload, Bitmap? thumb)
-    {
-        if (preload is null)
-        {
             var model = await GetImageModel.GetImageModelAsync(fileInfo);
-            UpdateThumbnailUI(thumb);
+            await Dispatcher.CurrentDispatcher.InvokeAsync(() => _dragDropView.UpdateThumbnail(model.Image as Bitmap));
             _preLoadValue = new PreLoadValue(model);
         }
-        else
-        {
-            _preLoadValue = preload;
-            UpdateThumbnailUI(thumb);
-        }
     }
-
-    private static void UpdateThumbnailUI(Bitmap? thumb) =>
-        Dispatcher.CurrentDispatcher.Invoke(() => _dragDropView?.UpdateThumbnail(thumb));
+        
 
     private static bool HandleDragEnterFromUrl(object? urlObject)
     {
@@ -332,33 +317,39 @@ public static class DragAndDropManager
         var tab = tabOverview.ActiveTab.CurrentValue;
         var droppedFileInfo = new FileInfo(path);
         
-        if (_preLoadValue is not null)
+        if (_preLoadValue is null || Application.Current.DataContext is not CoreViewModel core)
         {
-             if (Application.Current?.DataContext is CoreViewModel core)
-             {
-                 var droppedDir = droppedFileInfo.DirectoryName ?? string.Empty;
-                 var currentDir = tab.ImageIterator?.CurrentDirectory ?? string.Empty;
+            return;
+        }
+        var droppedDir = droppedFileInfo.DirectoryName ?? string.Empty;
+        var currentDir = tab.ImageIterator?.CurrentDirectory ?? string.Empty;
 
-                 IReadOnlyList<FileInfo> files;
-                 
-                 if (string.Equals(droppedDir, currentDir, StringComparison.OrdinalIgnoreCase))
-                 {
-                     files = tab.ImageIterator?.Files ?? [];
-                 }
-                 else
-                 {
-                     files = FileListRetriever.RetrieveFiles(droppedFileInfo, core.PlatformService.CompareStrings);
-                 }
-
-                 var index = files.FindIndex(x => x.FullName.AsSpan().Equals(droppedFileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
-
-                 core.SharedCache.Add(tab.Id, index, _preLoadValue, files.Count, false);
-             }
+        IReadOnlyList<FileInfo> files;
+        bool isSameDir;
+        if (string.Equals(droppedDir, currentDir, StringComparison.OrdinalIgnoreCase))
+        {
+            files = tab.ImageIterator?.Files ?? [];
+            isSameDir = true;
+        }
+        else
+        {
+            files = FileListRetriever.RetrieveFiles(droppedFileInfo, core.PlatformService.CompareStrings);
+            isSameDir = false;
         }
 
-        InitializeTab(tabOverview, droppedFileInfo);
-        
-        await tabOverview.LoadFromFileAsync(path);
+        var index = files.FindIndex(x => x.FullName.AsSpan().Equals(droppedFileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
+
+        core.SharedCache.Add(tab.Id, index, _preLoadValue, files.Count, false);
+
+        if (isSameDir)
+        {
+            await tabOverview.LoadFromIndexAsync(index, tab).ConfigureAwait(false);
+        }
+        else
+        {
+            InitializeTab(tabOverview, droppedFileInfo);
+            await tabOverview.LoadFromFileAsync(path).ConfigureAwait(false);
+        }
     }
     
     private static void InitializeTab(TabOverviewViewModel tabOverview, FileInfo? fileInfo)
