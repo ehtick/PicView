@@ -91,17 +91,10 @@ public partial class GalleryView : GalleryAnimationControl
                             }
                         },DispatcherPriority.Background);
                         
-                        if (index >= 0) index++;
-
-                        if (tab.Model.FileInfo.FullName != item.FileInfo.FullName)
+                        if (index >= 0)
                         {
-                            continue;
+                            index++;
                         }
-
-                        Dispatcher.UIThread.Post(() =>
-                        {
-                            GalleryItemsControl.ScrollToCenterOfCurrentItem();
-                        },DispatcherPriority.Background);
                     }
                 }
                 break;
@@ -122,7 +115,7 @@ public partial class GalleryView : GalleryAnimationControl
                     {
                         GalleryItemsControl.Items.Remove(newItem);
                         GalleryItemsControl.ScrollToCenterOfCurrentItem();  
-                    },DispatcherPriority.Background);
+                    });
                 }
                 else
                 {
@@ -140,9 +133,8 @@ public partial class GalleryView : GalleryAnimationControl
                         Dispatcher.UIThread.Post(() =>
                         {
                             GalleryItemsControl.ScrollToCenterOfCurrentItem();
-                        },DispatcherPriority.Background);
+                        });
                     }
-                    GalleryItemsControl.ScrollToCenterOfCurrentItem();
                 }
                 break;
             // Replace, Move
