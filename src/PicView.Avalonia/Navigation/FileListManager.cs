@@ -1,11 +1,11 @@
-﻿using PicView.Avalonia.Gallery;
-using PicView.Avalonia.Interfaces;
-using PicView.Avalonia.UI;
+﻿using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.FileSorting;
 
 namespace PicView.Avalonia.Navigation;
+
+// TODO: Deprecated, delete
 
 /// <summary>
 /// Manages file list sorting and updating within the application.
@@ -72,7 +72,7 @@ public static class FileListManager
 
                 var index = files.FindIndex(info => info.FullName.Equals(vm.PicViewer.FileInfo.CurrentValue.FullName));
                 // NavigationManager.UpdateFileListAndIndex(files, index);
-                TitleManager.SetTitle(vm);
+                //TitleManager.SetTitle(vm);
                 return true;
             }
             catch (Exception e)

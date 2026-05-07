@@ -179,7 +179,7 @@ public static class SettingsUpdater
         // }
         //
         // await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
-        TitleManager.SetTitle(vm);
+        //TitleManager.SetTitle(vm);
     }
     
     public static async Task TurnOnSubdirectories(MainViewModel vm)
@@ -193,7 +193,7 @@ public static class SettingsUpdater
         // }
         //
         // await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
-        TitleManager.SetTitle(vm);
+        //TitleManager.SetTitle(vm);
     }
     
     public static async Task ToggleTaskbarProgress(MainViewModel vm)
@@ -311,7 +311,7 @@ public static class SettingsUpdater
         vm.PicViewer.IsShowingSideBySide.Value = false;
         vm.PicViewer.SecondaryImageSource.Value = null;
       //  WindowResizing.SetSize(vm);
-        TitleManager.SetTitle(vm);
+        //TitleManager.SetTitle(vm);
     }
     
     public static async Task TurnOnSideBySide(MainViewModel vm)

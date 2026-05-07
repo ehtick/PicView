@@ -1,15 +1,11 @@
-﻿using System.Runtime.InteropServices;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
@@ -217,28 +213,12 @@ public static class SettingsUpdater2
     {
         vm.GlobalSettings.IsIncludingSubdirectories.Value = false;
         Settings.Sorting.IncludeSubDirectories = false;
-
-        // if (!NavigationManager.CanNavigate(vm))
-        // {
-        //     return;
-        // }
-        //
-        // await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
-        TitleManager.SetTitle(vm);
     }
     
     public static async Task TurnOnSubdirectories(MainViewModel vm)
     {
         vm.GlobalSettings.IsIncludingSubdirectories.Value = true;
         Settings.Sorting.IncludeSubDirectories = true;
-        
-        // if (!NavigationManager.CanNavigate(vm))
-        // {
-        //     return;
-        // }
-        //
-        // await NavigationManager.ReloadFileListAsync().ConfigureAwait(false);
-        TitleManager.SetTitle(vm);
     }
     
     public static async Task ToggleTaskbarProgress(MainViewModel vm)
@@ -254,14 +234,6 @@ public static class SettingsUpdater2
         else
         {
             Settings.UIProperties.IsTaskbarProgressEnabled = true;
-            // if (NavigationManager.CanNavigate(vm))
-            // {
-            //     await Dispatcher.UIThread.InvokeAsync(() =>
-            //     {
-            //         vm.PlatformService.SetTaskbarProgress((ulong)NavigationManager.GetCurrentIndex,
-            //             (ulong)NavigationManager.GetCount);
-            //     });
-            // }
         }
 
         await SaveSettingsAsync();

@@ -63,7 +63,8 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     public BindableReactiveProperty<bool> IsRotated180 { get; } = new(false);
     public BindableReactiveProperty<bool> IsRotated270 { get; } = new(false);
     public BindableReactiveProperty<double> ScaleX { get; } = new(1);
-    public BindableReactiveProperty<double> FittingScale { get; } = new(1);
+    public BindableReactiveProperty<double> AspectRatio { get; } = new(1);
+    public BindableReactiveProperty<int> ZoomLevel { get; } = new();
     #endregion
 
     #region Navigation properties
@@ -150,22 +151,20 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         
         WindowTitles GetTitles()
         {
-            var zoom = FittingScale.Value * 100;
+            var zoom = ZoomLevel.CurrentValue;
+            var firstInfo = new ImageTitleInfo(Model.FileInfo, width, height, index, ImageIterator.Files.Count);
             if (Model.TiffNavigation is { } tiff)
             {
-                return ImageTitleFormatter.GenerateTiffTitleStrings(width, height,
-                    index, Model.FileInfo, zoom, ImageIterator.Files, tiff.CurrentPage, tiff.PageCount);
+                return ImageTitleFormatter.GenerateTiffTitleStrings(firstInfo, zoom, tiff.CurrentPage, tiff.PageCount);
             }
 
-            if (!Settings.ImageScaling.ShowImageSideBySide || SecondaryModel is null)
+            if (Settings.ImageScaling.ShowImageSideBySide && SecondaryModel is not null)
             {
-                return ImageTitleFormatter.GenerateTitleStrings(width, height,
-                    index, Model.FileInfo, zoom, ImageIterator.Files);
+                var secondInfo = new ImageTitleInfo(SecondaryModel.FileInfo, SecondaryModel.PixelWidth, SecondaryModel.PixelHeight, index + 1, ImageIterator.Files.Count);
+                return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, zoom, ImageIterator.Files);
             }
 
-            var firstInfo = new ImageTitleInfo(width, height, index, Model.FileInfo, zoom);
-            var secondInfo = new ImageTitleInfo(SecondaryModel.PixelWidth, SecondaryModel.PixelHeight, index + 1, SecondaryModel.FileInfo, zoom);
-            return ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo, ImageIterator.CurrentIndex, ImageIterator.SecondaryCurrentIndex, ImageIterator.Files);
+            return ImageTitleFormatter.GenerateTitleStrings(firstInfo, zoom);
         }
     }
     

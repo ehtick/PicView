@@ -1,9 +1,9 @@
-﻿using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+﻿using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.ImageHandling;
+
+// TODO: Reimplement
 
 /// <summary>
 /// Provides image optimization functionality
@@ -43,7 +43,7 @@ public static class ImageOptimizer
         }
         finally
         {
-            TitleManager.SetTitle(vm);
+            //TitleManager.SetTitle(vm);
             // vm.MainWindow.IsLoadingIndicatorShown.Value = false;
         }
     }

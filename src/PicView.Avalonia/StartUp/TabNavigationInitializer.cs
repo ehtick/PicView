@@ -74,7 +74,6 @@ public static class TabNavigationInitializer
         var tab = tabOverView.ActiveTab.CurrentValue;
         tabOverView.LoadAndInitializeFromPath(files, core.SharedNavigationService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
         tabOverView.SetParentContext(core);
-        tab.UpdateTabTitle();
         InitializeNewTab(tab, core.MainWindows.ActiveWindow.CurrentValue);
         tab.Gallery.Initialize();
         core.GallerySettings.Initialize();

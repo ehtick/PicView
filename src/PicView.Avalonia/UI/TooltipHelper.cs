@@ -82,6 +82,10 @@ public static class TooltipHelper
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var toolTip = UIHelper.GetToolTipMessage;
+                if (toolTip is null || message is null)
+                {
+                    return;
+                }
                 toolTip.ToolTipMessageText.Text = message.ToString();
                 UIHelper.GetToolTipMessage.IsVisible = true;
                 

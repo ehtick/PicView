@@ -6,7 +6,6 @@ using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.UI;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
@@ -93,15 +92,16 @@ public partial class ImageViewer : UserControl
             return;
         }
 
-        Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.ZoomLevel)
+        Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.Scale)
             .Skip(1)
             .Subscribe(zoomLevel =>
             {
-                TitleManager.SetTabTitle(tab, zoomLevel);
+                tab.ZoomLevel.Value = Convert.ToInt32(tab.AspectRatio.CurrentValue * (zoomLevel * 100));;
+                tab.UpdateTabTitle();
                 if (Settings.Zoom.IsShowingZoomPercentagePopup)
                 {
-                    _ = TooltipHelper.ShowTooltipMessageContinuallyAsync($"{Math.Floor(zoomLevel)}%", true,
-                        TimeSpan.FromSeconds(1));
+                    // _ = TooltipHelper.ShowTooltipMessageContinuallyAsync(ZoomPanControl.ZoomLevel, true,
+                    //     TimeSpan.FromSeconds(1));
                 }
 
                 ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,HoverBar.Bounds.Height / 2 + 25) : new Thickness(0, 0, 25, 25);

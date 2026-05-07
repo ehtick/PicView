@@ -71,6 +71,21 @@ public static partial class StringExtensions
         });
     }
     
+    public static string CombineWithPercentage(double zoomValue)
+    {
+        Span<char> buffer = stackalloc char[32];
+        if (!zoomValue.TryFormat(buffer, out var zoomLength))
+        {
+            return string.Empty;
+        }
+
+        return string.Create(zoomLength + 1, (zoomValue, zoomLength), static (destination, state) =>
+        {
+            state.zoomValue.TryFormat(destination[..state.zoomLength], out _);
+            destination[state.zoomLength] = '%';
+        });
+    }
+    
     /// <summary>
     /// Shortens the given string <paramref name="name"/> to the specified <paramref name="amount"/> and appends "..." to it.
     /// </summary>
@@ -113,4 +128,6 @@ public static partial class StringExtensions
     /// <returns>A regex pattern that matches numbers followed by a percentage sign.</returns>
     [GeneratedRegex("(\\d+)%")]
     private static partial Regex PercentageRegex();
+
+
 }

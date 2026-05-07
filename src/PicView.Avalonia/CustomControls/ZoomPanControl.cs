@@ -84,16 +84,6 @@ public class ZoomPanControl : Decorator
         ZoomPreviewer = zoomPreviewer;
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == FittingScaleProperty)
-        {
-            UpdateZoomLevel();
-        }
-    }
-
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);

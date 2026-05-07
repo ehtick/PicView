@@ -35,7 +35,6 @@ public static class UpdateImage
             return;
         }
         tabViewModel.FileInfo.Value = file;
-        tabViewModel.UpdateTabTitle();
 
         if (Application.Current.DataContext is not CoreViewModel core)
         {
@@ -54,20 +53,20 @@ public static class UpdateImage
     {
         tabViewModel.FileInfo.Value = firstFile;
         tabViewModel.SecondaryFileInfo.Value = secondFile;
-        var firstInfo = new ImageTitleInfo(tabViewModel.Model.PixelWidth,
+        var count = tabViewModel.ImageIterator.Files.Count;
+        var zoom = tabViewModel.ZoomLevel.CurrentValue;
+        var firstInfo = new ImageTitleInfo(firstFile,
+            tabViewModel.Model.PixelWidth,
             tabViewModel.Model.PixelHeight,
             index,
-            firstFile,
-            100);
-        var secondInfo = new ImageTitleInfo(tabViewModel.SecondaryModel.PixelWidth,
+            count);
+        var secondInfo = new ImageTitleInfo(secondFile,
+            tabViewModel.SecondaryModel.PixelWidth,
             tabViewModel.SecondaryModel.PixelHeight,
             secondaryIndex,
-            secondFile,
-            100);
-        var titles = ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo,
-            secondInfo,
-            index,
-            secondaryIndex,
+            count);
+        var titles = ImageTitleFormatter.GenerateTitleForSideBySide(firstInfo, secondInfo,
+            zoom,
             files);
         tabViewModel.WindowTitle.Value = titles.TitleWithAppName;
         tabViewModel.Title.Value = titles.BaseTitle;
@@ -140,13 +139,7 @@ public static class UpdateImage
         {
             imageViewer.GalleryView.GalleryItemsControl.ScrollToCenterOfCurrentItem();
         }
-
-        // Update tiff title if appropriate (there are no file changes in this instance
-        if (tabViewModel.Model?.TiffNavigation is null)
-        {
-            return;
-        }
-        // Update title to reflect tiff navigation changes
+        tabViewModel.ZoomLevel.Value = Convert.ToInt32(tabViewModel.AspectRatio.CurrentValue * 100);;
         tabViewModel.UpdateTabTitle();
     }
 }

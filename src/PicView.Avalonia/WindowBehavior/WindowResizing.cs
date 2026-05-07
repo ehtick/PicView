@@ -155,7 +155,7 @@ public static class WindowResizing
 
     public static void SetSize(ImageSize size, WindowResizeReason reason, MainWindowViewModel vm)
     {
-        vm.WindowTabs.ActiveTab.CurrentValue.FittingScale.Value = size.AspectRatio;
+        vm.WindowTabs.ActiveTab.CurrentValue.AspectRatio.Value = size.AspectRatio;
         vm.ScrollViewerWidth.Value = size.ScrollViewerWidth;
         vm.ScrollViewerHeight.Value = size.ScrollViewerHeight;
         var rotationAngle = vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue;
@@ -189,7 +189,7 @@ public static class WindowResizing
             {
                 vm.WindowMaxWidth.Value = isRotated ? size.WindowHeight : size.WindowWidth;
                 vm.WindowMaxHeight.Value = isRotated ? size.WindowWidth : size.WindowHeight;
-                vm.ImageWidth.Value = imageWidth;
+                vm.ImageWidth.Value = imageWidth - 2;
                 vm.ImageHeight.Value = imageHeight;
             }
         }
@@ -309,11 +309,11 @@ public static class WindowResizing
                 var (gW, gH) = GalleryHelper.GetGallerySize(vm);
                 if (vm.WindowTabs.Tabs.CurrentValue.Count > 1)
                 {
-                    uiTopSize = SizeDefaults.TabHeight + vm.TitlebarHeight.CurrentValue;
+                    uiTopSize = SizeDefaults.TabHeight + vm.TitlebarHeight.CurrentValue + 2;
                 }
                 else
                 {
-                    uiTopSize = vm.TitlebarHeight.CurrentValue;
+                    uiTopSize = vm.TitlebarHeight.CurrentValue + 2;
                 }
 
                 return (UIHelper.GetBottomBar.Bounds.Height, uiTopSize, gW, gH);
