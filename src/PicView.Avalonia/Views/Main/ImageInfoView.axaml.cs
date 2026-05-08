@@ -75,8 +75,8 @@ public partial class ImageInfoView : UserControl
             PixelWidthTextBox.KeyUp += delegate { AdjustAspectRatio(PixelWidthTextBox); };
             PixelHeightTextBox.KeyUp += delegate { AdjustAspectRatio(PixelHeightTextBox); };
 
-            Observable.EveryValueChanged(vm.WindowTabs.ActiveTab.CurrentValue.Model, x => x)
-                .SubscribeAwait(UpdateValuesAsync).AddTo(ref _disposables);
+            vm.WindowTabs.ActiveTab.CurrentValue.FileInfo.SubscribeAwait(FileInfoAsyncSubscription)
+                .AddTo(ref _disposables);
 
             SizeChanged += (_, _) => ResponsiveResizeUpdate(vm);
             
@@ -115,6 +115,17 @@ public partial class ImageInfoView : UserControl
 
             vm.InfoWindow.IsLoading.Value = false;
         };
+    }
+
+    private async ValueTask FileInfoAsyncSubscription(FileInfo? fileInfo, CancellationToken ct)
+    {
+        if (fileInfo is null || DataContext  is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        
+        var model = vm.WindowTabs.ActiveTab.CurrentValue.Model;
+        await UpdateValuesAsync(model, ct).ConfigureAwait(false);
     }
 
     private async Task HandleRenameOnEnterAsync(KeyEventArgs e, Func<string> getNewPath)

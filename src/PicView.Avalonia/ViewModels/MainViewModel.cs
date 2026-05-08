@@ -15,7 +15,6 @@ public class MainViewModel
     public GlobalSettingsViewModel GlobalSettings { get; } = new();
     public SettingsViewModel? SettingsViewModel { get; set; }
     public PicViewerModel PicViewer { get; } = new();
-    public ExifViewModel? Exif { get; set; }
     public ImageInfoWindowViewModel? InfoWindow { get; set; }
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
     public BatchResizeViewModel? BatchResizeViewModel { get; set; }

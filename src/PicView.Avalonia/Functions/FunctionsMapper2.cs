@@ -944,38 +944,32 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
 
     public async ValueTask Set0Star()
     {
-        // => await SetExifRatingHelper.Set0Star(vm);
-        return;
+        await SetExifRatingHelper.Set0Star(vm);
     }
 
     public async ValueTask Set1Star()
     {
-        // => await SetExifRatingHelper.Set1Star(vm);
-        return;
+        await SetExifRatingHelper.Set1Star(vm);
     }
 
     public async ValueTask Set2Star()
     {
-        // => await SetExifRatingHelper.Set2Star(vm);
-        return;
+        await SetExifRatingHelper.Set2Star(vm);
     }
 
     public async ValueTask Set3Star()
     {
-        // => await SetExifRatingHelper.Set3Star(vm);
-        return;
+        await SetExifRatingHelper.Set3Star(vm);
     }
 
     public async ValueTask Set4Star()
     {
-        // => await SetExifRatingHelper.Set4Star(vm);
-        return;
+        await SetExifRatingHelper.Set4Star(vm);
     }
 
     public async ValueTask Set5Star()
     {
-        // => await SetExifRatingHelper.Set5Star(vm);
-        return;
+        await SetExifRatingHelper.Set5Star(vm);
     }
 
     #endregion

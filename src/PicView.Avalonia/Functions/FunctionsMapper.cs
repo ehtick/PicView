@@ -667,56 +667,22 @@ public static class FunctionsMapper
     #region Rating
 
     public static async ValueTask Set0Star()
-        => await SetExifRatingHelper.Set0Star(Vm);
+        => await ValueTask.CompletedTask;
 
     public static async ValueTask Set1Star()
-        => await SetExifRatingHelper.Set1Star(Vm);
+        => await ValueTask.CompletedTask;
 
     public static async ValueTask Set2Star()
-        => await SetExifRatingHelper.Set2Star(Vm);
+        => await ValueTask.CompletedTask;
 
     public static async ValueTask Set3Star()
-        => await SetExifRatingHelper.Set3Star(Vm);
+        => await ValueTask.CompletedTask;
 
     public static async ValueTask Set4Star()
-        => await SetExifRatingHelper.Set4Star(Vm);
+        => await ValueTask.CompletedTask;
 
     public static async ValueTask Set5Star()
-        => await SetExifRatingHelper.Set5Star(Vm);
-
-    #endregion
-
-    #region Open GPS link
-
-    public static async Task OpenGoogleMaps()
-    {
-        // TODO: Needs refactoring into its own method
-        if (Vm is null)
-        {
-            return;
-        }
-        if (string.IsNullOrEmpty(Vm.Exif.GoogleLink.CurrentValue))
-        {
-            return;
-        }
-
-        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.GoogleLink.CurrentValue));
-    }
-    
-    public static async Task OpenBingMaps()
-    {
-        // TODO: Needs refactoring into its own method
-        if (Vm is null)
-        {
-            return;
-        }
-        if (string.IsNullOrEmpty(Vm.Exif.BingLink.CurrentValue))
-        {
-            return;
-        }
-
-        await Task.Run(() => ProcessHelper.OpenLink(Vm.Exif.BingLink.CurrentValue));
-    }
+        => await ValueTask.CompletedTask;
 
     #endregion
 
