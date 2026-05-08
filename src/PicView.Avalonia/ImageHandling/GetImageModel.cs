@@ -44,8 +44,6 @@ public static class GetImageModel
             var orientation = ExifOrientationHelper.GetImageOrientation(magickImage);
             var shouldAutoOrient = orientation is not (ExifOrientation.None or ExifOrientation.Horizontal);
             
-            imageModel.Format = magickImage.Format;
-            
             if (fileInfo.Extension.Equals(".b64", StringComparison.InvariantCultureIgnoreCase))
             {
                 await ProcessBase64Async(fileInfo, MagickFormat.Data, imageModel).ConfigureAwait(false);
@@ -173,7 +171,6 @@ public static class GetImageModel
         imageModel.ImageType = imageType;
         imageModel.DpiX = (ushort)bitmap.Dpi.X;
         imageModel.DpiY = (ushort)bitmap.Dpi.Y;
-        imageModel.Format = format;
     }
 
     private static ImageModel CreateErrorImageModel(FileInfo? fileInfo)

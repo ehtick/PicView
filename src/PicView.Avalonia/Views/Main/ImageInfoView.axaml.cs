@@ -229,7 +229,7 @@ public partial class ImageInfoView : UserControl
         GoogleLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.GoogleLink.CurrentValue);
         BingLinkButton.IsEnabled = !string.IsNullOrWhiteSpace(vm.Exif.BingLink.CurrentValue);
 
-        vm.Exif.IsExifAvailable.Value = vm.WindowTabs.ActiveTab.Value.Model.Format.IsExifImage();
+        vm.Exif.IsExifAvailable.Value = vm.Exif.ImageFormat.CurrentValue.IsExifImage();
     }
     
     private void SetLoadingState(bool isLoading)

@@ -302,6 +302,8 @@ public class ExifViewModel : IDisposable
     public BindableReactiveProperty<string?> LensMaker { get; } = new();
 
     public BindableReactiveProperty<bool> IsExifAvailable { get; } = new();
+    
+    public BindableReactiveProperty<MagickFormat?> ImageFormat { get; } = new();
 
     public void Dispose()
     {
@@ -361,6 +363,7 @@ public class ExifViewModel : IDisposable
             Subject,
             Title,
             WhiteBalance,
+            ImageFormat,
             SetAuthorsCommand,
             SetCopyrightCommand,
             SetSoftwareCommand,
@@ -648,6 +651,8 @@ public class ExifViewModel : IDisposable
                 ExifOrientation.Rotated270Cw => 8,
                 _ => 0
             };
+
+            ImageFormat.Value = magick.Format;
 
             var meter = TranslationManager.Translation.Meter;
 
