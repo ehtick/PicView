@@ -408,7 +408,7 @@ public class ExifViewModel : IDisposable
         var shouldDispose = magick != null;
 
         var fileInfo = model.FileInfo;
-        var orientation = model.Orientation;
+
         var pixelWidth = model.PixelWidth;
         var pixelHeight = model.PixelHeight;
         try
@@ -613,8 +613,8 @@ public class ExifViewModel : IDisposable
 
             if (profile != null)
             {
-                DpiY.Value = profile.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? model.DpiX;
-                DpiX.Value = profile.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? model.DpiY;
+                DpiY.Value = profile.GetValue(ExifTag.YResolution)?.Value.ToDouble() ?? magick.Density.X;
+                DpiX.Value = profile.GetValue(ExifTag.XResolution)?.Value.ToDouble() ?? magick.Density.Y;
                 var depth = profile.GetValue(ExifTag.BitsPerSample)?.Value;
                 if (depth is not null)
                 {
@@ -628,17 +628,19 @@ public class ExifViewModel : IDisposable
             }
             else
             {
+#if DEBUG
                 foreach (var artifactName in magick.ArtifactNames)
                 {
                     DebugHelper.LogDebug(nameof(ExifViewModel), nameof(UpdateExifValues), artifactName);
                 }
-
-
-                DpiY.Value = model.DpiX;
-                DpiX.Value = model.DpiY;
+#endif
+                
+                DpiY.Value = magick.Density.X;
+                DpiX.Value = magick.Density.Y;
                 BitDepth.Value = (magick.Depth * 3).ToString();
             }
 
+            var orientation = ExifOrientationHelper.GetImageOrientation(magick);
             Orientation.Value = orientation switch
             {
                 ExifOrientation.Horizontal => 1,

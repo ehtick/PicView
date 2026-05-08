@@ -346,7 +346,6 @@ public class FileWatcherService : IFileWatcherService, IDisposable
                     {
                         FileInfo = newFileInfo,
                         Image = currentModel.Image,
-                        Orientation = currentModel.Orientation,
                         ImageType = currentModel.ImageType
                     };
                     tab.Model = newModel;
