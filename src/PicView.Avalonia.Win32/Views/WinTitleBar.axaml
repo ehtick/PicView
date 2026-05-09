@@ -78,6 +78,19 @@
                         </MenuItem.Icon>
                     </MenuItem>
 
+                    <!--  Export to PDF  -->
+                    <MenuItem
+                        x:Name="PDFMenuItem"
+                        Command="{Binding SaveAsPDFCommand}"
+                        CommandParameter="{Binding WindowTabs.ActiveTab.Value.Image.Value}"
+                        Header="{Binding Translation.SaveAsPdf.Value}"
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False}"
+                        Theme="{StaticResource MainBg}">
+                        <MenuItem.Icon>
+                            <Path Classes="SavePath" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
                     <!--  Print  -->
                     <MenuItem
                         x:Name="PrintMenuItem"
@@ -678,7 +691,8 @@
                         Command="{CompiledBinding NextArchiveCommand}"
                         Header="{CompiledBinding Translation.NextArchive.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
                                 Width="14"
@@ -692,7 +706,8 @@
                         Command="{CompiledBinding PrevArchiveCommand}"
                         Header="{CompiledBinding Translation.PrevArchive.Value,
                                                  Mode=OneWay}"
-                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Theme="{StaticResource MainBg}">
                         <MenuItem.Icon>
                             <Image
                                 Width="14"

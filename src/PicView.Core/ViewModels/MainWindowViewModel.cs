@@ -325,6 +325,8 @@ public class MainWindowViewModel : IDisposable
 
     public ReactiveCommand SaveAsCommand { get; }
     private async ValueTask SaveAs(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.SaveAs(); }
+    public ReactiveCommand SaveAsPDFCommand { get; }
+    private async ValueTask SaveAsPDF(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.SaveAsPDF(); }
 
     public ReactiveCommand DeleteFileCommand { get; }
     private async ValueTask DeleteFile(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.DeleteFile(); }
@@ -615,6 +617,7 @@ public class MainWindowViewModel : IDisposable
         OpenInExplorerCommand = new ReactiveCommand(OpenInExplorer);
         SaveCommand = new ReactiveCommand(Save);
         SaveAsCommand = new ReactiveCommand(SaveAs);
+        SaveAsPDFCommand = new ReactiveCommand(SaveAsPDF);
         DeleteFileCommand = new ReactiveCommand(DeleteFile);
         DeleteFilePermanentlyCommand = new ReactiveCommand(DeleteFilePermanently);
         RenameCommand = new ReactiveCommand(Rename);
@@ -780,6 +783,7 @@ public class MainWindowViewModel : IDisposable
             OpenInExplorerCommand,
             SaveCommand,
             SaveAsCommand,
+            SaveAsPDFCommand,
             DeleteFileCommand,
             DeleteFilePermanentlyCommand,
             RenameCommand,

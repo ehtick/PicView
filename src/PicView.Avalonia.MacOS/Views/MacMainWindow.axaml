@@ -59,8 +59,14 @@
                                                     FallbackValue=False,
                                                     Mode=OneWay}" />
 
-                    <!--  Export to PDF  -->
-                    <NativeMenuItem Header="Export to PDF (missing translation)" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
+                    <!--  Save as PDF  -->
+                    <NativeMenuItem
+                        Command="{Binding SaveAsPDFCommand}"
+                        Header="{Binding Translation.SaveAsPdf.Value}"
+                        IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                    Converter={x:Static ObjectConverters.IsNotNull},
+                                                    FallbackValue=False,
+                                                    Mode=OneWay}" />
 
                     <!--  Locate on disk  -->
                     <NativeMenuItem

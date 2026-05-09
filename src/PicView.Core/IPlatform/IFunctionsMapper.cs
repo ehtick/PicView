@@ -100,6 +100,7 @@ public interface IFunctionsMapper
     ValueTask OpenInExplorer();
     ValueTask Save();
     ValueTask SaveAs();
+    ValueTask SaveAsPDF();
     ValueTask DeleteFile();
     ValueTask DeleteFilePermanently();
     ValueTask Rename();

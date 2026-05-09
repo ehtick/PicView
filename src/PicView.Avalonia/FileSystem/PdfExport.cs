@@ -1,15 +1,66 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using ImageMagick;
+using PicView.Avalonia.Printing;
+using PicView.Core.Config;
 using PicView.Core.Localization;
+using PicView.Core.Printing;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.FileSystem;
 
 public static class PdfExport
 {
+    public static async Task SavePdfWithFilePicker(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.Image.CurrentValue is not Bitmap avaloniaBmp)
+        {
+            return;
+        }
+        
+        vm.PrintPreview ??= new PrintPreviewViewModel();
+        PrintWindowConfig printWindowConfig;
+        if (vm.PrintPreview.PrintWindowConfig is not null)
+        {
+            printWindowConfig = vm.PrintPreview.PrintWindowConfig;
+        }
+        else
+        {
+            printWindowConfig = new PrintWindowConfig();
+            await printWindowConfig.LoadAsync();
+        }
+        
+        var preview = vm.PrintPreview;
+        var printSettings = preview.PrintSettings.Value ?? new PrintSettings();
+
+        var settings = printWindowConfig.WindowProperties;
+        var requestedName = settings.PaperSize ?? "A4";
+        var (w, h) = PaperSizeHelper.GetMmSize(requestedName);
+        var landscape = settings.Orientation is (int)Orientations.Landscape;
+        var paperInfo = landscape ? new PaperInfo(requestedName, h, w)
+            : new PaperInfo(requestedName, w, h);
+        
+        var layout = PrintCore.ComputeLayout(
+            paperInfo.WidthMm, paperInfo.HeightMm, printSettings,
+            avaloniaBmp.PixelSize.Width, avaloniaBmp.PixelSize.Height, 300f);
+            
+        var pageSize = new PixelSize((int)Math.Round(layout.PageWidthPx), (int)Math.Round(layout.PageHeightPx));
+        var suggestedFileName = vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.Name + ".pdf";
+        var rtb = new RenderTargetBitmap(pageSize);
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            using var ctx = rtb.CreateDrawingContext();
+            ctx.FillRectangle(Brushes.White, new Rect(0, 0, layout.PageWidthPx, layout.PageHeightPx));
+            var dest = new Rect(layout.DrawX, layout.DrawY, layout.DrawWidth, layout.DrawHeight);
+            ctx.DrawImage(avaloniaBmp, new Rect(0, 0, avaloniaBmp.PixelSize.Width, avaloniaBmp.PixelSize.Height), dest);
+        });
+        await SavePdfWithFilePicker(suggestedFileName, rtb);
+    }
+    
     public static async Task SavePdfWithFilePicker(string outputFilename, RenderTargetBitmap bitmap)
     {
         if (string.IsNullOrWhiteSpace(outputFilename))

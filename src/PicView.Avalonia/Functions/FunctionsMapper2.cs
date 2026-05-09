@@ -6,7 +6,6 @@ using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
-using PicView.Avalonia.Gallery;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Navigation;
@@ -117,6 +116,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
             "OpenInExplorer" => OpenInExplorer,
             "Save" => Save,
             "SaveAs" => SaveAs,
+            "SaveAsPDF" => SaveAsPDF,
             "Print" => Print,
             "Reload" => Reload,
 
@@ -692,6 +692,11 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     public async ValueTask Print()
     {
         await FileManager2.Print(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.FullName, vm).ConfigureAwait(false);
+    }
+    
+    public async ValueTask SaveAsPDF()
+    {
+        await PdfExport.SavePdfWithFilePicker(vm);
     }
 
     /// <inheritdoc cref="FilePicker.SelectAndLoadFile(MainViewModel)" />

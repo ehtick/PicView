@@ -262,6 +262,7 @@ public class TranslationViewModel
         Saturation.Value = t.Saturation;
         Save.Value = t.Save;
         SaveAs.Value = t.SaveAs;
+        SaveAsPdf.Value = t.SaveAsPdf;
         Scale.Value = t.Scale;
         ScrollAndRotate.Value = t.ScrollAndRotate;
         ScrollDirection.Value = t.ScrollDirection;
@@ -642,6 +643,7 @@ public class TranslationViewModel
     public BindableReactiveProperty<string?> Saturation { get; } = new();
     public BindableReactiveProperty<string?> Save { get; } = new();
     public BindableReactiveProperty<string?> SaveAs { get; } = new();
+    public BindableReactiveProperty<string?> SaveAsPdf { get; } = new();
     public BindableReactiveProperty<string?> Scale { get; } = new();
     public BindableReactiveProperty<string?> ScrollAndRotate { get; } = new();
     public BindableReactiveProperty<string?> ScrollDirection { get; } = new();
