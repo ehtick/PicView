@@ -425,14 +425,17 @@ public class GalleryAnimationControl : UserControl
 
         SetDockedThumbPosition(dock);
         _viewer?.ScrollToCenterOfCurrentItem();
-        Dispatcher.UIThread.Post(() =>
+        if (Settings.WindowProperties.AutoFit)
         {
-            if (Application.Current.DataContext is not CoreViewModel core)
+            Dispatcher.UIThread.Post(() =>
             {
-                return;
-            }
-            WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
-        });
+                if (Application.Current.DataContext is not CoreViewModel core)
+                {
+                    return;
+                }
+                WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
+            });
+        }
     }
 
     private async Task DockedToClosed()
@@ -452,15 +455,17 @@ public class GalleryAnimationControl : UserControl
         }
 
         IsVisible = false;
-        Dispatcher.UIThread.Post(() =>
+        if (Settings.WindowProperties.AutoFit)
         {
-            if (Application.Current.DataContext is not CoreViewModel core)
+            Dispatcher.UIThread.Post(() =>
             {
-                return;
-            }
-            WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
-        });
-
+                if (Application.Current.DataContext is not CoreViewModel core)
+                {
+                    return;
+                }
+                WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Layout);
+            });
+        }
     }
 
     private async Task DockedToExpanded()
