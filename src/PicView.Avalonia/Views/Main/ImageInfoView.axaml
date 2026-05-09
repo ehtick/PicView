@@ -457,11 +457,11 @@
                                 x:Name="FullPathTextBox"
                                 Width="{CompiledBinding InfoWindow.TextBoxXlWidth.Value}"
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.FullName,
+                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName,
                                                        FallbackValue=''}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.FullName,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.FullName,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -482,13 +482,13 @@
                                 x:Name="PixelWidthTextBox"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.PixelWidth,
+                                Text="{CompiledBinding Exif.PixelWidth.Value,
                                                        Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.SizeTooltip.Value,
                                                               Mode=OneWay}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.PixelWidth,
+                                CopyText="{CompiledBinding Exif.PixelWidth.Value,
                                                            Mode=OneWay}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy,
@@ -509,13 +509,13 @@
                                 x:Name="PixelHeightTextBox"
                                 Width="{CompiledBinding InfoWindow.TextBoxWidth.Value}"
                                 Classes="hover TStyle x"
-                                Text="{CompiledBinding WindowTabs.ActiveTab.Value.Model.PixelHeight,
+                                Text="{CompiledBinding Exif.PixelHeight.Value,
                                                        Mode=OneWay}"
                                 ToolTip.Tip="{CompiledBinding Translation.SizeTooltip.Value,
                                                               Mode=OneWay}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.PixelHeight,
+                                CopyText="{CompiledBinding Exif.PixelHeight.Value,
                                                            Mode=OneWay}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -805,13 +805,13 @@
                                 Margin="5,0,0,0"
                                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.CreationTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.CreationTime,
                                                                    Mode=TwoWay,
                                                                    FallbackValue=''}" />
 
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.CreationTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.CreationTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -833,12 +833,12 @@
                                 Margin="5,0,0,0"
                                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.LastWriteTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastWriteTime,
                                                                    Mode=TwoWay,
                                                                    FallbackValue=''}" />
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.LastWriteTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastWriteTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -860,13 +860,13 @@
                                 Margin="5,0,0,0"
                                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
                                                             Converter={x:Static ObjectConverters.IsNotNull}}"
-                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.LastAccessTime,
+                                SelectedDateTime="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastAccessTime,
                                                                    Mode=TwoWay,
                                                                    FallbackValue=''}" />
 
                             <customControls:CopyButton
                                 Classes="altHover BorderStyle"
-                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.Model.FileInfo.LastAccessTime,
+                                CopyText="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value.LastAccessTime,
                                                            FallbackValue=''}"
                                 IsVisible="{CompiledBinding InfoWindow.IsCopyButtonEnabled.Value}"
                                 ToolTip.Tip="{CompiledBinding Translation.Copy.Value,
@@ -919,6 +919,7 @@
                                                             FallbackValue=0}"
                                     Margin="5,0,0,0"
                                     Command="{CompiledBinding Exif.SetDateTakenCommand}"
+                                    CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value}"
                                     SelectedDateTime="{CompiledBinding Exif.DateTaken.Value,
                                                                        Mode=TwoWay,
                                                                        FallbackValue=''}" />

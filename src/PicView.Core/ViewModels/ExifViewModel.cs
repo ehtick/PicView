@@ -196,9 +196,10 @@ public class ExifViewModel : IDisposable
     public ReactiveCommand<string> SetLensModelCommand { get; set; }
     public ReactiveCommand<string> SetExifVersionCommand { get; set; }
 
+    public BindableReactiveProperty<uint> PixelWidth { get; } = new();
+    public BindableReactiveProperty<uint> PixelHeight { get; } = new();
     public BindableReactiveProperty<uint> ExifRating { get; } = new();
     public BindableReactiveProperty<double> DpiX { get; } = new();
-
     public BindableReactiveProperty<double> DpiY { get; } = new();
 
     public BindableReactiveProperty<string?> PrintSizeInch { get; } = new();
@@ -351,6 +352,8 @@ public class ExifViewModel : IDisposable
             Orientation,
             Orientations,
             PhotometricInterpretation,
+            PixelHeight,
+            PixelWidth,
             PrintSizeCm,
             PrintSizeInch,
             Resolution,
@@ -398,6 +401,8 @@ public class ExifViewModel : IDisposable
             SetLensMakerCommand,
             SetLensModelCommand,
             SetExifVersionCommand);
+        
+        GC.SuppressFinalize(this);
     }
 
     private FileInfo? _fileInfo;
@@ -409,8 +414,8 @@ public class ExifViewModel : IDisposable
 
         var fileInfo = model.FileInfo;
 
-        var pixelWidth = model.PixelWidth;
-        var pixelHeight = model.PixelHeight;
+        var pixelWidth = PixelWidth.Value = model.PixelWidth;
+        var pixelHeight = PixelHeight.Value = model.PixelHeight;
         try
         {
             if (fileInfo is null || !fileInfo.Exists)
@@ -783,9 +788,12 @@ public class ExifViewModel : IDisposable
         return true;
     }
 
-    private async Task<bool> SetDateTaken(FileInfo fileInfo)
+    private async Task SetDateTaken(FileInfo fileInfo)
     {
-        return await ExifWriter.SetDateTaken(fileInfo, DateTaken.Value.Value);
+        if (DateTaken.Value != null)
+        {
+            await ExifWriter.SetDateTaken(fileInfo, DateTaken.Value.Value);
+        }
     }
 
     private async Task AddExifPropertyAsync<T>(Func<FileInfo?, T, Task<bool>> addAction, T value)
