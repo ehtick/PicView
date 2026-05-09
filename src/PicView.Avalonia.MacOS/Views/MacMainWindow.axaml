@@ -1,19 +1,19 @@
 <customControls:MainWindow
-    MaxHeight="{CompiledBinding WindowMaxHeight.Value}"
-    MaxWidth="{CompiledBinding WindowMaxWidth.Value}"
-    MinHeight="{CompiledBinding WindowMinHeight}"
-    MinWidth="{CompiledBinding WindowMinWidth}"
-    Title="{CompiledBinding WindowTabs.ActiveTab.Value.WindowTitle.Value,
-                            FallbackValue=''}"
     x:Class="PicView.Avalonia.MacOS.Views.MacMainWindow"
-    x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     xmlns:views="clr-namespace:PicView.Avalonia.MacOS.Views"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    Title="{CompiledBinding WindowTabs.ActiveTab.Value.WindowTitle.Value,
+                            FallbackValue=''}"
+    MinWidth="{CompiledBinding WindowMinWidth}"
+    MinHeight="{CompiledBinding WindowMinHeight}"
+    MaxWidth="{CompiledBinding WindowMaxWidth.Value}"
+    MaxHeight="{CompiledBinding WindowMaxHeight.Value}"
+    x:DataType="viewModels:MainWindowViewModel">
     <NativeMenu.Menu>
         <NativeMenu>
             <!--  File  -->
@@ -461,7 +461,7 @@
                                                  Mode=OneWay}"
                         IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}" />
 
-                    <!--  Previous folder  -->
+                    <!--  Previous archive  -->
                     <NativeMenuItem
                         Command="{CompiledBinding PrevArchiveCommand}"
                         Header="{CompiledBinding Translation.PrevArchive.Value,
@@ -551,8 +551,8 @@
         </NativeMenu>
     </NativeMenu.Menu>
     <DockPanel LastChildFill="True">
-        <views:MacOSTitlebar DockPanel.Dock="Top" x:Name="Titlebar" />
-        <uc:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
+        <views:MacOSTitlebar x:Name="Titlebar" DockPanel.Dock="Top" />
+        <uc:BottomBar x:Name="BottomBar" DockPanel.Dock="Bottom" />
         <main:MainView x:Name="MainView" />
     </DockPanel>
 </customControls:MainWindow>

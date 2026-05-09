@@ -65,12 +65,19 @@ public static class WindowFunctions
         {
             Settings.StartUp.LastFile = lastFile;
         }
-        
-        await SaveSettingsAsync();
-        //await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
-        TempFileHelper.DeleteTempFiles();
-        await FileHistoryManager.SaveToFileAsync();
-        ArchiveExtraction.Cleanup();
+
+        try
+        {
+            await SaveSettingsAsync();
+            //await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
+            TempFileHelper.DeleteTempFiles();
+            await FileHistoryManager.SaveToFileAsync();
+            ArchiveExtraction.Cleanup();
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(WindowFunctions), nameof(WindowClosingBehavior), e);
+        }
         core.MainWindows.MainWindows.Remove(viewModel);
 
         if (core?.SettingsViewModel?.SettingsWindowConfig is not null)
