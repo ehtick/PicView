@@ -67,6 +67,7 @@ public class LanguageModel
     public string? Close { get; set; }
     public string? CloseApp { get; set; }
     public string? CloseGallery { get; set; }
+    public string? CloseTab { get; set; }
     public string? CloseWindowPrompt { get; set; }
     public string? CloudyWeather { get; set; }
     public string? Color { get; set; }
@@ -262,6 +263,7 @@ public class LanguageModel
     public string? Navigation { get; set; }
     public string? NearestNeighbor { get; set; }
     public string? NegativeColors { get; set; }
+    public string? NewTab { get; set; }
     public string? NewWindow { get; set; }
     public string? NextArchive { get; set; }
     public string? NextFolder { get; set; }
@@ -425,6 +427,7 @@ public class LanguageModel
     public string? StrobeReturnLightNotDetected { get; set; }
     public string? Subject { get; set; }
     public string? Temperature { get; set; }
+    public string? TabManagement { get; set; }
     public string? Theme { get; set; }
     public string? Thumbnail { get; set; }
     public string? Tile { get; set; }

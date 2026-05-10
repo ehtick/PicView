@@ -468,7 +468,7 @@
                     <TextBlock
                         Margin="10,10,10,15"
                         Classes="txt bold"
-                        Text="Tab management (Replace with translation)"
+                        Text="{Binding Translation.TabManagement.Value}"
                         TextAlignment="Center" />
                     <ItemsControl ItemsSource="{CompiledBinding Keybindings.TabKeys.Value}">
                         <ItemsControl.ItemTemplate>

@@ -63,6 +63,7 @@ public class TranslationViewModel
         ClearEffects.Value = t.ClearEffects;
         Close.Value = t.Close;
         CloseGallery.Value = t.CloseGallery;
+        CloseTab.Value = t.CloseTab;
         CloseWindowPrompt.Value = t.CloseWindowPrompt;
         Color.Value = t.Color;
         ColorBalance.Value = t.ColorBalance;
@@ -194,6 +195,7 @@ public class TranslationViewModel
         NavigateForwards.Value = t.NavigateForwards;
         Navigation.Value = t.Navigation;
         NegativeColors.Value = t.NegativeColors;
+        NewTab.Value = t.NewTab;
         NewWindow.Value = t.NewWindow;
         NextArchive.Value = t.NextArchive;
         NextFolder.Value = t.NextFolder;
@@ -323,6 +325,7 @@ public class TranslationViewModel
         Stretch.Value = t.Stretch;
         Subject.Value = t.Subject;
         Temperature.Value = t.Temperature;
+        TabManagement.Value = t.TabManagement;
         Theme.Value = t.Theme;
         Thumbnail.Value = t.Thumbnail;
         Tile.Value = t.Tile;
@@ -444,6 +447,7 @@ public class TranslationViewModel
     public BindableReactiveProperty<string?> ClearEffects { get; } = new();
     public BindableReactiveProperty<string?> Close { get; } = new();
     public BindableReactiveProperty<string?> CloseGallery { get; } = new();
+    public BindableReactiveProperty<string?> CloseTab { get; } = new();
     public BindableReactiveProperty<string?> CloseWindowPrompt { get; } = new();
     public BindableReactiveProperty<string?> Color { get; } = new();
     public BindableReactiveProperty<string?> ColorBalance { get; } = new();
@@ -575,6 +579,7 @@ public class TranslationViewModel
     public BindableReactiveProperty<string?> NavigateForwards { get; } = new();
     public BindableReactiveProperty<string?> Navigation { get; } = new();
     public BindableReactiveProperty<string?> NegativeColors { get; } = new();
+    public BindableReactiveProperty<string?> NewTab { get; } = new();
     public BindableReactiveProperty<string?> NewWindow { get; } = new();
     public BindableReactiveProperty<string?> NextArchive { get; } = new();
     public BindableReactiveProperty<string?> NextFolder { get; } = new();
@@ -704,6 +709,7 @@ public class TranslationViewModel
     public BindableReactiveProperty<string?> Stretch { get; } = new();
     public BindableReactiveProperty<string?> Subject { get; } = new();
     public BindableReactiveProperty<string?> Temperature { get; } = new();
+    public BindableReactiveProperty<string?> TabManagement { get; } = new();
     public BindableReactiveProperty<string?> Theme { get; } = new();
     public BindableReactiveProperty<string?> Thumbnail { get; } = new();
     public BindableReactiveProperty<string?> Tile { get; } = new();

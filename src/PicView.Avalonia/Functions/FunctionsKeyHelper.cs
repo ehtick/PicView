@@ -223,8 +223,8 @@ public static class FunctionsKeyHelper
         
         // Tab management
         var tabManagement = keybindings.TabKeys.Value;
-        AddBinding(tabManagement, "NewTab", TranslationManager.GetTranslation("NewTab"));
-        AddBinding(tabManagement, "CloseTab", TranslationManager.GetTranslation("CloseTab"));
+        AddBinding(tabManagement, "NewTab", TranslationManager.Translation.NewTab);
+        AddBinding(tabManagement, "CloseTab", TranslationManager.Translation.CloseTab);
         
         // Window management
         var windowManagement = keybindings.WindowManagementKeys.Value;
