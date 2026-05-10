@@ -6,8 +6,10 @@ using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.ImageTransformations;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;
 using R3;
@@ -96,12 +98,14 @@ public partial class ImageViewer : UserControl
             .Skip(1)
             .Subscribe(zoomLevel =>
             {
-                tab.ZoomLevel.Value = Convert.ToInt32(tab.AspectRatio.CurrentValue * (zoomLevel * 100));;
+                var adjustedZoomLevel = Convert.ToInt32(tab.AspectRatio.CurrentValue * (zoomLevel * 100));
+                tab.ZoomLevel.Value = adjustedZoomLevel;;
                 tab.UpdateTabTitle();
                 if (Settings.Zoom.IsShowingZoomPercentagePopup)
                 {
-                    // _ = TooltipHelper.ShowTooltipMessageContinuallyAsync(ZoomPanControl.ZoomLevel, true,
-                    //     TimeSpan.FromSeconds(1));
+                    var message = StringExtensions.CombineWithPercentage(adjustedZoomLevel);
+                    _ = TooltipHelper.ShowTooltipMessageContinuallyAsync(message, true,
+                        TimeSpan.FromSeconds(1));
                 }
 
                 ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,HoverBar.Bounds.Height / 2 + 25) : new Thickness(0, 0, 25, 25);
@@ -127,7 +131,7 @@ public partial class ImageViewer : UserControl
             .SubscribeAwait(async (x, _) =>
             {
                 await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
-            }, DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer)), AwaitOperation.Drop)
+            },DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer)), AwaitOperation.Drop)
             .AddTo(ref _disposables);
     }
 
