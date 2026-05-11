@@ -212,20 +212,20 @@
             <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Main\PrintPreviewView2.axaml.cs">
-          <DependentUpon>PrintPreviewView2.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>PrintPreviewView2.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Main\AboutView2.axaml.cs">
-          <DependentUpon>AboutView2.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>AboutView2.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\UC\DragDropView.axaml.cs">
-          <DependentUpon>DragDropView.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>DragDropView.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
         <Compile Update="Views\Config\KeybindingsView.axaml.cs">
-          <DependentUpon>KeybindingsView.axaml</DependentUpon>
-          <SubType>Code</SubType>
+            <DependentUpon>KeybindingsView.axaml</DependentUpon>
+            <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 
