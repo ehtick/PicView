@@ -182,6 +182,7 @@ public static class FunctionsKeyHelper
         var fileManagement = keybindings.FileManagementKeys.Value;
         AddBinding(fileManagement, "Open", TranslationManager.Translation.Open);
         AddBinding(fileManagement, "OpenWith", TranslationManager.Translation.OpenWith);
+        AddBinding(fileManagement, "OpenInExplorer", TranslationManager.Translation.ShowInFolder);
         AddBinding(fileManagement, "Reload", TranslationManager.Translation.Reload);
         AddBinding(fileManagement, "Save", TranslationManager.Translation.Save);
         AddBinding(fileManagement, "SaveAs", TranslationManager.Translation.SaveAs);
