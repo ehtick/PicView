@@ -1,15 +1,18 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.FileSystem;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
-using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -25,84 +28,132 @@ public partial class StartUpMenu : UserControl
         Loaded += StartUpMenu_Loaded;
     }
 
-    private MainWindowViewModel? ParentContext =>
-        (DataContext as TabViewModel)?.ParentWindowContext as MainWindowViewModel;
-
     private void StartUpMenu_Loaded(object? sender, RoutedEventArgs e)
     {
         FilePasteLabel.Content = TranslationManager.Translation.FilePaste ?? "Paste";
         OpenFileDialogLabel.Content = TranslationManager.Translation.OpenFileDialog ?? "Open File";
         OpenLastFileLabel.Content = TranslationManager.Translation.OpenLastFile ?? "Open Last File";
 
-        SelectFileButton.PointerEntered += (_, _) =>
+        SelectFileButton.PointerEntered += SelectFileButtonOnPointerEntered;
+        SelectFileButton.PointerExited  += SelectFileButtonOnPointerExited;
+        SelectFileButton.Click += SelectFileButtonOnClick;
+
+        OpenLastFileButton.PointerEntered += OpenLastFileLabelOnPointerEntered;
+        OpenLastFileButton.PointerExited += OpenLastFileLabelOnPointerExited;
+        OpenLastFileButton.Click += OpenLastFileButtonOnClick;
+
+        PasteButton.PointerEntered += PasteButtonOnPointerEntered;
+        PasteButton.PointerExited += PasteButtonOnPointerExited;
+
+        if (DataContext is not TabViewModel tab)
         {
-            if (!this.TryFindResource("SelectFileBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            var selectFileBrush = brush as SolidColorBrush;
-            selectFileBrush.Color = ColorManager.PrimaryAccentColor;
-        };
-
-        SelectFileButton.PointerExited += (_, _) =>
-        {
-            if (!this.TryFindResource("SelectFileBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
-                return;
-
-            var selectFileBrush = brush as SolidColorBrush;
-            selectFileBrush.Color = color as Color? ?? default;
-        };
-
-        OpenLastFileButton.PointerEntered += (_, _) =>
-        {
-            if (!this.TryFindResource("OpenLastFileBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            var selectFileBrush = brush as SolidColorBrush;
-            selectFileBrush.Color = ColorManager.PrimaryAccentColor;
-        };
-
-        OpenLastFileButton.PointerExited += (_, _) =>
-        {
-            if (!this.TryFindResource("OpenLastFileBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
-                return;
-
-            var selectFileBrush = brush as SolidColorBrush;
-            selectFileBrush.Color = color as Color? ?? default;
-        };
-
-        PasteButton.PointerEntered += (_, _) =>
-        {
-            if (!this.TryFindResource("PasteBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            var selectFileBrush = brush as SolidColorBrush;
-            selectFileBrush.Color = ColorManager.PrimaryAccentColor;
-        };
-
-        PasteButton.PointerExited += (_, _) =>
-        {
-            if (!this.TryFindResource("PasteBrush", Application.Current.RequestedThemeVariant, out var brush))
-                return;
-
-            if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
-                return;
-
-            var pasteBrush = brush as SolidColorBrush;
-            pasteBrush.Color = color as Color? ?? default;
-        };
-
-        if (DataContext is TabViewModel tab)
-        {
-            tab.Title.Value = TranslationManager.Translation.NoImage ?? string.Empty;
-            tab.WindowTitle.Value = TranslationManager.Translation.NoImage + " - PicView";
-            tab.TitleTooltip.Value = TranslationManager.Translation.NoImage ?? string.Empty;
+            return;
         }
+
+        tab.Title.Value = TranslationManager.Translation.NoImage ?? string.Empty;
+        tab.WindowTitle.Value = StringExtensions.CombineWithAppName(TranslationManager.Translation.NoImage);
+        tab.TitleTooltip.Value = TranslationManager.Translation.NoImage ?? string.Empty;
+    }
+
+    private void OpenLastFileButtonOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        
+        _ = UIHelper.OpenLastFile(core.MainWindows.ActiveWindow.CurrentValue);
+    }
+
+    private void PasteButtonOnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("PasteBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+
+        if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
+        {
+            return;
+        }
+
+        var pasteBrush = brush as SolidColorBrush;
+        pasteBrush.Color = color as Color? ?? default;
+    }
+
+    private void PasteButtonOnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("PasteBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+
+        var selectFileBrush = brush as SolidColorBrush;
+        selectFileBrush.Color = ColorManager.PrimaryAccentColor;
+    }
+
+    private void OpenLastFileLabelOnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("OpenLastFileBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+
+        if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
+        {
+            return;
+        }
+
+        var selectFileBrush = brush as SolidColorBrush;
+        selectFileBrush.Color = color as Color? ?? default;
+    }
+
+    private void OpenLastFileLabelOnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("OpenLastFileBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+
+        var selectFileBrush = brush as SolidColorBrush;
+        selectFileBrush.Color = ColorManager.PrimaryAccentColor;
+    }
+
+    private static void SelectFileButtonOnClick(object? sender, RoutedEventArgs e)
+    {
+        // There is problems with DataContext and commands, so just use event
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        FilePicker2.SelectAndLoadFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
+    }
+
+    private void SelectFileButtonOnPointerExited(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("SelectFileBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+
+        if (!this.TryFindResource("SecondaryTextColor", Application.Current.RequestedThemeVariant, out var color))
+        {
+            return;
+        }
+
+        var selectFileBrush = brush as SolidColorBrush;
+        selectFileBrush.Color = color as Color? ?? default;
+    }
+
+    private void SelectFileButtonOnPointerEntered(object? sender, PointerEventArgs e)
+    {
+        if (!this.TryFindResource("SelectFileBrush", Application.Current.RequestedThemeVariant, out var brush))
+        {
+            return;
+        }
+        
+        var selectFileBrush = brush as SolidColorBrush;
+        selectFileBrush.Color = ColorManager.PrimaryAccentColor;
     }
 
     public void ResponsiveSize(double width)
@@ -160,5 +211,18 @@ public partial class StartUpMenu : UserControl
                 Buttons.VerticalAlignment = VerticalAlignment.Center;
             }
         }
+    }
+    
+    ~StartUpMenu()
+    {
+        SelectFileButton.PointerEntered -= SelectFileButtonOnPointerEntered;
+        SelectFileButton.PointerExited -= SelectFileButtonOnPointerExited;
+        SelectFileButton.Click -= SelectFileButtonOnClick;
+        
+        OpenLastFileLabel.PointerEntered -= OpenLastFileLabelOnPointerEntered;
+        OpenLastFileLabel.PointerExited -= OpenLastFileLabelOnPointerExited;
+        
+        PasteButton.PointerEntered -= PasteButtonOnPointerEntered;
+        PasteButton.PointerExited -= PasteButtonOnPointerExited;
     }
 }

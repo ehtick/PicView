@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Buttons;
@@ -81,7 +82,7 @@ public static class UIHelper
 
     #endregion
 
-    #region Helper functions`
+    #region Helper functions
     
     public static ClickArrowRight? GetClickArrowRight(MainWindowViewModel vm)
     {
@@ -115,6 +116,23 @@ public static class UIHelper
             mainContextMenu.Open();
         }
     }
+    
+    public static async Task OpenLastFile(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadLastFileAsync())
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
 
     /// <summary>
     /// Centers the window or gallery based on current state
@@ -129,17 +147,6 @@ public static class UIHelper
         {
             WindowFunctions.CenterWindowOnScreen();
         }
-    }
-
-    /// <inheritdoc cref="Center"/>
-    public static async Task CenterAsync(MainWindowViewModel? vm)
-    {
-        if (vm is null)
-        {
-            return;
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() => { Center(vm); });
     }
 
     public static void SetButtonInterval(RepeatButton? button)

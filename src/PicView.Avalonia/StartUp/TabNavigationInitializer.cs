@@ -106,10 +106,14 @@ public static class TabNavigationInitializer
     
     public static void InitializeNewTab(TabViewModel newTab, MainWindowViewModel mainWindowViewModel)
     {
+        if (newTab is null)
+        {
+            return;
+        }
         if (newTab.IsInitialized)
         {
 #if DEBUG
-            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(InitializeNewTab), $"TTab {newTab.Id} {newTab.Model.FileInfo.Name} is already initialized");
+            DebugHelper.LogDebug(nameof(TabNavigationInitializer), nameof(InitializeNewTab), $"Tab {newTab.Id} {newTab.Model?.FileInfo?.Name} is already initialized");
 #endif
             return;
         }

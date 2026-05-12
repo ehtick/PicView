@@ -214,14 +214,14 @@ public static class WindowResizing
     public static ImageSize? GetSize(MainWindowViewModel vm)
     {
         double width, height, secondaryWidth, secondaryHeight;
-        if (vm.WindowTabs.SharedCache?.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo, out var preloadValue) ?? false)
+        if (vm.WindowTabs?.ActiveTab?.CurrentValue?.Model?.FileInfo is not null)
         {
-            width = preloadValue.ImageModel.PixelWidth;
-            height = preloadValue.ImageModel.PixelHeight;
-        }
-        else
-        {
-            if (vm.WindowTabs.ActiveTab.CurrentValue.Model.Image is Bitmap bitmap)
+            if (vm.WindowTabs.SharedCache.TryGet(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo, out var preloadValue))
+            {
+                width = preloadValue.ImageModel.PixelWidth;
+                height = preloadValue.ImageModel.PixelHeight;
+            }
+            else if (vm.WindowTabs.ActiveTab.CurrentValue.Model.Image is Bitmap bitmap)
             {
                 width = bitmap.PixelSize.Width;
                 height = bitmap.PixelSize.Height;
@@ -230,6 +230,15 @@ public static class WindowResizing
             {
                 return null;
             }
+        }
+        else if (vm.WindowTabs?.ActiveTab?.CurrentValue?.Model?.Image is Bitmap bitmap)
+        {
+            width = bitmap.PixelSize.Width;
+            height = bitmap.PixelSize.Height;
+        }
+        else
+        {
+            return null;
         }
 
         if (Settings.ImageScaling.ShowImageSideBySide)
@@ -316,7 +325,7 @@ public static class WindowResizing
                     uiTopSize = vm.TitlebarHeight.CurrentValue + 2;
                 }
 
-                return (UIHelper.GetBottomBar.Bounds.Height, uiTopSize, gW, gH);
+                return (UIHelper.GetBottomBar?.Bounds.Height ?? 0, uiTopSize, gW, gH);
             }
         }
 
