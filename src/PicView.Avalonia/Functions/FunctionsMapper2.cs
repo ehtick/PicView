@@ -801,14 +801,14 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="ClipboardFileOperations.CopyFileToClipboard(string, MainViewModel)" />
     public async ValueTask CopyFile()
     {
-        await ClipboardFileOperations2.CopyFileToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model
+        await ClipboardFileOperations.CopyFileToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model
             .FileInfo?.FullName).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="ClipboardTextOperations.CopyTextToClipboard(string)" />
     public async ValueTask CopyFilePath()
     {
-        await ClipboardTextOperations2.CopyTextToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model
+        await ClipboardTextOperations.CopyTextToClipboard(vm.WindowTabs.ActiveTab.CurrentValue.Model
             .FileInfo?.FullName).ConfigureAwait(false);
     }
 
@@ -829,7 +829,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
     public async ValueTask DuplicateFile()
     {
-        await ClipboardFileOperations2.Duplicate(vm.WindowTabs.ActiveTab.CurrentValue.Model
+        await ClipboardFileOperations.Duplicate(vm.WindowTabs.ActiveTab.CurrentValue.Model
             .FileInfo?.FullName, vm).ConfigureAwait(false);
     }
 
@@ -840,15 +840,14 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
         {
             return;
         }
-        await ClipboardFileOperations2.CutFile(vm.WindowTabs.ActiveTab.CurrentValue.Model
+        await ClipboardFileOperations.CutFile(vm.WindowTabs.ActiveTab.CurrentValue.Model
             .FileInfo?.FullName, core.PlatformService).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ClipboardPasteOperations.Paste(MainViewModel)" />
     public async ValueTask Paste()
     {
-        await ClipboardPasteOperations2.Paste(vm).ConfigureAwait(false);
-        return;
+        await ClipboardPasteOperations.Paste(vm).ConfigureAwait(false);
     }
     
     #endregion

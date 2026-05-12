@@ -573,16 +573,16 @@ public static class FunctionsMapper
         await ClipboardImageOperations.CopyBase64ToClipboard(Vm.PicViewer.FileInfo?.CurrentValue.FullName, vm: Vm).ConfigureAwait(false);
 
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
-    public static async ValueTask DuplicateFile() => 
-        await ClipboardFileOperations.Duplicate(Vm.PicViewer.FileInfo?.CurrentValue.FullName).ConfigureAwait(false);
+    public static async ValueTask DuplicateFile() =>
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="ClipboardFileOperations.CutFile(string, MainViewModel)" />
     public static async ValueTask CutFile() =>
-        await ClipboardFileOperations.CutFile(Vm.PicViewer.FileInfo.CurrentValue.FullName, Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="ClipboardPasteOperations.Paste(MainViewModel)" />
     public static async ValueTask Paste() =>
-        await ClipboardPasteOperations.Paste(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
     
     #endregion
 

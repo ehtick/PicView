@@ -1,7 +1,6 @@
 ﻿using Avalonia.Input.Platform;
-using Avalonia.Threading;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Clipboard;
 
@@ -11,7 +10,7 @@ public static class ClipboardPasteOperations
     /// Pastes content from the clipboard
     /// </summary>
     /// <param name="vm">The main view model</param>
-    public static async Task Paste(MainViewModel vm)
+    public static async ValueTask Paste(MainWindowViewModel vm)
     {
         var clipboard = ClipboardService.GetClipboard();
         if (clipboard == null)
@@ -22,10 +21,10 @@ public static class ClipboardPasteOperations
         try
         {
             // Need to use dispatcher to access clipboard in this instance
-            var files = await Dispatcher.UIThread.InvokeAsync(async () => await clipboard.TryGetFilesAsync());
+            var files = await clipboard.TryGetFilesAsync();
             if (files != null)
             {
-                await ClipboardFileOperations.PasteFiles(files);
+                await ClipboardFileOperations.PasteFiles(files, vm);
                 return;
             }
 
@@ -33,13 +32,12 @@ public static class ClipboardPasteOperations
             var text = await clipboard.TryGetTextAsync();
             if (!string.IsNullOrWhiteSpace(text))
             {
-                // TODO load file in active tab
-                //await NavigationManager.LoadPicFromStringAsync(text, vm).ConfigureAwait(false);
+                await vm.WindowTabs.LoadFromStringAsync(text);
                 return;
             }
 
             // Try to paste image data
-            await ClipboardImageOperations.PasteClipboardImage(vm);
+            //await ClipboardImageOperations.PasteClipboardImage(vm);
         }
         catch (Exception ex)
         {
