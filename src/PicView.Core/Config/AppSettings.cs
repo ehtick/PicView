@@ -57,7 +57,7 @@ public class WindowProperties
     /// When set to <c>true</c>, the window automatically resizes to fit the content, disabling manual resizing.
     /// When set to <c>false</c> the image will be centered in the container, and manual resizing and window behavior is enabled
     /// </remarks>
-    public bool AutoFit { get; set; } = true;
+    public bool AutoFit { get; set; } = false;
 
     /// <summary>
     /// Determines whether the window should be displayed as the top-most window.
