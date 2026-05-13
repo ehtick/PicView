@@ -618,10 +618,10 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
 
     #region Image Scaling and Window Behavior
     
-    /// <inheritdoc cref="WindowFunctions.Stretch(MainViewModel)" />
+    /// <inheritdoc cref="ImageStretching.ZoomToFit" />
     public async ValueTask ZoomToFit()
     {
-        await WindowFunctions.Stretch(vm);
+        await ImageStretching.ZoomToFit(vm);
     }
     
     /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainViewModel)" />

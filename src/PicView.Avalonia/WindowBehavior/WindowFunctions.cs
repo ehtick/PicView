@@ -186,26 +186,6 @@ public static class WindowFunctions
         vm.IsAutoFit.Value = false;
     }
 
-    public static async Task Stretch(MainWindowViewModel vm)
-    {
-        // TODO: Reimplement or figure out refactor
-        
-        if (Settings.ImageScaling.ZoomToFit)
-        {
-            Settings.ImageScaling.ZoomToFit = false;
-            // vm.GlobalSettings.IsStretched.Value = false;
-        }
-        else
-        {
-            Settings.ImageScaling.ZoomToFit = true;
-            // vm.GlobalSettings.IsStretched.Value = true;
-        }
-
-        //vm.ImageViewer.MainImage.InvalidateVisual();
-        // await WindowResizing.SetSizeAsync(vm);
-        await SaveSettingsAsync().ConfigureAwait(false);
-    }
-
     public static void Minimize()
     {
         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)

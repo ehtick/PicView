@@ -189,7 +189,7 @@ public static class WindowResizing
             {
                 vm.WindowMaxWidth.Value = isRotated ? size.WindowHeight : size.WindowWidth;
                 vm.WindowMaxHeight.Value = isRotated ? size.WindowWidth : size.WindowHeight;
-                vm.ImageWidth.Value = imageWidth - 2;
+                vm.ImageWidth.Value = Convert.ToInt32(imageWidth - 2); // Fixes incorrect rounding
                 vm.ImageHeight.Value = imageHeight;
             }
         }
@@ -202,11 +202,19 @@ public static class WindowResizing
             }
             else
             {
-                vm.ImageWidth.Value =
-                    vm.ImageHeight.Value = double.NaN;
+                if (Settings.ImageScaling.ZoomToFit)
+                {
+                    vm.ImageWidth.Value =
+                        vm.ImageHeight.Value = double.NaN;
+                }
+                else
+                {
+                    vm.ImageWidth.Value = imageWidth;
+                    vm.ImageHeight.Value = imageHeight;
+                }
             }
             vm.WindowMaxWidth.Value =
-                vm.WindowMaxHeight.Value  = double.NaN;
+                vm.WindowMaxHeight.Value = double.NaN;
         }
 
     }
