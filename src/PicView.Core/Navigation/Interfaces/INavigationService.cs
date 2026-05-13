@@ -9,7 +9,7 @@ public interface INavigationService
     
     ValueTask LoadFromFileAsync(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct);
 
-    ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct);
+    ValueTask<bool> LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct);
 
     ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct);
 

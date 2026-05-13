@@ -661,18 +661,14 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
         await UIHelper.OpenLastFile(vm);
     }
 
-    /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public async ValueTask OpenPreviousFileHistoryEntry()
     {
-        // await NavigationManager.LoadPicFromStringAsync(FileHistoryManager.GetPreviousEntry(), vm).ConfigureAwait(false);
-        return;
+        await UIHelper.OpenPreviousFileHistoryEntry(vm).ConfigureAwait(false);
     }
    
-    /// <inheritdoc cref="NavigationManager.LoadPicFromStringAsync(string, MainViewModel)" />
     public async ValueTask OpenNextFileHistoryEntry()
     {
-        // await NavigationManager.LoadPicFromStringAsync(FileHistoryManager.GetNextEntry(), vm).ConfigureAwait(false);
-        return;
+        await UIHelper.OpenNextFileHistoryEntry(vm).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="FileManager.Print(string, MainViewModel)" />

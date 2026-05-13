@@ -283,19 +283,25 @@ public class TabOverviewViewModel
     }
 
 
-    public async ValueTask LoadFromStringAsync(string source, TabViewModel? senderTab = null)
+    public async ValueTask<bool> LoadFromStringAsync(string source, TabViewModel? senderTab = null)
     {
         if (SharedNavigation is null)
         {
-            return;
+            return false;
         }
         var tab = senderTab ?? ActiveTab.Value;
         var ct = tab.GetTabCancellation();
         
-        await SharedNavigation.LoadFromStringAsync(source, tab, ct)
+        var success = await SharedNavigation.LoadFromStringAsync(source, tab, ct)
             .ConfigureAwait(false);
+        if (!success)
+        {
+            return false;
+        }
+
         ActiveTab.Value = tab;
         CanActiveTabNavigate.Value = tab.ImageIterator.Files.Count > 1;
+        return true;
     }
     
     public async ValueTask LoadFromFileAsync(FileInfo file, TabViewModel? senderTab = null)

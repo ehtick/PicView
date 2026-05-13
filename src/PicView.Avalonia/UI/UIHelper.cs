@@ -10,6 +10,7 @@ using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Views.UC.Buttons;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.FileHistory;
 using PicView.Core.ViewModels;
 using R3.Avalonia;
 
@@ -121,6 +122,40 @@ public static class UIHelper
     {
         vm.IsLoadingIndicatorShown.Value = true;
         if (await vm.WindowTabs.LoadLastFileAsync())
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
+    
+    public static async ValueTask OpenPreviousFileHistoryEntry(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadFromStringAsync(FileHistoryManager.GetPreviousEntry()).ConfigureAwait(false))
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
+    
+    public static async ValueTask OpenNextFileHistoryEntry(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadFromStringAsync(FileHistoryManager.GetNextEntry()).ConfigureAwait(false))
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {

@@ -97,44 +97,44 @@ public class NavigationService(
         }
     }
 
-    public async ValueTask LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct)
+    public async ValueTask<bool> LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct)
     {
         if (string.IsNullOrWhiteSpace(source))
         {
-            return;
+            return false;
         }
 
         var check = FileTypeResolver.CheckIfLoadableString(source);
         if (check == null)
         {
-            return;
+            return false;
         }
 
         switch (check.Value.Type)
         {
             case FileTypeResolver.LoadAbleFileType.File:
                 await LoadFromFileAsync(check.Value.Data, tab, ct).ConfigureAwait(false);
-                return;
+                return true;
             case FileTypeResolver.LoadAbleFileType.Directory:
             {
                 var files = await Task.Run(() => FileListRetriever.RetrieveFiles(new FileInfo(check.Value.Data), stringComparer), ct.Token).ConfigureAwait(false);
                 if (files.Count == 0)
                 {
-                    return;
+                    return false;
                 }
 
                 var first = files[0];
                 await RepopulateIterator(first, tab, ct, files).ConfigureAwait(false);
-                return;
+                return true;
             }
             case FileTypeResolver.LoadAbleFileType.Web:
                 await LoadFromUrlAsync(check.Value.Data, tab, ct).ConfigureAwait(false);
-                return;
+                return true;
             case FileTypeResolver.LoadAbleFileType.Base64:
             case FileTypeResolver.LoadAbleFileType.Zip:
                 throw new NotImplementedException();
             default:
-                return;
+                return false;
         }
     }
 
