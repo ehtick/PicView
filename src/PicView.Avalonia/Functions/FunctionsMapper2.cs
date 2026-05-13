@@ -801,15 +801,13 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="ClipboardImageOperations.CopyImageToClipboard(MainViewModel)" />
     public async ValueTask CopyImage()
     {
-        // await ClipboardImageOperations.CopyImageToClipboard(vm).ConfigureAwait(false);
-        return;
+        await ClipboardImageOperations.CopyImageToClipboard(vm).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string, MainViewModel)" />
     public async ValueTask CopyBase64()
     {
-        // await ClipboardImageOperations.CopyBase64ToClipboard(vm.PicViewer.FileInfo?.CurrentValue.FullName, vm: vm).ConfigureAwait(false);
-        return;
+        await ClipboardImageOperations.CopyBase64ToClipboard(vm.WindowTabs.ActiveTab.CurrentValue?.FileInfo?.CurrentValue?.FullName, vm).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />

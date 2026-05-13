@@ -122,15 +122,28 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         {
             return;
         }
-
-        if (ImageIterator?.Files?.Count <= 0)
-        {
-            SetNewTabTitle();
-            return;
-        }
-            
+        
         var width = Model.PixelWidth;
         var height = Model.PixelHeight;
+        
+        if (ImageIterator is null)
+        {
+            if (Image.CurrentValue is not null)
+            {
+                var zoom = ZoomLevel.CurrentValue;
+                var singleTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, TranslationManager.Translation.ClipboardImage, zoom);
+                WindowTitle.Value = singleTitles.TitleWithAppName;
+                Title.Value = singleTitles.BaseTitle;
+                TitleTooltip.Value = singleTitles.FilePathTitle;
+            }
+            else
+            {
+                SetNewTabTitle();
+            }
+
+            return;
+        }
+        
         var index = ImageIterator.CurrentIndex;
         var windowTitles = GetTitles();
         WindowTitle.Value = windowTitles.TitleWithAppName;
@@ -269,6 +282,17 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         NavigationCts = new CancellationTokenSource();
         oldCts.Dispose();
         return NavigationCts;
+    }
+
+    public void DisposeImageIterator()
+    {
+        ImageIterator?.Dispose();
+        ImageIterator = null;
+        FileInfo.Value = null;
+        SecondaryFileInfo.Value = null;
+        SecondaryModel = null;
+        CanNavigateBackwards.Value = false;
+        CanNavigateForwards.Value = false;
     }
     
     public void Dispose()

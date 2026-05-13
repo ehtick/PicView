@@ -1,10 +1,13 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
 using ImageMagick;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
+using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
 using PicView.Core.Titles;
@@ -141,5 +144,42 @@ public static class UpdateImage
         }
         tabViewModel.ZoomLevel.Value = Convert.ToInt32(tabViewModel.InitialZoom.CurrentValue * 100);;
         tabViewModel.UpdateTabTitle();
+    }
+
+    public static void SetSingleImage(MainWindowViewModel vm, Bitmap image, string name)
+    {
+        var tabViewModel = vm.WindowTabs.ActiveTab.CurrentValue;
+        if (tabViewModel?.CurrentView?.CurrentValue is not ImageViewer imageViewer)
+        {
+            return;
+        }
+        
+        tabViewModel.Image.Value = image;
+        tabViewModel.ImageType.Value = ImageType.Bitmap;
+        
+        imageViewer.ResetZoomSlim();
+        imageViewer.Rotate(0);
+
+        tabViewModel.Gallery.GalleryMode.Value = GalleryMode2.Closed;
+
+        var width = (uint)image.PixelSize.Width;
+        var height = (uint)image.PixelSize.Height;
+        
+        if (Settings.WindowProperties.AutoFit)
+        {
+            WindowResizing.SetSize(width, height, 0,0,
+                WindowResizeReason.Application,
+                vm);
+        }
+        var zoom = tabViewModel.ZoomLevel.CurrentValue;
+        var windowTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, name, zoom);
+        tabViewModel.WindowTitle.Value = windowTitles.TitleWithAppName;
+        tabViewModel.Title.Value = windowTitles.BaseTitle;
+        tabViewModel.TitleTooltip.Value = windowTitles.FilePathTitle;
+
+        tabViewModel.Model.PixelWidth = width;
+        tabViewModel.Model.PixelHeight = height;
+        
+        tabViewModel.DisposeImageIterator();
     }
 }

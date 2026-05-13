@@ -745,7 +745,7 @@
             </MenuItem>
 
             <!--  Copy  -->
-            <MenuItem Header="{CompiledBinding Translation.Copy.Value, Mode=OneWay}">
+            <MenuItem Header="{Binding Translation.Copy.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Width="12"
@@ -756,7 +756,10 @@
                 </MenuItem.Icon>
 
                 <!--  Copy image  -->
-                <MenuItem Header="{CompiledBinding Translation.CopyImage.Value, Mode=OneWay}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
+                <MenuItem
+                    Command="{Binding CopyImageCommand}"
+                    Header="{Binding Translation.CopyImage.Value, Mode=OneWay}"
+                    IsEnabled="{Binding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path Classes="CopyPath" />
                     </MenuItem.Icon>
@@ -764,22 +767,19 @@
 
                 <!--  Copy file path  -->
                 <MenuItem
-                    Command="{CompiledBinding CopyFileCommand}"
+                    Command="{Binding CopyFileCommand}"
                     Header="{Binding Translation.FileCopyPath.Value, Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                Converter={x:Static ObjectConverters.IsNotNull},
-                                                FallbackValue=False,
-                                                Mode=OneWay}">
+                    IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path Classes="CopyPath" />
                     </MenuItem.Icon>
                 </MenuItem>
 
                 <!--  Copy base64  -->
-                <MenuItem Command="{CompiledBinding CopyBase64Command}" IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
+                <MenuItem Command="{Binding CopyBase64Command}" IsEnabled="{Binding WindowTabs.ActiveTab.Value.Image.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
                     <MenuItem.Header>
                         <TextBlock>
-                            <Run Text="{CompiledBinding Translation.Copy.Value, Mode=OneWay}" />
+                            <Run Text="{Binding Translation.Copy.Value, Mode=OneWay}" />
                             <Run Text=" base64" />
                         </TextBlock>
                     </MenuItem.Header>
@@ -792,13 +792,9 @@
 
                 <!--  Duplicate file  -->
                 <MenuItem
-                    Command="{CompiledBinding DuplicateFileCommand}"
-                    Header="{CompiledBinding Translation.DuplicateFile.Value,
-                                             Mode=OneWay}"
-                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                Converter={x:Static ObjectConverters.IsNotNull},
-                                                FallbackValue=False,
-                                                Mode=OneWay}">
+                    Command="{Binding DuplicateFileCommand}"
+                    Header="{Binding Translation.DuplicateFile.Value, Mode=OneWay}"
+                    IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Path Classes="DuplicatePath" />
                     </MenuItem.Icon>
@@ -808,13 +804,9 @@
 
             <!--  Copy file  -->
             <MenuItem
-                Command="{CompiledBinding CopyFileCommand}"
-                Header="{CompiledBinding Translation.CopyFile.Value,
-                                         Mode=OneWay}"
-                IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                            Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False,
-                                            Mode=OneWay}">
+                Command="{Binding CopyFileCommand}"
+                Header="{Binding Translation.CopyFile.Value, Mode=OneWay}"
+                IsEnabled="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value, Converter={x:Static ObjectConverters.IsNotNull}, FallbackValue=False, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path Classes="CopyPath" />
                 </MenuItem.Icon>

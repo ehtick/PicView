@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -8,7 +7,6 @@ using Avalonia.Media;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
@@ -44,6 +42,7 @@ public partial class StartUpMenu : UserControl
 
         PasteButton.PointerEntered += PasteButtonOnPointerEntered;
         PasteButton.PointerExited += PasteButtonOnPointerExited;
+        PasteButton.Click += PasteButtonOnClick;
 
         if (DataContext is not TabViewModel tab)
         {
@@ -55,6 +54,15 @@ public partial class StartUpMenu : UserControl
         tab.TitleTooltip.Value = TranslationManager.Translation.NoImage ?? string.Empty;
     }
 
+    private void PasteButtonOnClick(object? sender, RoutedEventArgs e)
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        _ = UIHelper.Paste(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
+    }
+
     private void OpenLastFileButtonOnClick(object? sender, RoutedEventArgs e)
     {
         if (Application.Current.DataContext is not CoreViewModel core)
@@ -62,7 +70,7 @@ public partial class StartUpMenu : UserControl
             return;
         }
         
-        _ = UIHelper.OpenLastFile(core.MainWindows.ActiveWindow.CurrentValue);
+        _ = UIHelper.OpenLastFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
     }
 
     private void PasteButtonOnPointerExited(object? sender, PointerEventArgs e)

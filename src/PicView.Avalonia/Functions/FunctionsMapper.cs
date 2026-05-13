@@ -566,11 +566,11 @@ public static class FunctionsMapper
 
     /// <inheritdoc cref="ClipboardImageOperations.CopyImageToClipboard(MainViewModel)" />
     public static async ValueTask CopyImage() => 
-        await ClipboardImageOperations.CopyImageToClipboard(Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string, MainViewModel)" />
     public static async ValueTask CopyBase64() =>
-        await ClipboardImageOperations.CopyBase64ToClipboard(Vm.PicViewer.FileInfo?.CurrentValue.FullName, vm: Vm).ConfigureAwait(false);
+        await ValueTask.CompletedTask;
 
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainViewModel)" />
     public static async ValueTask DuplicateFile() =>

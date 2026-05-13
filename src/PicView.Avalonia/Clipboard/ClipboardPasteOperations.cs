@@ -10,12 +10,12 @@ public static class ClipboardPasteOperations
     /// Pastes content from the clipboard
     /// </summary>
     /// <param name="vm">The main view model</param>
-    public static async ValueTask Paste(MainWindowViewModel vm)
+    public static async ValueTask<bool> Paste(MainWindowViewModel vm)
     {
         var clipboard = ClipboardService.GetClipboard();
         if (clipboard == null)
         {
-            return;
+            return false;
         }
 
         try
@@ -25,7 +25,7 @@ public static class ClipboardPasteOperations
             if (files != null)
             {
                 await ClipboardFileOperations.PasteFiles(files, vm);
-                return;
+                return true;
             }
 
             // Try to paste text (URLs, file paths)
@@ -33,15 +33,16 @@ public static class ClipboardPasteOperations
             if (!string.IsNullOrWhiteSpace(text))
             {
                 await vm.WindowTabs.LoadFromStringAsync(text);
-                return;
+                return true;
             }
 
             // Try to paste image data
-            //await ClipboardImageOperations.PasteClipboardImage(vm);
+            await ClipboardImageOperations.PasteClipboardImage(vm);
         }
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(ClipboardPasteOperations), nameof(Paste), ex);
         }
+        return false;
     }
 }

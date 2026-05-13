@@ -133,6 +133,23 @@ public static class UIHelper
         }
         vm.IsLoadingIndicatorShown.Value = false;
     }
+    
+    public static async Task Paste(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await Clipboard.ClipboardPasteOperations.Paste(vm))
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
 
     /// <summary>
     /// Centers the window or gallery based on current state
