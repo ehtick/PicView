@@ -50,6 +50,17 @@ public class MainWindow : Window, IMainWindow
         ScalingChanged += OnScalingChanged;
         
         PointerExited += (_, _) => { DragAndDropManager.RemoveDragDropView(); };
+        
+        Deactivated += OnDeactivated;
+    }
+
+    private void OnDeactivated(object? sender, EventArgs e)
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        core.SharedCache.ForceDisposalQueue();
     }
 
     private void OnScalingChanged(object? sender, EventArgs e)
@@ -93,6 +104,7 @@ public class MainWindow : Window, IMainWindow
         Disposables?.Dispose();
         Loaded -= OnLoaded;
         Activated -= OnActivated;
+        Deactivated -= OnDeactivated;
         SharedBottomBar?.Dispose();
         base.OnClosed(e);
     }

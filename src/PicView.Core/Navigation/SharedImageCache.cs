@@ -416,6 +416,17 @@ public class SharedImageCache : IImageCache
         }
     }
 
+    public void ForceDisposalQueue()
+    {
+        foreach (var kvp in _disposalList)
+        {
+            if (_disposalList.TryRemove(kvp.Key, out var removed))
+            {
+                DisposeHelper(removed.Item);
+            }
+        }
+    }
+
     private void DisposeHelper(PreLoadValue? item)
     {
         if (item?.ImageModel?.Image is not IDisposable disposable)
