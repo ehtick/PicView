@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using PicView.Core.FileSorting;
+using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
 using R3;
@@ -316,6 +317,7 @@ public class TabOverviewViewModel
         var ct = tab.GetTabCancellation();
         await SharedNavigation.LoadFromFileAsync(file, tab, ct).ConfigureAwait(false);
         CanActiveTabNavigate.Value = tab.ImageIterator?.Files?.Count > 1;
+        tab.SingleImageType = SingleImageType.None;
     }
     
     public async ValueTask LoadFromFileAsync(string file, TabViewModel? senderTab = null)
@@ -328,6 +330,7 @@ public class TabOverviewViewModel
         var tab = senderTab ?? ActiveTab.Value;
         var ct = tab.GetTabCancellation();
         await tab.ImageIterator.IterateToIndexAsync(index, ct).ConfigureAwait(false);
+        tab.SingleImageType = SingleImageType.None;
     }
     
     public async ValueTask<bool> LoadLastFileAsync()
@@ -345,6 +348,7 @@ public class TabOverviewViewModel
             return true;
         }
         CanActiveTabNavigate.Value = false;
+        tab.SingleImageType = SingleImageType.None;
         return false;
     }
 
