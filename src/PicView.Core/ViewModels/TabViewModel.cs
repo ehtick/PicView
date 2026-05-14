@@ -44,8 +44,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
     
-    public bool IsClipboardImage { get; set; }
-    public bool IsSingleViewUrl { get; set; }
+    public SingleImageType SingleImageType { get; set; }
     public string? SourceURL { get; set; }
     #endregion
 
@@ -133,34 +132,29 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         
         var width = Model.PixelWidth;
         var height = Model.PixelHeight;
-
-        if (width == 0 || height == 0)
-        {
-            return;
-        }
         
-        if (ImageIterator is null)
+        if (ImageIterator is null || ImageIterator.CurrentIndex is -1)
         {
             if (Image.CurrentValue is null)
             {
                 SetNewTabTitle();
             }
-            else
+            else if (width is not 0 && height is not 0)
             {
                 string nameTitle;
-                if (IsClipboardImage)
+                switch (SingleImageType)
                 {
-                    Debug.Assert(TranslationManager.Translation != null);
-                    Debug.Assert(TranslationManager.Translation.ClipboardImage != null);
-                    nameTitle = TranslationManager.Translation.ClipboardImage;
-                }
-                else if (IsSingleViewUrl)
-                {
-                    nameTitle = SourceURL ?? string.Empty;
-                }
-                else
-                {
-                    nameTitle = Model?.FileInfo?.Name ?? string.Empty;
+                    case SingleImageType.Clipboard:
+                        Debug.Assert(TranslationManager.Translation != null);
+                        Debug.Assert(TranslationManager.Translation.ClipboardImage != null);
+                        nameTitle = TranslationManager.Translation.ClipboardImage;
+                        break;
+                    case SingleImageType.Url:
+                        nameTitle = SourceURL ?? string.Empty;
+                        break;
+                    default:
+                        nameTitle = Model?.FileInfo?.Name ?? string.Empty;
+                        break;
                 }
                 var zoom = ZoomLevel.CurrentValue;
                 var singleTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, nameTitle, zoom);

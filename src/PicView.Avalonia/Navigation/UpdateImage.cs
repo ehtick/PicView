@@ -9,6 +9,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.ImageDecoding;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.Titles;
 using PicView.Core.ViewModels;
 
@@ -145,7 +146,7 @@ public static class UpdateImage
         tabViewModel.UpdateTabTitle();
     }
 
-    public static void SetSingleImage(MainWindowViewModel vm, Bitmap image, string name)
+    public static void SetSingleImage(MainWindowViewModel vm, Bitmap image, SingleImageType type, string name)
     {
         var tabViewModel = vm.WindowTabs.ActiveTab.CurrentValue;
         if (tabViewModel?.CurrentView?.CurrentValue is not ImageViewer imageViewer)
@@ -178,6 +179,8 @@ public static class UpdateImage
 
         tabViewModel.Model.PixelWidth = width;
         tabViewModel.Model.PixelHeight = height;
+
+        tabViewModel.SingleImageType = type;
         
         tabViewModel.DisposeImageIterator();
     }

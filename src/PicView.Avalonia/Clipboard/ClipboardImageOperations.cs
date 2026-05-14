@@ -4,6 +4,7 @@ using PicView.Avalonia.Animations;
 using PicView.Avalonia.Navigation;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Clipboard;
@@ -112,13 +113,12 @@ public static class ClipboardImageOperations
 
         try
         {
-            var name = TranslationManager.Translation.ClipboardImage;
             var bitmap = await clipboard.TryGetBitmapAsync();
             if (bitmap is null)
             {
                 return;
             }
-            UpdateImage.SetSingleImage(vm, bitmap, name);
+            UpdateImage.SetSingleImage(vm, bitmap, SingleImageType.Clipboard, TranslationManager.Translation.ClipboardImage);
         }
         catch (Exception ex)
         {

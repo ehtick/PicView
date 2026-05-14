@@ -10,6 +10,7 @@ using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.IPlatform;
+using PicView.Core.Models;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 
@@ -51,9 +52,9 @@ public static class WindowFunctions
         {
             lastFile = ArchiveExtraction.LastOpenedArchive;
         }
-        else if (viewModel.WindowTabs.ActiveTab.CurrentValue.TabTitle.CurrentValue.TryGetURL(out var url))
+        else if (viewModel.WindowTabs.ActiveTab.CurrentValue.SingleImageType is SingleImageType.Url && viewModel.WindowTabs.ActiveTab.CurrentValue.SourceURL is not null)
         {
-            lastFile = url;
+            lastFile = viewModel.WindowTabs.ActiveTab.CurrentValue.SourceURL;
         }
         else
         {

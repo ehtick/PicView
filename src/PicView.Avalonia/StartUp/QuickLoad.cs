@@ -13,6 +13,7 @@ using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
 using PicView.Core.Http;
 using PicView.Core.Localization;
+using PicView.Core.Models;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
@@ -42,6 +43,7 @@ public static class QuickLoad
                 Dispatcher.UIThread.Invoke(() =>
                 {
                     core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new StartUpMenu();
+                    core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
                 }, DispatcherPriority.Send);
                 return;
             }
@@ -77,6 +79,7 @@ public static class QuickLoad
                     Dispatcher.UIThread.Invoke(() =>
                     {
                         core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new StartUpMenu();
+                        core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
                     }, DispatcherPriority.Send);
                     break;
             }
@@ -128,7 +131,7 @@ public static class QuickLoad
         var model = await GetImageModel.GetImageModelAsync(new FileInfo(destPath)).ConfigureAwait(false);
         tab.Model = model;
         tab.SourceURL = url;
-        tab.IsSingleViewUrl = true;
+        tab.SingleImageType = SingleImageType.Url;
         
         tab.TabTitle.Value = safeFileName;
         tab.Title.Value = safeFileName;
