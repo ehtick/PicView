@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
@@ -27,7 +28,7 @@ public class MainWindow : Window, IMainWindow
 
     protected MainWindow()
     {
-        FrameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this));
+        FrameProvider = new AvaloniaRenderingFrameProvider(GetTopLevel(this)!);
         UIHelper.SetFrameProvider(FrameProvider);
         Loaded += OnLoaded;
     }
@@ -37,6 +38,7 @@ public class MainWindow : Window, IMainWindow
         Resized += WindowSizeChanged;
         
         // Keep window position when resizing
+        Debug.Assert(FrameProvider != null, nameof(FrameProvider) + " != null");
         ClientSizeProperty.Changed.ToObservable()
             .SubscribeOn(FrameProvider)
             .Subscribe(HandleWindowResize, DebugHelper.LogError(nameof(MainWindow), nameof(HandleWindowResize)))
@@ -62,7 +64,7 @@ public class MainWindow : Window, IMainWindow
 
     private void OnActivated(object? sender, EventArgs e)
     {
-        if (Application.Current.DataContext is not CoreViewModel core || Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current!.DataContext is not CoreViewModel core || Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }
@@ -72,8 +74,16 @@ public class MainWindow : Window, IMainWindow
     
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
-        await WindowFunctions.WindowClosingBehavior(this);
-        base.OnClosing(e);
+        try
+        {
+            await WindowFunctions.WindowClosingBehavior(this);
+            base.OnClosing(e);
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(MainWindow), nameof(OnClosing), ex);
+            Environment.Exit(1);
+        }
     }
     
     protected override void OnClosed(EventArgs e)
@@ -83,7 +93,7 @@ public class MainWindow : Window, IMainWindow
         Disposables?.Dispose();
         Loaded -= OnLoaded;
         Activated -= OnActivated;
-        SharedBottomBar.Dispose();
+        SharedBottomBar?.Dispose();
         base.OnClosed(e);
     }
 
@@ -92,7 +102,7 @@ public class MainWindow : Window, IMainWindow
     // Window has been resized
     private void WindowSizeChanged(object? sender, WindowResizedEventArgs e)
     {
-        if (DataContext is not MainWindowViewModel vm)
+        if (DataContext is not MainWindowViewModel vm || SharedBottomBar is null || SharedTitleBar is null)
         {
             return;
         }

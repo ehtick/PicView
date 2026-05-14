@@ -71,6 +71,7 @@ public static class WindowFunctions
             await SaveSettingsAsync();
             //await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
             TempFileHelper.DeleteTempFiles();
+            TempFileManager.Cleanup();
             await FileHistoryManager.SaveToFileAsync();
             ArchiveExtraction.Cleanup();
         }
@@ -80,7 +81,7 @@ public static class WindowFunctions
         }
         core.MainWindows.MainWindows.Remove(viewModel);
 
-        if (core?.SettingsViewModel?.SettingsWindowConfig is not null)
+        if (core.SettingsViewModel?.SettingsWindowConfig is not null)
         {
             await core.SettingsViewModel.SettingsWindowConfig.SaveAsync();
         }

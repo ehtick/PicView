@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using PicView.Core.FileSorting;
 using PicView.Core.Navigation;
 using PicView.Core.Navigation.Interfaces;
@@ -267,6 +268,7 @@ public class TabOverviewViewModel
     {
         var tab = ActiveTab.Value;
         var ct = tab.GetTabCancellation();
+        Debug.Assert(SharedNavigation != null, nameof(SharedNavigation) + " != null");
         await SharedNavigation.NavigateAsync(tab, navigateTo, ct).ConfigureAwait(false);
     }
     

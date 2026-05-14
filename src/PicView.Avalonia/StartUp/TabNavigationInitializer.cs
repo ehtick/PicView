@@ -1,7 +1,7 @@
+using System.Diagnostics;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Core.DebugTools;
-using PicView.Core.FileHandling;
 using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
@@ -24,13 +24,14 @@ public static class TabNavigationInitializer
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
         var thumbnailCache = core.SharedThumbnailCache;
-        
+
+        Debug.Assert(core.PlatformService != null);
         var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache, thumbnailService);
 
         // 3. Create NavigationService (Core)
-        var tempFileService = new TempFileService();
-        core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
+        core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, thumbnailService, core.PlatformService.CompareStrings);
 
+        Debug.Assert(core.MainWindows.ActiveWindow.CurrentValue != null);
         var tabOverView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
         var tab = tabOverView.ActiveTab.CurrentValue;
 
@@ -44,6 +45,7 @@ public static class TabNavigationInitializer
     
     public static void Initialize(CoreViewModel core, FileInfo fileInfo)
     {
+        Debug.Assert(core.PlatformService != null);
         Initialize(core, core.PlatformService.GetFiles(fileInfo));
     }
     
@@ -62,14 +64,15 @@ public static class TabNavigationInitializer
         // We use the same loading logic as AvaloniaImageLoader (via GetImageModel)
         var sharedCache = core.SharedCache;
         var thumbnailCache = core.SharedThumbnailCache;
-        
+
+        Debug.Assert(core.PlatformService != null);
         var fileWatcher = new FileWatcherService(core.PlatformService.CompareStrings, sharedCache, thumbnailCache, thumbnailService);
 
         // 3. Create NavigationService (Core)
-        var tempFileService = new TempFileService();
-        core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, tempFileService, thumbnailService, core.PlatformService.CompareStrings);
+        core.SharedNavigationService ??= new NavigationService(imageLoader, archiveService, sharedCache, fileWatcher, core.PlatformService, thumbnailService, core.PlatformService.CompareStrings);
 
         // 4. Initialize ViewModel
+        Debug.Assert(core.MainWindows.ActiveWindow.CurrentValue != null);
         var tabOverView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
         var tab = tabOverView.ActiveTab.CurrentValue;
         tabOverView.LoadAndInitializeFromPath(files, core.SharedNavigationService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
@@ -96,8 +99,16 @@ public static class TabNavigationInitializer
         
         newVm.WindowTabs.LoadAndInitialize(nav, cache, thumbCache, thumbLoader, fileWatcher);
         newVm.WindowTabs.SetParentContext(newVm);
-        newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
+        if (tab.FileInfo?.CurrentValue is not null)
+        {
+            newVm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
+        }
+        else
+        {
+            newVm.WindowTabs.ActiveTab.CurrentValue.SetNewTabTitle();
+        }
         newVm.WindowTabs.SelectTab(tab);
+        Debug.Assert(tab.ImageIterator != null);
         tab.ImageIterator.UpdateNavigationProperties();
         
         // Need to properly remove it from the previous location

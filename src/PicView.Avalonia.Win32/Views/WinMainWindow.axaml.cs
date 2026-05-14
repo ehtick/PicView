@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Diagnostics;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -20,10 +21,12 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
 
     public WinMainWindow()
     {
-        if (Application.Current.DataContext is not CoreViewModel core)
+        if (Application.Current!.DataContext is not CoreViewModel core)
         {
             return;
         }
+
+        Debug.Assert(core.GlobalSettings != null);
         var mainWindowViewModel = new MainWindowViewModel(core.Translation, this, core.GlobalSettings, core.GallerySettings);
         DataContext = mainWindowViewModel;
 
@@ -45,6 +48,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
                 return;
             }
 
+            Debug.Assert(FrameProvider != null, nameof(FrameProvider) + " != null");
             Observable.EveryValueChanged(this, x => x.WindowState, FrameProvider)
                 .SubscribeAwait(async (state, _) =>
             {
@@ -82,12 +86,12 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
                     Titlebar.EditableTitlebar.CloseTitlebar();
                 }
 
-                if (!UIHelper.GetDropDownMenu.IsPointerOver)
+                if (!UIHelper.GetDropDownMenu?.IsPointerOver ?? false)
                 {
                     windowViewModel.TopTitlebarViewModel.CloseDropDownMenu();
                 }
             };
-            UIHelper.GetMainTabControl.TabDetached += MainTabControlOnTabDetached;
+            UIHelper.GetMainTabControl?.TabDetached += MainTabControlOnTabDetached;
         };
     }
 
@@ -162,7 +166,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
         // 3. Fallback: Create a new window (Detaching behavior)
         Task.Run(() =>
         {
-            MainWindowViewModel? newVm = null;
+            MainWindowViewModel? newVm;
             Dispatcher.UIThread.Invoke(() =>
             {
                 // Create a new window with the detached tab
@@ -177,6 +181,10 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
                     return;
                 }
                 newVm = newWindow.DataContext as MainWindowViewModel;
+                if (newVm is null)
+                {
+                    return;
+                }
                 core.MainWindows.MainWindows.Add(newVm);
                 core.MainWindows.ActiveWindow.Value = newVm;
                 StartUpHelper.StartUpBlank(core, true, desktop, newWindow);
@@ -188,9 +196,9 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
                 }
 
                 desktop.MainWindow = newWindow;
+                
+                TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
             }, DispatcherPriority.Send);
-
-            TabNavigationInitializer.InitializeDetachedWindow(parentVm, newVm, tab);
         });
     }
     
@@ -230,28 +238,29 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
     public async Task ShowPrintWindow(string path)
     {
         var vm = Dispatcher.UIThread.Invoke(() => DataContext as MainWindowViewModel);
+        Debug.Assert(_windowInitializer != null, nameof(_windowInitializer) + " != null");
         await _windowInitializer.ShowPrintWindow(path, vm);
     }
 
     /// <inheritdoc />
     public async Task Maximize(bool saveSetting = true) =>
-        await Win32Window.Maximize(this, DataContext as MainWindowViewModel, saveSetting);
+        await Win32Window.Maximize(this, (DataContext as MainWindowViewModel)!, saveSetting);
     
     /// <inheritdoc />
     public async Task MaximizeRestore(bool saveSetting = true) =>
-        await Win32Window.ToggleMaximize(this, DataContext as MainWindowViewModel, saveSetting);
+        await Win32Window.ToggleMaximize(this, (DataContext as MainWindowViewModel)!, saveSetting);
 
     /// <inheritdoc />
     public async Task Fullscreen(bool saveSetting = true) =>
-        await Win32Window.Fullscreen(this, DataContext as MainWindowViewModel, saveSetting);
+        await Win32Window.Fullscreen(this, (DataContext as MainWindowViewModel)!, saveSetting);
     
     /// <inheritdoc />
     public async Task ToggleFullscreen(bool saveSetting = true) =>
-        await Win32Window.ToggleFullscreen(this, DataContext as MainWindowViewModel, saveSetting);
+        await Win32Window.ToggleFullscreen(this, (DataContext as MainWindowViewModel)!, saveSetting);
     
     /// <inheritdoc />
     public async Task Restore() =>
-        await Win32Window.Restore(this, DataContext as MainWindowViewModel);
+        await Win32Window.Restore(this, (DataContext as MainWindowViewModel)!);
     
     public void Minimize() =>
         Win32Window.Minimize(this);

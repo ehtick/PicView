@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.Localization;
@@ -32,13 +33,20 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     /// Unique identifier for this tab.
     public uint Id { get; } = TabIDGenerator.GetNextId();
 
+    // ReSharper disable once MemberCanBeMadeStatic.Global
+#pragma warning disable CA1822
     public double TabHeight => SizeDefaults.TabHeight;
+#pragma warning restore CA1822
     
     public CompositeDisposable Disposables { get; } = new();
     public bool IsInitialized { get; set; }
     
     public bool IsClosing { get; private set; }
     public bool IsSelected { get; set; }
+    
+    public bool IsClipboardImage { get; set; }
+    public bool IsSingleViewUrl { get; set; }
+    public string? SourceURL { get; set; }
     #endregion
 
     #region UI view models
@@ -125,20 +133,40 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
         
         var width = Model.PixelWidth;
         var height = Model.PixelHeight;
+
+        if (width == 0 || height == 0)
+        {
+            return;
+        }
         
         if (ImageIterator is null)
         {
-            if (Image.CurrentValue is not null)
+            if (Image.CurrentValue is null)
             {
-                var zoom = ZoomLevel.CurrentValue;
-                var singleTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, TranslationManager.Translation.ClipboardImage, zoom);
-                WindowTitle.Value = singleTitles.TitleWithAppName;
-                Title.Value = singleTitles.BaseTitle;
-                TitleTooltip.Value = singleTitles.FilePathTitle;
+                SetNewTabTitle();
             }
             else
             {
-                SetNewTabTitle();
+                string nameTitle;
+                if (IsClipboardImage)
+                {
+                    Debug.Assert(TranslationManager.Translation != null);
+                    Debug.Assert(TranslationManager.Translation.ClipboardImage != null);
+                    nameTitle = TranslationManager.Translation.ClipboardImage;
+                }
+                else if (IsSingleViewUrl)
+                {
+                    nameTitle = SourceURL ?? string.Empty;
+                }
+                else
+                {
+                    nameTitle = Model?.FileInfo?.Name ?? string.Empty;
+                }
+                var zoom = ZoomLevel.CurrentValue;
+                var singleTitles = ImageTitleFormatter.GenerateTitleForSingleImage(width, height, nameTitle, zoom);
+                WindowTitle.Value = singleTitles.TitleWithAppName;
+                Title.Value = singleTitles.BaseTitle;
+                TitleTooltip.Value = singleTitles.FilePathTitle;
             }
 
             return;

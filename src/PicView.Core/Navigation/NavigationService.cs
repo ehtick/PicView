@@ -1,6 +1,6 @@
 using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
-using PicView.Core.FileHandling.Interfaces;
+using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
@@ -19,7 +19,6 @@ public class NavigationService(
     IImageCache cache,
     IFileWatcherService fileWatcherService,
     IPlatformSpecificService platformService,
-    ITempFileService tempFileService,
     IThumbnailLoader thumbnailLoader,
     Func<string, string, int> stringComparer)
     : INavigationService
@@ -144,7 +143,7 @@ public class NavigationService(
 
         platformService.StopTaskbarProgress();
         var safeFileName = HttpManager.GetSafeFileName(url);
-        var destPath = tempFileService.GetNewTempFilePath(safeFileName);
+        var destPath = TempFileManager.GetNewTempFilePath(safeFileName);
         
         using var client = new HttpClientDownloadWithProgress(url, destPath);
         client.ProgressChanged += (totalFileSize, totalBytesDownloaded, progressPercentage) =>
@@ -174,7 +173,7 @@ public class NavigationService(
             {
                 return;
             }
-
+            
             var model = await imageLoader.GetImageModelAsync(new FileInfo(destPath), ct.Token).ConfigureAwait(false);
             tab.Model = model;
             tab.SecondaryModel = null;

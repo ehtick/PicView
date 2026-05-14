@@ -1,29 +1,34 @@
 ﻿using PicView.Core.DebugTools;
-using PicView.Core.FileHandling.Interfaces;
 
 namespace PicView.Core.FileHandling;
 
-public class TempFileService : ITempFileService
+public static class TempFileManager
 {
-    private readonly List<string> _tempFiles = [];
-    private readonly Lock _lock = new();
+    private static List<string>? _tempFiles;
+    private static Lock? _lock;
 
-    public string GetNewTempFilePath(string fileName)
+    public static string GetNewTempFilePath(string fileName)
     {
         var tempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
         Directory.CreateDirectory(tempPath);
         var filePath = Path.Combine(tempPath, fileName);
-
+        _lock ??= new Lock();
         lock (_lock)
         {
+            _tempFiles ??= [];
             _tempFiles.Add(filePath);
         }
 
         return filePath;
     }
 
-    public void Cleanup()
+    public static void Cleanup()
     {
+        if (_lock is null || _tempFiles is null)
+        {
+            return;
+        }
+        
         lock (_lock)
         {
             foreach (var file in _tempFiles)
@@ -43,7 +48,7 @@ public class TempFileService : ITempFileService
                 }
                 catch (Exception e)
                 {
-                    DebugHelper.LogDebug(nameof(TempFileService), nameof(Cleanup), e);
+                    DebugHelper.LogDebug(nameof(TempFileManager), nameof(Cleanup), e);
                 }
             }
             _tempFiles.Clear();
