@@ -289,10 +289,9 @@ public static class WindowResizing
         {
             return null;
         }
-        
+        var (containerWidth, containerHeight) = GetWindowSize();
         if (Settings.ImageScaling.ShowImageSideBySide && secondWidth > 0 && secondHeight > 0)
         {
-            var (containerWidth, containerHeight) = GetWindowSize();
             return ImageSizeCalculationHelper.GetSideBySideImageSize(
                 width,
                 height,
@@ -311,6 +310,8 @@ public static class WindowResizing
                 width,
                 height,
                 screenSize,
+                containerWidth,
+                containerHeight,
                 rotation,
                 uiTopSize,
                 uiBottomSize,
