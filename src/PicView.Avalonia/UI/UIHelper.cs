@@ -139,6 +139,10 @@ public static class UIHelper
                 vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new StartUpMenu();
             });
         }
+        else
+        {
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+        }
         vm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
         vm.IsLoadingIndicatorShown.Value = false;
     }

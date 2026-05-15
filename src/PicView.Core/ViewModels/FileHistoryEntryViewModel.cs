@@ -11,8 +11,7 @@ public class FileHistoryEntryViewModel : IDisposable
     public BindableReactiveProperty<bool> IsPinned { get; } = new();
     public BindableReactiveProperty<bool> IsCurrentItem { get; } = new(false);
     public BindableReactiveProperty<int> Index { get;  } = new();
-
-    public ReactiveCommand<Unit> OpenCommand { get; } = new();
+    
     public ReactiveCommand<Unit> PinCommand { get; } = new();
     public ReactiveCommand<Unit> UnpinCommand { get; } = new();
     public ReactiveCommand<Unit> RemoveCommand { get; } = new();
@@ -27,7 +26,6 @@ public class FileHistoryEntryViewModel : IDisposable
         IsCurrentItem.Value = isCurrentItem;
         Index.Value = index;
 
-        OpenCommand.SubscribeAwait(Open);
         PinCommand.Subscribe(Pin);
         UnpinCommand.Subscribe(Unpin);
         RemoveCommand.Subscribe(Remove);
@@ -52,16 +50,9 @@ public class FileHistoryEntryViewModel : IDisposable
         FileHistoryManager.Remove(FilePath.CurrentValue);
         _core.FileHistory.UpdateHistory();
     }
-
-    private async ValueTask Open(Unit unit, CancellationToken ct)
-    {
-        _core.MainWindows.ActiveWindow.CurrentValue.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
-        await _core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromStringAsync(FilePath.CurrentValue);
-    }
     
     public void Dispose()
     {
-        OpenCommand.Dispose();
         PinCommand.Dispose();
         UnpinCommand.Dispose();
         RemoveCommand.Dispose();

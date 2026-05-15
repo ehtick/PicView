@@ -1,10 +1,10 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.UC.FileHistoryItem"
-    x:DataType="vm:FileHistoryEntryViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:vm="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="vm:FileHistoryEntryViewModel">
     <UserControl.Styles>
 
         <!--  Style for current item  -->
@@ -27,7 +27,7 @@
         </Style>
 
         <!--  Show buttons on hover  -->
-        <Style Selector=":pointerover > Border#AppBorder">
+        <Style Selector=":pointerover &gt; Border#AppBorder">
             <Setter Property="IsVisible" Value="True" />
         </Style>
 
@@ -37,14 +37,15 @@
         <DockPanel LastChildFill="True">
 
             <StackPanel
+                x:Name="ButtonPanel"
+                HorizontalAlignment="Right"
                 Background="Transparent"
                 DockPanel.Dock="Right"
-                HorizontalAlignment="Right"
                 IsVisible="False"
-                Orientation="Horizontal"
-                x:Name="ButtonPanel">
+                Orientation="Horizontal">
 
                 <customControls:IconButton
+                    Padding="7,0"
                     Background="{DynamicResource AccentColor}"
                     Classes="accentHover"
                     ClickMode="Release"
@@ -54,47 +55,46 @@
                     IconHeight="14"
                     IconWidth="14"
                     IsVisible="{Binding !IsPinned.Value}"
-                    Padding="7,0"
                     ToolTip.Tip="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.Pin.Value}" />
 
                 <customControls:IconButton
+                    Padding="7,0"
+                    HorizontalAlignment="Right"
                     Background="{DynamicResource AccentColor}"
                     Classes="accentHover"
                     ClickMode="Release"
                     Command="{Binding UnpinCommand}"
                     Foreground="{DynamicResource MainTextColor}"
-                    HorizontalAlignment="Right"
                     Icon="{StaticResource UnPinImage}"
                     IconHeight="14"
                     IconWidth="14"
                     IsVisible="{Binding IsPinned.Value}"
-                    Padding="7,0"
                     ToolTip.Tip="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.Unpin.Value}" />
 
                 <customControls:IconButton
+                    Padding="7,0"
+                    HorizontalAlignment="Right"
                     Background="{DynamicResource AccentColor}"
                     Classes="errorHover"
                     ClickMode="Release"
                     Command="{CompiledBinding RemoveCommand}"
                     Data="{StaticResource CloseGeometry}"
                     Foreground="{DynamicResource MainTextColor}"
-                    HorizontalAlignment="Right"
                     IconHeight="12"
                     IconWidth="12"
-                    Padding="7,0"
                     ToolTip.Tip="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).Translation.Remove.Value}" />
 
             </StackPanel>
 
             <Button
-                Classes.isCurrent="{Binding IsCurrentItem.Value}"
-                Command="{Binding OpenCommand}"
-                DockPanel.Dock="Left"
-                Foreground="{DynamicResource MainTextColor}"
+                x:Name="MainButton"
                 Padding="5,6"
-                x:Name="MainButton">
+                Background="Transparent"
+                Classes.isCurrent="{Binding IsCurrentItem.Value}"
+                DockPanel.Dock="Left"
+                Foreground="{DynamicResource MainTextColor}">
                 <ToolTip.Tip>
-                    <StackPanel MaxHeight="700" MaxWidth="500">
+                    <StackPanel MaxWidth="500" MaxHeight="700">
                         <!--  TODO: Show thumbnail here  -->
                         <Image />
                         <TextBlock
@@ -105,13 +105,13 @@
                 </ToolTip.Tip>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock
+                        Padding="5,0,2,0"
                         Classes="txt txtHover"
                         IsVisible="{Binding !IsPinned.Value}"
-                        Padding="5,0,2,0"
                         Text="{Binding Index.Value}" />
                     <TextBlock
-                        Classes="txt txtHover"
                         Padding="5,0,0,0"
+                        Classes="txt txtHover"
                         Text="{Binding FileName.Value}" />
                 </StackPanel>
             </Button>

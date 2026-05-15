@@ -109,7 +109,7 @@
                 </StackPanel>
             </Button>
 
-            <Button x:Name="PasteButton">
+            <Button x:Name="PasteButton" Background="Transparent">
                 <StackPanel Height="30" Orientation="Horizontal">
                     <Path
                         Width="20"
