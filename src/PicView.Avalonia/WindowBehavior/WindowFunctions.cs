@@ -137,17 +137,15 @@ public static class WindowFunctions
 
         if (Settings.WindowProperties.TopMost)
         {
-            // TODO: Reimplement or figure out refactor
-            
-            // vm.GlobalSettings.IsTopMost.Value = false;
             desktop.MainWindow.Topmost = false;
             Settings.WindowProperties.TopMost = false;
+            vm.IsTopMost.Value = true;
         }
         else
         {
-            // vm.GlobalSettings.IsTopMost.Value = true;
             desktop.MainWindow.Topmost = true;
             Settings.WindowProperties.TopMost = true;
+            vm.IsTopMost.Value  = false;
         }
 
         await SaveSettingsAsync().ConfigureAwait(false);
