@@ -53,16 +53,25 @@ public static class DragAndDropManager
         {
             _ = Task.Run(() => HandleAdditionalFiles(files.Skip(1)));
         }
-
+        
+        SwitchToImageViewerIfNecessary();
         var path = firstFile.Path.LocalPath;
 
         if (path.IsSupported())
         {
             await LoadSupportedFile(path, tabOverview);
         }
-        else if (Directory.Exists(path) || path.IsArchive())
+        else if (Directory.Exists(path))
         {
-            await tabOverview.LoadFromFileAsync(path);
+            await tabOverview.LoadFromDirectoryAsync(path);
+        }
+        else if (path.IsArchive())
+        {
+            await tabOverview.LoadFromStringAsync(path);
+        }
+        else
+        {
+            SwitchStartUpMenuIfNecessary();
         }
     }
 
@@ -111,6 +120,46 @@ public static class DragAndDropManager
     #endregion
 
     #region Private Helpers
+    
+    private static void SwitchToImageViewerIfNecessary()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (Application.Current.DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+
+            var currentView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.CurrentView;
+            if (currentView.CurrentValue is StartUpMenu)
+            {
+                currentView.Value = new ImageViewer();
+            }
+        });
+    }
+    
+    private static void SwitchStartUpMenuIfNecessary()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (Application.Current.DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            
+            var tab = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
+            if (tab.Image.CurrentValue is not null)
+            {
+                // Image is being viewed, return
+                return;
+            }
+            var currentView = tab.CurrentView;
+            if (currentView.CurrentValue is ImageViewer)
+            {
+                currentView.Value = new StartUpMenu();
+            }
+        });
+    }
 
     private static void HandleAdditionalFiles(IEnumerable<IStorageItem> additionalFiles)
     {
@@ -312,7 +361,7 @@ public static class DragAndDropManager
         });
     }
 
-    private static async Task LoadSupportedFile(string path, TabOverviewViewModel tabOverview)
+    private static async ValueTask LoadSupportedFile(string path, TabOverviewViewModel tabOverview)
     {
         var tab = tabOverview.ActiveTab.CurrentValue;
         var droppedFileInfo = new FileInfo(path);
