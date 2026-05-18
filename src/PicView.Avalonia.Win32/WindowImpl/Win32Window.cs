@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Win32.Views;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Sizing;
@@ -13,8 +14,13 @@ public static class Win32Window
     public static async Task Fullscreen(MainWindow window, MainWindowViewModel vm, bool saveSettings = true)
     {
         window.IsChangingWindowState = true;
-        
-        Settings.WindowProperties.Fullscreen = true;
+
+        if (!Slideshow.IsRunning)
+        {
+            // Don't save the user setting when entering fullscreen from slideshow
+            Settings.WindowProperties.Fullscreen = true;
+        }
+
         Settings.WindowProperties.Maximized = false;
         vm.IsMaximized.Value = false;
         vm.IsFullscreen.Value = true;

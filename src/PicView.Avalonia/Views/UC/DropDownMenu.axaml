@@ -172,6 +172,7 @@
             <Carousel
                 x:Name="SlideshowCarousel"
                 DockPanel.Dock="Top"
+                IsEnabled="{Binding MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CanNavigateForwards.Value}"
                 SelectedIndex="{Binding MainWindows.ActiveWindow.Value.TopTitlebarViewModel.DropDownMenu.SlideshowCarouselIndex.Value}">
                 <Carousel.PageTransition>
                     <CompositePageTransition>

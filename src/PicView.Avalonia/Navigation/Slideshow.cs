@@ -8,7 +8,7 @@ namespace PicView.Avalonia.Navigation;
 
 public static class Slideshow
 {
-    public static bool IsRunning => _timer is not null && _timer.Enabled;
+    public static bool IsRunning { get; private set; }
     
     private static Timer? _timer;
     public static async Task StartSlideshow(MainWindowViewModel vm)
@@ -40,6 +40,8 @@ public static class Slideshow
     
     public static void StopSlideshow(MainWindowViewModel vm)
     {
+        IsRunning = false;
+        
         if (_timer is null)
         {
             return;
@@ -102,6 +104,7 @@ public static class Slideshow
     {
         _timer.Interval = seconds;
         _timer.Start();
+        IsRunning = true;
         if (Application.Current.DataContext is CoreViewModel core)
         {
             core.PlatformService.DisableScreensaver();

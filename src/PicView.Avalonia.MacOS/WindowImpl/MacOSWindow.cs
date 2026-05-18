@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using PicView.Avalonia.MacOS.Views;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ViewModels;
@@ -93,7 +94,11 @@ public static class MacOSWindow
         WindowResizing.SaveSize(window);
         
         Settings.WindowProperties.Maximized = false;
-        Settings.WindowProperties.Fullscreen = true;
+        if (!Slideshow.IsRunning)
+        {
+            // Don't save the user setting when entering fullscreen from slideshow
+            Settings.WindowProperties.Fullscreen = true;
+        }
         
         vm.IsTopToolbarShown.Value = false;
         vm.IsBottomToolbarShown.Value = false;
