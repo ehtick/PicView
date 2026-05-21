@@ -112,6 +112,15 @@ public static class StartUpHelper
         HandlePostWindowUpdates(vm, settingsExists, desktop, window);
     }
     
+    public static void DetachedWindowStartup(CoreViewModel vm,  IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
+    {
+        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, true);
+
+        window.Show();
+        
+        HandlePostWindowUpdates(vm, true, desktop, window);
+    }
+    
     public static void RegularStartUp(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {

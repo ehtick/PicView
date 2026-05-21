@@ -7,6 +7,8 @@ using PicView.Avalonia.Linux.WindowImpl;
 using WindowInitializer = PicView.Avalonia.Services.WindowInitializer;
 using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.IPlatform;
 using PicView.Core.ViewModels;
 using R3;
@@ -204,7 +206,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
                 newVm = newWindow.DataContext as MainWindowViewModel;
                 core.MainWindows.MainWindows.Add(newVm);
                 core.MainWindows.ActiveWindow.Value = newVm;
-                StartUpHelper.StartUpBlank(core, true, desktop, newWindow);
+                StartUpHelper.DetachedWindowStartup(core, desktop, newWindow);
 
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)
@@ -221,7 +223,7 @@ public partial class LinuxMainWindow : MainWindow, IPlatformWindowService
 
     protected override async void OnClosing(WindowClosingEventArgs e)
     {
-        await WindowFunctions2.WindowClosingBehavior(this);
+        await WindowFunctions.WindowClosingBehavior(this);
         base.OnClosing(e);
     }
 

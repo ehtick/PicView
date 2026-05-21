@@ -187,7 +187,7 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
                 }
                 core.MainWindows.MainWindows.Add(newVm);
                 core.MainWindows.ActiveWindow.Value = newVm;
-                StartUpHelper.StartUpBlank(core, true, desktop, newWindow);
+                StartUpHelper.DetachedWindowStartup(core, desktop, newWindow);
 
                 // Fix null DataContext
                 if (tab.CurrentView.CurrentValue is Control control)

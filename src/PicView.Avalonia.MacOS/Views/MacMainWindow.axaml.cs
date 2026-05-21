@@ -209,7 +209,7 @@ public partial class MacMainWindow : MainWindow, IPlatformWindowService
                 newVm = newWindow.DataContext as MainWindowViewModel;
                 core.MainWindows.MainWindows.Add(newVm);
                 core.MainWindows.ActiveWindow.Value = newVm;
-                StartUpHelper.StartUpBlank(core, true, desktop, newWindow);
+                StartUpHelper.DetachedWindowStartup(core, desktop, newWindow);
 
 
                 // Fix null DataContext

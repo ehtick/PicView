@@ -235,25 +235,6 @@ public static class WindowFunctions
         });
     }
 
-    public static void CenterWindowOnOwnerWindow(Window windowToCenter, Window ownerWindow)
-    {
-        if (ownerWindow is null || windowToCenter is null)
-        {
-            return;
-        }
-        var windowSize = windowToCenter.ClientSize;
-        var ownerSize = ownerWindow.ClientSize;
-        var x = ownerWindow.Bounds.X is 0 ? Settings.WindowProperties.Left : ownerWindow.Bounds.X;
-        var y = ownerWindow.Bounds.Y is 0 ? Settings.WindowProperties.Top : ownerWindow.Bounds.Y;
-
-        // Calculate the position to center the window on the screen
-        var centeredX = x + (ownerSize.Width - windowSize.Width) / 2;
-        var centeredY = y + (ownerSize.Height - windowSize.Height) / 2;
-
-        // Set the window's new position
-        windowToCenter.Position = new PixelPoint((int)centeredX, (int)centeredY);
-    }
-
     public static void InitializeWindowSizeAndPosition(Window window)
     {
         if (Dispatcher.UIThread.CheckAccess())
