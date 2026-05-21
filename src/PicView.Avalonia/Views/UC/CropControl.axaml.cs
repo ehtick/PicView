@@ -12,7 +12,6 @@ namespace PicView.Avalonia.Views.UC;
 public partial class CropControl : UserControl
 {
     private readonly CropDragHandler? _dragHandler;
-    private readonly CropKeyboardManager? _keyboardManager;
     private readonly CropLayoutManager? _layoutManager;
     private readonly CropResizeHandler? _resizeHandler;
 
@@ -29,7 +28,6 @@ public partial class CropControl : UserControl
             MainRectangle.Cursor = Cursor.Parse("DragMove");
         }
         
-        _keyboardManager = new CropKeyboardManager(this);
         _dragHandler = new CropDragHandler(this);
         _resizeHandler = new CropResizeHandler(this);
         _layoutManager = new CropLayoutManager(this);
@@ -134,10 +132,5 @@ public partial class CropControl : UserControl
             control.Key.PointerMoved += (s, e) => _layoutManager.UpdateLayout();
             control.Key.PointerReleased += _resizeHandler.OnResizeEnd;
         }
-    }
-
-    public async Task KeyDownHandler(object? sender, KeyEventArgs e)
-    {
-        await _keyboardManager.KeyDownHandler(e).ConfigureAwait(false);
     }
 }

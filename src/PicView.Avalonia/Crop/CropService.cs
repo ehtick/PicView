@@ -104,9 +104,17 @@ public class CropService(TabViewModel tabViewModel) : ICropService
 
     private async ValueTask CopyCroppedImageAsync()
     {
+        if (GetCroppedImage() is Bitmap bitmap)
+        {
+            await Task.WhenAll(ClipboardImageOperations.CopyImageToClipboard(bitmap), AnimationsHelper.CopyAnimation());
+        }
+    }
+
+    public object? GetCroppedImage()
+    {
         if (tabViewModel.Image.CurrentValue is not Bitmap sourceBitmap || tabViewModel.Crop is null)
         {
-            return;
+            return null;
         }
 
         var x = Convert.ToInt32(tabViewModel.Crop.SelectionX.CurrentValue / tabViewModel.Crop.AspectRatio);
@@ -114,12 +122,7 @@ public class CropService(TabViewModel tabViewModel) : ICropService
         var rect = new PixelRect(x, y, (int)tabViewModel.Crop.PixelSelectionWidth.CurrentValue, (int)tabViewModel.Crop.PixelSelectionHeight.CurrentValue);
 
         var croppedBitmap = new CroppedBitmap(sourceBitmap, rect);
-        var bitmap = BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
-
-        if (bitmap is not null)
-        {
-            await Task.WhenAll(ClipboardImageOperations.CopyImageToClipboard(bitmap), AnimationsHelper.CopyAnimation());
-        }
+        return BitmapHelper.ConvertCroppedBitmapToBitmap(croppedBitmap);
     }
 
     public void CloseCropControl()

@@ -8,4 +8,6 @@ public interface ICropService
     Task StartCropControlAsync(MainWindowViewModel vm);
     void CloseCropControl();
     bool DetermineIfShouldBeEnabled(MainWindowViewModel vm);
+    
+    object? GetCroppedImage();
 }

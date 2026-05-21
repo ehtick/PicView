@@ -1,6 +1,7 @@
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using PicView.Avalonia.Animations;
+using PicView.Avalonia.Crop;
 using PicView.Avalonia.Navigation;
 using PicView.Core.DebugTools;
 using PicView.Core.Localization;
@@ -20,11 +21,27 @@ public static class ClipboardImageOperations
     public static async Task CopyImageToClipboard(MainWindowViewModel vm)
     {
         var clipboard = ClipboardService.GetClipboard();
-        if (clipboard == null || vm.WindowTabs.ActiveTab.CurrentValue.Image.CurrentValue is not Bitmap bitmap)
+        if (clipboard == null)
         {
             return;
         }
-        
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CropService is CropService { IsCropping: true } cropService)
+        {
+            if (cropService.GetCroppedImage() is Bitmap clipboardBitmap)
+            {
+                await CopyImageToClipboard(clipboard, clipboardBitmap);
+                return;
+            }
+        }
+        if (vm.WindowTabs.ActiveTab.CurrentValue.Image.CurrentValue is not Bitmap bitmap)
+        {
+            return;
+        }
+        await CopyImageToClipboard(clipboard, bitmap);
+    }
+    
+    public static async Task CopyImageToClipboard(IClipboard clipboard, Bitmap bitmap)
+    {
         _ = AnimationsHelper.CopyAnimation();
         await clipboard.ClearAsync();
         await clipboard.SetBitmapAsync(bitmap);
