@@ -182,8 +182,17 @@ public static class WindowResizing
         {
             if (reason is WindowResizeReason.User)
             {
-                vm.ImageWidth.Value =
-                    vm.ImageHeight.Value = double.NaN;
+                if (isRotated)
+                {
+                    vm.ImageWidth.Value = imageHeight;
+                    vm.ImageHeight.Value = imageWidth;
+                }
+                else
+                {
+                    vm.ImageWidth.Value = imageWidth;
+                    vm.ImageHeight.Value = imageHeight;
+                }
+
             }
             else
             {
@@ -195,23 +204,15 @@ public static class WindowResizing
         }
         else
         {
-            if (Settings.ImageScaling.ShowImageSideBySide)
+            if (isRotated)
             {
-                vm.ImageWidth.Value = imageWidth;
-                vm.ImageHeight.Value = imageHeight;
+                vm.ImageWidth.Value = imageHeight;
+                vm.ImageHeight.Value = imageWidth;
             }
             else
             {
-                if (Settings.ImageScaling.ZoomToFit)
-                {
-                    vm.ImageWidth.Value =
-                        vm.ImageHeight.Value = double.NaN;
-                }
-                else
-                {
-                    vm.ImageWidth.Value = imageWidth;
-                    vm.ImageHeight.Value = imageHeight;
-                }
+                vm.ImageWidth.Value = imageWidth;
+                vm.ImageHeight.Value = imageHeight;
             }
             vm.WindowMaxWidth.Value =
                 vm.WindowMaxHeight.Value = double.NaN;

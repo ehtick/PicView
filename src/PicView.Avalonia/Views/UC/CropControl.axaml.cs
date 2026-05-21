@@ -5,6 +5,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using PicView.Avalonia.Crop;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -74,7 +75,11 @@ public partial class CropControl : UserControl
         }
         
         InitializeResizeHandlers();
-        _layoutManager.InitializeLayout();
+        if (Application.Current.DataContext is CoreViewModel core)
+        {
+            _layoutManager.InitializeLayout(core.MainWindows.ActiveWindow.CurrentValue);
+        }
+
         
         MainRectangle.PointerPressed += _dragHandler.OnDragStart;
         MainRectangle.PointerReleased += _dragHandler.OnDragEnd;

@@ -1,7 +1,5 @@
-﻿using PicView.Avalonia.Functions;
-using PicView.Avalonia.Interfaces;
+﻿using PicView.Avalonia.Interfaces;
 using PicView.Core.ViewModels;
-using ImageViewer = PicView.Avalonia.Views.UC.ImageViewer;
 
 namespace PicView.Avalonia.ViewModels;
 
@@ -17,17 +15,4 @@ public class MainViewModel
     public ImageInfoWindowViewModel? InfoWindow { get; set; }
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
     public BatchResizeViewModel? BatchResizeViewModel { get; set; }
-
-    public MainViewModel(IPlatformSpecificService? platformSpecificService, IPlatformWindowService? platformWindowService)
-    {
-        FunctionsMapper.Vm = this;
-        PlatformService = platformSpecificService;
-        PlatformWindowService = platformWindowService;
-    }
-
-    public MainViewModel()
-    {
-        // Only use for unit test
-    }
-    
 }

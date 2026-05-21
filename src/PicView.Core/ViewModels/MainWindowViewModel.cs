@@ -20,7 +20,6 @@ public class MainWindowViewModel : IDisposable
     public ImageInfoWindowViewModel? InfoWindow { get; set; } 
     public ExifViewModel? Exif { get; set; }
     public ResizeImageViewModel? ResizeImageViewModel { get; set; }
-    public CropViewModel? Crop { get; set; }
 
     #region Window state
     public bool IsNavigationButtonLeftClicked { get; set; }

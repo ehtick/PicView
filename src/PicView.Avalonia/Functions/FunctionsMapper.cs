@@ -436,7 +436,7 @@ public static class FunctionsMapper
     public static async ValueTask ResizeImage() =>
         await ResizeWindow();
 
-    /// <inheritdoc cref="CropFunctions.StartCropControl(MainViewModel)" />
+    /// <inheritdoc cref="CropManager.StartCropControl(MainViewModel)" />
     public static async ValueTask Crop() =>
         await ValueTask.CompletedTask;
 

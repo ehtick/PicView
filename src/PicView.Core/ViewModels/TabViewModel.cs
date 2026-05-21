@@ -9,6 +9,7 @@ using PicView.Core.Preloading;
 using PicView.Core.Titles;
 using PicView.Core.Generators;
 using PicView.Core.ImageDecoding;
+using PicView.Core.IPlatform;
 using PicView.Core.Sizing;
 using R3;
 
@@ -27,8 +28,8 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     #region Properties
     
     #region Tab logic
-    /// The CoreViewModel that currently "owns" this tab
-    public object? ParentWindowContext { get; set; }
+    /// The MainWindowViewModel that currently "owns" this tab
+    public MainWindowViewModel? ParentWindowContext { get; set; }
     
     /// Unique identifier for this tab.
     public uint Id { get; } = TabIDGenerator.GetNextId();
@@ -52,7 +53,9 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     public BindableReactiveProperty<object?> CurrentView { get; } = new(null);
     public HoverbarViewModel Hoverbar { get; } = new();
     public GalleryViewModel Gallery { get; } = new();
-
+    
+    public CropViewModel? Crop { get; set; }
+    public ICropService? CropService { get; set; }
     #endregion
     
     #region Image properties
@@ -73,6 +76,7 @@ public class TabViewModel(Action<uint> closeTab, IFileWatcherService? fileWatche
     public BindableReactiveProperty<double> ScaleX { get; } = new(1);
     public BindableReactiveProperty<double> InitialZoom { get; } = new(1);
     public BindableReactiveProperty<int> ZoomLevel { get; } = new();
+
     #endregion
 
     #region Navigation properties

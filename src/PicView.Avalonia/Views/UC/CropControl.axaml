@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    x:DataType="viewModels:MainWindowViewModel"
+    x:DataType="viewModels:TabViewModel"
     ClipToBounds="False">
     <UserControl.Resources>
         <SolidColorBrush x:Key="Brush0" Color="{DynamicResource MainTextColor}" />
@@ -24,7 +24,7 @@
     </UserControl.Styles>
     <UserControl.ContextMenu>
         <ContextMenu x:Name="CropContextMenu">
-            <MenuItem Command="{CompiledBinding Crop.CropImageCommand}" Header="{CompiledBinding Translation.Crop.Value, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CropImageCommand}" Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Crop.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Width="12"
@@ -32,7 +32,7 @@
                         Source="{StaticResource CropImage}" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding Crop.CopyCropImageCommand}" Header="{CompiledBinding Translation.Copy.Value, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CopyCropImageCommand}" Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Copy.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Width="12"
@@ -42,7 +42,7 @@
                         Stretch="Fill" />
                 </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Command="{CompiledBinding Crop.CloseCropCommand}" Header="{CompiledBinding Translation.Close.Value, Mode=OneWay}">
+            <MenuItem Command="{CompiledBinding Crop.CloseCropCommand}" Header="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Close.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Width="12"
@@ -58,9 +58,9 @@
         <!--  Image control to display the bitmap  -->
         <customControls:PicBox
             x:Name="ImageControl"
-            CurrentFileInfo="{Binding WindowTabs.ActiveTab.Value.FileInfo.Value}"
-            ImageType="{Binding WindowTabs.ActiveTab.Value.ImageType.Value}"
-            Source="{Binding WindowTabs.ActiveTab.Value.Image.Value}" />
+            CurrentFileInfo="{Binding FileInfo.Value}"
+            ImageType="{Binding ImageType.Value}"
+            Source="{Binding Image.Value}" />
 
         <Canvas x:Name="RootCanvas" Background="Transparent">
 
@@ -78,11 +78,11 @@
                     Classes="txt"
                     FontSize="14"
                     Foreground="{DynamicResource MainTextColor}">
-                    <Run Text="{CompiledBinding Translation.Width.Value, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Width.Value, Mode=OneWay}" />
                     <Run Text=": " />
                     <Run Text="{CompiledBinding Crop.PixelSelectionWidth.Value, Mode=OneWay}" />
                     <Run Text=" x " />
-                    <Run Text="{CompiledBinding Translation.Height.Value, Mode=OneWay}" />
+                    <Run Text="{CompiledBinding $parent[Window].((viewModels:MainWindowViewModel)DataContext).Translation.Height.Value, Mode=OneWay}" />
                     <Run Text=": " />
                     <Run Text="{CompiledBinding Crop.PixelSelectionHeight.Value, Mode=OneWay}" />
                 </TextBlock>

@@ -118,14 +118,11 @@ public static class UpdateImage
             secondaryWidth = secondaryHeight = 0;
         }
         
-        if (Settings.WindowProperties.AutoFit)
-        {
-            WindowResizing.SetSize(tabViewModel.Model.PixelWidth,
-                tabViewModel.Model.PixelHeight, 
-                secondaryWidth, secondaryHeight,
-                WindowResizeReason.Application,
-                vm);
-        }
+        WindowResizing.SetSize(tabViewModel.Model.PixelWidth,
+            tabViewModel.Model.PixelHeight, 
+            secondaryWidth, secondaryHeight,
+            WindowResizeReason.Application,
+            vm);
         
         if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
         {

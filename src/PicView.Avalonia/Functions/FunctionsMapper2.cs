@@ -851,10 +851,10 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     public async ValueTask ResizeImage() =>
         await ResizeWindow();
 
-    /// <inheritdoc cref="CropFunctions.StartCropControl(MainWindowViewModel)" />
+    /// <inheritdoc cref="CropManager.StartCropControl(MainWindowViewModel)" />
     public async ValueTask Crop()
     {
-        await CropFunctions.StartCropControlAsync(vm).ConfigureAwait(false);
+        await CropManager.StartCropControlAsync(vm).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ImageOptimizer.OptimizeImageAsync(MainViewModel)" />

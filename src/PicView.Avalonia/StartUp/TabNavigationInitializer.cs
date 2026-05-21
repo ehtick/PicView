@@ -37,7 +37,7 @@ public static class TabNavigationInitializer
 
         // 4. Initialize ViewModel
         tabOverView.LoadAndInitialize(core.SharedNavigationService, sharedCache,thumbnailCache, thumbnailService, fileWatcher);
-        tabOverView.SetParentContext(core);
+        tabOverView.SetParentContext(core.MainWindows.ActiveWindow.CurrentValue);
         InitializeNewTab(tab, core.MainWindows.ActiveWindow.CurrentValue);
         tab.Gallery.Initialize();
         core.GallerySettings.Initialize();
@@ -76,7 +76,7 @@ public static class TabNavigationInitializer
         var tabOverView = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
         var tab = tabOverView.ActiveTab.CurrentValue;
         tabOverView.LoadAndInitializeFromPath(files, core.SharedNavigationService, sharedCache, thumbnailCache, thumbnailService, fileWatcher);
-        tabOverView.SetParentContext(core);
+        tabOverView.SetParentContext(core.MainWindows.ActiveWindow.CurrentValue);
         InitializeNewTab(tab, core.MainWindows.ActiveWindow.CurrentValue);
         tab.Gallery.Initialize();
         core.GallerySettings.Initialize();

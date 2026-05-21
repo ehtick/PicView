@@ -128,7 +128,7 @@ public partial class MainView : UserControl
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)
     {
         CloseTitlebarIfOpen(sender, e);
-        if (MainKeyboardShortcuts.ShiftDown && !CropFunctions.IsCropping)
+        if (MainKeyboardShortcuts.ShiftDown && !CropManager.IsCropping)
         {
             var hostWindow = (Window)VisualRoot!;
             WindowFunctions.WindowDragBehavior(hostWindow, e);

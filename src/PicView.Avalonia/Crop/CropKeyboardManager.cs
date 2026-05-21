@@ -13,18 +13,16 @@ public class CropKeyboardManager(CropControl control)
 {
     public async Task KeyDownHandler(KeyEventArgs e)
     {
-        if (control.DataContext is not MainViewModel vm)
-        {
-            return;
-        }
-
         switch (e.Key)
         {
             case Key.Enter:
                 // await vm.Crop.SaveCroppedImageAsync();
                 return;
             case Key.Escape:
-                CropFunctions.CloseCropControl(UIHelper.GetMainView.DataContext as MainWindowViewModel);
+                if (control.DataContext is TabViewModel tab)
+                {
+                    tab.CropService?.CloseCropControl();
+                }
                 return;
         }
 

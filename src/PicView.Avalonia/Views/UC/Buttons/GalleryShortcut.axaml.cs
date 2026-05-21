@@ -16,11 +16,11 @@ public partial class GalleryShortcut : UserControl
                 return;
             }
 
-            if (tab.ParentWindowContext is not CoreViewModel core)
+            if (tab.ParentWindowContext is not { } vm)
             {
                 return;
             }
-            _ = new HoverFadeButtonHandler(this, core.MainWindows.ActiveWindow.CurrentValue, InnerButton);
+            _ = new HoverFadeButtonHandler(this, vm, InnerButton);
         };
     }
 }

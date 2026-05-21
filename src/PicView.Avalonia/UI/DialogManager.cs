@@ -17,11 +17,10 @@ public static class DialogManager
     /// </summary>
     public static async Task HandleShouldClosing(MainWindowViewModel vm)
     {
-
         // Handle cropping mode
-        if (CropFunctions.IsCropping)
+        if (CropManager.IsCropping)
         {
-            //CropFunctions.CloseCropControl(vm);
+            CropManager.CloseCropControl(vm);
             return;
         }
 

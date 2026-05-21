@@ -1,5 +1,7 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
 using PicView.Core.ViewModels;
 
@@ -9,37 +11,55 @@ public class CropLayoutManager(CropControl control)
 {
     private const int DefaultSelectionSize = 200;
 
-    public void InitializeLayout()
+    public void InitializeLayout(MainWindowViewModel vm)
     {
-        if (control.DataContext is not MainWindowViewModel vm)
+        if (control.DataContext is not TabViewModel tab)
+        {
+            return;
+        }
+
+        if (tab.Crop == null)
         {
             return;
         }
 
         // Ensure image dimensions are valid before proceeding
-        if (vm.ImageWidth.CurrentValue <= 0 || vm.ImageHeight.CurrentValue <= 0)
+        double imageWidth, imageHeight;
+        if (double.IsNaN(vm.ImageWidth.CurrentValue) || double.IsNaN(vm.ImageHeight.CurrentValue))
         {
-            return;
+            var size = WindowResizing.GetSize(vm);
+            if (!size.HasValue)
+            {
+                return;
+            }
+
+            imageWidth = size.Value.Width;
+            imageHeight = size.Value.Height;
+        }
+        else
+        {
+            imageWidth = vm.ImageWidth.CurrentValue;
+            imageHeight = vm.ImageHeight.CurrentValue;
         }
 
         // Set initial width and height for the crop rectangle
-        var originalWidth = vm.ImageWidth.CurrentValue >= DefaultSelectionSize * 2
+        var originalWidth = imageWidth >= DefaultSelectionSize * 2
             ? DefaultSelectionSize
-            : (uint)(vm.ImageWidth.CurrentValue / 2);
-        var originalHeight = vm.ImageHeight.CurrentValue >= DefaultSelectionSize * 2
+            : (uint)(imageWidth / 2);
+        var originalHeight = imageHeight >= DefaultSelectionSize * 2
             ? DefaultSelectionSize
-            : (uint)(vm.ImageHeight.CurrentValue / 2);
+            : (uint)(imageHeight / 2);
         
-        vm.Crop.SetSelectionWidth(originalWidth);
-        vm.Crop.SetSelectionHeight(originalHeight);
+        tab.Crop.SetSelectionWidth(originalWidth);
+        tab.Crop.SetSelectionHeight(originalHeight);
         
         // // Calculate centered position
-        vm.Crop.SelectionX.Value = Convert.ToInt32((vm.ImageWidth.CurrentValue - vm.Crop.SelectionWidth.CurrentValue) / 2);
-        vm.Crop.SelectionY.Value = Convert.ToInt32((vm.ImageHeight.CurrentValue - vm.Crop.SelectionHeight.CurrentValue) / 2);
+        tab.Crop.SelectionX.Value = Convert.ToInt32((imageWidth - tab.Crop.SelectionWidth.CurrentValue) / 2);
+        tab.Crop.SelectionY.Value = Convert.ToInt32((imageHeight - tab.Crop.SelectionHeight.CurrentValue) / 2);
         
         // // Apply the calculated position to the MainRectangle
-        Canvas.SetLeft(control.MainRectangle, vm.Crop.SelectionX.CurrentValue);
-        Canvas.SetTop(control.MainRectangle, vm.Crop.SelectionY.CurrentValue);
+        Canvas.SetLeft(control.MainRectangle, tab.Crop.SelectionX.CurrentValue);
+        Canvas.SetTop(control.MainRectangle, tab.Crop.SelectionY.CurrentValue);
 
         UpdateLayout();
     }
@@ -59,16 +79,23 @@ public class CropLayoutManager(CropControl control)
 
     private void UpdateSurroundingRectangles()
     {
-        if (control.DataContext is not MainWindowViewModel vm)
+        if (control.DataContext is not TabViewModel tab || Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        if (tab.Crop == null)
         {
             return;
         }
         
+        var vm = core.MainWindows.ActiveWindow.CurrentValue;
+        
         // Converting to int fixes black border
         var left = Convert.ToInt32(Canvas.GetLeft(control.MainRectangle));
         var top = Convert.ToInt32(Canvas.GetTop(control.MainRectangle));
-        var right = Convert.ToInt32(left + vm.Crop.SelectionWidth.CurrentValue);
-        var bottom = Convert.ToInt32(top + vm.Crop.SelectionHeight.CurrentValue);
+        var right = Convert.ToInt32(left + tab.Crop.SelectionWidth.CurrentValue);
+        var bottom = Convert.ToInt32(top + tab.Crop.SelectionHeight.CurrentValue);
         
         // Calculate the positions and sizes for the surrounding rectangles
         // Top Rectangle (above MainRectangle)
@@ -84,29 +111,34 @@ public class CropLayoutManager(CropControl control)
         
         // Left Rectangle (left of MainRectangle)
         control.LeftRectangle.Width = left < 0 ? 0 : left;
-        control.LeftRectangle.Height = vm.Crop.SelectionHeight.CurrentValue;
+        control.LeftRectangle.Height = tab.Crop.SelectionHeight.CurrentValue;
         Canvas.SetLeft(control.LeftRectangle, 0);
         Canvas.SetTop(control.LeftRectangle, top);
         
         // Right Rectangle (right of MainRectangle)
         var newRightRectangleWidth = vm.ImageWidth.CurrentValue - right < 0 ? 0 : vm.ImageWidth.CurrentValue - right;
         control.RightRectangle.Width = newRightRectangleWidth;
-        control.RightRectangle.Height = vm.Crop.SelectionHeight.CurrentValue;
+        control.RightRectangle.Height = tab.Crop.SelectionHeight.CurrentValue;
         Canvas.SetLeft(control.RightRectangle, right);
         Canvas.SetTop(control.RightRectangle, top);
     }
 
     public void UpdateButtonPositions()
     {
-        if (control.DataContext is not MainWindowViewModel vm)
+        if (control.DataContext is not TabViewModel tab)
+        {
+            return;
+        }
+
+        if (tab.Crop == null)
         {
             return;
         }
         
-        var selectionX = vm.Crop.SelectionX.CurrentValue;
-        var selectionY = vm.Crop.SelectionY.CurrentValue;
-        var selectionWidth = vm.Crop.SelectionWidth.CurrentValue;
-        var selectionHeight = vm.Crop.SelectionHeight.CurrentValue;
+        var selectionX = tab.Crop.SelectionX.CurrentValue;
+        var selectionY = tab.Crop.SelectionY.CurrentValue;
+        var selectionWidth = tab.Crop.SelectionWidth.CurrentValue;
+        var selectionHeight = tab.Crop.SelectionHeight.CurrentValue;
         
         // Get the bounds of the RootCanvas (the control container)
         const int rootCanvasLeft = 0;

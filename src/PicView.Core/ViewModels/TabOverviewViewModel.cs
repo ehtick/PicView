@@ -30,7 +30,7 @@ public class TabOverviewViewModel
     public IFileWatcherService? SharedFileWatcher { get; private set; }
 
     // Needed for correct context in multi-window scenarios
-    private object? _parentVm;
+    private MainWindowViewModel? _parentVm;
 
     public TabOverviewViewModel()
     {
@@ -119,7 +119,7 @@ public class TabOverviewViewModel
         return tab;
     }
     
-    public void SetParentContext(object parent)
+    public void SetParentContext(MainWindowViewModel parent)
     {
         _parentVm = parent;
         // Update existing tabs if any
