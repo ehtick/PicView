@@ -21,17 +21,12 @@ public partial class ImageViewer : UserControl
 {
     private RotationTransformer? _imageTransformer;
     private DisposableBag _disposables;
-    private readonly MainWindowViewModel? _mainWindowViewModel;
     
     public ImageViewer()
     {
         InitializeComponent();
         ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         Loaded += OnLoaded;
-        if (Application.Current.DataContext is CoreViewModel core)
-        {
-            _mainWindowViewModel = core.MainWindows.ActiveWindow.CurrentValue;
-        }
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
@@ -54,14 +49,15 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
-        
-        if (_mainWindowViewModel is null)
+
+        if (sender is not ImageViewer { DataContext: TabViewModel tab })
         {
             return;
         }
+        
         await MouseShortcuts.HandlePointerWheelChanged(
             e,
-            _mainWindowViewModel, 
+            tab.ParentWindowContext, 
             ImageScrollViewer,
             async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomIn(args)),
             async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomOut(args)));
