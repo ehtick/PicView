@@ -95,7 +95,8 @@
                 Height="{CompiledBinding Crop.SelectionHeight.Value}"
                 Background="Transparent"
                 BorderBrush="#fff"
-                BorderThickness="2" />
+                BorderThickness="2"
+                Cursor="Hand" />
 
             <!--  Top Left  -->
             <Border
