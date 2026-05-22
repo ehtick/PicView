@@ -456,33 +456,10 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
         await SettingsUpdater2.ToggleTaskbarProgress(vm).ConfigureAwait(false);
     }
     
-    /// <inheritdoc cref="SettingsUpdater.ToggleConstrainBackgroundColor(MainViewModel)" />
-    public ValueTask ToggleConstrainBackgroundColor()
+    /// <inheritdoc cref="SettingsUpdater.ToggleConstrainBackgroundColor()" />
+    public async ValueTask ToggleConstrainBackgroundColor()
     {
-        Settings.UIProperties.IsConstrainBackgroundColorEnabled =
-            !Settings.UIProperties.IsConstrainBackgroundColorEnabled;
-        if (Application.Current.DataContext is not CoreViewModel core || core?.MainWindows.ActiveWindow.Value is not { } activeWindow)
-        {
-            return ValueTask.CompletedTask;
-        }
-
-        var brush = BackgroundManager.GetBackgroundBrush((BackgroundType)Settings.UIProperties.BgColorChoice);
-        var globalSettings = core.GlobalSettings;
-                 
-        if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
-        {
-            globalSettings.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-            globalSettings.ConstrainedImageBackground.Value = brush;
-        }
-        else
-        {
-            globalSettings.ImageBackground.Value = brush;
-            globalSettings.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-        }
-                 
-        globalSettings.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
-        
-        return ValueTask.CompletedTask;
+        await SettingsUpdater2.ToggleConstrainBackgroundColor().ConfigureAwait(false);
     }
     
     #endregion

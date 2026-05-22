@@ -44,6 +44,7 @@ public static class BackgroundManager
         BackgroundType.SemiTransparentDarkerGray => new SolidColorBrush(Color.FromArgb(200, 50, 50, 50)),
         BackgroundType.NearBlack => new SolidColorBrush(Color.FromRgb(5, 5, 5)),
         BackgroundType.DarkGray => new SolidColorBrush(Color.FromRgb(48, 48, 48)),
+        BackgroundType.MainBackgroundColor => new SolidColorBrush(Color.FromRgb(43, 43, 43)),
         _ => new SolidColorBrush(Colors.Transparent)
     };
 

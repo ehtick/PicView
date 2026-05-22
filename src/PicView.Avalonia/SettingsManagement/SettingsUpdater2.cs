@@ -1,11 +1,13 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.ColorHandling;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
@@ -263,29 +265,30 @@ public static class SettingsUpdater2
         await SaveSettingsAsync();
     }
     
-    public static async Task ToggleConstrainBackgroundColor(MainViewModel vm)
+    public static async Task ToggleConstrainBackgroundColor()
     {
+        Settings.UIProperties.IsConstrainBackgroundColorEnabled =
+            !Settings.UIProperties.IsConstrainBackgroundColorEnabled;
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        var brush = BackgroundManager.GetBackgroundBrush((BackgroundType)Settings.UIProperties.BgColorChoice);
+        var globalSettings = core.GlobalSettings;
+                 
         if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
         {
-            Settings.UIProperties.IsConstrainBackgroundColorEnabled = false;
-            if (vm.SettingsViewModel is not null)
-            {
-                vm.SettingsViewModel.IsConstrainingBackgroundColor.Value = false;
-            }
+            globalSettings.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+            globalSettings.ConstrainedImageBackground.Value = brush;
         }
         else
         {
-            Settings.UIProperties.IsConstrainBackgroundColorEnabled = true;
-            if (vm.SettingsViewModel is not null)
-            {
-                vm.SettingsViewModel.IsConstrainingBackgroundColor.Value = true;
-            }
+            globalSettings.ImageBackground.Value = brush;
+            globalSettings.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
         }
-        
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            BackgroundManager.SetBackground(vm);
-        });
+                 
+        globalSettings.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
         await SaveSettingsAsync();
     }
 

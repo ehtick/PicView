@@ -1,13 +1,13 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.Config.AppearanceView"
-    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:color="clr-namespace:PicView.Core.ColorHandling;assembly=PicView.Core"
     xmlns:converters="clr-namespace:PicView.Avalonia.Converters"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="viewModels:CoreViewModel">
 
     <UserControl.Resources>
         <converters:IntToEnumBoolConverter x:Key="IntToEnumBoolConverter" />
@@ -17,41 +17,41 @@
 
         <StackPanel Classes="searchHeader">
             <Image
+                Width="18"
                 Height="18"
-                Source="{StaticResource PaletteImage}"
-                Width="18" />
+                Source="{StaticResource PaletteImage}" />
             <TextBlock
-                Classes="txt bold"
                 Margin="0,20,0,20"
+                Classes="txt bold"
                 Text="{CompiledBinding Translation.Appearance.Value,
                                        Mode=OneWay}" />
         </StackPanel>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ThemeSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ThemeSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock
-                    Classes="txt bold"
                     Margin="0,20,0,20"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.Theme.Value,
                                            Mode=OneWay}" />
 
                 <ComboBox
+                    x:Name="ThemeBox"
+                    Width="300"
+                    Margin="0,6,0,10"
+                    Padding="5,7,0,7"
                     Background="{DynamicResource SecondaryBackgroundColor}"
                     BorderBrush="{DynamicResource MainBorderColor}"
                     BorderThickness="1"
                     FontFamily="/Assets/Fonts/Roboto-Medium.ttf#Roboto"
                     Foreground="{DynamicResource MainTextColor}"
-                    Margin="0,6,0,10"
-                    Padding="5,7,0,7"
                     SelectedIndex="{CompiledBinding SettingsViewModel.ThemeIndex.Value,
-                                                    Mode=TwoWay}"
-                    Width="300"
-                    x:Name="ThemeBox">
+                                                    Mode=TwoWay}">
                     <ComboBoxItem
+                        x:Name="DarkThemeBox"
                         Content="{CompiledBinding Translation.DarkTheme.Value,
                                                   Mode=OneWay}"
-                        Foreground="{DynamicResource MainTextColor}"
-                        x:Name="DarkThemeBox" />
+                        Foreground="{DynamicResource MainTextColor}" />
                     <ComboBoxItem x:Name="LightThemeBox">
                         <TextBlock Classes="txt" Foreground="{DynamicResource MainTextColor}">
                             <TextBlock.Inlines>
@@ -72,32 +72,32 @@
 
 
                 <Button
-                    Classes="errorHover"
-                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.RestartCommand}"
+                    x:Name="RestartButton"
                     Margin="0,0,0,20"
-                    x:Name="RestartButton">
+                    Classes="errorHover"
+                    Command="{CompiledBinding MainWindows.ActiveWindow.Value.RestartCommand}">
                     <TextBlock
+                        Padding="5"
                         Classes="txt"
                         FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
-                        Padding="5"
                         Text="{CompiledBinding Translation.ChangingThemeRequiresRestart.Value,
                                                Mode=OneWay}" />
                 </Button>
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ColorSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ColorSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock
-                    Classes="txt bold"
                     Margin="0,5,0,20"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.HighlightColor.Value,
                                            Mode=OneWay}" />
 
                 <WrapPanel
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,10"
                     MaxWidth="300"
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Center"
                     Orientation="Horizontal">
                     <WrapPanel.Styles>
                         <Styles>
@@ -120,140 +120,140 @@
 
                     <!--  Blue  -->
                     <Button
+                        x:Name="BlueButton"
                         Background="#1A8CF0"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Blue}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Blue}"
-                        x:Name="BlueButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Blue}" />
                     <!--  Cyan  -->
                     <Button
+                        x:Name="CyanButton"
                         Background="#1BA1E2"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Cyan}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Cyan}"
-                        x:Name="CyanButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Cyan}" />
                     <!--  TealButton  -->
                     <Button
+                        x:Name="TealButton"
                         Background="#36E6CC"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Teal}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Teal}"
-                        x:Name="TealButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Teal}" />
                     <!--  Emerald  -->
                     <Button
+                        x:Name="EmeraldButton"
                         Background="#007200"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Emerald}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Emerald}"
-                        x:Name="EmeraldButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Emerald}" />
                     <!--  Gold  -->
                     <Button
+                        x:Name="GoldButton"
                         Background="#FEA955"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Golden}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Golden}"
-                        x:Name="GoldButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Golden}" />
                     <!--  Orange  -->
                     <Button
+                        x:Name="OrangeButton"
                         Background="#DB5B3D"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Orange}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Orange}"
-                        x:Name="OrangeButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Orange}" />
                     <!--  Red  -->
                     <Button
+                        x:Name="RedButton"
                         Background="#F91110"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Red}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Red}"
-                        x:Name="RedButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Red}" />
                     <!--  Ruby  -->
                     <Button
+                        x:Name="RubyButton"
                         Background="#FF206E"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Ruby}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Ruby}"
-                        x:Name="RubyButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Ruby}" />
                     <!--  Pink  -->
                     <Button
+                        x:Name="PinkButton"
                         Background="#FF35C5"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Pink}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Pink}"
-                        x:Name="PinkButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Pink}" />
                     <!--  Raspberry  -->
                     <Button
+                        x:Name="RaspberryButton"
                         Background="#b5457e"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Raspberry}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Raspberry}"
-                        x:Name="RaspberryButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Raspberry}" />
                     <!--  Magenta  -->
                     <Button
+                        x:Name="MagentaButton"
                         Background="#E68BEE"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Magenta}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Magenta}"
-                        x:Name="MagentaButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Magenta}" />
                     <!--  Purple  -->
                     <Button
+                        x:Name="PurpleButton"
                         Background="#9738EB"
                         Classes="colorBtn"
                         Classes.activeColorBtn="{CompiledBinding SettingsViewModel.ColorThemeIndex.Value,
                                                                  Converter={StaticResource IntToEnumBoolConverter},
                                                                  ConverterParameter={x:Static color:ColorOptions.Purple}}"
                         Command="{CompiledBinding SettingsViewModel.SetColorThemeCommand}"
-                        CommandParameter="{x:Static color:ColorOptions.Purple}"
-                        x:Name="PurpleButton" />
+                        CommandParameter="{x:Static color:ColorOptions.Purple}" />
                 </WrapPanel>
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock
-                    Classes="txt bold"
                     Margin="0,20,0,10"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.ChangeBackground.Value,
                                            Mode=OneWay}" />
 
                 <WrapPanel
-                    HorizontalAlignment="Center"
-                    Margin="0,0,0,10"
                     MaxWidth="300"
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Center"
                     Orientation="Horizontal">
                     <WrapPanel.Styles>
                         <Styles>
@@ -278,137 +278,148 @@
 
                     <!--  Transparent  -->
                     <Button
+                        x:Name="TransparentBgButton"
                         Background="Transparent"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.Transparent}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.Transparent}"
-                        x:Name="TransparentBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.Transparent}" />
 
                     <!--  Noise Texture  -->
                     <Button
+                        x:Name="NoiseTextureButton"
                         Background="{DynamicResource NoisyTexture}"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.NoiseTexture}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.NoiseTexture}"
-                        x:Name="NoiseTextureButton" />
+                        CommandParameter="{x:Static color:BackgroundType.NoiseTexture}" />
 
                     <!--  Dark Gray Semi Transparent Alt  -->
                     <Button
+                        x:Name="DarkGraySemiTransparentAltBgButton"
                         Background="#C8323232"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.SemiTransparentDarkerGray}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.SemiTransparentDarkerGray}"
-                        x:Name="DarkGraySemiTransparentAltBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.SemiTransparentDarkerGray}" />
 
                     <!--  Dark Gray Semi Transparent  -->
                     <Button
+                        x:Name="DarkGraySemiTransparentBgButton"
                         Background="#C8646464"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.SemiTransparentDarkGray}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.SemiTransparentDarkGray}"
-                        x:Name="DarkGraySemiTransparentBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.SemiTransparentDarkGray}" />
 
                     <!--  Checkerboard  -->
                     <Button
+                        x:Name="CheckerboardButton"
                         Background="Transparent"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.Checkerboard}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.Checkerboard}"
-                        x:Name="CheckerboardButton" />
+                        CommandParameter="{x:Static color:BackgroundType.Checkerboard}" />
 
                     <!--  Checkerboard alt  -->
                     <Button
+                        x:Name="CheckerboardAltButton"
                         Background="Transparent"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.CheckerboardAlternative}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.CheckerboardAlternative}"
-                        x:Name="CheckerboardAltButton" />
+                        CommandParameter="{x:Static color:BackgroundType.CheckerboardAlternative}" />
 
                     <!--  White  -->
                     <Button
+                        x:Name="WhiteBgButton"
                         Background="#fff"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.White}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.White}"
-                        x:Name="WhiteBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.White}" />
 
                     <!--  Gray  -->
                     <Button
+                        x:Name="GrayBgButton"
                         Background="#C8C8C8"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.LightGray}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.LightGray}"
-                        x:Name="GrayBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.LightGray}" />
 
                     <!--  Medium Gray  -->
                     <Button
+                        x:Name="MediumGrayBgButton"
                         Background="#9B9B9B"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.MediumGray}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.MediumGray}"
-                        x:Name="MediumGrayBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.MediumGray}" />
 
                     <!--  Dark Gray  -->
                     <Button
+                        x:Name="DarkGrayBgButton"
                         Background="#303030"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.DarkGray}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.DarkGray}"
-                        x:Name="DarkGrayBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.DarkGray}" />
+
+                    <!--  Dark MainBackgroundColor  -->
+                    <Button
+                        x:Name="DarkMainBackgroundColorBgButton"
+                        Background="#2b2b2b"
+                        Classes="colorBtn"
+                        Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
+                                                                       Converter={StaticResource IntToEnumBoolConverter},
+                                                                       ConverterParameter={x:Static color:BackgroundType.MainBackgroundColor}}"
+                        Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
+                        CommandParameter="{x:Static color:BackgroundType.MainBackgroundColor}" />
 
                     <!--  Black  -->
                     <Button
+                        x:Name="BlackBgButton"
                         Background="#050505"
                         Classes="colorBtn"
                         Classes.activeColorAccentBtn="{CompiledBinding SettingsViewModel.BackgroundChoice.Value,
                                                                        Converter={StaticResource IntToEnumBoolConverter},
                                                                        ConverterParameter={x:Static color:BackgroundType.NearBlack}}"
                         Command="{CompiledBinding SettingsViewModel.SetBackgroundCommand}"
-                        CommandParameter="{x:Static color:BackgroundType.NearBlack}"
-                        x:Name="BlackBgButton" />
+                        CommandParameter="{x:Static color:BackgroundType.NearBlack}" />
 
                 </WrapPanel>
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundConstrainSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.BackgroundConstrainSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
+                x:Name="ConstrainingBackgroundColorToggleButton"
                 Classes="altHover settingsToggleButton"
                 Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleConstrainBackgroundColorCommand}"
                 IsChecked="{CompiledBinding SettingsViewModel.IsConstrainingBackgroundColor.Value}"
                 Text="{CompiledBinding Translation.ConstrainBackgroundToImage.Value,
-                                       Mode=OneWay}"
-                x:Name="ConstrainingBackgroundColorToggleButton" />
+                                       Mode=OneWay}" />
         </Border>
 
     </StackPanel>
