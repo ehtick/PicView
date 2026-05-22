@@ -181,19 +181,6 @@ public static class SettingsUpdater2
             vm.SettingsViewModel.IsUsingTouchpad.Value = true;
         }
     }
-    
-    public static async Task ToggleSubdirectories(MainViewModel vm)
-    {
-        if (Settings.Sorting.IncludeSubDirectories)
-        {
-            await TurnOffSubdirectories(vm).ConfigureAwait(false);
-        }
-        else
-        {
-            await TurnOnSubdirectories(vm).ConfigureAwait(false);
-        }
-        await SaveSettingsAsync();
-    }
 
     public static async Task ToggleStretch(MainWindowViewModel vm)
     {
@@ -209,19 +196,43 @@ public static class SettingsUpdater2
         await SaveSettingsAsync();
     }
     
-    public static async Task TurnOffSubdirectories(MainViewModel vm)
+    public static async ValueTask ToggleSubdirectories(MainWindowViewModel vm)
+    {
+        if (Settings.Sorting.IncludeSubDirectories)
+        {
+            TurnOffSubdirectories(vm);
+        }
+        else
+        {
+            TurnOnSubdirectories(vm);
+        }
+
+        var windowTabs = vm.WindowTabs;
+        var tab = windowTabs.ActiveTab.CurrentValue;
+        if (tab.ImageIterator?.Files.Count > 0)
+        {
+            var ct = tab.GetTabCancellation();
+            await windowTabs.SharedNavigation.RepopulateIterator(tab.FileInfo.CurrentValue, tab, ct).ConfigureAwait(false);
+            await tab.ImageIterator.ReloadAsync(ct).ConfigureAwait(false);
+            tab.UpdateTabTitle();
+        }
+        
+        await SaveSettingsAsync();
+    }
+    
+    public static void TurnOffSubdirectories(MainWindowViewModel vm)
     {
         vm.GlobalSettings.IsIncludingSubdirectories.Value = false;
         Settings.Sorting.IncludeSubDirectories = false;
     }
     
-    public static async Task TurnOnSubdirectories(MainViewModel vm)
+    public static void TurnOnSubdirectories(MainWindowViewModel vm)
     {
         vm.GlobalSettings.IsIncludingSubdirectories.Value = true;
         Settings.Sorting.IncludeSubDirectories = true;
     }
     
-    public static async Task ToggleTaskbarProgress(MainWindowViewModel vm)
+    public static async ValueTask ToggleTaskbarProgress(MainWindowViewModel vm)
     {
         if (Application.Current.DataContext is not CoreViewModel core)
         {

@@ -442,8 +442,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="SettingsUpdater.ToggleSubdirectories(MainViewModel)" />
     public async ValueTask ToggleSubdirectories()
     {
-        // await SettingsUpdater.ToggleSubdirectories(vm: vm).ConfigureAwait(false);
-        return;
+        await SettingsUpdater2.ToggleSubdirectories(vm).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="HideInterfaceLogic.ToggleBottomToolbar(MainViewModel)" />

@@ -38,6 +38,8 @@ public interface IImageIterator : IDisposable
     ValueTask NavigateAsync(NavigateTo to, SkipAmount skipAmount, CancellationTokenSource ct);
     
     ValueTask ReloadAsync(CancellationTokenSource ct);
+    
+    ValueTask ReloadFileListAsync(CancellationTokenSource ct);
 
     /// <summary>
     /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.

@@ -286,6 +286,11 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             await IterateToIndexAsync(CurrentIndex, ct).ConfigureAwait(false);
         }
     }
+    
+    public async ValueTask ReloadFileListAsync(CancellationTokenSource ct)
+    {
+        
+    }
 
     #endregion
 
