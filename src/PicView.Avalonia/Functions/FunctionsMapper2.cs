@@ -427,8 +427,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="SettingsUpdater.ToggleLooping(MainViewModel)" />
     public async ValueTask ToggleLooping()
     {
-        // await SettingsUpdater.ToggleLooping(vm).ConfigureAwait(false);
-        return;
+        await SettingsUpdater2.ToggleLooping(vm).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="HideInterfaceLogic.ToggleUI(MainViewModel)" />

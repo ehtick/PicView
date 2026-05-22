@@ -421,13 +421,8 @@ public static class SettingsUpdater2
         // vm.MainWindow.ChangeCtrlZoomImage.Value = scanEyeImage as DrawingImage;
     }
     
-    public static async Task ToggleLooping(MainViewModel vm)
+    public static async Task ToggleLooping(MainWindowViewModel vm)
     {
-        if (vm is null)
-        {
-            return;
-        }
-        
         var value = !Settings.UIProperties.Looping;
         Settings.UIProperties.Looping = value;
         vm.Translation.IsLooping.Value = value
@@ -440,14 +435,26 @@ public static class SettingsUpdater2
             : TranslationManager.Translation.LoopingDisabled;
         TooltipHelper.ShowTooltipMessage(msg);
 
+        var windowTabs = vm.WindowTabs;
+        var tab = windowTabs.ActiveTab.CurrentValue;
+        if (tab.ImageIterator?.Files.Count > 0)
+        {
+            var isLooping = Settings.UIProperties.Looping;
+            var index = tab.ImageIterator.CurrentIndex;
+            var count = tab.ImageIterator.Files.Count;
+            if (Settings.ImageScaling.ShowImageSideBySide)
+            {
+                tab.CanNavigateForwards.Value = isLooping || index < count - 2;
+            }
+            else
+            {
+                tab.CanNavigateForwards.Value = isLooping || index < count - 1;
+            }
+
+            tab.CanNavigateBackwards.Value = isLooping || index > 0;
+        }
+        
         await SaveSettingsAsync();
-    }
-    
-    public static void TurnOffLooping(MainViewModel vm)
-    {
-        Settings.UIProperties.Looping = false;
-        vm.Translation.IsLooping.Value = TranslationManager.Translation.LoopingDisabled;
-        vm.GlobalSettings.IsLooping.Value = false;
     }
     
     #endregion
