@@ -404,8 +404,8 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <!--  Toggle bottom bar  -->
-            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{Binding Translation.ShowBottomToolbar.Value, Mode=OneWay}">
+            <!--  Hide bottom bar  -->
+            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Width="12"
@@ -596,8 +596,8 @@
 
             <Separator />
 
-            <!--  Toggle bottom bar  -->
-            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{Binding Translation.ShowBottomToolbar.Value, Mode=OneWay}">
+            <!--  Hide bottom bar  -->
+            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Width="12"
@@ -608,8 +608,8 @@
         </ContextMenu>
 
         <ContextMenu x:Key="BottomMenu">
-            <!--  Toggle bottom bar  -->
-            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{Binding Translation.ShowBottomToolbar.Value, Mode=OneWay}">
+            <!--  Hide bottom bar  -->
+            <MenuItem Command="{Binding ToggleBottomToolbarCommand}" Header="{CompiledBinding Translation.HideBottomToolbar.Value, Mode=OneWay}">
                 <MenuItem.Icon>
                     <Image
                         Width="12"
