@@ -43,6 +43,11 @@ public static class UpdateImage
         {
             return;
         }
+        
+        if (Settings.UIProperties.IsTaskbarProgressEnabled)
+        {
+            core.PlatformService.SetTaskbarProgress((ulong)tabViewModel.ImageIterator.CurrentIndex, (ulong)tabViewModel.ImageIterator.Files.Count);
+        }
 
         core.Effects?.ProcessedImage = new MagickImage(file);
     }

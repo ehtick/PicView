@@ -455,8 +455,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     /// <inheritdoc cref="SettingsUpdater.ToggleValueTaskbarProgress(MainViewModel)" />
     public async ValueTask ToggleTaskbarProgress()
     {
-        // await SettingsUpdater.ToggleTaskbarProgress(vm).ConfigureAwait(false);
-        return;
+        await SettingsUpdater2.ToggleTaskbarProgress(vm).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="SettingsUpdater.ToggleConstrainBackgroundColor(MainViewModel)" />

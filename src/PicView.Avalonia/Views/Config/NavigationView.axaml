@@ -1,84 +1,85 @@
 ﻿<UserControl
     x:Class="PicView.Avalonia.Views.Config.NavigationView"
-    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="viewModels:CoreViewModel">
 
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
         <StackPanel Classes="searchHeader">
             <Image
+                Width="18"
                 Height="18"
-                Source="{StaticResource SignPostImage}"
-                Width="18" />
+                Source="{StaticResource SignPostImage}" />
             <TextBlock
-                Classes="txt bold searchHeader"
                 Margin="0,20,0,20"
+                Classes="txt bold searchHeader"
                 Text="{CompiledBinding Translation.Navigation.Value,
                                        Mode=OneWay}" />
         </StackPanel>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSubdirectorySearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSubdirectorySearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
+                x:Name="IncludeSubdirToggleButton"
                 Classes="altHover settingsToggleButton"
                 IsChecked="{CompiledBinding SettingsViewModel.IsIncludingSubdirectories.Value,
                                             Mode=TwoWay}"
                 Text="{CompiledBinding Translation.SearchSubdirectory.Value,
-                                       Mode=OneWay}"
-                x:Name="IncludeSubdirToggleButton" />
+                                       Mode=OneWay}" />
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationLoopSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationLoopSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
+                x:Name="LoopingToggleButton"
                 Classes="altHover settingsToggleButton"
                 IsChecked="{CompiledBinding SettingsViewModel.IsLooping.Value,
                                             Mode=TwoWay}"
                 Text="{CompiledBinding Translation.IsLooping.Value,
                                        Mode=OneWay}"
                 ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,
-                                              Mode=OneWay}"
-                x:Name="LoopingToggleButton" />
+                                              Mode=OneWay}" />
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationTaskbarSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationTaskbarSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
+                x:Name="TaskBarToggleButton"
                 Classes="altHover settingsToggleButton"
+                Command="{Binding MainWindows.ActiveWindow.CurrentValue.ToggleTaskbarProgressCommand}"
                 IsChecked="{CompiledBinding SettingsViewModel.IsShowingTaskbarProgress.Value,
-                                            Mode=TwoWay}"
+                                            Mode=OneWay}"
                 Text="{CompiledBinding Translation.ToggleTaskbarProgress.Value,
-                                       Mode=OneWay}"
-                x:Name="TaskBarToggleButton" />
+                                       Mode=OneWay}" />
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSpeedSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSpeedSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock
-                    Classes="txt bold"
-                    Margin="0,10,0,10"
                     MaxWidth="300"
+                    Margin="0,10,0,10"
+                    Classes="txt bold"
                     Text="{CompiledBinding Translation.AdjustNavSpeed.Value,
                                            Mode=OneWay}" />
                 <customControls:CustomSlider
+                    Width="300"
                     Height="30"
+                    Margin="0,1,0,1"
                     HorizontalAlignment="Center"
                     IsSnapToTickEnabled="True"
-                    Margin="0,1,0,1"
                     Maximum="0.95"
                     Minimum="0.05"
                     TickFrequency="0.01"
                     TickPlacement="BottomRight"
                     Value="{CompiledBinding SettingsViewModel.NavSpeed.Value,
-                                            Mode=TwoWay}"
-                    Width="300" />
+                                            Mode=TwoWay}" />
 
                 <TextBlock
+                    Margin="0,0,0,15"
                     Classes="txt"
                     FontFamily="/Assets/Fonts/Roboto-Bold.ttf#Roboto"
                     Foreground="{DynamicResource MainTextColor}"
-                    Margin="0,0,0,15"
                     Opacity=".9">
                     <Run Text="{CompiledBinding SettingsViewModel.GetNavSpeed.Value, Mode=OneWay}" />
                     <Run Text="{CompiledBinding Translation.SecAbbreviation.Value, Mode=OneWay}" />

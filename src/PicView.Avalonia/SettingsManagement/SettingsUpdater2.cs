@@ -221,19 +221,29 @@ public static class SettingsUpdater2
         Settings.Sorting.IncludeSubDirectories = true;
     }
     
-    public static async Task ToggleTaskbarProgress(MainViewModel vm)
+    public static async Task ToggleTaskbarProgress(MainWindowViewModel vm)
     {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
         if (Settings.UIProperties.IsTaskbarProgressEnabled)
         {
             Settings.UIProperties.IsTaskbarProgressEnabled = false;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                vm.PlatformService.StopTaskbarProgress();
+                core.PlatformService.StopTaskbarProgress();
             });
         }
         else
         {
             Settings.UIProperties.IsTaskbarProgressEnabled = true;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                core.PlatformService.SetTaskbarProgress(
+                    (ulong)vm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.CurrentIndex,
+                    (ulong)vm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.Files.Count);
+            });
         }
 
         await SaveSettingsAsync();
