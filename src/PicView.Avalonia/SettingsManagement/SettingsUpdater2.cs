@@ -146,6 +146,23 @@ public static class SettingsUpdater2
         //     vm.MainWindow.IsLoadingIndicatorShown.Value = false;
         // }
     }
+    
+    public static async ValueTask ToggleZoomToFit(MainWindowViewModel vm)
+    {
+        if (Settings.ImageScaling.ZoomToFit)
+        {
+            Settings.ImageScaling.ZoomToFit = false;
+            vm.IsZoomedToFit.Value = false;
+        }
+        else
+        {
+            Settings.ImageScaling.ZoomToFit = true;
+            vm.IsZoomedToFit.Value = true;
+        }
+
+        WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+        await SaveSettingsAsync().ConfigureAwait(false);
+    }
 
     public static async Task ToggleUsingTouchpad(MainViewModel vm)
     {
@@ -180,20 +197,6 @@ public static class SettingsUpdater2
         {
             vm.SettingsViewModel.IsUsingTouchpad.Value = true;
         }
-    }
-
-    public static async Task ToggleStretch(MainWindowViewModel vm)
-    {
-        if (Settings.ImageScaling.ZoomToFit)
-        {
-            Settings.ImageScaling.ZoomToFit = false;
-        }
-        else
-        {
-            Settings.ImageScaling.ZoomToFit = true;
-        }
-        WindowResizing.SetSize(vm, WindowResizeReason.Application);
-        await SaveSettingsAsync();
     }
     
     public static async ValueTask ToggleSubdirectories(MainWindowViewModel vm)

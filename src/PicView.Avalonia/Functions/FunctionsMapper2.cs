@@ -8,7 +8,6 @@ using PicView.Avalonia.Crop;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.ImageTransformations;
-using PicView.Avalonia.Navigation;
 using PicView.Avalonia.SettingsManagement;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.ViewModels;
@@ -451,7 +450,7 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
         await ToggleUIVisibility.ToggleBottomBar(vm);
     }
     
-    /// <inheritdoc cref="SettingsUpdater.ToggleValueTaskbarProgress(MainViewModel)" />
+    /// <inheritdoc cref="SettingsUpdater2.ToggleTaskbarProgress(MainWindowViewModel)" />
     public async ValueTask ToggleTaskbarProgress()
     {
         await SettingsUpdater2.ToggleTaskbarProgress(vm).ConfigureAwait(false);
@@ -576,8 +575,12 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
     public async ValueTask NewWindow() =>
         await Task.Run(ProcessHelper.StartNewProcess).ConfigureAwait(false);
 
-    public async ValueTask AboutWindow() =>
-        await Dispatcher.UIThread.InvokeAsync(() => vm?.PlatformWindowService?.ShowAboutWindow());
+    public ValueTask AboutWindow()
+    {
+        vm?.PlatformWindowService?.ShowAboutWindow();
+        return ValueTask.CompletedTask;
+    }
+
     public async ValueTask CheckForUpdates()
     {
         await Dispatcher.UIThread.InvokeAsync(() => vm.PlatformWindowService?.ShowAboutWindow());
@@ -589,36 +592,53 @@ public class FunctionsMapper2(MainWindowViewModel vm, Window window) : IFunction
         await core.AboutView.UpdateCurrentVersion();
     }
 
-    public async ValueTask ConvertWindow() =>
-        await Dispatcher.UIThread.InvokeAsync(() => vm?.PlatformWindowService?.ShowConvertWindow());
+    public ValueTask ConvertWindow()
+    {
+        vm?.PlatformWindowService?.ShowConvertWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask KeybindingsWindow() =>
-        await vm?.PlatformWindowService?.ShowKeybindingsWindow();
+    public ValueTask KeybindingsWindow()
+    {
+        vm?.PlatformWindowService?.ShowKeybindingsWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask EffectsWindow() =>
-        await Dispatcher.UIThread.InvokeAsync(() =>
-            vm?.PlatformWindowService?.ShowEffectsWindow());
+    public ValueTask EffectsWindow()
+    {
+        vm?.PlatformWindowService?.ShowEffectsWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask ImageInfoWindow() =>
-        await vm?.PlatformWindowService?.ShowImageInfoWindow();
+    public ValueTask ImageInfoWindow()
+    {
+        vm?.PlatformWindowService?.ShowImageInfoWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask ResizeWindow() =>
-        await Dispatcher.UIThread.InvokeAsync(() => vm?.PlatformWindowService?.ShowSingleImageResizeWindow());
+    public ValueTask ResizeWindow()
+    {
+        vm?.PlatformWindowService?.ShowSingleImageResizeWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask BatchResizeWindow() =>
-        await vm?.PlatformWindowService?.ShowBatchResizeWindow();
+    public ValueTask BatchResizeWindow()
+    {
+        vm?.PlatformWindowService?.ShowBatchResizeWindow();
+        return ValueTask.CompletedTask;
+    }
 
-    public async ValueTask SettingsWindow() =>
-        await vm.PlatformWindowService.ShowSettingsWindow();
+    public ValueTask SettingsWindow() =>
+        vm.PlatformWindowService.ShowSettingsWindow();
 
     #endregion Windows
 
     #region Image Scaling and Window Behavior
     
-    /// <inheritdoc cref="ImageStretching.ZoomToFit" />
+    /// <inheritdoc cref="SettingsUpdater2.ToggleZoomToFit" />
     public async ValueTask ZoomToFit()
     {
-        await ImageStretching.ZoomToFit(vm);
+        await SettingsUpdater2.ToggleZoomToFit(vm);
     }
     
     /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainWindowViewModel, Window)" />
