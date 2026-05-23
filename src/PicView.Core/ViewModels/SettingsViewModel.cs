@@ -73,7 +73,18 @@ public class SettingsViewModel : IDisposable
         IsShowingTaskbarProgress.Subscribe(x => Settings.UIProperties.IsTaskbarProgressEnabled = x).AddTo(ref _disposables);
         IsFileHistoryEnabled.Subscribe(x => Settings.Navigation.IsFileHistoryEnabled = x).AddTo(ref _disposables);
         
-        ToggleUsingTouchpadCommand = new ReactiveCommand(_ => IsUsingTouchpad.Value = !IsUsingTouchpad.Value).AddTo(ref _disposables);
+        ToggleUsingTouchpadCommand = new ReactiveCommand(_ =>
+        {
+            IsUsingTouchpad.Value = !IsUsingTouchpad.Value;
+            if (IsUsingTouchpad.Value)
+            {
+                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingTouchpad;
+            }
+            else
+            {
+                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingMouse;
+            }
+        }).AddTo(ref _disposables);
 
         // Search Initialization
         SearchData = new SettingsSearchData();
