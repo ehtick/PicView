@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using PicView.Avalonia.Input;
 using PicView.Core.Config;
@@ -23,13 +24,16 @@ public static class GenericWindowHelper
         }
     }
     
-    public static void KeybindingsWindowInitialize(Window window, KeybindingWindowConfig.KeybindingWindowProperties windowConfig)
+    public static void GenericWindowInitialize(Window window, string title, bool isWidthLocked, IWindowProperties windowConfig)
     {
         window.Loaded += delegate
         {
-            if (!double.IsNaN(window.Width))
+            if (isWidthLocked)
             {
-                window.MinWidth = window.MaxWidth = window.Width;
+                if (!double.IsNaN(window.Width))
+                {
+                    window.MinWidth = window.MaxWidth = window.Width;
+                }
             }
 
             if (windowConfig.Maximized)
@@ -40,13 +44,17 @@ public static class GenericWindowHelper
             { 
                 window.WindowState = WindowState.Normal;
                 window.Height = windowConfig.Height ?? window.Height;
+                if (!isWidthLocked)
+                {
+                    window.Width = windowConfig.Width ?? window.Width;
+                }
                 if (windowConfig.Top is not null && windowConfig.Left is not null)
                 {
                     window.Position = new PixelPoint(windowConfig.Left.Value, windowConfig.Top.Value);
                 }
             }
             
-            window.Title = StringExtensions.CombineWithAppName(TranslationManager.Translation.ApplicationShortcuts);
+            window.Title = StringExtensions.CombineWithAppName(title);
         };
         window.KeyUp += (_, e) =>
         {
@@ -71,6 +79,16 @@ public static class GenericWindowHelper
             windowConfig.Top = window.Position.Y;
             windowConfig.Left = window.Position.X;
             MainKeyboardShortcuts.IsEscKeyEnabled = false;
+
+            if (window is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+            
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.MainWindow.Focus();
+            }
         };
     }
     

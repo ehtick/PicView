@@ -16,7 +16,7 @@ public interface IWindowInitializer
     
     void ShowSingleImageResizeWindow();
     
-    Task ShowBatchResizeWindow(MainWindowViewModel vm);
+    ValueTask ShowBatchResizeWindow();
 
     void ShowConvertWindow();
     

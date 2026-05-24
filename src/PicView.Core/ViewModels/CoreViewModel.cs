@@ -23,6 +23,7 @@ public class CoreViewModel(
     public SettingsViewModel? SettingsViewModel { get; set; } // Single settings window
     public AboutViewModel? AboutView { get; set; } // Single about window
     public EffectsViewModel? Effects { get; set; }
+    public BatchResizeViewModel? BatchResize { get; set; }
     public FileHistoryViewModel? FileHistory { get; set; }
 
     // --- Overview models ---

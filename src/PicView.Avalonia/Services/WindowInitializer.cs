@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Interfaces;
@@ -151,14 +152,14 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             if (core.Keybindings is null)
             {
                 core.Keybindings = new KeybindingsViewModel();
-                core.Keybindings.ResetKeybindingsCommand = new ReactiveCommand(async (_, _) =>
+                core.Keybindings.ResetKeybindingsCommand = new ReactiveCommand(async (_, ct) =>
                 {
                     _keybindingsWindow?.Close();
                     await Task.Run(() =>
                     {
                         KeybindingManager.SetDefaultKeybindings(core.PlatformService);
                         FunctionsKeyHelper.ResetKeybindings(core.Keybindings);
-                    });
+                    }, ct);
                 });
 
                 _ = Task.Run(async () =>
@@ -180,12 +181,13 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                 _keybindingsWindow.DataContext = core;
 
                 Show();
-                _keybindingsWindow.Closing += (_, _) =>
+                _keybindingsWindow.Closing += async (_, _) =>
                 {
                     if (_keybindingsWindow is IDisposable disposable)
                     {
                         disposable.Dispose();
                     }
+                    await core.Keybindings.WindowConfig.SaveAsync();
                     _keybindingsWindow = null;
                 };
             });
@@ -241,13 +243,16 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             {
                 _settingsWindow = provider.CreateSettingsWindow(core.SettingsViewModel.SettingsWindowConfig);
                 _settingsWindow.DataContext = core;
-                _settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
                 Show();
-                _settingsWindow.Closing += (_, _) =>
+                _settingsWindow.Closing += async (_, _) =>
                 {
-                    desktop.MainWindow?.Focus();
+                    _settingsWindow.Hide();
+                    core.SettingsViewModel.SettingsWindowConfig.WindowProperties.LastTab = core.SettingsViewModel.GetLastTabId();
+                    desktop.MainWindow?.Focus();   
                     _settingsWindow = null;
+                    await core.SettingsViewModel.SettingsWindowConfig.SaveAsync();
+                    await SaveSettingsAsync();
                 };
             });
         }
@@ -380,60 +385,63 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
         }
     }
 
-    public async Task ShowBatchResizeWindow(MainWindowViewModel vm)
+    public async ValueTask ShowBatchResizeWindow()
     {
-        // if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        // {
-        //     return;
-        // }
-        //
-        // if (_batchResizeWindow is null)
-        // {
-        //     if (vm.Window.BatchResizeWindowConfig is null)
-        //     {
-        //         vm.Window.BatchResizeWindowConfig = new BatchResizeWindowConfig();
-        //         await vm.Window.BatchResizeWindowConfig.LoadAsync();
-        //     }
-        //
-        //     await Dispatcher.UIThread.InvokeAsync(() =>
-        //     {
-        //         _batchResizeWindow = provider.CreateBatchResizeWindow(vm.Window.BatchResizeWindowConfig);
-        //         _batchResizeWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-        //
-        //         Show();
-        //         _batchResizeWindow.Closing += (_, _) =>
-        //         {
-        //             if (_batchResizeWindow is IDisposable disposable)
-        //             {
-        //                 disposable.Dispose();
-        //             }
-        //             _batchResizeWindow = null;
-        //         };
-        //     });
-        // }
-        // else
-        // {
-        //     await Dispatcher.UIThread.InvokeAsync(() =>
-        //     {
-        //         if (_batchResizeWindow.WindowState == WindowState.Minimized)
-        //         {
-        //             WindowFunctions.ShowMinimizedWindow(_batchResizeWindow);
-        //         }
-        //         else
-        //         {
-        //             Show();
-        //         }
-        //     });
-        // }
-        //
-        // await FunctionsMapper.CloseMenus();
-        //
-        // return;
-        //
-        // void Show()
-        // {
-        //     _batchResizeWindow?.Show(desktop.MainWindow);
-        // }
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        
+        if (_batchResizeWindow is null)
+        {
+            core.BatchResize ??= new BatchResizeViewModel(
+                FilePicker2.SelectDirectory, FilePicker2.SelectFile, core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.FileInfo.CurrentValue,
+                core.PlatformService.GetFiles);
+            if (core.BatchResize.Config is null)
+            {
+                core.BatchResize.Config = new BatchResizeWindowConfig();
+                await core.BatchResize.Config.LoadAsync();
+            }
+        
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _batchResizeWindow = provider.CreateBatchResizeWindow(core.BatchResize.Config);
+                _batchResizeWindow.DataContext = core;
+                Show();
+                _batchResizeWindow.Closing += (_, _) =>
+                {
+                    if (_batchResizeWindow is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                    _ = core.BatchResize.Config.SaveAsync();
+                    _batchResizeWindow = null;
+                };
+            });
+        }
+        else
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_batchResizeWindow.WindowState == WindowState.Minimized)
+                {
+                    WindowFunctions.ShowMinimizedWindow(_batchResizeWindow);
+                }
+                else
+                {
+                    Show();
+                }
+            });
+        }
+        
+        await FunctionsMapper.CloseMenus();
+        
+        return;
+        
+        void Show()
+        {
+            _batchResizeWindow?.Show();
+        }
     }
 
     public void ShowConvertWindow()

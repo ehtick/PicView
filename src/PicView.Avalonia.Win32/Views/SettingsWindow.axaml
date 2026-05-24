@@ -16,8 +16,7 @@
         x:Name="ParentBorder"
         BorderBrush="{DynamicResource WindowBorderColor}"
         BorderThickness="1"
-        PointerPressed="MoveWindow"
-        PointerReleased="UpdateWindowSizeAndPosition">
+        PointerPressed="MoveWindow">
         <DockPanel>
             <Border
                 Height="{StaticResource TopBorderHeight}"

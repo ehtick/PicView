@@ -75,14 +75,15 @@ public class SettingsViewModel : IDisposable
         
         ToggleUsingTouchpadCommand = new ReactiveCommand(_ =>
         {
-            IsUsingTouchpad.Value = !IsUsingTouchpad.Value;
             if (IsUsingTouchpad.Value)
             {
-                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingTouchpad;
+                IsUsingTouchpad.Value = false;
+                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingMouse;
             }
             else
             {
-                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingMouse;
+                IsUsingTouchpad.Value = true;
+                translation.IsUsingTouchpad.Value = TranslationManager.Translation.UsingTouchpad;
             }
         }).AddTo(ref _disposables);
 

@@ -3,7 +3,7 @@ using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
 using PicView.Core.Config;
-using R3;
+using PicView.Core.Localization;
 
 namespace PicView.Avalonia.Win32.Views;
 
@@ -12,6 +12,7 @@ public partial class KeybindingsWindow : GenericWindow
     public KeybindingsWindow(KeybindingWindowConfig config)
     {
         InitializeComponent();
+        GenericWindowHelper.GenericWindowInitialize(this, TranslationManager.Translation.ApplicationShortcuts, true, config.WindowProperties);
         if (Settings.Theme.GlassTheme)
         {
             TopWindowBorder.Background = Brushes.Transparent;
@@ -42,6 +43,5 @@ public partial class KeybindingsWindow : GenericWindow
         {
             KeybindingsView.Background = UIHelper.GetMenuBackgroundColor();
         }
-        GenericWindowHelper.KeybindingsWindowInitialize(this, config.WindowProperties);
     }
 }

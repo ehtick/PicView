@@ -226,8 +226,8 @@ public partial class WinMainWindow : MainWindow, IPlatformWindowService
     public void ShowSingleImageResizeWindow() =>
         _windowInitializer?.ShowSingleImageResizeWindow();
 
-    public async Task ShowBatchResizeWindow() =>
-        await _windowInitializer?.ShowBatchResizeWindow(DataContext as MainWindowViewModel);
+    public async ValueTask ShowBatchResizeWindow() =>
+        await _windowInitializer.ShowBatchResizeWindow();
 
     public void ShowEffectsWindow() =>
         _windowInitializer?.ShowEffectsWindow();
