@@ -40,6 +40,8 @@ public static class ImageSizeCalculationHelper
         double windowWidth, windowHeight;
         double calculatedImageWidth, calculatedImageHeight;
 
+        var isRotated = rotationAngle is 90 or 270;
+        
         if (Settings.Zoom.ScrollEnabled)
         {
             // Calculate aspect ratio that fits the image to the available width, 
@@ -52,8 +54,16 @@ public static class ImageSizeCalculationHelper
             scrollWidth = Math.Min(calculatedImageWidth, maxAvailableWidth);
             scrollHeight = Math.Min(calculatedImageHeight, maxAvailableHeight);
 
-            windowWidth = scrollWidth + galleryWidth;
-            windowHeight = scrollHeight + uiBottomSize + uiTopSize + galleryHeight;
+            if (isRotated)
+            {
+                windowWidth = scrollHeight + uiBottomSize + uiTopSize + galleryHeight; 
+                windowHeight = scrollWidth + galleryWidth;   
+            }
+            else
+            {
+                windowWidth = scrollWidth + galleryWidth;
+                windowHeight = scrollHeight + uiBottomSize + uiTopSize + galleryHeight;
+            }
         }
         else
         {
@@ -63,8 +73,16 @@ public static class ImageSizeCalculationHelper
             scrollWidth = double.NaN;
             scrollHeight = double.NaN;
 
-            windowWidth = calculatedImageWidth + galleryWidth;
-            windowHeight = calculatedImageHeight + uiBottomSize + uiTopSize + galleryHeight;
+            if (isRotated)
+            {
+                windowWidth = calculatedImageHeight + galleryWidth;
+                windowHeight = calculatedImageWidth + uiBottomSize + uiTopSize + galleryHeight;
+            }
+            else
+            {
+                windowWidth = calculatedImageWidth + galleryWidth;
+                windowHeight = calculatedImageHeight + uiBottomSize + uiTopSize + galleryHeight;
+            }
         }
 
         return new ImageSize(windowWidth, windowHeight, calculatedImageWidth, calculatedImageHeight, 

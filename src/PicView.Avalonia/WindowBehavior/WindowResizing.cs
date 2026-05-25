@@ -180,10 +180,8 @@ public static class WindowResizing
             }
             else
             {
-                var rotationAngle = vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue;
-                var isRotated = rotationAngle is 90 or 270;
-                vm.WindowMaxWidth.Value = isRotated ? size.WindowHeight : size.WindowWidth;
-                vm.WindowMaxHeight.Value = isRotated ? size.WindowWidth : size.WindowHeight;
+                vm.WindowMaxWidth.Value = size.WindowWidth;
+                vm.WindowMaxHeight.Value = size.WindowHeight;
             }
         }
         else
