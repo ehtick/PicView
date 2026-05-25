@@ -76,7 +76,7 @@ public class CropService(TabViewModel tabViewModel) : ICropService
         tabViewModel.CanNavigateForwards.Value = false;
         windowTabs.CanActiveTabNavigate.Value = false;
         
-        await FunctionsMapper.CloseMenus();
+        //await FunctionsMapper.CloseMenus();
         
         if (isDockedGalleryShown)
         {

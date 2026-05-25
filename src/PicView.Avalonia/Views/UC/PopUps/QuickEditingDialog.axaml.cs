@@ -28,7 +28,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.ResizeImage();
+               // await FunctionsMapper.ResizeImage();
             })
             .AddTo(_subscriptions);
         
@@ -37,7 +37,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.BatchResizeWindow();
+                //await FunctionsMapper.BatchResizeWindow();
             })
             .AddTo(_subscriptions);
             
@@ -46,7 +46,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.ImageInfoWindow();
+                // await FunctionsMapper.ImageInfoWindow();
             })
             .AddTo(_subscriptions);
         
@@ -55,7 +55,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.EffectsWindow();
+                // await FunctionsMapper.EffectsWindow();
             })
             .AddTo(_subscriptions);
         
@@ -64,7 +64,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.Crop();
+                // await FunctionsMapper.Crop();
             })
             .AddTo(_subscriptions);
         
@@ -73,7 +73,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 await AnimatedClosing();
-                await FunctionsMapper.Slideshow();
+                // await FunctionsMapper.Slideshow();
             })
             .AddTo(_subscriptions);
                 
@@ -82,7 +82,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.OpenCloseBottomGallery();
+                // await FunctionsMapper.OpenCloseBottomGallery();
             })
             .AddTo(_subscriptions);
         
@@ -91,7 +91,7 @@ public partial class QuickEditingDialog : AnimatedPopUp
             .SubscribeAwait(async (_, _) =>
             {
                 _ = AnimatedClosing();
-                await FunctionsMapper.SideBySide();
+                // await FunctionsMapper.SideBySide();
             })
             .AddTo(_subscriptions);
     }

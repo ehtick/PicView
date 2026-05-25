@@ -53,14 +53,6 @@ public static class MainKeyboardShortcuts
         }
 
         UpdateModifierState(e.Key, true);
-        
-#if DEBUG
-        // Handle special debug keys first
-        if (HandleDebugKeys(e.Key))
-        {
-            return;
-        }
-#endif
 
         // If it's a modifier key only, nothing more to do
         if (IsModifierKey(e.Key))
@@ -131,28 +123,6 @@ public static class MainKeyboardShortcuts
         Key.LWin or Key.RWin => true,
         _ => false
     };
-
-    /// <summary>
-    /// Handles debug-specific key commands.
-    /// </summary>
-    /// <returns>True if the key was handled as a debug key.</returns>
-    private static bool HandleDebugKeys(Key key)
-    {
-#if DEBUG
-        switch (key)
-        {
-            case Key.F12: // Show Avalonia DevTools in DEBUG mode
-                return true;
-            case Key.F9:
-                _ = FunctionsMapper.ShowStartUpMenu();
-                return true;
-            case Key.F7:
-                FunctionsMapper.Invalidate();
-                return true;
-        }
-#endif
-        return false;
-    }
 
     /// <summary>
     /// Handles special cases like cropping, dialog handling, and escape key.

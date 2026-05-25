@@ -79,7 +79,7 @@ public static class StartUpHelper
         
         void ImageStartUp(string filePath)
         {
-            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
+            SettingsUpdater.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
             HandleWindowScalingMode(vm, window);
 
@@ -91,7 +91,7 @@ public static class StartUpHelper
 
         void BlankStartUp()
         {
-            SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
+            SettingsUpdater.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
             HandleWindowScalingMode(vm, window);
 
@@ -103,7 +103,7 @@ public static class StartUpHelper
     public static void StartUpBlank(CoreViewModel vm, bool settingsExists,
         IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
-        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
+        SettingsUpdater.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
         
         HandleWindowScalingMode(vm, window);
 
@@ -114,7 +114,7 @@ public static class StartUpHelper
     
     public static void DetachedWindowStartup(CoreViewModel vm,  IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
-        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, true);
+        SettingsUpdater.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, true);
 
         window.Show();
         
@@ -125,7 +125,7 @@ public static class StartUpHelper
         IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         TranslationManager.Init();
-        SettingsUpdater2.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
+        SettingsUpdater.InitializeSettings(vm.MainWindows.ActiveWindow.CurrentValue, settingsExists);
 
         HandleWindowScalingMode(vm, window);
 
@@ -231,7 +231,7 @@ public static class StartUpHelper
                     await KeybindingManager.LoadKeybindings(vm.PlatformService);
                 }
                 vm.MainWindows.ActiveWindow.Value.Mapper =
-                    new FunctionsMapper2(vm.MainWindows.ActiveWindow.CurrentValue, window);
+                    new FunctionsMapper(vm.MainWindows.ActiveWindow.CurrentValue, window);
                 FileHistoryManager.Initialize();
                 HandleWindowControlSettings(vm, desktop);
                 vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.SetSortOrder((SortFilesBy)Settings.Sorting.SortPreference);

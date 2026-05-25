@@ -82,8 +82,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                     _aboutWindow.Activate();
                 }
             }
-
-            _ = FunctionsMapper.CloseMenus();
         }
     }
 
@@ -135,8 +133,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                 }
             });
         }
-
-        await FunctionsMapper.CloseMenus();
     }
 
     public async Task ShowKeybindingsWindow()
@@ -207,8 +203,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             });
         }
 
-        await FunctionsMapper.CloseMenus();
-
         return;
 
         void Show()
@@ -271,8 +265,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             });
         }
 
-        await FunctionsMapper.CloseMenus();
-
         return;
 
         void Show()
@@ -329,8 +321,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                     _effectsWindow.Activate();
                 }
             }
-
-            _ = FunctionsMapper.CloseMenus();
         }
     }
 
@@ -380,8 +370,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                     _singleImageResizeWindow.Activate();
                 }
             }
-
-            _ = FunctionsMapper.CloseMenus();
         }
     }
 
@@ -434,8 +422,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             });
         }
         
-        await FunctionsMapper.CloseMenus();
-        
         return;
         
         void Show()
@@ -483,8 +469,6 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                     _convertWindow.Activate();
                 }
             }
-
-            _ = FunctionsMapper.CloseMenus();
         }
     }
 
@@ -539,7 +523,5 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                 }
             });
         }
-
-        _ = FunctionsMapper.CloseMenus();
     }
 }
