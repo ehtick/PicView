@@ -64,8 +64,8 @@ public partial class SettingsView : UserControl
         InterfaceSection.ToggleHoverButton.Classes.Remove("altHover");
         InterfaceSection.ToggleHoverButton.Classes.Add("hover");
         
-        ImageSection.StretchToggleButton.Classes.Remove("altHover");
-        ImageSection.StretchToggleButton.Classes.Add("hover");
+        ImageSection.ZoomToFitToggleButton.Classes.Remove("altHover");
+        ImageSection.ZoomToFitToggleButton.Classes.Add("hover");
         
         ImageSection.ScrollToggleButton.Classes.Remove("altHover");
         ImageSection.ScrollToggleButton.Classes.Add("hover");

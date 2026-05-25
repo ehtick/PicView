@@ -23,7 +23,7 @@
 
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageStretchSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
-                x:Name="StretchToggleButton"
+                x:Name="ZoomToFitToggleButton"
                 Classes="altHover settingsToggleButton"
                 IsChecked="{CompiledBinding MainWindows.ActiveWindow.Value.IsZoomedToFit.Value}"
                 Text="{CompiledBinding Translation.Stretch.Value,
