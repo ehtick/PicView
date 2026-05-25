@@ -152,10 +152,11 @@ public partial class BatchResizeView : UserControl
 
     private void SetThumbValues(int i)
     {
-        if (DataContext is not MainViewModel vm)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
+        var batch = core.BatchResize;
 
         var oneBased = i;
         i++;
@@ -176,17 +177,17 @@ public partial class BatchResizeView : UserControl
 
             if (thumbIsPercentageResized)
             {
-                vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, new Percentage(thumbValue));
+                batch.Thumbs[oneBased] = new BatchThumb(saveDestination, new Percentage(thumbValue));
             }
 
             if (thumbIsWidthResized)
             {
-                vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, width: thumbValue);
+                batch.Thumbs[oneBased] = new BatchThumb(saveDestination, width: thumbValue);
             }
 
             if (thumbIsHeightResized)
             {
-                vm.BatchResizeViewModel.Thumbs[oneBased] = new BatchThumb(saveDestination, height: thumbValue);
+                batch.Thumbs[oneBased] = new BatchThumb(saveDestination, height: thumbValue);
             }
         };
     }

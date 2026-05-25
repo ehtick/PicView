@@ -14,5 +14,4 @@ public class MainViewModel
     public SettingsViewModel? SettingsViewModel { get; set; }
     public ImageInfoWindowViewModel? InfoWindow { get; set; }
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
-    public BatchResizeViewModel? BatchResizeViewModel { get; set; }
 }
