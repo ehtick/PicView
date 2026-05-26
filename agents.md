@@ -3,7 +3,7 @@
 ## Build & Configuration
 
 - **Solution**: `PicView.sln` / `PicView.slnx` in the `src/` root.
-- **Target framework**: `net10.0` (with `net10.0-windows10.0.22621` for Win32 project). Language version set to `preview`.
+- **Target framework**: `net11.0` (with `net10.0-windows11.0.22621` for Win32 project). Language version set to `preview`.
 - **Platforms**: `x64` and `arm64` only — all projects specify `<Platforms>x64;arm64</Platforms>`.
 - **AOT**: `PicView.Core` is configured for Native AOT (`PublishAot`, `Trimming=full`, `IsAotCompatible`). Keep new Core code AOT-compatible (no reflection-heavy patterns).
 - **Directory.Build.props** (solution root) sets shared properties: `Nullable=enable`, `AvaloniaVersion`, and version info.
@@ -20,10 +20,10 @@ dotnet build PicView.Tests\PicView.Tests.csproj
 
 ### Framework & Setup
 
-- **Framework**: xUnit 2.9.3 with `Microsoft.NET.Test.Sdk 18.3.0`.
+- **Framework**: xUnit 2.9.3 with `Microsoft.NET.Test.Sdk 18.5.1`.
 - **Avalonia UI tests**: `Avalonia.Headless.XUnit` is available for tests that need the Avalonia rendering pipeline.
 - **Test project**: `PicView.Tests/PicView.Tests.csproj` — references `PicView.Core` and `PicView.Avalonia`.
-- **Global usings** (`GlobalUsings.cs`): `Xunit`, `SettingsManager` (static), `System.Collections.Generic`, `System`.
+- **Global usings** (`GlobalUsings.cs`): `xunit.v3`, `SettingsManager` (static), `System.Collections.Generic`, `System`.
 - **InternalsVisibleTo**: `PicView.Core` exposes internals to `PicView.Tests`.
 
 ### Running Tests
