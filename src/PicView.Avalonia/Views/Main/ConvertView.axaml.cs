@@ -1,50 +1,64 @@
 ﻿using Avalonia.Controls;
-using PicView.Avalonia.ViewModels;
+using Avalonia.Input;
+using PicView.Avalonia.CustomControls;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.Main;
 
 public partial class ConvertView : UserControl
 {
-    // TODO: refactor to MainWindowViewModel
+    // TODO: refactor to new image file saving system
     public ConvertView()
     {
-        // InitializeComponent();
-        //
-        // Loaded += delegate
-        // {
-        //     if (DataContext is not MainViewModel vm)
-        //     {
-        //         return;
-        //     }
-        //
-        //     SaveButton.Click += async (_, _) =>
-        //     {
-        //         var destination = vm.PicViewer.FileInfo.CurrentValue.FullName;
-        //         var ext = DetermineFileExtension(vm, ref destination);
-        //
-        //         await SaveImageHandler.SaveImageWithPossibleNavigation(vm, vm.PicViewer.FileInfo.CurrentValue.FullName,
-        //             destination, true, ext);
-        //     };
-        //
-        //     SaveAsButton.Click += async (_, _) =>
-        //     {
-        //         var ext = GetExtension();
-        //         var destination =
-        //             await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.CurrentValue.FullName, ext);
-        //         if (destination is null)
-        //         {
-        //             return;
-        //         }
-        //
-        //         var sameFile = destination.Equals(vm.PicViewer.FileInfo.CurrentValue.FullName,
-        //             StringComparison.OrdinalIgnoreCase);
-        //
-        //         await SaveImageHandler.SaveImageWithPossibleNavigation(vm, vm.PicViewer.FileInfo.CurrentValue.FullName,
-        //             destination, sameFile, ext);
-        //     };
-        //
-        //     CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
-        // };
+        InitializeComponent();
+        
+        Loaded += delegate
+        {
+            if (DataContext is not MainWindowViewModel vm)
+            {
+                return;
+            }
+        
+            SaveButton.Click += async (_, _) =>
+            {
+                // var destination = vm.PicViewer.FileInfo.CurrentValue.FullName;
+                // var ext = DetermineFileExtension(vm, ref destination);
+                //
+                // await SaveImageHandler.SaveImageWithPossibleNavigation(vm, vm.PicViewer.FileInfo.CurrentValue.FullName,
+                //     destination, true, ext);
+            };
+        
+            SaveAsButton.Click += async (_, _) =>
+            {
+                // var ext = GetExtension();
+                // var destination =
+                //     await FilePicker.PickFileForSavingAsync(vm.PicViewer.FileInfo?.CurrentValue.FullName, ext);
+                // if (destination is null)
+                // {
+                //     return;
+                // }
+                //
+                // var sameFile = destination.Equals(vm.PicViewer.FileInfo.CurrentValue.FullName,
+                //     StringComparison.OrdinalIgnoreCase);
+                //
+                // await SaveImageHandler.SaveImageWithPossibleNavigation(vm, vm.PicViewer.FileInfo.CurrentValue.FullName,
+                //     destination, sameFile, ext);
+            };
+        
+            CancelButton.Click += (_, _) => SafeClose();
+        };
+    }
+    
+    private void SafeClose()
+    {
+        Dispatcher.Invoke(() =>
+        {
+            if (TopLevel.GetTopLevel(this) is not Window window)
+            {
+                return;
+            }
+            window.Close();
+        });
     }
 
     private string GetExtension() => ConversionComboBox.SelectedIndex switch
@@ -58,7 +72,7 @@ public partial class ConvertView : UserControl
         _ => ""
     };
 
-    private string DetermineFileExtension(MainViewModel vm, ref string destination)
+    private string DetermineFileExtension(MainWindowViewModel vm, ref string destination)
     {
         // var ext = vm.PicViewer.FileInfo.CurrentValue.Extension;
         // if (NoConversion.IsSelected)
@@ -94,5 +108,14 @@ public partial class ConvertView : UserControl
         // destination = Path.ChangeExtension(destination, ext);
         // return ext;
         return "";
+    }
+
+    private void BottomBorder_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (TopLevel.GetTopLevel(this) is not GenericWindow window)
+        {
+            return;
+        }
+        window.MoveWindow(sender,e);
     }
 }

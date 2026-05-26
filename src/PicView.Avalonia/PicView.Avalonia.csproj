@@ -113,10 +113,6 @@
             <DependentUpon>EffectsView.axaml</DependentUpon>
             <SubType>Code</SubType>
         </Compile>
-        <Compile Update="Views\UC\Buttons\PinButton.axaml.cs">
-            <DependentUpon>PinButton.axaml</DependentUpon>
-            <SubType>Code</SubType>
-        </Compile>
         <Compile Update="Views\WindowSettingsView.axaml.cs">
             <DependentUpon>WindowSettingsView.axaml</DependentUpon>
             <SubType>Code</SubType>

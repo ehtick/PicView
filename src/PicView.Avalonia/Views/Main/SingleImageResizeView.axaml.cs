@@ -3,7 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using PicView.Avalonia.FileSystem;
 using PicView.Avalonia.UI;
-using PicView.Core.DebugTools;
 using PicView.Core.ViewModels;
 using R3;
 

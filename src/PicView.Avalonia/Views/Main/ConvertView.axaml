@@ -2,14 +2,9 @@
     x:Class="PicView.Avalonia.Views.Main.ConvertView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="viewModels:MainWindowViewModel"
-    mc:Ignorable="d">
+    x:DataType="viewModels:MainWindowViewModel">
 
     <UserControl.Resources>
         <SolidColorBrush x:Key="CancelBrush" Color="{DynamicResource MainTextColor}" />
@@ -53,7 +48,8 @@
                 x:Name="BottomBorder"
                 Height="80"
                 Background="#46252525"
-                Orientation="Horizontal">
+                Orientation="Horizontal"
+                PointerPressed="BottomBorder_OnPointerPressed">
                 <Button
                     x:Name="ResetButton"
                     Width="195"

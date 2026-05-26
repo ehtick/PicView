@@ -7,9 +7,7 @@ namespace PicView.Avalonia.ViewModels;
 public class MainViewModel
 {
     public readonly IPlatformSpecificService? PlatformService;
-    public readonly IPlatformWindowService? PlatformWindowService;
     
     public TranslationViewModel Translation { get; } = new();
-    public SettingsViewModel? SettingsViewModel { get; set; }
     public FileAssociationsViewModel? AssociationsViewModel { get; set; }
 }

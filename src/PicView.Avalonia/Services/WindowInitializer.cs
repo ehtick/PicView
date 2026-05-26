@@ -445,7 +445,8 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
 
         void Set()
         {
-            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
+                Application.Current.DataContext is not CoreViewModel core)
             {
                 return;
             }
@@ -454,7 +455,7 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             {
                 _convertWindow = provider.CreateConvertWindow();
                 _convertWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
+                _convertWindow.DataContext = core.MainWindows.ActiveWindow.CurrentValue;
                 _convertWindow.Show(desktop.MainWindow);
                 _convertWindow.Closing += (_, _) => _convertWindow = null;
             }
