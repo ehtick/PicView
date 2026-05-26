@@ -848,11 +848,10 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         await CropManager.StartCropControlAsync(vm).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="ImageOptimizer.OptimizeImageAsync(MainViewModel)" />
+    /// <inheritdoc cref="ImageOptimizer.OptimizeImageAsync(MainWindowViewModel)" />
     public async ValueTask OptimizeImage()
     {
-        // await ImageOptimizer.OptimizeImageAsync(vm).ConfigureAwait(false);
-        return;
+        await ImageOptimizer.OptimizeImageAsync(vm).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="Navigation.Slideshow.StartSlideshow(MainWindowViewModel)" />

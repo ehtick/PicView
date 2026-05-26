@@ -1,9 +1,7 @@
-﻿using PicView.Avalonia.ViewModels;
-using PicView.Core.DebugTools;
+﻿using PicView.Core.DebugTools;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.ImageHandling;
-
-// TODO: refactor to MainWindowViewModel
 
 /// <summary>
 /// Provides image optimization functionality
@@ -14,37 +12,39 @@ public static class ImageOptimizer
     /// Optimizes the current image in the view model
     /// </summary>
     /// <param name="vm">The main view model</param>
-    public static async Task OptimizeImageAsync(MainViewModel vm)
+    public static async Task OptimizeImageAsync(MainWindowViewModel vm)
     {
-        // if (!NavigationManager.CanNavigate(vm) || vm.PicViewer.FileInfo == null)
-        // {
-        //     return;
-        // }
+        var tab = vm.WindowTabs.ActiveTab.CurrentValue;
+        if (tab.FileInfo?.CurrentValue is null || !tab.CanNavigateBackwards.Value || !tab.CanNavigateForwards.Value)
+        {
+            return;
+        }
 
         try
         {
-            // vm.MainWindow.IsLoadingIndicatorShown.Value = true;
-            // await Task.Run(() =>
-            // {
-            //     try
-            //     {
-            //         var optimizer = new ImageMagick.ImageOptimizer
-            //         {
-            //             OptimalCompression = true
-            //         };
-            //         optimizer.LosslessCompress(vm.PicViewer.FileInfo.CurrentValue.FullName);
-            //     }
-            //     catch (Exception ex)
-            //     {
-            //         DebugHelper.LogDebug(nameof(ImageOptimizer), nameof(OptimizeImageAsync), ex);
-            //     }
-            // });
-            // await NavigationManager.QuickReload();
+            vm.IsLoadingIndicatorShown.Value = true;
+            await Task.Run(() =>
+            {
+                var file = tab.FileInfo.CurrentValue;
+                try
+                {
+                    var optimizer = new ImageMagick.ImageOptimizer
+                    {
+                        OptimalCompression = true
+                    };
+                    optimizer.LosslessCompress(file.FullName);
+                }
+                catch (Exception ex)
+                {
+                    DebugHelper.LogDebug(nameof(ImageOptimizer), nameof(OptimizeImageAsync), ex);
+                }
+            });
+            await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation());
         }
         finally
         {
-            //TitleManager.SetTitle(vm);
-            // vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+            tab.UpdateTabTitle();
+            vm.IsLoadingIndicatorShown.Value = false;
         }
     }
 }
