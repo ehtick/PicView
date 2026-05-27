@@ -189,7 +189,15 @@ public static class ClipboardFileOperations
                     break;
                 case IStorageItem singleFile:
                 {
-                    await vm.WindowTabs.LoadFromFileAsync(singleFile.Path.AbsolutePath).ConfigureAwait(false);
+                    var path = singleFile.Path.LocalPath;
+                    if (path.IsArchive())
+                    {
+                        await vm.WindowTabs.LoadFromArchiveAsync(path);
+                    }
+                    else
+                    {
+                        await vm.WindowTabs.LoadFromFileAsync(path).ConfigureAwait(false);
+                    }
                     break;
                 }
             }
@@ -208,7 +216,16 @@ public static class ClipboardFileOperations
         }
 
         // Load the first file
-        await vm.WindowTabs.LoadFromFileAsync(storageItems[0].Path.AbsolutePath).ConfigureAwait(false);
+        var firstItem = storageItems[0].Path.LocalPath;
+        if (firstItem.IsArchive())
+        {
+            await vm.WindowTabs.LoadFromArchiveAsync(firstItem).ConfigureAwait(false);
+        }
+        else
+        {
+            await vm.WindowTabs.LoadFromFileAsync(firstItem).ConfigureAwait(false);
+        }
+
 
         // Open consecutive files in a new process
         foreach (var file in storageItems.Skip(1))
