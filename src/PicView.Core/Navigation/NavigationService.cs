@@ -87,6 +87,8 @@ public class NavigationService(
         {
             await Repopulate();
         }
+        
+        ArchiveExtraction.Cleanup();
 
         return;
 
@@ -106,6 +108,7 @@ public class NavigationService(
 
         var first = files[0];
         await RepopulateIterator(first, tab, ct, files).ConfigureAwait(false);
+        ArchiveExtraction.Cleanup();
     }
 
     public async ValueTask<bool> LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct)
@@ -265,6 +268,7 @@ public class NavigationService(
             tab.CanNavigateForwards.Value = false;
 
             FileHistoryManager.Add(url);
+            ArchiveExtraction.Cleanup();
         }
         catch (Exception e)
         {
