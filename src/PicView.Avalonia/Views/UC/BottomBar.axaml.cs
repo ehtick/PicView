@@ -7,9 +7,7 @@ using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.DragAndDrop;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
-using PicView.Core.DebugTools;
 using PicView.Core.ViewModels;
-using R3;
 
 namespace PicView.Avalonia.Views.UC;
 

@@ -11,7 +11,8 @@ namespace PicView.Avalonia.CustomControls;
 
 public class MainTitleBar : UserControl, ITitleBar
 {
-    public MainTitleBar()
+    public Button? SharedDropDownMenuButton { get; protected init; }
+    protected MainTitleBar()
     {
         Loaded += OnLoaded;
     }

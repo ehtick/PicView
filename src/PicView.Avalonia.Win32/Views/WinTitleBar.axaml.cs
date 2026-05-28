@@ -14,7 +14,7 @@ public partial class WinTitleBar : MainTitleBar
     public WinTitleBar()
     {
         InitializeComponent();
-
+        SharedDropDownMenuButton = DropDownMenuButton;
         Loaded += (_, _) =>
         {
             if (Settings.Theme.GlassTheme)
@@ -97,6 +97,7 @@ public partial class WinTitleBar : MainTitleBar
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
         LogoBorder.IsVisible = true;
         vm.TopTitlebarViewModel.MaxItemWidth.Value = double.NaN;
+        DropDownMenuButton.IsVisible = Bounds.Width > SizeDefaults.MainTitleDropDownBtnBp;
     }
 
     private void CloseMenu()

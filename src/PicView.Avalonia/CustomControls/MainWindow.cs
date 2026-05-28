@@ -11,6 +11,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
+using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 using R3;
 using R3.Avalonia;
@@ -23,7 +24,7 @@ public class MainWindow : Window, IMainWindow
     /// Flag to prevent window state changes while resizing
     public bool IsChangingWindowState { get; set; }
     public BottomBar? SharedBottomBar { get; set; }
-    public UserControl? SharedTitleBar { get; set; }
+    public MainTitleBar? SharedTitleBar { get; set; }
     public AvaloniaRenderingFrameProvider? FrameProvider { get; set; }
 
     protected MainWindow()
@@ -36,6 +37,9 @@ public class MainWindow : Window, IMainWindow
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         Resized += WindowSizeChanged;
+        
+        // Set initial layout size and visibility, so that the UI is responsive at first startup also
+        SetLayoutSizeAndVisibility(Bounds.Width);
         
         // Keep window position when resizing
         Debug.Assert(FrameProvider != null, nameof(FrameProvider) + " != null");
@@ -110,6 +114,12 @@ public class MainWindow : Window, IMainWindow
     }
 
     #region Sizing
+
+    private void SetLayoutSizeAndVisibility(double width)
+    {
+        SharedBottomBar.ResponsiveNavigationBtnSize();
+        SharedTitleBar.SharedDropDownMenuButton.IsVisible = width > SizeDefaults.MainTitleDropDownBtnBp;
+    }
     
     // Window has been resized
     private void WindowSizeChanged(object? sender, WindowResizedEventArgs e)
@@ -137,7 +147,7 @@ public class MainWindow : Window, IMainWindow
         }
 
         WindowResizing.SetSize(vm, e.Reason);
-        SharedBottomBar.ResponsiveNavigationBtnSize();
+        SetLayoutSizeAndVisibility(e.ClientSize.Width);
     }
     
     // Window is being resized

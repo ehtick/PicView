@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Views.UC;
 using R3;
 using R3.Avalonia;
@@ -13,7 +14,7 @@ public interface IMainWindow
     
     BottomBar? SharedBottomBar { get; set; }
     
-    UserControl? SharedTitleBar { get; set; }
+    MainTitleBar? SharedTitleBar { get; set; }
     
     AvaloniaRenderingFrameProvider? FrameProvider { get; set; }
 }
