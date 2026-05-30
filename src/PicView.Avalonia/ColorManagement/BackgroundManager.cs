@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.ColorHandling;
+using PicView.Core.ViewModels;
 
 // ReSharper disable PossibleLossOfFraction
 
@@ -52,7 +51,7 @@ public static class BackgroundManager
     /// Changes the background to the next option in the cycle and updates the view model.
     /// </summary>
     /// <param name="vm">The main view model where the background is updated.</param>
-    public static void ChangeBackground(MainViewModel vm)
+    public static void ChangeBackground(MainWindowViewModel vm)
     {
         // Cycle to the next background choice
         var nextChoice = (Settings.UIProperties.BgColorChoice + 1) % ((int)BackgroundType.MaxValue + 1);
@@ -60,8 +59,8 @@ public static class BackgroundManager
     }
     
     
-    /// <inheritdoc cref="ChangeBackground(MainViewModel)" />
-    public static async Task ChangeBackgroundAsync(MainViewModel vm)
+    /// <inheritdoc cref="ChangeBackground(MainWindowViewModel)" />
+    public static async Task ChangeBackgroundAsync(MainWindowViewModel vm)
     {
         await Dispatcher.UIThread.InvokeAsync(() => ChangeBackground(vm));
         await SaveSettingsAsync();
@@ -71,7 +70,7 @@ public static class BackgroundManager
     /// Sets the background of the view model based on the current background choice.
     /// </summary>
     /// <param name="vm">The main view model where the background is set.</param>
-    public static void SetBackground(MainViewModel vm)
+    public static void SetBackground(MainWindowViewModel vm)
     {
         SetBackground(vm, Settings.UIProperties.BgColorChoice);
     }
@@ -81,21 +80,21 @@ public static class BackgroundManager
     /// </summary>
     /// <param name="vm">The main view model where the background is set.</param>
     /// <param name="choice">The background choice to set.</param>
-    public static void SetBackground(MainViewModel vm, int choice)
+    public static void SetBackground(MainWindowViewModel vm, int choice)
     {
-        // Settings.UIProperties.BgColorChoice = choice;
-        // if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
-        // {
-        //     vm.MainWindow.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-        //     vm.MainWindow.ConstrainedImageBackground.Value = GetBackgroundBrush((BackgroundType)choice);
-        // }
-        // else
-        // {
-        //     vm.MainWindow.ImageBackground.Value = GetBackgroundBrush((BackgroundType)choice);
-        //     vm.MainWindow.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-        // }
-        //
-        // vm.MainWindow.BackgroundChoice.Value = choice;
+        Settings.UIProperties.BgColorChoice = choice;
+        if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
+        {
+            vm.GlobalSettings.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+            vm.GlobalSettings.ConstrainedImageBackground.Value = GetBackgroundBrush((BackgroundType)choice);
+        }
+        else
+        {
+            vm.GlobalSettings.ImageBackground.Value = GetBackgroundBrush((BackgroundType)choice);
+            vm.GlobalSettings.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+        }
+        
+        vm.GlobalSettings.BackgroundChoice.Value = choice;
     }
 
     /// <summary>
@@ -181,5 +180,32 @@ public static class BackgroundManager
             Stretch = Stretch.None,
             Drawing = drawingGroup
         };
+    }
+    
+    public static void SetBackground(int backgroundIndex)
+    {
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        
+        var globalSettings = core.GlobalSettings;
+
+        Settings.UIProperties.BgColorChoice = backgroundIndex;
+                 
+        var brush = GetBackgroundBrush((BackgroundType)backgroundIndex);
+                 
+        if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
+        {
+            globalSettings.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+            globalSettings.ConstrainedImageBackground.Value = brush;
+        }
+        else
+        {
+            globalSettings.ImageBackground.Value = brush;
+            globalSettings.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
+        }
+                 
+        globalSettings.BackgroundChoice.Value = backgroundIndex;
     }
 }

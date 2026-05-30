@@ -812,14 +812,13 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     #region Image Functions
     
-    /// <inheritdoc cref="BackgroundManager.ChangeBackground(MainViewModel)" />
+    /// <inheritdoc cref="BackgroundManager.ChangeBackground(MainWindowViewModel)" />
     public async ValueTask ChangeBackground()
     {
-        // await BackgroundManager.ChangeBackgroundAsync(vm).ConfigureAwait(false);
-        return;
+        await BackgroundManager.ChangeBackgroundAsync(vm).ConfigureAwait(false);
     }
     
-    /// <inheritdoc cref="SettingsUpdater.ToggleSideBySide(MainViewModel)" />
+    /// <inheritdoc cref="SettingsUpdater.ToggleSideBySide(MainWindowViewModel)" />
     public async ValueTask SideBySide()
     {
         await SettingsUpdater.ToggleSideBySide().ConfigureAwait(false);
@@ -828,14 +827,13 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     /// <inheritdoc cref="ErrorHandling.ReloadAsync(MainViewModel)" />
     public async ValueTask Reload()
     {
-        // await ErrorHandling.ReloadAsync(vm).ConfigureAwait(false);
-        return;
+        await vm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.ReloadAsync(vm.WindowTabs.ActiveTab.CurrentValue.GetTabCancellation()).ConfigureAwait(false);
     }
 
     public async ValueTask ResizeImage() =>
         await ResizeWindow();
 
-    /// <inheritdoc cref="CropManager.StartCropControl(MainWindowViewModel)" />
+    /// <inheritdoc cref="CropManager.StartCropControlAsync(MainWindowViewModel)" />
     public async ValueTask Crop()
     {
         await CropManager.StartCropControlAsync(vm).ConfigureAwait(false);
@@ -862,39 +860,39 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     #region Sorting
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesByName() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.Name).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesByCreationTime() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.CreationTime).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesByLastAccessTime() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.LastAccessTime).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesByLastWriteTime() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.LastWriteTime).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesBySize() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.FileSize).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesByExtension() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.Extension).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, SortFilesBy)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesRandomly() =>
         await vm.WindowTabs.SortAsync(SortFilesBy.Random).ConfigureAwait(false);
 
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, bool)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesAscending() =>
         await vm.WindowTabs.SortAsync(ascending: true).ConfigureAwait(false);
     
-    /// <inheritdoc cref="FileListManager.UpdateFileList(PicView.Avalonia.Interfaces.IPlatformSpecificService, MainViewModel, bool)" />
+    /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.SortAsync(TabViewModel, bool, CancellationTokenSource)" />
     public async ValueTask SortFilesDescending() =>
         await vm.WindowTabs.SortAsync(ascending: false).ConfigureAwait(false);
 

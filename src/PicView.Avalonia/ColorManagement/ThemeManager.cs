@@ -75,31 +75,4 @@ public static class ThemeManager
     {
         ColorManager.UpdateAccentColors(colorIndex);
     }
-
-    public static void SetBackground(int backgroundIndex)
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        
-        var globalSettings = core.GlobalSettings;
-
-        Settings.UIProperties.BgColorChoice = backgroundIndex;
-                 
-        var brush = BackgroundManager.GetBackgroundBrush((BackgroundType)backgroundIndex);
-                 
-        if (Settings.UIProperties.IsConstrainBackgroundColorEnabled)
-        {
-            globalSettings.ImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-            globalSettings.ConstrainedImageBackground.Value = brush;
-        }
-        else
-        {
-            globalSettings.ImageBackground.Value = brush;
-            globalSettings.ConstrainedImageBackground.Value = new SolidColorBrush(Colors.Transparent);
-        }
-                 
-        globalSettings.BackgroundChoice.Value = backgroundIndex;
-    }
 }

@@ -24,6 +24,6 @@ public class ThemeService : IThemeService
 
     public void SetBackground(int backgroundIndex)
     {
-        ThemeManager.SetBackground(backgroundIndex);
+        BackgroundManager.SetBackground(backgroundIndex);
     }
 }

@@ -252,7 +252,7 @@ public static class StartUpHelper
             GlassThemeHelper.GlassThemeUpdates();
         }
 
-        ThemeManager.SetBackground(Settings.UIProperties.BgColorChoice);
+        BackgroundManager.SetBackground(Settings.UIProperties.BgColorChoice);
         ColorManager.UpdateAccentColors(Settings.Theme.ColorTheme);
     }
 
