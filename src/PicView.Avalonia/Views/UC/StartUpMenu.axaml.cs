@@ -141,7 +141,7 @@ public partial class StartUpMenu : UserControl
         {
             return;
         }
-        FilePicker2.SelectAndLoadFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
+        FilePicker.SelectAndLoadFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
     }
 
     private void SelectFileButtonOnPointerExited(object? sender, PointerEventArgs e)

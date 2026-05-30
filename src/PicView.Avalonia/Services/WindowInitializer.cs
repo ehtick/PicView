@@ -383,7 +383,7 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
         if (_batchResizeWindow is null)
         {
             core.BatchResize ??= new BatchResizeViewModel(
-                FilePicker2.SelectDirectory, FilePicker2.SelectFile, core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.FileInfo.CurrentValue,
+                FilePicker.SelectDirectory, FilePicker.SelectFile, core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.FileInfo.CurrentValue,
                 core.PlatformService.GetFiles);
             if (core.BatchResize.Config is null)
             {

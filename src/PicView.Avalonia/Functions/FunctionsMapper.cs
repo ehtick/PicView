@@ -666,13 +666,13 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         await PdfExport.SavePdfWithFilePicker(vm);
     }
 
-    /// <inheritdoc cref="FilePicker.SelectAndLoadFile(MainViewModel)" />
+    /// <inheritdoc cref="FilePicker.SelectAndLoadFile(MainWindowViewModel)" />
     public async ValueTask Open()
     {
-        await FilePicker2.SelectAndLoadFile(vm).ConfigureAwait(false);
+        await FilePicker.SelectAndLoadFile(vm).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="FileManager.OpenWith(string, MainViewModel)" />
+    /// <inheritdoc cref="FileManager.OpenWith(string)" />
     public ValueTask OpenWith()
     {
         if (Application.Current.DataContext is not CoreViewModel core)
@@ -684,7 +684,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         return ValueTask.CompletedTask;
     }
 
-    /// <inheritdoc cref="FileManager.LocateOnDisk(string, MainViewModel)" />
+    /// <inheritdoc cref="FileManager.LocateOnDisk(string)" />
     public ValueTask OpenInExplorer()
     {
         if (Application.Current.DataContext is not CoreViewModel core)
@@ -696,18 +696,16 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         return ValueTask.CompletedTask;
     }
 
-    /// <inheritdoc cref="FileSaverHelper.SaveCurrentFile(MainViewModel)" />
+    /// <inheritdoc cref="FileSaverHelper.SaveCurrentFile(MainWindowViewModel)" />
     public async ValueTask Save()
     {
-        // await FileSaverHelper.SaveCurrentFile(vm).ConfigureAwait(false);
-        return;
+        await FileSaverHelper.SaveCurrentFile(vm).ConfigureAwait(false);
     }
     
-    /// <inheritdoc cref="FileSaverHelper.SaveFileAs(MainViewModel)" />
+    /// <inheritdoc cref="FileSaverHelper.SaveFileAs(MainWindowViewModel)" />
     public async ValueTask SaveAs()
     {
-        // await FileSaverHelper.SaveFileAs(vm).ConfigureAwait(false);
-        return;
+        await FileSaverHelper.SaveFileAs(vm).ConfigureAwait(false);
     }
     
     /// <inheritdoc cref="FileManager.DeleteFileWithOptionalDialog" />

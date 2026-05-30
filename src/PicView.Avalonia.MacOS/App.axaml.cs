@@ -84,7 +84,7 @@ public class App : Application, IPlatformSpecificService
         _mainWindowViewModel = _mainWindow.DataContext as MainWindowViewModel;
         
         TranslationManager.Init();
-        SettingsUpdater2.InitializeSettings(_mainWindowViewModel, settingsExists);
+        SettingsUpdater.InitializeSettings(_mainWindowViewModel, settingsExists);
 
         StartUpHelper.HandleWindowScalingMode(_coreViewModel, _mainWindow);
         

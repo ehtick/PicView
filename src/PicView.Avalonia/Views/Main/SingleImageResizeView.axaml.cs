@@ -50,7 +50,7 @@ public partial class SingleImageResizeView : UserControl
     }
     
     private static async ValueTask<string?> SafePickAsync(string file, string extension) 
-        => await FilePicker2.PickFileForSavingAsync(file, extension);
+        => await FilePicker.PickFileForSavingAsync(file, extension);
 
     private void OnUnloaded(object? sender, EventArgs e)
     {

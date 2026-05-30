@@ -1,19 +1,44 @@
-﻿﻿using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.StartUp;
+using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.Localization;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.FileSystem;
 
 public static class FilePicker
 {
-    public static async Task SelectAndLoadFile(MainViewModel vm)
+    public static async Task SelectAndLoadFile(MainWindowViewModel vm)
     {
+        if (vm is null)
+        {
+            return;
+        }
+
+        var file = await SelectFile().ConfigureAwait(false);
+        if (file is null)
+        {
+            return;
+        }
+        
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not StartUpMenu)
+            {
+                return;
+            }
+
+            vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        });
+
+
+        await vm.WindowTabs.LoadFromFileAsync(file).ConfigureAwait(false);
     }
 
     public static async Task<string?> SelectFile()
@@ -49,7 +74,7 @@ public static class FilePicker
                     GetFilePickerFileTypes.ArchiveFileType]
             };
 
-            var files = await ExecuteOnUIThread(() => provider.OpenFilePickerAsync(options)).ConfigureAwait(false);
+            var files = await provider.OpenFilePickerAsync(options);
             return files?.Count >= 1 ? files[0] : null;
         }
         catch (Exception e)
@@ -60,7 +85,7 @@ public static class FilePicker
         return null;
     }
 
-    public static async ValueTask<bool> PickAndSaveFileAsAsync(string? fileName, MainViewModel vm)
+    public static async ValueTask<bool> PickAndSaveFileAsAsync(string? fileName, MainWindowViewModel vm)
     {
         var file = await PickFileForSavingAsync(fileName).ConfigureAwait(false);
         if (file is null)
@@ -85,7 +110,7 @@ public static class FilePicker
 
             var options = new FilePickerSaveOptions
             {
-                Title = $"{TranslationManager.Translation.SaveAs} - PicView",
+                Title = StringExtensions.CombineWithAppName(TranslationManager.Translation.SaveAs),
                 FileTypeChoices = [
                     FilePickerFileTypes.ImageAll,
                     GetFilePickerFileTypes.JpegFileType,
