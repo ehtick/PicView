@@ -57,7 +57,7 @@
                                        Mode=OneWay}" />
         </Border>
 
-        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomPopupSearchTags}" Classes="searchBorder">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ZoomPreviewerSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="ShowZoomPreviewerToggleButton"
                 Classes="altHover settingsToggleButton"

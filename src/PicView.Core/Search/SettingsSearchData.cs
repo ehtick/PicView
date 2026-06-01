@@ -82,6 +82,11 @@ public class SettingsSearchData
         sb.Append(TranslationManager.Translation.ShowConfirmationDialogWhenPermanentlyDeletingFile);
         DeleteFileDialogSearchTags = sb.ToString();
         
+        sb.Append(space);
+        sb.Append(TranslationManager.Translation.Navigation);
+        sb.Append(TranslationManager.Translation.WhenDeletingAFile);
+        WhenDeletingFileSearchTags = sb.ToString();
+        
         sb.Clear();
         
         sb.Append(TranslationManager.Translation.SearchSubdirectory);
@@ -97,21 +102,6 @@ public class SettingsSearchData
         sb.Append(space);
         sb.Append("File system");
         FileHistorySearchTags = sb.ToString();
-        
-        sb.Clear();
-        
-        sb.Append(TranslationManager.Translation.DeletedFile);
-        sb.Append(space);
-        sb.Append(TranslationManager.Translation.DeleteFilePermanently);
-        sb.Append(space);
-        sb.Append(TranslationManager.Translation.PermanentlyDelete);
-        sb.Append(space);
-        sb.Append(TranslationManager.Translation.NavigateBackwards);
-        sb.Append(space);
-        sb.Append(TranslationManager.Translation.NavigateForwards);
-        sb.Append(space);
-        sb.Append(TranslationManager.Translation.Navigation);
-        WhenDeletingFileSearchTags = sb.ToString();
         
         sb.Clear();
         
