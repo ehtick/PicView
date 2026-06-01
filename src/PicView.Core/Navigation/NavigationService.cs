@@ -1,8 +1,11 @@
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.DebugTools;
 using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
+using PicView.Core.FileSearch;
 using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
 using PicView.Core.Http;
@@ -12,6 +15,7 @@ using PicView.Core.Models;
 using PicView.Core.Navigation.Interfaces;
 using PicView.Core.Preloading;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Core.Navigation;
 
@@ -24,6 +28,9 @@ public class NavigationService(
     Func<string, string, int> stringComparer)
     : INavigationService
 {
+    
+    public BindableReactiveProperty<ObservableCollection<FileSearchResult>?>? FilteredFileInfos { get; set; }
+    public ReactiveCommand<string>? LoadFromStringCommand { get; set; }
 
     public async ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct, List<FileInfo>? files = null)
     {

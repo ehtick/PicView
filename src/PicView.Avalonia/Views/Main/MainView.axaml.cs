@@ -40,7 +40,6 @@ public partial class MainView : UserControl
             AddHandler(DragDrop.DragLeaveEvent, DragLeave);
             AddHandler(DragDrop.DropEvent, Drop);
 
-            GotFocus += CloseTitlebarIfOpen;
             LostFocus += HandleLostFocus;
             PointerPressed += PointerPressedBehavior;
 
@@ -137,7 +136,6 @@ public partial class MainView : UserControl
 
     private void PointerPressedBehavior(object? sender, PointerPressedEventArgs e)
     {
-        CloseTitlebarIfOpen(sender, e);
         if (MainKeyboardShortcuts.ShiftDown && !CropManager.IsCropping)
         {
             var hostWindow = (Window)VisualRoot!;
@@ -145,23 +143,6 @@ public partial class MainView : UserControl
         }
         
         DragAndDropManager.RemoveDragDropView();
-    }
-    
-    private void CloseTitlebarIfOpen(object? sender, EventArgs e)
-    {
-        // if (DataContext is not MainViewModel vm)
-        // {
-        //     return;
-        // }
-        //
-        // if (!vm.MainWindow.IsEditableTitlebarOpen.Value)
-        // {
-        //     return;
-        // }
-        //
-        // vm.MainWindow.IsEditableTitlebarOpen.Value = false;
-        MainKeyboardShortcuts.IsKeysEnabled = true;
-        Focus();
     }
     
     private static void HandleLostFocus(object? sender, EventArgs e)

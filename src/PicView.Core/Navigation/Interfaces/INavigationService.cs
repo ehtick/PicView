@@ -1,5 +1,8 @@
-﻿using PicView.Core.FileSorting;
+﻿using System.Collections.ObjectModel;
+using PicView.Core.FileSearch;
+using PicView.Core.FileSorting;
 using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Core.Navigation.Interfaces;
 
@@ -12,6 +15,7 @@ public interface INavigationService
     ValueTask LoadFromDirectoryAsync(FileInfo source, TabViewModel tab, CancellationTokenSource ct);
 
     ValueTask<bool> LoadFromStringAsync(string source, TabViewModel tab, CancellationTokenSource ct);
+    ReactiveCommand<string>? LoadFromStringCommand { get; set; }
     
     ValueTask LoadFromUrlAsync(string source, TabViewModel tab, CancellationTokenSource ct);
 
@@ -48,4 +52,7 @@ public interface INavigationService
     /// If <see cref="PicView.Core.Config.Sorting.IncludeSubDirectories"/> is true, it explores subdirectories in reverse order.
     /// </summary>
     ValueTask NavigateToPreviousFolderAsync(TabViewModel tab, CancellationTokenSource ct);
+    
+    public BindableReactiveProperty<ObservableCollection<FileSearchResult>?>? FilteredFileInfos { get; set; }
+
 }

@@ -57,18 +57,13 @@ public static class DialogManager
 
     public static void AddFileSearchDialog()
     {
-        // TODO
-        // if (!NavigationManager.CanNavigate(UIHelper.GetMainView.DataContext as MainViewModel))
-        // {
-        //     return;
-        // }
-        // if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
-        // {
-        //     return;
-        // }
-        //
-        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        // UIHelper2.GetMainView.MainPanel.Children.Add(new FileSearchDialog());
+        if (UIHelper.GetMainView.MainPanel.Children.OfType<FileSearchDialog>().Any() || UIHelper.GetMainView.DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        vm.TopTitlebarViewModel.CloseDropDownMenu();
+        UIHelper.GetMainView.MainPanel.Children.Add(new FileSearchDialog());
+        IsDialogOpen = true;
     }
 
     public static void AddNavigationDialog()

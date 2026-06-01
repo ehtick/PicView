@@ -5,8 +5,6 @@ using Avalonia.Input;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.Views.UC;
-using PicView.Avalonia.Views.UC.PopUps;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Input;
@@ -173,35 +171,38 @@ public static class MainKeyboardShortcuts2
                 return true;
             }
         }
+        
+        if (vm.IsEditableTitlebarOpen.CurrentValue)
+        {
+            return true;
+        }
 
         // Handle open dialog
         if (DialogManager.IsDialogOpen)
         {
-            if (e.Key is Key.Escape)
+            if (e.Key is not Key.Escape)
             {
-                if (vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.CurrentValue)
-                {
-                    vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
-                    return true;
-                }
-                
-                var animatedPopUp = UIHelper.GetMainView.MainPanel.Children.OfType<AnimatedPopUp>().FirstOrDefault();
-                if (animatedPopUp is not null)
-                {
-                    await animatedPopUp.AnimatedClosing();
-                    return true;
-                }
+                return true;
             }
+
+            if (vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.CurrentValue)
+            {
+                vm.TopTitlebarViewModel.DropDownMenu.IsDropDownMenuVisible.Value = false;
+                return true;
+            }
+                
+            var animatedPopUp = UIHelper.GetMainView.MainPanel.Children.OfType<AnimatedPopUp>().FirstOrDefault();
+            if (animatedPopUp is not null)
+            {
+                await animatedPopUp.AnimatedClosing();
+            }
+
+            return true;
         }
         
         // Handle escape key
         if (e.Key == Key.Escape)
         {
-            if (vm.IsEditableTitlebarOpen.CurrentValue)
-            {
-                return true;
-            }
-            
             if (vm.TopTitlebarViewModel.IsMainMenuVisible.CurrentValue)
             {
                 vm.TopTitlebarViewModel.CloseMenu();

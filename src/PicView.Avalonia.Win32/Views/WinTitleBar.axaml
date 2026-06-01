@@ -972,23 +972,22 @@
                 IsRepeatEnabled="False"
                 IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}" />
 
-            <Button
+            <customControls:IconButton
                 x:Name="SearchButton"
                 Width="30"
                 Margin="2,3,7,3"
                 Background="Transparent"
                 BorderBrush="{DynamicResource MainBorderColor}"
                 Classes="noBorderHover"
+                Command="{Binding SearchCommand}"
                 CornerRadius="6"
                 DockPanel.Dock="Left"
                 Foreground="{DynamicResource MainTextColor}"
+                Icon="{StaticResource SearchImage}"
+                IconHeight="13"
+                IconWidth="13"
                 IsTabStop="False"
-                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}">
-                <Image
-                    Width="13"
-                    Height="13"
-                    Source="{StaticResource SearchImage}" />
-            </Button>
+                IsVisible="{Binding TopTitlebarViewModel.IsMenuButtonVisible.Value}" />
 
             <StackPanel
                 x:Name="WinBtnPanel"

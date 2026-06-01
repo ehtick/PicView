@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.UI;
@@ -20,6 +19,7 @@ public class AnimatedPopUp : ContentControl
     private Panel? _partOverlay;
 
     private const double AnimSpeed = 0.3;
+    
     protected AnimatedPopUp()
     {
         Loaded += async delegate { await AnimatedOpening(); };
