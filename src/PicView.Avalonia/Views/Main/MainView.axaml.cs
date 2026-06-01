@@ -12,6 +12,7 @@ using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
@@ -97,7 +98,16 @@ public partial class MainView : UserControl
         }
         else
         {
-            tabViewModel.CurrentView.Value = new StartUpMenu();
+            var startUpMenu = new StartUpMenu();
+            
+            if (Settings.WindowProperties.AutoFit)
+            {
+                // Keep the StartUpMenu the same size when creating a new tab
+                startUpMenu.Width = Bounds.Width;
+                startUpMenu.Height = Bounds.Height - SizeDefaults.TabHeight;
+            }
+
+            tabViewModel.CurrentView.Value = startUpMenu;
         }
     }
     private void MainTabControlOnSelectionChanged(object? sender, SelectionChangedEventArgs e)
