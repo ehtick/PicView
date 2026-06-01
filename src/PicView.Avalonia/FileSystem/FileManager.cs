@@ -12,9 +12,13 @@ namespace PicView.Avalonia.FileSystem;
 public static class FileManager
 {
     /// <summary>
-    ///     Deletes the current file, either permanently or by moving to recycle bin
+    /// Deletes a specified file with an optional confirmation dialog based on the recycle flag.
     /// </summary>
-    public static async ValueTask DeleteFileWithOptionalDialog(bool recycle, string path, IPlatformSpecificService platformService)
+    /// <param name="recycle">A flag indicating whether to recycle the file (if true) or delete it permanently (if false).</param>
+    /// <param name="path">The fully qualified path to the file to be deleted.</param>
+    /// <param name="platformService">The platform-specific service responsible for performing the file deletion operation.</param>
+    public static async ValueTask DeleteFileWithOptionalDialog(bool recycle, string path,
+        IPlatformSpecificService platformService)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
@@ -64,11 +68,12 @@ public static class FileManager
     }
 
     /// <summary>
-    ///     Shows properties dialog for the specified file
+    /// Displays the properties of a specified file using the platform-specific service.
     /// </summary>
+    /// <param name="path">The fully qualified path to the file whose properties need to be displayed.</param>
     public static void ShowFileProperties(string path)
     {
-        CoreViewModel? core = Dispatcher.UIThread.Invoke(() => Application.Current.DataContext as CoreViewModel);
+        var core = Dispatcher.UIThread.Invoke(() => Application.Current.DataContext as CoreViewModel);
         if (core is null)
         {
             return;
@@ -84,8 +89,9 @@ public static class FileManager
     }
 
     /// <summary>
-    ///     Opens the file location in file explorer
+    /// Locates the specified file or directory on the disk by highlighting it in the native file explorer.
     /// </summary>
+    /// <param name="path">The path of the file or directory to be located on the disk.</param>
     public static async Task LocateOnDisk(string path)
     {
         if (Application.Current.DataContext is not CoreViewModel core)
@@ -95,7 +101,7 @@ public static class FileManager
 
         try
         {
-            await Task.Run(() => core.PlatformService!.LocateOnDisk(path));
+            await Task.Run(() => core.PlatformService.LocateOnDisk(path));
         }
         catch (Exception ex)
         {
@@ -104,8 +110,9 @@ public static class FileManager
     }
 
     /// <summary>
-    ///     Shows the dialog to open the file with another application
+    /// Opens the file located at the specified path with an application chosen by the user.
     /// </summary>
+    /// <param name="path">The full file path of the file to be opened.</param>
     public static async Task OpenWith(string path)
     {
         if (Application.Current.DataContext is not CoreViewModel core)

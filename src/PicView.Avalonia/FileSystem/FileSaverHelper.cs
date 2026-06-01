@@ -7,7 +7,6 @@ using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.FileSystem;
 
-// Deprecated, TODO cleanup
 public static class FileSaverHelper
 {
     public static async ValueTask<bool> SaveCurrentFile(MainWindowViewModel vm)
@@ -25,7 +24,7 @@ public static class FileSaverHelper
         
         if (isSaved)
         {
-            // // TODO: Add visual design to tell whether file was saved
+            // TODO: Add visual design to tell whether file was saved
         }
         
         return isSaved;
@@ -41,7 +40,7 @@ public static class FileSaverHelper
         var isSaved = await FilePicker.PickAndSaveFileAsAsync(fileName, vm);
         if (isSaved)
         {
-            // // TODO: Add visual design to tell whether file was saved
+            // TODO: Add visual design to tell whether file was saved
         }
 
         return isSaved;
