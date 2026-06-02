@@ -6,12 +6,17 @@
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     x:DataType="viewModels:CoreViewModel"
     Background="Transparent"
+    ClickingOutsideCloses="True"
     ContextMenu="{StaticResource MainMenu}"
     ZIndex="99">
     <customControls:AnimatedPopUp.Resources>
         <ContextMenu x:Key="MainMenu">
             <!--  Close  -->
-            <MenuItem x:Name="CloseMenuItem" Header="{CompiledBinding Translation.Close.Value, Mode=OneWay}">
+            <MenuItem
+                x:Name="CloseMenuItem"
+                Click="CloseMenuItem_OnClick"
+                Header="{CompiledBinding Translation.Close.Value,
+                                         Mode=OneWay}">
                 <MenuItem.Icon>
                     <Path
                         Width="12"
@@ -47,6 +52,7 @@
                 BorderBrush="{DynamicResource MainBorderColor}"
                 BorderThickness="1"
                 CornerRadius="3"
+                Focusable="True"
                 FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
                 Foreground="{DynamicResource MainTextColor}"
                 Watermark="{CompiledBinding Translation.Search.Value,
@@ -58,12 +64,15 @@
             BorderThickness="0,1,1,1"
             CornerRadius="6"
             IsVisible="{Binding !!SharedNavigationService.FilteredFileInfos.Value.Count}">
-            <customControls:AutoScrollViewer MaxHeight="400">
+            <customControls:AutoScrollViewer MaxHeight="550">
                 <Border
                     Background="#10000000"
                     Classes="borderStyle"
                     CornerRadius="6">
-                    <ItemsControl ItemsSource="{CompiledBinding SharedNavigationService.FilteredFileInfos.Value}">
+                    <ItemsControl
+                        x:Name="SearchItemsControl"
+                        ItemsSource="{CompiledBinding SharedNavigationService.FilteredFileInfos.Value}"
+                        KeyboardNavigation.TabNavigation="Cycle">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Button

@@ -58,22 +58,39 @@ public partial class FileSearchDialog : AnimatedPopUp
         switch (e.Key)
         {
             case Key.Down:
-                MoveFocus(NavigationDirection.Next);
+                MoveFocus(NavigationDirection.Down);
                 e.Handled = true;
                 break;
             case Key.Up:
-                MoveFocus(NavigationDirection.Previous);
+                MoveFocus(NavigationDirection.Up);
                 e.Handled = true;
                 break;
             case Key.Enter:
-                if (string.IsNullOrWhiteSpace(SearchBox.Text))
+                if (SearchBox.IsFocused)
                 {
-                    return;
-                }
+                    if (string.IsNullOrWhiteSpace(SearchBox.Text))
+                    {
+                        return;
+                    }
                 
-                var tabs = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
+                    var tabs = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs;
+                    await tabs.LoadFromFileAsync(SearchBox.Text).ConfigureAwait(false);
+                }
+                else
+                {
+                    if (TopLevel.GetTopLevel(this) is not { FocusManager: { } focusManager })
+                    {
+                        return;
+                    }
+
+                    var focused = focusManager.GetFocusedElement();
+                    if (focused is not Button button)
+                    {
+                        return;
+                    }
+                    button.Command.Execute(button.CommandParameter);
+                }
                 e.Handled = true;
-                await tabs.LoadFromFileAsync(SearchBox.Text).ConfigureAwait(false);
                 break;
         }
     }
@@ -84,15 +101,7 @@ public partial class FileSearchDialog : AnimatedPopUp
         {
             return;
         }
-        
-        var focused = focusManager.GetFocusedElement();
-        if (focused is null)
-        {
-            return;
-        }
-        
-        var next = focusManager.FindNextElement(direction);
-        next?.Focus();
+        focusManager.TryMoveFocus(direction);
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -171,7 +180,10 @@ public partial class FileSearchDialog : AnimatedPopUp
         }
         
         core.SharedNavigationService?.FilteredFileInfos?.CurrentValue?.Clear();
-        core.SharedNavigationService?.FilteredFileInfos?.Dispose();
-        core.SharedNavigationService?.LoadFromStringCommand?.Dispose();
+    }
+
+    private void CloseMenuItem_OnClick(object? sender, RoutedEventArgs e)
+    {
+        _ = AnimatedClosing();
     }
 }
