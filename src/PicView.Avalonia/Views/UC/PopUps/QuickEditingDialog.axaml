@@ -3,15 +3,10 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:viewModels1="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     Padding="20"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    x:DataType="viewModels1:MainWindowViewModel"
-    ClickingOutsideCloses="True"
-    mc:Ignorable="d">
+    x:DataType="viewModels:MainWindowViewModel"
+    ClickingOutsideCloses="True">
     <StackPanel Background="Transparent">
 
         <!--  Tool Windows  -->
@@ -142,7 +137,7 @@
                     Background="Transparent"
                     Classes="altHover"
                     CornerRadius="0,4,4,0"
-                    Icon="{StaticResource FlaskImage}"
+                    Icon="{StaticResource SparklesImage}"
                     IconHeight="18"
                     IconMargin="5,0,10,0"
                     IconWidth="18"
@@ -174,7 +169,7 @@
                 Margin="6,0,4,8"
                 Background="{DynamicResource MenuButtonColor}"
                 Classes="ButtonBorder altHover"
-                Data="{StaticResource CropGeometry}"
+                Icon="{StaticResource CropImage}"
                 IconHeight="15"
                 IconMargin="15,0,10,0"
                 IconWidth="15"
