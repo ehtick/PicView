@@ -236,8 +236,6 @@ public static class SettingsUpdater
         await SaveSettingsAsync();
     }
     
-    #region Image settings
-
     public static async Task ToggleSideBySide()
     {
         Settings.ImageScaling.ShowImageSideBySide = !Settings.ImageScaling.ShowImageSideBySide;
@@ -365,5 +363,4 @@ public static class SettingsUpdater
         await SaveSettingsAsync();
     }
     
-    #endregion
 }
