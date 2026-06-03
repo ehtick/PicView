@@ -7,6 +7,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ColorHandling;
+using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
@@ -15,60 +16,9 @@ using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 namespace PicView.Avalonia.SettingsManagement;
 public static class SettingsUpdater
 {
-    // public static void ValidateGallerySettings(MainViewModel vm, bool settingsExists)
-    // {
-    //     if (vm.Gallery is not {} gallery)
-    //     {
-    //         return;
-    //     }
-    //
-    //     if (!settingsExists)
-    //     {
-    //         gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
-    //         gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
-    //     }
-    //     else
-    //     {
-    //         gallery.GalleryItem.ExpandedGalleryItemHeight.Value  = Settings.Gallery.ExpandedGalleryItemSize;
-    //         gallery.GalleryItem.BottomGalleryItemHeight.Value = Settings.Gallery.BottomGalleryItemSize;
-    //     }
-    //
-    //     // Set default gallery sizes if they are out of range or upgrading from an old version
-    //     if (gallery.GalleryItem.BottomGalleryItemHeight.CurrentValue is < GalleryDefaults.MinBottomGalleryItemHeight or > GalleryDefaults.MaxBottomGalleryItemHeight)
-    //     {
-    //         gallery.GalleryItem.BottomGalleryItemHeight.Value = GalleryDefaults.DefaultBottomGalleryHeight;
-    //     }
-    //
-    //     if (gallery.GalleryItem.ExpandedGalleryItemHeight.CurrentValue is < GalleryDefaults.MinFullGalleryItemHeight or > GalleryDefaults.MaxFullGalleryItemHeight)
-    //     {
-    //         gallery.GalleryItem.ExpandedGalleryItemHeight.Value = GalleryDefaults.DefaultFullGalleryHeight;
-    //     }
-    //
-    //     if (settingsExists)
-    //     {
-    //         return;
-    //     }
-    //
-    //     if (string.IsNullOrWhiteSpace(Settings.Gallery.BottomGalleryStretchMode))
-    //     {
-    //         Settings.Gallery.BottomGalleryStretchMode = "UniformToFill";
-    //     }
-    //
-    //     if (string.IsNullOrWhiteSpace(Settings.Gallery.FullGalleryStretchMode))
-    //     {
-    //         Settings.Gallery.FullGalleryStretchMode = "UniformToFill";
-    //     }
-    // }
-
-
-
     public static void InitializeSettings(MainWindowViewModel vm, bool settingsExists)
     {
         Task.Run(() => LanguageUpdater.UpdateLanguageAsync(vm.Translation, settingsExists));
-        
-        //MainWindowViewModel.GetAndSetWindowMinSize(vm);
-        
-
         
         vm.TitlebarHeight.Value = Settings.WindowProperties.Fullscreen
                                        || !Settings.UIProperties.ShowInterface
@@ -78,7 +28,7 @@ public static class SettingsUpdater
                                               || !Settings.UIProperties.ShowInterface
             ? 0
             : SizeDefaults.BottombarHeight;
-        // vm.PicViewer.IsShowingSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
+        vm.IsSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
         vm.IsUIShown.Value  = Settings.UIProperties.ShowInterface;
         vm.IsTopToolbarShown.Value  = Settings.UIProperties.ShowInterface;
         vm.IsBottomToolbarShown.Value   = Settings.UIProperties.ShowBottomNavBar &&
