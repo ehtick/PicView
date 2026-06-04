@@ -248,7 +248,7 @@ public static class WindowResizing
         }
         else
         {
-            return null;
+            secondaryWidth = secondaryHeight = 0;
         }
         
         return GetSize(width, height, secondaryWidth, secondaryHeight, tab.RotationAngle.CurrentValue,
