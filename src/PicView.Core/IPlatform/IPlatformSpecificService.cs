@@ -19,7 +19,7 @@ public interface IPlatformSpecificService
     
     void ShowFileProperties(string path);
     
-    void Print(string path);
+    ValueTask Print(string path);
     
     Task SetAsWallpaper(string path, int wallpaperStyle);
     

@@ -653,7 +653,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         {
             return;
         }
-        await Task.Run(() => core.PlatformService.Print(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.FullName));
+        await core.PlatformService.Print(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.FullName);
     }
     
     public async ValueTask SaveAsPDF()

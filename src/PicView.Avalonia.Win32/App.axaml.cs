@@ -131,11 +131,11 @@ public class App : Application, IPlatformSpecificService
         FileExplorer.ShowFileProperties(path);
     }
 
-    public void Print(string path)
+    public async ValueTask Print(string path)
     {
         if (Settings.UIProperties.ShowPrintPreview)
         {
-            _mainWindow.ShowPrintWindow(path);
+            await _mainWindow.ShowPrintWindow(path);
         }
         else
         {

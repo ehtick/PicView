@@ -188,9 +188,9 @@ public class App : Application, IPlatformSpecificService
         // TODO: make interface async
     }
 
-    public void Print(string path)
+    public async ValueTask Print(string path)
     {
-        _mainWindow.ShowPrintWindow(path);
+        await _mainWindow.ShowPrintWindow(path);
     }
 
     public async Task SetAsWallpaper(string path, int wallpaperStyle)

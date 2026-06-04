@@ -100,9 +100,9 @@ public class App : Application, IPlatformSpecificService
         throw new NotImplementedException();
     }
 
-    public void Print(string path)
+    public async ValueTask Print(string path)
     {
-        
+        await _mainWindow.ShowPrintWindow(path);   
     }
 
     public async Task SetAsWallpaper(string path, int wallpaperStyle)
