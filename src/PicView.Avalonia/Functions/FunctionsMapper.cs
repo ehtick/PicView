@@ -1014,46 +1014,10 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         return;
     }
     
-    public async ValueTask Restart()
+    public ValueTask Restart()
     {
-        // // TODO: Needs refactoring into its own method
-        // var openFile = string.Empty;
-        // var getFromArgs = false;
-        // if (vm?.PicViewer.FileInfo is not null)
-        // {
-        //     if (vm.PicViewer.FileInfo.CurrentValue.Exists)
-        //     {
-        //         openFile = vm.PicViewer.FileInfo.CurrentValue.FullName;
-        //     }
-        //     else
-        //     {
-        //         getFromArgs = true;
-        //     }
-        // }
-        // else
-        // {
-        //     getFromArgs = true;
-        // }
-        // if (getFromArgs)
-        // {
-        //     var args = Environment.GetCommandLineArgs();
-        //     if (args is not null && args.Length > 0)
-        //     {
-        //         openFile = args[1];
-        //     }
-        // }
-        // ProcessHelper.RestartApp(openFile);
-        //
-        // if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        // {
-        //     Environment.Exit(0);
-        //     return;
-        // }
-        // await Dispatcher.UIThread.InvokeAsync(() =>
-        // {
-        //     desktop.MainWindow?.Close();
-        // });
-        return;
+        AppFunctions.Restart(vm.WindowTabs.ActiveTab.CurrentValue);
+        return ValueTask.CompletedTask;
     }
     
     public ValueTask ShowSettingsFile()
