@@ -3,11 +3,11 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.ColorManagement;
+using PicView.Avalonia.Functions;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ColorHandling;
-using PicView.Core.Gallery;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
@@ -37,9 +37,11 @@ public static class SettingsUpdater
         vm.GlobalSettings.BackgroundChoice.Value = Settings.UIProperties.BgColorChoice;
     }
     
-    public static async Task ResetSettings(MainWindowViewModel vm)
+    public static void ResetSettings()
     {
-        // TODO
+        SetDefaults();
+        var core = Application.Current.DataContext as CoreViewModel;
+        AppFunctions.Restart(core?.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab?.Value);
     }
     
     public static async ValueTask ToggleZoomToFit(MainWindowViewModel vm)

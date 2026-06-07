@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Threading;
+using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Core.ArchiveHandling;
 using PicView.Core.Config;
@@ -70,7 +71,7 @@ public static class WindowFunctions
         try
         {
             await SaveSettingsAsync();
-            //await KeybindingManager.UpdateKeyBindingsFile(); // Save keybindings
+            await KeybindingManager.UpdateKeyBindingsFile();
             TempFileManager.Cleanup();
             await FileHistoryManager.SaveToFileAsync();
             ArchiveExtraction.Cleanup();

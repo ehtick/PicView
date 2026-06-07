@@ -1006,12 +1006,10 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     #region Other settings
 
-    /// <inheritdoc cref="SettingsUpdater.ResetSettings(MainViewModel)" />
+    /// <inheritdoc cref="SettingsUpdater.ResetSettings()" />
     public async ValueTask ResetSettings()
     {
-        // TODO
-        // await SettingsUpdater.ResetSettings(vm).ConfigureAwait(false);
-        return;
+        SettingsUpdater.ResetSettings();
     }
     
     public ValueTask Restart()
