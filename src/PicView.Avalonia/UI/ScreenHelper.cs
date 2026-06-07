@@ -67,16 +67,4 @@ public static class ScreenHelper
             };
         }
     }
-
-    public static int GetWindowMaxHeight()
-    {
-        return ScreenSize.WorkingAreaHeight switch
-        {
-            > 500 and < 600 => 500,
-            > 600 and < 700 => 550,
-            >= 650 and < 750 => 720,
-            >= 750 => 750,
-            _ => SizeDefaults.WindowMinSize
-        };
-    }
 }

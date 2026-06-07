@@ -34,18 +34,29 @@ public interface IImageIterator : IDisposable
     /// Initializes the iterator with a new list of files and a starting position.
     /// </summary>
     void Initialize(IReadOnlyList<FileInfo> files, int initialIndex = 0);
-    
+
+    /// <summary>
+    /// Asynchronously navigates the image collection based on the specified navigation direction and skip amount.
+    /// </summary>
+    /// <param name="to">The direction to navigate, represented by the <see cref="NavigateTo"/> enumeration.</param>
+    /// <param name="skipAmount">The amount of images to skip, represented by the <see cref="SkipAmount"/> enumeration.</param>
+    /// <param name="ct">The cancellation token source to monitor for task cancellation requests.</param>
     ValueTask NavigateAsync(NavigateTo to, SkipAmount skipAmount, CancellationTokenSource ct);
-    
+
+    /// <summary>
+    /// Clears the cache and reloads the current image.
+    /// </summary>
+    /// <param name="ct">A <see cref="CancellationTokenSource"/> used to monitor for cancellation requests.</param>
     ValueTask ReloadAsync(CancellationTokenSource ct);
-    
-    ValueTask ReloadFileListAsync(CancellationTokenSource ct);
 
     /// <summary>
     /// Moves the iterator to the specified index, triggers image loading, and handles UI updates.
     /// </summary>
     ValueTask IterateToIndexAsync(int index, CancellationTokenSource ct);
     
+    /// <summary>
+    /// Moves the iterator to the specified indices (for side-by-side viewing), triggers image loading, and handles UI updates.
+    /// </summary>
     ValueTask IterateToIndicesAsync(int index, int secondaryIndex, CancellationTokenSource ct);
 
     /// <summary>

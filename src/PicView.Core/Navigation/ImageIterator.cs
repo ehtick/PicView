@@ -270,6 +270,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     public async ValueTask ReloadAsync(CancellationTokenSource ct)
     {
+        Cache.Clear(_tab.Id);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             if (SecondaryCurrentIndex is -1)
@@ -283,11 +284,6 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         {
             await IterateToIndexAsync(CurrentIndex, ct).ConfigureAwait(false);
         }
-    }
-    
-    public async ValueTask ReloadFileListAsync(CancellationTokenSource ct)
-    {
-        
     }
 
     #endregion

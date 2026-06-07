@@ -1,6 +1,3 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
 using PicView.Core.ProcessHandling;
 using PicView.Core.ViewModels;
 
@@ -35,16 +32,9 @@ public static class AppFunctions
                 openFile = args[1];
             }
         }
-        ProcessHelper.RestartApp(openFile);
         
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            Environment.Exit(0);
-            return;
-        }
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            desktop.MainWindow?.Close();
-        });
+        ProcessHelper.StartCurrentAppWithArgs(openFile);
+        Environment.Exit(0);
+
     }
 }
