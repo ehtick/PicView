@@ -42,7 +42,7 @@ public static class ArchiveExtraction
     /// </param>
     public readonly record struct ArchivePreparation(
         string TempDirectory,
-        List<string> EntryKeys,
+        string[] EntryKeys,
         bool IsFullyExtracted);
 
     /// <summary>
@@ -80,9 +80,9 @@ public static class ArchiveExtraction
                     .EnumerateFiles("*", SearchOption.AllDirectories)
                     .Where(f => f.FullName.IsSupported())
                     .Select(f => f.FullName)
-                    .ToList()).ConfigureAwait(false);
+                    .ToArray()).ConfigureAwait(false);
 
-                if (files.Count == 0)
+                if (files.Length is 0)
                 {
                     return null;
                 }
@@ -93,26 +93,22 @@ public static class ArchiveExtraction
                 return new ArchivePreparation(tempDirectory, files, IsFullyExtracted: true);
             }
 
-            var entryKeys = await Task.Run(() =>
-            {
-                using var archive = ArchiveFactory.OpenArchive(archivePath);
-                return archive.Entries
-                    .Where(e => !e.IsDirectory
-                                && !string.IsNullOrEmpty(e.Key)
-                                && e.Key!.IsSupported())
-                    .Select(e => e.Key!)
-                    .ToList();
-            }).ConfigureAwait(false);
+            var archive = await ArchiveFactory.OpenAsyncArchive(archivePath);
+            var entries = await archive.EntriesAsync
+                .Where(e => !e.IsDirectory
+                            && !string.IsNullOrEmpty(e.Key)
+                            && e.Key!.IsSupported())
+                .Select(e => e.Key!).ToArrayAsync();
 
-            if (entryKeys.Count == 0)
+            if (entries.Length is 0)
             {
                 return null;
             }
 
-            SortByFileName(entryKeys, stringComparer);
+            SortByFileName(entries, stringComparer);
 
             LastOpenedArchive = archivePath;
-            return new ArchivePreparation(tempDirectory, entryKeys, IsFullyExtracted: false);
+            return new ArchivePreparation(tempDirectory, entries, IsFullyExtracted: false);
         }
         catch (Exception ex)
         {
@@ -294,8 +290,12 @@ public static class ArchiveExtraction
         return destinationPath;
     }
 
-    private static void SortByFileName(List<string> paths, Func<string, string, int> stringComparer)
+    private static void SortByFileName(string[] paths, Func<string, string, int> stringComparer)
     {
+        if (!Settings.Sorting.Name)
+        {
+            return;
+        }
         if (Settings.Sorting.Ascending)
         {
             paths.Sort((a, b) => stringComparer(Path.GetFileName(a), Path.GetFileName(b)));

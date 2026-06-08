@@ -30,6 +30,7 @@ public class NavigationService(
     
     public BindableReactiveProperty<ObservableCollection<FileSearchResult>?>? FilteredFileInfos { get; set; }
     public ReactiveCommand<string>? LoadFromStringCommand { get; set; }
+    private FileAndDirectoryNavigator? _navigator;
 
     public async ValueTask RepopulateIterator(FileInfo fileInfo, TabViewModel tab, CancellationTokenSource ct, List<FileInfo>? files = null)
     {
@@ -213,9 +214,9 @@ public class NavigationService(
         await RepopulateIterator(seedFiles[0], tab, ct, seedFiles).ConfigureAwait(false);
 
         // Kick off background extraction of remaining entries. FileWatcherService picks them up.
-        if (prep.EntryKeys.Count > 1)
+        if (prep.EntryKeys.Length > 1)
         {
-            var remainingKeys = prep.EntryKeys.Skip(1).ToList();
+            var remainingKeys = prep.EntryKeys.Skip(1).ToArray();
             var backgroundToken = tab.GetTabCancellation().Token;
             _ = Task.Run(() => ArchiveExtraction.ExtractRemainingAsync(archivePath, remainingKeys, backgroundToken), backgroundToken);
         }
@@ -336,7 +337,8 @@ public class NavigationService(
             return;
         }
 
-        var nextDir = await Task.Run(() => FindNextValidDirectory(currentDir), ct.Token).ConfigureAwait(false);
+        _navigator ??= new FileAndDirectoryNavigator(stringComparer);
+        var nextDir = await Task.Run(() => _navigator.FindNextValidDirectory(currentDir), ct.Token).ConfigureAwait(false);
         if (nextDir != null)
         {
             await LoadFromDirectoryAsync(new FileInfo(nextDir), tab, ct).ConfigureAwait(false);
@@ -350,8 +352,8 @@ public class NavigationService(
         {
             return;
         }
-
-        var prevDir = await Task.Run(() => FindPreviousValidDirectory(currentDir), ct.Token).ConfigureAwait(false);
+        _navigator ??= new FileAndDirectoryNavigator(stringComparer);
+        var prevDir = await Task.Run(() => _navigator.FindPreviousValidDirectory(currentDir), ct.Token).ConfigureAwait(false);
         if (prevDir != null)
         {
             await LoadFromDirectoryAsync(new FileInfo(prevDir), tab, ct).ConfigureAwait(false);
@@ -374,410 +376,12 @@ public class NavigationService(
         {
             return;
         }
-
-        var nextArchive = 
-            await Task.Run(() => FindNextArchive(currentDir, next, currentFile!.FullName), ct.Token).ConfigureAwait(false);
+        _navigator ??= new FileAndDirectoryNavigator(stringComparer);
+        var nextArchive = await Task.Run(() =>
+            _navigator.FindNextArchive(currentDir, next, currentFile!.FullName), ct.Token).ConfigureAwait(false);
         if (nextArchive != null)
         {
             await LoadFromArchiveAsync(nextArchive, tab, ct).ConfigureAwait(false);
-        }
-    }
-
-    private List<FileInfo> GetSortedArchivesInDirectory(string path)
-    {
-        try
-        {
-            var dir = new DirectoryInfo(path);
-            if (!dir.Exists)
-            {
-                return [];
-            }
-
-            var archives = dir.EnumerateFiles("*", SearchOption.TopDirectoryOnly)
-                .Where(f => f.FullName.IsArchive())
-                .ToList();
-
-            if (!Settings.Sorting.Ascending)
-            {
-                archives.Sort((x, y) => stringComparer(y.Name, x.Name));
-            }
-            else
-            {
-                archives.Sort((x, y) => stringComparer(x.Name, y.Name));
-            }
-
-            return archives;
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetSortedArchivesInDirectory), ex);
-            return [];
-        }
-    }
-
-    private string? FindNextArchive(string currentDir, bool next, string currentFilePath)
-    {
-        // Look for next archive in the current directory after the current file
-        var archives = GetSortedArchivesInDirectory(currentDir);
-        var idx = archives.FindIndex(a => a.FullName.Equals(currentFilePath, StringComparison.OrdinalIgnoreCase));
-        if (!next)
-        {
-            return idx switch
-            {
-                > 0 => archives[idx - 1].FullName,
-                < 0 when archives.Count > 0 => archives[^1].FullName,
-                _ => GetLastArchiveInPreviousSiblingOrAncestor(currentDir)
-            };
-        }
-        switch (idx)
-        {
-            case >= 0 when idx + 1 < archives.Count:
-                return archives[idx + 1].FullName;
-            case < 0 when archives.Count > 0:
-                return archives[0].FullName;
-        }
-    
-        if (!Settings.Sorting.IncludeSubDirectories)
-        {
-            return GetFirstArchiveInNextSiblingOrAncestor(currentDir);
-        }
-    
-        var firstInChild = GetFirstArchiveInDescendants(currentDir);
-        return firstInChild ?? GetFirstArchiveInNextSiblingOrAncestor(currentDir);
-    }
-
-    private string? GetFirstArchiveInDescendants(string path)
-    {
-        try
-        {
-            var dir = new DirectoryInfo(path);
-            var subDirs = dir.GetDirectories().ToList();
-            SortDirectories(subDirs);
-
-            foreach (var sub in subDirs)
-            {
-                var archives = GetSortedArchivesInDirectory(sub.FullName);
-                if (archives.Count > 0)
-                {
-                    return archives[0].FullName;
-                }
-
-                if (!Settings.Sorting.IncludeSubDirectories)
-                {
-                    continue;
-                }
-
-                var child = GetFirstArchiveInDescendants(sub.FullName);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetFirstArchiveInDescendants), ex);
-        }
-        return null;
-    }
-
-    private string? GetFirstArchiveInNextSiblingOrAncestor(string path)
-    {
-        var dir = new DirectoryInfo(path);
-        var parent = dir.Parent;
-        if (parent == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            var siblings = parent.GetDirectories().ToList();
-            SortDirectories(siblings);
-            var index = siblings.FindIndex(d => d.FullName.Equals(path, StringComparison.OrdinalIgnoreCase));
-
-            for (var i = index + 1; i < siblings.Count; i++)
-            {
-                var sibling = siblings[i];
-                var archives = GetSortedArchivesInDirectory(sibling.FullName);
-                if (archives.Count > 0)
-                {
-                    return archives[0].FullName;
-                }
-
-                if (!Settings.Sorting.IncludeSubDirectories)
-                {
-                    continue;
-                }
-
-                var child = GetFirstArchiveInDescendants(sibling.FullName);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetFirstArchiveInNextSiblingOrAncestor), ex);
-        }
-
-        return GetFirstArchiveInNextSiblingOrAncestor(parent.FullName);
-    }
-
-    private string? GetLastArchiveInPreviousSiblingOrAncestor(string currentPath)
-    {
-        var dir = new DirectoryInfo(currentPath);
-        var parent = dir.Parent;
-        if (parent is null)
-        {
-            return null;
-        }
-
-        try
-        {
-            var siblings = parent.GetDirectories().ToList();
-            SortDirectories(siblings);
-            var index = siblings.FindIndex(d => d.FullName.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
-
-            if (index <= 0)
-            {
-                var parentArchives = GetSortedArchivesInDirectory(parent.FullName);
-                if (parentArchives.Count > 0)
-                {
-                    return parentArchives[^1].FullName;
-                }
-                return GetLastArchiveInPreviousSiblingOrAncestor(parent.FullName);
-            }
-
-            for (var i = index - 1; i >= 0; i--)
-            {
-                var sibling = siblings[i];
-                var lastChild = GetLastArchiveInDescendantOrSelf(sibling.FullName);
-                if (lastChild != null)
-                {
-                    return lastChild;
-                }
-            }
-
-            var parentArchivesFallback = GetSortedArchivesInDirectory(parent.FullName);
-            if (parentArchivesFallback.Count > 0)
-            {
-                return parentArchivesFallback[^1].FullName;
-            }
-            return GetLastArchiveInPreviousSiblingOrAncestor(parent.FullName);
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetLastArchiveInPreviousSiblingOrAncestor), ex);
-            return null;
-        }
-    }
-
-    private string? GetLastArchiveInDescendantOrSelf(string path)
-    {
-        if (!Settings.Sorting.IncludeSubDirectories)
-        {
-            var archives = GetSortedArchivesInDirectory(path);
-            return archives.Count > 0 ? archives[^1].FullName : null;
-        }
-
-        try
-        {
-            var dir = new DirectoryInfo(path);
-            var subDirs = dir.GetDirectories().ToList();
-            SortDirectories(subDirs);
-
-            for (var i = subDirs.Count - 1; i >= 0; i--)
-            {
-                var lastChild = GetLastArchiveInDescendantOrSelf(subDirs[i].FullName);
-                if (lastChild != null) return lastChild;
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetLastArchiveInDescendantOrSelf), ex);
-        }
-
-        var archivesHere = GetSortedArchivesInDirectory(path);
-        return archivesHere.Count > 0 ? archivesHere[^1].FullName : null;
-    }
-
-    private string? FindNextValidDirectory(string currentPath)
-    {
-        if (!Settings.Sorting.IncludeSubDirectories)
-        {
-            return GetNextSiblingOrAncestorSibling(currentPath);
-        }
-
-        var firstChild = GetFirstValidChild(currentPath);
-        return firstChild ?? GetNextSiblingOrAncestorSibling(currentPath);
-    }
-
-    private string? GetFirstValidChild(string path)
-    {
-        try
-        {
-            var dir = new DirectoryInfo(path);
-            var subDirs = dir.GetDirectories().ToList();
-            SortDirectories(subDirs);
-
-            foreach (var sub in subDirs)
-            {
-                if (IsDirectoryValid(sub.FullName)) return sub.FullName;
-                if (!Settings.Sorting.IncludeSubDirectories)
-                {
-                    continue;
-                }
-
-                var child = GetFirstValidChild(sub.FullName);
-                if (child != null)
-                {
-                    return child;
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetFirstValidChild), ex);
-        }
-        return null;
-    }
-
-    private string? GetNextSiblingOrAncestorSibling(string path)
-    {
-        var dir = new DirectoryInfo(path);
-        var parent = dir.Parent;
-        if (parent == null)
-        {
-            return null;
-        }
-
-        try
-        {
-            var siblings = parent.GetDirectories().ToList();
-            SortDirectories(siblings);
-            var index = siblings.FindIndex(d => d.FullName.Equals(path, StringComparison.OrdinalIgnoreCase));
-
-            for (var i = index + 1; i < siblings.Count; i++)
-            {
-                var sibling = siblings[i];
-                if (IsDirectoryValid(sibling.FullName)) return sibling.FullName;
-                if (!Settings.Sorting.IncludeSubDirectories)
-                {
-                    continue;
-                }
-
-                var child = GetFirstValidChild(sibling.FullName);
-                if (child != null) return child;
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetNextSiblingOrAncestorSibling), ex);
-        }
-
-        return GetNextSiblingOrAncestorSibling(parent.FullName);
-    }
-
-    private string? FindPreviousValidDirectory(string currentPath)
-    {
-        var dir = new DirectoryInfo(currentPath);
-        var parent = dir.Parent;
-        if (parent is null)
-        {
-            return null;
-        }
-
-        try
-        {
-            var siblings = parent.GetDirectories().ToList();
-            SortDirectories(siblings);
-            var index = siblings.FindIndex(d => d.FullName.Equals(currentPath, StringComparison.OrdinalIgnoreCase));
-
-            if (index <= 0)
-            {
-                return IsDirectoryValid(parent.FullName)
-                    ? parent.FullName
-                    : FindPreviousValidDirectory(parent.FullName);
-            }
-
-            for (var i = index - 1; i >= 0; i--)
-            {
-                var sibling = siblings[i];
-                var lastChild = GetLastValidDescendantOrSelf(sibling.FullName);
-                if (lastChild != null)
-                {
-                    return lastChild;
-                }
-            }
-
-            return IsDirectoryValid(parent.FullName) ? parent.FullName : FindPreviousValidDirectory(parent.FullName);
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(FindPreviousValidDirectory), ex);
-            return null;
-        }
-    }
-
-    private string? GetLastValidDescendantOrSelf(string path)
-    {
-        if (!Settings.Sorting.IncludeSubDirectories)
-        {
-            return IsDirectoryValid(path) ? path : null;
-        }
-
-        try
-        {   
-            var dir = new DirectoryInfo(path);
-            var subDirs = dir.GetDirectories().ToList();
-            SortDirectories(subDirs);
-
-            for (var i = subDirs.Count - 1; i >= 0; i--)
-            {
-                var lastChild = GetLastValidDescendantOrSelf(subDirs[i].FullName);
-                if (lastChild != null) return lastChild;
-            }
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(GetLastValidDescendantOrSelf), ex);
-        }
-
-        return IsDirectoryValid(path) ? path : null;
-    }
-
-    private static bool IsDirectoryValid(string path)
-    {
-        try
-        {
-            var dir = new DirectoryInfo(path);
-            if (!dir.Exists)
-            {
-                return false;
-            }
-
-            return Settings.Sorting.IncludeSubDirectories ?
-                dir.EnumerateFiles("*", SearchOption.AllDirectories).Any(f => f.FullName.IsSupported()) :
-                dir.EnumerateFiles("*", SearchOption.TopDirectoryOnly).Any(f => f.FullName.IsSupported());
-        }
-        catch (Exception ex)
-        {
-            DebugHelper.LogDebug(nameof(NavigationService), nameof(IsDirectoryValid), ex);
-            return false;
-        }
-    }
-
-    private void SortDirectories(List<DirectoryInfo> dirs)
-    {
-        if (!Settings.Sorting.Ascending)
-        {
-            dirs.Sort((x, y) => stringComparer(y.Name, x.Name));
-        }
-        else
-        {
-            dirs.Sort((x, y) => stringComparer(x.Name, y.Name));
         }
     }
 
