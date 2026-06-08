@@ -5,7 +5,6 @@ using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using ImageMagick;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.BatchResize;
 using PicView.Core.Localization;
 using PicView.Core.ViewModels;

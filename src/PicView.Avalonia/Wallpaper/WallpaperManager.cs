@@ -1,14 +1,12 @@
 ﻿using System.Runtime.InteropServices;
-using PicView.Avalonia.ImageHandling;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Wallpaper;
 
 public static class WallpaperManager
 {
-    
-    public static async Task SetAsWallpaper(string path, WallpaperStyle style, MainViewModel vm)
+    // TODO
+    public static async Task SetAsWallpaper(string path, WallpaperStyle style, MainWindowViewModel vm)
     {
 //         if (vm.PlatformService is null)
 //         {

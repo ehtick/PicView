@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.ProcessHandling;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Navigation;
 
@@ -112,7 +112,7 @@ public static class IPC
     /// it reads the incoming arguments and processes them. The arguments can include file paths or commands, 
     /// and they are passed to the main view model to update the UI accordingly.
     /// </remarks>
-    public static async Task StartListeningForArguments(MainViewModel vm)
+    public static async Task StartListeningForArguments(MainWindowViewModel vm)
     {
         if (_isRunning.HasValue && !_isRunning.Value)
         {
@@ -147,7 +147,10 @@ public static class IPC
 #endif
                     // Need to stop taskbar progress if it's running
                     // Otherwise the new taskbar progress will not be updated
-                    vm.PlatformService.StopTaskbarProgress();
+                    if (Application.Current.DataContext is CoreViewModel core)
+                    {
+                        core.PlatformService.StopTaskbarProgress();
+                    }
                     await Dispatcher.UIThread.InvokeAsync(() => 
                     {
                         if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
@@ -157,8 +160,7 @@ public static class IPC
                         // Activating the window works fine in debug mode, but not in AOT release mode 
                         desktop.MainWindow.Activate();
                     });
-                    // await NavigationManager.LoadPicFromStringAsync(line, vm).ConfigureAwait(false);
-
+                    await vm.WindowTabs.LoadFromStringAsync(line).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)

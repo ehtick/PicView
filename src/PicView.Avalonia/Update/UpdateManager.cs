@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Http;
@@ -167,7 +165,7 @@ public static class UpdateManager
     }
     
     private static void UpdateDownloadProgress(
-        MainViewModel vm,
+        //MainViewModel vm,
         long? totalFileSize,
         long? totalBytesDownloaded,
         double? progressPercentage)
@@ -176,7 +174,7 @@ public static class UpdateManager
         {
             return;
         }
-
-        vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded.Value, (ulong)totalFileSize.Value);
+        // TODO
+        //vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded.Value, (ulong)totalFileSize.Value);
     }
 }

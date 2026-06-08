@@ -1,11 +1,10 @@
-using Avalonia;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.ISettings;
 
 namespace PicView.Avalonia.Services;
 
 public class ImageSettingsService : IImageSettingsService
 {
+    // TODO
     public void TriggerScalingModeUpdate(bool nearestNeighbor)
     {
         // var context = Application.Current?.DataContext;

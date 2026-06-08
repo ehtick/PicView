@@ -3,9 +3,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
-using PicView.Core.Localization;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
