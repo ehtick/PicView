@@ -1,8 +1,5 @@
 using Avalonia;
-using Avalonia.Media;
 using Avalonia.Styling;
-using PicView.Core.ColorHandling;
-using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.ColorManagement;
 public static class ThemeManager

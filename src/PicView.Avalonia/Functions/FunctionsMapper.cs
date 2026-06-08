@@ -12,6 +12,7 @@ using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.StartUp;
+using PicView.Avalonia.Wallpaper;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.FileHistory;
 using PicView.Core.FileSorting;
@@ -912,51 +913,21 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     public async ValueTask SetAsWallpaper() =>
         await SetAsWallpaperFilled();
 
-    public async ValueTask SetAsWallpaperTiled()
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        await Task.Run(() => core.PlatformService.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, 0)).ConfigureAwait(false);
-    }
-    
-    public async ValueTask SetAsWallpaperCentered()     
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        await Task.Run(() => core.PlatformService.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, 1)).ConfigureAwait(false);
-    }
-    
-    public async ValueTask SetAsWallpaperStretched()
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        await Task.Run(() => core.PlatformService.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, 2)).ConfigureAwait(false);
-    }
-    
-    public async ValueTask SetAsWallpaperFitted()     
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        await Task.Run(() => core.PlatformService.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, 3)).ConfigureAwait(false);
-    }
-    
-    public async ValueTask SetAsWallpaperFilled()
-    {
-        if (Application.Current.DataContext is not CoreViewModel core)
-        {
-            return;
-        }
-        await Task.Run(() => core.PlatformService.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, 4)).ConfigureAwait(false);
-    }
-    
+    public async ValueTask SetAsWallpaperTiled() =>
+        await WallpaperManager.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, WallpaperStyle.Tile, vm);
+
+    public async ValueTask SetAsWallpaperCentered() =>
+        await WallpaperManager.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, WallpaperStyle.Center, vm);
+
+    public async ValueTask SetAsWallpaperStretched() =>
+        await WallpaperManager.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, WallpaperStyle.Stretch, vm);
+
+    public async ValueTask SetAsWallpaperFitted() =>
+        await WallpaperManager.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, WallpaperStyle.Fit, vm);
+
+    public async ValueTask SetAsWallpaperFilled() =>
+        await WallpaperManager.SetAsWallpaper(vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo.FullName, WallpaperStyle.Fill, vm);
+
     public async ValueTask SetAsLockscreenCentered()
     {
         if (Application.Current.DataContext is not CoreViewModel core)
