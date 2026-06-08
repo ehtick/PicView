@@ -106,7 +106,9 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
             else
             {
                 // Is loading in cache, show thumbnail while loading
-                var thumb = _thumbnailLoader.GetExifThumbnail(targetFile);
+                var thumb = _thumbCache.TryGet(targetFile.FullName, out var cachedThumb) ? cachedThumb 
+                    : _thumbnailLoader.GetExifThumbnail(targetFile);
+                
                 _tab.Image.Value = thumb;
                 _tab.SetLoading();
 
@@ -290,7 +292,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
     #region Repeated Navigation (Throttling)
 
-    public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct)
+    public async ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationTokenSource ct)
     {
         var now = DateTime.UtcNow;
         if (now - _lastRepeatTime < repeatInterval)
@@ -302,7 +304,7 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
 
         var (iteration, isReversed) = IterationHelper.GetIteration(CurrentIndex, Files.Count, to, SkipAmount.One);
         IsReversed = isReversed;
-        await IterateToIndexAsync(iteration, CancellationTokenSource.CreateLinkedTokenSource(ct));
+        await IterateToIndexAsync(iteration, ct);
     }
 
     public void StopRepeatedNavigation()

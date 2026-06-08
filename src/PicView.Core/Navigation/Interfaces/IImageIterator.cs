@@ -69,7 +69,7 @@ public interface IImageIterator : IDisposable
     /// <summary>
     /// Handles continuous navigation (e.g., holding down a key) at a set interval.
     /// </summary>
-    ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationToken ct);
+    ValueTask RepeatNavigateAsync(NavigateTo to, TimeSpan repeatInterval, CancellationTokenSource ct);
     
     /// <summary>
     /// Stops the continuous navigation started by <see cref="RepeatNavigateAsync"/>.

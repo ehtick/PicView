@@ -11,7 +11,6 @@ using PicView.Core.ColorHandling;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
 using PicView.Core.ViewModels;
-using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
 namespace PicView.Avalonia.SettingsManagement;
 public static class SettingsUpdater
@@ -227,7 +226,6 @@ public static class SettingsUpdater
     
     public static void TurnOffScroll(MainWindowViewModel vm)
     {
-        //vm.ToggleScrollBarVisibility.Value = ScrollBarVisibility.Disabled;
         vm.Translation.IsScrolling.Value = TranslationManager.Translation.ScrollingDisabled;
         vm.IsScrollingEnabled.Value = false;
         Settings.Zoom.ScrollEnabled = false;
@@ -235,11 +233,8 @@ public static class SettingsUpdater
     
     public static void TurnOnScroll(MainWindowViewModel vm)
     {
-        // vm.ToggleScrollBarVisibility.Value = ScrollBarVisibility.Visible;
         vm.Translation.IsScrolling.Value = TranslationManager.Translation.ScrollingEnabled;
-        // vm.GlobalSettings.IsScrollingEnabled.Value = true;
         Settings.Zoom.ScrollEnabled = true;
-        // vm.MainWindow.RightControlOffSetMargin.Value = new Thickness(0,0,30,0);
     }
     
     public static async Task ToggleCtrlZoom(MainWindowViewModel vm)

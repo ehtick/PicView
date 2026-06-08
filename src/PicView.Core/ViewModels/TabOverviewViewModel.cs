@@ -273,9 +273,8 @@ public class TabOverviewViewModel
 
         if (isKeyHeldDown)
         {
-            var ct = tab.GetTabCancellation();
             await tab.ImageIterator.RepeatNavigateAsync(direction,
-                TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed), ct.Token).ConfigureAwait(false);
+                TimeSpan.FromSeconds(Settings.UIProperties.NavSpeed), tab.GetTabCancellation()).ConfigureAwait(false);
         }
         else
         {
