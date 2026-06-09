@@ -1,7 +1,9 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 
 namespace PicView.Core.WindowsNT;
 
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public static partial class NativeMethods
 {
     // Alphanumeric sort
@@ -59,8 +61,8 @@ public static partial class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool DeleteDC(IntPtr hdc);
 
-    [LibraryImport("gdi32.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
-    public static partial int StartDocW(IntPtr hdc, ref DOCINFO docinfo);
+    [DllImport("gdi32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern int StartDocW(IntPtr hdc, ref DOCINFO docinfo);
 
     [LibraryImport("gdi32.dll", SetLastError = true)]
     public static partial int EndDoc(IntPtr hdc);
