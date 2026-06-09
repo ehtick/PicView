@@ -88,31 +88,7 @@ public static class ClipboardImageOperations
         {
             return Convert.ToBase64String(await File.ReadAllBytesAsync(path));
         }
-
-        // switch (vm.PicViewer.ImageType.CurrentValue)
-        // {
-        //     case ImageType.AnimatedGif:
-        //     case ImageType.AnimatedWebp:
-        //     case ImageType.Bitmap:
-        //         if (vm.PicViewer.ImageSource.CurrentValue is not Bitmap bitmap)
-        //         {
-        //             return string.Empty;
-        //         }
-        //
-        //         using (var stream = new MemoryStream())
-        //         {
-        //             bitmap.Save(stream, 100);
-        //             return Convert.ToBase64String(stream.ToArray());
-        //         }
-        //
-        //     case ImageType.Svg:
-        //         return string.Empty;
-        //
-        //     default:
-        //         throw new ArgumentOutOfRangeException(nameof(vm.PicViewer.ImageType),
-        //             $"Unsupported image type: {vm.PicViewer.ImageType}");
-        // }
-        return null; // TODO
+        return null; // TODO handle non-image types, such as SVGs
     }
 
     /// <summary>

@@ -174,7 +174,7 @@ public static class ClipboardFileOperations
             return Task.FromResult(false);
         }
 
-        // TODO
+        // TODO implement cut
         return Task.FromResult(false);
     }
 
