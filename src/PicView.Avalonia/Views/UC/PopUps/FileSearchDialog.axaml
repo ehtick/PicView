@@ -6,7 +6,6 @@
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
     x:DataType="viewModels:CoreViewModel"
     Background="Transparent"
-    ClickingOutsideCloses="True"
     ContextMenu="{StaticResource MainMenu}"
     ZIndex="99">
     <customControls:AnimatedPopUp.Resources>
@@ -14,7 +13,7 @@
             <!--  Close  -->
             <MenuItem
                 x:Name="CloseMenuItem"
-                Click="CloseMenuItem_OnClick"
+                Click="CloseMenu"
                 Header="{CompiledBinding Translation.Close.Value,
                                          Mode=OneWay}">
                 <MenuItem.Icon>
@@ -29,78 +28,103 @@
         </ContextMenu>
     </customControls:AnimatedPopUp.Resources>
 
-    <StackPanel
-        Width="425"
-        VerticalAlignment="Center"
-        Background="Transparent">
-
-        <Panel>
-            <Image
-                Width="16"
-                Height="16"
-                Margin="7,0,0,5"
-                HorizontalAlignment="Left"
-                Source="{StaticResource SearchImage}" />
-
-            <customControls:FuncTextBox
-                x:Name="SearchBox"
-                Width="425"
-                Margin="0,0,0,5"
-                Padding="27,7,4,7"
-                VerticalAlignment="Center"
-                Background="{DynamicResource AltBackgroundColor}"
-                BorderBrush="{DynamicResource MainBorderColor}"
-                BorderThickness="1"
-                CornerRadius="3"
-                Focusable="True"
-                FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
-                Foreground="{DynamicResource MainTextColor}"
-                Watermark="{CompiledBinding Translation.Search.Value,
-                                            Mode=OneWay}" />
-        </Panel>
-
-        <Border
+    <Panel>
+        <customControls:IconButton
+            x:Name="CloseButton"
+            Width="50"
+            Height="50"
+            Margin="0,-15,-10,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="{DynamicResource SecondaryButtonBackgroundColor}"
             BorderBrush="{DynamicResource MainBorderColor}"
-            BorderThickness="0,1,1,1"
-            CornerRadius="6"
-            IsVisible="{Binding !!SharedNavigationService.FilteredFileInfos.Value.Count}">
-            <customControls:AutoScrollViewer MaxHeight="550">
-                <Border
-                    Background="#10000000"
-                    Classes="borderStyle"
-                    CornerRadius="6">
-                    <ItemsControl
-                        x:Name="SearchItemsControl"
-                        ItemsSource="{CompiledBinding SharedNavigationService.FilteredFileInfos.Value}"
-                        KeyboardNavigation.TabNavigation="Cycle">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button
-                                    Padding="5,10"
-                                    Background="Transparent"
-                                    BorderBrush="{DynamicResource MainBorderColor}"
-                                    BorderThickness="0,0,0,1"
-                                    Classes="noBorderHover focus"
-                                    Command="{Binding #SearchBox.((viewModels:CoreViewModel)DataContext).SharedNavigationService.LoadFromStringCommand}"
-                                    CommandParameter="{Binding File.FullName}"
-                                    Focusable="True"
-                                    IsTabStop="True">
-                                    <customControls:HighlightableTextBlock
-                                        Margin="2,0,0,0"
-                                        Classes="txt"
-                                        HighlightBrush="{DynamicResource AccentColor}"
-                                        HighlightEnd="{Binding MatchEndIndex}"
-                                        HighlightStart="{Binding MatchStartIndex}"
-                                        IsHitTestVisible="False"
-                                        Text="{Binding File.Name}"
-                                        TextWrapping="Wrap" />
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Border>
-            </customControls:AutoScrollViewer>
-        </Border>
+            BorderThickness="1"
+            Classes="hover"
+            Click="CloseMenu"
+            CornerRadius="50"
+            Data="{StaticResource CloseGeometry}"
+            IconHeight="18"
+            IconWidth="18"
+            ZIndex="1" />
+        <StackPanel
+            Width="425"
+            VerticalAlignment="Center"
+            Background="Transparent">
 
-    </StackPanel>
+            <TextBlock
+                Margin="0,15"
+                Classes="txt bold"
+                Text="{Binding Translation.Search.Value}"
+                TextAlignment="Center" />
+
+            <Panel>
+                <Image
+                    Width="16"
+                    Height="16"
+                    Margin="20,0,0,5"
+                    HorizontalAlignment="Left"
+                    Source="{StaticResource SearchImage}" />
+
+                <customControls:FuncTextBox
+                    x:Name="SearchBox"
+                    Width="400"
+                    Margin="0,0,0,5"
+                    Padding="27,7,4,7"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource AltBackgroundColor}"
+                    BorderBrush="{DynamicResource MainBorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Focusable="True"
+                    FontFamily="/Assets/Fonts/Roboto-Regular.ttf#Roboto"
+                    Foreground="{DynamicResource MainTextColor}"
+                    Watermark="{CompiledBinding Translation.Search.Value,
+                                                Mode=OneWay}" />
+            </Panel>
+
+            <Border
+                BorderBrush="{DynamicResource MainBorderColor}"
+                BorderThickness="0,1,1,1"
+                CornerRadius="6"
+                IsVisible="{Binding !!SharedNavigationService.FilteredFileInfos.Value.Count}">
+                <customControls:AutoScrollViewer MaxHeight="550">
+                    <Border
+                        Background="#10000000"
+                        Classes="borderStyle"
+                        CornerRadius="6">
+                        <ItemsControl
+                            x:Name="SearchItemsControl"
+                            ItemsSource="{CompiledBinding SharedNavigationService.FilteredFileInfos.Value}"
+                            KeyboardNavigation.TabNavigation="Cycle">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Padding="5,10"
+                                        Background="Transparent"
+                                        BorderBrush="{DynamicResource MainBorderColor}"
+                                        BorderThickness="0,0,0,1"
+                                        Classes="noBorderHover focus"
+                                        Command="{Binding #SearchBox.((viewModels:CoreViewModel)DataContext).SharedNavigationService.LoadFromStringCommand}"
+                                        CommandParameter="{Binding File.FullName}"
+                                        Focusable="True"
+                                        IsTabStop="True">
+                                        <customControls:HighlightableTextBlock
+                                            Margin="2,0,0,0"
+                                            Classes="txt"
+                                            HighlightBrush="{DynamicResource AccentColor}"
+                                            HighlightEnd="{Binding MatchEndIndex}"
+                                            HighlightStart="{Binding MatchStartIndex}"
+                                            IsHitTestVisible="False"
+                                            Text="{Binding File.Name}"
+                                            TextWrapping="Wrap" />
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </customControls:AutoScrollViewer>
+            </Border>
+
+        </StackPanel>
+    </Panel>
 </customControls:AnimatedPopUp>

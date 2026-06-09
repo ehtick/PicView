@@ -182,7 +182,7 @@ public partial class FileSearchDialog : AnimatedPopUp
         core.SharedNavigationService?.FilteredFileInfos?.CurrentValue?.Clear();
     }
 
-    private void CloseMenuItem_OnClick(object? sender, RoutedEventArgs e)
+    private void CloseMenu(object? sender, RoutedEventArgs e)
     {
         _ = AnimatedClosing();
     }
