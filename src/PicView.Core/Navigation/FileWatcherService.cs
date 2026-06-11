@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
 using PicView.Core.FileHandling;
 using PicView.Core.FileSorting;
 using PicView.Core.Gallery;
@@ -71,7 +72,7 @@ public class FileWatcherService(
                 EnableRaisingEvents = true,
                 Filter = "*.*",
                 IncludeSubdirectories = Settings.Sorting.IncludeSubDirectories,
-                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size
             };
 
             // We use Observable.FromEvent to bridge standard .NET events to R3
@@ -93,6 +94,12 @@ public class FileWatcherService(
                 h => watcher.Renamed += h,
                 h => watcher.Renamed -= h
             );
+            
+            var changed = Observable.FromEvent<FileSystemEventHandler, FileSystemEventArgs>(
+                h => (s, e) => h(e),
+                h => watcher.Changed += h,
+                h => watcher.Changed -= h
+            );
 
             // AwaitOperation.Sequential ensures we don't process two file events for the same folder at the exact same time, 
             // which protects the Integrity of the 'files' list and the CurrentIndex.
@@ -108,9 +115,13 @@ public class FileWatcherService(
             var fileRenamedSub = renamed.SubscribeAwait(async (e, ct) =>
                 await OnFileRenamedAsync(tab, e), 
                 DebugHelper.LogError(nameof(FileWatcherService), nameof(OnFileRenamedAsync)));
+            
+            var fileChangedSub = changed.Subscribe( (e) =>
+                OnFileChanged(tab, e), 
+                DebugHelper.LogError(nameof(FileWatcherService), nameof(OnFileChanged)));
 
             // Combine disposables
-            var subscription = Disposable.Combine(fileCreatedSub, fileDeletedSub, fileRenamedSub);
+            var subscription = Disposable.Combine(fileCreatedSub, fileDeletedSub, fileRenamedSub, fileChangedSub);
 
             _watchers[directory] = (watcher, subscription, [new WeakReference<TabViewModel>(tab)]);
         }
@@ -357,6 +368,36 @@ public class FileWatcherService(
         }
 
         _cache.Resynchronize(tab.Id, files);
+        tab.UpdateTabTitle();
+    }
+    /// Update the tabs FileInfo to reflect an updated new file size
+    private void OnFileChanged(TabViewModel tab, FileSystemEventArgs e)
+    {
+        if (e.FullPath != tab.FileInfo.CurrentValue.FullName)
+        {
+            return;
+        }
+        
+        var newFile = new FileInfo(e.FullPath);
+        var previousFile = tab.Model?.FileInfo;
+        if (newFile.Length == previousFile.Length)
+        {
+            // Don't do anything if the file size hasn't changed
+            return;
+        }
+        
+        if (tab.ImageIterator.Files is not List<FileInfo> files)
+        {
+            return;
+        }
+        var index = files.FindIndex(x => x.FullName.AsSpan().Equals(newFile.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+        {
+            files[index] = newFile;
+        }
+        
+        tab.Model.FileInfo = newFile;
+        tab.FileInfo.Value = newFile;
         tab.UpdateTabTitle();
     }
 

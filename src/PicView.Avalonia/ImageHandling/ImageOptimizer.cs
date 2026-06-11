@@ -20,31 +20,24 @@ public static class ImageOptimizer
             return;
         }
 
-        try
+        vm.IsLoadingIndicatorShown.Value = true;
+        await Task.Run(() =>
         {
-            vm.IsLoadingIndicatorShown.Value = true;
-            await Task.Run(() =>
+            var file = tab.FileInfo.CurrentValue;
+            try
             {
-                var file = tab.FileInfo.CurrentValue;
-                try
+                var optimizer = new ImageMagick.ImageOptimizer
                 {
-                    var optimizer = new ImageMagick.ImageOptimizer
-                    {
-                        OptimalCompression = true
-                    };
-                    optimizer.LosslessCompress(file.FullName);
-                }
-                catch (Exception ex)
-                {
-                    DebugHelper.LogDebug(nameof(ImageOptimizer), nameof(OptimizeImageAsync), ex);
-                }
-            });
-            await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation());
-        }
-        finally
-        {
-            tab.UpdateTabTitle();
-            vm.IsLoadingIndicatorShown.Value = false;
-        }
+                    OptimalCompression = true
+                };
+                optimizer.LosslessCompress(file.FullName);
+            }
+            catch (Exception ex)
+            {
+                DebugHelper.LogDebug(nameof(ImageOptimizer), nameof(OptimizeImageAsync), ex);
+            }
+        });
+        await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation());
+        vm.IsLoadingIndicatorShown.Value = false;
     }
 }
