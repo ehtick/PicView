@@ -241,15 +241,7 @@ public static class StartUpHelper
 
     private static void HandleWindowControlSettings(CoreViewModel vm, IClassicDesktopStyleApplicationLifetime desktop)
     {
-        if (Settings.Zoom.ScrollEnabled)
-        {
-            //SettingsUpdater.TurnOnScroll(vm);
-        }
-        else
-        {
-      //      vm.MainWindow.ToggleScrollBarVisibility.Value = ScrollBarVisibility.Disabled;
-            vm.MainWindows.ActiveWindow.CurrentValue.IsScrollingEnabled.Value = false;
-        }
+        vm.MainWindows.ActiveWindow.CurrentValue.IsScrollingEnabled.Value = Settings.Zoom.ScrollEnabled;
 
         if (Settings.WindowProperties.TopMost)
         {
@@ -293,21 +285,6 @@ public static class StartUpHelper
             };
             vm.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.CurrentView.Value = startUpMenu;
             TabNavigationInitializer.Initialize(vm);
-        }
-    }
-
-    private static void HandleNormalWindow(CoreViewModel vm, Window window, bool setPos)
-    {
-        WindowFunctions.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
-        if (Settings.UIProperties.ShowInterface)
-        {
-         //   vm.MainWindow.IsTopToolbarShown.Value = true;
-        //    vm.MainWindow.IsBottomToolbarShown.Value = Settings.UIProperties.ShowBottomNavBar;
-        }
-
-        if (setPos)
-        {
-            WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
     }
 
