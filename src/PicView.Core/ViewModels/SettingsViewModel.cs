@@ -1,6 +1,7 @@
 using PicView.Core.Config;
 using PicView.Core.Localization;
 using PicView.Core.ColorHandling;
+using PicView.Core.DebugTools;
 using PicView.Core.Gallery;
 using PicView.Core.ISettings;
 using PicView.Core.Navigation;
@@ -66,10 +67,11 @@ public class SettingsViewModel : IDisposable
         {
             SelectedCategory.Value = category;
             IsOverviewVisible.Value = false;
-        }).AddTo(ref _disposables);
+        }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(NavigateToCategoryCommand)))
+        .AddTo(ref _disposables);
 
-        IsOverviewVisible.Subscribe(_ => OnStateChanged()).AddTo(ref _disposables);
-        SelectedCategory.Subscribe(_ => OnStateChanged()).AddTo(ref _disposables);
+        IsOverviewVisible.Subscribe(_ => OnStateChanged(), DebugHelper.LogError(nameof(SettingsViewModel), nameof(IsOverviewVisible))).AddTo(ref _disposables);
+        SelectedCategory.Subscribe(_ => OnStateChanged(), DebugHelper.LogError(nameof(SettingsViewModel), nameof(SelectedCategory))).AddTo(ref _disposables);
 
         _currentState = GetCurrentState();
 
@@ -120,8 +122,8 @@ public class SettingsViewModel : IDisposable
             {
                 Suggestions.Value = [];
             }
-
-        }).AddTo(ref _disposables);
+        }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SearchQuery)))
+        .AddTo(ref _disposables);
 
         SelectedSuggestion.Subscribe(item =>
         {
@@ -132,7 +134,8 @@ public class SettingsViewModel : IDisposable
 
             SearchQuery.Value = item.Name;
             Suggestions.Value = [];
-        }).AddTo(ref _disposables);
+        }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SelectedSuggestion)))
+        .AddTo(ref _disposables);
 
         UpdateNavigationProperties();
     }
@@ -320,34 +323,39 @@ public class SettingsViewModel : IDisposable
             {
                 Settings.UIProperties.NavSpeed = x;
                 GetNavSpeed.Value = Math.Round(Settings.UIProperties.NavSpeed, 2);
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
         Observable.EveryValueChanged(this, x => x.ZoomSpeed.CurrentValue)
             .Subscribe(x =>
             {
                 Settings.Zoom.ZoomSpeed = x;
                 GetZoomSpeed.Value = Math.Round(Settings.Zoom.ZoomSpeed, 2);
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
         Observable.EveryValueChanged(this, x => x.SlideshowSpeed.CurrentValue)
             .Subscribe(x =>
             {
                 var roundedValue = Math.Round(x, 2);
                 Settings.UIProperties.SlideShowTimer = roundedValue;
                 GetSlideshowSpeed.Value = roundedValue;
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
 
         Observable.EveryValueChanged(this, x => x.IsShowingPermanentDeletionDialog.CurrentValue)
             .SubscribeAwait(async (x, _) =>
             {
                 Settings.UIProperties.ShowPermanentDeletionConfirmation = x;
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
 
         Observable.EveryValueChanged(this, x => x.IsShowingRecycleDialog.CurrentValue)
             .SubscribeAwait(async (x, _) =>
             {
                 Settings.UIProperties.ShowRecycleConfirmation = x;
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
 
         Observable.EveryValueChanged(this, x => x.IsResettingZoomOnImageChange.CurrentValue)
             .Subscribe(x => Settings.Zoom.ResetZoomOnChange = x).AddTo(ref _disposables);
@@ -388,14 +396,16 @@ public class SettingsViewModel : IDisposable
                  OpenLastFile.Value = x == 1;
                  Settings.StartUp.OpenLastFile = x == 1;
                  await SaveSettingsAsync();
-             }).AddTo(ref _disposables);
+             }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+             .AddTo(ref _disposables);
              
         Observable.EveryValueChanged(this, x => x.DeletionIndex.CurrentValue)
              .SubscribeAwait(async (x, _) => {
                  IsNavigatingBackwardsWhenDeleting.Value = x == 1;
                  Settings.Navigation.IsNavigatingBackwardsWhenDeleting = x == 1;
                  await SaveSettingsAsync();
-             }).AddTo(ref _disposables);
+             }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+             .AddTo(ref _disposables);
         
         // Appearance
         Observable.EveryValueChanged(this, x => x.ThemeIndex.CurrentValue)
@@ -403,19 +413,22 @@ public class SettingsViewModel : IDisposable
             {
                 _themeService?.SetTheme(x);
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
             
         SetColorThemeCommand
             .Subscribe(x => {
             ColorThemeIndex.Value = (int)x;
             _themeService?.SetColorTheme((int)x);
-        }).AddTo(ref _disposables);
+        }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+        .AddTo(ref _disposables);
 
         SetBackgroundCommand
             .Subscribe(x => {
             BackgroundChoice.Value = (int)x;
             _themeService?.SetBackground((int)x);
-        }).AddTo(ref _disposables);
+        }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+        .AddTo(ref _disposables);
 
         // Image
         Observable.EveryValueChanged(this, x => x.ImageScalingIndex.CurrentValue)
@@ -425,7 +438,8 @@ public class SettingsViewModel : IDisposable
                 Settings.ImageScaling.IsScalingSetToNearestNeighbor = isNearestNeighbor;
                 _imageSettingsService?.TriggerScalingModeUpdate(isNearestNeighbor);
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
             
         // Zoom
         Observable.EveryValueChanged(this, x => x.CtrlZoom.CurrentValue)
@@ -434,7 +448,8 @@ public class SettingsViewModel : IDisposable
                 // Sync MouseWheelBehavior if needed
                 MouseWheelBehavior.Value = x ? 0 : 1;
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
 
         Observable.EveryValueChanged(this, x => x.ScrollDirectionIndex.CurrentValue)
             .SubscribeAwait(async (x, _) => {
@@ -442,14 +457,16 @@ public class SettingsViewModel : IDisposable
                  HorizontalReverseScroll.Value = reverse;
                  Settings.Zoom.HorizontalReverseScroll = reverse;
                  await SaveSettingsAsync();
-             }).AddTo(ref _disposables);
+             }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
              
         // Mouse
         Observable.EveryValueChanged(this, x => x.MouseSideButtonBehaviorIndex.CurrentValue)
             .SubscribeAwait(async (x, _) => {
                 Settings.Navigation.MouseSideButtonNavigationMode = (NavigationMode)x;
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
 
         Observable.EveryValueChanged(this, x => x.MouseWheelBehavior.CurrentValue)
             .SubscribeAwait(async (x, _) => {
@@ -457,7 +474,8 @@ public class SettingsViewModel : IDisposable
                 Settings.Zoom.CtrlZoom = ctrlZoom;
                 if (CtrlZoom.Value != ctrlZoom) CtrlZoom.Value = ctrlZoom;
                 await SaveSettingsAsync();
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
             
         // Language
         Observable.EveryValueChanged(this, x => x.UserLanguage.CurrentValue)
@@ -470,12 +488,14 @@ public class SettingsViewModel : IDisposable
                         await _languageService.UpdateLanguageAsync(x);
                     }
                 }
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
         
         GalleryMouseWheelBehavior
             .Subscribe(x => {
                 Settings.Gallery.GalleryMouseWheelBehavior = (GalleryMouseWheel)x;
-            }).AddTo(ref _disposables);
+            }, DebugHelper.LogError(nameof(SettingsViewModel), nameof(SubscriptionSettingsUpdate)))
+            .AddTo(ref _disposables);
     }
     
     private readonly record struct NavigationState(bool IsOverview, SettingsCategory Category);
