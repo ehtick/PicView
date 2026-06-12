@@ -57,14 +57,11 @@ public static class ToggleUIVisibility
             vm.IsBottomToolbarShown.Value = false;
             vm.Translation.IsShowingUI.Value = TranslationManager.Translation.ShowUI;
             tab.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
-            if (tab.Gallery.IsGalleryDocked.CurrentValue)
+            if (!Settings.Gallery.ShowDockedGalleryInHiddenUI)
             {
-                if (!Settings.Gallery.ShowDockedGalleryInHiddenUI)
-                {
-                    // Hide gallery if not enabled
-                    tab.Gallery.GalleryMode.Value = GalleryMode2.Closed;
-                    tab.Gallery.IsGalleryDocked.Value = false;
-                }
+                // Hide gallery if not enabled
+                tab.Gallery.GalleryMode.Value = GalleryMode2.Closed;
+                tab.Gallery.IsGalleryDocked.Value = false;
             }
         }
         else
@@ -84,7 +81,7 @@ public static class ToggleUIVisibility
             }
             Settings.UIProperties.ShowInterface = true;
             vm.TitlebarHeight.Value = SizeDefaults.MainTitlebarHeight;
-            if (tab.Gallery.IsGalleryDocked.CurrentValue)
+            if (Settings.Gallery.IsGalleryDocked)
             {
                 if (tab.ImageIterator.Files.Count > 0)
                 {
