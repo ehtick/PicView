@@ -38,11 +38,15 @@
                 Foreground="{DynamicResource MainTextColor}"
                 IsVisible="{Binding TopTitlebarViewModel.IsMainMenuVisible.Value}"
                 ZIndex="9">
+
+                <!--  File  -->
                 <MenuItem
                     x:Name="FileMenuItem"
                     Height="{Binding TitlebarHeight.Value, Mode=OneWay}"
-                    MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}"
-                    Header="{Binding Translation.File}">
+                    MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.File.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Open  -->
                     <MenuItem
@@ -148,7 +152,10 @@
                 </MenuItem>
 
                 <!--  Edit  -->
-                <MenuItem MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}" Header="{CompiledBinding Translation.Edit, Mode=OneWay}">
+                <MenuItem x:Name="EditMenuItem" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.Edit.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Copy image  -->
                     <MenuItem
@@ -244,7 +251,11 @@
                 </MenuItem>
 
                 <!--  View  -->
-                <MenuItem MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}" Header="{CompiledBinding Translation.View, Mode=OneWay}">
+                <MenuItem
+                    x:Name="ViewMenuItem"
+                    MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}"
+                    Header="{CompiledBinding Translation.View,
+                                             Mode=OneWay}">
 
                     <!--  Change background  -->
                     <MenuItem
@@ -365,7 +376,10 @@
                 </MenuItem>
 
                 <!--  Image  -->
-                <MenuItem MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}" Header="{CompiledBinding Translation.Image, Mode=OneWay}">
+                <MenuItem x:Name="ImageMenuItem" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.Image.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Exif window  -->
                     <MenuItem
@@ -517,7 +531,10 @@
                 </MenuItem>
 
                 <!--  Navigate  -->
-                <MenuItem MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}" Header="{Binding Translation.Navigate, Mode=OneWay}">
+                <MenuItem x:Name="NavigateMenuItem" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.Navigate.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Next  -->
                     <MenuItem
@@ -817,7 +834,10 @@
                 </MenuItem>
 
                 <!--  Settings  -->
-                <MenuItem MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}" Header="{CompiledBinding Translation.Settings.Value, Mode=OneWay}">
+                <MenuItem x:Name="SettingsMenuItem" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.Settings.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Toggle Subdirectories  -->
                     <MenuItem
@@ -924,7 +944,10 @@
                 </MenuItem>
 
                 <!--  Help  -->
-                <MenuItem Header="{CompiledBinding Translation.Help, Mode=OneWay}">
+                <MenuItem x:Name="HelpMenuItem" MaxWidth="{Binding TopTitlebarViewModel.MaxItemWidth.Value}">
+                    <MenuItem.Header>
+                        <TextBlock Classes="txt" Text="{Binding Translation.Help.Value, Mode=OneWay}" />
+                    </MenuItem.Header>
 
                     <!--  Show about window  -->
                     <MenuItem

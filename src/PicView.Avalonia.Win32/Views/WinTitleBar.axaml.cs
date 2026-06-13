@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.CustomControls;
@@ -67,33 +68,64 @@ public partial class WinTitleBar : MainTitleBar
                     // Overflow buttons if the window is too small
                     if (Bounds.Width - SearchButton.Bounds.Width - DropDownMenuButton.Bounds.Width - CreateTabButton.Bounds.Width < SizeDefaults.SecondaryWindowMinWidth)
                     {
-                        TruncateMenu(vm);
+                        OpenTruncatedMenu(vm);
                     }
                     else
                     {
-                        FullMenu(vm);
+                        OpenRegularSizedMenu(vm);
                     }
-                    MainMenu.Open();
-                    FileMenuItem.Open();
                 }
                 else
                 {
-                    MainMenu.Close();
-                    FullMenu(vm);
+                    ClosedMenu(vm);
                 }
             }, DebugHelper.LogError(nameof(WinTitleBar), nameof(InitializeEventHandlers)))
             .AddTo(mainWindow.Disposables);
     }
 
-    private void TruncateMenu(MainWindowViewModel vm)
+    private void OpenTruncatedMenu(MainWindowViewModel vm)
     {
+        OpenMenu();
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = false;
         LogoBorder.IsVisible = false;
-        vm.TopTitlebarViewModel.MaxItemWidth.Value = 60;
+        vm.TopTitlebarViewModel.MaxItemWidth.Value = 55;
+        
+        var truncatedPadding = new Thickness(2,0,0,0);
+        FileMenuItem.Padding = truncatedPadding;
+        EditMenuItem.Padding = truncatedPadding;
+        ViewMenuItem.Padding = truncatedPadding;
+        ImageMenuItem.Padding = truncatedPadding;
+        NavigateMenuItem.Padding = truncatedPadding;
+        SettingsMenuItem.Padding = truncatedPadding;
+        HelpMenuItem.Padding = truncatedPadding;
     }
     
-    private void FullMenu(MainWindowViewModel vm)
+    private void OpenRegularSizedMenu(MainWindowViewModel vm)
     {
+        OpenMenu();
+        vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
+        LogoBorder.IsVisible = true;
+        vm.TopTitlebarViewModel.MaxItemWidth.Value = double.NaN;
+                
+        var regularPadding = new Thickness(8);
+        FileMenuItem.Padding = regularPadding;
+        EditMenuItem.Padding = regularPadding;
+        ViewMenuItem.Padding = regularPadding;
+        ImageMenuItem.Padding = regularPadding;
+        NavigateMenuItem.Padding = regularPadding;
+        SettingsMenuItem.Padding = regularPadding;
+        HelpMenuItem.Padding = regularPadding;
+    }
+    
+    private void OpenMenu()
+    {
+        MainMenu.Open();
+        FileMenuItem.Open();
+    }
+    
+    private void ClosedMenu(MainWindowViewModel vm)
+    {
+        MainMenu.Close();
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = true;
         LogoBorder.IsVisible = true;
         vm.TopTitlebarViewModel.MaxItemWidth.Value = double.NaN;
