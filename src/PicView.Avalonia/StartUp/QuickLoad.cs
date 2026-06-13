@@ -6,6 +6,7 @@ using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.ArchiveHandling;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.FileHistory;
@@ -53,7 +54,7 @@ public static class QuickLoad
                         RevertToStartUpMenuOnFail(core);
                         return;
                     }
-                    await LoadSingleFileAsync(core, files[0], files).ConfigureAwait(false);
+                    await LoadSingleFileAsync(core, files[0], continueFromLeftOff, files).ConfigureAwait(false);
                     return;
                 }
                 case FileTypeResolver.LoadAbleFileType.Web:
@@ -73,7 +74,7 @@ public static class QuickLoad
         }
         else
         {
-            await LoadSingleFileAsync(core, fileInfo).ConfigureAwait(false);
+            await LoadSingleFileAsync(core, fileInfo, continueFromLeftOff).ConfigureAwait(false);
         }
     }
 
@@ -134,7 +135,10 @@ public static class QuickLoad
         }
     }
 
-    private static async ValueTask LoadSingleFileAsync(CoreViewModel core, FileInfo fileInfo, List<FileInfo>? files = null)
+    private static async ValueTask LoadSingleFileAsync(CoreViewModel core,
+        FileInfo fileInfo,
+        bool continueFromLeftOff,
+        List<FileInfo>? files = null)
     {
         Dispatcher.UIThread.Invoke(() =>
         {
@@ -157,9 +161,26 @@ public static class QuickLoad
         var tab = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
         tab.Image.Value = imageModel.Image;
         tab.Model = imageModel;
+        FileInfo initialDirectory;
+        if (continueFromLeftOff)
+        {
+            if (!string.IsNullOrWhiteSpace(Settings.StartUp.StartUpDirectory) && !ArchiveExtraction.IsArchived)
+            {
+                initialDirectory = fileInfo.FullName.Contains(Settings.StartUp.StartUpDirectory) ?
+                    new FileInfo(Settings.StartUp.StartUpDirectory) : new FileInfo(fileInfo.DirectoryName);
+            }
+            else
+            {
+                initialDirectory = fileInfo;
+            }
+        }
+        else
+        {
+            initialDirectory = fileInfo;
+        }
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            files ??= core.PlatformService.GetFiles(fileInfo);
+            files ??= core.PlatformService.GetFiles(initialDirectory);
             var index = files.FindIndex(x =>
                 x.FullName.AsSpan().Equals(fileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
             var (nextIndex, _) = IterationHelper.GetIteration(index, files.Count, NavigateTo.Next, SkipAmount.One);
@@ -191,6 +212,10 @@ public static class QuickLoad
         FileHistoryManager.Add(fileInfo.FullName);
 
         await LoadGalleryIfNeeded(core, tab).ConfigureAwait(false);
+        if (continueFromLeftOff)
+        {
+            Settings.StartUp.StartUpDirectory = initialDirectory.DirectoryName;
+        }
     }
     
     private static async ValueTask LoadArchiveFileAsync(CoreViewModel core, FileInfo source)
