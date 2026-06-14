@@ -145,7 +145,7 @@ public static class WindowResizing
     {
         var size = GetSize(width, height, secondWidth, secondHeight, vm.WindowTabs.ActiveTab.CurrentValue.RotationAngle.CurrentValue, vm);
 
-        if (size is null || size.Value.WindowWidth == 0 || size.Value.WindowHeight == 0)
+        if (size is null || size.Value.WindowWidth is 0 || size.Value.WindowHeight is 0)
         {
             return;
         }

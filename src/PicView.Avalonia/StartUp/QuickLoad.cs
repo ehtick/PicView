@@ -156,28 +156,13 @@ public static class QuickLoad
             // Just catching the exception here means it will still load correctly regardless
             DebugHelper.LogDebug(nameof(QuickLoad), nameof(QuickLoadAsync), e);
         }
-
-        var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
         var tab = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
+        tab.SetLoading();
+        var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
         tab.Image.Value = imageModel.Image;
         tab.Model = imageModel;
-        FileInfo initialDirectory;
-        if (continueFromLeftOff)
-        {
-            if (!string.IsNullOrWhiteSpace(Settings.StartUp.StartUpDirectory) && !ArchiveExtraction.IsArchived)
-            {
-                initialDirectory = fileInfo.FullName.Contains(Settings.StartUp.StartUpDirectory) ?
-                    new FileInfo(Settings.StartUp.StartUpDirectory) : new FileInfo(fileInfo.DirectoryName);
-            }
-            else
-            {
-                initialDirectory = fileInfo;
-            }
-        }
-        else
-        {
-            initialDirectory = fileInfo;
-        }
+        var initialDirectory = GetInitialDirectory(!Settings.ImageScaling.ShowImageSideBySide, fileInfo);
+
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             files ??= core.PlatformService.GetFiles(initialDirectory);
@@ -193,9 +178,10 @@ public static class QuickLoad
         }
         else
         {
+            UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
             if (files is null)
             {
-                TabNavigationInitializer.Initialize(core, fileInfo);
+                TabNavigationInitializer.Initialize(core, initialDirectory);
             }
             else
             {
@@ -214,7 +200,7 @@ public static class QuickLoad
         await LoadGalleryIfNeeded(core, tab).ConfigureAwait(false);
         if (continueFromLeftOff)
         {
-            Settings.StartUp.StartUpDirectory = initialDirectory.DirectoryName;
+            Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
         }
     }
     
@@ -270,5 +256,20 @@ public static class QuickLoad
         {
             Settings.Gallery.DockPosition = GalleryDockPosition.Closed;
         }
+    }
+
+    private static FileInfo GetInitialDirectory(bool continueFromLeftOff, FileInfo fileInfo)
+    {
+        if (!continueFromLeftOff)
+        {
+            return fileInfo;
+        }
+
+        if (!string.IsNullOrWhiteSpace(Settings.StartUp.StartUpDirectory) && !ArchiveExtraction.IsArchived)
+        {
+            return fileInfo.FullName.Contains(Settings.StartUp.StartUpDirectory) ?
+                new FileInfo(Settings.StartUp.StartUpDirectory) : new FileInfo(fileInfo.DirectoryName);
+        }
+        return fileInfo;
     }
 }
