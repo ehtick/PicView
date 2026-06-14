@@ -1,34 +1,31 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
-using PicView.Avalonia.Gallery;
-using PicView.Avalonia.Navigation;
-using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.Views.UC;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.UI;
 
 /// <summary>
 ///     Handles fade-in and fade-out animation for a button (or button group) based on pointer proximity.
 /// </summary>
-public class HoverFadeButtonHandler
+public class HoverFadeButtonHandler : IDisposable
 {
     private readonly Control? _childButton;
     private readonly Control _mainButton;
-    private readonly MainViewModel _vm;
     private CancellationTokenSource? _fadeCts;
 
     /// <summary>
     ///     Initializes the hover fade logic for a button or button group.
     /// </summary>
     /// <param name="mainButton">The main button or parent control.</param>
-    /// <param name="vm">The ViewModel for context (navigation, settings, etc).</param>
     /// <param name="childButton">Optional child button (e.g., an icon inside the button).</param>
-    public HoverFadeButtonHandler(Control mainButton, MainViewModel vm, Control? childButton = null)
+    public HoverFadeButtonHandler(Control mainButton, Control? childButton = null)
     {
         _mainButton = mainButton ?? throw new ArgumentNullException(nameof(mainButton));
         _childButton = childButton;
-        _vm = vm ?? throw new ArgumentNullException(nameof(vm));
 
         AttachEvents();
     }
@@ -41,6 +38,8 @@ public class HoverFadeButtonHandler
 
     private void AttachEvents()
     {
+        _mainButton.DetachedFromLogicalTree += OnDetachedFromLogicalTree;
+
         _mainButton.PointerEntered += OnPointerEntered;
         _mainButton.PointerExited += OnPointerExited;
         if (_childButton == null)
@@ -50,6 +49,11 @@ public class HoverFadeButtonHandler
 
         _childButton.PointerEntered += OnPointerEntered;
         _childButton.PointerExited += OnPointerExited;
+    }
+
+    private void OnDetachedFromLogicalTree(object? sender, LogicalTreeAttachmentEventArgs e)
+    {
+        Dispose();
     }
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -71,7 +75,7 @@ public class HoverFadeButtonHandler
         }
         
         // Delay fade-out to ensure pointer is truly outside both parent and child
-        Dispatcher.UIThread.Post(async () =>
+        Dispatcher.CurrentDispatcher.Post(async () =>
         {
             await Task.Delay(30); // short delay to allow pointer transitions
             if (!IsPointerOver())
@@ -83,18 +87,24 @@ public class HoverFadeButtonHandler
 
     private bool ShouldShowButton()
     {
-        // You may want to extend this with more checks
-        if (!Settings.UIProperties.ShowAltInterfaceButtons || GalleryFunctions.IsFullGalleryOpen)
+        if (!Settings.UIProperties.ShowAltInterfaceButtons)
         {
             return false;
         }
 
-        if (_childButton != null && !NavigationManager.CanNavigate(_vm))
+        if (_mainButton is HoverBar hoverBar)
         {
-            return false;
+            if (!Settings.UIProperties.ShowHoverNavigationBar || Settings.UIProperties.ShowBottomNavBar)
+            {
+                hoverBar.IsVisible = false;
+                return false;
+            }
+            if (!Settings.UIProperties.ShowInterface && Settings.UIProperties.ShowHoverNavigationBar)
+            {
+                hoverBar.IsVisible = true;
+            }
         }
-
-        return _childButton == null || NavigationManager.GetCount > 1;
+        return true;
     }
 
     /// <summary>
@@ -102,7 +112,7 @@ public class HoverFadeButtonHandler
     /// </summary>
     private bool IsPointerOver()
     {
-        if (_mainButton.IsPointerOver)
+        if ((bool)_mainButton?.IsPointerOver)
         {
             return true;
         }
@@ -131,16 +141,6 @@ public class HoverFadeButtonHandler
     private async Task AnimateOpacityAsync(Control control, double targetOpacity, double durationSeconds,
         CancellationToken token)
     {
-        if (control == UIHelper.GetHoverBar)
-        {
-            // Fix instances where hover bar is visible, but shouldn't be
-            // TODO: find a cleaner solution
-            if (!_vm.HoverbarViewModel.IsHoverbarVisible.Value)
-            {
-                control.IsVisible = false;
-                return;
-            }
-        }
         var from = control.Opacity;
         if (Math.Abs(from - targetOpacity) < 0.01)
         {
@@ -148,17 +148,11 @@ public class HoverFadeButtonHandler
         }
 
         var anim = AnimationsHelper.OpacityAnimation(from, targetOpacity, durationSeconds);
-        try
+        await anim.RunAsync(control, token);
+        // After fade out, ensure fully hidden (in case animation didn't complete)
+        if (Math.Abs(targetOpacity) < 0.01)
         {
-            await anim.RunAsync(control, token);
-            // After fade out, ensure fully hidden (in case animation didn't complete)
-            if (Math.Abs(targetOpacity) < 0.01)
-            {
-                control.Opacity = 0;
-            }
-        }
-        catch (TaskCanceledException)
-        {
+            control.Opacity = 0;
         }
     }
 
@@ -166,5 +160,30 @@ public class HoverFadeButtonHandler
     {
         _mainButton.Opacity = opacity;
         _childButton?.Opacity = opacity;
+    }
+
+    public void Dispose()
+    {
+        _mainButton.DetachedFromLogicalTree -= OnDetachedFromLogicalTree;
+        _mainButton.PointerEntered -= OnPointerEntered;
+        _mainButton.PointerExited -= OnPointerExited;
+
+        if (_childButton != null)
+        {
+            _childButton.PointerEntered -= OnPointerEntered;
+            _childButton.PointerExited -= OnPointerExited;
+        }
+
+        try
+        {
+            _fadeCts?.Cancel();
+            _fadeCts?.Dispose();
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(HoverFadeButtonHandler), nameof(Dispose), e);
+        }
+        
+        GC.SuppressFinalize(this);
     }
 }

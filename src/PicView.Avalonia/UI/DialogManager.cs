@@ -3,8 +3,8 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Crop;
 using PicView.Avalonia.Navigation;
-using PicView.Avalonia.ViewModels;
 using PicView.Avalonia.Views.UC.PopUps;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.UI;
 
@@ -15,19 +15,12 @@ public static class DialogManager
     /// <summary>
     /// Handles close action based on current application state
     /// </summary>
-    public static async Task HandleShouldClosing(MainViewModel vm)
+    public static async Task HandleShouldClosing(MainWindowViewModel vm)
     {
-        // Handle open menus
-        if (MenuManager.IsAnyMenuOpen(vm))
-        {
-            MenuManager.CloseMenus(vm);
-            return;
-        }
-
         // Handle cropping mode
-        if (CropFunctions.IsCropping)
+        if (CropManager.IsCropping)
         {
-            CropFunctions.CloseCropControl(vm);
+            CropManager.CloseCropControl(vm);
             return;
         }
 
@@ -46,15 +39,15 @@ public static class DialogManager
     {
         if (Settings.UIProperties.ShowConfirmationOnEsc)
         {
-            UIHelper.GetMainView?.MainGrid.Children.Add(new CloseDialog());
+            UIHelper.GetMainView?.MainPanel.Children.Add(new CloseDialog());
         }
         else
         {
-            Close();
+            CloseMainWindow();
         }
     }
 
-    public static void Close()
+    public static void CloseMainWindow()
     {
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -64,27 +57,24 @@ public static class DialogManager
 
     public static void AddFileSearchDialog()
     {
-        if (!NavigationManager.CanNavigate(UIHelper.GetMainView.DataContext as MainViewModel))
+        if (UIHelper.GetMainView.MainPanel.Children.OfType<FileSearchDialog>().Any() || UIHelper.GetMainView.DataContext is not MainWindowViewModel vm)
         {
             return;
         }
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<FileSearchDialog>().Any())
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper.GetMainView.MainGrid.Children.Add(new FileSearchDialog());
+        vm.TopTitlebarViewModel.CloseDropDownMenu();
+        UIHelper.GetMainView.MainPanel.Children.Add(new FileSearchDialog());
+        IsDialogOpen = true;
     }
 
     public static void AddNavigationDialog()
     {
-        if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
-        {
-            return;
-        }
-
-        MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
+        // TODO
+        // if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
+        // {
+        //     return;
+        // }
+        //
+        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
+        // UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
     }
 }

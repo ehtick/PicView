@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using PicView.Core.Config;
 using PicView.Core.Models;
 using R3;
 
@@ -6,6 +7,8 @@ namespace PicView.Core.ViewModels;
 
 public class KeybindingsViewModel : IDisposable
 {
+    public KeybindingWindowConfig WindowConfig { get; set; }
+    
     private readonly CompositeDisposable _disposables = new();
     
     public BindableReactiveProperty<string> FilterText { get; } = new(string.Empty);
@@ -25,6 +28,7 @@ public class KeybindingsViewModel : IDisposable
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> SortFilesKeys { get; } = new([]);
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> CopyKeys { get; } = new([]);
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> ToolWindowsKeys { get; } = new([]);
+    public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> TabKeys { get; } = new([]);
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> WindowManagementKeys { get; } = new([]);
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> WindowScalingKeys { get; } = new([]);
     public BindableReactiveProperty<ObservableCollection<KeyBindingsModel>> StarRatingKeys { get; } = new([]);

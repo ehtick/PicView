@@ -1,4 +1,4 @@
-﻿// ReSharper disable PropertyCanBeMadeInitOnly.Global
+// ReSharper disable PropertyCanBeMadeInitOnly.Global
 
 namespace PicView.Core.Localization;
 
@@ -47,8 +47,6 @@ public class LanguageModel
     public string? Blue { get; set; }
     public string? Blur { get; set; }
     public string? Bottom { get; set; }
-    public string? BottomGalleryItemSize { get; set; }
-    public string? BottomGalleryThumbnailStretch { get; set; }
     public string? Brightness { get; set; }
     public string? CameraMaker { get; set; }
     public string? CameraModel { get; set; }
@@ -69,6 +67,7 @@ public class LanguageModel
     public string? Close { get; set; }
     public string? CloseApp { get; set; }
     public string? CloseGallery { get; set; }
+    public string? CloseTab { get; set; }
     public string? CloseWindowPrompt { get; set; }
     public string? CloudyWeather { get; set; }
     public string? Color { get; set; }
@@ -118,6 +117,8 @@ public class LanguageModel
     public string? DisableFadeInButtonsOnHover { get; set; }
     public string? DiskSize { get; set; }
     public string? DoubleClick { get; set; }
+    public string? DockedGalleryItemSize { get; set; }
+    public string? DockedGalleryThumbnailStretch { get; set; }
     public string? Down { get; set; }
     public string? Downloading { get; set; }
     public string? Dpi { get; set; }
@@ -129,6 +130,7 @@ public class LanguageModel
     public string? Effects { get; set; }
     public string? EffectsTooltip { get; set; }
     public string? Enter { get; set; }
+    public string? ErrorLoadingImage { get; set; }
     public string? Esc { get; set; }
     public string? EscCloseTooltip { get; set; }
     public string? ExifVersion { get; set; }
@@ -191,7 +193,7 @@ public class LanguageModel
     public string? Hard { get; set; }
     public string? Height { get; set; }
     public string? Help { get; set; }
-    public string? HideBottomGallery { get; set; }
+    public string? HideDockedGallery { get; set; }
     public string? HideBottomToolbar { get; set; }
     public string? HideHoverNavigationBar { get; set; }
     public string? HideUI { get; set; }
@@ -211,6 +213,7 @@ public class LanguageModel
     public string? InfoWindowTitle { get; set; }
     public string? InterfaceConfiguration { get; set; }
     public string? ISOSpeed { get; set; }
+    public string? ItemSpacing { get; set; }
     public string? Landscape { get; set; }
     public string? LandscapeCrisp { get; set; }
     public string? Language { get; set; }
@@ -224,6 +227,7 @@ public class LanguageModel
     public string? Lighting { get; set; }
     public string? LightSource { get; set; }
     public string? LightTheme { get; set; }
+    public string? LineSpacing { get; set; }
     public string? Loading { get; set; }
     public string? Longitude { get; set; }
     public string? Looping { get; set; }
@@ -259,6 +263,7 @@ public class LanguageModel
     public string? Navigation { get; set; }
     public string? NearestNeighbor { get; set; }
     public string? NegativeColors { get; set; }
+    public string? NewTab { get; set; }
     public string? NewWindow { get; set; }
     public string? NextArchive { get; set; }
     public string? NextFolder { get; set; }
@@ -317,6 +322,7 @@ public class LanguageModel
     public string? Red { get; set; }
     public string? RedEyeReduction { get; set; }
     public string? Reload { get; set; }
+    public string? Remove { get; set; }
     public string? RemoveAll { get; set; }
     public string? RemoveImageData { get; set; }
     public string? RemoveStarRating { get; set; }
@@ -375,8 +381,12 @@ public class LanguageModel
     public string? Sharpness { get; set; }
     public string? Shift { get; set; }
     public string? ShowAllSettingsWindow { get; set; }
-    public string? ShowBottomGallery { get; set; }
-    public string? ShowBottomGalleryWhenUiIsHidden { get; set; }
+    public string? ShowDockedGallery { get; set; }
+    public string? ShowDockedGalleryAtBottom { get; set; }
+    public string? ShowDockedGalleryAtTop { get; set; }
+    public string? ShowDockedGalleryToTheLeft { get; set; }
+    public string? ShowDockedGalleryToTheRight { get; set; }
+    public string? ShowDockedGalleryWhenUiIsHidden { get; set; }
     public string? ShowBottomToolbar { get; set; }
     public string? ShowConfirmationDialogWhenMovingFileToRecycleBin { get; set; }
     public string? ShowConfirmationDialogWhenPermanentlyDeletingFile { get; set; }
@@ -412,11 +422,11 @@ public class LanguageModel
     public string? StayCentered { get; set; }
     public string? StayTopMost { get; set; }
     public string? Stretch { get; set; }
-    public string? StretchImage { get; set; }
     public string? StrobeReturnLightDetected { get; set; }
     public string? StrobeReturnLightNotDetected { get; set; }
     public string? Subject { get; set; }
     public string? Temperature { get; set; }
+    public string? TabManagement { get; set; }
     public string? Theme { get; set; }
     public string? Thumbnail { get; set; }
     public string? Tile { get; set; }
@@ -465,5 +475,7 @@ public class LanguageModel
     public string? Zoom { get; set; }
     public string? ZoomIn { get; set; }
     public string? ZoomOut { get; set; }
+    public string? ZoomToFit { get; set; }
+    
     #endregion
 }

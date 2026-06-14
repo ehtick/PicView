@@ -63,6 +63,25 @@ public static partial class FileHelper
         }
     }
 
+    public static bool TryGetURL(this string value, out string url)
+    {
+        try
+        {
+            var extractedUrl = URLregex().Match(value).ToString();
+            if (!string.IsNullOrEmpty(extractedUrl))
+            {
+                url = extractedUrl;
+                return false;
+            }
+        }
+        catch (Exception e)
+        {
+            DebugHelper.LogDebug(nameof(FileHelper), nameof(GetURL), e);
+        }
+        url = string.Empty;
+        return false;
+    }
+
     /// <summary>
     ///     Generates a new filename with an incremented number inside parentheses to avoid duplication.
     /// </summary>

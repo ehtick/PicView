@@ -1,12 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.Config;
 using PicView.Core.DebugTools;
 using PicView.Core.Http;
+using PicView.Core.IPlatform;
+using PicView.Core.Update;
 
 namespace PicView.Avalonia.Update;
 
@@ -62,7 +62,7 @@ public static class UpdateManager
         }
 
         // Handle update based on platform and installation type
-        await platformUpdate?.HandlePlatofrmUpdate(updateInfo, tempPath);
+        await platformUpdate?.HandlePlatformUpdate(updateInfo, tempPath);
         return true;
     }
 
@@ -142,30 +142,30 @@ public static class UpdateManager
     
     public static async Task DownloadUpdateFile(string downloadUrl, string tempPath)
     {
-        var vm = UIHelper.GetMainView.DataContext as MainViewModel;
-        vm.PlatformService.StopTaskbarProgress();
-
-        using var downloader = new HttpClientDownloadWithProgress(downloadUrl, tempPath);
-        try
-        {
-            downloader.ProgressChanged += (size, downloaded, percentage) =>
-                UpdateDownloadProgress(vm, size, downloaded, percentage);
-
-            await downloader.StartDownloadAsync();
-        }
-        catch (Exception e)
-        {
-            DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
-            TooltipHelper.ShowTooltipMessage(e.Message);
-        }
-        finally
-        {
-            vm.PlatformService.StopTaskbarProgress();
-        }
+        // var vm = UIHelper.GetMainView.DataContext as MainViewModel;
+        // vm.PlatformService.StopTaskbarProgress();
+        //
+        // using var downloader = new HttpClientDownloadWithProgress(downloadUrl, tempPath);
+        // try
+        // {
+        //     downloader.ProgressChanged += (size, downloaded, percentage) =>
+        //         UpdateDownloadProgress(vm, size, downloaded, percentage);
+        //
+        //     await downloader.StartDownloadAsync();
+        // }
+        // catch (Exception e)
+        // {
+        //     DebugHelper.LogDebug(nameof(UpdateManager), nameof(DownloadUpdateFile), e);
+        //     TooltipHelper.ShowTooltipMessage(e.Message);
+        // }
+        // finally
+        // {
+        //     vm.PlatformService.StopTaskbarProgress();
+        // }
     }
     
     private static void UpdateDownloadProgress(
-        MainViewModel vm,
+        //MainViewModel vm,
         long? totalFileSize,
         long? totalBytesDownloaded,
         double? progressPercentage)
@@ -174,7 +174,7 @@ public static class UpdateManager
         {
             return;
         }
-
-        vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded.Value, (ulong)totalFileSize.Value);
+        // TODO
+        //vm.PlatformService.SetTaskbarProgress((ulong)totalBytesDownloaded.Value, (ulong)totalFileSize.Value);
     }
 }

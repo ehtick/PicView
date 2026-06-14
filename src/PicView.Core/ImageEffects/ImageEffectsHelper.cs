@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ImageMagick;
+﻿using ImageMagick;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 
@@ -16,8 +13,7 @@ public static class ImageEffectsHelper
             return await Task.Run(async () =>
             {
                 var img = await LoadImage(fileInfo, ct).ConfigureAwait(false);
-                ApplyImageEffects(img, config, ct);
-                return img;
+                return ApplyImageEffects(img, config, ct);
             }, ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException) { }
@@ -42,7 +38,7 @@ public static class ImageEffectsHelper
         return img;
     }
 
-    private static void ApplyImageEffects(MagickImage img, ImageEffectConfig c, CancellationToken ct)
+    public static MagickImage ApplyImageEffects(MagickImage img, ImageEffectConfig c, CancellationToken ct)
     {
         ApplyExposure(img, c.ExposureStops);
         img.BrightnessContrast(c.Brightness, c.Contrast);
@@ -82,6 +78,8 @@ public static class ImageEffectsHelper
         if (c.Solarize.ToUInt32() != 0) img.Solarize(c.Solarize);
 
         ct.ThrowIfCancellationRequested();
+
+        return img;
     }
 
     // ----------------------------------------------------

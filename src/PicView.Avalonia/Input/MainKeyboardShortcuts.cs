@@ -1,14 +1,6 @@
 ﻿using System.Runtime.InteropServices;
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
-using PicView.Avalonia.Crop;
-using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Functions;
-using PicView.Avalonia.Navigation;
-using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Input;
@@ -61,14 +53,6 @@ public static class MainKeyboardShortcuts
         }
 
         UpdateModifierState(e.Key, true);
-        
-#if DEBUG
-        // Handle special debug keys first
-        if (HandleDebugKeys(e.Key))
-        {
-            return;
-        }
-#endif
 
         // If it's a modifier key only, nothing more to do
         if (IsModifierKey(e.Key))
@@ -141,80 +125,11 @@ public static class MainKeyboardShortcuts
     };
 
     /// <summary>
-    /// Handles debug-specific key commands.
-    /// </summary>
-    /// <returns>True if the key was handled as a debug key.</returns>
-    private static bool HandleDebugKeys(Key key)
-    {
-#if DEBUG
-        switch (key)
-        {
-            case Key.F12: // Show Avalonia DevTools in DEBUG mode
-                return true;
-            case Key.F9:
-                _ = FunctionsMapper.ShowStartUpMenu();
-                return true;
-            case Key.F7:
-                FunctionsMapper.Invalidate();
-                return true;
-        }
-#endif
-        return false;
-    }
-
-    /// <summary>
     /// Handles special cases like cropping, dialog handling, and escape key.
     /// </summary>
     /// <returns>True if the key event was handled by a special case handler.</returns>
     private static async Task<bool> HandleSpecialCases(KeyEventArgs e)
     {
-        // Handle cropping mode
-        if (CropFunctions.IsCropping)
-        {
-            if (UIHelper.GetMainView.MainGrid.DataContext is MainViewModel { MainWindow.CurrentView.CurrentValue: CropControl cropControl })
-            {
-                await cropControl.KeyDownHandler(null, e);
-            }
-            return true;
-        }
-
-        // Handle open dialog
-        if (DialogManager.IsDialogOpen)
-        {
-            UIHelper.GetMainView.MainGrid.Children
-                .OfType<AnimatedPopUp>()
-                .FirstOrDefault()
-                ?.KeyDownHandler(null, e);
-            return true;
-        }
-        
-        // Handle escape key
-        if (e.Key == Key.Escape)
-        {
-            if (UIHelper.GetMainView.DataContext as MainViewModel is { MainWindow.IsEditableTitlebarOpen.CurrentValue: true })
-            {
-                return true;
-            }
-            
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { Windows.Count: > 1 } desktop)
-            {
-                desktop.Windows[^1].Close();
-                IsKeyHeldDown = true; // If closing the last window, make sure not to call Close()
-                return true;
-            }
-
-            if (Slideshow.IsRunning)
-            {
-                Slideshow.StopSlideshow(UIHelper.GetMainView.MainGrid.DataContext as MainViewModel);
-                return true;
-            }
-
-            if (!IsKeyHeldDown && IsEscKeyEnabled)
-            {
-                _ = FunctionsMapper.Close();
-            }
-        }
-
         return false;
     }
 
@@ -231,7 +146,7 @@ public static class MainKeyboardShortcuts
                 return;
             }
             
-            await action.Invoke().ConfigureAwait(false);
+            //await action.Invoke().ConfigureAwait(false);
         }
     }
 

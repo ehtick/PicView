@@ -1,8 +1,11 @@
 <Solution>
     <Configurations>
-        <Platform Name="Any CPU"/>
         <Platform Name="x64"/>
+        <Platform Name="arm64"/>
     </Configurations>
+    <Project Path="PicView.Avalonia.Linux/PicView.Avalonia.Linux.csproj">
+        <Platform Solution="*|x64" Project="x64"/>
+    </Project>
     <Project Path="PicView.Avalonia.MacOS/PicView.Avalonia.MacOS.csproj">
         <Platform Solution="*|x64" Project="x64"/>
     </Project>
@@ -13,6 +16,9 @@
         <Platform Solution="*|x64" Project="x64"/>
     </Project>
     <Project Path="PicView.Benchmarks/PicView.Benchmarks.csproj"/>
+    <Project Path="PicView.Core.Linux/PicView.Core.Linux.csproj">
+        <Platform Solution="*|x64" Project="x64"/>
+    </Project>
     <Project Path="PicView.Core.MacOS/PicView.Core.MacOS.csproj">
         <Platform Solution="*|x64" Project="x64"/>
     </Project>

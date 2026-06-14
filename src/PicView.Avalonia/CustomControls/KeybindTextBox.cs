@@ -52,7 +52,6 @@ public class KeybindTextBox : TextBox
 
     protected override Type StyleKeyOverride => typeof(TextBox);
 
-
     public KeyGesture? Keybind
     {
         get => GetValue(KeybindProperty) as KeyGesture;
@@ -137,7 +136,7 @@ public class KeybindTextBox : TextBox
         }
     }
 
-    private void OnGotFocus(object? sender, GotFocusEventArgs e)
+    private void OnGotFocus(object? sender, FocusChangedEventArgs e)
     {
         if (IsReadOnly)
         {
@@ -205,10 +204,8 @@ public class KeybindTextBox : TextBox
         }
 
         KeybindingManager.CustomShortcuts.Remove(new KeyGesture(e.Key, e.KeyModifiers));
-
-        var function = FunctionsMapper.GetFunctionByName(MethodName);
-
-        if (function == null)
+        
+        if (string.IsNullOrEmpty(MethodName))
         {
             return;
         }
@@ -229,30 +226,30 @@ public class KeybindTextBox : TextBox
         // Handle whether it's an alternative key or not
         if (Alt)
         {
-            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(MethodName))
             {
                 // If the main key is not present, add a new entry with the alternative key
                 var altKey = (Key)Enum.Parse(typeof(Key), e.Key.ToString());
                 var keyGesture = new KeyGesture(altKey, e.KeyModifiers);
-                KeybindingManager.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
             }
             else
             {
                 // Update the key and function name in the CustomShortcuts dictionary
                 var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-                KeybindingManager.CustomShortcuts[keyGesture] = function;
+                KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
             }
         }
         else
         {
             // Remove if it already contains
-            if (KeybindingManager.CustomShortcuts.ContainsValue(function))
+            if (KeybindingManager.CustomShortcuts.ContainsValue(MethodName))
             {
                 Remove();
             }
 
             var keyGesture = new KeyGesture(e.Key, e.KeyModifiers);
-            KeybindingManager.CustomShortcuts[keyGesture] = function;
+            KeybindingManager.CustomShortcuts[keyGesture] = MethodName;
         }
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -270,9 +267,10 @@ public class KeybindTextBox : TextBox
 
         void Remove()
         {
-            var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value?.Method?.Name == MethodName)
-                ?.Select(x => x.Key).ToList() ?? null;
-            if (keys is not null)
+            var keys = KeybindingManager.CustomShortcuts.Where(x => x.Value == MethodName)
+                .Select(x => x.Key).ToArray();
+            
+            if (keys.Length > 0)
             {
                 KeybindingManager.CustomShortcuts.Remove(Alt ? keys.LastOrDefault() : keys.FirstOrDefault());
             }

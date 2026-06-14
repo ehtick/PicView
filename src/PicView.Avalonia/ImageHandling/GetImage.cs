@@ -1,7 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using ImageMagick;
 using PicView.Core.DebugTools;
-using PicView.Core.Exif;
 using PicView.Core.FileHandling;
 using PicView.Core.ImageReading;
 
@@ -9,76 +8,6 @@ namespace PicView.Avalonia.ImageHandling;
 
 public static class GetImage
 {
-    public static async ValueTask<object?> GetImageCore(FileInfo fileInfo, MagickImage? magickImage = null)
-    {
-        if (fileInfo is null)
-        {
-            return null;
-        }
-
-        var shouldDisposeMagickImage = magickImage is null;
-
-        try
-        {
-            // Initialize MagickImage if not provided
-            magickImage ??= CreateAndPingMagickImage(fileInfo);
-
-            // Check if the image needs rotation based on EXIF
-            var orientation = ExifOrientationHelper.GetImageOrientation(magickImage);
-            var shouldAutoOrient = orientation is not (ExifOrientation.None or ExifOrientation.Horizontal);
-            
-            if (fileInfo.Extension.Equals(".b64", StringComparison.InvariantCultureIgnoreCase))
-            {
-                return await GetBase64ImageAsync(fileInfo).ConfigureAwait(false);
-            }
-
-            // Process the image based on type
-            // If the image requires rotation, we bypass GetSkBitmapAsync to use Magick's AutoOrient
-            return magickImage.Format switch
-            {
-                MagickFormat.WebP or
-                    MagickFormat.WebM or
-                    MagickFormat.Png or
-                    MagickFormat.Png00 or
-                    MagickFormat.Png8 or
-                    MagickFormat.Png24 or
-                    MagickFormat.Png32 or
-                    MagickFormat.Png48 or
-                    MagickFormat.Png64 or
-                    MagickFormat.APng or
-                    MagickFormat.Jpe or
-                    MagickFormat.Jpeg or
-                    MagickFormat.Pjpeg or
-                    MagickFormat.Bmp or
-                    MagickFormat.Tif or
-                    MagickFormat.Tiff or
-                    MagickFormat.Ico or
-                    MagickFormat.Icon or
-                    MagickFormat.Wbmp when !shouldAutoOrient => await GetSkBitmapAsync(fileInfo).ConfigureAwait(false),
-
-                MagickFormat.Arw or
-                    MagickFormat.Nef or
-                    MagickFormat.Dng or
-                    MagickFormat.Cr2 or
-                    MagickFormat.Rw2 => await GetRawBitmapAsync(fileInfo, magickImage).ConfigureAwait(false),
-
-                _ => await GetNonStandardBitmapAsync(fileInfo, magickImage).ConfigureAwait(false)
-            };
-        }
-        catch (Exception e)
-        {
-            DebugHelper.LogDebug(nameof(GetImage), nameof(GetImageCore), e);
-            return null;
-        }
-        finally
-        {
-            if (shouldDisposeMagickImage)
-            {
-                magickImage?.Dispose();
-            }
-        }
-    }
-    
     public static async ValueTask<Bitmap?> GetSkBitmapAsync(string file) =>
         await GetSkBitmapAsync(new FileInfo(file)).ConfigureAwait(false);
 

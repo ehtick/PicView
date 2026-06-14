@@ -1,21 +1,20 @@
-using System.Runtime.InteropServices;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input.Platform;
 using Avalonia.Platform.Storage;
 using PicView.Avalonia.Animations;
-using PicView.Avalonia.Navigation;
+using PicView.Avalonia.StartUp;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.DebugTools;
 using PicView.Core.FileHandling;
 using PicView.Core.Localization;
-using PicView.Core.ProcessHandling;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Clipboard;
 
 /// <summary>
-/// Handles clipboard operations related to files
+/// Handles clipboard operations related to files (MVVM refactor)
 /// </summary>
 public static class ClipboardFileOperations
 {
@@ -24,80 +23,79 @@ public static class ClipboardFileOperations
     /// If the current file is being duplicated, the view model will navigate to the duplicated file.
     /// </summary>
     /// <param name="path">Path to the file to duplicate, or null to duplicate the current file.</param>
-    /// <param name="vm">The main view model</param>
-    public static async Task Duplicate(string path, MainViewModel vm)
+    /// <param name="vm">The main window view model</param>
+    public static async Task Duplicate(string? path, MainWindowViewModel vm)
     {
-        if (string.IsNullOrWhiteSpace(path))
+        var currentFile = vm.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo?.FullName;
+        
+        // If path is null/empty, we assume we want to duplicate the current file
+        var targetPath = string.IsNullOrWhiteSpace(path) ? currentFile : path;
+
+        if (string.IsNullOrWhiteSpace(targetPath))
         {
             return;
         }
         
         try
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+            vm.IsLoadingIndicatorShown.Value = true;
             
-            if (path == vm.PicViewer.FileInfo?.CurrentValue.FullName)
+            // If we are duplicating the currently viewing file, we want to perform navigation to the new file
+            if (targetPath == currentFile)
             {
                 await DuplicateCurrentFile(vm);
             }
             else
             {
-                await DuplicateFile(path);
+                await DuplicateFile(targetPath);
             }
         }
         catch (Exception ex)
         {
             DebugHelper.LogDebug(nameof(ClipboardFileOperations), nameof(Duplicate), ex);
-            TooltipHelper.ShowTooltipMessage(TranslationManager.Translation.UnexpectedError);
+            TooltipHelper.ShowTooltipMessage(TranslationManager.Translation?.UnexpectedError);
         }
         finally
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+            vm.IsLoadingIndicatorShown.Value = false;
         }
     }
 
     /// <summary>
     /// Duplicates the current file and navigates to it
     /// </summary>
-    /// <param name="vm">The main view model</param>
-    private static async Task DuplicateCurrentFile(MainViewModel vm)
+    /// <param name="vm">The main window view model</param>
+    private static async Task DuplicateCurrentFile(MainWindowViewModel vm)
     {
-        if (!NavigationManager.CanNavigate(vm))
+        var activeTab = vm.WindowTabs.ActiveTab.CurrentValue;
+        
+        if (activeTab.ImageIterator is null || vm.WindowTabs.SharedNavigation is null)
         {
             return;
         }
 
-        if (Settings.Navigation.IsFileWatcherEnabled)
-        {
-            NavigationManager.ImageIterator.IsWatcherEnabled = false;
-        }
-
         try
         {
+            var currentPath = activeTab.Model.FileInfo?.FullName;
+            if (string.IsNullOrWhiteSpace(currentPath))
+            {
+                return;
+            }
+
             var duplicatedPath =
-                await FileHelper.DuplicateAndReturnFileNameAsync(vm.PicViewer.FileInfo.CurrentValue.FullName);
+                await FileHelper.DuplicateAndReturnFileNameAsync(currentPath);
 
             if (string.IsNullOrWhiteSpace(duplicatedPath) || !File.Exists(duplicatedPath))
             {
                 return;
             }
-
-            await NavigationManager.AddFile(duplicatedPath);
-            await Task.WhenAll(
-                AnimationsHelper.CopyAnimation(), 
-                NavigationManager.LoadPicFromFile(duplicatedPath, vm)
-            );
+            
+            _ = AnimationsHelper.CopyAnimation();
+            await vm.WindowTabs.SharedNavigation.LoadFromFileAsync(duplicatedPath, activeTab, activeTab.GetTabCancellation());
         }
-        finally
+        catch (Exception ex)
         {
-            if (Settings.Navigation.IsFileWatcherEnabled)
-            {
-                NavigationManager.EnableWatcher();
-            }
-            else
-            {
-                NavigationManager.DisableWatcher();
-            }
+            DebugHelper.LogDebug(nameof(ClipboardFileOperations), nameof(DuplicateCurrentFile), ex);
         }
     }
     
@@ -118,46 +116,69 @@ public static class ClipboardFileOperations
     /// Copies a file to the clipboard
     /// </summary>
     /// <param name="filePath">Path to the file</param>
+    /// <param name="visual">Optional visual to locate clipboard</param>
     /// <returns>A task representing the asynchronous operation</returns>
-    public static async Task CopyFileToClipboard(string? filePath)
+    public static async Task CopyFileToClipboard(string? filePath, Visual? visual = null)
     {
-        if (string.IsNullOrWhiteSpace(filePath) ||
-            Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop ||
-            desktop.MainWindow?.Clipboard is not { } clipboard ||
-            desktop.MainWindow?.StorageProvider is not { } storageProvider)
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            return;
+        }
+
+        var clipboard = ClipboardService.GetClipboard(visual);
+        if (clipboard == null)
+        {
+            return;
+        }
+        
+        // We need a StorageProvider to get the IStorageFile.
+        // If we have a visual, we can try to get TopLevel -> StorageProvider
+        IStorageProvider? storageProvider = null;
+        if (visual != null)
+        {
+             var topLevel = TopLevel.GetTopLevel(visual);
+             storageProvider = topLevel?.StorageProvider;
+        }
+        
+        // Fallback to Application lifetime if visual didn't work
+        if (storageProvider == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            storageProvider = desktop.MainWindow?.StorageProvider;
+        }
+        
+        if (storageProvider == null)
         {
             return;
         }
         
         var animTask = AnimationsHelper.CopyAnimation();
-        var storageFile = await storageProvider.TryGetFileFromPathAsync(filePath);
-        var fileTask = clipboard.SetFileAsync(storageFile);
+        var storageFile = await storageProvider.TryGetFileFromPathAsync(Path.GetFullPath(filePath));
         
-        await Task.WhenAll(animTask, fileTask);
+        if (storageFile != null)
+        {
+             var fileTask = clipboard.SetFileAsync(storageFile);
+             await Task.WhenAll(animTask, fileTask);
+        }
     }
 
     /// <summary>
     /// Cuts a file to the clipboard (copy + mark for deletion on paste)
     /// </summary>
     /// <param name="filePath">Path to the file</param>
-    /// <param name="vm">The main view model</param>
+    /// <param name="platformService">Platform specific service for cutting files</param>
     /// <returns>A task representing the asynchronous operation</returns>
-    public static Task<bool> CutFile(string filePath, MainViewModel vm)
+    public static Task<bool> CutFile(string filePath, Core.IPlatform.IPlatformSpecificService platformService)
     {
         if (string.IsNullOrWhiteSpace(filePath))
         {
             return Task.FromResult(false);
         }
 
-        return ClipboardService.ExecuteClipboardOperation(
-            () => Task.Run(() => vm.PlatformService.CutFile(filePath))
-        );
+        // TODO implement cut
+        return Task.FromResult(false);
     }
-    
-    /// <summary>
-    /// Handles pasting files from the clipboard
-    /// </summary>
-    public static async Task PasteFiles(object files, MainViewModel vm)
+
+    public static async ValueTask PasteFiles(object files, MainWindowViewModel vm)
     {
         try
         {
@@ -168,7 +189,15 @@ public static class ClipboardFileOperations
                     break;
                 case IStorageItem singleFile:
                 {
-                    await NavigationManager.LoadPicFromStringAsync(singleFile.Path.AbsolutePath, vm);
+                    var path = singleFile.Path.LocalPath;
+                    if (path.IsArchive())
+                    {
+                        await vm.WindowTabs.LoadFromArchiveAsync(path);
+                    }
+                    else
+                    {
+                        await vm.WindowTabs.LoadFromFileAsync(path).ConfigureAwait(false);
+                    }
                     break;
                 }
             }
@@ -179,7 +208,7 @@ public static class ClipboardFileOperations
         }
     }
     
-    private static async Task ProcessStorageItems(IStorageItem[] storageItems, MainViewModel vm)
+    private static async ValueTask ProcessStorageItems(IStorageItem[] storageItems, MainWindowViewModel vm)
     {
         if (storageItems.Length == 0)
         {
@@ -187,12 +216,23 @@ public static class ClipboardFileOperations
         }
 
         // Load the first file
-        await NavigationManager.LoadPicFromStringAsync(storageItems[0].Path.AbsolutePath, vm);
+        var firstItem = storageItems[0].Path.LocalPath;
+        if (firstItem.IsArchive())
+        {
+            await vm.WindowTabs.LoadFromArchiveAsync(firstItem).ConfigureAwait(false);
+        }
+        else
+        {
+            await vm.WindowTabs.LoadFromFileAsync(firstItem).ConfigureAwait(false);
+        }
+
 
         // Open consecutive files in a new process
         foreach (var file in storageItems.Skip(1))
         {
-            ProcessHelper.StartNewProcess(file.Path.AbsolutePath);
+            var tab = await vm.WindowTabs.CreateNewTabFromFileAsync(file.Path.AbsolutePath);
+            TabNavigationInitializer.InitializeNewTab(tab, vm);
+            file.Dispose();
         }
     }
 }

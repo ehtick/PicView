@@ -1,17 +1,19 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Gallery;
-using PicView.Avalonia.ViewModels;
+using PicView.Avalonia.StartUp;
+using PicView.Avalonia.Views.Main;
 using PicView.Avalonia.Views.UC;
+using PicView.Avalonia.Views.UC.Buttons;
 using PicView.Avalonia.WindowBehavior;
+using PicView.Core.FileHistory;
+using PicView.Core.ViewModels;
 using R3.Avalonia;
-using BottomBar = PicView.Avalonia.Views.UC.BottomBar;
-using GalleryAnimationControlView = PicView.Avalonia.Views.Gallery.GalleryAnimationControlView;
-using MainView = PicView.Avalonia.Views.Main.MainView;
 
 namespace PicView.Avalonia.UI;
 
@@ -23,48 +25,84 @@ public static class UIHelper
     #region Controls
 
     public static MainView? GetMainView { get; private set; }
+    public static DraggableTabControl? GetMainTabControl { get; private set; }
     public static Control? GetTitlebar { get; private set; }
     public static EditableTitlebar? GetEditableTitlebar { get; private set; }
-    public static GalleryAnimationControlView? GetGalleryView { get; private set; }
     public static BottomBar? GetBottomBar { get; private set; }
-    public static HoverBar? GetHoverBar { get; private set; }
-    
+    public static DropDownMenu? GetDropDownMenu { get; private set; }
     public static ToolTipMessage? GetToolTipMessage { get; private set; }
 
+    public static AvaloniaRenderingFrameProvider? GetFrameProvider =>
+        Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime { MainWindow: MainWindow window } ? null : window.FrameProvider;
 
-    public static AvaloniaRenderingFrameProvider? GetFrameProvider { get; private set; }
-
-    public static void SetFrameProvider(AvaloniaRenderingFrameProvider frameProvider) =>
-        GetFrameProvider = frameProvider;
+    public static CoreViewModel CoreViewModel => Application.Current.DataContext as CoreViewModel ?? throw new InvalidOperationException("CoreViewModel is null");
 
     /// <summary>
     /// Sets up control references from the main desktop application
     /// </summary>
-    public static void SetControls(IClassicDesktopStyleApplicationLifetime desktop)
+    public static void SetControls(Window mainWindow)
     {
-        GetMainView = desktop.MainWindow?.FindControl<MainView>("MainView");
-        GetTitlebar = desktop.MainWindow?.FindControl<Control>("Titlebar");
+        GetMainView = mainWindow?.FindControl<MainView>("MainView");
+        GetTitlebar = mainWindow?.FindControl<Control>("Titlebar");
         GetEditableTitlebar = GetTitlebar?.FindControl<EditableTitlebar>("EditableTitlebar");
-        GetGalleryView = GetMainView?.MainGrid.GetControl<GalleryAnimationControlView>("GalleryView");
-        GetBottomBar = desktop.MainWindow?.FindControl<BottomBar>("BottomBar");
-        GetToolTipMessage = GetMainView?.MainGrid.FindControl<ToolTipMessage>("ToolTipMessage");
+        GetBottomBar = mainWindow?.FindControl<BottomBar>("BottomBar");
+        GetToolTipMessage = GetMainView?.MainPanel.FindControl<ToolTipMessage>("ToolTipMessage");
+        GetMainTabControl = GetMainView.MainTabControl;
     }
 
-    public static void AddHoverBar(MainViewModel vm)
+    public static HoverBar? GetHoverBar()
     {
-        if (GetHoverBar is not null)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
-            return;
+            return null;
         }
-        GetHoverBar = new HoverBar();
-        GetMainView.MainGrid.Children.Add(GetHoverBar);
-        _ = new HoverFadeButtonHandler(GetHoverBar, vm, GetHoverBar.BottomBorder);
-        MainWindowViewModel.HoverBarSubscription();
+
+        if (core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
+        {
+            return imageViewer.HoverBar;
+        }
+
+        return null;
+    }
+    
+
+    
+    public static void AddDropDownMenu()
+    {
+        var dropDownMenu = new DropDownMenu
+        {
+            Name = "DropDownMenu",
+            VerticalAlignment = VerticalAlignment.Top,
+            Margin = new Thickness(3, 0, 3, 0),
+            IsVisible = false,
+            HorizontalAlignment = HorizontalAlignment.Right,
+            ZIndex = 2
+        };
+        GetMainView.MainPanel.Children.Add(dropDownMenu);
+        GetDropDownMenu = dropDownMenu;
     }
 
     #endregion
 
     #region Helper functions
+    
+    public static ClickArrowRight? GetClickArrowRight(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
+        {
+            return imageViewer.ClickArrowRight;
+        }
+        return null;
+    }
+    
+    public static ClickArrowLeft? GetClickArrowLeft(MainWindowViewModel vm)
+    {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is ImageViewer imageViewer)
+        {
+            return imageViewer.ClickArrowLeft;
+        }
+        return null;
+    }
     
     private const string BoldFontLocation = "avares://PicView.Avalonia/Assets/Fonts/Roboto-Medium.ttf#Roboto";
     public static FontFamily BoldFontFamily => new(BoldFontLocation);
@@ -80,57 +118,82 @@ public static class UIHelper
             mainContextMenu.Open();
         }
     }
+    
+    public static async Task OpenLastFile(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        var isViewStartupMenu = false;
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+            {
+                isViewStartupMenu = true;
+                vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+            }
+        }, DispatcherPriority.Send);
+        TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        var isSuccessFullyLoaded = await vm.WindowTabs.LoadLastFileAsync();
+        if (!isSuccessFullyLoaded && isViewStartupMenu)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new StartUpMenu();
+            });
+        }
+        else
+        {
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+        }
+        vm.WindowTabs.ActiveTab.CurrentValue.UpdateTabTitle();
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
+    
+    public static async ValueTask OpenPreviousFileHistoryEntry(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadFromStringAsync(FileHistoryManager.GetPreviousEntry()).ConfigureAwait(false))
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
+    
+    public static async ValueTask OpenNextFileHistoryEntry(MainWindowViewModel vm)
+    {
+        vm.IsLoadingIndicatorShown.Value = true;
+        if (await vm.WindowTabs.LoadFromStringAsync(FileHistoryManager.GetNextEntry()).ConfigureAwait(false))
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is StartUpMenu)
+                {
+                    vm.WindowTabs.ActiveTab.Value.CurrentView.Value = new ImageViewer();
+                }
+            });
+            TabNavigationInitializer.InitializeNewTab(vm.WindowTabs.ActiveTab.Value, vm);
+        }
+        vm.IsLoadingIndicatorShown.Value = false;
+    }
 
     /// <summary>
     /// Centers the window or gallery based on current state
     /// </summary>
-    public static void Center(MainViewModel? vm)
+    public static void Center(MainWindowViewModel vm)
     {
-        if (vm is null)
+        if (vm.WindowTabs.ActiveTab.CurrentValue.Gallery.IsGalleryExpanded.CurrentValue)
         {
-            return;
-        }
-
-        if (GalleryFunctions.IsFullGalleryOpen)
-        {
-            GalleryFunctions.CenterGallery(vm);
+            GalleryHelper.CenterGallery(vm);
         }
         else
         {
             WindowFunctions.CenterWindowOnScreen();
-        }
-    }
-
-    /// <inheritdoc cref="Center"/>
-    public static async Task CenterAsync(MainViewModel? vm)
-    {
-        if (vm is null)
-        {
-            return;
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() => { Center(vm); });
-    }
-
-    /// <summary>
-    ///     Scrolls to the end of the gallery if the <paramref name="last" /> parameter is true.
-    /// </summary>
-    /// <param name="last">True to scroll to the end of the gallery.</param>
-    /// <returns>A task representing the asynchronous operation.</returns>
-    public static async Task ScrollToEndIfNecessary(bool last)
-    {
-        if (!Settings.Gallery.IsBottomGalleryShown)
-        {
-            return;
-        }
-
-        if (last)
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => { GetGalleryView.GalleryListBox.ScrollToEnd(); });
-        }
-        else
-        {
-            await Dispatcher.UIThread.InvokeAsync(() => { GetGalleryView.GalleryListBox.ScrollToHome(); });
         }
     }
 

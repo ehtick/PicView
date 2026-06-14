@@ -1,29 +1,30 @@
 ﻿using System.Runtime.InteropServices;
+using Avalonia;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Wallpaper;
 
 public static class WallpaperManager
 {
-    
-    public static async Task SetAsWallpaper(string path, WallpaperStyle style, MainViewModel vm)
+    public static async Task SetAsWallpaper(string path, WallpaperStyle style, MainWindowViewModel vm)
     {
-        if (vm.PlatformService is null)
+        if (!vm.GlobalSettings.ShowSetAsWallpaper.Value)
         {
             return;
         }
         
-        if (!vm.GlobalSettings.ShowSetAsWallpaper.Value)
-            return;
-        
-        vm.MainWindow.IsLoadingIndicatorShown.Value = true;
+        vm.IsLoadingIndicatorShown.Value = true;
         try
         {
             var file = await ImageFormatConverter.ConvertToCommonSupportedFormatAsync(path, vm).ConfigureAwait(false);
 
-            vm.PlatformService?.SetAsWallpaper(file, GetWallpaperStyle(style));
+            if (Application.Current.DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            core.PlatformService?.SetAsWallpaper(file, GetWallpaperStyle(style));
         }
         catch (Exception e)
         {
@@ -34,7 +35,7 @@ public static class WallpaperManager
         }
         finally
         {
-            vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+            vm.IsLoadingIndicatorShown.Value = false;
         }
     }
     

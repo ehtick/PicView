@@ -1,7 +1,8 @@
 using System.Diagnostics;
-using PicView.Avalonia.Update;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.DebugTools;
+using PicView.Core.Update;
+using UpdateManager = PicView.Avalonia.Update.UpdateManager;
 
 namespace PicView.Avalonia.MacOS.PlatformUpdate;
 

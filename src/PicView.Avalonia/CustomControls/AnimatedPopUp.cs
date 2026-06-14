@@ -2,7 +2,6 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Media;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.UI;
@@ -20,12 +19,11 @@ public class AnimatedPopUp : ContentControl
     private Panel? _partOverlay;
 
     private const double AnimSpeed = 0.3;
+    
     protected AnimatedPopUp()
     {
         Loaded += async delegate { await AnimatedOpening(); };
     }
-
-    public event EventHandler<KeyEventArgs> KeyChanged;
 
     public bool ClickingOutsideCloses
     {
@@ -115,25 +113,12 @@ public class AnimatedPopUp : ContentControl
         );
         if (remove)
         {
-            UIHelper.GetMainView.MainGrid.Children.Remove(this);
+            UIHelper.GetMainView.MainPanel.Children.Remove(this);
         }
         else
         {
             IsHitTestVisible = false;
             IsVisible = false;
-        }
-    }
-
-    // ReSharper disable once UnusedMember.Global
-    public void KeyDownHandler(object? sender, KeyEventArgs e)
-    {
-        if (e.Key is Key.Escape)
-        {
-            _ = AnimatedClosing();
-        }
-        else
-        {
-            KeyChanged(this, e);
         }
     }
 }

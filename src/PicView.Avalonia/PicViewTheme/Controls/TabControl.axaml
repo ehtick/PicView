@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ControlTheme TargetType="TabControl" x:Key="{x:Type TabControl}">
         <Setter Property="Padding" Value="8" />
@@ -58,4 +59,5 @@
             <Setter Property="Padding" Value="0 0 4 0" />
         </Style>
     </ControlTheme>
+
 </ResourceDictionary>

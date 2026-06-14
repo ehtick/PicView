@@ -31,7 +31,7 @@ public static class ScreenHelper
         // Need to lock it to prevent multiple calls
         lock (Lock)
         {
-            var screen = window.Screens.ScreenFromVisual(window);
+            var screen = window.Screens.ScreenFromWindow(window);
 
             if (screen is null)
             {
@@ -66,17 +66,5 @@ public static class ScreenHelper
                 Y = screen.Bounds.Y
             };
         }
-    }
-
-    public static int GetWindowMaxHeight()
-    {
-        return ScreenSize.WorkingAreaHeight switch
-        {
-            > 500 and < 600 => 500,
-            > 600 and < 700 => 550,
-            >= 650 and < 750 => 720,
-            >= 750 => 750,
-            _ => SizeDefaults.WindowMinSize
-        };
     }
 }

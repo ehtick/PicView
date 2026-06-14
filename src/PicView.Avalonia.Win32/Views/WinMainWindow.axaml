@@ -1,27 +1,24 @@
-<Window
+<customControls:MainWindow
+    MaxHeight="{CompiledBinding WindowMaxHeight.Value}"
+    MaxWidth="{CompiledBinding WindowMaxWidth.Value}"
+    MinHeight="{CompiledBinding WindowMinHeight}"
+    MinWidth="{CompiledBinding WindowMinWidth}"
+    Title="{CompiledBinding WindowTabs.ActiveTab.Value.WindowTitle.Value,
+                            FallbackValue=''}"
     x:Class="PicView.Avalonia.Win32.Views.WinMainWindow"
+    x:DataType="viewModels:MainWindowViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls;assembly=PicView.Avalonia"
     xmlns:main="clr-namespace:PicView.Avalonia.Views.Main;assembly=PicView.Avalonia"
     xmlns:uc="clr-namespace:PicView.Avalonia.Views.UC;assembly=PicView.Avalonia"
-    xmlns:viewModels="clr-namespace:PicView.Avalonia.ViewModels;assembly=PicView.Avalonia"
-    xmlns:views1="clr-namespace:PicView.Avalonia.Win32.Views"
-    Title="{CompiledBinding PicViewer.WindowTitle.Value,
-                            Mode=OneWay}"
-    MinWidth="{CompiledBinding MainWindow.WindowMinWidth.Value}"
-    MinHeight="{CompiledBinding MainWindow.WindowMinHeight.Value}"
-    x:DataType="viewModels:MainViewModel"
-    CanResize="{CompiledBinding MainWindow.CanResize.Value}"
-    Icon="/icon.ico"
-    SizeChanged="Control_OnSizeChanged"
-    SizeToContent="{CompiledBinding MainWindow.SizeToContent.Value}"
-    TransparencyLevelHint="AcrylicBlur">
-
+    xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
+    xmlns:views="clr-namespace:PicView.Avalonia.Win32.Views"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border BorderBrush="{DynamicResource WindowBorderColor}" BorderThickness="1">
         <DockPanel LastChildFill="True">
-            <views1:WinTitleBar x:Name="Titlebar" DockPanel.Dock="Top" />
-            <uc:BottomBar x:Name="BottomBar" DockPanel.Dock="Bottom" />
+            <views:WinTitleBar DockPanel.Dock="Top" x:Name="Titlebar" />
+            <uc:BottomBar DockPanel.Dock="Bottom" x:Name="BottomBar" />
             <main:MainView x:Name="MainView" />
         </DockPanel>
     </Border>
-</Window>
+</customControls:MainWindow>

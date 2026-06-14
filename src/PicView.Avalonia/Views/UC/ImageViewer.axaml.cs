@@ -1,15 +1,19 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
-using ImageMagick;
 using PicView.Avalonia.ImageTransformations;
-using PicView.Avalonia.ImageTransformations.Rotation;
 using PicView.Avalonia.Input;
-using PicView.Avalonia.ViewModels;
-using PicView.Avalonia.WindowBehavior;
+using PicView.Avalonia.UI;
 using PicView.Core.Config;
-using PicView.Core.Exif;
+using PicView.Core.DebugTools;
+using PicView.Core.Extensions;
+using PicView.Core.Localization;
+using PicView.Core.ViewModels;
+using R3;
 
 namespace PicView.Avalonia.Views.UC;
 
@@ -17,28 +21,21 @@ namespace PicView.Avalonia.Views.UC;
 public partial class ImageViewer : UserControl
 {
     private RotationTransformer? _imageTransformer;
+    private DisposableBag _disposables;
     
     public ImageViewer()
     {
         InitializeComponent();
+        ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
         Loaded += OnLoaded;
     }
 
     private void OnLoaded(object? sender, RoutedEventArgs e)
     {
         InitializeImageTransformer();
-        ZoomPanControl.Initialize();
-        ImageControlHelper.TriggerScalingModeUpdate(MainImage, true);
-        
-        // Start in dispatcher with low priority,
-        // because it is more important to schedule it after more important things.
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
-            AddHandler(Gestures.PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            AddHandler(Gestures.PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
-            InitializeMouseInputHelper();
-        }, DispatcherPriority.Background);
+        AddHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged, RoutingStrategies.Tunnel);
+        AddHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
+        AddHandler(PinchEvent, TouchMagnifyEvent, RoutingStrategies.Bubble);
     }
 
     public void TriggerScalingModeUpdate(bool invalidate) =>
@@ -47,8 +44,26 @@ public partial class ImageViewer : UserControl
     private void TouchMagnifyEvent(object? sender, PointerDeltaEventArgs e) =>
         ZoomPanControl.ZoomWithPointerWheelCore(e.Delta.Y > 0, e.GetPosition(this));
 
-    public static async Task PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e) =>
-        await MouseShortcuts.HandlePointerWheelChanged(e);
+    public async ValueTask PreviewOnPointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        if (GalleryView.IsPointerOver)
+        {
+            return;
+        }
+
+        if (sender is not ImageViewer { DataContext: TabViewModel tab })
+        {
+            return;
+        }
+        
+        await MouseShortcuts.HandlePointerWheelChanged(
+            e,
+            tab.ParentWindowContext, 
+            ImageScrollViewer,
+            async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomIn(args)),
+            async args => await Dispatcher.UIThread.InvokeAsync(() => ZoomOut(args)));
+    }
+        
 
     private void InitializeImageTransformer()
     {
@@ -56,57 +71,119 @@ public partial class ImageViewer : UserControl
         {
             return;
         }
+
+        if (Application.Current.DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        // The image is not flipped by default, update translation to reflect that
+        core.Translation.IsFlipped.Value = TranslationManager.Translation.Flip;
+
         _imageTransformer = new RotationTransformer(
-            ImageLayoutTransformControl,
+            MainTransform,
             MainImage,
-            () => DataContext,
-            () =>
+            core.MainWindows.ActiveWindow.CurrentValue);
+        ZoomPanControl.Initialize(ZoomPreview);
+
+        Observable.EveryValueChanged(ZoomPanControl, zoom => zoom.Scale)
+            .Skip(1)
+            .Subscribe(zoomLevel =>
             {
-                ZoomPanControl.ResetZoomSlim();
-            });
+                if (DataContext is not TabViewModel tab)
+                {
+                    return;
+                }
+                var adjustedZoomLevel = Convert.ToInt32(tab.InitialZoom.CurrentValue * (zoomLevel * 100));
+                tab.ZoomLevel.Value = adjustedZoomLevel;;
+                tab.UpdateTabTitle();
+                if (Settings.Zoom.IsShowingZoomPercentagePopup)
+                {
+                    var message = StringExtensions.CombineWithPercentage(adjustedZoomLevel);
+                    _ = TooltipHelper.ShowTooltipMessageContinuallyAsync(message, true,
+                        TimeSpan.FromSeconds(1));
+                }
+
+                ZoomPreview.Margin = HoverBar.Opacity > 0 ? new Thickness(0,0,25,HoverBar.Bounds.Height / 2 + 25) : new Thickness(0, 0, 25, 25);
+            }, DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer))).AddTo(ref _disposables);
+        
+        core.MainWindows.ActiveWindow.CurrentValue.IsScrollingEnabled.Subscribe(isScrolling =>
+        {
+            ImageScrollViewer.VerticalScrollBarVisibility = isScrolling ?
+                ScrollBarVisibility.Visible : ScrollBarVisibility.Disabled;
+        }, DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer))).AddTo(ref _disposables);
+        
+        // Correspond to change when index clicked on track
+        Observable.FromEvent<EventHandler<int>, int>(
+                handler => (sender, index) => handler(index),
+                handler => HoverBar.ProgressBar.ClickedOnTrack += handler,
+                handler => HoverBar.ProgressBar.ClickedOnTrack -= handler)
+            .SubscribeAwait(async (x, _) =>
+            {
+                if (DataContext is not TabViewModel tab)
+                {
+                    return;
+                }
+                await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+            }, DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer)), AwaitOperation.Drop)
+            .AddTo(ref _disposables);
+        // Correspond to change when index dragged on track
+        // wait for a 25ms pause in changes (debounce), and then emit the last value.
+        Observable.FromEvent<EventHandler<int>, int>(
+                handler => (sender, index) => handler(index),
+                handler => HoverBar.ProgressBar.DraggedOnTrack += handler,
+                handler => HoverBar.ProgressBar.DraggedOnTrack -= handler)
+            .Debounce(TimeSpan.FromMilliseconds(25)) // Debounce handles rapid events during drag
+            .SubscribeAwait(async (x, _) =>
+            {
+                if (DataContext is not TabViewModel tab)
+                {
+                    return;
+                }
+                await tab.ImageIterator.SkipToIndexAsync(x, tab.GetTabCancellation()).ConfigureAwait(false);
+            },DebugHelper.LogError(nameof(ImageViewer), nameof(InitializeImageTransformer)), AwaitOperation.Drop)
+            .AddTo(ref _disposables);
     }
 
-    private void InitializeMouseInputHelper() =>
-        MouseShortcuts.InitializeMouseShortcuts(
-            ImageScrollViewer,
-            async e => { await Dispatcher.UIThread.InvokeAsync(() => { ZoomIn(e); }); },
-            async e => { await Dispatcher.UIThread.InvokeAsync(() => { ZoomOut(e); }); });
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromLogicalTree(e);
+        RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
+        RemoveHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
+        RemoveHandler(PinchEvent, TouchMagnifyEvent);
+        _disposables.Dispose();
+    }
 
     #region Zoom
-    /// <inheritdoc cref="Zoom.ZoomIn(MainViewModel)"/>
+    /// <inheritdoc cref="Zoom.ZoomIn(ViewModels.MainViewModel)"/>
     private void ZoomIn(PointerWheelEventArgs e) =>
         ZoomPanControl.ZoomWithPointerWheel(e);
 
-    /// <inheritdoc cref="Zoom.ZoomOut(MainViewModel)"/>
+    /// <inheritdoc cref="Zoom.ZoomOut(ViewModels.MainViewModel)"/>
     private void ZoomOut(PointerWheelEventArgs e) =>
         ZoomPanControl.ZoomWithPointerWheel(e);
 
-    /// <inheritdoc cref="Zoom.ZoomIn(MainViewModel)"/>
+    /// <inheritdoc cref="Zoom.ZoomIn(ViewModels.MainViewModel)"/>
     public void ZoomIn() =>
         ZoomPanControl.ZoomIn();
 
-    /// <inheritdoc cref="Zoom.ZoomOut(MainViewModel)"/>
+    /// <inheritdoc cref="Zoom.ZoomOut(ViewModels.MainViewModel)"/>
     public void ZoomOut() =>
         ZoomPanControl.ZoomOut();
 
-    /// <inheritdoc cref="Zoom.ResetZoom(bool, MainViewModel)"/>
+    /// <inheritdoc cref="Zoom.ResetZoom(bool, ViewModels.MainViewModel)"/>
     public void ResetZoom(bool enableAnimations = true) =>
         ZoomPanControl.ResetZoom(enableAnimations);
+    
+    public void ResetZoomSlim() =>
+        ZoomPanControl.ResetZoomSlim();
     
     #endregion
 
     #region Image Transformation
     public void Rotate(bool clockWise) => _imageTransformer?.Rotate(clockWise);
-    public void Rotate(double angle) => _imageTransformer?.Rotate(angle);
+    public void Rotate(int angle) => _imageTransformer?.Rotate(angle);
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
         
     #endregion
-
-    private void MainImage_OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (!Settings.UIProperties.ShowInterface && ZoomPanControl.ZoomLevel is 100)
-        {
-            WindowFunctions.WindowDragBehavior((Window)VisualRoot!, e);
-        }
-    }
 }

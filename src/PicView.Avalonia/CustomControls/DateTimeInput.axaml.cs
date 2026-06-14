@@ -9,7 +9,7 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.CustomControls;
@@ -95,9 +95,9 @@ public class DateTimeInput : TemplatedControl
     /// </summary>
     private void OnSelectedDateTimeChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        if (DataContext is MainViewModel vm)
+        if (DataContext is MainWindowViewModel vm)
         {
-            if (vm.PicViewer?.FileInfo.Value?.Exists == true)
+            if (vm.WindowTabs.ActiveTab.CurrentValue?.FileInfo.Value?.Exists == true)
             {
                 _controlsContainer?.IsVisible = true;
             }

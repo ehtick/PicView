@@ -22,10 +22,10 @@ Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero trac
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/Setup-PicView-v4.2.0-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/Setup-PicView-v4.2.0-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/Setup-PicView-v4.1.2-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/Setup-PicView-v4.1.2-win-arm64.exe)
 
-[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/PicView-4.2.0-macOS-arm64.dmg)
-[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/PicView-4.2.0-macOS-x64.dmg)
+[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/PicView-4.1.2-macOS-arm64.dmg)
+[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/PicView-4.1.2-macOS-x64.dmg)
 
 [Latest releases at PicView.org](https://picview.org/download)
 
@@ -243,9 +243,7 @@ https://github.com/Ruben2776/PicView/issues/13.
 
 ## Code Signing Policy
 
-macOS app bundles are notarized, signed and stapled.
-
-All Windows releases are built via GitHub Actions, virus scanned and digitally signed.
+All releases are built via GitHub Actions, virus scanned and digitally signed.
 
 Free code signing is provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
 

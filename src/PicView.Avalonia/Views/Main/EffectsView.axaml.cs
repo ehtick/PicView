@@ -1,23 +1,22 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.LogicalTree;
-using Avalonia.Media;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
-using PicView.Avalonia.ViewModels;
 using PicView.Core.ImageEffects;
 using PicView.Core.Localization;
+using PicView.Core.Models;
+using PicView.Core.ViewModels;
 using R3;
 
 namespace PicView.Avalonia.Views.Main;
 
 public partial class EffectsView : UserControl
 {
-    private readonly CompositeDisposable _disposables = new();
+    private DisposableBag _disposables;
     private readonly Subject<Unit> _changes = new();
 
     private readonly ImageEffectConfig _default = new();
@@ -36,49 +35,64 @@ public partial class EffectsView : UserControl
 
     private void OnLoaded(object? sender, EventArgs e)
     {
-        if (DataContext is not MainViewModel vm)
+        if (DataContext is not CoreViewModel core)
+        {
             return;
-
-        vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
-
-        // reset on file change
-        Observable.EveryValueChanged(vm.PicViewer.FileInfo, x => x.CurrentValue, UIHelper.GetFrameProvider)
-            .Subscribe(_ => ResetAllUiAndConfig(vm))
-            .AddTo(_disposables);
-
-        InitButtons(vm);
+        }
+        
+        core.Effects ??= new EffectsViewModel();
+        core.Effects.EffectConfig.Value ??= new ImageEffectConfig();
+        
+        // TODO handle initialize when no image present, or the image is not a file
+        // core.Effects.Initialize(core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo);
+        //
+        // Observable.EveryValueChanged(core.Effects, x => x.ProcessedImage).ObserveOn(UIHelper.GetFrameProvider)
+        // .Subscribe(UpdateUIImage);
+        
+        InitButtons();
         InitControlHooks();
         InitPresets();
-        InitPipeline(vm);
-
+        InitPipeline(core.Effects);
+        
         // apply existing config to UI if any
-        ApplyConfigToUi(vm.PicViewer.EffectConfig.CurrentValue);
-        if (!IsDefault(vm.PicViewer.EffectConfig.CurrentValue))
+        ApplyConfigToUi(core.Effects.EffectConfig.Value);
+        if (!IsDefault(core.Effects.EffectConfig.Value))
             RequestUpdate();
         else
             HideResetBtn();
     }
-
-    private void InitButtons(MainViewModel vm)
+    
+    private void MoveWindow(object? sender, PointerPressedEventArgs e)
     {
-        if (!Settings.Theme.Dark)
+        if (TopLevel.GetTopLevel(this) is Window window)
         {
-            if (TryGetResource("CancelBrush", Application.Current.RequestedThemeVariant, out var cBrush) && cBrush is SolidColorBrush brush)
-            {
-                UIHelper.SetButtonHover(CancelButton, brush);
-                UIHelper.SetButtonHover(ResetButton, brush);
-            }
-
-            UIHelper.SwitchAccentHoverClass(ResetButton);
-            UIHelper.SwitchAccentHoverClass(CancelButton);
-            LowerPanel.Background = new SolidColorBrush(Color.Parse("#5DA2A2A2"));
+            window.BeginMoveDrag(e);
         }
+    }
 
+    private void UpdateUIImage(MagickImage? obj)
+    {
+        if (obj is null || DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+        core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.Image.Value =
+            obj.ToWriteableBitmap();
+    }
+
+    private void InitButtons()
+    {
         PointerPressed += OnPointerPressed;
 
         // Footer buttons
         ResetButton.Click += async (_, _) => await RemoveEffects();
-        CancelButton.Click += (_, _) => (VisualRoot as Window)?.Close();
+        CancelButton.Click += (_, _) =>
+        {
+            if (TopLevel.GetTopLevel(this) is Window window)
+            {
+                window.Close();
+            }
+        };
         //ApplyButton.Click += async (_, _) => await CommitToHistoryAndClose();
 
         // Per-tab reset
@@ -88,7 +102,7 @@ public partial class EffectsView : UserControl
 
         ResetAllBtn.Click += (_, _) =>
         {
-            ResetAllUiAndConfig(vm);
+            ResetAllUiAndConfig();
             HideResetBtn();
             RequestUpdate();
         };
@@ -197,7 +211,6 @@ public partial class EffectsView : UserControl
         };
     }
 
-
     private void Hook(RangeBase slider)
     {
         Observable.FromEventHandler<RangeBaseValueChangedEventArgs>(h => slider.ValueChanged += h, h => slider.ValueChanged -= h)
@@ -207,10 +220,10 @@ public partial class EffectsView : UserControl
                 HideCancelBtn();
                 RequestUpdate();
             })
-            .AddTo(_disposables);
+            .AddTo(ref _disposables);
     }
 
-    private void InitPipeline(MainViewModel vm)
+    private void InitPipeline(EffectsViewModel effectsViewModel)
     {
         _changes
             .Debounce(_debounceTime)
@@ -218,36 +231,49 @@ public partial class EffectsView : UserControl
             .Select(_ =>
             {
                 if (_reloading)
-                    return (Config: (ImageEffectConfig?)null, Vm: vm);
-
-                var config = vm.PicViewer.EffectConfig.Value ??= new ImageEffectConfig();
+                {
+                    return (Config: null, Vm: effectsViewModel);
+                }
+        
+                var config = effectsViewModel.EffectConfig.Value ??= new ImageEffectConfig();
                 ReadUiIntoConfig(config);
-                return (Config: config, Vm: vm);
+                return (Config: config, Vm: effectsViewModel);
             })
             .SelectAwait(async (state, ct) =>
             {
                 if (state.Config is null)
-                    return (Magick: (MagickImage?)null, state.Vm);
+                    return (Magick: null, state.Vm);
+        
+                state.Vm.IsLoading.Value = true;
 
-                state.Vm.MainWindow.IsLoadingIndicatorShown.Value = true;
-
+                if (DataContext is not CoreViewModel core)
+                {
+                    return (Magick: null, state.Vm);
+                }
+        
                 var magick = await ImageEffectsHelper.ApplyEffects(
-                    state.Vm.PicViewer.FileInfo.CurrentValue,
+                    core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Model.FileInfo,
                     state.Config,
                     ct);
-
+        
                 return (Magick: magick, state.Vm);
             })
             .Subscribe(result =>
             {
                 var (magick, viewModel) = result;
-
+                if (DataContext is not CoreViewModel core)
+                {
+                    return;
+                }
+        
                 if (magick is not null)
-                    viewModel.PicViewer.ImageSource.Value = magick.ToWriteableBitmap();
-
-                viewModel.MainWindow.IsLoadingIndicatorShown.Value = false;
+                {
+                    core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.Value.Image.Value = magick.ToWriteableBitmap();
+                }
+        
+                viewModel.IsLoading.Value = false;
             })
-            .AddTo(_disposables);
+            .AddTo(ref _disposables);
     }
 
     private void RequestUpdate() => _changes.OnNext(Unit.Default);
@@ -433,13 +459,17 @@ public partial class EffectsView : UserControl
         };
     }
 
-    private void ResetAllUiAndConfig(MainViewModel vm)
+    private void ResetAllUiAndConfig()
     {
         _reloading = true;
         try
         {
             ResetAllUi();
-            vm.PicViewer.EffectConfig.Value = new ImageEffectConfig();
+            if (DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            core.Effects?.EffectConfig.Value = new ImageEffectConfig();
         }
         finally
         {
@@ -504,12 +534,14 @@ public partial class EffectsView : UserControl
         _reloading = true;
         try
         {
-            await NavigationManager.QuickReload().ConfigureAwait(false);
+            if (DataContext is not CoreViewModel core)
+            {
+                return;
+            }
+            await core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ReloadAsync().ConfigureAwait(false);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (DataContext is MainViewModel vm)
-                    ResetAllUiAndConfig(vm);
-
+                ResetAllUiAndConfig();
                 HideResetBtn();
             });
         }
@@ -519,27 +551,6 @@ public partial class EffectsView : UserControl
             _reloading = false;
         }
     }
-
-    // private async Task CommitToHistoryAndClose()
-    // {
-    //     if (UIHelper.GetMainView.DataContext is not MainViewModel vm)
-    //         return;
-    //
-    //     if (vm.PicViewer.ImageSource.Value is not Bitmap bmp)
-    //         return;
-    //
-    //     if (vm.PicViewer.EffectConfig.Value is null)
-    //         return;
-    //
-    //     await using (DebouncedLoadingScope.Start(vm.MainWindow.IsLoadingIndicatorShown, 50))
-    //     {
-    //         var config = vm.PicViewer.EffectConfig.CurrentValue;
-    //         var desc = BuildEffectDescription(config);
-    //
-    //         //await vm.HistoryManager.AddSnapshot(EditKind.Effect, desc, bmp).ConfigureAwait(false);
-    //         await Dispatcher.UIThread.InvokeAsync(() => (VisualRoot as Window)?.Close());
-    //     }
-    // }
 
     private void HideResetBtn()
     {
@@ -564,8 +575,8 @@ public partial class EffectsView : UserControl
     {
         _disposables.Dispose();
 
-        if (DataContext is MainViewModel vm)
-            vm.MainWindow.IsLoadingIndicatorShown.Value = false;
+        // if (DataContext is MainViewModel vm)
+        //     vm.MainWindow.IsLoadingIndicatorShown.Value = false;
     }
 
     private static string BuildEffectDescription(ImageEffectConfig c)

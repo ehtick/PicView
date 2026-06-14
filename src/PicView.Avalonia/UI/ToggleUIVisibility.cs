@@ -1,0 +1,115 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.Navigation.Services;
+using PicView.Avalonia.WindowBehavior;
+using PicView.Core.Gallery;
+using PicView.Core.Localization;
+using PicView.Core.Sizing;
+using PicView.Core.ViewModels;
+
+namespace PicView.Avalonia.UI;
+
+public static class ToggleUIVisibility
+{
+    public static async ValueTask ToggleBottomBar(MainWindowViewModel vm)
+    {
+        if (Settings.UIProperties.ShowBottomNavBar)
+        {
+            vm.IsBottomToolbarShown.Value = false;
+            Settings.UIProperties.ShowBottomNavBar = false;
+            vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.ShowBottomToolbar;
+            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
+            
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+        }
+        else
+        {
+            vm.IsBottomToolbarShown.Value = true;
+            Settings.UIProperties.ShowBottomNavBar = true;
+            vm.BottombarHeight.Value = SizeDefaults.BottombarHeight;
+            vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.HideBottomToolbar;
+            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = false;
+            
+            WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+            
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: MainWindow mainWindow })
+            {
+                Dispatcher.UIThread.Post(() => mainWindow.SharedBottomBar.ResponsiveNavigationBtnSize());
+            }
+        }
+        
+        await SaveSettingsAsync();
+    }
+
+    public static async ValueTask ToggleInterface(MainWindowViewModel vm)
+    {
+        var tab = vm.WindowTabs.ActiveTab.CurrentValue;
+        if (Settings.UIProperties.ShowInterface)
+        {
+            // Hide Interface
+            
+            vm.IsUIShown.Value = false;
+            Settings.UIProperties.ShowInterface = false;
+            vm.IsTopToolbarShown.Value = false;
+            vm.IsBottomToolbarShown.Value = false;
+            vm.Translation.IsShowingUI.Value = TranslationManager.Translation.ShowUI;
+            tab.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
+            if (!Settings.Gallery.ShowDockedGalleryInHiddenUI)
+            {
+                // Hide gallery if not enabled
+                tab.Gallery.GalleryMode.Value = GalleryMode2.Closed;
+                tab.Gallery.IsGalleryDocked.Value = false;
+            }
+        }
+        else
+        {
+            vm.IsUIShown.Value = true;
+            vm.IsTopToolbarShown.Value = true;
+            vm.Translation.IsShowingUI.Value = TranslationManager.Translation.HideUI;
+            if (Settings.UIProperties.ShowBottomNavBar)
+            {
+                vm.IsBottomToolbarShown.Value = true;
+                vm.BottombarHeight.Value = SizeDefaults.BottombarHeight;
+                tab.Hoverbar.IsHoverbarVisible.Value = false;
+            }
+            else
+            {
+                tab.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
+            }
+            Settings.UIProperties.ShowInterface = true;
+            vm.TitlebarHeight.Value = SizeDefaults.MainTitlebarHeight;
+            if (Settings.Gallery.IsGalleryDocked)
+            {
+                if (tab.ImageIterator.Files.Count > 0)
+                {
+                    if (Application.Current.DataContext is CoreViewModel core)
+                    {
+                          _ = GalleryLoader.LoadGalleryAsync(core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+                                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
+                                    new AvaloniaThumbnailLoader(),
+                                    core.SharedThumbnailCache,
+                                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
+                                .ConfigureAwait(false);
+                    }
+  
+                }
+
+                tab.Gallery.IsDockedGalleryVisible.Value = true;
+            }
+            else
+            {
+                tab.Gallery.IsGalleryDocked.Value = false;
+            }
+        }
+        vm.TopTitlebarViewModel.CloseDropDownMenu();
+        WindowResizing.SetSize(vm, WindowResizeReason.Layout);
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: MainWindow mainWindow })
+        {
+            Dispatcher.UIThread.Post(() => mainWindow.SharedBottomBar.ResponsiveNavigationBtnSize());
+        }
+        await SaveSettingsAsync();
+    }
+}

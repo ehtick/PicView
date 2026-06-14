@@ -1,6 +1,6 @@
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.Input;
 using PicView.Avalonia.UI;
 using PicView.Avalonia.WindowBehavior;
@@ -9,7 +9,7 @@ using R3;
 
 namespace PicView.Avalonia.MacOS.Views;
 
-public partial class EffectsWindow : Window, IDisposable
+public partial class EffectsWindow : GenericWindow, IDisposable
 {
     private readonly CompositeDisposable _disposables = new();
     public EffectsWindow()
@@ -38,14 +38,6 @@ public partial class EffectsWindow : Window, IDisposable
                 Close();
             }
         };
-    }
-
-    private void MoveWindow(object? sender, PointerPressedEventArgs e)
-    {
-        if (VisualRoot is null) { return; }
-
-        var hostWindow = (Window)VisualRoot;
-        hostWindow?.BeginMoveDrag(e);
     }
     
     public void Dispose()

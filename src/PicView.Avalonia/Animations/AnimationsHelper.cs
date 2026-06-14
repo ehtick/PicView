@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls.Shapes;
@@ -50,6 +50,50 @@ public static class AnimationsHelper
                         new Setter
                         {
                             Property = Layoutable.HeightProperty,
+                            Value = to
+                        }
+                    },
+                    Cue = new Cue(1d)
+                }
+            }
+        };
+    }
+
+    /// <summary>
+    /// Creates a width animation for a <see cref="Layoutable"/> control.
+    /// </summary>
+    /// <param name="from">The starting width value.</param>
+    /// <param name="to">The ending width value.</param>
+    /// <param name="speed">The duration of the animation in seconds.</param>
+    /// <returns>An <see cref="Animation"/> that animates the width property.</returns>
+    public static Animation WidthAnimation(double from, double to, double speed)
+    {
+        return new Animation
+        {
+            Duration = TimeSpan.FromSeconds(speed),
+            Easing = new SplineEasing(),
+            FillMode = FillMode.Forward,
+            Children =
+            {
+                new KeyFrame
+                {
+                    Setters =
+                    {
+                        new Setter
+                        {
+                            Property = Layoutable.WidthProperty,
+                            Value = from
+                        }
+                    },
+                    Cue = new Cue(0d)
+                },
+                new KeyFrame
+                {
+                    Setters =
+                    {
+                        new Setter
+                        {
+                            Property = Layoutable.WidthProperty,
                             Value = to
                         }
                     },
@@ -135,14 +179,14 @@ public static class AnimationsHelper
                 Fill = Brushes.Black,
                 IsHitTestVisible = false
             };
-            UIHelper.GetMainView.MainGrid.Children.Add(rectangle);
+            UIHelper.GetMainView.MainPanel.Children.Add(rectangle);
         });
 
         await startOpacityAnimation.RunAsync(rectangle);
         await endOpacityAnimation.RunAsync(rectangle);
         await Task.Delay(200);
 
-        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetMainView.MainGrid.Children.Remove(rectangle); });
+        await Dispatcher.UIThread.InvokeAsync(() => { UIHelper.GetMainView.MainPanel.Children.Remove(rectangle); });
     }
 
     /// <summary>

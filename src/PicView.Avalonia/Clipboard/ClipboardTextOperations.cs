@@ -1,4 +1,6 @@
 using Avalonia.Input.Platform;
+using PicView.Avalonia.Animations;
+using PicView.Core.DebugTools;
 
 namespace PicView.Avalonia.Clipboard;
 
@@ -25,10 +27,17 @@ public static class ClipboardTextOperations
             return false;
         }
 
-        return await ClipboardService.ExecuteClipboardOperation(async () =>
+        try
         {
+            _ = AnimationsHelper.CopyAnimation();
+            await clipboard.ClearAsync();
             await clipboard.SetTextAsync(text);
-            return true;
-        }, showAnimation: true);
+        }
+        catch (Exception ex)
+        {
+            DebugHelper.LogDebug(nameof(ClipboardTextOperations), nameof(CopyTextToClipboard), ex);
+            return false;
+        }
+        return true;
     }
 }
