@@ -205,7 +205,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.NextFile()" />
     public async ValueTask Next() =>
-        await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown,
+        await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts.IsKeyHeldDown,
             NavigateTo.Next).ConfigureAwait(false);
 
     /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.NavigateToNextFolderAsync" />
@@ -222,7 +222,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.PrevFile()" />
     public async ValueTask Prev() =>
-        await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown,
+        await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts.IsKeyHeldDown,
             NavigateTo.Previous).ConfigureAwait(false);
 
     /// <inheritdoc cref="Core.Navigation.Interfaces.INavigationService.NavigateToPreviousFolderAsync" />
@@ -260,7 +260,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     {
         if (vm.WindowTabs.ActiveTab.Value.Gallery.IsGalleryExpanded.Value)
         {
-            await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown, NavigateTo.Up).ConfigureAwait(false);
+            await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts.IsKeyHeldDown, NavigateTo.Up).ConfigureAwait(false);
             return;
         }
 
@@ -315,7 +315,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     {
         if (vm.WindowTabs.ActiveTab.Value.Gallery.IsGalleryExpanded.Value)
         {
-            await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts2.IsKeyHeldDown, NavigateTo.Down).ConfigureAwait(false);
+            await vm.WindowTabs.NavigateDirectionalAsync(MainKeyboardShortcuts.IsKeyHeldDown, NavigateTo.Down).ConfigureAwait(false);
             return;
         }
 

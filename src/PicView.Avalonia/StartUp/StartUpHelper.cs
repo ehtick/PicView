@@ -306,13 +306,13 @@ public static class StartUpHelper
     {
         // Extract the ViewModel from the window that received the key press
         var vm = (sender as Control)?.DataContext as MainWindowViewModel;
-        await MainKeyboardShortcuts2.MainWindow_KeysDownAsync(e, vm).ConfigureAwait(false);
+        await MainKeyboardShortcuts.MainWindow_KeysDownAsync(e, vm).ConfigureAwait(false);
     }
 
     private static async ValueTask MainWindow_KeyUpAsync(object? sender, KeyEventArgs e)
     {
         // Extract the ViewModel from the window that received the key press
         var vm = (sender as Control)?.DataContext as MainWindowViewModel;
-        await MainKeyboardShortcuts2.MainWindow_KeysUpAsync(e, vm);
+        await MainKeyboardShortcuts.MainWindow_KeysUpAsync(e, vm);
     }
 }
