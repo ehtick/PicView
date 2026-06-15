@@ -2,7 +2,7 @@
 <img src="https://d33wubrfki0l68.cloudfront.net/327934f4ff80060e07c17935683ecad27cda8080/ee2bc/assets/images/photoshop_1.png" alt="PicView Logo" height="90">
 </h1>
 
-PicView is a fast, free and fully customizable picture viewer for macOS and Windows 10/11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others. 
+PicView is a fast, free and fully customizable picture viewer for macOS and Windows 10/11. It supports virtually all image file types, including _(animated)_ `WEBP`, _(animated)_ `GIF`, `SVG`, `AVIF`, `HEIC`, `PSD` and many others.
 
 Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero tracking. It works out of the box — or you can customize it to your needs.
 
@@ -22,10 +22,10 @@ Enjoy a clean, free, and fast experience with no annoying pop-ups, and zero trac
 
 # Downloads
 
-[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/Setup-PicView-v4.1.2-win-x64.exe) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/Setup-PicView-v4.1.2-win-arm64.exe)
+[![](https://img.shields.io/badge/Windows-x64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/PicView-v4.2.0-win-x64.zip) [![](https://img.shields.io/badge/Windows-arm64-blue?style=flat-square&logo=windows&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/Setup-PicView-v4.2.0-win-arm64.exe)
 
-[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/PicView-4.1.2-macOS-arm64.dmg)
-[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.1.2/PicView-4.1.2-macOS-x64.dmg)
+[![](https://img.shields.io/badge/macOS-arm64%20(Apple%20Silicon)-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/PicView-4.2.0-macOS-arm64.dmg)
+[![](https://img.shields.io/badge/macOS-x64-blueviolet?style=flat-square&logo=apple&logoColor=fff)](https://github.com/Ruben2776/PicView/releases/download/4.2.0/PicView-4.2.0-macOS-x64.dmg)
 
 [Latest releases at PicView.org](https://picview.org/download)
 
@@ -61,7 +61,7 @@ If you like PicView, consider giving it a star or a like on [AlternativeTo](http
 Developing PicView has ongoing costs (website hosting, Apple Developer license, AI subscription, etc.).  
 If you enjoy PicView, please consider supporting its development:
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV) 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/W7W46BJFV)
 
 <a href="https://www.paypal.com/paypalme/Ruben2776"><img src="https://img.shields.io/badge/PayPal-grey?logo=paypal"><a/>
 <a href="https://github.com/sponsors/Ruben2776"><img src="https://img.shields.io/github/sponsors/Ruben2776"><a/>
@@ -193,7 +193,7 @@ All builds are compiled using NativeAOT _(with trimming)_, resulting in a fully 
 
 Using Cysharp’s ZLinq and ZString for zero allocation and high performance, and R3 for high-performance ViewModel binding and event streams.
 
-Magick.NET is used for its rich file support, image editing, and information capabilities. 
+Magick.NET is used for its rich file support, image editing, and information capabilities.
 
 # Contributions
 ![Visual Studio 2022](https://img.shields.io/badge/IDE-Visual%20Studio%202022-964ad4.svg?maxAge=3600)
@@ -201,7 +201,7 @@ Magick.NET is used for its rich file support, image editing, and information cap
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/bf0fd0f740f9486ba306bdec7fe8bde7)](https://www.codacy.com/manual/ruben_8/PicView?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Ruben2776/PicView&amp;utm_campaign=Badge_Grade)
 
 **Building:** <br>
-Open and run the solution in Visual Studio or Rider. 
+Open and run the solution in Visual Studio or Rider.
 If you're using arm64 hardware, make sure to change the platform target to your CPU architecture in the project properties, as well as changing the Magick.NET NuGet packages to match.
 
 Contributions are welcome! Check out the [Help wanted](https://github.com/Ruben2776/PicView/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22) label to get started.
