@@ -26,7 +26,7 @@ public static class FileExtensions
     }
 
     /// <summary>
-    /// Formats a file size in bytes using string.Create for zero-allocation construction.
+    /// Formats a file size in bytes using string. String.Create for zero-allocation construction.
     /// </summary>
     private static string FormatBytes(long bytes)
     {
@@ -75,7 +75,7 @@ public static class FileExtensions
 
         // 3. Calculate Exact String Length
         // Since 'whole' is scaled by magnitude, it is always < 1024 (1-4 digits).
-        var wholeLen = whole < 10 ? 1 : (whole < 100 ? 2 : (whole < 1000 ? 3 : 4));
+        var wholeLen = whole < 10 ? 1 : (whole < 100 ? 2 : whole < 1000 ? 3 : 4);
         
         // Base length: Whole + " X" + "B" (3 chars for suffix part)
         var totalLen = wholeLen + 3;

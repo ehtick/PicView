@@ -2,7 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using ImageMagick;
 using PicView.Avalonia.Input;
+using PicView.Avalonia.UI;
+using PicView.Core.FileHandling;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.Views.UC;
@@ -90,68 +93,66 @@ public partial class EditableTitlebar : UserControl
     protected override void OnKeyUp(KeyEventArgs e)
     {
         base.OnKeyUp(e);
-        //
-        // if (Application.Current.DataContext is not CoreViewModel core)
-        // {
-        //     return;
-        // }
-        //
-        // if (!core.MainWindows.ActiveWindow.CurrentValue.IsEditableTitlebarOpen.CurrentValue)
-        // {
-        //     if (e.Key != Key.Escape)
-        //     {
-        //         _ = MainKeyboardShortcuts.MainWindow_KeysDownAsync(e).ConfigureAwait(false);
-        //     }
-        //
-        //     return;
-        // }
-        //
-        // if (e.Key == Key.Enter)
-        // {
-        //     vm.MainWindow.IsLoadingIndicatorShown.Value = true;
-        //     
-        //     var oldPath = vm.PicViewer.FileInfo.CurrentValue.FullName;
-        //     var newPath = Path.Combine(vm.PicViewer.FileInfo.CurrentValue.DirectoryName, TextBox.Text);
-        //     Task.Run(async () =>
-        //     {
-        //         if (newPath == oldPath)
-        //         {
-        //             ShowFileExistsError(vm);
-        //             return;
-        //         }
-        //
-        //         var currentExtension = Path.GetExtension(oldPath);
-        //         var newExtension = Path.GetExtension(newPath);
-        //         if (currentExtension.Equals(newExtension, StringComparison.OrdinalIgnoreCase))
-        //         {
-        //             // Same file, handle simple rename
-        //
-        //             // Make sure the old file is discarded from being cached
-        //             NavigationManager.RemoveFromPreloader(oldPath);
-        //
-        //             FileHelper.RenameFile(oldPath, newPath);
-        //         }
-        //         else
-        //         {
-        //             // Convert and reload
-        //             await SaveImageHandler.SaveImageWithPossibleNavigation(vm,
-        //                 vm.PicViewer.FileInfo.CurrentValue.FullName,
-        //                 newPath, true, newExtension);
-        //
-        //             await NavigationManager.QuickReload();
-        //         }
-        //
-        //         vm.MainWindow.IsLoadingIndicatorShown.Value = false;
-        //     });
-        // }
-        //
-        // if (e.Key is not (Key.Escape or Key.Enter))
-        // {
-        //     return;
-        // }
-        //
-        // UIHelper.GetMainView.Focus();
-        // MainKeyboardShortcuts.IsKeysEnabled = true;
+        
+        if (Application.Current.DataContext is not CoreViewModel core || DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        
+        if (!core.MainWindows.ActiveWindow.CurrentValue.IsEditableTitlebarOpen.CurrentValue)
+        {
+            if (e.Key != Key.Escape)
+            {
+                _ = MainKeyboardShortcuts.MainWindow_KeysDownAsync(e, vm).ConfigureAwait(false);
+            }
+        
+            return;
+        }
+        
+        if (e.Key == Key.Enter)
+        {
+            vm.IsLoadingIndicatorShown.Value = true;
+            var tab = vm.WindowTabs.ActiveTab.CurrentValue;
+            
+            var oldPath = tab.FileInfo.CurrentValue.FullName;
+            var newPath = Path.Combine(tab.FileInfo.CurrentValue.DirectoryName, TextBox.Text);
+            Task.Run(async () =>
+            {
+                if (newPath == oldPath)
+                {
+                    // TODO
+                    //ShowFileExistsError(vm);
+                    return;
+                }
+        
+                var currentExtension = Path.GetExtension(oldPath);
+                var newExtension = Path.GetExtension(newPath);
+                if (currentExtension.Equals(newExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    FileHelper.RenameFile(oldPath, newPath);
+                }
+                else
+                {
+                    using var magick = new MagickImage(oldPath);
+                    await magick.WriteAsync(newPath);
+                    await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
+                }
+
+                var newFileInfo = new FileInfo(newPath);
+                tab.FileInfo.Value = newFileInfo;
+                tab.Model.FileInfo = newFileInfo;
+                tab.UpdateTabTitle();
+                vm.IsLoadingIndicatorShown.Value = false;
+            });
+        }
+        
+        if (e.Key is not (Key.Escape or Key.Enter))
+        {
+            return;
+        }
+        
+        UIHelper.GetMainView.Focus();
+        MainKeyboardShortcuts.IsKeysEnabled = true;
     }
 
     public void SelectFileName()
