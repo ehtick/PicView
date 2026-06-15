@@ -170,7 +170,7 @@ public static class QuickLoad
                 x.FullName.AsSpan().Equals(fileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
             var (nextIndex, _) = IterationHelper.GetIteration(index, files.Count, NavigateTo.Next, SkipAmount.One);
             var nextFileInfo = files[nextIndex];
-            var secondImageModel = await GetImageModel.GetImageModelAsync(nextFileInfo, magickImage).ConfigureAwait(false);
+            var secondImageModel = await GetImageModel.GetImageModelAsync(nextFileInfo).ConfigureAwait(false);
             tab.SecondaryModel = secondImageModel;
             UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
             UpdateImage.UpdateTabSideBySideTitles(core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue, index, nextIndex, fileInfo, nextFileInfo, files);
@@ -202,6 +202,7 @@ public static class QuickLoad
         {
             Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
         }
+        magickImage.Dispose();
     }
     
     private static async ValueTask LoadArchiveFileAsync(CoreViewModel core, FileInfo source)
