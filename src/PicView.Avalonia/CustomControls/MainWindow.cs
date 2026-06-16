@@ -118,6 +118,7 @@ public class MainWindow : Window, IMainWindow
     {
         SharedBottomBar.ResponsiveNavigationBtnSize();
         SharedTitleBar.SharedDropDownMenuButton.IsVisible = width > SizeDefaults.MainTitleDropDownBtnBp;
+        SharedTitleBar.SharedSearchButton.IsVisible = width > SizeDefaults.MainTitleSearchBtnBp;
     }
     
     // Window has been resized

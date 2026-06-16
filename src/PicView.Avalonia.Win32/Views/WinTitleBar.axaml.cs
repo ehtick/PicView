@@ -16,6 +16,8 @@ public partial class WinTitleBar : MainTitleBar
     {
         InitializeComponent();
         SharedDropDownMenuButton = DropDownMenuButton;
+        SharedSearchButton = SearchButton;
+        
         Loaded += (_, _) =>
         {
             if (Settings.Theme.GlassTheme)
@@ -88,9 +90,10 @@ public partial class WinTitleBar : MainTitleBar
         OpenMenu();
         vm.TopTitlebarViewModel.IsBtnPanelVisible.Value = false;
         LogoBorder.IsVisible = false;
-        vm.TopTitlebarViewModel.MaxItemWidth.Value = 55;
+        const int menuItemsCount = 7;
+        vm.TopTitlebarViewModel.MaxItemWidth.Value = Bounds.Width / menuItemsCount;
         
-        var truncatedPadding = new Thickness(2,0,0,0);
+        var truncatedPadding = new Thickness(2,0,2,0);
         FileMenuItem.Padding = truncatedPadding;
         EditMenuItem.Padding = truncatedPadding;
         ViewMenuItem.Padding = truncatedPadding;

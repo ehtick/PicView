@@ -11,6 +11,8 @@ public partial class MacOSTitlebar : MainTitleBar
     {
         InitializeComponent();
         SharedDropDownMenuButton = DropDownMenuButton;
+        SharedSearchButton = SearchButton;
+        
         Loaded += (_, _) =>
         {
             if (Settings.Theme.GlassTheme)
