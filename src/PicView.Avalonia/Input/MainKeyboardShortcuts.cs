@@ -79,13 +79,6 @@ public static class MainKeyboardShortcuts
         // If it's a modifier key only, nothing more to do
         if (IsModifierKey(e.Key))
         {
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
-                if (CurrentModifiers is KeyModifiers.Alt && !mainWindowViewModel.TopTitlebarViewModel.IsMainMenuVisible.CurrentValue)
-                {
-                    mainWindowViewModel.TopTitlebarViewModel.OpenMenu();
-                }
-            }
             return;
         }
 
@@ -97,8 +90,16 @@ public static class MainKeyboardShortcuts
     /// Processes the KeyUp event for the main window.
     /// </summary>
     /// <param name="e">The key event arguments.</param>
+    /// <param name="mainWindowViewModel">The main window view model.</param>
     public static async ValueTask MainWindow_KeysUpAsync(KeyEventArgs e, MainWindowViewModel? mainWindowViewModel)
     {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            if (CurrentKeys.Key is Key.LeftAlt or Key.RightAlt)
+            {
+                mainWindowViewModel.TopTitlebarViewModel.ToggleMenu();
+            }
+        }
         await mainWindowViewModel.Mapper.StopRepeatedNavigation();
         UpdateModifierState(e.Key, false);
         Reset();

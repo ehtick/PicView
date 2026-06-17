@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PicView.Avalonia.CustomControls;
@@ -25,13 +24,9 @@ public partial class RenameDialog : AnimatedPopUp
             RenameBox.CaretIndex = RenameBox.Text.Length;
         }
         
-        CancelButton.Click += async delegate
-        {
-            await AnimatedClosing();
-        };
+        CancelButton.Click += CloseMenu;
+        CloseButton.Click += CloseMenu;
         ApplyButton.Click += ApplyButtonOnClick;
-
-        
         KeyDown += OnKeyDown;
     }
 
@@ -62,5 +57,12 @@ public partial class RenameDialog : AnimatedPopUp
         Loaded -= OnLoaded;
         ApplyButton.Click -= ApplyButtonOnClick;
         KeyDown -= OnKeyDown;
+        CloseButton.Click -= CloseMenu;
+        CancelButton.Click -= CloseMenu;
+    }
+
+    private void CloseMenu(object? sender, RoutedEventArgs e)
+    {
+        _ = AnimatedClosing();
     }
 }

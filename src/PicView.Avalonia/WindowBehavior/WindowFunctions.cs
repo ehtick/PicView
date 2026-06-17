@@ -390,8 +390,7 @@ public static class WindowFunctions
         }
 
         ScreenHelper.UpdateScreenSize(window);
-        // TODO: Reimplement or figure out refactor
-        // WindowResizing.SetSize(window.DataContext as MainWindowViewModel);
+        WindowResizing.SetSize(window.DataContext as MainWindowViewModel, WindowResizeReason.DpiChange);
     }
 
     public static void WindowDragBehavior(Window window, PointerPressedEventArgs e)
@@ -411,8 +410,7 @@ public static class WindowFunctions
         }
 
         ScreenHelper.UpdateScreenSize(window);
-        // TODO: Reimplement or figure out refactor
-        // WindowResizing.SetSize(window.DataContext as MainWindowViewModel);
+        WindowResizing.SetSize(window.DataContext as MainWindowViewModel, WindowResizeReason.DpiChange);
     }
 
     #endregion

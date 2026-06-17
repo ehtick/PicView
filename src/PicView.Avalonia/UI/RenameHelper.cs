@@ -9,12 +9,12 @@ public static class RenameHelper
 {
     public static void Rename(MainWindowViewModel vm)
     {
-        if (vm.IsUIShown.CurrentValue)
+        if (!vm.IsTopToolbarShown.CurrentValue || vm.IsFullscreen.CurrentValue)
         {
-            UIHelper.GetEditableTitlebar.SelectFileName();       
+            DialogManager.AddRenameDialog();
             return;
         }
-        DialogManager.AddRenameDialog();
+        UIHelper.GetEditableTitlebar.SelectFileName();   
     }
 
     public static void RenameAction(MainWindowViewModel vm, string newName)

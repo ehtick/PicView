@@ -32,7 +32,6 @@
                 x:Name="MainMenu"
                 Height="{Binding TitlebarHeight.Value, Mode=OneWay}"
                 HorizontalAlignment="Left"
-                Background="{DynamicResource ContextMenuBackgroundColor}"
                 Foreground="{DynamicResource MainTextColor}"
                 IsVisible="{Binding TopTitlebarViewModel.IsMainMenuVisible.Value}"
                 ZIndex="9">

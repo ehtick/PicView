@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using PicView.Core.Conversion;
-using PicView.Core.ViewModels;
-using R3;
+﻿using R3;
 
 namespace PicView.Core.ViewModels;
 
@@ -73,13 +70,7 @@ public class TopTitlebarViewModel
         IsEditableTitlebarVisible.Value = false;
         IsGalleryButtonVisible.Value = false;
         IsMenuButtonVisible.Value = false;
-        // CropFunctions.DetermineIfShouldBeEnabled(vm);
-        // vm.PicViewer.ShouldOptimizeImageBeEnabled.Value =
-        //     ConversionHelper.DetermineIfOptimizeImageShouldBeEnabled(vm.PicViewer.FileInfo?.CurrentValue);
     }
-
-    public void CloseMenu(Unit unit)
-        => CloseMenu();
 
     public void CloseMenu()
     {
