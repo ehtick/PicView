@@ -1,0 +1,66 @@
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using PicView.Avalonia.CustomControls;
+using PicView.Avalonia.UI;
+using PicView.Core.ViewModels;
+
+namespace PicView.Avalonia.Views.UC.PopUps;
+
+public partial class RenameDialog : AnimatedPopUp
+{
+    public RenameDialog()
+    {
+        InitializeComponent();
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object? sender, RoutedEventArgs e)
+    {
+        RenameBox.Focus();
+        if (RenameBox.Text is not null)
+        {
+            RenameBox.CaretIndex = RenameBox.Text.Length;
+        }
+        
+        CancelButton.Click += async delegate
+        {
+            await AnimatedClosing();
+        };
+        ApplyButton.Click += ApplyButtonOnClick;
+
+        
+        KeyDown += OnKeyDown;
+    }
+
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Enter:
+                RenameHelper.RenameAction(DataContext as MainWindowViewModel, RenameBox.Text);
+                e.Handled = true;
+                break;
+            case Key.Escape:
+                CancelButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+                e.Handled = true;
+                break;
+        }
+    }
+
+    private void ApplyButtonOnClick(object? sender, RoutedEventArgs e)
+    {
+        RenameHelper.RenameAction(DataContext as MainWindowViewModel, RenameBox.Text);
+        _ = AnimatedClosing();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        Loaded -= OnLoaded;
+        ApplyButton.Click -= ApplyButtonOnClick;
+        KeyDown -= OnKeyDown;
+    }
+}

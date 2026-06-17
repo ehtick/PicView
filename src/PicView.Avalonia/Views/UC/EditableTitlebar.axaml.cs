@@ -109,50 +109,16 @@ public partial class EditableTitlebar : UserControl
             return;
         }
         
-        if (e.Key == Key.Enter)
+        switch (e.Key)
         {
-            vm.IsLoadingIndicatorShown.Value = true;
-            var tab = vm.WindowTabs.ActiveTab.CurrentValue;
-            
-            var oldPath = tab.FileInfo.CurrentValue.FullName;
-            var newPath = Path.Combine(tab.FileInfo.CurrentValue.DirectoryName, TextBox.Text);
-            Task.Run(async () =>
-            {
-                if (newPath == oldPath)
-                {
-                    // TODO
-                    //ShowFileExistsError(vm);
-                    return;
-                }
-        
-                var currentExtension = Path.GetExtension(oldPath);
-                var newExtension = Path.GetExtension(newPath);
-                if (currentExtension.Equals(newExtension, StringComparison.OrdinalIgnoreCase))
-                {
-                    FileHelper.RenameFile(oldPath, newPath);
-                }
-                else
-                {
-                    using var magick = new MagickImage(oldPath);
-                    await magick.WriteAsync(newPath);
-                    await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
-                }
-
-                var newFileInfo = new FileInfo(newPath);
-                tab.FileInfo.Value = newFileInfo;
-                tab.Model.FileInfo = newFileInfo;
-                tab.UpdateTabTitle();
-                vm.IsLoadingIndicatorShown.Value = false;
-            });
+            case Key.Enter:
+                RenameHelper.RenameAction(vm, TextBox.Text);
+                break;
+            case Key.Escape:
+                UIHelper.GetMainView.Focus();
+                MainKeyboardShortcuts.IsKeysEnabled = true;
+                break;
         }
-        
-        if (e.Key is not (Key.Escape or Key.Enter))
-        {
-            return;
-        }
-        
-        UIHelper.GetMainView.Focus();
-        MainKeyboardShortcuts.IsKeysEnabled = true;
     }
 
     public void SelectFileName()

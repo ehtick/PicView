@@ -727,13 +727,10 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
             .ConfigureAwait(false);
     }
 
-    public async ValueTask Rename()
+    public ValueTask Rename()
     {
-        // TODO: Needs refactor for selecting file name
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            UIHelper.GetEditableTitlebar.SelectFileName();
-        });
+        RenameHelper.Rename(vm);
+        return ValueTask.CompletedTask;
     }
 
     /// <inheritdoc cref="FileManager.ShowFileProperties(string)" />

@@ -77,4 +77,15 @@ public static class DialogManager
         // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
         // UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
     }
+    
+    public static void AddRenameDialog()
+    {
+        if (UIHelper.GetMainView.MainPanel.Children.OfType<RenameDialog>().Any() || UIHelper.GetMainView.DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        vm.TopTitlebarViewModel.CloseDropDownMenu();
+        UIHelper.GetMainView.MainPanel.Children.Add(new RenameDialog());
+        IsDialogOpen = true;
+    }
 }
