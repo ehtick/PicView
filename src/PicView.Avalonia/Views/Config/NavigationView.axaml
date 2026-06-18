@@ -35,8 +35,8 @@
             <customControls:TextToggleButton
                 x:Name="LoopingToggleButton"
                 Classes="altHover settingsToggleButton"
-                IsChecked="{CompiledBinding SettingsViewModel.IsLooping.Value,
-                                            Mode=TwoWay}"
+                Command="{Binding MainWindows.ActiveWindow.Value.ToggleLoopingCommand}"
+                IsChecked="{Binding GlobalSettings.IsLooping.Value, Mode=TwoWay}"
                 Text="{CompiledBinding Translation.IsLooping.Value,
                                        Mode=OneWay}"
                 ToolTip.Tip="{CompiledBinding Translation.ToggleLooping.Value,

@@ -81,7 +81,6 @@ public class SettingsViewModel : IDisposable
         
         // Navigation Properties
         IsIncludingSubdirectories.Subscribe(x => Settings.Sorting.IncludeSubDirectories = x).AddTo(ref _disposables);
-        IsLooping.Subscribe(x => Settings.UIProperties.Looping = x).AddTo(ref _disposables);
         IsShowingTaskbarProgress.Subscribe(x => Settings.UIProperties.IsTaskbarProgressEnabled = x).AddTo(ref _disposables);
         IsFileHistoryEnabled.Subscribe(x => Settings.Navigation.IsFileHistoryEnabled = x).AddTo(ref _disposables);
         
@@ -192,7 +191,6 @@ public class SettingsViewModel : IDisposable
 
     // Navigation
     public BindableReactiveProperty<bool> IsIncludingSubdirectories { get; } = new(Settings.Sorting.IncludeSubDirectories);
-    public BindableReactiveProperty<bool> IsLooping { get; } = new(Settings.UIProperties.Looping);
     public BindableReactiveProperty<bool> IsShowingTaskbarProgress { get; } = new(Settings.UIProperties.IsTaskbarProgressEnabled);
     public BindableReactiveProperty<bool> IsFileHistoryEnabled { get; } = new(Settings.Navigation.IsFileHistoryEnabled);
 
@@ -299,7 +297,6 @@ public class SettingsViewModel : IDisposable
             MouseWheelBehavior,
             UserLanguage,
             IsIncludingSubdirectories,
-            IsLooping,
             IsShowingTaskbarProgress,
             IsFileHistoryEnabled,
             SetColorThemeCommand,
