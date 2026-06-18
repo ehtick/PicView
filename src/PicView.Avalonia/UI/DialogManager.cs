@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using PicView.Avalonia.Crop;
@@ -68,14 +69,14 @@ public static class DialogManager
 
     public static void AddNavigationDialog()
     {
-        // TODO
-        // if (UIHelper.GetMainView.MainGrid.Children.OfType<NavigationDialog>().Any())
-        // {
-        //     return;
-        // }
-        //
-        // MenuManager.CloseMenus(UIHelper.GetMainView.DataContext as MainViewModel);
-        // UIHelper.GetMainView.MainGrid.Children.Add(new NavigationDialog());
+        if (UIHelper.GetMainView.MainPanel.Children.OfType<NavigationDialog>().Any() || UIHelper.GetMainView.DataContext is not MainWindowViewModel vm)
+        {
+            return;
+        }
+        
+        vm.TopTitlebarViewModel.CloseDropDownMenu();
+        UIHelper.GetMainView.MainPanel.Children.Add(new NavigationDialog());
+        IsDialogOpen = true;
     }
     
     public static void AddRenameDialog()

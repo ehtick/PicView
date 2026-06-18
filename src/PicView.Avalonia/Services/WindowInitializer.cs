@@ -96,7 +96,7 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
                 await vm.InfoWindow.ImageInfoWindowConfig.LoadAsync();
             }
 
-            await Dispatcher.UIThread.InvokeAsync(async () =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 vm.Exif ??= new ExifViewModel();
                 _imageInfoWindow = provider.CreateImageInfoWindow(vm);
