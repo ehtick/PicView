@@ -86,9 +86,9 @@ public class NavigationService(
             return;
         }
 
-        if (iterator.Files.Contains(fileInfo))
-        {
-            var index = FindIndex(fileInfo, tab);
+        var index = FindIndex(fileInfo, tab);
+        if (index is not -1)
+        {            
             await tab.ImageIterator.IterateToIndexAsync(index, ct).ConfigureAwait(false);
         }
         else
