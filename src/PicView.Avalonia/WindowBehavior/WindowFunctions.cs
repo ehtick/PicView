@@ -135,18 +135,10 @@ public static class WindowFunctions
             return;
         }
 
-        if (Settings.WindowProperties.TopMost)
-        {
-            desktop.MainWindow.Topmost = false;
-            Settings.WindowProperties.TopMost = false;
-            vm.IsTopMost.Value = true;
-        }
-        else
-        {
-            desktop.MainWindow.Topmost = true;
-            Settings.WindowProperties.TopMost = true;
-            vm.IsTopMost.Value  = false;
-        }
+        var shouldBeTopMost = !Settings.WindowProperties.TopMost;
+        desktop.MainWindow.Topmost = shouldBeTopMost;
+        Settings.WindowProperties.TopMost = shouldBeTopMost;
+        vm.IsTopMost.Value  = shouldBeTopMost;
 
         await SaveSettingsAsync().ConfigureAwait(false);
     }
