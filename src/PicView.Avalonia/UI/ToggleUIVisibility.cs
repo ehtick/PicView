@@ -21,8 +21,9 @@ public static class ToggleUIVisibility
             vm.IsBottomToolbarShown.Value = false;
             Settings.UIProperties.ShowBottomNavBar = false;
             vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.ShowBottomToolbar;
-            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
-            
+            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value =
+                Settings.UIProperties.ShowHoverNavigationBar;
+
             WindowResizing.SetSize(vm, WindowResizeReason.Layout);
         }
         else
@@ -32,15 +33,18 @@ public static class ToggleUIVisibility
             vm.BottombarHeight.Value = SizeDefaults.BottombarHeight;
             vm.Translation.IsShowingBottomToolbar.Value = TranslationManager.Translation.HideBottomToolbar;
             vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = false;
-            
+
             WindowResizing.SetSize(vm, WindowResizeReason.Layout);
-            
-            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: MainWindow mainWindow })
+
+            if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
+                {
+                    MainWindow: MainWindow mainWindow
+                })
             {
                 Dispatcher.UIThread.Post(() => mainWindow.SharedBottomBar.ResponsiveNavigationBtnSize());
             }
         }
-        
+
         await SaveSettingsAsync();
     }
 
@@ -50,7 +54,7 @@ public static class ToggleUIVisibility
         if (Settings.UIProperties.ShowInterface)
         {
             // Hide Interface
-            
+
             vm.IsUIShown.Value = false;
             Settings.UIProperties.ShowInterface = false;
             vm.IsTopToolbarShown.Value = false;
@@ -79,6 +83,7 @@ public static class ToggleUIVisibility
             {
                 tab.Hoverbar.IsHoverbarVisible.Value = Settings.UIProperties.ShowHoverNavigationBar;
             }
+
             Settings.UIProperties.ShowInterface = true;
             vm.TitlebarHeight.Value = SizeDefaults.MainTitlebarHeight;
             if (Settings.Gallery.IsGalleryDocked)
@@ -87,14 +92,16 @@ public static class ToggleUIVisibility
                 {
                     if (Application.Current.DataContext is CoreViewModel core)
                     {
-                          _ = GalleryLoader.LoadGalleryAsync(core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
-                                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
-                                    new AvaloniaThumbnailLoader(),
-                                    core.SharedThumbnailCache,
-                                    core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation().Token)
-                                .ConfigureAwait(false);
+                        _ = GalleryLoader.LoadGalleryAsync(
+                                core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value,
+                                core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.ImageIterator.Files,
+                                new AvaloniaThumbnailLoader(),
+                                core.SharedThumbnailCache,
+                                core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.GetTabCancellation()
+                                    .Token)
+                            .ConfigureAwait(false);
                     }
-  
+
                 }
 
                 tab.Gallery.IsDockedGalleryVisible.Value = true;
@@ -104,12 +111,37 @@ public static class ToggleUIVisibility
                 tab.Gallery.IsGalleryDocked.Value = false;
             }
         }
+
         vm.TopTitlebarViewModel.CloseDropDownMenu();
         WindowResizing.SetSize(vm, WindowResizeReason.Layout);
-        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: MainWindow mainWindow })
+        if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
+            {
+                MainWindow: MainWindow mainWindow
+            })
         {
             Dispatcher.UIThread.Post(() => mainWindow.SharedBottomBar.ResponsiveNavigationBtnSize());
         }
+
         await SaveSettingsAsync();
     }
+
+    public static async ValueTask ToggleHoverBar(MainWindowViewModel vm)
+    {
+        var shouldShow = !Settings.UIProperties.ShowHoverNavigationBar;
+        
+        Settings.UIProperties.ShowHoverNavigationBar = shouldShow;
+        if (shouldShow && !vm.IsBottomToolbarShown.CurrentValue || shouldShow && vm.IsFullscreen.CurrentValue)
+        {
+            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = true;
+            vm.Translation.IsShowingHoverNavigationBar.Value = TranslationManager.Translation.HideHoverNavigationBar;
+        }
+        else
+        {
+            vm.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible.Value = false;
+            vm.Translation.IsShowingHoverNavigationBar.Value = TranslationManager.Translation.ShowHoverNavigationBar;
+        }
+        
+        await SaveSettingsAsync();
+    }
+
 }

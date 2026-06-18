@@ -52,6 +52,7 @@ public interface IFunctionsMapper
     ValueTask ToggleInterface();
     ValueTask ToggleSubdirectories();
     ValueTask ToggleBottomToolbar();
+    ValueTask ToggleHoverBar();
     ValueTask ToggleTaskbarProgress();
     ValueTask ToggleConstrainBackgroundColor();
     ValueTask ChangeBackground();

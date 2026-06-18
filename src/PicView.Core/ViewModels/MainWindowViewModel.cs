@@ -195,6 +195,9 @@ public class MainWindowViewModel : IDisposable
 
     public ReactiveCommand ToggleInterfaceCommand { get; }
     private async ValueTask ToggleInterface(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.ToggleInterface(); }
+    
+    public ReactiveCommand ToggleHoverBarCommand { get; }
+    private async ValueTask ToggleHoverBar(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.ToggleHoverBar(); }
 
     public ReactiveCommand ToggleSubdirectoriesCommand { get; }
     private async ValueTask ToggleSubdirectories(Unit unit, CancellationToken cancellationToken) { if (Mapper is null) return; await Mapper.ToggleSubdirectories(); }
@@ -559,6 +562,7 @@ public class MainWindowViewModel : IDisposable
         // Interface Toggles
         ToggleLoopingCommand = new ReactiveCommand(ToggleLooping);
         ToggleInterfaceCommand = new ReactiveCommand(ToggleInterface);
+        ToggleHoverBarCommand = new ReactiveCommand(ToggleHoverBar);
         ToggleSubdirectoriesCommand = new ReactiveCommand(ToggleSubdirectories);
         ToggleBottomToolbarCommand = new ReactiveCommand(ToggleBottomToolbar);
         ToggleTaskbarProgressCommand = new ReactiveCommand(ToggleTaskbarProgress);
@@ -726,6 +730,7 @@ public class MainWindowViewModel : IDisposable
             ChangeCtrlZoomCommand,
             ToggleLoopingCommand,
             ToggleInterfaceCommand,
+            ToggleHoverBarCommand,
             ToggleSubdirectoriesCommand,
             ToggleBottomToolbarCommand,
             ToggleTaskbarProgressCommand,

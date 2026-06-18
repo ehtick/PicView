@@ -1,28 +1,29 @@
 <UserControl
     x:Class="PicView.Avalonia.Views.Config.InterfaceConfigurationView"
-    x:DataType="viewModels:CoreViewModel"
     xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:customControls="clr-namespace:PicView.Avalonia.CustomControls"
     xmlns:ui="clr-namespace:PicView.Avalonia.UI"
     xmlns:viewModels="clr-namespace:PicView.Core.ViewModels;assembly=PicView.Core"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    x:DataType="viewModels:CoreViewModel">
 
     <StackPanel HorizontalAlignment="Center" Orientation="Vertical">
 
         <StackPanel Classes="searchHeader">
             <Image
+                Width="18"
                 Height="18"
-                Source="{StaticResource ColumnsSettingsImage}"
-                Width="18" />
+                Source="{StaticResource ColumnsSettingsImage}" />
             <TextBlock
-                Classes="txt bold"
                 Margin="0,20,0,20"
+                Classes="txt bold"
                 Text="{CompiledBinding Translation.InterfaceConfiguration.Value,
                                        Mode=OneWay}" />
         </StackPanel>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowBottomToolbarSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowBottomToolbarSearchTags}" Classes="searchBorder">
             <customControls:TextIconButton
+                x:Name="ShowBottomToolbarButton"
                 Classes="altHover settingsTextIconButton"
                 Command="{Binding MainWindows.ActiveWindow.Value.ToggleBottomToolbarCommand}"
                 Icon="{StaticResource Panel-Bottom}"
@@ -30,14 +31,14 @@
                 IconMargin="10,0,10,0"
                 IconWidth="18"
                 Text="{CompiledBinding Translation.IsShowingBottomToolbar.Value,
-                                       Mode=OneWay}"
-                x:Name="ShowBottomToolbarButton" />
+                                       Mode=OneWay}" />
         </Border>
 
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowUISearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowUISearchTags}" Classes="searchBorder">
             <StackPanel>
                 <customControls:TextIconButton
+                    x:Name="HideUIButton"
                     Classes="altHover settingsTextIconButton"
                     Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleInterfaceCommand}"
                     Icon="{StaticResource EyeImage}"
@@ -46,9 +47,9 @@
                     IconWidth="18"
                     IsVisible="{Binding !MainWindows.ActiveWindow.Value.IsUIShown.Value}"
                     Text="{CompiledBinding Translation.IsShowingUI.Value,
-                                           Mode=OneWay}"
-                    x:Name="HideUIButton" />
+                                           Mode=OneWay}" />
                 <customControls:TextIconButton
+                    x:Name="ShowUIButton"
                     Classes="altHover settingsTextIconButton"
                     Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleInterfaceCommand}"
                     Icon="{StaticResource EyeOffImage}"
@@ -57,33 +58,34 @@
                     IconWidth="18"
                     IsVisible="{Binding MainWindows.ActiveWindow.Value.IsUIShown.Value}"
                     Text="{CompiledBinding Translation.IsShowingUI.Value,
-                                           Mode=OneWay}"
-                    x:Name="ShowUIButton" />
+                                           Mode=OneWay}" />
             </StackPanel>
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowFadeInButtonsSearchTags}">
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowFadeInButtonsSearchTags}" Classes="searchBorder">
             <customControls:TextIconButton
+                x:Name="ToggleFadeUIButton"
                 Classes="altHover settingsTextIconButton"
                 Icon="{StaticResource CursorImage}"
                 IconHeight="18"
                 IconMargin="10,0,10,0"
                 IconWidth="18"
                 Text="{CompiledBinding Translation.IsShowingFadingUIButtons.Value,
-                                       Mode=OneWay}"
-                x:Name="ToggleFadeUIButton" />
+                                       Mode=OneWay}" />
         </Border>
 
-        <Border Classes="searchBorder" ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowHoverNavigationBarSearchTags}">
+        <!--  Show hover bar  -->
+        <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ShowHoverNavigationBarSearchTags}" Classes="searchBorder">
             <customControls:TextIconButton
+                x:Name="ToggleHoverButton"
                 Classes="altHover settingsTextIconButton"
+                Command="{CompiledBinding MainWindows.ActiveWindow.Value.ToggleHoverBarCommand}"
                 Icon="{StaticResource CursorImage}"
                 IconHeight="18"
                 IconMargin="10,0,10,0"
                 IconWidth="18"
                 Text="{CompiledBinding Translation.IsShowingHoverNavigationBar.Value,
-                                       Mode=OneWay}"
-                x:Name="ToggleHoverButton" />
+                                       Mode=OneWay}" />
         </Border>
 
     </StackPanel>

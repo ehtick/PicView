@@ -428,6 +428,12 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         await ToggleUIVisibility.ToggleInterface(vm).ConfigureAwait(false);
     }
     
+    /// <inheritdoc cref="ToggleUIVisibility.ToggleHoverBar(MainWindowViewModel)" />
+    public async ValueTask ToggleHoverBar()
+    {
+        await ToggleUIVisibility.ToggleHoverBar(vm).ConfigureAwait(false);
+    }
+    
     /// <inheritdoc cref="SettingsUpdater.ToggleSubdirectories(MainWindowViewModel)" />
     public async ValueTask ToggleSubdirectories()
     {
