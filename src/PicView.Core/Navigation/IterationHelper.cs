@@ -46,7 +46,21 @@ public static class IterationHelper
                 return (-1, false);
         }
     }
-    
+
+    /// <summary>
+    /// Calculates the indices for navigating a dual-view image pane based on the provided navigation settings.
+    /// </summary>
+    /// <param name="index">The current index in the collection.</param>
+    /// <param name="count">The total number of items in the collection.</param>
+    /// <param name="navigation">The navigation direction to determine the next indices.</param>
+    /// <param name="skipAmount">The amount by which the indices should be skipped. Use none to get current indices.</param>
+    /// <returns>
+    /// A tuple containing:
+    /// - The primary index of the item to navigate to.
+    /// - The secondary index of the item for dual-pane views.
+    /// - A boolean indicating whether the navigation is reversed.
+    /// Returns (-1, -1, false) if invalid navigation is requested or the count of items is zero.
+    /// </returns>
     public static (int, int, bool) GetIterations(int index, int count, NavigateTo navigation, SkipAmount skipAmount)
     {
         switch (count)
@@ -126,6 +140,7 @@ public static class IterationHelper
             SkipAmount.Two => 2,
             SkipAmount.Ten => 10,
             SkipAmount.Hundred => 100,
+            SkipAmount.None => 0,
             _ => throw new ArgumentOutOfRangeException(nameof(skipAmount), skipAmount, null)
         };
     }

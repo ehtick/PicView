@@ -6,6 +6,7 @@ using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.Functions;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.UI;
+using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ColorHandling;
 using PicView.Core.Localization;
@@ -189,15 +190,35 @@ public static class SettingsUpdater
     
     public static async Task ToggleSideBySide()
     {
-        Settings.ImageScaling.ShowImageSideBySide = !Settings.ImageScaling.ShowImageSideBySide;
         if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
         var window = core.MainWindows.ActiveWindow.Value;
         var tab = window.WindowTabs.ActiveTab.Value;
-        window.IsSideBySide.Value = Settings.ImageScaling.ShowImageSideBySide;
-        await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
+        
+        var showSideBySide = !Settings.ImageScaling.ShowImageSideBySide;
+        if (showSideBySide)
+        {
+            Settings.ImageScaling.ShowImageSideBySide = true;
+            window.IsSideBySide.Value = true;
+            if (tab.CurrentView.CurrentValue is ImageViewer imageViewer)
+            {
+                await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
+                var imageModel = await core.SharedCache.LoadAsync(tab.Id, tab.ImageIterator.SecondaryCurrentIndex, tab.ImageIterator.Files);
+                imageViewer.SecondaryImage.Source = imageModel.Image;
+            }
+        }
+        else
+        {
+            Settings.ImageScaling.ShowImageSideBySide = false;
+            window.IsSideBySide.Value = false;
+            if (tab.CurrentView.CurrentValue is ImageViewer imageViewer)
+            {
+                imageViewer.SecondaryImage.Source = null;
+            }
+        }
+        
         WindowResizing.SetSize(window, WindowResizeReason.Application);
 
         await SaveSettingsAsync();

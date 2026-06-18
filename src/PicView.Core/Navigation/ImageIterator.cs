@@ -275,11 +275,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         Cache.Clear(_tab.Id);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            if (SecondaryCurrentIndex is -1)
-            {
-                var (first, _, _) = IterationHelper.GetIterations(CurrentIndex, Files.Count, NavigateTo.Next, SkipAmount.One);
-                SecondaryCurrentIndex = first;
-            }
+            var (nextIteration, _, _) = IterationHelper.GetIterations(CurrentIndex, Files.Count, NavigateTo.Next, SkipAmount.None);
+            SecondaryCurrentIndex = nextIteration;
             await IterateToIndicesAsync(CurrentIndex, SecondaryCurrentIndex, ct).ConfigureAwait(false);
         }
         else

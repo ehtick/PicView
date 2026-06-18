@@ -21,6 +21,7 @@
                                        Mode=OneWay}" />
         </StackPanel>
 
+        <!--  Subdirectories  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSubdirectorySearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="IncludeSubdirToggleButton"
@@ -31,6 +32,7 @@
                                        Mode=OneWay}" />
         </Border>
 
+        <!--  Looping  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationLoopSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="LoopingToggleButton"
@@ -43,6 +45,7 @@
                                               Mode=OneWay}" />
         </Border>
 
+        <!--  Taskbar  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationTaskbarSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="TaskBarToggleButton"
@@ -54,6 +57,7 @@
                                        Mode=OneWay}" />
         </Border>
 
+        <!--  Nav speed  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.NavigationSpeedSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock

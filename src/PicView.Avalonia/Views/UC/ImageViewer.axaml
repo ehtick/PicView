@@ -51,7 +51,7 @@
                                     CurrentFileInfo="{Binding SecondaryFileInfo.Value}"
                                     DockPanel.Dock="Right"
                                     ImageType="{Binding SecondaryImageType.Value}"
-                                    IsVisible="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).IsSideBySide.Value}"
+                                    IsVisible="{CompiledBinding ParentWindowContext.IsSideBySide.Value}"
                                     Source="{CompiledBinding SecondaryImage.Value}" />
                             </DockPanel>
                         </Border>

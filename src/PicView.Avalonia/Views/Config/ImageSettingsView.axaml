@@ -21,6 +21,7 @@
                                        Mode=OneWay}" />
         </StackPanel>
 
+        <!--  Zoom to fit  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageZoomToFitSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="ZoomToFitToggleButton"
@@ -32,6 +33,7 @@
                                               Mode=OneWay}" />
         </Border>
 
+        <!--  Scroll  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageScrollingSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="ScrollToggleButton"
@@ -42,16 +44,19 @@
                                        Mode=OneWay}" />
         </Border>
 
+        <!--  Side by side  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageSideBySideSearchTags}" Classes="searchBorder">
             <customControls:TextToggleButton
                 x:Name="SideBySideToggleButton"
                 Classes="altHover settingsToggleButton"
                 Command="{CompiledBinding MainWindows.ActiveWindow.Value.SideBySideCommand}"
+                IsChecked="{Binding MainWindows.ActiveWindow.Value.IsSideBySide.Value, Mode=TwoWay}"
                 Text="{CompiledBinding Translation.SideBySide.Value,
                                        Mode=OneWay}" />
 
         </Border>
 
+        <!--  Aliasing  -->
         <Border ui:SearchProperties.Keywords="{CompiledBinding SettingsViewModel.SearchData.ImageScalingSearchTags}" Classes="searchBorder">
             <StackPanel>
                 <TextBlock
