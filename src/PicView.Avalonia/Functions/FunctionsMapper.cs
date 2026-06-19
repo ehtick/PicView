@@ -536,6 +536,12 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     public async ValueTask NewWindow() =>
         await Task.Run(ProcessHelper.StartNewProcess).ConfigureAwait(false);
 
+    public ValueTask ShowStartUpMenu()
+    {
+        ViewChangeHelper.SwitchToStartUpMenu(vm);
+        return ValueTask.CompletedTask;
+    }
+
     public ValueTask AboutWindow()
     {
         vm?.PlatformWindowService?.ShowAboutWindow();

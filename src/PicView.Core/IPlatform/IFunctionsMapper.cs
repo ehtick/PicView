@@ -89,6 +89,7 @@ public interface IFunctionsMapper
     ValueTask Minimize();
     ValueTask Restore();
     ValueTask NewWindow();
+    ValueTask ShowStartUpMenu();
 
     // File Operations
     ValueTask OpenLastFile();

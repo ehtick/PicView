@@ -238,29 +238,35 @@ public class FileWatcherService(
         var wasCurrentFileDeleted =
             currentFile?.FullName.AsSpan().Equals(e.FullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
-        var files = tab.ImageIterator.Files as List<FileInfo>;
-        if (files != null)
+        if (tab.ImageIterator.Files is not List<FileInfo> files)
         {
-            var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(fullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
-            if (removeIndex >= 0)
+            return;
+        }
+        var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(fullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
+        if (removeIndex >= 0)
+        {
+            files.RemoveAt(removeIndex);
+            if (tab.Gallery.GalleryItems.Count > removeIndex)
             {
-                files.RemoveAt(removeIndex);
-                if (tab.Gallery.GalleryItems.Count > removeIndex)
-                {
-                    tab.Gallery.GalleryItems.RemoveAt(removeIndex);
-                }
+                tab.Gallery.GalleryItems.RemoveAt(removeIndex);
             }
         }
         
-        if (wasCurrentFileDeleted && files != null)
+        if (files.Count is 0)
         {
-            if (files.Count != 0)
+            if (tab.ParentWindowContext is not null)
             {
-                var isNavigatingBackwards = Settings.Navigation.IsNavigatingBackwardsWhenDeleting;
-                var targetIndex = isNavigatingBackwards ? oldIndex - 1 : oldIndex;
-                targetIndex = Math.Clamp(targetIndex, 0, files.Count - 1);
-                await tab.ImageIterator.IterateToIndexAsync(targetIndex, tab.GetTabCancellation());
+                await tab.ParentWindowContext.Mapper.ShowStartUpMenu();
             }
+            return;
+        }
+
+        if (wasCurrentFileDeleted)
+        {
+            var isNavigatingBackwards = Settings.Navigation.IsNavigatingBackwardsWhenDeleting;
+            var targetIndex = isNavigatingBackwards ? oldIndex - 1 : oldIndex;
+            targetIndex = Math.Clamp(targetIndex, 0, files.Count - 1);
+            await tab.ImageIterator.IterateToIndexAsync(targetIndex, tab.GetTabCancellation());
         }
         else
         {
@@ -294,18 +300,18 @@ public class FileWatcherService(
         var wasCurrentFileRenamed = currentFile?.FullName.AsSpan()
             .Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase) ?? false;
 
-        var files = tab.ImageIterator.Files as List<FileInfo>;
-        var insertionIndex = -1;
-        if (files != null)
+        if (tab.ImageIterator.Files is not List<FileInfo> files)
         {
-            var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
-            if (removeIndex >= 0)
-            {
-                files.RemoveAt(removeIndex);
-                tab.Gallery.GalleryItems.RemoveAt(removeIndex);
-            }
-            insertionIndex = FileSortOrder.InsertSorted(files, newFileInfo, _stringComparer);
+            return;
         }
+
+        var removeIndex = files.FindIndex(x => x.FullName.AsSpan().Equals(e.OldFullPath.AsSpan(), StringComparison.OrdinalIgnoreCase));
+        if (removeIndex >= 0)
+        {
+            files.RemoveAt(removeIndex);
+            tab.Gallery.GalleryItems.RemoveAt(removeIndex);
+        }
+        var insertionIndex = FileSortOrder.InsertSorted(files, newFileInfo, _stringComparer);
 
         if (insertionIndex >= 0 && insertionIndex > tab.Gallery.GalleryItems.Count)
         {
@@ -356,7 +362,7 @@ public class FileWatcherService(
 
         var fileToCheck = wasCurrentFileRenamed ? newFileInfo : currentFile;
 
-        if (fileToCheck != null && files != null)
+        if (fileToCheck != null)
         {
             var newIndex = files.FindIndex(x =>
                 x.FullName.Equals(fileToCheck.FullName, StringComparison.OrdinalIgnoreCase));
