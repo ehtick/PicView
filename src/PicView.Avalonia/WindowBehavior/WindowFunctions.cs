@@ -40,7 +40,7 @@ public static class WindowFunctions
             return;
         }
 
-        if (window.DataContext is not MainWindowViewModel viewModel)
+        if (window.DataContext is not MainWindowViewModel vm)
         {
             return;
         }
@@ -53,13 +53,13 @@ public static class WindowFunctions
         {
             lastFile = ArchiveExtraction.LastOpenedArchive;
         }
-        else if (viewModel.WindowTabs.ActiveTab.CurrentValue.SingleImageType is SingleImageType.Url && viewModel.WindowTabs.ActiveTab.CurrentValue.SourceURL is not null)
+        else if (vm.WindowTabs.ActiveTab.CurrentValue.SingleImageType is SingleImageType.Url && vm.WindowTabs.ActiveTab.CurrentValue.SourceURL is not null)
         {
-            lastFile = viewModel.WindowTabs.ActiveTab.CurrentValue.SourceURL;
+            lastFile = vm.WindowTabs.ActiveTab.CurrentValue.SourceURL;
         }
         else
         {
-            lastFile = viewModel.WindowTabs.ActiveTab.CurrentValue?.Model?.FileInfo?.FullName ?? FileHistoryManager.GetLastEntry() ?? null;
+            lastFile = vm.WindowTabs.ActiveTab.CurrentValue?.Model?.FileInfo?.FullName ?? FileHistoryManager.GetLastEntry() ?? null;
         }
 
 
@@ -80,7 +80,12 @@ public static class WindowFunctions
         {
             DebugHelper.LogDebug(nameof(WindowFunctions), nameof(WindowClosingBehavior), e);
         }
-        core.MainWindows.MainWindows.Remove(viewModel);
+
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+        core.MainWindows.MainWindows.Remove(vm);
 
         if (core.SettingsViewModel?.SettingsWindowConfig is not null)
         {

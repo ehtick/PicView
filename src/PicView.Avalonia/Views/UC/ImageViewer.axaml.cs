@@ -18,7 +18,7 @@ using R3;
 namespace PicView.Avalonia.Views.UC;
 
 
-public partial class ImageViewer : UserControl
+public partial class ImageViewer : UserControl, IDisposable
 {
     private RotationTransformer? _imageTransformer;
     private DisposableBag _disposables;
@@ -145,15 +145,6 @@ public partial class ImageViewer : UserControl
             .AddTo(ref _disposables);
     }
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromLogicalTree(e);
-        RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
-        RemoveHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
-        RemoveHandler(PinchEvent, TouchMagnifyEvent);
-        _disposables.Dispose();
-    }
-
     #region Zoom
     /// <inheritdoc cref="Zoom.ZoomIn(ViewModels.MainViewModel)"/>
     private void ZoomIn(PointerWheelEventArgs e) =>
@@ -186,4 +177,13 @@ public partial class ImageViewer : UserControl
     public void Flip(bool animate) => _imageTransformer?.Flip(animate);
         
     #endregion
+
+    public void Dispose()
+    {
+        RemoveHandler(PointerWheelChangedEvent, PreviewOnPointerWheelChanged);
+        RemoveHandler(PointerTouchPadGestureMagnifyEvent, TouchMagnifyEvent);
+        RemoveHandler(PinchEvent, TouchMagnifyEvent);
+        _disposables.Dispose();
+        HoverBar.Dispose();
+    }
 }

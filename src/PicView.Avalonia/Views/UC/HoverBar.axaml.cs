@@ -3,7 +3,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using Avalonia.Threading;
 using PicView.Avalonia.UI;
@@ -15,7 +14,7 @@ using R3;
 
 namespace PicView.Avalonia.Views.UC;
 
-public partial class HoverBar : UserControl
+public partial class HoverBar : UserControl, IDisposable
 {
     private DisposableBag _disposables;
     public HoverBar()
@@ -299,9 +298,8 @@ public partial class HoverBar : UserControl
     private static void ShowSearchDialog() =>
         DialogManager.AddFileSearchDialog();
 
-    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    public void Dispose()
     {
-        base.OnDetachedFromLogicalTree(e);
         RemoveHandler(PointerPressedEvent, ManagePointerPressed);
         _disposables.Dispose();
     }

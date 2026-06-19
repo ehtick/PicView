@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Views.UC;
@@ -38,8 +37,6 @@ public class HoverFadeButtonHandler : IDisposable
 
     private void AttachEvents()
     {
-        _mainButton.DetachedFromLogicalTree += OnDetachedFromLogicalTree;
-
         _mainButton.PointerEntered += OnPointerEntered;
         _mainButton.PointerExited += OnPointerExited;
         if (_childButton == null)
@@ -49,11 +46,6 @@ public class HoverFadeButtonHandler : IDisposable
 
         _childButton.PointerEntered += OnPointerEntered;
         _childButton.PointerExited += OnPointerExited;
-    }
-
-    private void OnDetachedFromLogicalTree(object? sender, LogicalTreeAttachmentEventArgs e)
-    {
-        Dispose();
     }
 
     private void OnPointerEntered(object? sender, PointerEventArgs e)
@@ -164,7 +156,6 @@ public class HoverFadeButtonHandler : IDisposable
 
     public void Dispose()
     {
-        _mainButton.DetachedFromLogicalTree -= OnDetachedFromLogicalTree;
         _mainButton.PointerEntered -= OnPointerEntered;
         _mainButton.PointerExited -= OnPointerExited;
 

@@ -51,7 +51,7 @@
                                     CurrentFileInfo="{Binding SecondaryFileInfo.Value}"
                                     DockPanel.Dock="Right"
                                     ImageType="{Binding SecondaryImageType.Value}"
-                                    IsVisible="{CompiledBinding ParentWindowContext.IsSideBySide.Value}"
+                                    IsVisible="{CompiledBinding $parent[Window].((vm:MainWindowViewModel)DataContext).IsSideBySide.Value}"
                                     Source="{CompiledBinding SecondaryImage.Value}" />
                             </DockPanel>
                         </Border>
@@ -82,7 +82,7 @@
                 x:Name="GalleryShortcut"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                IsVisible="{CompiledBinding !$parent[Window].((vm:MainWindowViewModel)DataContext).IsUIShown.Value}"
+                IsVisible="{CompiledBinding !$parent[Window].((vm:MainWindowViewModel)DataContext).IsBottomToolbarShown.Value}"
                 Opacity="0"
                 ZIndex="9" />
         </Panel>
