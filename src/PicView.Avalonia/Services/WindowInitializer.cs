@@ -8,6 +8,7 @@ using PicView.Avalonia.Functions;
 using PicView.Avalonia.Interfaces;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.Config;
+using PicView.Core.DebugTools;
 using PicView.Core.IPlatform;
 using PicView.Core.Update;
 using PicView.Core.ViewModels;
@@ -223,6 +224,12 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
         {
             core.SettingsViewModel = new SettingsViewModel(core.Translation);
             core.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
+            core.SettingsViewModel.WindowMargin.Subscribe(_ =>
+                {
+                    WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Application);
+                },
+                DebugHelper.LogError(nameof(core.SettingsViewModel),
+                    nameof(core.SettingsViewModel.WindowMargin)));
         }
 
         if (core.SettingsViewModel.SettingsWindowConfig is null)
