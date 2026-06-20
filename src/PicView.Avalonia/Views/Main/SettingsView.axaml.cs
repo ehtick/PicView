@@ -64,9 +64,6 @@ public partial class SettingsView : UserControl
         InterfaceSection.ToggleHoverButton.Classes.Remove("altHover");
         InterfaceSection.ToggleHoverButton.Classes.Add("hover");
         
-        ImageSection.ZoomToFitToggleButton.Classes.Remove("altHover");
-        ImageSection.ZoomToFitToggleButton.Classes.Add("hover");
-        
         ImageSection.ScrollToggleButton.Classes.Remove("altHover");
         ImageSection.ScrollToggleButton.Classes.Add("hover");
         
@@ -114,6 +111,9 @@ public partial class SettingsView : UserControl
         
         NavigationSection.IncludeSubdirToggleButton.Classes.Remove("altHover");
         NavigationSection.IncludeSubdirToggleButton.Classes.Add("hover");      
+        
+        ZoomSection.ZoomToFitToggleButton.Classes.Remove("altHover");
+        ZoomSection.ZoomToFitToggleButton.Classes.Add("hover");
         
         ZoomSection.ResetZoomToggleButton.Classes.Remove("altHover");
         ZoomSection.ResetZoomToggleButton.Classes.Add("hover");
