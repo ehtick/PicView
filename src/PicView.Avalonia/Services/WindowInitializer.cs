@@ -225,11 +225,9 @@ public class WindowInitializer(IWindowProvider provider) : IWindowInitializer, I
             core.SettingsViewModel = new SettingsViewModel(core.Translation);
             core.SettingsViewModel.Initialize(new ThemeService(), new LanguageService(), new ImageSettingsService());
             core.SettingsViewModel.WindowMargin.Subscribe(_ =>
-                {
-                    WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Application);
-                },
-                DebugHelper.LogError(nameof(core.SettingsViewModel),
-                    nameof(core.SettingsViewModel.WindowMargin)));
+            {
+                WindowResizing.SetSize(core.MainWindows.ActiveWindow.CurrentValue, WindowResizeReason.Application);
+            }, DebugHelper.LogError(nameof(core.SettingsViewModel), nameof(core.SettingsViewModel.WindowMargin)));
         }
 
         if (core.SettingsViewModel.SettingsWindowConfig is null)

@@ -191,16 +191,6 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     #region Functions
 
-    #region Menus
-
-    public ValueTask ToggleDropDownMenu()
-    {
-        vm.TopTitlebarViewModel.ToggleDropDownMenu(default);
-        return ValueTask.CompletedTask;
-    }
-
-    #endregion Menus
-
     #region Navigation, zoom and rotation
 
     /// <inheritdoc cref="Core.ViewModels.TabOverviewViewModel.NextFile()" />
@@ -403,6 +393,12 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
     #endregion
 
     #region Toggle UI functions
+    
+    public ValueTask ToggleDropDownMenu()
+    {
+        vm.TopTitlebarViewModel.ToggleDropDownMenu(default);
+        return ValueTask.CompletedTask;
+    }
 
     /// <inheritdoc cref="SettingsUpdater.ToggleScroll(MainWindowViewModel)" />
     public async ValueTask ToggleScroll()
