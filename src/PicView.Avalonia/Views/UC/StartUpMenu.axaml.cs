@@ -7,7 +7,7 @@ using Avalonia.Media;
 using PicView.Avalonia.Clipboard;
 using PicView.Avalonia.ColorManagement;
 using PicView.Avalonia.FileSystem;
-using PicView.Avalonia.UI;
+using PicView.Avalonia.Navigation;
 using PicView.Core.Extensions;
 using PicView.Core.Localization;
 using PicView.Core.Sizing;
@@ -77,7 +77,7 @@ public partial class StartUpMenu : UserControl
             return;
         }
         
-        _ = UIHelper.OpenLastFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
+        _ = UINavigationHelper.OpenLastFile(core.MainWindows.ActiveWindow.CurrentValue).ConfigureAwait(false);
     }
 
     private void PasteButtonOnPointerExited(object? sender, PointerEventArgs e)

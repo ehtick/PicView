@@ -83,6 +83,17 @@ public static class UpdateImage
 
     public static void ChangeImage(TabViewModel tabViewModel, MainWindowViewModel vm)
     {
+        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
+        {
+            return;
+        }
+        
+        if (Settings.Zoom.ResetZoomOnChange)
+        {
+            imageViewer.ResetZoomSlim();
+            tabViewModel.RotationAngle.Value = 0;
+        }
+        
         if (tabViewModel.Model.ImageType is ImageType.Svg)
         {
             tabViewModel.Image.Value = new SvgImage { Source = tabViewModel.Model.Image as SvgSource };
@@ -128,17 +139,6 @@ public static class UpdateImage
             secondaryWidth, secondaryHeight,
             WindowResizeReason.Application,
             vm);
-        
-        if (vm.WindowTabs.ActiveTab.CurrentValue.CurrentView.CurrentValue is not ImageViewer imageViewer)
-        {
-            return;
-        }
-        
-        if (Settings.Zoom.ResetZoomOnChange)
-        {
-            imageViewer.ResetZoomSlim();
-            imageViewer.Rotate(0);
-        }
 
         if (tabViewModel.Gallery.IsDockedGalleryVisible.CurrentValue)
         {
