@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Svg.Skia;
+using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
@@ -96,7 +97,10 @@ public static class UpdateImage
         
         if (tabViewModel.Model.ImageType is ImageType.Svg)
         {
-            tabViewModel.Image.Value = new SvgImage { Source = tabViewModel.Model.Image as SvgSource };
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                tabViewModel.Image.Value = new SvgImage { Source = tabViewModel.Model.Image as SvgSource };
+            }, DispatcherPriority.Send);
         }
         else
         {

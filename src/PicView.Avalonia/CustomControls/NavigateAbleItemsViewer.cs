@@ -19,7 +19,6 @@ public class NavigateAbleItemsViewer : ItemsControl
     #region Fields and  Avalonia Properties
     
     private AutoScrollViewer? _scrollViewer;
-    private bool _isVerticalScrolling;
 
     protected override Type StyleKeyOverride => typeof(NavigateAbleItemsViewer);
 
@@ -114,7 +113,6 @@ public class NavigateAbleItemsViewer : ItemsControl
 
     public void SetVerticalScrolling()
     {
-        _isVerticalScrolling = true;
         if (_scrollViewer == null)
         {
             return;
@@ -126,7 +124,6 @@ public class NavigateAbleItemsViewer : ItemsControl
     
     public void SetHorizontalScrolling()
     {
-        _isVerticalScrolling = false;
         if (_scrollViewer == null)
         {
             return;

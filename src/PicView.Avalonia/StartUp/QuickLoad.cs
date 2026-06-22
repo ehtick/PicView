@@ -169,11 +169,7 @@ public static class QuickLoad
         }
         else
         {
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
-            }, DispatcherPriority.Send);
-
+            UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
             if (files is null)
             {
                 TabNavigationInitializer.Initialize(core, initialDirectory);
