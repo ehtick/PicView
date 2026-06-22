@@ -4,6 +4,7 @@ using ImageMagick;
 using PicView.Avalonia.ImageHandling;
 using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Navigation.Services;
+using PicView.Avalonia.UI;
 using PicView.Avalonia.Views.UC;
 using PicView.Avalonia.WindowBehavior;
 using PicView.Core.ArchiveHandling;
@@ -40,7 +41,7 @@ public static class QuickLoad
             var check = FileTypeResolver.CheckIfLoadableString(source);
             if (check is null)
             {
-                RevertToStartUpMenuOnFail(core);
+                ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
                 return;
             }
 
@@ -51,7 +52,7 @@ public static class QuickLoad
                     var files = FileListRetriever.RetrieveFiles(new FileInfo(check.Value.Data),core.PlatformService.CompareStrings);
                     if (files.Count == 0)
                     {
-                        RevertToStartUpMenuOnFail(core);
+                        ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
                         return;
                     }
                     await LoadSingleFileAsync(core, files[0], continueFromLeftOff, files).ConfigureAwait(false);
@@ -63,7 +64,7 @@ public static class QuickLoad
                     return;
                 }
                 default:
-                    RevertToStartUpMenuOnFail(core);
+                    ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
                     return;
             }
         }
@@ -76,15 +77,6 @@ public static class QuickLoad
         {
             await LoadSingleFileAsync(core, fileInfo, continueFromLeftOff).ConfigureAwait(false);
         }
-    }
-
-    private static void RevertToStartUpMenuOnFail(CoreViewModel core)
-    {
-        Dispatcher.UIThread.Invoke(() =>
-        {
-            core.MainWindows.ActiveWindow.Value.WindowTabs.ActiveTab.Value.CurrentView.Value = new StartUpMenu();
-            core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
-        }, DispatcherPriority.Send);
     }
 
     private static async ValueTask LoadUrlImageAsync(CoreViewModel core, string url)
@@ -177,7 +169,11 @@ public static class QuickLoad
         }
         else
         {
-            UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
+            }, DispatcherPriority.Send);
+
             if (files is null)
             {
                 TabNavigationInitializer.Initialize(core, initialDirectory);
@@ -201,7 +197,7 @@ public static class QuickLoad
         core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
         FileHistoryManager.Add(fileInfo.FullName);
 
-        await LoadGalleryIfNeeded(core, tab).ConfigureAwait(false);
+        await LoadGalleryIfNeeded(core).ConfigureAwait(false);
         if (continueFromLeftOff)
         {
             Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
@@ -223,14 +219,14 @@ public static class QuickLoad
         var isArchiveLoaded = await core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.LoadFromArchiveAsync(source.FullName).ConfigureAwait(false);
         if (!isArchiveLoaded)
         {
-            RevertToStartUpMenuOnFail(core);
+            ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
             return;
         }
         core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
-        await LoadGalleryIfNeeded(core, tab).ConfigureAwait(false);
+        await LoadGalleryIfNeeded(core).ConfigureAwait(false);
     }
 
-    private static async ValueTask LoadGalleryIfNeeded(CoreViewModel core, TabViewModel tab)
+    private static async ValueTask LoadGalleryIfNeeded(CoreViewModel core)
     {
         if (Settings.Gallery.IsGalleryDocked)
         {

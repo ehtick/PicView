@@ -363,7 +363,7 @@ public static class DragAndDropManager
 
     private static async ValueTask LoadSupportedFile(string path, TabOverviewViewModel tabOverview)
     {
-        if (_preLoadValue is null || Application.Current.DataContext is not CoreViewModel core)
+        if (Application.Current.DataContext is not CoreViewModel core)
         {
             return;
         }
@@ -394,7 +394,10 @@ public static class DragAndDropManager
 
         var index = files.FindIndex(x => x.FullName.AsSpan().Equals(droppedFileInfo.FullName.AsSpan(), StringComparison.OrdinalIgnoreCase));
 
-        core.SharedCache.Add(tab.Id, index, _preLoadValue, files.Count, false);
+        if (_preLoadValue is not null)
+        {
+            core.SharedCache.Add(tab.Id, index, _preLoadValue, files.Count, false);
+        }
         
         if (isSameDir)
         {

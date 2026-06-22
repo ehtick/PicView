@@ -12,6 +12,7 @@ using ImageMagick;
 using PicView.Avalonia.AnimatedImage;
 using PicView.Core.DebugTools;
 using PicView.Core.ImageDecoding;
+using PicView.Core.Navigation;
 using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.CustomControls;
@@ -258,26 +259,29 @@ public class PicBox : Control
         {
             using (context.PushRenderOptions(options))
             {
-                context.DrawImage(source as IImage, sourceRect, destRect);
+                context.DrawImage(source, sourceRect, destRect);
                 RenderAnimatedImageIfRequired(context);
             }
         }
         catch (Exception e)
         {
-            var bitmap = GetBitmapFromAlternativeSources();
-            if (bitmap != null)
+            if (ImageType is ImageType.Bitmap)
             {
-                try
+                var bitmap = GetBitmapFromAlternativeSources();
+                if (bitmap != null)
                 {
-                    using (context.PushRenderOptions(options))
+                    try
                     {
-                        context.DrawImage(source, sourceRect, destRect);
-                    }
+                        using (context.PushRenderOptions(options))
+                        {
+                            context.DrawImage(source, sourceRect, destRect);
+                        }
 
-                }
-                catch (Exception exception)
-                {
-                    DebugHelper.LogDebug(nameof(PicBox), nameof(GetBitmapFromAlternativeSources), exception);
+                    }
+                    catch (Exception exception)
+                    {
+                        DebugHelper.LogDebug(nameof(PicBox), nameof(GetBitmapFromAlternativeSources), exception);
+                    }
                 }
             }
             
@@ -361,11 +365,14 @@ public class PicBox : Control
             return new Size();
         }
 
-        if (tabs.SharedCache.TryGet(model.FileInfo, out var preloadValue))
+        if (tabs.SharedCache is SharedImageCache sharedCache)
         {
-            if (preloadValue?.ImageModel != null)
+            if (sharedCache.TryGet(model.FileInfo, out var preloadValue))
             {
-                return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
+                if (preloadValue?.ImageModel != null)
+                {
+                    return new Size(preloadValue.ImageModel.PixelWidth, preloadValue.ImageModel.PixelHeight);
+                }
             }
         }
 
