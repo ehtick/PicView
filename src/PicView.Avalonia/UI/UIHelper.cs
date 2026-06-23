@@ -24,6 +24,7 @@ public static class UIHelper
 {
     #region Controls
 
+    public static MainWindow? GetMainWindow { get; private set; }
     public static MainView? GetMainView { get; private set; }
     public static DraggableTabControl? GetMainTabControl { get; private set; }
     public static Control? GetTitlebar { get; private set; }
@@ -42,6 +43,7 @@ public static class UIHelper
     /// </summary>
     public static void SetControls(MainWindow mainWindow)
     {
+        GetMainWindow = mainWindow;
         GetMainView = mainWindow.SharedMainView;
         GetTitlebar = mainWindow.SharedTitleBar;
         GetEditableTitlebar = mainWindow.SharedTitleBar.FindControl<EditableTitlebar>("EditableTitlebar");

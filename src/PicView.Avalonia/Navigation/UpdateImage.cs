@@ -108,6 +108,18 @@ public static class UpdateImage
         }
         tabViewModel.ImageType.Value = tabViewModel.Model.ImageType;
         
+        SetWindowAndImageSize(tabViewModel, vm);
+
+        if (tabViewModel.Gallery.IsDockedGalleryVisible.CurrentValue)
+        {
+            imageViewer.GalleryView.GalleryItemsControl.ScrollToCenterOfCurrentItem();
+        }
+        tabViewModel.ZoomLevel.Value = Convert.ToInt32(tabViewModel.InitialZoom.CurrentValue * 100);;
+        tabViewModel.UpdateTabTitle();
+    }
+
+    public static void SetWindowAndImageSize(TabViewModel tabViewModel, MainWindowViewModel vm)
+    {
         double secondaryWidth, secondaryHeight;
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
@@ -143,13 +155,6 @@ public static class UpdateImage
             secondaryWidth, secondaryHeight,
             WindowResizeReason.Application,
             vm);
-
-        if (tabViewModel.Gallery.IsDockedGalleryVisible.CurrentValue)
-        {
-            imageViewer.GalleryView.GalleryItemsControl.ScrollToCenterOfCurrentItem();
-        }
-        tabViewModel.ZoomLevel.Value = Convert.ToInt32(tabViewModel.InitialZoom.CurrentValue * 100);;
-        tabViewModel.UpdateTabTitle();
     }
 
     public static void SetSingleImage(MainWindowViewModel vm, Bitmap image, SingleImageType type, string name)

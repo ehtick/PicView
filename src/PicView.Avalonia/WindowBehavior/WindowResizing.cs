@@ -32,6 +32,11 @@ public static class WindowResizing
         
         return true;
     }
+
+    public static void FastCenterWindow()
+    {
+        FastCenterWindow(UIHelper.GetMainWindow);
+    }
     
     private static void FastCenterWindow(Window window)
     {

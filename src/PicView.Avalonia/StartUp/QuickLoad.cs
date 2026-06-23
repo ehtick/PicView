@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using ImageMagick;
 using PicView.Avalonia.ImageHandling;
@@ -137,9 +138,18 @@ public static class QuickLoad
         }, DispatcherPriority.Send);
     
         var magickImage = new MagickImage();
+        var vm = core.MainWindows.ActiveWindow.CurrentValue;
         try
         {
             magickImage.Ping(fileInfo);
+
+            if (Settings.WindowProperties.AutoFit && !Settings.ImageScaling.ShowImageSideBySide)
+            {
+                // Predict window size and center beforehand for pleasant opening when double-clicking a file
+                WindowResizing.SetSize(magickImage.Width, magickImage.Height,
+                    0, 0, WindowResizeReason.Application, vm);
+                Dispatcher.UIThread.Invoke(WindowResizing.FastCenterWindow, DispatcherPriority.Render);
+            }
         }
         catch (Exception e)
         {
@@ -147,7 +157,8 @@ public static class QuickLoad
             // Just catching the exception here means it will still load correctly regardless
             DebugHelper.LogDebug(nameof(QuickLoad), nameof(QuickLoadAsync), e);
         }
-        var tab = core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue;
+        
+        var tab = vm.WindowTabs.ActiveTab.CurrentValue;
         tab.SetLoading();
         var imageModel = await GetImageModel.GetImageModelAsync(fileInfo, magickImage).ConfigureAwait(false);
         tab.Image.Value = imageModel.Image;
@@ -164,7 +175,7 @@ public static class QuickLoad
             var secondImageModel = await GetImageModel.GetImageModelAsync(nextFileInfo).ConfigureAwait(false);
             tab.SecondaryModel = secondImageModel;
             UpdateImage.ChangeImage(tab, core.MainWindows.ActiveWindow.CurrentValue);
-            UpdateImage.UpdateTabSideBySideTitles(core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue, index, nextIndex, fileInfo, nextFileInfo, files);
+            UpdateImage.UpdateTabSideBySideTitles(tab, index, nextIndex, fileInfo, nextFileInfo, files);
             TabNavigationInitializer.Initialize(core, files);
         }
         else
@@ -190,7 +201,7 @@ public static class QuickLoad
             core.PlatformService.SetTaskbarProgress((ulong)tab.ImageIterator.CurrentIndex, (ulong)tab.ImageIterator.Files.Count);
         }
 
-        core.MainWindows.ActiveWindow.Value.IsLoadingIndicatorShown.Value = false;
+        vm.IsLoadingIndicatorShown.Value = false;
         FileHistoryManager.Add(fileInfo.FullName);
 
         await LoadGalleryIfNeeded(core).ConfigureAwait(false);
