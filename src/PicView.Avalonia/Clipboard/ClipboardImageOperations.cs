@@ -50,10 +50,8 @@ public static class ClipboardImageOperations
     /// <summary>
     ///     Copies an image as base64 string to the clipboard
     /// </summary>
-    /// <param name="path">Optional path to the image file</param>
-    /// <param name="vm">The main view model</param>
-    /// <returns>A task representing the asynchronous operation</returns>
-    public static async Task<bool> CopyBase64ToClipboard(string path, MainWindowViewModel vm)
+    /// <param name="path">Path to the image file</param>
+    public static async Task<bool> CopyBase64ToClipboard(string path)
     {
         var clipboard = ClipboardService.GetClipboard();
         if (clipboard == null)
@@ -61,7 +59,7 @@ public static class ClipboardImageOperations
             return false;
         }
         
-        var base64 = await GetBase64String(path, vm);
+        var base64 = await GetBase64String(path);
         
         if (string.IsNullOrEmpty(base64))
         {
@@ -82,7 +80,7 @@ public static class ClipboardImageOperations
         }
     }
 
-    private static async Task<string> GetBase64String(string path, MainWindowViewModel vm)
+    private static async Task<string> GetBase64String(string path)
     {
         if (!string.IsNullOrWhiteSpace(path))
         {

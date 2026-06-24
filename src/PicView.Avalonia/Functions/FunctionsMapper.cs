@@ -768,10 +768,10 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
         await ClipboardImageOperations.CopyImageToClipboard(vm).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string, MainWindowViewModel)" />
+    /// <inheritdoc cref="ClipboardImageOperations.CopyBase64ToClipboard(string)" />
     public async ValueTask CopyBase64()
     {
-        await ClipboardImageOperations.CopyBase64ToClipboard(vm.WindowTabs.ActiveTab.CurrentValue?.FileInfo?.CurrentValue?.FullName, vm).ConfigureAwait(false);
+        await ClipboardImageOperations.CopyBase64ToClipboard(vm.WindowTabs.ActiveTab.CurrentValue?.FileInfo?.CurrentValue?.FullName).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="ClipboardFileOperations.Duplicate(string, MainWindowViewModel)" />

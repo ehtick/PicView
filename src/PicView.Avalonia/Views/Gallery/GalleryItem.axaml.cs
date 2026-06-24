@@ -194,8 +194,7 @@ public partial class GalleryItem : NavigateAbleItem
         {
             return;
         }
-        // TODO
-        //ClipboardImageOperations.CopyBase64ToClipboard(fileName);
+        _ = ClipboardImageOperations.CopyBase64ToClipboard(item.FileLocation.CurrentValue);
     }
 
     private void DuplicateFile_OnClick(object? sender, RoutedEventArgs e)
