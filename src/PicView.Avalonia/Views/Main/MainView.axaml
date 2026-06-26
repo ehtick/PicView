@@ -559,22 +559,117 @@
 
             <!--  Set as wallpaper  -->
             <MenuItem
-                Command="{CompiledBinding SetAsWallpaperFittedCommand}"
-                CommandParameter="{CompiledBinding WindowTabs.ActiveTab.Value.FileInfo.Value,
-                                                   FallbackValue=''}"
+                x:Name="WallpaperMenuItem"
                 Header="{CompiledBinding Translation.SetAsWallpaper.Value,
                                          Mode=OneWay}"
                 IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
                                             Converter={x:Static ObjectConverters.IsNotNull},
-                                            FallbackValue=False}">
+                                            FallbackValue=False}"
+                IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
                 <MenuItem.Icon>
                     <Path
                         Width="13"
                         Height="10.40"
                         Data="{StaticResource PanoramaGeometry}"
-                        Fill="{StaticResource Brush0}"
+                        Fill="{DynamicResource MainTextColor}"
                         Stretch="Fill" />
                 </MenuItem.Icon>
+
+                <!--  Set as wallpaper filled  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsWallpaperFilledCommand}"
+                    Header="{CompiledBinding Translation.Fill.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
+                    IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Width="13"
+                            Height="10.40"
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Set as wallpaper fit  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsWallpaperFittedCommand}"
+                    Header="{CompiledBinding Translation.Fit.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
+                    IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Width="13"
+                            Height="10.40"
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Set as wallpaper stretched  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsWallpaperStretchedCommand}"
+                    Header="{CompiledBinding Translation.Stretch.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
+                    IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Width="13"
+                            Height="10.40"
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+
+                <!--  Set as wallpaper centered  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsWallpaperCenteredCommand}"
+                    Header="{CompiledBinding Translation.Center.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
+                    IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Width="13"
+                            Height="10.40"
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <!--  Set as wallpaper tiled  -->
+                <MenuItem
+                    Command="{CompiledBinding SetAsWallpaperTiledCommand}"
+                    Header="{CompiledBinding Translation.Tile.Value,
+                                             Mode=OneWay}"
+                    IsEnabled="{CompiledBinding WindowTabs.ActiveTab.Value.Image.Value,
+                                                Converter={x:Static ObjectConverters.IsNotNull},
+                                                FallbackValue=False}"
+                    IsVisible="{CompiledBinding GlobalSettings.ShowSetAsWallpaper.Value}">
+                    <MenuItem.Icon>
+                        <Path
+                            Width="13"
+                            Height="10.40"
+                            Data="{StaticResource PanoramaGeometry}"
+                            Fill="{DynamicResource MainTextColor}"
+                            Stretch="Fill" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
 
             <!--  Image  -->
