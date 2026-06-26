@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.LogicalTree;
 using Avalonia.Media;
 using PicView.Avalonia.CustomControls;
 using PicView.Avalonia.UI;
@@ -27,18 +26,32 @@ public partial class FileAssociationWindow : GenericWindow
         {
             InitializeCheckBoxesCollection();
 
-            KeyDown += (_, e) =>
-            {
-                var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control) || e.KeyModifiers.HasFlag(KeyModifiers.Meta);
-                if (e.Key == Key.F && ctrl)
-                {
-                    FilterBox.Focus();
-                }
-            };
+            KeyDown += OnKeyDown;
+            Closing += OnClosing;
         };
     }
-    
-      private void InitializeCheckBoxesCollection()
+
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
+    {
+        _disposables.Dispose();
+        if (DataContext is not CoreViewModel core)
+        {
+            return;
+        }
+
+        core.AssociationsViewModel.Dispose();
+    }
+
+    private void OnKeyDown(object? sender, KeyEventArgs e)
+    {
+        var ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control) || e.KeyModifiers.HasFlag(KeyModifiers.Meta);
+        if (e.Key == Key.F && ctrl)
+        {
+            FilterBox.Focus();
+        }
+    }
+
+    private void InitializeCheckBoxesCollection()
     {
         var container = FileTypesContainer;
 
@@ -246,7 +259,7 @@ public partial class FileAssociationWindow : GenericWindow
             return;
         }
 
-        var checkBoxes = FileTypesContainer.Children.OfType<CheckBox>().ToList();
+        var checkBoxes = FileTypesContainer.Children.OfType<CheckBox>().ToArray();
 
         foreach (var group in core.AssociationsViewModel.FileTypeGroups)
         {
@@ -265,10 +278,7 @@ public partial class FileAssociationWindow : GenericWindow
 
             // Also update the group checkbox
             var groupCheckBox = checkBoxes.FirstOrDefault(x => x.Tag == group);
-            if (groupCheckBox != null)
-            {
-                groupCheckBox.IsChecked = group.IsSelected.Value;
-            }
+            groupCheckBox?.IsChecked = group.IsSelected.Value;
         }
     }
 
@@ -289,14 +299,15 @@ public partial class FileAssociationWindow : GenericWindow
                 checkBox.IsVisible = searchText.Contains(filterText, StringComparison.InvariantCultureIgnoreCase);
             }
         }
-
-        // Update all group checkbox states after filtering
-        if (DataContext is CoreViewModel core)
+        
+        if (DataContext is not CoreViewModel core)
         {
-            foreach (var group in core.AssociationsViewModel.FileTypeGroups)
-            {
-                UpdateGroupCheckboxState(group);
-            }
+            return;
+        }
+        
+        foreach (var group in core.AssociationsViewModel.FileTypeGroups)
+        {
+            UpdateGroupCheckboxState(group);
         }
     }
 }
