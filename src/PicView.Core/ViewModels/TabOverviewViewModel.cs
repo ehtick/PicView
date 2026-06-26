@@ -374,11 +374,9 @@ public class TabOverviewViewModel
         tab.SingleImageType = SingleImageType.None;
     }
     
-    public async ValueTask LoadFromFileAsync(string file, TabViewModel? senderTab = null)
-    {
+    public async ValueTask LoadFromFileAsync(string file, TabViewModel? senderTab = null) => 
         await LoadFromFileAsync(new FileInfo(file), senderTab).ConfigureAwait(false);
-    }
-    
+
     public async ValueTask LoadFromDirectoryAsync(string file, TabViewModel? senderTab = null)
     {
         if (SharedNavigation is null)

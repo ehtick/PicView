@@ -335,20 +335,8 @@ public class NavigationService(
         }
     }
 
-    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct)
-    {
-        if (!CanNavigate(tab))
-        {
-            return;
-        }
-
-        if (tab.ImageIterator is null)
-        {
-            return;
-        }
-        
+    public async ValueTask NavigateAsync(TabViewModel tab, NavigateTo to, CancellationTokenSource ct) =>
         await tab.ImageIterator.NavigateAsync(to, SkipAmount.One, ct).ConfigureAwait(false);
-    }
 
     public async ValueTask NavigateByIncrementsAsync(TabViewModel tab, SkipAmount skipAmount, bool forwards, CancellationTokenSource ct)
     {
