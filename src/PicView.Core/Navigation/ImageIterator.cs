@@ -275,7 +275,8 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         Cache.Clear(_tab.Id);
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
-            var (nextIteration, _, _) = IterationHelper.GetIterations(CurrentIndex, Files.Count, NavigateTo.Next, SkipAmount.None);
+            // Need to update SecondaryCurrentIndex
+            var (_, nextIteration, _) = IterationHelper.GetIterations(CurrentIndex, Files.Count, NavigateTo.Next, SkipAmount.None);
             SecondaryCurrentIndex = nextIteration;
             await IterateToIndicesAsync(CurrentIndex, SecondaryCurrentIndex, ct).ConfigureAwait(false);
         }
