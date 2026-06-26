@@ -83,7 +83,7 @@ public static class SettingsUpdater
         {
             var ct = tab.GetTabCancellation();
             await windowTabs.SharedNavigation.RepopulateIterator(tab.FileInfo.CurrentValue, tab, ct).ConfigureAwait(false);
-            await tab.ImageIterator.ReloadAsync(ct).ConfigureAwait(false);
+            await tab.ImageIterator.ReloadAsync().ConfigureAwait(false);
             tab.UpdateTabTitle();
         }
         
@@ -209,7 +209,7 @@ public static class SettingsUpdater
             window.IsSideBySide.Value = true;
             if (tab.CurrentView.CurrentValue is ImageViewer imageViewer)
             {
-                await tab.ImageIterator.ReloadAsync(tab.GetTabCancellation()).ConfigureAwait(false);
+                await tab.ImageIterator.ReloadAsync(false).ConfigureAwait(false);
                 var imageModel = await core.SharedCache.LoadAsync(tab.Id, tab.ImageIterator.SecondaryCurrentIndex, tab.ImageIterator.Files);
                 imageViewer.SecondaryImage.Source = imageModel.Image;
             }

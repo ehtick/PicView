@@ -270,9 +270,13 @@ public class ImageIterator(IImageCache cache, IThumbnailCache thumbCache, IThumb
         UpdateNavigationProperties();
     }
 
-    public async ValueTask ReloadAsync(CancellationTokenSource ct)
+    public async ValueTask ReloadAsync(bool clearCache = true)
     {
-        Cache.Clear(_tab.Id);
+        if (clearCache)
+        {
+            Cache.Clear(_tab.Id);
+        }
+        var ct = _tab.GetTabCancellation();
         if (Settings.ImageScaling.ShowImageSideBySide)
         {
             // Need to update SecondaryCurrentIndex

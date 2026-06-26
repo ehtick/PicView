@@ -817,7 +817,7 @@ public class FunctionsMapper(MainWindowViewModel vm, Window window) : IFunctions
 
     /// <inheritdoc cref="Core.Navigation.Interfaces.IImageIterator.ReloadAsync"/>
     public async ValueTask Reload() =>
-        await vm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.ReloadAsync(vm.WindowTabs.ActiveTab.CurrentValue.GetTabCancellation()).ConfigureAwait(false);
+        await vm.WindowTabs.ActiveTab.CurrentValue.ImageIterator.ReloadAsync().ConfigureAwait(false);
 
     public async ValueTask ResizeImage() =>
         await ResizeWindow();

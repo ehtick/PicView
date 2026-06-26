@@ -430,8 +430,7 @@ public class TabOverviewViewModel
     public async ValueTask ReloadAsync(TabViewModel? senderTab = null)
     {
         var tab = senderTab ?? ActiveTab.Value;
-        var ct = tab.GetTabCancellation();
-        await tab.ImageIterator.ReloadAsync(ct).ConfigureAwait(false);
+        await tab.ImageIterator.ReloadAsync().ConfigureAwait(false);
     }
     #endregion
 
