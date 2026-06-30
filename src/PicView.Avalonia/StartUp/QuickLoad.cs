@@ -36,8 +36,9 @@ public static class QuickLoad
     /// <param name="core">The main view model.</param>
     /// <param name="source">The file, URL, or directory path to be loaded.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    /// <param name="shouldCenter">A boolean indicating whether to center the window.</param>
-    public static async ValueTask QuickLoadAsync(MainWindow mainWindow, CoreViewModel core, string source, bool continueFromLeftOff, bool shouldCenter = false)
+    /// <param name="isStartup">A boolean used to determine start-up behavior for the window.</param>
+    public static async ValueTask QuickLoadAsync(MainWindow mainWindow, CoreViewModel core, string source,
+        bool continueFromLeftOff, bool isStartup = false)
     {        
         var fileInfo = new FileInfo(source);
         if (!fileInfo.Exists) // If not file, try to load if URL or directory
@@ -59,7 +60,7 @@ public static class QuickLoad
                         ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
                         return;
                     }
-                    await LoadSingleFileAsync(mainWindow, core, files[0], continueFromLeftOff, shouldCenter, files).ConfigureAwait(false);
+                    await LoadSingleFileAsync(mainWindow, core, files[0], continueFromLeftOff, isStartup, files).ConfigureAwait(false);
                     return;
                 }
                 case FileTypeResolver.LoadAbleFileType.Web:
@@ -79,7 +80,7 @@ public static class QuickLoad
         }
         else
         {
-            await LoadSingleFileAsync(mainWindow, core, fileInfo, continueFromLeftOff, shouldCenter).ConfigureAwait(false);
+            await LoadSingleFileAsync(mainWindow, core, fileInfo, continueFromLeftOff, isStartup).ConfigureAwait(false);
         }
     }
 
@@ -133,7 +134,7 @@ public static class QuickLoad
     private static async ValueTask LoadSingleFileAsync(MainWindow mainWindow, CoreViewModel core,
         FileInfo fileInfo,
         bool continueFromLeftOff,
-        bool shouldCenter,
+        bool isStartUp,
         List<FileInfo>? files = null)
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -147,7 +148,7 @@ public static class QuickLoad
         {
             magickImage.Ping(fileInfo);
 
-            if (Settings.WindowProperties.AutoFit && !Settings.ImageScaling.ShowImageSideBySide)
+            if (isStartUp && Settings.WindowProperties.AutoFit && !Settings.ImageScaling.ShowImageSideBySide)
             {
                 // Predict window size and center beforehand for pleasant opening when double-clicking a file
                 WindowResizing.SetSize(magickImage.Width, magickImage.Height,
@@ -196,7 +197,7 @@ public static class QuickLoad
             }
         }
 
-        if (shouldCenter && Settings.WindowProperties.AutoFit)
+        if (isStartUp && Settings.WindowProperties.AutoFit)
         {
             WindowFunctions.CenterWindowOnScreen();
         }

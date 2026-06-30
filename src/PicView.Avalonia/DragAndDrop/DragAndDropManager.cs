@@ -371,7 +371,7 @@ public static class DragAndDropManager
         var tab = tabOverview.ActiveTab.CurrentValue;
         if (!tab.IsInitialized)
         {
-            await QuickLoad.QuickLoadAsync(mainWindow, core, path, false).ConfigureAwait(false);
+            await QuickLoad.QuickLoadAsync(mainWindow, core, path, continueFromLeftOff: false).ConfigureAwait(false);
             return;
         }
         var droppedFileInfo = new FileInfo(path);

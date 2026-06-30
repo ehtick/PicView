@@ -31,7 +31,7 @@ public static class FilePicker
         var tab = vm.WindowTabs.ActiveTab.CurrentValue;
         if (!tab.IsInitialized)
         {
-            await QuickLoad.QuickLoadAsync(mainWindow, core, file, false).ConfigureAwait(false);
+            await QuickLoad.QuickLoadAsync(mainWindow, core, file, continueFromLeftOff: false).ConfigureAwait(false);
             return;
         }
         
