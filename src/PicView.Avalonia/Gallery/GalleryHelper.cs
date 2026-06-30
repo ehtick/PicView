@@ -1,4 +1,5 @@
-﻿using PicView.Avalonia.Navigation;
+﻿using Avalonia;
+using PicView.Avalonia.Navigation;
 using PicView.Avalonia.Views.UC;
 using MainWindowViewModel = PicView.Core.ViewModels.MainWindowViewModel;
 
@@ -16,12 +17,23 @@ public static class GalleryHelper
         {
             return (0, 0);
         }
-        
-        if (gallery.IsLeftDocked.CurrentValue || gallery.IsRightDocked.CurrentValue)
+
+        Rect galleryBounds;
+        if (tab.CurrentView.CurrentValue is ImageViewer imageViewer)
         {
-            return (vm.GallerySettings.DockedGalleryItemSize.CurrentValue, 0);
+            galleryBounds = imageViewer.GalleryView.Bounds;
         }
-        return (0, vm.GallerySettings.DockedGalleryItemSize.CurrentValue);
+        else
+        {
+            return (0, 0);
+        }
+
+        if (tab.Gallery.IsLeftDocked.CurrentValue || tab.Gallery.IsRightDocked.CurrentValue)
+        {
+            return (galleryBounds.Width, 0);
+        }
+
+        return (0, galleryBounds.Height);
     }
 
     public static void CenterGallery(MainWindowViewModel main)
