@@ -151,16 +151,43 @@ public static class WindowFunctions
 
     public static async Task ToggleAutoFit(MainWindowViewModel vm, MainWindow mainWindow)
     {
-        if (Settings.WindowProperties.AutoFit)
+        Set(vm, mainWindow);
+
+        if (Application.Current.DataContext is CoreViewModel core && core.MainWindows.MainWindows.Count > 1)
         {
-            SetManualWindow(vm, mainWindow);
+            if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return;
+            }
+            foreach (var consecutiveVm in core.MainWindows.MainWindows)
+            {
+                var consecutiveWindow = desktop.Windows.FirstOrDefault(w => w.DataContext == consecutiveVm);
+                if (consecutiveWindow is not MainWindow consecutiveMainWindow)
+                {
+                    continue;
+                }
+                Set(consecutiveVm, consecutiveMainWindow);
+            }
         }
-        else
-        {
-            SetAutoFit(vm, mainWindow);
-        }
-        WindowResizing.SetSize(mainWindow, WindowResizeReason.Application);
+        Settings.WindowProperties.AutoFit = !Settings.WindowProperties.AutoFit;
         await SaveSettingsAsync().ConfigureAwait(false);
+        return;
+
+        void Set(MainWindowViewModel targetVm, MainWindow targetMainWindow)
+        {
+            if (Settings.WindowProperties.AutoFit)
+            {
+                targetVm.WindowMaxWidth.Value = targetVm.WindowMaxHeight.Value = double.NaN;
+                targetMainWindow.SizeToContent = SizeToContent.Manual;
+                targetVm.IsAutoFit.Value = false;
+            }
+            else
+            {
+                targetMainWindow.SizeToContent = SizeToContent.WidthAndHeight;
+                targetVm.IsAutoFit.Value = true;
+            }
+            WindowResizing.SetSize(targetMainWindow, WindowResizeReason.Application);
+        }
     }
 
     public static void SetAutoFit(MainWindowViewModel vm, Window window, bool center = true)
