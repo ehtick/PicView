@@ -198,19 +198,23 @@ public static class QuickLoad
             WindowFunctions.CenterWindowOnScreen();
         }
 
+        vm.IsLoadingIndicatorShown.Value = false;
+        tab.UpdateTabTitle();
         if (Settings.UIProperties.IsTaskbarProgressEnabled)
         {
             core.PlatformService.SetTaskbarProgress((ulong)tab.ImageIterator.CurrentIndex, (ulong)tab.ImageIterator.Files.Count);
         }
+        
 
-        vm.IsLoadingIndicatorShown.Value = false;
         FileHistoryManager.Add(fileInfo.FullName);
 
         await LoadGalleryIfNeeded(core).ConfigureAwait(false);
+        
         if (continueFromLeftOff)
         {
             Settings.StartUp.StartUpDirectory = initialDirectory.FullName;
         }
+        
         magickImage.Dispose();
     }
     

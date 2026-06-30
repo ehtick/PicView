@@ -31,7 +31,7 @@ public class MainWindow : Window, IMainWindow
     public MainTitleBar? SharedTitleBar { get; set; }
     public MainView? SharedMainView { get; set; }
     public AvaloniaRenderingFrameProvider FrameProvider { get; set; }
-    public UIControlHelper UIHelper { get; set; }
+    public UIControlHelper UIHelper { get; }
 
     protected MainWindow()
     {
