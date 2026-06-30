@@ -106,7 +106,7 @@ public static class StartUpHelper
     public static void DetachedWindowStartup(CoreViewModel core, IClassicDesktopStyleApplicationLifetime desktop, MainWindow window)
     {
         SettingsUpdater.InitializeSettings(window.DataContext as MainWindowViewModel, true);
-        HandleWindowScalingMode(core, window);
+        HandleWindowScalingMode(core, window, false);
         window.Show();
         
         HandlePostWindowUpdates(core, desktop, window);
@@ -127,7 +127,7 @@ public static class StartUpHelper
         HandlePostWindowUpdates(vm, desktop, window);
     }
     
-    public static void HandleWindowScalingMode(CoreViewModel vm, MainWindow window)
+    public static void HandleWindowScalingMode(CoreViewModel vm, MainWindow window, bool shouldCenter = true)
     {
         ScreenHelper.UpdateScreenSize(window);
 
@@ -146,12 +146,11 @@ public static class StartUpHelper
         }
         else if (Settings.WindowProperties.AutoFit)
         {
-            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            window.WindowStartupLocation = shouldCenter ? WindowStartupLocation.CenterScreen : WindowStartupLocation.Manual;
             WindowFunctions.SetAutoFit(vm.MainWindows.ActiveWindow.CurrentValue, window, false);
         }
         else 
         {
-            window.WindowStartupLocation = WindowStartupLocation.Manual;
             WindowFunctions.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
@@ -231,7 +230,7 @@ public static class StartUpHelper
 
     private static void HandleStartImage(MainWindow mainWindow, CoreViewModel vm, string arg)
     {
-        Task.Run(() => QuickLoad.QuickLoadAsync(mainWindow, vm, arg, false));
+        Task.Run(() => QuickLoad.QuickLoadAsync(mainWindow, vm, arg, false, true));
     }
 
     public static void StartUpMenuOrLastFile(MainWindow mainWindow, CoreViewModel vm)
@@ -244,7 +243,7 @@ public static class StartUpHelper
             }
             else
             {
-                Task.Run(() => QuickLoad.QuickLoadAsync(mainWindow, vm, Settings.StartUp.LastFile, true));
+                Task.Run(() => QuickLoad.QuickLoadAsync(mainWindow, vm, Settings.StartUp.LastFile, true, true));
             }
         }
         else

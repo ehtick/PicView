@@ -32,10 +32,12 @@ public static class QuickLoad
     /// Asynchronously loads an image, archive, URL, base64 string, or directory into the application view,
     /// updating the UI state and loading indicative properties as necessary.
     /// </summary>
+    /// <param name="mainWindow">The active main window.</param>
     /// <param name="core">The main view model.</param>
     /// <param name="source">The file, URL, or directory path to be loaded.</param>
     /// <param name="continueFromLeftOff">A boolean indicating whether to continue loading from the last session folder structure.</param>
-    public static async ValueTask QuickLoadAsync(MainWindow mainWindow, CoreViewModel core, string source, bool continueFromLeftOff)
+    /// <param name="shouldCenter">A boolean indicating whether to center the window.</param>
+    public static async ValueTask QuickLoadAsync(MainWindow mainWindow, CoreViewModel core, string source, bool continueFromLeftOff, bool shouldCenter = false)
     {        
         var fileInfo = new FileInfo(source);
         if (!fileInfo.Exists) // If not file, try to load if URL or directory
@@ -57,7 +59,7 @@ public static class QuickLoad
                         ViewChangeHelper.SwitchToStartUpMenu(core.MainWindows.ActiveWindow.CurrentValue);
                         return;
                     }
-                    await LoadSingleFileAsync(mainWindow, core, files[0], continueFromLeftOff, files).ConfigureAwait(false);
+                    await LoadSingleFileAsync(mainWindow, core, files[0], continueFromLeftOff, shouldCenter, files).ConfigureAwait(false);
                     return;
                 }
                 case FileTypeResolver.LoadAbleFileType.Web:
@@ -77,7 +79,7 @@ public static class QuickLoad
         }
         else
         {
-            await LoadSingleFileAsync(mainWindow, core, fileInfo, continueFromLeftOff).ConfigureAwait(false);
+            await LoadSingleFileAsync(mainWindow, core, fileInfo, continueFromLeftOff, shouldCenter).ConfigureAwait(false);
         }
     }
 
@@ -131,6 +133,7 @@ public static class QuickLoad
     private static async ValueTask LoadSingleFileAsync(MainWindow mainWindow, CoreViewModel core,
         FileInfo fileInfo,
         bool continueFromLeftOff,
+        bool shouldCenter,
         List<FileInfo>? files = null)
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -193,7 +196,7 @@ public static class QuickLoad
             }
         }
 
-        if (Settings.WindowProperties.AutoFit)
+        if (shouldCenter && Settings.WindowProperties.AutoFit)
         {
             WindowFunctions.CenterWindowOnScreen();
         }
