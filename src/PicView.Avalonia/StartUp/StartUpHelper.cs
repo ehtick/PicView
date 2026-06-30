@@ -165,12 +165,6 @@ public static class StartUpHelper
         SetWindowEventHandlers(window);
         HandleThemeUpdates();
 
-        if (Settings.UIProperties.ShowHoverNavigationBar)
-        {
-            core.MainWindows.ActiveWindow.CurrentValue.WindowTabs.ActiveTab.CurrentValue.Hoverbar.IsHoverbarVisible
-                .Value = !Settings.UIProperties.ShowBottomNavBar;
-        }
-
         core.MainWindows.ActiveWindow.CurrentValue.ToolTip ??= new ToolTipViewModel();
         TooltipHelper.StartTooltipSubscription(core.MainWindows.ActiveWindow.CurrentValue.ToolTip, window);
         

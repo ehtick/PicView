@@ -1,9 +1,11 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Threading;
 using PicView.Avalonia.Animations;
 using PicView.Avalonia.Views.UC;
 using PicView.Core.DebugTools;
+using PicView.Core.ViewModels;
 
 namespace PicView.Avalonia.UI;
 
@@ -84,16 +86,14 @@ public class HoverFadeButtonHandler : IDisposable
             return false;
         }
 
-        if (_mainButton is HoverBar hoverBar)
+        if (Settings.UIProperties.ShowHoverNavigationBar && _mainButton is HoverBar hoverBar)
         {
-            if (!Settings.UIProperties.ShowHoverNavigationBar || Settings.UIProperties.ShowBottomNavBar)
+            if (Application.Current.DataContext is CoreViewModel core)
             {
-                hoverBar.IsVisible = false;
-                return false;
-            }
-            if (!Settings.UIProperties.ShowInterface && Settings.UIProperties.ShowHoverNavigationBar)
-            {
-                hoverBar.IsVisible = true;
+                var isBottomToolbarShown =
+                    core.MainWindows.ActiveWindow.CurrentValue.IsBottomToolbarShown.CurrentValue;
+                hoverBar.IsVisible = !isBottomToolbarShown;
+                return !isBottomToolbarShown;
             }
         }
         return true;

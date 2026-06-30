@@ -65,7 +65,6 @@
                 VerticalAlignment="Bottom"
                 IsVisible="False"
                 ZIndex="90" />
-            <uc:HoverBar x:Name="HoverBar" VerticalAlignment="Bottom" />
             <buttons:ClickArrowRight
                 x:Name="ClickArrowRight"
                 HorizontalAlignment="Right"
@@ -84,7 +83,11 @@
                 VerticalAlignment="Bottom"
                 IsVisible="{CompiledBinding !$parent[Window].((vm:MainWindowViewModel)DataContext).IsBottomToolbarShown.Value}"
                 Opacity="0"
-                ZIndex="9" />
+                ZIndex="2" />
+            <uc:HoverBar
+                x:Name="HoverBar"
+                VerticalAlignment="Bottom"
+                ZIndex="2" />
         </Panel>
     </DockPanel>
 </UserControl>
