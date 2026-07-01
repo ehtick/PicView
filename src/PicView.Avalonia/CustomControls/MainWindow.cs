@@ -228,7 +228,7 @@ public class MainWindow : Window, IMainWindow
                 return;
             }
             // User manually resized (not maximize or restore), reset to manual window
-            Dispatcher.CurrentDispatcher.Post(() => WindowFunctions.SetManualWindow(vm, this));
+            Dispatcher.CurrentDispatcher.Post(WindowFunctions.SetManualWindows);
         }
         WindowResizing.SetSize(this, e.Reason);
         SetLayoutSizeAndVisibility(e.ClientSize.Width);

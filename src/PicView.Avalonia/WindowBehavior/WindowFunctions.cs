@@ -149,31 +149,34 @@ public static class WindowFunctions
         await SaveSettingsAsync().ConfigureAwait(false);
     }
 
-    public static async Task ToggleAutoFit(MainWindowViewModel vm, MainWindow mainWindow)
+    /// <summary>
+    /// Toggles the AutoFit setting across all main application windows.
+    /// If AutoFit is enabled, adjusts the windows to automatically size to their content.
+    /// If AutoFit is disabled, allows manual resizing of windows.
+    /// Updates the application settings and persists the changes.
+    /// </summary>
+    public static async Task ToggleAutoFit()
     {
-        Set(vm, mainWindow);
-
-        if (Application.Current.DataContext is CoreViewModel core && core.MainWindows.MainWindows.Count > 1)
+        if (Application.Current.DataContext is not CoreViewModel core || Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return;
-            }
-            foreach (var consecutiveVm in core.MainWindows.MainWindows)
-            {
-                var consecutiveWindow = desktop.Windows.FirstOrDefault(w => w.DataContext == consecutiveVm);
-                if (consecutiveWindow is not MainWindow consecutiveMainWindow)
-                {
-                    continue;
-                }
-                Set(consecutiveVm, consecutiveMainWindow);
-            }
+            return;
         }
+
+        foreach (var vm in core.MainWindows.MainWindows)
+        {
+            var window = desktop.Windows.FirstOrDefault(w => w.DataContext == vm);
+            if (window is not MainWindow consecutiveMainWindow)
+            {
+                continue;
+            }
+            Toggle(vm, consecutiveMainWindow);
+        }
+        
         Settings.WindowProperties.AutoFit = !Settings.WindowProperties.AutoFit;
         await SaveSettingsAsync().ConfigureAwait(false);
         return;
 
-        void Set(MainWindowViewModel targetVm, MainWindow targetMainWindow)
+        void Toggle(MainWindowViewModel targetVm, MainWindow targetMainWindow)
         {
             if (Settings.WindowProperties.AutoFit)
             {
@@ -202,21 +205,41 @@ public static class WindowFunctions
             CenterWindowOnScreen();
         }
     }
-    
-    public static void SetManualWindow(MainWindowViewModel vm)
+
+    /// <summary>
+    /// Configures all windows to use manual sizing and positioning.
+    /// This method updates the application state and modifies the behavior
+    /// of individual windows to no longer rely on automatic adjustments.
+    /// </summary>
+    public static void SetManualWindows()
     {
-        if (Application.Current.ApplicationLifetime  is not IClassicDesktopStyleApplicationLifetime desktop)
+        if (Application.Current.DataContext is not CoreViewModel core || Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
         {
             return;
         }
-        SetManualWindow(vm, desktop.MainWindow);
+        
+        foreach (var vm in core.MainWindows.MainWindows)
+        {
+            var window = desktop.Windows.FirstOrDefault(w => w.DataContext == vm);
+            if (window is not MainWindow mainWindow)
+            {
+                continue;
+            }
+            SetSingleManualWindow(vm, mainWindow);
+        }
+        
+        Settings.WindowProperties.AutoFit = false;
     }
 
-    public static void SetManualWindow(MainWindowViewModel vm, Window window)
+    /// <summary>
+    /// Configures a single window to operate in manual size mode and updates the associated view model properties.
+    /// </summary>
+    /// <param name="vm">The view model associated with the window, containing state and settings for the application.</param>
+    /// <param name="mainWindow">The main window to be configured for manual size adjustments.</param>
+    public static void SetSingleManualWindow(MainWindowViewModel vm, MainWindow mainWindow)
     {
         vm.WindowMaxWidth.Value = vm.WindowMaxHeight.Value = double.NaN;
-        window.SizeToContent = SizeToContent.Manual;
-        Settings.WindowProperties.AutoFit = false;
+        mainWindow.SizeToContent = SizeToContent.Manual;
         vm.IsAutoFit.Value = false;
     }
 

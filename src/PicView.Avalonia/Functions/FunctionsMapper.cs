@@ -606,16 +606,14 @@ public class FunctionsMapper(MainWindowViewModel vm, MainWindow mainWindow) : IF
         await SettingsUpdater.ToggleZoomToFit(vm, mainWindow);
     }
     
-    /// <inheritdoc cref="WindowFunctions.ToggleAutoFit(MainWindowViewModel, Window)" />
-    public async ValueTask AutoFitWindow()
-    {
-        await WindowFunctions.ToggleAutoFit(vm, mainWindow);
-    }
+    /// <inheritdoc cref="WindowFunctions.ToggleAutoFit()" />
+    public async ValueTask AutoFitWindow() =>
+        await WindowFunctions.ToggleAutoFit();
 
-    /// <inheritdoc cref="WindowFunctions.SetManualWindow(MainWindowViewModel)" />
+    /// <inheritdoc cref="WindowFunctions.SetManualWindows" />
     public ValueTask NormalWindow()
     {
-        WindowFunctions.SetManualWindow(vm);
+        WindowFunctions.SetManualWindows();
         return ValueTask.CompletedTask;
     }
 

@@ -151,7 +151,7 @@ public static class StartUpHelper
         }
         else 
         {
-            WindowFunctions.SetManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
+            WindowFunctions.SetSingleManualWindow(vm.MainWindows.ActiveWindow.CurrentValue, window);
             WindowFunctions.InitializeWindowSizeAndPosition(window);
         }
     }
